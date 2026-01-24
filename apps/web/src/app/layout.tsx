@@ -17,7 +17,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "PulseGuard | Website Monitoring & Uptime Platform",
-  description: "24/7 monitoring and instant notifications. Start monitoring your website performance in minutes.",
+  description:
+    "24/7 monitoring and instant notifications. Start monitoring your website performance in minutes.",
 };
 
 export default function RootLayout({
@@ -28,9 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Providers>
-            {children}
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

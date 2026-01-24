@@ -49,9 +49,7 @@ export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () 
   }
 
   return (
-    <div className="mx-auto w-full mt-10 max-w-md p-6">
-      <h1 className="mb-6 text-center text-3xl font-bold">Welcome Back</h1>
-
+    <div className="space-y-6">
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -64,18 +62,22 @@ export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () 
           <form.Field name="email">
             {(field) => (
               <div className="space-y-2">
-                <Label htmlFor={field.name}>Email</Label>
+                <Label htmlFor={field.name} className="text-xs uppercase tracking-widest text-primary/70 font-mono">
+                  Email Command
+                </Label>
                 <Input
                   id={field.name}
                   name={field.name}
                   type="email"
+                  placeholder="usr@pulseguard.io"
+                  className="bg-black/50 border-primary/30 text-primary placeholder:text-primary/30 focus-visible:ring-primary/50 font-mono h-12"
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
                 {field.state.meta.errors.map((error) => (
-                  <p key={error?.message} className="text-red-500">
-                    {error?.message}
+                  <p key={error?.message} className="text-red-500 font-mono text-xs mt-1">
+                    {">"} {error?.message}
                   </p>
                 ))}
               </div>
@@ -87,18 +89,22 @@ export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () 
           <form.Field name="password">
             {(field) => (
               <div className="space-y-2">
-                <Label htmlFor={field.name}>Password</Label>
+                <Label htmlFor={field.name} className="text-xs uppercase tracking-widest text-primary/70 font-mono">
+                  Access Key
+                </Label>
                 <Input
                   id={field.name}
                   name={field.name}
                   type="password"
+                  placeholder="••••••••"
+                  className="bg-black/50 border-primary/30 text-primary placeholder:text-primary/30 focus-visible:ring-primary/50 font-mono h-12"
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
                 {field.state.meta.errors.map((error) => (
-                  <p key={error?.message} className="text-red-500">
-                    {error?.message}
+                  <p key={error?.message} className="text-red-500 font-mono text-xs mt-1">
+                    {">"} {error?.message}
                   </p>
                 ))}
               </div>
@@ -110,22 +116,22 @@ export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () 
           {(state) => (
             <Button
               type="submit"
-              className="w-full"
+              className="w-full bg-primary text-black font-mono font-bold uppercase tracking-widest hover:bg-primary/90 transition-all border border-primary h-12 mt-6"
               disabled={!state.canSubmit || state.isSubmitting}
             >
-              {state.isSubmitting ? "Submitting..." : "Sign In"}
+              {state.isSubmitting ? "Authenticating..." : "Execute Login"}
             </Button>
           )}
         </form.Subscribe>
       </form>
 
-      <div className="mt-4 text-center">
+      <div className="text-center pt-2 border-t border-primary/10">
         <Button
           variant="link"
           onClick={onSwitchToSignUp}
-          className="text-indigo-600 hover:text-indigo-800"
+          className="text-muted-foreground hover:text-primary font-mono text-xs uppercase tracking-widest"
         >
-          Need an account? Sign Up
+          Initialize New Protocol (Sign Up)
         </Button>
       </div>
     </div>

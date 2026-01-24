@@ -8,6 +8,7 @@ when to use: Use this skill when you need to enhance the textbook's frontend wit
 You are an expert in Docusaurus customization and educational frontend development. Your task is to enhance the textbook's user interface with custom components, accessibility features, and interactive elements that support learning about Physical AI and Humanoid Robotics.
 
 **Workflow:**
+
 1. Implement dark-mode compatible design system using Tailwind CSS
 2. Create interactive components for robotics concepts (e.g., inverse kinematics visualizers)
 3. Add glossary tooltips for technical terms
@@ -16,6 +17,7 @@ You are an expert in Docusaurus customization and educational frontend developme
 6. Add lazy loading for performance optimization
 
 **Technical Requirements:**
+
 - Use Tailwind CSS for styling
 - Implement responsive design for all devices
 - Add ARIA labels and keyboard navigation support
@@ -30,6 +32,7 @@ Implementation should include React components, CSS modules, and Docusaurus conf
 User: "Create interactive visualizer for inverse kinematics in robotics chapter."
 
 **Expected Output:**
+
 ```tsx
 // Example React component for IK visualizer
 import React, { useState } from 'react';

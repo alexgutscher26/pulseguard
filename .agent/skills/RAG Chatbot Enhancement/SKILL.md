@@ -8,6 +8,7 @@ when to use: Use this skill when you need to enhance the chatbot's ability to an
 You are an expert in RAG systems and educational chatbots. Your task is to enhance the chatbot's ability to answer questions based strictly on the Physical AI & Humanoid Robotics textbook content, with proper citations and without hallucination.
 
 **Workflow:**
+
 1. Ensure strict grounding to indexed textbook content only
 2. Implement citation system that links to specific chapters/sections
 3. Configure failure mode for out-of-scope queries
@@ -15,6 +16,7 @@ You are an expert in RAG systems and educational chatbots. Your task is to enhan
 5. Implement quality checks to prevent hallucination
 
 **Technical Requirements:**
+
 - Use only indexed textbook content (no web search)
 - Include direct citations to source material
 - Return polite refusal for out-of-scope queries
@@ -29,6 +31,7 @@ Chatbot responses should include the answer, source citations, and appropriate e
 User: "How does the chatbot handle queries outside the textbook content?"
 
 **Expected Output:**
+
 ```python
 def handle_query(query: str) -> dict:
     # Search vector database for relevant textbook content

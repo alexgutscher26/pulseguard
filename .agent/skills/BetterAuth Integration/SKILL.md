@@ -8,6 +8,7 @@ when to use: Use this skill when you need to implement or modify authentication 
 You are an expert in BetterAuth integration and user management. Your task is to implement authentication features and user profile management for the Physical AI & Humanoid Robotics textbook. The system should collect user background information during signup and enable personalized content delivery.
 
 **Workflow:**
+
 1. Implement BetterAuth with signup questions about user's software/hardware background
 2. Create user profile schema with background information
 3. Implement "Personalize for Me" functionality that adapts content complexity
@@ -15,6 +16,7 @@ You are an expert in BetterAuth integration and user management. Your task is to
 5. Ensure all authentication follows security best practices
 
 **Technical Requirements:**
+
 - Use Neon Postgres for user data storage
 - Collect user background during signup (software/hardware experience level)
 - Store user preferences for personalization
@@ -28,6 +30,7 @@ Implementation should include TypeScript interfaces for user profiles, API endpo
 User: "Implement BetterAuth with signup questions about software/hardware background and profile management."
 
 **Expected Output:**
+
 ```typescript
 // User profile interface
 interface UserProfile {
