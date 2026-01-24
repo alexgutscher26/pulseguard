@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import "../index.css";
-import Header from "@/components/header";
 import Providers from "@/components/providers";
 
 const geistSans = Geist({
@@ -17,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "pulseguard",
-  description: "pulseguard",
+  title: "PulseGuard | Website Monitoring & Uptime Platform",
+  description: "24/7 monitoring and instant notifications. Start monitoring your website performance in minutes.",
 };
 
 export default function RootLayout({
@@ -30,10 +29,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>
-          <div className="grid grid-rows-[auto_1fr] h-svh">
-            <Header />
             {children}
-          </div>
         </Providers>
       </body>
     </html>
