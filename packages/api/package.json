@@ -1,0 +1,27 @@
+{
+  "name": "@pulseguard/api",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@pulseguard/auth": "workspace:*",
+    "@pulseguard/db": "workspace:*",
+    "@pulseguard/env": "workspace:*",
+    "@trpc/client": "catalog:",
+    "@trpc/server": "catalog:",
+    "dotenv": "catalog:",
+    "next": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@pulseguard/config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}

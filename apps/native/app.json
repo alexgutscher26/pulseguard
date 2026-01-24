@@ -1,0 +1,17 @@
+{
+  "expo": {
+    "scheme": "pulseguard",
+    "userInterfaceStyle": "automatic",
+    "orientation": "default",
+    "web": {
+      "bundler": "metro"
+    },
+    "name": "pulseguard",
+    "slug": "pulseguard",
+    "plugins": ["expo-font"],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}

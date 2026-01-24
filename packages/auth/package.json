@@ -1,0 +1,25 @@
+{
+  "name": "@pulseguard/auth",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@better-auth/expo": "catalog:",
+    "@pulseguard/db": "workspace:*",
+    "@pulseguard/env": "workspace:*",
+    "better-auth": "catalog:",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@pulseguard/config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}

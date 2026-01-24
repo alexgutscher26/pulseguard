@@ -1,0 +1,3 @@
+{
+  "extends": "@pulseguard/config/tsconfig.base.json"
+}
