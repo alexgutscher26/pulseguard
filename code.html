@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PulseGuard Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#136dec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101822",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .sidebar-active {
+            background-color: #282f39;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-white min-h-screen">
+<div class="flex h-screen overflow-hidden">
+<!-- SideNavBar -->
+<aside class="w-64 flex-shrink-0 border-r border-[#3b4554] bg-[#111418] flex flex-col justify-between p-4">
+<div class="flex flex-col gap-8">
+<!-- Logo/Brand -->
+<div class="flex items-center gap-3 px-2">
+<div class="bg-primary size-10 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white">pulse_alert</span>
+</div>
+<div class="flex flex-col">
+<h1 class="text-white text-base font-bold leading-none">PulseGuard</h1>
+<p class="text-[#9da8b9] text-xs font-medium mt-1">Pro Plan</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg sidebar-active transition-colors" href="#">
+<span class="material-symbols-outlined text-white">dashboard</span>
+<p class="text-white text-sm font-medium">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#9da8b9] hover:bg-[#282f39] hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">monitor_heart</span>
+<p class="text-sm font-medium">Monitors</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#9da8b9] hover:bg-[#282f39] hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<p class="text-sm font-medium">Alerts</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#9da8b9] hover:bg-[#282f39] hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-sm font-medium">Settings</p>
+</a>
+</nav>
+</div>
+<!-- Bottom CTA -->
+<div class="bg-[#1c2027] p-4 rounded-xl flex flex-col gap-3">
+<p class="text-xs text-[#9da8b9]">Running low on monitors? Upgrade for more slots.</p>
+<button class="w-full bg-primary hover:bg-primary/90 text-white text-sm font-bold py-2 rounded-lg transition-all">
+                    Upgrade Plan
+                </button>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col overflow-y-auto">
+<!-- TopNavBar -->
+<header class="sticky top-0 z-10 flex items-center justify-between border-b border-[#282f39] bg-[#111418]/80 backdrop-blur-md px-8 py-4">
+<div class="flex items-center gap-4 text-white">
+<h2 class="text-xl font-bold tracking-tight">Dashboard Overview</h2>
+</div>
+<div class="flex items-center gap-6">
+<label class="relative hidden md:block">
+<span class="absolute inset-y-0 left-0 flex items-center pl-3">
+<span class="material-symbols-outlined text-[#9da8b9] text-xl">search</span>
+</span>
+<input class="bg-[#282f39] text-white text-sm rounded-lg border-none focus:ring-1 focus:ring-primary w-64 pl-10 py-2 placeholder:text-[#9da8b9]" placeholder="Search monitors..." type="text"/>
+</label>
+<button class="bg-primary hover:bg-primary/90 text-white text-sm font-bold px-4 py-2 rounded-lg flex items-center gap-2 transition-all">
+<span class="material-symbols-outlined text-sm">add</span>
+                        Add Monitor
+                    </button>
+<div class="flex items-center gap-3 border-l border-[#282f39] pl-6">
+<div class="text-right hidden sm:block">
+<p class="text-xs text-white font-medium">Alex Rivera</p>
+<p class="text-[10px] text-[#9da8b9]">Admin</p>
+</div>
+<div class="size-10 rounded-full bg-gradient-to-tr from-primary to-blue-400 p-0.5">
+<img class="rounded-full w-full h-full object-cover" data-alt="User profile avatar with blue gradient border" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxSYTgfX2U4lnnYl1yKNWL9eNJG3Lj1p_plRCe12llLiayEVV3biVu6yC0OGWk3Mti3J0YGrFtTWUwGNJvt6Y4-8l_L8i_N-MjEaZ6JAC8uPa9FJ-Cl8tbFv41OFaIu_4duPeo7UcdgXPXxnHSgArtMEkKZddUpSqnWuI5wzbxkFCrGBvWmTatIm8JIm2KhGv0gNieFcvCO3LdXUbrmfdrMyCTSSXZAR1GeVA5__te0JJ80IJkzNCgXrwfGbJ_gcu_4pyoVHeN6oI7"/>
+</div>
+</div>
+</div>
+</header>
+<div class="p-8 max-w-[1200px] mx-auto w-full">
+<!-- Stats Section -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+<div class="bg-[#111418] border border-[#3b4554] rounded-xl p-6 hover:border-primary/50 transition-colors">
+<div class="flex items-center justify-between mb-2">
+<p class="text-[#9da8b9] text-sm font-medium">Active Monitors</p>
+<span class="material-symbols-outlined text-primary text-xl">sensors</span>
+</div>
+<p class="text-3xl font-bold">12</p>
+<p class="text-[#0bda5e] text-xs font-medium mt-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">trending_up</span>
+                            +2 this week
+                        </p>
+</div>
+<div class="bg-[#111418] border border-[#3b4554] rounded-xl p-6 hover:border-primary/50 transition-colors">
+<div class="flex items-center justify-between mb-2">
+<p class="text-[#9da8b9] text-sm font-medium">Global Uptime</p>
+<span class="material-symbols-outlined text-[#0bda5e] text-xl">check_circle</span>
+</div>
+<p class="text-3xl font-bold">99.98%</p>
+<p class="text-[#0bda5e] text-xs font-medium mt-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">trending_up</span>
+                            +0.01%
+                        </p>
+</div>
+<div class="bg-[#111418] border border-[#3b4554] rounded-xl p-6 hover:border-primary/50 transition-colors">
+<div class="flex items-center justify-between mb-2">
+<p class="text-[#9da8b9] text-sm font-medium">Avg Response Time</p>
+<span class="material-symbols-outlined text-[#fa6238] text-xl">speed</span>
+</div>
+<p class="text-3xl font-bold">342ms</p>
+<p class="text-[#fa6238] text-xs font-medium mt-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">trending_down</span>
+                            -12ms (faster)
+                        </p>
+</div>
+<div class="bg-[#111418] border border-[#3b4554] rounded-xl p-6 hover:border-primary/50 transition-colors">
+<div class="flex items-center justify-between mb-2">
+<p class="text-[#9da8b9] text-sm font-medium">Active Alerts</p>
+<span class="material-symbols-outlined text-[#fa6238] text-xl">warning</span>
+</div>
+<p class="text-3xl font-bold">1</p>
+<p class="text-[#9da8b9] text-xs font-medium mt-2">Currently being resolved</p>
+</div>
+</div>
+<!-- SectionHeader -->
+<div class="flex items-center justify-between mb-4 px-2">
+<h2 class="text-xl font-bold">Your Monitors</h2>
+<div class="flex gap-2">
+<button class="bg-[#282f39] text-white text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-[#3b4554] transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+                            Filter
+                        </button>
+<button class="bg-[#282f39] text-white text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-[#3b4554] transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">sort</span>
+                            Sort
+                        </button>
+</div>
+</div>
+<!-- Table -->
+<div class="bg-[#111418] border border-[#3b4554] rounded-xl overflow-hidden shadow-lg">
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-[#1c2027] border-b border-[#3b4554]">
+<tr>
+<th class="px-6 py-4 text-xs font-semibold text-[#9da8b9] uppercase tracking-wider">Site Name</th>
+<th class="px-6 py-4 text-xs font-semibold text-[#9da8b9] uppercase tracking-wider">Status</th>
+<th class="px-6 py-4 text-xs font-semibold text-[#9da8b9] uppercase tracking-wider">24h Uptime</th>
+<th class="px-6 py-4 text-xs font-semibold text-[#9da8b9] uppercase tracking-wider">Response</th>
+<th class="px-6 py-4 text-right text-xs font-semibold text-[#9da8b9] uppercase tracking-wider">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#3b4554]">
+<!-- Row 1 -->
+<tr class="hover:bg-[#1c2027] transition-colors group">
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-white">Main Website</span>
+<span class="text-xs text-[#9da8b9]">https://example.com</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#0bda5e]/10 text-[#0bda5e]">
+<span class="size-1.5 rounded-full bg-[#0bda5e]"></span>
+                                            Up
+                                        </span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="flex gap-0.5">
+<!-- Small bars visual -->
+<div class="h-4 w-1 bg-[#0bda5e] rounded-full"></div>
+<div class="h-4 w-1 bg-[#0bda5e] rounded-full"></div>
+<div class="h-4 w-1 bg-[#0bda5e] rounded-full"></div>
+<div class="h-4 w-1 bg-[#0bda5e] rounded-full"></div>
+<div class="h-4 w-1 bg-[#0bda5e] rounded-full"></div>
+<div class="h-4 w-1 bg-[#0bda5e] rounded-full"></div>
+<div class="h-4 w-1 bg-[#0bda5e] rounded-full opacity-50"></div>
+</div>
+<span class="text-sm font-medium">100%</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="text-sm font-medium text-[#9da8b9]">124ms</span>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="text-[#9da8b9] hover:text-white"><span class="material-symbols-outlined text-xl">analytics</span></button>
+<button class="text-[#9da8b9] hover:text-white"><span class="material-symbols-outlined text-xl">edit</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-[#1c2027] transition-colors group">
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-white">API Gateway</span>
+<span class="text-xs text-[#9da8b9]">https://api.example.com</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#fa6238]/10 text-[#fa6238]">
+<span class="size-1.5 rounded-full bg-[#fa6238]"></span>
+                                            Down
+                                        </span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="flex gap-0.5">
+<div class="h-4 w-1 bg-[#0bda5e] rounded-full"></div>
+<div class="h-4 w-1 bg-[#0bda5e] rounded-full"></div>
+<div class="h-4 w-1 bg-[#fa6238] rounded-full"></div>
+<div class="h-4 w-1 bg-[#fa6238] rounded-full"></div>
+<div class="h-4 w-1 bg-[#0bda5e] rounded-full"></div>
+<div class="h-4 w-1 bg-[#0bda5e] rounded-full"></div>
+<div class="h-4 w-1 bg-[#0bda5e] rounded-full opacity-50"></div>
+</div>
+<span class="text-sm font-medium">95.2%</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="text-sm font-medium text-[#fa6238]">Timeout</span>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="text-[#9da8b9] hover:text-white"><span class="material-symbols-outlined text-xl">analytics</span></button>
+<button class="text-[#9da8b9] hover:text-white"><span class="material-symbols-outlined text-xl">edit</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-[#1c2027] transition-colors group">
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-white">Staging Env</span>
+<span class="text-xs text-[#9da8b9]">https://staging.example.com</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#9da8b9]/10 text-[#9da8b9]">
+<span class="size-1.5 rounded-full bg-[#9da8b9]"></span>
+                                            Paused
+                                        </span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="flex gap-0.5">
+<div class="h-4 w-1 bg-[#3b4554] rounded-full"></div>
+<div class="h-4 w-1 bg-[#3b4554] rounded-full"></div>
+<div class="h-4 w-1 bg-[#3b4554] rounded-full"></div>
+<div class="h-4 w-1 bg-[#3b4554] rounded-full"></div>
+<div class="h-4 w-1 bg-[#3b4554] rounded-full"></div>
+<div class="h-4 w-1 bg-[#3b4554] rounded-full"></div>
+<div class="h-4 w-1 bg-[#3b4554] rounded-full opacity-50"></div>
+</div>
+<span class="text-sm font-medium">N/A</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="text-sm font-medium text-[#9da8b9]">—</span>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="text-[#9da8b9] hover:text-white"><span class="material-symbols-outlined text-xl">analytics</span></button>
+<button class="text-[#9da8b9] hover:text-white"><span class="material-symbols-outlined text-xl">edit</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer -->
+<div class="bg-[#1c2027] px-6 py-4 flex items-center justify-between border-t border-[#3b4554]">
+<p class="text-xs text-[#9da8b9]">Showing 1-3 of 12 monitors</p>
+<div class="flex gap-2">
+<button class="px-3 py-1 rounded border border-[#3b4554] text-[#9da8b9] hover:text-white text-xs disabled:opacity-50" disabled="">Previous</button>
+<button class="px-3 py-1 rounded border border-[#3b4554] text-[#9da8b9] hover:text-white text-xs">Next</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Floating Action Button for Mobile -->
+<button class="fixed bottom-6 right-6 md:hidden bg-primary size-14 rounded-full flex items-center justify-center shadow-2xl text-white">
+<span class="material-symbols-outlined text-2xl">add</span>
+</button>
+</body></html>
