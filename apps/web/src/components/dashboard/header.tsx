@@ -12,6 +12,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+/**
+ * Renders the dashboard header component.
+ *
+ * The DashboardHeader component displays a sticky header with session information, a search input,
+ * and options for adding monitors and managing user accounts. It utilizes the authClient to retrieve
+ * the current session and conditionally displays user details, including their profile image and access level.
+ */
 export function DashboardHeader() {
   const { data: session } = authClient.useSession();
 
