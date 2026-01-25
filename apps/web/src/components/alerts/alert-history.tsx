@@ -42,6 +42,9 @@ const history = [
   },
 ];
 
+/**
+ * Renders the alert history component displaying recent incident reports.
+ */
 export function AlertHistory() {
   return (
     <div className="flex flex-col gap-4">
