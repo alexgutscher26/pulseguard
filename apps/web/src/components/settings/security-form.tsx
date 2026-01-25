@@ -2,6 +2,9 @@
 
 import { Shield, Smartphone, Lock } from "lucide-react";
 
+/**
+ * Renders a security form for managing two-factor authentication and password changes.
+ */
 export function SecurityForm() {
   return (
     <div className="flex flex-col gap-6">
