@@ -2,6 +2,7 @@
 
 import { Search, Plus, Terminal, LogOut, User, Settings } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -54,11 +55,11 @@ export function DashboardHeader() {
           />
         </label>
 
-        <button className="flex items-center justify-center h-9 px-4 bg-primary/10 text-primary text-xs font-mono font-bold uppercase tracking-wider hover:bg-primary/20 transition-all border border-primary/50 hover:border-primary gap-2 group cursor-pointer relative overflow-hidden">
+        <Link href="/dashboard/monitors/new" className="flex items-center justify-center h-9 px-4 bg-primary/10 text-primary text-xs font-mono font-bold uppercase tracking-wider hover:bg-primary/20 transition-all border border-primary/50 hover:border-primary gap-2 group cursor-pointer relative overflow-hidden">
              <div className="absolute inset-0 bg-primary/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
             <Plus className="size-4 relative z-10" />
             <span className="relative z-10">Add Monitor</span>
-        </button>
+        </Link>
 
         <div className="flex items-center gap-3 border-l border-primary/20 pl-6 h-8">
             <DropdownMenu>

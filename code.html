@@ -1,10 +1,12 @@
 <!DOCTYPE html>
+
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Global App Settings - PulseGuard</title>
+<title>Monitor Detail Analytics | PulseGuard</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
         tailwind.config = {
@@ -15,9 +17,6 @@
                         "primary": "#136dec",
                         "background-light": "#f6f7f8",
                         "background-dark": "#101822",
-                        "status-up": "#0bda5e",
-                        "status-down": "#fa6238",
-                        "status-paused": "#9da8b9",
                     },
                     fontFamily: {
                         "display": ["Inter"]
@@ -27,163 +26,266 @@
             },
         }
     </script>
-<style type="text/tailwindcss">
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .sidebar-active {
-            background-color: #282f39;
-        }
-        .tab-active {
-            background-color: #282f39;
-            color: white;
-        }
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
     </style>
 </head>
-<body class="font-display bg-background-light dark:bg-background-dark text-white min-h-screen">
-<div class="flex h-screen overflow-hidden">
-<aside class="w-64 flex-shrink-0 border-r border-[#3b4554] bg-[#111418] flex flex-col justify-between p-4">
-<div class="flex flex-col gap-8">
-<div class="flex items-center gap-3 px-2">
-<div class="bg-primary size-10 rounded-lg flex items-center justify-center">
-<span class="material-symbols-outlined text-white">pulse_alert</span>
-</div>
-<div class="flex flex-col">
-<h1 class="text-white text-base font-bold leading-none">PulseGuard</h1>
-<p class="text-[#9da8b9] text-xs font-medium mt-1">Pro Plan</p>
-</div>
-</div>
-<nav class="flex flex-col gap-1">
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#9da8b9] hover:bg-[#282f39] hover:text-white transition-colors" href="#">
-<span class="material-symbols-outlined">dashboard</span>
-<p class="text-sm font-medium">Dashboard</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#9da8b9] hover:bg-[#282f39] hover:text-white transition-colors" href="#">
-<span class="material-symbols-outlined">monitor_heart</span>
-<p class="text-sm font-medium">Monitors</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#9da8b9] hover:bg-[#282f39] hover:text-white transition-colors" href="#">
-<span class="material-symbols-outlined">notifications</span>
-<p class="text-sm font-medium">Alerts</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg sidebar-active transition-colors" href="#">
-<span class="material-symbols-outlined text-white">settings</span>
-<p class="text-white text-sm font-medium">Settings</p>
-</a>
-</nav>
-</div>
-<div class="bg-[#1c2027] p-4 rounded-xl flex flex-col gap-3">
-<p class="text-xs text-[#9da8b9]">Running low on monitors? Upgrade for more slots.</p>
-<button class="w-full bg-primary hover:bg-primary/90 text-white text-sm font-bold py-2 rounded-lg transition-all">
-                Upgrade Plan
-            </button>
-</div>
-</aside>
-<main class="flex-1 flex flex-col overflow-y-auto bg-background-dark">
-<header class="sticky top-0 z-20 flex items-center justify-between border-b border-[#282f39] bg-[#111418]/80 backdrop-blur-md px-8 py-4">
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between border-b border-solid border-slate-200 dark:border-[#282f39] px-6 lg:px-40 py-3 bg-white dark:bg-background-dark sticky top-0 z-50">
 <div class="flex items-center gap-8">
-<h2 class="text-xl font-bold tracking-tight text-white">Global App Settings</h2>
+<div class="flex items-center gap-4 text-primary">
+<div class="size-6">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 4H42V17.3333V30.6667H24V44H6V30.6667V17.3333H24V4Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
 </div>
-<div class="flex items-center gap-4">
-<button class="bg-primary hover:bg-primary/90 text-white text-sm font-bold px-4 py-2 rounded-lg transition-all">
-                    Save Changes
-                </button>
-<div class="size-10 rounded-full bg-gradient-to-tr from-primary to-blue-400 p-0.5 ml-2">
-<img alt="User profile" class="rounded-full w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxSYTgfX2U4lnnYl1yKNWL9eNJG3Lj1p_plRCe12llLiayEVV3biVu6yC0OGWk3Mti3J0YGrFtTWUwGNJvt6Y4-8l_L8i_N-MjEaZ6JAC8uPa9FJ-Cl8tbFv41OFaIu_4duPeo7UcdgXPXxnHSgArtMEkKZddUpSqnWuI5wzbxkFCrGBvWmTatIm8JIm2KhGv0gNieFcvCO3LdXUbrmfdrMyCTSSXZAR1GeVA5__te0JJ80IJkzNCgXrwfGbJ_gcu_4pyoVHeN6oI7"/>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">PulseGuard</h2>
 </div>
+<label class="hidden md:flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+<div class="text-[#9da8b9] flex border-none bg-slate-100 dark:bg-[#282f39] items-center justify-center pl-4 rounded-l-lg" data-icon="search">
+<span class="material-symbols-outlined text-xl">search</span>
 </div>
-</header>
-<div class="p-8 max-w-[1200px] mx-auto w-full">
-<div class="flex gap-12">
-<aside class="w-48 flex-shrink-0">
-<nav class="flex flex-col gap-1">
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg tab-active transition-colors" href="#">
-<span class="material-symbols-outlined text-sm">person</span>
-<p class="text-sm font-medium">General</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#9da8b9] hover:bg-[#282f39] hover:text-white transition-colors" href="#">
-<span class="material-symbols-outlined text-sm">shield</span>
-<p class="text-sm font-medium">Security</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#9da8b9] hover:bg-[#282f39] hover:text-white transition-colors" href="#">
-<span class="material-symbols-outlined text-sm">key</span>
-<p class="text-sm font-medium">API Keys</p>
-</a>
-</nav>
-</aside>
-<div class="flex-1 flex flex-col gap-8">
-<section class="bg-[#111418] border border-[#3b4554] rounded-xl overflow-hidden shadow-sm">
-<div class="p-6 border-b border-[#3b4554]">
-<h3 class="text-lg font-bold text-white">Profile Information</h3>
-<p class="text-sm text-[#9da8b9]">Update your photo and personal details.</p>
+<input class="form-input flex w-full min-w-0 flex-1 border-none bg-slate-100 dark:bg-[#282f39] text-slate-900 dark:text-white focus:ring-0 h-full placeholder:text-[#9da8b9] px-4 rounded-r-lg pl-2 text-base font-normal" placeholder="Search monitors..." value=""/>
 </div>
-<div class="p-6 flex flex-col gap-6">
-<div class="flex items-center gap-6">
-<div class="relative group">
-<img alt="Avatar" class="size-20 rounded-full object-cover border-2 border-[#3b4554]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxSYTgfX2U4lnnYl1yKNWL9eNJG3Lj1p_plRCe12llLiayEVV3biVu6yC0OGWk3Mti3J0YGrFtTWUwGNJvt6Y4-8l_L8i_N-MjEaZ6JAC8uPa9FJ-Cl8tbFv41OFaIu_4duPeo7UcdgXPXxnHSgArtMEkKZddUpSqnWuI5wzbxkFCrGBvWmTatIm8JIm2KhGv0gNieFcvCO3LdXUbrmfdrMyCTSSXZAR1GeVA5__te0JJ80IJkzNCgXrwfGbJ_gcu_4pyoVHeN6oI7"/>
-<button class="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-<span class="material-symbols-outlined text-white">photo_camera</span>
+</label>
+</div>
+<div class="flex flex-1 justify-end gap-4 lg:gap-8 items-center">
+<div class="flex gap-2">
+<button class="flex size-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-[#282f39] text-slate-600 dark:text-white">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="flex size-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-[#282f39] text-slate-600 dark:text-white">
+<span class="material-symbols-outlined">settings</span>
 </button>
 </div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border border-slate-200 dark:border-slate-700" data-alt="User profile avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBLhPaJYovdrqKfxtDrcgolA7FWbSOo4mo-COb5UsDASVNcZH-raL88IVPd6TsICQgBDQQ5xHSTRsGX3uNJ_Bnq9783oqpsIGLmy6L0M6AsPNJ-ERe-d380_ll1eHcD1zPfBJ9kSXNHJZc8QR88mMzjqD2u0w8BWm2L952yk_xsWIfSrmILzFta8t1BfAXZuLaqXvFHFt5D2IbJ1wkoB_Q8wXUag1E0di8xA9T0RgDXBdmi-gQlq0XrGuCpWAhJhN2Gp1q27JdZS6cb");'></div>
+</div>
+</header>
+<main class="flex flex-1 justify-center py-8">
+<div class="layout-content-container flex flex-col max-w-[1200px] flex-1 px-4 lg:px-10">
+<!-- Breadcrumbs -->
+<div class="flex flex-wrap gap-2 items-center mb-6">
+<a class="text-[#9da8b9] hover:text-primary text-sm font-medium transition-colors" href="#">Monitors</a>
+<span class="text-[#9da8b9] text-sm font-medium">/</span>
+<span class="text-slate-900 dark:text-white text-sm font-medium">Main API</span>
+</div>
+<!-- Action Panel & Status Banner -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+<div class="lg:col-span-2 flex flex-col gap-4">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 rounded-xl border border-slate-200 dark:border-[#3b4554] bg-white dark:bg-background-dark p-6 shadow-sm">
 <div class="flex flex-col gap-2">
-<div class="flex gap-2">
-<button class="bg-[#282f39] hover:bg-[#3b4554] text-white text-xs font-bold px-3 py-1.5 rounded transition-all">Change Photo</button>
-<button class="text-[#fa6238] hover:bg-[#fa6238]/10 text-xs font-bold px-3 py-1.5 rounded transition-all">Remove</button>
+<div class="flex items-center gap-3">
+<h1 class="text-slate-900 dark:text-white text-2xl font-bold leading-tight">Main API</h1>
+<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider flex items-center gap-1">
+<span class="size-2 rounded-full bg-emerald-500"></span>
+                                            Currently Up
+                                        </span>
 </div>
-<p class="text-[10px] text-[#9da8b9]">JPG, GIF or PNG. Max size of 800K</p>
+<p class="text-[#9da8b9] text-sm font-normal">Endpoint: <code class="text-slate-600 dark:text-slate-300">https://api.example.com/v1/health</code></p>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex flex-col items-end gap-1">
+<p class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase">Monitoring Status</p>
+<label class="relative flex h-[31px] w-[56px] cursor-pointer items-center rounded-full border-none bg-slate-200 dark:bg-[#282f39] p-1 has-[:checked]:bg-primary transition-colors">
+<div class="h-6 w-6 rounded-full bg-white shadow-md transition-transform transform translate-x-0 peer-checked:translate-x-6"></div>
+<input checked="" class="invisible absolute peer" type="checkbox"/>
+</label>
 </div>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-<div class="flex flex-col gap-1.5">
-<label class="text-xs font-semibold text-[#9da8b9] uppercase tracking-wider">Full Name</label>
-<input class="bg-[#1c2027] border-[#3b4554] focus:ring-primary focus:border-primary text-white text-sm rounded-lg p-2.5" type="text" value="Alex Mitchell"/>
-</div>
-<div class="flex flex-col gap-1.5">
-<label class="text-xs font-semibold text-[#9da8b9] uppercase tracking-wider">Email Address</label>
-<input class="bg-[#1c2027] border-[#3b4554] focus:ring-primary focus:border-primary text-white text-sm rounded-lg p-2.5" type="email" value="alex@example.com"/>
 </div>
 </div>
+<div class="flex flex-col gap-2 rounded-xl border border-slate-200 dark:border-[#3b4554] bg-white dark:bg-background-dark p-6 shadow-sm">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-semibold uppercase">Last checked</p>
+<p class="text-slate-900 dark:text-white text-lg font-bold">42 seconds ago</p>
+<div class="mt-auto flex items-center gap-2 text-emerald-500 text-sm font-medium">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+                                Healthy from 12 locations
+                            </div>
 </div>
-</section>
-<section class="bg-[#111418] border border-[#3b4554] rounded-xl overflow-hidden shadow-sm">
-<div class="p-6 border-b border-[#3b4554]">
-<h3 class="text-lg font-bold text-white">Regional Settings</h3>
-<p class="text-sm text-[#9da8b9]">Manage your timezone and date preferences.</p>
 </div>
-<div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-<div class="flex flex-col gap-1.5">
-<label class="text-xs font-semibold text-[#9da8b9] uppercase tracking-wider">Timezone</label>
-<select class="bg-[#1c2027] border-[#3b4554] focus:ring-primary focus:border-primary text-white text-sm rounded-lg p-2.5">
-<option>(GMT-08:00) Pacific Time</option>
-<option selected="">(GMT+00:00) UTC</option>
-<option>(GMT+01:00) Central European Time</option>
+<!-- Stats Row -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+<div class="flex flex-col gap-2 rounded-xl p-6 border border-slate-200 dark:border-[#3b4554] bg-white dark:bg-background-dark shadow-sm">
+<div class="flex justify-between items-center">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Uptime (24h)</p>
+<span class="material-symbols-outlined text-primary">analytics</span>
+</div>
+<p class="text-slate-900 dark:text-white tracking-tight text-3xl font-bold">99.98%</p>
+<p class="text-emerald-500 text-sm font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                                +0.02% from yesterday
+                            </p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 border border-slate-200 dark:border-[#3b4554] bg-white dark:bg-background-dark shadow-sm">
+<div class="flex justify-between items-center">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Avg Response Time</p>
+<span class="material-symbols-outlined text-primary">speed</span>
+</div>
+<p class="text-slate-900 dark:text-white tracking-tight text-3xl font-bold">245ms</p>
+<p class="text-orange-500 text-sm font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                                +15ms increase
+                            </p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 border border-slate-200 dark:border-[#3b4554] bg-white dark:bg-background-dark shadow-sm">
+<div class="flex justify-between items-center">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Total Downtime</p>
+<span class="material-symbols-outlined text-primary">timer_off</span>
+</div>
+<p class="text-slate-900 dark:text-white tracking-tight text-3xl font-bold">12m</p>
+<p class="text-emerald-500 text-sm font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_down</span>
+                                -8m from last month
+                            </p>
+</div>
+</div>
+<!-- Charts Section -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+<!-- Uptime Bar Chart -->
+<div class="flex flex-col gap-4 rounded-xl border border-slate-200 dark:border-[#3b4554] bg-white dark:bg-background-dark p-6 shadow-sm">
+<div class="flex justify-between items-center">
+<h3 class="text-slate-900 dark:text-white text-lg font-bold">Uptime History</h3>
+<select class="bg-slate-50 dark:bg-[#282f39] border-none rounded-lg text-xs font-semibold text-slate-500 dark:text-slate-400 py-1 pl-3 pr-8 focus:ring-0">
+<option>Last 24 Hours</option>
+<option>Last 7 Days</option>
+<option>Last 30 Days</option>
 </select>
 </div>
-<div class="flex flex-col gap-1.5">
-<label class="text-xs font-semibold text-[#9da8b9] uppercase tracking-wider">Date Format</label>
-<select class="bg-[#1c2027] border-[#3b4554] focus:ring-primary focus:border-primary text-white text-sm rounded-lg p-2.5">
-<option>DD/MM/YYYY</option>
-<option selected="">MM/DD/YYYY</option>
-<option>YYYY-MM-DD</option>
-</select>
+<div class="flex items-baseline gap-2">
+<p class="text-slate-900 dark:text-white text-3xl font-bold">100%</p>
+<p class="text-[#9da8b9] text-sm">Current Average</p>
+</div>
+<div class="grid min-h-[160px] grid-flow-col gap-2 items-end pt-4">
+<div class="bg-emerald-500/20 dark:bg-emerald-500/20 border-t-2 border-emerald-500 w-full rounded-t-sm" style="height: 100%;"></div>
+<div class="bg-emerald-500/20 dark:bg-emerald-500/20 border-t-2 border-emerald-500 w-full rounded-t-sm" style="height: 100%;"></div>
+<div class="bg-emerald-500/20 dark:bg-emerald-500/20 border-t-2 border-emerald-500 w-full rounded-t-sm" style="height: 100%;"></div>
+<div class="bg-red-500/20 dark:bg-red-500/20 border-t-2 border-red-500 w-full rounded-t-sm" style="height: 40%;"></div>
+<div class="bg-emerald-500/20 dark:bg-emerald-500/20 border-t-2 border-emerald-500 w-full rounded-t-sm" style="height: 100%;"></div>
+<div class="bg-emerald-500/20 dark:bg-emerald-500/20 border-t-2 border-emerald-500 w-full rounded-t-sm" style="height: 100%;"></div>
+<div class="bg-emerald-500/20 dark:bg-emerald-500/20 border-t-2 border-emerald-500 w-full rounded-t-sm" style="height: 100%;"></div>
+<div class="bg-emerald-500/20 dark:bg-emerald-500/20 border-t-2 border-emerald-500 w-full rounded-t-sm" style="height: 100%;"></div>
+<div class="bg-emerald-500/20 dark:bg-emerald-500/20 border-t-2 border-emerald-500 w-full rounded-t-sm" style="height: 100%;"></div>
+<div class="bg-emerald-500/20 dark:bg-emerald-500/20 border-t-2 border-emerald-500 w-full rounded-t-sm" style="height: 100%;"></div>
+<div class="bg-emerald-500/20 dark:bg-emerald-500/20 border-t-2 border-emerald-500 w-full rounded-t-sm" style="height: 100%;"></div>
+<div class="bg-emerald-500/20 dark:bg-emerald-500/20 border-t-2 border-emerald-500 w-full rounded-t-sm" style="height: 100%;"></div>
+</div>
+<div class="flex justify-between mt-2">
+<p class="text-[#9da8b9] text-[11px] font-bold uppercase tracking-wider">24h ago</p>
+<p class="text-[#9da8b9] text-[11px] font-bold uppercase tracking-wider">Now</p>
 </div>
 </div>
-</section>
-<section class="bg-[#111418] border border-status-down/30 rounded-xl overflow-hidden">
-<div class="p-6 flex items-center justify-between">
-<div class="flex flex-col">
-<h3 class="text-lg font-bold text-status-down">Danger Zone</h3>
-<p class="text-sm text-[#9da8b9]">Permanently delete your account and all data. This action is irreversible.</p>
+<!-- Response Time Line Chart -->
+<div class="flex flex-col gap-4 rounded-xl border border-slate-200 dark:border-[#3b4554] bg-white dark:bg-background-dark p-6 shadow-sm">
+<div class="flex justify-between items-center">
+<h3 class="text-slate-900 dark:text-white text-lg font-bold">Response Time (ms)</h3>
+<button class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded">
+<span class="material-symbols-outlined text-slate-400">fullscreen</span>
+</button>
 </div>
-<button class="bg-status-down/10 hover:bg-status-down text-status-down hover:text-white text-sm font-bold px-4 py-2 rounded-lg transition-all border border-status-down/30">
-                                Delete Account
+<div class="flex items-baseline gap-2">
+<p class="text-slate-900 dark:text-white text-3xl font-bold">238ms</p>
+<p class="text-[#9da8b9] text-sm">Last 24h Average</p>
+</div>
+<div class="flex flex-1 flex-col pt-4 min-h-[160px]">
+<svg fill="none" height="100%" preserveaspectratio="none" viewbox="0 0 478 150" width="100%" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 109C18 109 18 21 36 21C54 21 54 41 72 41C90 41 90 93 108 93C127 93 127 33 145 33C163 33 163 101 181 101C199 101 199 61 217 61C236 61 236 45 254 45C272 45 272 121 290 121C308 121 308 149 326 149C344 149 344 1 363 1C381 1 381 81 399 81C417 81 417 129 435 129C453 129 453 25 472 25" stroke="#136dec" stroke-linecap="round" stroke-width="3"></path>
+<path d="M0 109C18 109 18 21 36 21C54 21 54 41 72 41C90 41 90 93 108 93C127 93 127 33 145 33C163 33 163 101 181 101C199 101 199 61 217 61C236 61 236 45 254 45C272 45 272 121 290 121C308 121 308 149 326 149C344 149 344 1 363 1C381 1 381 81 399 81C417 81 417 129 435 129C453 129 453 25 472 25V150H0V109Z" fill="url(#latency_grad)"></path>
+<defs>
+<lineargradient gradientunits="userSpaceOnUse" id="latency_grad" x1="0" x2="0" y1="0" y2="150">
+<stop stop-color="#136dec" stop-opacity="0.2"></stop>
+<stop offset="1" stop-color="#136dec" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+</svg>
+<div class="flex justify-between mt-2">
+<p class="text-[#9da8b9] text-[11px] font-bold uppercase tracking-wider">00:00</p>
+<p class="text-[#9da8b9] text-[11px] font-bold uppercase tracking-wider">08:00</p>
+<p class="text-[#9da8b9] text-[11px] font-bold uppercase tracking-wider">16:00</p>
+<p class="text-[#9da8b9] text-[11px] font-bold uppercase tracking-wider">Now</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Incident History Section -->
+<div class="flex flex-col gap-4 rounded-xl border border-slate-200 dark:border-[#3b4554] bg-white dark:bg-background-dark p-6 shadow-sm overflow-hidden">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
+<div>
+<h3 class="text-slate-900 dark:text-white text-lg font-bold">Incident History</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm">Log of downtime events from the past 30 days</p>
+</div>
+<button class="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-[#282f39] text-slate-700 dark:text-white rounded-lg text-sm font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined text-base">download</span>
+                                Export CSV
                             </button>
 </div>
-</section>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-slate-100 dark:border-[#282f39]">
+<th class="py-4 px-2 text-slate-400 text-xs font-bold uppercase tracking-wider">Status</th>
+<th class="py-4 px-2 text-slate-400 text-xs font-bold uppercase tracking-wider">Started At</th>
+<th class="py-4 px-2 text-slate-400 text-xs font-bold uppercase tracking-wider">Duration</th>
+<th class="py-4 px-2 text-slate-400 text-xs font-bold uppercase tracking-wider">Resolution</th>
+<th class="py-4 px-2 text-slate-400 text-xs font-bold uppercase tracking-wider text-right">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-slate-100 dark:border-[#282f39] hover:bg-slate-50 dark:hover:bg-[#1c222b] transition-colors group">
+<td class="py-4 px-2">
+<span class="flex items-center gap-2 text-emerald-500 font-semibold text-sm">
+<span class="material-symbols-outlined text-base">check_circle</span>
+                                                Resolved
+                                            </span>
+</td>
+<td class="py-4 px-2 text-sm text-slate-600 dark:text-slate-300">Oct 24, 2023 - 08:14:22</td>
+<td class="py-4 px-2 text-sm font-medium text-slate-900 dark:text-white">4m 12s</td>
+<td class="py-4 px-2 text-sm text-slate-500 dark:text-slate-400">Database connection timeout</td>
+<td class="py-4 px-2 text-right">
+<button class="text-primary hover:underline text-sm font-semibold">Details</button>
+</td>
+</tr>
+<tr class="border-b border-slate-100 dark:border-[#282f39] hover:bg-slate-50 dark:hover:bg-[#1c222b] transition-colors group">
+<td class="py-4 px-2">
+<span class="flex items-center gap-2 text-emerald-500 font-semibold text-sm">
+<span class="material-symbols-outlined text-base">check_circle</span>
+                                                Resolved
+                                            </span>
+</td>
+<td class="py-4 px-2 text-sm text-slate-600 dark:text-slate-300">Oct 21, 2023 - 14:02:10</td>
+<td class="py-4 px-2 text-sm font-medium text-slate-900 dark:text-white">8m 45s</td>
+<td class="py-4 px-2 text-sm text-slate-500 dark:text-slate-400">DNS propagation delay</td>
+<td class="py-4 px-2 text-right">
+<button class="text-primary hover:underline text-sm font-semibold">Details</button>
+</td>
+</tr>
+<tr class="border-b border-slate-100 dark:border-[#282f39] hover:bg-slate-50 dark:hover:bg-[#1c222b] transition-colors group">
+<td class="py-4 px-2">
+<span class="flex items-center gap-2 text-red-500 font-semibold text-sm">
+<span class="material-symbols-outlined text-base">error</span>
+                                                Ongoing
+                                            </span>
+</td>
+<td class="py-4 px-2 text-sm text-slate-600 dark:text-slate-300">Oct 20, 2023 - 23:55:01</td>
+<td class="py-4 px-2 text-sm font-medium text-slate-900 dark:text-white">Ongoing</td>
+<td class="py-4 px-2 text-sm text-slate-500 dark:text-slate-400">502 Bad Gateway</td>
+<td class="py-4 px-2 text-right">
+<button class="text-primary hover:underline text-sm font-semibold">Details</button>
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
 </main>
+<footer class="mt-auto border-t border-slate-200 dark:border-[#282f39] py-8 text-center bg-white dark:bg-background-dark">
+<p class="text-[#9da8b9] text-xs">© 2023 PulseGuard Monitor Detail View. All data points refreshed every 60 seconds.</p>
+</footer>
 </div>
-
+</div>
 </body></html>
