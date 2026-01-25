@@ -30,6 +30,17 @@ const monitors = [
   },
 ];
 
+/**
+ * Renders a visual representation of uptime status as a bar.
+ *
+ * The function determines the color and opacity of the bar based on the provided status.
+ * It uses specific color classes for different status values: green for normal, red for failure,
+ * and grey for unknown. Additionally, it handles a special case for a status of 0.5 to render
+ * a bar with reduced opacity.
+ *
+ * @param {Object} param0 - The parameters object.
+ * @param {number} param0.status - The uptime status value that influences the bar's appearance.
+ */
 function UptimeBar({ status }: { status: number }) {
   let colorClass = "bg-[#0bda5e]"; // Green
   if (status === 0) colorClass = "bg-[#fa6238]"; // Red
@@ -42,6 +53,14 @@ function UptimeBar({ status }: { status: number }) {
   return <div className={`h-4 w-1 rounded-full ${colorClass} ${opacityClass}`}></div>;
 }
 
+/**
+ * Renders a table displaying the status of monitors.
+ *
+ * The MonitorsTable function creates a structured layout that includes a header with filter and sort buttons,
+ * a table with monitor details such as site name, status, uptime, and response time,
+ * and a footer for pagination. It utilizes the monitors data to dynamically populate the table rows
+ * and displays the status of each monitor with appropriate styling based on their state.
+ */
 export function MonitorsTable() {
   return (
     <div>
