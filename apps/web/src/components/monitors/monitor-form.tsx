@@ -3,6 +3,9 @@
 import { Activity, Globe, Server, Clock, Save, X } from "lucide-react";
 import Link from "next/link";
 
+/**
+ * Renders a form for configuring a new monitor protocol.
+ */
 export function MonitorForm() {
   return (
     <div className="max-w-2xl mx-auto flex flex-col gap-8">
