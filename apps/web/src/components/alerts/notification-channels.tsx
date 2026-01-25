@@ -26,6 +26,9 @@ const channels = [
   },
 ];
 
+/**
+ * Renders the Notification Channels component.
+ */
 export function NotificationChannels() {
   return (
     <div className="flex flex-col gap-4">
