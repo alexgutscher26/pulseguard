@@ -19,6 +19,9 @@ const apiKeys = [
   },
 ];
 
+/**
+ * Renders a form for managing API access tokens.
+ */
 export function ApiKeysForm() {
   return (
     <div className="flex flex-col gap-6">
