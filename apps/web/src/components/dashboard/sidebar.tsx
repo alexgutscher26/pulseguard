@@ -13,9 +13,9 @@ import { usePathname } from "next/navigation";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Monitors", href: "/monitors", icon: Monitor },
-  { name: "Alerts", href: "/alerts", icon: Bell },
-  { name: "Settings", href: "/settings", icon: Settings },
+  { name: "Monitors", href: "/dashboard/monitors", icon: Monitor },
+  { name: "Alerts", href: "/dashboard/alerts", icon: Bell },
+  { name: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
 export function Sidebar() {

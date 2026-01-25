@@ -12,8 +12,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import { usePathname } from "next/navigation";
+
 export function DashboardHeader() {
   const { data: session } = authClient.useSession();
+  const pathname = usePathname();
+
+  const getTitle = () => {
+    if (pathname.includes("/dashboard/monitors")) return <>SYSTEM<span className="text-foreground mx-2">//</span>MONITORS</>;
+    if (pathname.includes("/dashboard/alerts")) return <>SYSTEM<span className="text-foreground mx-2">//</span>ALERTS</>;
+    if (pathname.includes("/dashboard/settings")) return <>SYSTEM<span className="text-foreground mx-2">//</span>SETTINGS</>;
+    return <>SYSTEM<span className="text-foreground mx-2">//</span>OVERVIEW</>;
+  };
 
   return (
     <header className="sticky top-0 z-10 flex items-center justify-between border-b border-primary/20 bg-[#050505]/90 backdrop-blur-md px-8 py-4 relative overflow-hidden">
@@ -27,7 +37,7 @@ export function DashboardHeader() {
             <Terminal className="size-4 text-primary" />
         </div>
         <h2 className="text-lg font-bold tracking-tighter uppercase font-mono text-primary/90 text-glow-sm">
-            System<span className="text-foreground mx-2">//</span>Overview
+            {getTitle()}
         </h2>
       </div>
 
