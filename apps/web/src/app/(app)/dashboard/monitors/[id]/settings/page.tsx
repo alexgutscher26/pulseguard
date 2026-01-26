@@ -7,7 +7,7 @@ import { MonitorSettingsView } from "@/components/monitors/settings-view";
 /**
  * Renders the monitor settings page.
  *
- * This function retrieves the user session and checks for authentication. If the user is not authenticated, it redirects to the login page. It then fetches the monitor details using the provided id from the parameters. If the monitor is not found, it triggers a not found response. Finally, it renders the MonitorForm component with the retrieved monitor data, ensuring it matches the expected format.
+ * This function checks for user authentication and retrieves the monitor details using the provided id from the parameters. If the user is not authenticated, it redirects to the login page. If the monitor is not found, it triggers a not found response. Finally, it renders the MonitorSettingsView component with the retrieved monitor data and its associated maintenance windows.
  *
  * @param {Object} params - An object containing the parameters for the function.
  * @param {Promise<{ id: string }>} params.params - A promise that resolves to an object containing the monitor id.
