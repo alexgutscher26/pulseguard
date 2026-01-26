@@ -2,38 +2,43 @@
 
 import { Server, CheckCircle, AlertTriangle, PauseCircle } from "lucide-react";
 
-const stats = [
-  {
-    label: "Total Targets",
-    value: "24",
-    icon: Server,
-    color: "text-white",
-    iconColor: "text-primary",
-  },
-  {
-    label: "Operational",
-    value: "21",
-    icon: CheckCircle,
-    color: "text-primary",
-    iconColor: "text-primary",
-  },
-  {
-    label: "Down / Crit",
-    value: "2",
-    icon: AlertTriangle,
-    color: "text-red-500",
-    iconColor: "text-red-500",
-  },
-  {
-    label: "Maintenance",
-    value: "1",
-    icon: PauseCircle,
-    color: "text-yellow-500",
-    iconColor: "text-yellow-500",
-  },
-];
+export function MonitorStats({ monitors = [] }: { monitors: any[] }) {
+  const total = monitors.length;
+  const operational = monitors.filter(m => m.status === "UP").length;
+  const down = monitors.filter(m => m.status === "DOWN").length;
+  const maintenance = monitors.filter(m => m.status === "PAUSED").length;
 
-export function MonitorStats() {
+  const stats = [
+    {
+      label: "Total Targets",
+      value: total,
+      icon: Server,
+      color: "text-white",
+      iconColor: "text-primary",
+    },
+    {
+      label: "Operational",
+      value: operational,
+      icon: CheckCircle,
+      color: "text-primary",
+      iconColor: "text-primary",
+    },
+    {
+      label: "Down / Crit",
+      value: down,
+      icon: AlertTriangle,
+      color: "text-red-500",
+      iconColor: "text-red-500",
+    },
+    {
+      label: "Maintenance",
+      value: maintenance,
+      icon: PauseCircle,
+      color: "text-yellow-500",
+      iconColor: "text-yellow-500",
+    },
+  ];
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {stats.map((stat) => (

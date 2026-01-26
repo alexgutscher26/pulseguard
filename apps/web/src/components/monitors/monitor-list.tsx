@@ -1,48 +1,16 @@
 "use client";
 
 import { MoreHorizontal, Zap, WifiOff, ChevronLeft, ChevronRight } from "lucide-react";
-
-// Mock Data
-const monitors = [
-  {
-    id: 1,
-    name: "API Gateway Production",
-    url: "https://api.pulseguard.io/v1/health",
-    status: "UP",
-    uptime: "98.5%",
-    response: "124ms",
-    history: [1, 1, 1, 1, 1, 1, 0, 1, 1, 1], // 1=up, 0=down
-  },
-  {
-    id: 2,
-    name: "Auth Service",
-    url: "https://auth.pulseguard.io",
-    status: "DOWN",
-    uptime: "45.2%",
-    response: "Timeout",
-    history: [1, 1, 0, 0, 0, 0, 0, 0],
-  },
-  {
-    id: 3,
-    name: "Staging Cluster",
-    url: "192.168.0.45",
-    status: "PAUSED",
-    uptime: "--",
-    response: "--",
-    history: [],
-  },
-];
+import { useRouter } from "next/navigation";
 
 function UptimeBar({ status }: { status: number }) {
-    // Determine color/height based on status.
-    // In strict code.html, we had fixed items. Here we simulate.
     const bgClass = status === 1 ? "bg-primary/80" : "bg-red-500/80";
-    // Randomize height slightly for 'alive' look if 1, max height if 0 to show error clearly?
-    // Code.html just had h-4 mostly.
     return <div className={`w-1 h-3 md:h-4 ${bgClass}`}></div>;
 }
 
-export function MonitorList() {
+export function MonitorList({ monitors }: { monitors: any[] }) {
+    const router = useRouter();
+
     return (
         <div className="border border-primary/20 bg-black/40 relative overflow-hidden shadow-lg backdrop-blur-sm">
             {/* Decor corners */}
@@ -55,14 +23,31 @@ export function MonitorList() {
                         <tr>
                             <th className="p-4 text-[10px] text-primary/60 uppercase tracking-widest font-normal font-mono">Status</th>
                             <th className="p-4 text-[10px] text-primary/60 uppercase tracking-widest font-normal font-mono">Monitor Info</th>
-                            <th className="p-4 text-[10px] text-primary/60 uppercase tracking-widest font-normal font-mono">History (24h)</th>
+                            <th className="p-4 text-[10px] text-primary/60 uppercase tracking-widest font-normal font-mono">History (Latest)</th>
                             <th className="p-4 text-[10px] text-primary/60 uppercase tracking-widest font-normal font-mono">Response</th>
                             <th className="p-4 text-[10px] text-primary/60 uppercase tracking-widest font-normal font-mono text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-primary/10 text-sm">
-                        {monitors.map((monitor) => (
-                            <tr key={monitor.id} className="group hover:bg-primary/5 transition-colors cursor-pointer font-mono border-l-2 border-transparent hover:border-primary/50">
+                        {monitors.length === 0 && (
+                            <tr>
+                                <td colSpan={5} className="p-8 text-center text-primary/40 font-mono text-xs uppercase tracking-widest">
+                                    No monitors active. Dispatch new targets.
+                                </td>
+                            </tr>
+                        )}
+                        {monitors.map((monitor) => {
+                            // Calculate history for bars (last 10 events reversed for display left-to-right?)
+                            // Assuming events are desc, so [0] is latest. We want old -> new.
+                            const history = monitor.events ? [...monitor.events].reverse().map((e: any) => e.status === "UP" ? 1 : 0) : [];
+                            const latestLatency = monitor.events?.[0]?.latency;
+                            
+                            return (
+                                <tr 
+                                    key={monitor.id} 
+                                    onClick={() => router.push(`/dashboard/monitors/${monitor.id}`)}
+                                    className="group hover:bg-primary/5 transition-colors cursor-pointer font-mono border-l-2 border-transparent hover:border-primary/50"
+                                >
                                 <td className="p-4 w-32">
                                     {monitor.status === "UP" && (
                                         <div className="flex items-center gap-2 px-2 py-1 bg-primary/10 border border-primary/20 w-fit rounded-sm">
@@ -93,17 +78,18 @@ export function MonitorList() {
                                 </td>
                                 <td className={`p-4 ${monitor.status === "PAUSED" ? "opacity-50" : ""}`}>
                                     <div className="flex items-center gap-3">
-                                        {monitor.history.length > 0 ? (
+                                        {history.length > 0 ? (
                                             <div className="flex gap-[1px] h-4 items-end">
-                                                {monitor.history.map((h, i) => (
+                                                {history.map((h: number, i: number) => (
                                                     <UptimeBar key={i} status={h} />
                                                 ))}
                                             </div>
                                         ) : (
                                             <span className="text-xs text-muted-foreground font-bold">--</span>
                                         )}
+                                        {/* Mock percentage or calculate */}
                                         <span className={`text-xs font-bold ${monitor.status === "DOWN" ? "text-red-500" : monitor.status === "PAUSED" ? "text-muted-foreground" : "text-primary"}`}>
-                                            {monitor.uptime}
+                                            100%
                                         </span>
                                     </div>
                                 </td>
@@ -116,7 +102,7 @@ export function MonitorList() {
                                                 <Zap className="size-3 text-primary" />
                                             )}
                                             <span className={monitor.status === "DOWN" ? "text-red-500" : "text-foreground"}>
-                                                {monitor.response}
+                                                {latestLatency ? latestLatency + "ms" : "--"}
                                             </span>
                                         </div>
                                     ) : (
@@ -129,14 +115,14 @@ export function MonitorList() {
                                     </button>
                                 </td>
                             </tr>
-                        ))}
+                        )})} 
                     </tbody>
                 </table>
             </div>
 
-            {/* Pagination */}
+            {/* Pagination mocked */}
             <div className="p-4 border-t border-primary/20 flex items-center justify-between bg-primary/5">
-                <span className="text-[10px] text-primary/60 uppercase tracking-widest font-mono">Showing 1-10 of 24 targets</span>
+                <span className="text-[10px] text-primary/60 uppercase tracking-widest font-mono">Showing {monitors.length} targets</span>
                 <div className="flex gap-2">
                     <button className="px-3 py-1 border border-primary/20 text-primary/60 hover:text-primary hover:border-primary/50 text-[10px] uppercase font-bold tracking-wider disabled:opacity-30 disabled:hover:text-primary/60 flex items-center gap-1 font-mono transition-all rounded-sm" disabled>
                         <ChevronLeft className="size-3" /> Prev

@@ -1,10 +1,8 @@
 import { auth } from "@pulseguard/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-
-import { MonitorStats } from "@/components/monitors/monitor-stats";
-import { MonitorFilters } from "@/components/monitors/monitor-filters";
-import { MonitorList } from "@/components/monitors/monitor-list";
+import { MonitorManager } from "@/components/monitors/monitor-manager";
+import { getMonitors } from "@/actions/monitors";
 
 export default async function MonitorsPage() {
   const session = await auth.api.getSession({
@@ -15,11 +13,9 @@ export default async function MonitorsPage() {
     redirect("/login");
   }
 
+  const monitors = await getMonitors();
+
   return (
-    <div className="flex flex-col gap-6">
-      <MonitorStats />
-      <MonitorFilters />
-      <MonitorList />
-    </div>
+    <MonitorManager initialMonitors={monitors} />
   );
 }

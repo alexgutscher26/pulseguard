@@ -14,6 +14,7 @@
     "@prisma/client": "catalog:",
     "@pulseguard/api": "workspace:*",
     "@pulseguard/auth": "workspace:*",
+    "@pulseguard/db": "workspace:*",
     "@pulseguard/env": "workspace:*",
     "@tanstack/react-form": "^1.27.3",
     "@tanstack/react-query": "catalog:",
