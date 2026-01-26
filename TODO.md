@@ -30,7 +30,7 @@ These items block general reliability or user trust.
   - Wait 2 seconds.
   - Retry the check (ideally from a different region, but retry logic is step 1).
   - Only if 2nd check fails -> Mark DOWN.
-- [ ] **Timeouts vs. Errors**
+- [x] **Timeouts vs. Errors**
   - Differentiate between `Connection Refused` (Service down) vs `Timeout` (Network congestion).
   - Log specific error codes to `MonitorEvent.errorReason`.
 

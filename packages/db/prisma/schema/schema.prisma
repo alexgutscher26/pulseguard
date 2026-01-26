@@ -46,6 +46,7 @@ model MonitorEvent {
   monitorId String
   status    MonitorStatus
   latency   Int      // Milliseconds
+  errorReason String? // "TIMEOUT", "DNS_ERROR", "HTTP_500", etc.
   timestamp DateTime @default(now())
   
   monitor   Monitor  @relation(fields: [monitorId], references: [id], onDelete: Cascade)

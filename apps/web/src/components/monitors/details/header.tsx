@@ -59,7 +59,7 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
               {isDown && (
                 <span className="px-2.5 py-0.5 rounded-sm bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 animate-pulse">
                   <span className="size-1.5 rounded-full bg-red-500 shadow-[0_0_5px_currentColor]"></span>
-                  Critical Down
+                  {monitor.events?.[0]?.errorReason || "Critical Down"}
                 </span>
               )}
               {isPaused && (

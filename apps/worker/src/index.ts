@@ -8,10 +8,13 @@ export interface Env {
 import { connect } from "cloudflare:sockets";
 
 // Helper: Perform a single check without DB side effects
-async function performCheck(monitor: any): Promise<{ status: "UP" | "DOWN"; latency: number }> {
+async function performCheck(
+  monitor: any,
+): Promise<{ status: "UP" | "DOWN"; latency: number; errorReason?: string }> {
   const start = Date.now();
   let currentStatus: "UP" | "DOWN" = "DOWN";
   let latency = 0;
+  let errorReason: string | undefined = undefined;
 
   try {
     const urlStr = monitor.url;
@@ -26,6 +29,10 @@ async function performCheck(monitor: any): Promise<{ status: "UP" | "DOWN"; late
         signal: AbortSignal.timeout(10000),
       });
       currentStatus = response.ok ? "UP" : "DOWN";
+
+      if (!response.ok) {
+        errorReason = `HTTP_${response.status}`;
+      }
     } else if (urlStr.startsWith("tcp://")) {
       // Parse tcp://hostname:port
       const part = urlStr.replace("tcp://", "");
@@ -57,13 +64,27 @@ async function performCheck(monitor: any): Promise<{ status: "UP" | "DOWN"; late
     }
 
     latency = Date.now() - start;
-  } catch (err) {
+  } catch (err: any) {
     console.error(`Error checking ${monitor.url}:`, err);
     latency = 0;
     currentStatus = "DOWN";
+
+    // Classify Error
+    if (err.name === "TimeoutError" || (err.message && err.message.includes("Stats"))) {
+      errorReason = "TIMEOUT";
+    } else if (
+      err.code === "ECONNREFUSED" ||
+      (err.message && err.message.includes("Connection refused"))
+    ) {
+      errorReason = "CONNECTION_REFUSED";
+    } else if (err.code === "ENOTFOUND" || (err.message && err.message.includes("getaddrinfo"))) {
+      errorReason = "DNS_ERROR";
+    } else {
+      errorReason = "UNKNOWN_ERROR";
+    }
   }
 
-  return { status: currentStatus, latency };
+  return { status: currentStatus, latency, errorReason };
 }
 
 // Reusable processing logic (shared between Cron and Queue consumer)
@@ -91,7 +112,7 @@ async function processBatch(monitors: any[], prisma: any) {
         console.log(`[DoubleCheck] Retry result for ${monitor.name}: ${result.status}`);
       }
 
-      const { status: currentStatus, latency } = result;
+      const { status: currentStatus, latency, errorReason } = result;
 
       const previousStatus = monitor.status;
 
@@ -103,6 +124,7 @@ async function processBatch(monitors: any[], prisma: any) {
               monitorId: monitor.id,
               status: currentStatus,
               latency: latency,
+              errorReason: errorReason,
               timestamp: new Date(),
             },
           }),
