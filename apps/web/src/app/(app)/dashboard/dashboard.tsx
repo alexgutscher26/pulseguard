@@ -3,6 +3,9 @@
 import { DashboardStats, type DashboardStatsData } from "@/components/dashboard/stats";
 import { MonitorsTable } from "@/components/dashboard/monitors-table";
 
+/**
+ * Renders the Dashboard component displaying stats and monitors.
+ */
 export default function Dashboard({
   monitors,
   stats,
