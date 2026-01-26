@@ -38,6 +38,17 @@ function UptimeBar({ status }: { status: number }) {
   return <div className={`h-4 w-1 rounded-full ${colorClass} ${opacityClass}`}></div>;
 }
 
+/**
+ * Renders a table displaying the status of monitors with filtering and sorting options.
+ *
+ * The function initializes state for sorting and filtering, calculates uptime and event history,
+ * and renders a table with monitor details. It includes dropdown menus for filtering by status
+ * and sorting by name, status, or uptime. The table displays the most recent events and response
+ * times for each monitor, updating dynamically based on user interactions.
+ *
+ * @param {Object} param0 - The component props.
+ * @param {MonitorWithEvents[]} param0.monitors - An array of monitors with their associated events.
+ */
 export function MonitorsTable({ monitors: initialMonitors }: { monitors: MonitorWithEvents[] }) {
   const [sort, setSort] = useState<SortOption>("name");
   const [filterStatuses, setFilterStatuses] = useState<FilterStatus[]>([]);
