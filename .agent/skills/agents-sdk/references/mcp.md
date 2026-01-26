@@ -13,8 +13,8 @@ export class MyAgent extends Agent<Env, State> {
     const result = await this.addMcpServer(
       name,
       url,
-      "https://my-worker.workers.dev",  // callback host for OAuth
-      "agents"                            // routing prefix
+      "https://my-worker.workers.dev", // callback host for OAuth
+      "agents", // routing prefix
     );
 
     if (result.state === "authenticating") {
@@ -78,7 +78,7 @@ Use `McpAgent` from the SDK to create an MCP server.
 **Install dependencies:**
 
 ```bash
-npm install @modelcontextprotocol/sdk zod
+bun install @modelcontextprotocol/sdk zod
 ```
 
 **Wrangler config:**
@@ -86,9 +86,9 @@ npm install @modelcontextprotocol/sdk zod
 ```jsonc
 {
   "durable_objects": {
-    "bindings": [{ "name": "MyMCP", "class_name": "MyMCP" }]
+    "bindings": [{ "name": "MyMCP", "class_name": "MyMCP" }],
   },
-  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["MyMCP"] }]
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["MyMCP"] }],
 }
 ```
 
@@ -104,7 +104,7 @@ type State = { counter: number };
 export class MyMCP extends McpAgent<Env, State, {}> {
   server = new McpServer({
     name: "MyMCPServer",
-    version: "1.0.0"
+    version: "1.0.0",
   });
 
   initialState = { counter: 0 };
@@ -112,7 +112,7 @@ export class MyMCP extends McpAgent<Env, State, {}> {
   async init() {
     // Register a resource
     this.server.resource("counter", "mcp://resource/counter", (uri) => ({
-      contents: [{ text: String(this.state.counter), uri: uri.href }]
+      contents: [{ text: String(this.state.counter), uri: uri.href }],
     }));
 
     // Register a tool
@@ -120,14 +120,14 @@ export class MyMCP extends McpAgent<Env, State, {}> {
       "increment",
       {
         description: "Increment the counter",
-        inputSchema: { amount: z.number().default(1) }
+        inputSchema: { amount: z.number().default(1) },
       },
       async ({ amount }) => {
         this.setState({ counter: this.state.counter + amount });
         return {
-          content: [{ text: `Counter: ${this.state.counter}`, type: "text" }]
+          content: [{ text: `Counter: ${this.state.counter}`, type: "text" }],
         };
-      }
+      },
     );
   }
 }
@@ -142,7 +142,11 @@ export default {
 
     // SSE transport (legacy)
     if (url.pathname.startsWith("/sse")) {
-      return MyMCP.serveSSE("/sse", { binding: "MyMCP" }).fetch(request, env, ctx);
+      return MyMCP.serveSSE("/sse", { binding: "MyMCP" }).fetch(
+        request,
+        env,
+        ctx,
+      );
     }
 
     // Streamable HTTP transport (recommended)
@@ -151,6 +155,6 @@ export default {
     }
 
     return new Response("Not found", { status: 404 });
-  }
+  },
 };
 ```

@@ -23,10 +23,10 @@ export default {
       `https://api.cloudflare.com/client/v4/zones/${env.ZONE_ID}/rulesets`,
       {
         headers: {
-          'Authorization': `Bearer ${env.CF_API_TOKEN}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${env.CF_API_TOKEN}`,
+          "Content-Type": "application/json",
         },
-      }
+      },
     );
     return response;
   },
@@ -38,9 +38,9 @@ export default {
 **Installation**:
 
 ```bash
-npm install cloudflare
+bun install cloudflare
 # or
-pnpm add cloudflare
+pbun add cloudflare
 ```
 
 **Basic Setup**:

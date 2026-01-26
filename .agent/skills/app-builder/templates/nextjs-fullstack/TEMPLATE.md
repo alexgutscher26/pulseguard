@@ -65,11 +65,11 @@ project-name/
 ## Setup Steps
 
 1. `npx create-next-app {{name}} --typescript --tailwind --app`
-2. `npm install prisma @prisma/client zod`
+2. `bun install prisma @prisma/client zod`
 3. `npx prisma init`
 4. Configure schema
-5. `npm run db:push`
-6. `npm run dev`
+5. `bun run db:push`
+6. `bun run dev`
 
 ---
 

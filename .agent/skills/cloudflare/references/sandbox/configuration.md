@@ -3,15 +3,15 @@
 ## getSandbox Options
 
 ```typescript
-const sandbox = getSandbox(env.Sandbox, 'sandbox-id', {
-  normalizeId: true,         // lowercase ID (required for preview URLs)
-  sleepAfter: '30m',         // sleep after inactivity: '5m', '1h', '2d'
-  keepAlive: false,          // false = auto-timeout, true = never sleep
+const sandbox = getSandbox(env.Sandbox, "sandbox-id", {
+  normalizeId: true, // lowercase ID (required for preview URLs)
+  sleepAfter: "30m", // sleep after inactivity: '5m', '1h', '2d'
+  keepAlive: false, // false = auto-timeout, true = never sleep
 
   containerTimeouts: {
-    instanceGetTimeoutMS: 30000,  // 30s for provisioning
-    portReadyTimeoutMS: 90000     // 90s for container startup
-  }
+    instanceGetTimeoutMS: 30000, // 30s for provisioning
+    portReadyTimeoutMS: 90000, // 90s for container startup
+  },
 });
 ```
 
@@ -53,7 +53,7 @@ RUN pip3 install --no-cache-dir \
 
 ```dockerfile
 FROM docker.io/cloudflare/sandbox:latest
-RUN npm install -g typescript ts-node
+RUN bun install -g typescript ts-node
 ```
 
 **CRITICAL**: `EXPOSE` required for `wrangler dev` port access. Production auto-exposes all ports.
@@ -77,21 +77,23 @@ wrangler secret put KEY         # Set secret
 {
   "vars": {
     "ENVIRONMENT": "production",
-    "API_URL": "https://api.example.com"
+    "API_URL": "https://api.example.com",
   },
-  "r2_buckets": [{
-    "binding": "DATA_BUCKET",
-    "bucket_name": "my-data-bucket"
-  }]
+  "r2_buckets": [
+    {
+      "binding": "DATA_BUCKET",
+      "bucket_name": "my-data-bucket",
+    },
+  ],
 }
 ```
 
 **Usage**:
 
 ```typescript
-const token = env.GITHUB_TOKEN;  // From wrangler secret
-await sandbox.exec('git clone ...', {
-  env: { GIT_TOKEN: token }
+const token = env.GITHUB_TOKEN; // From wrangler secret
+await sandbox.exec("git clone ...", {
+  env: { GIT_TOKEN: token },
 });
 ```
 
@@ -109,17 +111,17 @@ await sandbox.exec('git clone ...', {
 ```jsonc
 {
   "triggers": {
-    "crons": ["*/5 * * * *"]  // Every 5 minutes
-  }
+    "crons": ["*/5 * * * *"], // Every 5 minutes
+  },
 }
 ```
 
 ```typescript
 export default {
   async scheduled(event: ScheduledEvent, env: Env) {
-    const sandbox = getSandbox(env.Sandbox, 'main');
-    await sandbox.exec('echo "keepalive"');  // Wake sandbox
-  }
+    const sandbox = getSandbox(env.Sandbox, "main");
+    await sandbox.exec('echo "keepalive"'); // Wake sandbox
+  },
 };
 ```
 
@@ -127,13 +129,13 @@ export default {
 
 ```typescript
 await sandbox.mountStorage({
-  type: 'r2',
+  type: "r2",
   bucket: env.DATA_BUCKET,
-  mountPoint: '/data',
-  readOnly: false
+  mountPoint: "/data",
+  readOnly: false,
 });
 
 // Access mounted storage
-await sandbox.exec('python3 process.py', { cwd: '/data/datasets' });
-await sandbox.writeFile('/data/output/results.csv', csvData);
+await sandbox.exec("python3 process.py", { cwd: "/data/datasets" });
+await sandbox.writeFile("/data/output/results.csv", csvData);
 ```

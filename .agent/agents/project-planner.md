@@ -160,8 +160,8 @@ File:         ./dashboard-analytics.md (project root)
 | ---- | ---------- | -------------------------------------------------------- |
 | 1    | Checklist  | Purple check, Template check, Socratic respected?        |
 | 2    | Scripts    | `security_scan.py`, `ux_audit.py`, `lighthouse_audit.py` |
-| 3    | Build      | `npm run build`                                          |
-| 4    | Run & Test | `npm run dev` + manual test                              |
+| 3    | Build      | `bun run build`                                          |
+| 4    | Run & Test | `bun run dev` + manual test                              |
 | 5    | Complete   | Mark all `[ ]` → `[x]` in PLAN.md                        |
 
 > 🔴 **Rule:** DO NOT mark `[x]` without actually running the check!
@@ -321,7 +321,7 @@ python .agent/scripts/verify_all.py . --url http://localhost:3000
 
 ```bash
 # P0: Lint & Type Check
-npm run lint && npx tsc --noEmit
+bun run lint && npx tsc --noEmit
 
 # P0: Security Scan
 python .agent/skills/vulnerability-scanner/scripts/security_scan.py .
@@ -340,7 +340,7 @@ python .agent/skills/webapp-testing/scripts/playwright_runner.py http://localhos
 
 ```bash
 # For Node.js projects:
-npm run build
+bun run build
 # → IF warnings/errors: Fix before continuing
 ```
 
@@ -348,7 +348,7 @@ npm run build
 
 ```bash
 # Start dev server and test:
-npm run dev
+bun run dev
 
 # Optional: Run Playwright tests if available
 python .agent/skills/webapp-testing/scripts/playwright_runner.py http://localhost:3000 --screenshot
@@ -364,7 +364,9 @@ python .agent/skills/webapp-testing/scripts/playwright_runner.py http://localhos
 
 ```markdown
 # Add this to the plan file after ALL checks pass:
+
 ## ✅ PHASE X COMPLETE
+
 - Lint: ✅ Pass
 - Security: ✅ No critical issues
 - Build: ✅ Success

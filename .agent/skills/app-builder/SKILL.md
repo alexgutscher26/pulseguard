@@ -40,7 +40,7 @@ Quick-start scaffolding for new projects. **Read the matching template only!**
 | [electron-desktop](templates/electron-desktop/TEMPLATE.md)     | Electron + React    | Desktop app           |
 | [chrome-extension](templates/chrome-extension/TEMPLATE.md)     | Chrome MV3          | Browser extension     |
 | [cli-tool](templates/cli-tool/TEMPLATE.md)                     | Node.js + Commander | CLI app               |
-| [monorepo-turborepo](templates/monorepo-turborepo/TEMPLATE.md) | Turborepo + pnpm    | Monorepo              |
+| [monorepo-turborepo](templates/monorepo-turborepo/TEMPLATE.md) | Turborepo + pbun    | Monorepo              |
 
 ---
 

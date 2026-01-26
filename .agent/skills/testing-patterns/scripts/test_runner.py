@@ -7,7 +7,7 @@ Usage:
     python test_runner.py <project_path> [--coverage]
 
 Supports:
-    - Node.js: npm test, jest, vitest
+    - Node.js: bun test, jest, vitest
     - Python: pytest, unittest
 """
 
@@ -44,7 +44,7 @@ def detect_test_framework(project_path: Path) -> dict:
             
             # Check for test script
             if "test" in scripts:
-                result["framework"] = "npm test"
+                result["framework"] = "bun test"
                 result["cmd"] = ["npm", "test"]
                 
                 # Try to detect specific framework for coverage

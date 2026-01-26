@@ -31,9 +31,7 @@
 new Miniflare({
   scriptPath: "./src/index.js",
   modules: true,
-  modulesRules: [
-    { type: "ESModule", include: ["**/*.js"], fallthrough: true },
-  ],
+  modulesRules: [{ type: "ESModule", include: ["**/*.js"], fallthrough: true }],
 });
 ```
 
@@ -46,7 +44,7 @@ new Miniflare({
 ```js
 // Ensure persist paths are directories, not files
 new Miniflare({
-  kvPersist: "./data/kv",           // Directory
+  kvPersist: "./data/kv", // Directory
   r2Persist: "./data/r2",
   durableObjectsPersist: "./data/do",
 });
@@ -63,7 +61,7 @@ new Miniflare({
 import { spawnSync } from "node:child_process";
 
 before(() => {
-  const result = spawnSync("npm run build", { shell: true });
+  const result = spawnSync("bun run build", { shell: true });
   if (result.error) throw result.error;
 });
 

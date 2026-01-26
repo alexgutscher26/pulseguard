@@ -26,7 +26,7 @@ allowed-tools: Read, Glob, Grep
 | [electron-desktop](electron-desktop/TEMPLATE.md)     | Electron + React    | Desktop app        |
 | [chrome-extension](chrome-extension/TEMPLATE.md)     | Chrome MV3          | Browser extension  |
 | [cli-tool](cli-tool/TEMPLATE.md)                     | Node.js + Commander | CLI app            |
-| [monorepo-turborepo](monorepo-turborepo/TEMPLATE.md) | Turborepo + pnpm    | Monorepo           |
+| [monorepo-turborepo](monorepo-turborepo/TEMPLATE.md) | Turborepo + pbun    | Monorepo           |
 | [astro-static](astro-static/TEMPLATE.md)             | Astro + MDX         | Blog / Docs        |
 
 ---

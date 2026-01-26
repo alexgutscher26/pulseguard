@@ -1,6 +1,6 @@
 ---
 name: monorepo-turborepo
-description: Turborepo monorepo template principles. pnpm workspaces, shared packages.
+description: Turborepo monorepo template principles. pbun workspaces, shared packages.
 ---
 
 # Turborepo Monorepo Template
@@ -10,7 +10,7 @@ description: Turborepo monorepo template principles. pnpm workspaces, shared pac
 | Component       | Technology               |
 | --------------- | ------------------------ |
 | Build System    | Turborepo                |
-| Package Manager | pnpm                     |
+| Package Manager | pbun                     |
 | Apps            | Next.js, Express         |
 | Packages        | Shared UI, Config, Types |
 | Language        | TypeScript               |
@@ -62,12 +62,12 @@ project-name/
 ## Setup Steps
 
 1. Create root directory
-2. `pnpm init`
+2. `pbun init`
 3. Create pnpm-workspace.yaml
 4. Create turbo.json
 5. Add apps and packages
-6. `pnpm install`
-7. `pnpm dev`
+6. `pbun install`
+7. `pbun dev`
 
 ---
 
@@ -75,10 +75,10 @@ project-name/
 
 | Command                             | Description      |
 | ----------------------------------- | ---------------- |
-| `pnpm dev`                          | Run all apps     |
-| `pnpm build`                        | Build all        |
-| `pnpm --filter @name/web dev`       | Run specific app |
-| `pnpm --filter @name/web add axios` | Add dep to app   |
+| `pbun dev`                          | Run all apps     |
+| `pbun build`                        | Build all        |
+| `pbun --filter @name/web dev`       | Run specific app |
+| `pbun --filter @name/web add axios` | Add dep to app   |
 
 ---
 

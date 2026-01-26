@@ -14,8 +14,8 @@ async function execWithRetry(sandbox, cmd) {
     try {
       return await sandbox.exec(cmd);
     } catch (e) {
-      if (e.code === 'CONTAINER_NOT_READY') {
-        await new Promise(r => setTimeout(r, 2000));
+      if (e.code === "CONTAINER_NOT_READY") {
+        await new Promise((r) => setTimeout(r, 2000));
         continue;
       }
       throw e;
@@ -65,21 +65,21 @@ const sandbox = getSandbox(env.Sandbox, `user-${Date.now()}`);
 const sandbox = getSandbox(env.Sandbox, `user-${userId}`);
 
 // ✅ GOOD: Reuse for temporary tasks
-const sandbox = getSandbox(env.Sandbox, 'shared-runner');
+const sandbox = getSandbox(env.Sandbox, "shared-runner");
 ```
 
 ### Sleep Configuration
 
 ```typescript
 // Cost-optimized: Sleep after 30min inactivity
-const sandbox = getSandbox(env.Sandbox, 'id', {
-  sleepAfter: '30m',
-  keepAlive: false
+const sandbox = getSandbox(env.Sandbox, "id", {
+  sleepAfter: "30m",
+  keepAlive: false,
 });
 
 // Always-on (higher cost, faster response)
-const sandbox = getSandbox(env.Sandbox, 'id', {
-  keepAlive: true
+const sandbox = getSandbox(env.Sandbox, "id", {
+  keepAlive: true,
 });
 ```
 
@@ -87,10 +87,12 @@ const sandbox = getSandbox(env.Sandbox, 'id', {
 
 ```jsonc
 {
-  "containers": [{
-    "class_name": "Sandbox",
-    "max_instances": 50  // Allow 50 concurrent sandboxes
-  }]
+  "containers": [
+    {
+      "class_name": "Sandbox",
+      "max_instances": 50, // Allow 50 concurrent sandboxes
+    },
+  ],
 }
 ```
 
@@ -109,16 +111,16 @@ const sandbox = getSandbox(env.Sandbox, 'id', {
 const result = await sandbox.exec(`python3 -c "${userCode}"`);
 
 // ✅ SAFE: Write to file, execute file
-await sandbox.writeFile('/workspace/user_code.py', userCode);
-const result = await sandbox.exec('python3 /workspace/user_code.py');
+await sandbox.writeFile("/workspace/user_code.py", userCode);
+const result = await sandbox.exec("python3 /workspace/user_code.py");
 ```
 
 ### Resource Limits
 
 ```typescript
 // Timeout long-running commands
-const result = await sandbox.exec('python3 script.py', {
-  timeout: 30000  // 30 seconds
+const result = await sandbox.exec("python3 script.py", {
+  timeout: 30000, // 30 seconds
 });
 ```
 
@@ -126,14 +128,14 @@ const result = await sandbox.exec('python3 script.py', {
 
 ```typescript
 // ❌ NEVER hardcode secrets
-const token = 'ghp_abc123';
+const token = "ghp_abc123";
 
 // ✅ Use environment secrets
 const token = env.GITHUB_TOKEN;
 
 // Pass to sandbox via exec env
-const result = await sandbox.exec('git clone ...', {
-  env: { GIT_TOKEN: token }
+const result = await sandbox.exec("git clone ...", {
+  env: { GIT_TOKEN: token },
 });
 ```
 
@@ -163,5 +165,5 @@ See: https://developers.cloudflare.com/sandbox/guides/production-deployment/
 - [Official Docs](https://developers.cloudflare.com/sandbox/)
 - [API Reference](https://developers.cloudflare.com/sandbox/api/)
 - [Examples](https://github.com/cloudflare/sandbox-sdk/tree/main/examples)
-- [npm Package](https://www.npmjs.com/package/@cloudflare/sandbox)
+- [bun Package](https://www.npmjs.com/package/@cloudflare/sandbox)
 - [Discord Support](https://discord.cloudflare.com)

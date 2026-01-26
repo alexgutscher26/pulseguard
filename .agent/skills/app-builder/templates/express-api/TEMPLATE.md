@@ -66,11 +66,11 @@ project-name/
 ## Setup Steps
 
 1. Create project directory
-2. `npm init -y`
-3. Install deps: `npm install express prisma zod bcrypt jsonwebtoken`
+2. `bun init -y`
+3. Install deps: `bun install express prisma zod bcrypt jsonwebtoken`
 4. Configure Prisma
-5. `npm run db:push`
-6. `npm run dev`
+5. `bun run db:push`
+6. `bun run dev`
 
 ---
 

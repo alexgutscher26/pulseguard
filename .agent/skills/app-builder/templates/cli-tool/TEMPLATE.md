@@ -63,18 +63,18 @@ project-name/
 ## Setup Steps
 
 1. Create project directory
-2. `npm init -y`
-3. Install deps: `npm install commander @inquirer/prompts chalk ora cosmiconfig`
+2. `bun init -y`
+3. Install deps: `bun install commander @inquirer/prompts chalk ora cosmiconfig`
 4. Configure bin in package.json
-5. `npm link` for local testing
+5. `bun link` for local testing
 
 ---
 
 ## Publishing
 
 ```bash
-npm login
-npm publish
+bun login
+bun publish
 ```
 
 ---

@@ -64,7 +64,7 @@ id = "preview-namespace-id"
 
 **Git deployment**: Dashboard → Project → Settings → Build settings
 
-- Build command: `npm run build`
+- Build command: `bun run build`
 - Output directory: `dist` / `out` / `build`
 - Environment variables: Set per environment (preview/production)
 
@@ -222,7 +222,7 @@ npx wrangler pages dev ./dist --port=3000
 npx wrangler pages dev ./dist --live-reload
 
 # Proxy mode (SSR frameworks)
-npx wrangler pages dev -- npm run dev
+npx wrangler pages dev -- bun run dev
 ```
 
 ## Limits

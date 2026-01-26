@@ -85,7 +85,7 @@ ESM (import/export)
 
 CommonJS (require)
 ├── Legacy compatibility
-├── More npm packages support
+├── More bun packages support
 └── Use for: existing codebases, some edge cases
 ```
 

@@ -27,26 +27,26 @@ Code Mode:
   "compatibility_flags": ["experimental", "enable_ctx_exports"],
   "durable_objects": {
     // "class_name" must match your Agent class name exactly
-    "bindings": [{ "name": "MyAgent", "class_name": "MyAgent" }]
+    "bindings": [{ "name": "MyAgent", "class_name": "MyAgent" }],
   },
   "migrations": [
     // Required: list all Agent classes for SQLite storage
-    { "tag": "v1", "new_sqlite_classes": ["MyAgent"] }
+    { "tag": "v1", "new_sqlite_classes": ["MyAgent"] },
   ],
   "services": [
     {
       "binding": "globalOutbound",
       // "service" must match "name" above
       "service": "my-agent-worker",
-      "entrypoint": "globalOutbound"
+      "entrypoint": "globalOutbound",
     },
     {
       "binding": "CodeModeProxy",
       "service": "my-agent-worker",
-      "entrypoint": "CodeModeProxy"
-    }
+      "entrypoint": "CodeModeProxy",
+    },
   ],
-  "worker_loaders": [{ "binding": "LOADER" }]
+  "worker_loaders": [{ "binding": "LOADER" }],
 }
 ```
 
@@ -64,21 +64,21 @@ export const globalOutbound = {
         ? input
         : typeof input === "object" && "url" in input
           ? input.url
-          : input.toString()
+          : input.toString(),
     );
     // Block certain domains if needed
     if (url.hostname === "blocked.example.com") {
       return new Response("Not allowed", { status: 403 });
     }
     return fetch(input, init);
-  }
+  },
 };
 ```
 
 ### 3. Install Dependencies
 
 ```bash
-npm install @cloudflare/codemode ai @ai-sdk/openai zod
+bun install @cloudflare/codemode ai @ai-sdk/openai zod
 ```
 
 ### 4. Use Code Mode in Agent
@@ -95,13 +95,17 @@ const tools = {
   getWeather: tool({
     description: "Get weather for a location",
     parameters: z.object({ location: z.string() }),
-    execute: async ({ location }) => `Weather: ${location} 72°F`
+    execute: async ({ location }) => `Weather: ${location} 72°F`,
   }),
   sendEmail: tool({
     description: "Send an email",
-    parameters: z.object({ to: z.string(), subject: z.string(), body: z.string() }),
-    execute: async ({ to, subject, body }) => `Email sent to ${to}`
-  })
+    parameters: z.object({
+      to: z.string(),
+      subject: z.string(),
+      body: z.string(),
+    }),
+    execute: async ({ to, subject, body }) => `Email sent to ${to}`,
+  }),
 };
 
 export class MyAgent extends Agent<Env, State> {
@@ -112,7 +116,7 @@ export class MyAgent extends Agent<Env, State> {
     return this.tools[functionName]?.execute?.(args, {
       abortSignal: new AbortController().signal,
       toolCallId: "codemode",
-      messages: []
+      messages: [],
     });
   }
 
@@ -126,18 +130,18 @@ export class MyAgent extends Agent<Env, State> {
       loader: env.LOADER,
       proxy: this.ctx.exports.CodeModeProxy({
         props: {
-          binding: "MyAgent",  // Class name
-          name: this.name,     // Instance name
-          callback: "callTool" // Method to call
-        }
-      })
+          binding: "MyAgent", // Class name
+          name: this.name, // Instance name
+          callback: "callTool", // Method to call
+        },
+      }),
     });
 
     const result = streamText({
       system: prompt,
       model: openai("gpt-4o"),
       messages: await convertToModelMessages(this.state.messages),
-      tools: wrappedTools  // Use wrapped tools, not original
+      tools: wrappedTools, // Use wrapped tools, not original
     });
 
     // ... handle stream
@@ -156,7 +160,7 @@ async function executeTask() {
   await codemode.sendEmail({
     to: "user@example.com",
     subject: "NYC Weather Forecast",
-    body: `Current weather: ${weather}`
+    body: `Current weather: ${weather}`,
   });
 
   return { success: true, weather };
@@ -175,14 +179,14 @@ async function executeTask() {
   // Query database MCP
   const status = await codemode.queryDatabase({
     query: "SELECT * FROM projects WHERE name = ?",
-    params: [files[0].name]
+    params: [files[0].name],
   });
 
   // Conditional logic based on results
   if (status.length === 0) {
     await codemode.createTask({
       title: `Review: ${files[0].name}`,
-      priority: "high"
+      priority: "high",
     });
   }
 

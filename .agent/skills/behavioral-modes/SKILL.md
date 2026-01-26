@@ -79,7 +79,7 @@ What resonates with you? Or should we explore a different direction?"
 
 [long explanation]
 
-Run `npm run dev` to test."
+Run `bun run dev` to test."
 ```
 
 ---

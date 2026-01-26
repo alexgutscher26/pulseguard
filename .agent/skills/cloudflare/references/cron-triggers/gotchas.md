@@ -50,7 +50,11 @@ export default {
 ```typescript
 export default {
   async scheduled(controller, env, ctx) {
-    console.log("EXECUTED", {time: new Date().toISOString(), scheduledTime: new Date(controller.scheduledTime).toISOString(), cron: controller.cron});
+    console.log("EXECUTED", {
+      time: new Date().toISOString(),
+      scheduledTime: new Date(controller.scheduledTime).toISOString(),
+      cron: controller.cron,
+    });
     ctx.waitUntil(env.KV.put("last_execution", Date.now().toString()));
   },
 };
@@ -66,12 +70,14 @@ export default {
     try {
       const abortCtrl = new AbortController();
       const timeout = setTimeout(() => abortCtrl.abort(), 5000);
-      const response = await fetch("https://api.example.com/data", {signal: abortCtrl.signal});
+      const response = await fetch("https://api.example.com/data", {
+        signal: abortCtrl.signal,
+      });
       clearTimeout(timeout);
       if (!response.ok) throw new Error(`API: ${response.status}`);
       await processData(await response.json(), env);
     } catch (error) {
-      console.error("Failed", {error: error.message, cron: controller.cron});
+      console.error("Failed", { error: error.message, cron: controller.cron });
       // Don't re-throw to mark success despite errors
     }
   },
@@ -80,7 +86,7 @@ export default {
 
 ## Local Testing Issues
 
-Ensure `wrangler dev` runs, `scheduled()` exists, update Wrangler: `npm i -g wrangler@latest`
+Ensure `wrangler dev` runs, `scheduled()` exists, update Wrangler: `bun i -g wrangler@latest`
 
 ```bash
 curl "http://localhost:8787/__scheduled?cron=*/5+*+*+*+*" # URL encode spaces
@@ -95,8 +101,17 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (url.pathname === "/__scheduled") {
-      if (env.ENVIRONMENT === "production") return new Response("Not found", { status: 404 });
-      await this.scheduled({scheduledTime: Date.now(), cron: url.searchParams.get("cron") || "* * * * *", type: "scheduled"}, env, ctx);
+      if (env.ENVIRONMENT === "production")
+        return new Response("Not found", { status: 404 });
+      await this.scheduled(
+        {
+          scheduledTime: Date.now(),
+          cron: url.searchParams.get("cron") || "* * * * *",
+          type: "scheduled",
+        },
+        env,
+        ctx,
+      );
       return new Response("OK");
     }
     return new Response("Hello");

@@ -5,12 +5,12 @@ description: Build stateful AI agents using the Cloudflare Agents SDK. Load when
 
 # Cloudflare Agents SDK
 
-Build persistent, stateful AI agents on Cloudflare Workers using the `agents` npm package.
+Build persistent, stateful AI agents on Cloudflare Workers using the `agents` bun package.
 
 ## FIRST: Verify Installation
 
 ```bash
-npm install agents
+bun install agents
 ```
 
 Agents require a binding in `wrangler.jsonc`:
@@ -19,12 +19,12 @@ Agents require a binding in `wrangler.jsonc`:
 {
   "durable_objects": {
     // "class_name" must match your Agent class name exactly
-    "bindings": [{ "name": "Counter", "class_name": "Counter" }]
+    "bindings": [{ "name": "Counter", "class_name": "Counter" }],
   },
   "migrations": [
     // Required: list all Agent classes for SQLite storage
-    { "tag": "v1", "new_sqlite_classes": ["Counter"] }
-  ]
+    { "tag": "v1", "new_sqlite_classes": ["Counter"] },
+  ],
 }
 ```
 
@@ -77,7 +77,8 @@ export class Counter extends Agent<Env, State> {
 }
 
 export default {
-  fetch: (req, env) => routeAgentRequest(req, env) ?? new Response("Not found", { status: 404 })
+  fetch: (req, env) =>
+    routeAgentRequest(req, env) ?? new Response("Not found", { status: 404 }),
 };
 ```
 
@@ -88,7 +89,7 @@ Use `AIChatAgent` for chat with automatic message persistence and resumable stre
 **Install additional dependencies first:**
 
 ```bash
-npm install @cloudflare/ai-chat ai @ai-sdk/openai
+bun install @cloudflare/ai-chat ai @ai-sdk/openai
 ```
 
 **Add wrangler.jsonc config** (same pattern as base Agent):
@@ -96,9 +97,9 @@ npm install @cloudflare/ai-chat ai @ai-sdk/openai
 ```jsonc
 {
   "durable_objects": {
-    "bindings": [{ "name": "Chat", "class_name": "Chat" }]
+    "bindings": [{ "name": "Chat", "class_name": "Chat" }],
   },
-  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Chat"] }]
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Chat"] }],
 }
 ```
 
@@ -113,14 +114,15 @@ export class Chat extends AIChatAgent<Env> {
     const result = streamText({
       model: openai("gpt-4o"),
       messages: await convertToModelMessages(this.messages),
-      onFinish
+      onFinish,
     });
     return result.toUIMessageStreamResponse();
   }
 }
 
 export default {
-  fetch: (req, env) => routeAgentRequest(req, env) ?? new Response("Not found", { status: 404 })
+  fetch: (req, env) =>
+    routeAgentRequest(req, env) ?? new Response("Not found", { status: 404 }),
 };
 ```
 

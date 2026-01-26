@@ -17,8 +17,8 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 | Operator | Meaning                   | Example                             |
 | -------- | ------------------------- | ----------------------------------- |
 | `;`      | Run sequentially          | `cmd1; cmd2`                        |
-| `&&`     | Run if previous succeeded | `npm install && npm run dev`        |
-| `\|\|`   | Run if previous failed    | `npm test \|\| echo "Tests failed"` |
+| `&&`     | Run if previous succeeded | `bun install && bun run dev`        |
+| `\|\|`   | Run if previous failed    | `bun test \|\| echo "Tests failed"` |
 | `\|`     | Pipe output               | `ls \| grep ".js"`                  |
 
 ---
@@ -50,7 +50,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 | Kill by PID    | `kill -9 <PID>`               |
 | Find port user | `lsof -i :3000`               |
 | Kill port      | `kill -9 $(lsof -t -i :3000)` |
-| Background     | `npm run dev &`               |
+| Background     | `bun run dev &`               |
 | Jobs           | `jobs -l`                     |
 | Bring to front | `fg %1`                       |
 

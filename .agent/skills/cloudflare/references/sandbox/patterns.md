@@ -6,18 +6,18 @@
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const { code } = await request.json();
-    const sandbox = getSandbox(env.Sandbox, 'ai-agent');
+    const sandbox = getSandbox(env.Sandbox, "ai-agent");
 
     // Execute user code safely
-    await sandbox.writeFile('/workspace/user_code.py', code);
-    const result = await sandbox.exec('python3 /workspace/user_code.py');
+    await sandbox.writeFile("/workspace/user_code.py", code);
+    const result = await sandbox.exec("python3 /workspace/user_code.py");
 
     return Response.json({
       output: result.stdout,
       error: result.stderr,
-      success: result.success
+      success: result.success,
     });
-  }
+  },
 };
 ```
 
@@ -29,20 +29,20 @@ export default {
     const proxyResponse = await proxyToSandbox(request, env);
     if (proxyResponse) return proxyResponse;
 
-    const sandbox = getSandbox(env.Sandbox, 'ide', { normalizeId: true });
+    const sandbox = getSandbox(env.Sandbox, "ide", { normalizeId: true });
 
-    if (request.url.endsWith('/start')) {
-      await sandbox.exec('curl -fsSL https://code-server.dev/install.sh | sh');
-      await sandbox.startProcess('code-server --bind-addr 0.0.0.0:8080', {
-        processId: 'vscode'
+    if (request.url.endsWith("/start")) {
+      await sandbox.exec("curl -fsSL https://code-server.dev/install.sh | sh");
+      await sandbox.startProcess("code-server --bind-addr 0.0.0.0:8080", {
+        processId: "vscode",
       });
 
       const exposed = await sandbox.exposePort(8080);
       return Response.json({ url: exposed.url });
     }
 
-    return new Response('Try /start');
-  }
+    return new Response("Try /start");
+  },
 };
 ```
 
@@ -56,24 +56,24 @@ export default {
 
     await sandbox.exec(`git clone -b ${branch} ${repo} /workspace/repo`);
 
-    const install = await sandbox.exec('npm install', {
-      cwd: '/workspace/repo',
+    const install = await sandbox.exec("bun install", {
+      cwd: "/workspace/repo",
       stream: true,
-      onOutput: (stream, data) => console.log(data)
+      onOutput: (stream, data) => console.log(data),
     });
 
     if (!install.success) {
-      return Response.json({ success: false, error: 'Install failed' });
+      return Response.json({ success: false, error: "Install failed" });
     }
 
-    const test = await sandbox.exec('npm test', { cwd: '/workspace/repo' });
+    const test = await sandbox.exec("bun test", { cwd: "/workspace/repo" });
 
     return Response.json({
       success: test.success,
       output: test.stdout,
-      exitCode: test.exitCode
+      exitCode: test.exitCode,
     });
-  }
+  },
 };
 ```
 
@@ -83,22 +83,25 @@ export default {
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const { notebook } = await request.json();
-    const sandbox = getSandbox(env.Sandbox, 'data-analysis');
+    const sandbox = getSandbox(env.Sandbox, "data-analysis");
 
-    await sandbox.writeFile('/workspace/analysis.ipynb', JSON.stringify(notebook));
-
-    const result = await sandbox.exec(
-      'jupyter nbconvert --to notebook --execute analysis.ipynb --output results.ipynb',
-      { cwd: '/workspace' }
+    await sandbox.writeFile(
+      "/workspace/analysis.ipynb",
+      JSON.stringify(notebook),
     );
 
-    const output = await sandbox.readFile('/workspace/results.ipynb');
+    const result = await sandbox.exec(
+      "jupyter nbconvert --to notebook --execute analysis.ipynb --output results.ipynb",
+      { cwd: "/workspace" },
+    );
+
+    const output = await sandbox.readFile("/workspace/results.ipynb");
 
     return Response.json({
       success: result.success,
-      notebook: JSON.parse(output.content)
+      notebook: JSON.parse(output.content),
     });
-  }
+  },
 };
 ```
 
@@ -106,10 +109,10 @@ export default {
 
 ```typescript
 const languageConfigs = {
-  python: { cmd: 'python3', ext: 'py' },
-  javascript: { cmd: 'node', ext: 'js' },
-  typescript: { cmd: 'ts-node', ext: 'ts' },
-  bash: { cmd: 'bash', ext: 'sh' }
+  python: { cmd: "python3", ext: "py" },
+  javascript: { cmd: "node", ext: "js" },
+  typescript: { cmd: "ts-node", ext: "ts" },
+  bash: { cmd: "bash", ext: "sh" },
 };
 
 export default {
@@ -118,10 +121,10 @@ export default {
     const config = languageConfigs[language];
 
     if (!config) {
-      return Response.json({ error: 'Unsupported language' }, { status: 400 });
+      return Response.json({ error: "Unsupported language" }, { status: 400 });
     }
 
-    const sandbox = getSandbox(env.Sandbox, 'code-runner');
+    const sandbox = getSandbox(env.Sandbox, "code-runner");
     const filename = `/workspace/script.${config.ext}`;
 
     await sandbox.writeFile(filename, code);
@@ -130,9 +133,9 @@ export default {
     return Response.json({
       output: result.stdout,
       error: result.stderr,
-      exitCode: result.exitCode
+      exitCode: result.exitCode,
     });
-  }
+  },
 };
 ```
 
@@ -141,8 +144,8 @@ export default {
 ```typescript
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
-    const userId = request.headers.get('X-User-ID');
-    const sandbox = getSandbox(env.Sandbox, 'multi-tenant');
+    const userId = request.headers.get("X-User-ID");
+    const sandbox = getSandbox(env.Sandbox, "multi-tenant");
 
     // Each user gets isolated session
     let session;
@@ -152,7 +155,7 @@ export default {
       session = await sandbox.createSession({
         id: userId,
         cwd: `/workspace/users/${userId}`,
-        env: { USER_ID: userId }
+        env: { USER_ID: userId },
       });
     }
 
@@ -160,7 +163,7 @@ export default {
     const result = await session.exec(`python3 -c "${code}"`);
 
     return Response.json({ output: result.stdout });
-  }
+  },
 };
 ```
 
@@ -177,12 +180,15 @@ EXPOSE 8888
 **Worker**:
 
 ```typescript
-await sandbox.startProcess('jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser', {
-  processId: 'jupyter',
-  cwd: '/workspace'
-});
+await sandbox.startProcess(
+  "jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser",
+  {
+    processId: "jupyter",
+    cwd: "/workspace",
+  },
+);
 
-const exposed = await sandbox.exposePort(8888, { name: 'jupyter' });
+const exposed = await sandbox.exposePort(8888, { name: "jupyter" });
 return Response.json({ url: exposed.url });
 ```
 
@@ -190,16 +196,22 @@ return Response.json({ url: exposed.url });
 
 ```typescript
 // Clone
-await sandbox.exec('git clone https://github.com/user/repo.git /workspace/repo');
+await sandbox.exec(
+  "git clone https://github.com/user/repo.git /workspace/repo",
+);
 
 // Clone specific branch
-await sandbox.exec('git clone -b main --single-branch https://github.com/user/repo.git /workspace/repo');
+await sandbox.exec(
+  "git clone -b main --single-branch https://github.com/user/repo.git /workspace/repo",
+);
 
 // Authenticated clone
 const token = env.GITHUB_TOKEN;
-await sandbox.exec(`git clone https://${token}@github.com/user/private-repo.git`);
+await sandbox.exec(
+  `git clone https://${token}@github.com/user/private-repo.git`,
+);
 
 // Git ops
-await sandbox.exec('git pull', { cwd: '/workspace/repo' });
-await sandbox.exec('git checkout -b feature', { cwd: '/workspace/repo' });
+await sandbox.exec("git pull", { cwd: "/workspace/repo" });
+await sandbox.exec("git checkout -b feature", { cwd: "/workspace/repo" });
 ```

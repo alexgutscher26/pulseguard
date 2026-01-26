@@ -7,7 +7,7 @@ Usage:
     python lint_runner.py <project_path>
 
 Supports:
-    - Node.js: npm run lint, npx tsc --noEmit
+    - Node.js: bun run lint, npx tsc --noEmit
     - Python: ruff check, mypy
 """
 
@@ -42,7 +42,7 @@ def detect_project_type(project_path: Path) -> dict:
             
             # Check for lint script
             if "lint" in scripts:
-                result["linters"].append({"name": "npm lint", "cmd": ["npm", "run", "lint"]})
+                result["linters"].append({"name": "bun lint", "cmd": ["npm", "run", "lint"]})
             elif "eslint" in deps:
                 result["linters"].append({"name": "eslint", "cmd": ["npx", "eslint", "."]})
             

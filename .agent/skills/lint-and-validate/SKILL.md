@@ -12,9 +12,9 @@ allowed-tools: Read, Glob, Grep, Bash
 
 #### Node.js / TypeScript
 
-1. **Lint/Fix:** `npm run lint` or `npx eslint "path" --fix`
+1. **Lint/Fix:** `bun run lint` or `npx eslint "path" --fix`
 2. **Types:** `npx tsc --noEmit`
-3. **Security:** `npm audit --audit-level=high`
+3. **Security:** `bun audit --audit-level=high`
 
 #### Python
 
@@ -25,7 +25,7 @@ allowed-tools: Read, Glob, Grep, Bash
 ## The Quality Loop
 
 1. **Write/Edit Code**
-2. **Run Audit:** `npm run lint && npx tsc --noEmit`
+2. **Run Audit:** `bun run lint && npx tsc --noEmit`
 3. **Analyze Report:** Check the "FINAL AUDIT REPORT" section.
 4. **Fix & Repeat:** Submitting code with "FINAL AUDIT" failures is NOT allowed.
 
