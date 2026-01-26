@@ -6,6 +6,15 @@ import { toast } from "sonner";
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 
+/**
+ * Render the detailed header for a monitor, displaying its status and controls.
+ *
+ * This function checks the monitor's status and events to determine its operational state, including whether it is up, down, paused, or pending. It provides functionality to run a check on the monitor and toggle its monitoring state. The UI reflects the current status and allows user interaction through buttons and a toggle switch.
+ *
+ * @param {Object} param0 - The properties object.
+ * @param {any} param0.monitor - The monitor object containing its details and status.
+ * @returns {JSX.Element} The rendered monitor detail header component.
+ */
 export function MonitorDetailHeader({ monitor }: { monitor: any }) {
   const hasEvents = monitor.events && monitor.events.length > 0;
   const isUp = monitor.status === "UP" && hasEvents;
@@ -27,6 +36,15 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
     });
   };
 
+  /**
+   * Toggles the monitoring state based on the provided enabled flag.
+   *
+   * This function initiates a transition to update the monitor's state by calling the toggleMonitor function with the monitor's ID and the enabled status.
+   * If the operation is successful, it displays a success message indicating whether monitoring has resumed or paused.
+   * In case of failure, it shows an error message with the provided error or a default failure message.
+   *
+   * @param {boolean} enabled - Indicates whether monitoring should be enabled or disabled.
+   */
   const handleToggle = (enabled: boolean) => {
     startTransition(async () => {
       const result = await toggleMonitor(monitor.id, enabled);
