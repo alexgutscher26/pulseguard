@@ -5,75 +5,98 @@ export interface Env {
   DATABASE_URL: string;
 }
 
-import { connect } from 'cloudflare:sockets';
+import { connect } from "cloudflare:sockets";
+
+// Helper: Perform a single check without DB side effects
+async function performCheck(monitor: any): Promise<{ status: "UP" | "DOWN"; latency: number }> {
+  const start = Date.now();
+  let currentStatus: "UP" | "DOWN" = "DOWN";
+  let latency = 0;
+
+  try {
+    const urlStr = monitor.url;
+
+    if (urlStr.startsWith("http://") || urlStr.startsWith("https://")) {
+      const response = await fetch(urlStr, {
+        method: "GET",
+        headers: {
+          "User-Agent": "PulseGuard-Monitor/1.0",
+          Accept: "*/*",
+        },
+        signal: AbortSignal.timeout(10000),
+      });
+      currentStatus = response.ok ? "UP" : "DOWN";
+    } else if (urlStr.startsWith("tcp://")) {
+      // Parse tcp://hostname:port
+      const part = urlStr.replace("tcp://", "");
+      const [hostname, port] = part.split(":");
+
+      if (!hostname || !port) throw new Error("Invalid TCP URL format");
+
+      const socket = connect({
+        hostname,
+        port: parseInt(port),
+      });
+
+      // Wait for connection
+      await socket.opened;
+      await socket.close();
+      currentStatus = "UP";
+    } else if (urlStr.startsWith("ping://")) {
+      const hostname = urlStr.replace("ping://", "");
+      const socket = connect({
+        hostname,
+        port: 80,
+      });
+      await socket.opened;
+      await socket.close();
+      currentStatus = "UP";
+    } else {
+      // Fallback or unknown
+      throw new Error("Unknown protocol");
+    }
+
+    latency = Date.now() - start;
+  } catch (err) {
+    console.error(`Error checking ${monitor.url}:`, err);
+    latency = 0;
+    currentStatus = "DOWN";
+  }
+
+  return { status: currentStatus, latency };
+}
 
 // Reusable processing logic (shared between Cron and Queue consumer)
 async function processBatch(monitors: any[], prisma: any) {
   console.log(`Processing batch of ${monitors.length} monitors...`);
 
-  await Promise.all(monitors.map(async (monitor) => {
-    const start = Date.now();
-    let currentStatus: "UP" | "DOWN" = "DOWN";
-    let latency = 0;
-    
-    try {
-      const urlStr = monitor.url;
-      
-      if (urlStr.startsWith("http://") || urlStr.startsWith("https://")) {
-          const response = await fetch(urlStr, {
-            method: 'GET',
-            headers: { 
-              'User-Agent': 'PulseGuard-Monitor/1.0',
-              'Accept': '*/*'
-            },
-            signal: AbortSignal.timeout(10000)
-          });
-          currentStatus = response.ok ? "UP" : "DOWN";
-      } else if (urlStr.startsWith("tcp://")) {
-          // Parse tcp://hostname:port
-          const part = urlStr.replace("tcp://", "");
-          const [hostname, port] = part.split(":");
-          
-          if (!hostname || !port) throw new Error("Invalid TCP URL format");
-          
-          const socket = connect({
-             hostname,
-             port: parseInt(port)
-          });
-          
-          // Wait for connection
-          await socket.opened;
-          await socket.close();
-          currentStatus = "UP";
-      } else if (urlStr.startsWith("ping://")) {
-          // Worker cannot do ICMP. Simulate by connecting to port 80? 
-          // Or just mark as "Not Supported" for now?
-          // Let's try to connect to port 80 as a fallback "ping"
-          const hostname = urlStr.replace("ping://", "");
-          const socket = connect({
-             hostname,
-             port: 80
-          });
-          await socket.opened;
-          await socket.close();
-          currentStatus = "UP";
-      } else {
-          // Fallback or unknown
-          throw new Error("Unknown protocol");
+  await Promise.all(
+    monitors.map(async (monitor) => {
+      // 1. Initial Check
+      let result = await performCheck(monitor);
+
+      // 2. Double Check Protocol (Retry on Failure)
+      // If the first check fails, we wait 2 seconds and try ONE more time.
+      // This prevents transient network blips from triggering alerts.
+      if (result.status === "DOWN" && monitor.status !== "DOWN") {
+        console.warn(
+          `[DoubleCheck] First check failed for ${monitor.name} (${monitor.url}). Retrying in 2s...`,
+        );
+
+        // Wait 2000ms
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        // Retry
+        result = await performCheck(monitor);
+        console.log(`[DoubleCheck] Retry result for ${monitor.name}: ${result.status}`);
       }
-      
-      latency = Date.now() - start;
-    } catch (err) {
-      console.error(`Error checking ${monitor.url}:`, err);
-      // latency = Date.now() - start;
-      latency = 0;
-      currentStatus = "DOWN";
-    }
 
-    const previousStatus = monitor.status;
+      const { status: currentStatus, latency } = result;
 
-    // Save result and update monitor
-    try {
+      const previousStatus = monitor.status;
+
+      // Save result and update monitor
+      try {
         await prisma.$transaction([
           prisma.monitorEvent.create({
             data: {
@@ -81,28 +104,30 @@ async function processBatch(monitors: any[], prisma: any) {
               status: currentStatus,
               latency: latency,
               timestamp: new Date(),
-            }
+            },
           }),
           prisma.monitor.update({
             where: { id: monitor.id },
             data: {
               status: currentStatus,
               lastCheck: new Date(),
-              nextCheck: new Date(Date.now() + (monitor.interval || 60) * 1000)
-            }
-          })
+              nextCheck: new Date(Date.now() + (monitor.interval || 60) * 1000),
+            },
+          }),
         ]);
 
         if (previousStatus !== currentStatus) {
-            console.log(`Status change detected for ${monitor.name}: ${previousStatus} -> ${currentStatus}`);
+          console.log(
+            `Status change detected for ${monitor.name}: ${previousStatus} -> ${currentStatus}`,
+          );
         }
-        
-    } catch (dbErr) {
+      } catch (dbErr) {
         console.error(`Failed to save result for ${monitor.url}`, dbErr);
-    }
-    
-    console.log(`Checked ${monitor.url}: ${currentStatus} (${latency}ms)`);
-  }));
+      }
+
+      console.log(`Checked ${monitor.url}: ${currentStatus} (${latency}ms)`);
+    }),
+  );
 }
 
 export default {
@@ -118,19 +143,16 @@ export default {
 
     // FREE TIER CONFIG: Process 10 monitors per cron tick (1 min)
     // This avoids CPU limits and Queue costs.
-    const BATCH_SIZE = 10; 
+    const BATCH_SIZE = 10;
 
     try {
       // Find active monitors that are due for a check
       const monitors = await prisma.monitor.findMany({
         where: {
           status: { in: ["UP", "DOWN"] },
-          OR: [
-            { nextCheck: null },
-            { nextCheck: { lte: new Date() } }
-          ]
+          OR: [{ nextCheck: null }, { nextCheck: { lte: new Date() } }],
         },
-        orderBy: { nextCheck: 'asc' }, // Prioritize oldest due
+        orderBy: { nextCheck: "asc" }, // Prioritize oldest due
         take: BATCH_SIZE,
         select: {
           id: true,
@@ -138,7 +160,7 @@ export default {
           interval: true,
           status: true,
           name: true,
-        }
+        },
       });
 
       console.log(`Found ${monitors.length} monitors to check.`);
@@ -159,7 +181,7 @@ export default {
         await env.CHECK_QUEUE.sendBatch(chunk);
       }
       */
-      
+
       console.log("Monitors processed successfully.");
     } catch (error) {
       console.error("Error in scheduled handler:", error);
@@ -169,11 +191,11 @@ export default {
   // 2. Queue Consumer: (Preserved for Paid Plan Upgrade)
   async queue(batch: MessageBatch<any>, env: Env, ctx: ExecutionContext) {
     const prisma = getPrisma(env.DATABASE_URL);
-    const monitors = batch.messages.map(msg => msg.body);
-    
+    const monitors = batch.messages.map((msg) => msg.body);
+
     await processBatch(monitors, prisma);
-    
+
     // Ack all messages after processing
     batch.ackAll();
-  }
+  },
 };

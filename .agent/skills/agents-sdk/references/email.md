@@ -62,6 +62,7 @@ export class EmailAgent extends Agent<Env, State> {
 ```
 
 **Install postal-mime for parsing:**
+
 ```bash
 npm install postal-mime
 ```
@@ -104,14 +105,14 @@ await routeAgentEmail(message, env, {
 const customResolver = async (email, env) => {
   // Parse recipient to determine agent
   const [localPart] = email.to.split("@");
-  
+
   if (localPart.startsWith("support-")) {
     return {
       agentName: "SupportAgent",
       agentId: localPart.replace("support-", "")
     };
   }
-  
+
   return null; // Don't route
 };
 

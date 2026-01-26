@@ -25,7 +25,7 @@ These items block general reliability or user trust.
 
 ### 🛡️ False Positive Prevention
 
-- [ ] **"Double Check" Protocol**
+- [x] **"Double Check" Protocol**
   - If a check fails (Status != 200), **do not write DOWN immediately**.
   - Wait 2 seconds.
   - Retry the check (ideally from a different region, but retry logic is step 1).

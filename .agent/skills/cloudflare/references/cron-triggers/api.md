@@ -45,6 +45,7 @@ interface ScheduledController {
 ```
 
 **Parse time:**
+
 ```typescript
 const date = new Date(controller.scheduledTime);
 console.log(date.toISOString());
@@ -53,12 +54,15 @@ console.log(date.toISOString());
 ## Handler Parameters
 
 **`controller: ScheduledController`**
+
 - Access cron expression and scheduled time
 
 **`env: Env`**
+
 - All bindings: KV, R2, D1, secrets, service bindings
 
 **`ctx: ExecutionContext`**
+
 - `ctx.waitUntil(promise)` - Extend execution for async tasks (logging, cleanup, external APIs)
 - First `waitUntil` failure recorded in Cron Events
 
@@ -82,15 +86,15 @@ export default {
       case "*/3 * * * *":
         ctx.waitUntil(updateRecentData(env));
         break;
-      
+
       case "0 * * * *":
         ctx.waitUntil(processHourlyAggregation(env));
         break;
-      
+
       case "0 2 * * *":
         ctx.waitUntil(performDailyMaintenance(env));
         break;
-      
+
       default:
         console.warn(`Unhandled cron: ${controller.cron}`);
     }
@@ -107,7 +111,7 @@ export default {
   async scheduled(controller: ScheduledController, env: Env, ctx: ExecutionContext) {
     // Critical path - runs immediately
     const data = await fetchCriticalData();
-    
+
     // Non-blocking background tasks
     ctx.waitUntil(
       Promise.all([
@@ -116,7 +120,7 @@ export default {
         notifyWebhook(env.WEBHOOK_URL, data),
       ])
     );
-    
+
     // Handler returns while waitUntil tasks complete
   },
 };
@@ -138,11 +142,11 @@ export class DataProcessingWorkflow extends WorkflowEntrypoint {
     const data = await step.do("fetch-data", async () => {
       return await fetchLargeDataset();
     });
-    
+
     const processed = await step.do("process-data", async () => {
       return await processDataset(data);
     });
-    
+
     await step.do("store-results", async () => {
       return await storeResults(processed);
     });
@@ -157,7 +161,7 @@ export default {
         cron: controller.cron,
       },
     });
-    
+
     console.log(`Started workflow: ${instance.id}`);
   },
 };
@@ -177,15 +181,15 @@ describe("Scheduled Handler", () => {
       waitUntil: (promise: Promise<any>) => promise,
       passThroughOnException: () => {},
     };
-    
+
     const controller = {
       scheduledTime: Date.now(),
       cron: "*/5 * * * *",
       type: "scheduled" as const,
     };
-    
+
     await worker.scheduled(controller, env, ctx);
-    
+
     const result = await env.MY_KV.get("last_run");
     expect(result).toBeDefined();
   });

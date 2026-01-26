@@ -53,4 +53,5 @@ new_sqlite_classes = ["MyContainer"]
 ```
 
 Key config requirements:
+
 - `image` - Path to Dockerfile or directory conta

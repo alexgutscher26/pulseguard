@@ -7,7 +7,7 @@ const sandbox = getSandbox(env.Sandbox, 'sandbox-id', {
   normalizeId: true,         // lowercase ID (required for preview URLs)
   sleepAfter: '30m',         // sleep after inactivity: '5m', '1h', '2d'
   keepAlive: false,          // false = auto-timeout, true = never sleep
-  
+
   containerTimeouts: {
     instanceGetTimeoutMS: 30000,  // 30s for provisioning
     portReadyTimeoutMS: 90000     // 90s for container startup
@@ -16,6 +16,7 @@ const sandbox = getSandbox(env.Sandbox, 'sandbox-id', {
 ```
 
 **Sleep Config**:
+
 - `sleepAfter`: Duration string (e.g., '5m', '30m', '1h')
 - `keepAlive: false`: Auto-sleep (default, cost-optimized)
 - `keepAlive: true`: Never sleep (higher cost, faster response)
@@ -24,6 +25,7 @@ const sandbox = getSandbox(env.Sandbox, 'sandbox-id', {
 ## Instance Types
 
 wrangler.jsonc `instance_type`:
+
 - `lite`: 256MB RAM, 0.5 vCPU (default)
 - `standard`: 512MB RAM, 1 vCPU
 - `heavy`: 1GB RAM, 2 vCPU
@@ -31,6 +33,7 @@ wrangler.jsonc `instance_type`:
 ## Dockerfile Patterns
 
 **Basic**:
+
 ```dockerfile
 FROM docker.io/cloudflare/sandbox:latest
 RUN pip3 install --no-cache-dir pandas numpy
@@ -38,6 +41,7 @@ EXPOSE 8080  # Required for wrangler dev
 ```
 
 **Scientific**:
+
 ```dockerfile
 FROM docker.io/cloudflare/sandbox:latest
 RUN pip3 install --no-cache-dir \
@@ -46,6 +50,7 @@ RUN pip3 install --no-cache-dir \
 ```
 
 **Node.js**:
+
 ```dockerfile
 FROM docker.io/cloudflare/sandbox:latest
 RUN npm install -g typescript ts-node
@@ -67,6 +72,7 @@ wrangler secret put KEY         # Set secret
 ## Environment & Secrets
 
 **wrangler.jsonc**:
+
 ```jsonc
 {
   "vars": {
@@ -81,6 +87,7 @@ wrangler secret put KEY         # Set secret
 ```
 
 **Usage**:
+
 ```typescript
 const token = env.GITHUB_TOKEN;  // From wrangler secret
 await sandbox.exec('git clone ...', {
@@ -91,6 +98,7 @@ await sandbox.exec('git clone ...', {
 ## Preview URL Setup
 
 **Prerequisites**:
+
 - Custom domain with wildcard DNS: `*.yourdomain.com → worker.yourdomain.com`
 - `.workers.dev` domains NOT supported
 - `normalizeId: true` in getSandbox

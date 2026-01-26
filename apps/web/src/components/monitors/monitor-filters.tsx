@@ -4,18 +4,23 @@ import { Search, Filter, ArrowUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface MonitorFiltersProps {
-    searchQuery: string;
-    setSearchQuery: (q: string) => void;
-    statusFilter: string;
-    setStatusFilter: (s: string) => void;
+  searchQuery: string;
+  setSearchQuery: (q: string) => void;
+  statusFilter: string;
+  setStatusFilter: (s: string) => void;
 }
 
-export function MonitorFilters({ searchQuery, setSearchQuery, statusFilter, setStatusFilter }: MonitorFiltersProps) {
+export function MonitorFilters({
+  searchQuery,
+  setSearchQuery,
+  statusFilter,
+  setStatusFilter,
+}: MonitorFiltersProps) {
   const tabs = [
-      { label: "All", value: "ALL" },
-      { label: "Up", value: "UP" },
-      { label: "Down", value: "DOWN" },
-      { label: "Paused", value: "PAUSED" },
+    { label: "All", value: "ALL" },
+    { label: "Up", value: "UP" },
+    { label: "Down", value: "DOWN" },
+    { label: "Paused", value: "PAUSED" },
   ];
 
   return (
@@ -32,25 +37,25 @@ export function MonitorFilters({ searchQuery, setSearchQuery, statusFilter, setS
           />
         </div>
         <div className="hidden md:block h-8 w-[1px] bg-primary/20 mx-2"></div>
-        
+
         <div className="flex gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
-            {tabs.map((tab) => (
-                <button
-                    key={tab.value}
-                    onClick={() => setStatusFilter(tab.value)}
-                    className={cn(
-                        "px-3 py-1.5 text-[10px] uppercase font-bold tracking-wider transition-all whitespace-nowrap font-mono rounded-sm border",
-                        statusFilter === tab.value 
-                            ? "bg-primary/10 text-primary border-primary/20" 
-                            : "text-primary/50 border-transparent hover:border-primary/20 hover:text-primary"
-                    )}
-                >
-                    {tab.label}
-                </button>
-            ))}
+          {tabs.map((tab) => (
+            <button
+              key={tab.value}
+              onClick={() => setStatusFilter(tab.value)}
+              className={cn(
+                "px-3 py-1.5 text-[10px] uppercase font-bold tracking-wider transition-all whitespace-nowrap font-mono rounded-sm border",
+                statusFilter === tab.value
+                  ? "bg-primary/10 text-primary border-primary/20"
+                  : "text-primary/50 border-transparent hover:border-primary/20 hover:text-primary",
+              )}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
       </div>
-      
+
       <div className="flex items-center gap-2 w-full md:w-auto justify-end">
         <button className="flex items-center gap-2 px-3 py-1.5 text-primary/60 hover:text-primary border border-primary/10 hover:border-primary/30 text-[10px] uppercase font-bold transition-all font-mono rounded-sm">
           <Filter className="size-3" /> Tags

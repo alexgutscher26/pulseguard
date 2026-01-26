@@ -47,13 +47,15 @@ export function AlertHistory() {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div className="flex flex-col">
-          <h3 className="text-lg font-bold text-foreground font-mono uppercase tracking-tight">Alert Log</h3>
+          <h3 className="text-lg font-bold text-foreground font-mono uppercase tracking-tight">
+            Alert Log
+          </h3>
           <p className="text-xs text-primary/60 font-mono">Recent incident reports</p>
         </div>
         <div className="flex gap-2">
-            <button className="flex items-center gap-2 px-3 py-1.5 bg-primary/5 border border-primary/20 hover:border-primary/50 text-primary/70 hover:text-primary text-[10px] font-bold uppercase tracking-wider transition-all font-mono">
-                <Calendar className="size-3" /> Last 24 Hours
-            </button>
+          <button className="flex items-center gap-2 px-3 py-1.5 bg-primary/5 border border-primary/20 hover:border-primary/50 text-primary/70 hover:text-primary text-[10px] font-bold uppercase tracking-wider transition-all font-mono">
+            <Calendar className="size-3" /> Last 24 Hours
+          </button>
         </div>
       </div>
 
@@ -66,27 +68,43 @@ export function AlertHistory() {
           <table className="w-full text-left border-collapse">
             <thead className="bg-primary/5 border-b border-primary/20">
               <tr>
-                <th className="px-6 py-4 text-[10px] font-bold text-primary/60 uppercase tracking-widest font-mono">Target System</th>
-                <th className="px-6 py-4 text-[10px] font-bold text-primary/60 uppercase tracking-widest font-mono">Incident Type</th>
-                <th className="px-6 py-4 text-[10px] font-bold text-primary/60 uppercase tracking-widest font-mono">Dispatch Status</th>
-                <th className="px-6 py-4 text-[10px] font-bold text-primary/60 uppercase tracking-widest font-mono">Channel</th>
-                <th className="px-6 py-4 text-[10px] font-bold text-primary/60 uppercase tracking-widest font-mono">Time Delta</th>
+                <th className="px-6 py-4 text-[10px] font-bold text-primary/60 uppercase tracking-widest font-mono">
+                  Target System
+                </th>
+                <th className="px-6 py-4 text-[10px] font-bold text-primary/60 uppercase tracking-widest font-mono">
+                  Incident Type
+                </th>
+                <th className="px-6 py-4 text-[10px] font-bold text-primary/60 uppercase tracking-widest font-mono">
+                  Dispatch Status
+                </th>
+                <th className="px-6 py-4 text-[10px] font-bold text-primary/60 uppercase tracking-widest font-mono">
+                  Channel
+                </th>
+                <th className="px-6 py-4 text-[10px] font-bold text-primary/60 uppercase tracking-widest font-mono">
+                  Time Delta
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-primary/10">
               {history.map((item, idx) => (
                 <tr key={idx} className="hover:bg-primary/5 transition-colors group">
                   <td className="px-6 py-4">
-                    <span className="text-sm font-bold text-foreground font-mono group-hover:text-primary transition-colors">{item.monitor}</span>
+                    <span className="text-sm font-bold text-foreground font-mono group-hover:text-primary transition-colors">
+                      {item.monitor}
+                    </span>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
                       <item.typeIcon className={`size-4 ${item.typeColor}`} />
-                      <span className="text-xs font-bold text-foreground font-mono">{item.type}</span>
+                      <span className="text-xs font-bold text-foreground font-mono">
+                        {item.type}
+                      </span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 border text-[10px] font-bold uppercase tracking-wider ${item.statusColor || "bg-primary/10 text-primary border-primary/20"}`}>
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 border text-[10px] font-bold uppercase tracking-wider ${item.statusColor || "bg-primary/10 text-primary border-primary/20"}`}
+                    >
                       {item.status}
                     </span>
                   </td>
@@ -95,8 +113,8 @@ export function AlertHistory() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-1 text-primary/50">
-                        <Clock className="size-3" />
-                        <span className="text-xs font-mono">{item.time}</span>
+                      <Clock className="size-3" />
+                      <span className="text-xs font-mono">{item.time}</span>
                     </div>
                   </td>
                 </tr>
@@ -106,11 +124,20 @@ export function AlertHistory() {
         </div>
 
         <div className="bg-primary/5 px-6 py-3 flex items-center justify-between border-t border-primary/20 font-mono">
-            <p className="text-[10px] text-primary/60 uppercase tracking-widest">Syslog: Showing last 25 incidents</p>
-            <div className="flex gap-2">
-                <button className="px-3 py-1 border border-primary/20 text-primary/60 hover:text-primary text-[10px] uppercase font-bold disabled:opacity-30 disabled:hover:text-primary/60 transition-all" disabled>Prev</button>
-                <button className="px-3 py-1 border border-primary/20 text-primary/60 hover:text-primary text-[10px] uppercase font-bold transition-all">Next</button>
-            </div>
+          <p className="text-[10px] text-primary/60 uppercase tracking-widest">
+            Syslog: Showing last 25 incidents
+          </p>
+          <div className="flex gap-2">
+            <button
+              className="px-3 py-1 border border-primary/20 text-primary/60 hover:text-primary text-[10px] uppercase font-bold disabled:opacity-30 disabled:hover:text-primary/60 transition-all"
+              disabled
+            >
+              Prev
+            </button>
+            <button className="px-3 py-1 border border-primary/20 text-primary/60 hover:text-primary text-[10px] uppercase font-bold transition-all">
+              Next
+            </button>
+          </div>
         </div>
       </div>
     </div>

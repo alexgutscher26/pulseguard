@@ -33,7 +33,7 @@ export class MyAgent extends Agent<Env, State> {
 async onChatMessage() {
   // Get AI-compatible tools from all connected MCP servers
   const mcpTools = this.mcp.getAITools();
-  
+
   const allTools = {
     ...localTools,
     ...mcpTools
@@ -44,7 +44,7 @@ async onChatMessage() {
     messages: await convertToModelMessages(this.messages),
     tools: allTools
   });
-  
+
   return result.toUIMessageStreamResponse();
 }
 ```
@@ -76,11 +76,13 @@ await this.removeMcpServer(serverId);
 Use `McpAgent` from the SDK to create an MCP server.
 
 **Install dependencies:**
+
 ```bash
 npm install @modelcontextprotocol/sdk zod
 ```
 
 **Wrangler config:**
+
 ```jsonc
 {
   "durable_objects": {
@@ -91,6 +93,7 @@ npm install @modelcontextprotocol/sdk zod
 ```
 
 **Server implementation:**
+
 ```typescript
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { McpAgent } from "agents/mcp";

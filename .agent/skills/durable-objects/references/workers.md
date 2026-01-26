@@ -297,11 +297,11 @@ export default {
     }
 
     const response = await handleRequest(request, env);
-    
+
     // Add CORS headers to response
     const newHeaders = new Headers(response.headers);
     Object.entries(corsHeaders()).forEach(([k, v]) => newHeaders.set(k, v));
-    
+
     return new Response(response.body, {
       status: response.status,
       headers: newHeaders,
@@ -320,6 +320,7 @@ wrangler secret put DATABASE_URL
 ```
 
 Access in code:
+
 ```typescript
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {

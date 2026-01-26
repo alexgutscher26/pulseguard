@@ -5,11 +5,13 @@ Code Mode generates executable JavaScript instead of making individual tool call
 ## Why Code Mode?
 
 Traditional tool calling:
+
 - One tool call per LLM request
 - Multiple round-trips for chained operations
 - High token usage for complex workflows
 
 Code Mode:
+
 - LLM generates code that orchestrates multiple tools
 - Single execution for complex workflows
 - Self-debugging and error recovery
@@ -150,13 +152,13 @@ When user asks "Check the weather in NYC and email me the forecast", codemode ge
 ```javascript
 async function executeTask() {
   const weather = await codemode.getWeather({ location: "NYC" });
-  
+
   await codemode.sendEmail({
     to: "user@example.com",
     subject: "NYC Weather Forecast",
     body: `Current weather: ${weather}`
   });
-  
+
   return { success: true, weather };
 }
 ```
@@ -169,13 +171,13 @@ Code Mode excels at orchestrating multiple MCP servers:
 async function executeTask() {
   // Query file system MCP
   const files = await codemode.listFiles({ path: "/projects" });
-  
+
   // Query database MCP
   const status = await codemode.queryDatabase({
     query: "SELECT * FROM projects WHERE name = ?",
     params: [files[0].name]
   });
-  
+
   // Conditional logic based on results
   if (status.length === 0) {
     await codemode.createTask({
@@ -183,21 +185,21 @@ async function executeTask() {
       priority: "high"
     });
   }
-  
+
   return { files, status };
 }
 ```
 
 ## When to Use
 
-| Scenario | Use Code Mode? |
-|----------|---------------|
-| Single tool call | No |
-| Chained tool calls | Yes |
-| Conditional logic across tools | Yes |
-| MCP multi-server workflows | Yes |
-| Token budget constrained | Yes |
-| Simple Q&A chat | No |
+| Scenario                       | Use Code Mode? |
+| ------------------------------ | -------------- |
+| Single tool call               | No             |
+| Chained tool calls             | Yes            |
+| Conditional logic across tools | Yes            |
+| MCP multi-server workflows     | Yes            |
+| Token budget constrained       | Yes            |
+| Simple Q&A chat                | No             |
 
 ## Limitations
 

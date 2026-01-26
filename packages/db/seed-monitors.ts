@@ -1,13 +1,14 @@
-
 import { getPrisma } from "./src/index";
 
 async function main() {
-  const url = process.env.DATABASE_URL || "postgresql://neondb_owner:npg_6hvWIxFBtgA3@ep-little-dawn-ag0aibtt-pooler.c-2.eu-central-1.aws.neon.tech/neondb?channel_binding=require&sslmode=require";
+  const url =
+    process.env.DATABASE_URL ||
+    "postgresql://neondb_owner:npg_6hvWIxFBtgA3@ep-little-dawn-ag0aibtt-pooler.c-2.eu-central-1.aws.neon.tech/neondb?channel_binding=require&sslmode=require";
   const prisma = getPrisma(url);
-  
+
   // Create a placeholder user if not exists
   let user = await prisma.user.findFirst({
-    where: { email: "demo@pulseguard.io" }
+    where: { email: "demo@pulseguard.io" },
   });
 
   if (!user) {
@@ -18,7 +19,7 @@ async function main() {
         name: "Demo User",
         email: "demo@pulseguard.io",
         emailVerified: true,
-      }
+      },
     });
   }
 
@@ -35,7 +36,7 @@ async function main() {
 
   for (const m of monitors) {
     const exists = await prisma.monitor.findFirst({
-      where: { userId: user.id, url: m.url }
+      where: { userId: user.id, url: m.url },
     });
 
     if (!exists) {
@@ -50,13 +51,13 @@ async function main() {
           status: "UP",
           // Set nextCheck to NOW so the worker picks it up immediately
           nextCheck: new Date(),
-        }
+        },
       });
     } else {
       console.log(`Monitor exists: ${m.name}, resetting nextCheck...`);
       await prisma.monitor.update({
         where: { id: exists.id },
-        data: { nextCheck: new Date() }
+        data: { nextCheck: new Date() },
       });
     }
   }

@@ -13,7 +13,7 @@ const worker = new cloudflare.WorkerScript("my-worker", {
     module: true, // ES modules
     compatibilityDate: "2024-01-01",
     compatibilityFlags: ["nodejs_compat"],
-    
+
     // Bindings
     kvNamespaceBindings: [{name: "MY_KV", namespaceId: kv.id}],
     r2BucketBindings: [{name: "MY_BUCKET", bucketName: bucket.name}],
@@ -177,6 +177,7 @@ const domain = new cloudflare.WorkersDomain("my-domain", {
 ## Multi-Language Examples
 
 **Python:**
+
 ```python
 import pulumi
 import pulumi_cloudflare as cloudflare
@@ -185,12 +186,13 @@ config = pulumi.Config()
 account_id = config.require("accountId")
 
 kv = cloudflare.WorkersKvNamespace("my-kv", account_id=account_id, title="my-kv")
-worker = cloudflare.WorkerScript("my-worker", account_id=account_id, name="my-worker", 
+worker = cloudflare.WorkerScript("my-worker", account_id=account_id, name="my-worker",
     content=open("./dist/worker.js").read(), module=True,
     kv_namespace_bindings=[cloudflare.WorkerScriptKvNamespaceBindingArgs(name="MY_KV", namespace_id=kv.id)])
 ```
 
 **Go:**
+
 ```go
 import (
     "github.com/pulumi/pulumi-cloudflare/sdk/v6/go/cloudflare"
@@ -202,7 +204,7 @@ func main() {
     pulumi.Run(func(ctx *pulumi.Context) error {
         cfg := config.New(ctx, "")
         accountId := cfg.Require("accountId")
-        
+
         kv, _ := cloudflare.NewWorkersKvNamespace(ctx, "my-kv", &cloudflare.WorkersKvNamespaceArgs{
             AccountId: pulumi.String(accountId),
             Title: pulumi.String("my-kv"),
@@ -213,4 +215,5 @@ func main() {
 ```
 
 ---
+
 See: [README.md](./README.md), [api.md](./api.md), [patterns.md](./patterns.md), [gotchas.md](./gotchas.md)

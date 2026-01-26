@@ -28,11 +28,11 @@ export default async function SettingsPage({
       <SettingsSidebar />
       <div className="flex-1 flex flex-col gap-6">
         {tab === "general" && (
-            <>
-                <ProfileForm />
-                <RegionalForm />
-                <DangerZone />
-            </>
+          <>
+            <ProfileForm />
+            <RegionalForm />
+            <DangerZone />
+          </>
         )}
         {tab === "security" && <SecurityForm />}
         {tab === "api-keys" && <ApiKeysForm />}

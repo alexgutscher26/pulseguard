@@ -14,6 +14,7 @@ wrangler --version  # Requires v4.x+
 ```
 
 If not installed:
+
 ```bash
 npm install -D wrangler@latest
 ```
@@ -39,16 +40,16 @@ npx create-cloudflare@latest my-app
 
 ## Quick Reference: Core Commands
 
-| Task | Command |
-|------|---------|
-| Start local dev server | `wrangler dev` |
-| Deploy to Cloudflare | `wrangler deploy` |
-| Deploy dry run | `wrangler deploy --dry-run` |
-| Generate TypeScript types | `wrangler types` |
-| Validate configuration | `wrangler check` |
-| View live logs | `wrangler tail` |
-| Delete Worker | `wrangler delete` |
-| Auth status | `wrangler whoami` |
+| Task                      | Command                     |
+| ------------------------- | --------------------------- |
+| Start local dev server    | `wrangler dev`              |
+| Deploy to Cloudflare      | `wrangler deploy`           |
+| Deploy dry run            | `wrangler deploy --dry-run` |
+| Generate TypeScript types | `wrangler types`            |
+| Validate configuration    | `wrangler check`            |
+| View live logs            | `wrangler tail`             |
+| Delete Worker             | `wrangler delete`           |
+| Auth status               | `wrangler whoami`           |
 
 ---
 
@@ -821,6 +822,7 @@ npm install -D @cloudflare/vitest-pool-workers vitest
 ```
 
 `vitest.config.ts`:
+
 ```typescript
 import { defineWorkersConfig } from "@cloudflare/vitest-pool-workers/config";
 
@@ -851,14 +853,14 @@ curl http://localhost:8787/__scheduled
 
 ### Common Issues
 
-| Issue | Solution |
-|-------|----------|
-| `command not found: wrangler` | Install: `npm install -D wrangler` |
-| Auth errors | Run `wrangler login` |
-| Config validation errors | Run `wrangler check` |
-| Type errors after config change | Run `wrangler types` |
-| Local storage not persisting | Check `.wrangler/state` directory |
-| Binding undefined in Worker | Verify binding name matches config exactly |
+| Issue                           | Solution                                   |
+| ------------------------------- | ------------------------------------------ |
+| `command not found: wrangler`   | Install: `npm install -D wrangler`         |
+| Auth errors                     | Run `wrangler login`                       |
+| Config validation errors        | Run `wrangler check`                       |
+| Type errors after config change | Run `wrangler types`                       |
+| Local storage not persisting    | Check `.wrangler/state` directory          |
+| Binding undefined in Worker     | Verify binding name matches config exactly |
 
 ### Debug Commands
 

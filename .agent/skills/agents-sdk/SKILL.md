@@ -30,11 +30,11 @@ Agents require a binding in `wrangler.jsonc`:
 
 ## Choosing an Agent Type
 
-| Use Case | Base Class | Package |
-|----------|------------|---------|
-| Custom state + RPC, no chat | `Agent` | `agents` |
+| Use Case                      | Base Class    | Package               |
+| ----------------------------- | ------------- | --------------------- |
+| Custom state + RPC, no chat   | `Agent`       | `agents`              |
 | Chat with message persistence | `AIChatAgent` | `@cloudflare/ai-chat` |
-| Building an MCP server | `McpAgent` | `agents/mcp` |
+| Building an MCP server        | `McpAgent`    | `agents/mcp`          |
 
 ## Key Concepts
 
@@ -47,17 +47,17 @@ Agents require a binding in `wrangler.jsonc`:
 
 ## Quick Reference
 
-| Task | API |
-|------|-----|
-| Persist state | `this.setState({ count: 1 })` |
-| Read state | `this.state.count` |
-| Schedule task | `this.schedule(60, "taskMethod", payload)` |
-| Schedule cron | `this.schedule("0 * * * *", "hourlyTask")` |
-| Cancel schedule | `this.cancelSchedule(id)` |
-| Queue task | `this.queue("processItem", payload)` |
-| SQL query | `` this.sql`SELECT * FROM users WHERE id = ${id}` `` |
-| RPC method | `@callable() async myMethod() { ... }` |
-| Streaming RPC | `@callable({ streaming: true }) async stream(res) { ... }` |
+| Task            | API                                                        |
+| --------------- | ---------------------------------------------------------- |
+| Persist state   | `this.setState({ count: 1 })`                              |
+| Read state      | `this.state.count`                                         |
+| Schedule task   | `this.schedule(60, "taskMethod", payload)`                 |
+| Schedule cron   | `this.schedule("0 * * * *", "hourlyTask")`                 |
+| Cancel schedule | `this.cancelSchedule(id)`                                  |
+| Queue task      | `this.queue("processItem", payload)`                       |
+| SQL query       | `` this.sql`SELECT * FROM users WHERE id = ${id}` ``       |
+| RPC method      | `@callable() async myMethod() { ... }`                     |
+| Streaming RPC   | `@callable({ streaming: true }) async stream(res) { ... }` |
 
 ## Minimal Agent
 
@@ -86,11 +86,13 @@ export default {
 Use `AIChatAgent` for chat with automatic message persistence and resumable streaming.
 
 **Install additional dependencies first:**
+
 ```bash
 npm install @cloudflare/ai-chat ai @ai-sdk/openai
 ```
 
 **Add wrangler.jsonc config** (same pattern as base Agent):
+
 ```jsonc
 {
   "durable_objects": {
@@ -123,6 +125,7 @@ export default {
 ```
 
 **Client** (React):
+
 ```tsx
 import { useAgent } from "agents/react";
 import { useAgentChat } from "@cloudflare/ai-chat/react";

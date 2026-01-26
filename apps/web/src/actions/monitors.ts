@@ -40,51 +40,58 @@ const monitorSchema = baseSchema.superRefine((data, ctx) => {
     }
     // Shared localhost check
     try {
-        const urlObj = new URL(data.url);
-        const hostname = urlObj.hostname.toLowerCase();
-        const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1' || hostname === '0.0.0.0';
-        if (isLocalhost) {
-             ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: "Localhost URLs are not allowed. Please use a public URL.",
-                path: ["url"],
-            });
-        }
+      const urlObj = new URL(data.url);
+      const hostname = urlObj.hostname.toLowerCase();
+      const isLocalhost =
+        hostname === "localhost" ||
+        hostname === "127.0.0.1" ||
+        hostname === "::1" ||
+        hostname === "0.0.0.0";
+      if (isLocalhost) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Localhost URLs are not allowed. Please use a public URL.",
+          path: ["url"],
+        });
+      }
     } catch {
-        // Invalid URL caught above
+      // Invalid URL caught above
     }
   } else if (data.type === "PING") {
-     if (!data.url) { // We reuse the 'url' input field for Hostname in the form
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Hostname is required",
-            path: ["url"],
-        });
-        return;
-     }
-     // Basic hostname check
-     if (data.url.includes("://")) { // Should just be hostname
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Enter hostname only (no http://)",
-            path: ["url"],
-        });
-     }
+    if (!data.url) {
+      // We reuse the 'url' input field for Hostname in the form
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Hostname is required",
+        path: ["url"],
+      });
+      return;
+    }
+    // Basic hostname check
+    if (data.url.includes("://")) {
+      // Should just be hostname
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Enter hostname only (no http://)",
+        path: ["url"],
+      });
+    }
   } else if (data.type === "PORT") {
-      if (!data.url) { // Reusing 'url' input as hostname
-         ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Hostname is required",
-            path: ["url"],
-         });
-      }
-      if (!data.port) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Port is required",
-            path: ["port"],
-         });
-      }
+    if (!data.url) {
+      // Reusing 'url' input as hostname
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Hostname is required",
+        path: ["url"],
+      });
+    }
+    if (!data.port) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Port is required",
+        path: ["port"],
+      });
+    }
   }
 });
 
@@ -109,9 +116,9 @@ export async function createMonitor(prevState: any, formData: FormData) {
   const validation = monitorSchema.safeParse(rawData);
 
   if (!validation.success) {
-      console.error(validation.error);
-      const firstError = validation.error.issues[0]?.message || "Invalid input";
-      return { success: false, error: firstError };
+    console.error(validation.error);
+    const firstError = validation.error.issues[0]?.message || "Invalid input";
+    return { success: false, error: firstError };
   }
 
   const data = validation.data;
@@ -120,9 +127,9 @@ export async function createMonitor(prevState: any, formData: FormData) {
   // Construct standard URL format for storage
   // The worker currently only supports FETCH (HTTP), so these won't work yet, but we store them correctly.
   if (data.type === "PING") {
-      finalUrl = `ping://${data.url}`;
+    finalUrl = `ping://${data.url}`;
   } else if (data.type === "PORT") {
-      finalUrl = `tcp://${data.url}:${data.port}`;
+    finalUrl = `tcp://${data.url}:${data.port}`;
   }
 
   try {
@@ -140,8 +147,8 @@ export async function createMonitor(prevState: any, formData: FormData) {
     revalidatePath("/dashboard/monitors");
     return { success: true };
   } catch (error) {
-      console.error("Failed to create monitor", error);
-      return { success: false, error: "Failed to create monitor" };
+    console.error("Failed to create monitor", error);
+    return { success: false, error: "Failed to create monitor" };
   }
 }
 
@@ -154,139 +161,138 @@ export async function getMonitors() {
 
   // Use try/catch in case DB not ready
   try {
-     const monitors = await prisma.monitor.findMany({
-        where: {
-            userId: session.user.id
+    const monitors = await prisma.monitor.findMany({
+      where: {
+        userId: session.user.id,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        events: {
+          take: 10,
+          orderBy: { timestamp: "desc" },
         },
-        orderBy: {
-            createdAt: 'desc'
-        },
-        include: {
-            events: {
-                take: 10,
-                orderBy: { timestamp: 'desc' }
-            }
-        }
-     });
-     return monitors;
+      },
+    });
+    return monitors;
   } catch (error) {
-      console.error("Failed to fetch monitors", error);
-      return [];
+    console.error("Failed to fetch monitors", error);
+    return [];
   }
 }
 
 export async function getMonitor(id: string) {
-    const session = await auth.api.getSession({
-        headers: await headers(),
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) return null;
+
+  try {
+    const monitor = await prisma.monitor.findUnique({
+      where: {
+        id,
+        userId: session.user.id,
+      },
+      include: {
+        events: {
+          take: 50,
+          orderBy: {
+            timestamp: "desc",
+          },
+        },
+      },
     });
-
-    if (!session?.user) return null;
-
-    try {
-        const monitor = await prisma.monitor.findUnique({
-            where: {
-                id,
-                userId: session.user.id
-            },
-            include: {
-                events: {
-                    take: 50,
-                    orderBy: {
-                        timestamp: 'desc'
-                    }
-                }
-            }
-        });
-        return monitor;
-    } catch (error) {
-        console.error("Failed to fetch monitor", error);
-        return null;
-    }
+    return monitor;
+  } catch (error) {
+    console.error("Failed to fetch monitor", error);
+    return null;
+  }
 }
 
 export async function checkMonitor(id: string) {
-    const session = await auth.api.getSession({
-        headers: await headers(),
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) return { success: false, error: "Unauthorized" };
+
+  const monitor = await prisma.monitor.findUnique({
+    where: { id, userId: session.user.id },
+  });
+
+  if (!monitor) return { success: false, error: "Monitor not found" };
+
+  const start = Date.now();
+  let currentStatus: "UP" | "DOWN" = "DOWN";
+  let latency = 0;
+
+  try {
+    const response = await fetch(monitor.url, {
+      method: "GET",
+      headers: {
+        "User-Agent": "PulseGuard-Monitor/1.0",
+        Accept: "*/*",
+      },
+      signal: AbortSignal.timeout(10000),
     });
 
-    if (!session?.user) return { success: false, error: "Unauthorized" };
+    latency = Date.now() - start;
+    currentStatus = response.ok ? "UP" : "DOWN";
+  } catch (err) {
+    console.error(`Error checking ${monitor.url}:`, err);
+    // latency = Date.now() - start; // Latency is effectively timeout or partial
+    latency = 0;
+    currentStatus = "DOWN";
+  }
 
-    const monitor = await prisma.monitor.findUnique({
-        where: { id, userId: session.user.id },
-    });
+  try {
+    await prisma.$transaction([
+      prisma.monitorEvent.create({
+        data: {
+          monitorId: monitor.id,
+          status: currentStatus,
+          latency: latency,
+          timestamp: new Date(),
+        },
+      }),
+      prisma.monitor.update({
+        where: { id: monitor.id },
+        data: {
+          status: currentStatus,
+          lastCheck: new Date(),
+        },
+      }),
+    ]);
 
-    if (!monitor) return { success: false, error: "Monitor not found" };
-
-    const start = Date.now();
-    let currentStatus: "UP" | "DOWN" = "DOWN";
-    let latency = 0;
-
-    try {
-        const response = await fetch(monitor.url, {
-            method: 'GET',
-            headers: {
-                'User-Agent': 'PulseGuard-Monitor/1.0',
-                'Accept': '*/*'
-            },
-            signal: AbortSignal.timeout(10000)
-        });
-
-        latency = Date.now() - start;
-        currentStatus = response.ok ? "UP" : "DOWN";
-    } catch (err) {
-        console.error(`Error checking ${monitor.url}:`, err);
-        // latency = Date.now() - start; // Latency is effectively timeout or partial
-        latency = 0;
-        currentStatus = "DOWN";
-    }
-
-    try {
-        await prisma.$transaction([
-            prisma.monitorEvent.create({
-                data: {
-                    monitorId: monitor.id,
-                    status: currentStatus,
-                    latency: latency,
-                    timestamp: new Date(),
-                }
-            }),
-            prisma.monitor.update({
-                where: { id: monitor.id },
-                data: {
-                    status: currentStatus,
-                    lastCheck: new Date(),
-                }
-            })
-        ]);
-        
-
-        revalidatePath(`/dashboard/monitors/${id}`);
-        return { success: true };
-    } catch (error) {
-        console.error("Failed to save check result", error);
-        return { success: false, error: "Failed to save result" };
-    }
+    revalidatePath(`/dashboard/monitors/${id}`);
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to save check result", error);
+    return { success: false, error: "Failed to save result" };
+  }
 }
 
 export async function toggleMonitor(id: string, enabled: boolean) {
-    const session = await auth.api.getSession({
-        headers: await headers(),
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) return { success: false, error: "Unauthorized" };
+
+  try {
+    await prisma.monitor.update({
+      where: { id, userId: session.user.id },
+      data: {
+        status: enabled ? "UP" : "PAUSED", // Reset to UP (pending next check) or PAUSED
+      },
     });
 
-    if (!session?.user) return { success: false, error: "Unauthorized" };
-
-    try {
-        await prisma.monitor.update({
-            where: { id, userId: session.user.id },
-            data: {
-                status: enabled ? "UP" : "PAUSED", // Reset to UP (pending next check) or PAUSED
-            },
-        });
-        
-        revalidatePath(`/dashboard/monitors/${id}`);
-        return { success: true };
-    } catch (error) {
-        console.error("Failed to toggle monitor", error);
-        return { success: false, error: "Failed to toggle monitor" };
-    }
+    revalidatePath(`/dashboard/monitors/${id}`);
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to toggle monitor", error);
+    return { success: false, error: "Failed to toggle monitor" };
+  }
 }

@@ -23,9 +23,7 @@ export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
 
     const checkStale = async () => {
       const lastEvent = monitor.events?.[0];
-      const lastCheckTime = lastEvent
-        ? new Date(lastEvent.timestamp).getTime()
-        : 0;
+      const lastCheckTime = lastEvent ? new Date(lastEvent.timestamp).getTime() : 0;
       const now = Date.now();
       const diffSeconds = (now - lastCheckTime) / 1000;
 

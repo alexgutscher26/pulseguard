@@ -17,6 +17,7 @@ Instead of `run_worker_first = true`, use array patterns:
 ```
 
 **Benefits:**
+
 - Reduces Worker invocations
 - Lowers costs
 - Improves asset delivery performance
@@ -42,3 +43,4 @@ Always type your environment:
 
 ```typescript
 interface
+```

@@ -44,9 +44,7 @@ export function MonitorCharts({ monitor }: { monitor: any }) {
   }
 
   const avgLatency =
-    latencies.length > 0
-      ? Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length)
-      : 0;
+    latencies.length > 0 ? Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length) : 0;
 
   const areaPath = pathD ? `${pathD} V 150 H 0 Z` : "";
 
@@ -66,8 +64,7 @@ export function MonitorCharts({ monitor }: { monitor: any }) {
           <p className="text-foreground text-3xl font-bold font-mono tracking-tighter">
             {displayEvents.length > 0
               ? (
-                  (displayEvents.filter((e) => e.status === "UP").length /
-                    displayEvents.length) *
+                  (displayEvents.filter((e) => e.status === "UP").length / displayEvents.length) *
                   100
                 ).toFixed(0)
               : "100"}
@@ -115,9 +112,7 @@ export function MonitorCharts({ monitor }: { monitor: any }) {
           <p className="text-foreground text-3xl font-bold font-mono tracking-tighter">
             {avgLatency}ms
           </p>
-          <p className="text-primary/60 text-xs font-mono">
-            Last 50 Events Average
-          </p>
+          <p className="text-primary/60 text-xs font-mono">Last 50 Events Average</p>
         </div>
         <div className="flex flex-1 flex-col pt-4 min-h-[160px]">
           {latencies.length > 0 ? (
@@ -146,11 +141,7 @@ export function MonitorCharts({ monitor }: { monitor: any }) {
                   y1="0"
                   y2="150"
                 >
-                  <stop
-                    stopColor="currentColor"
-                    className="text-primary"
-                    stopOpacity="0.2"
-                  ></stop>
+                  <stop stopColor="currentColor" className="text-primary" stopOpacity="0.2"></stop>
                   <stop
                     offset="1"
                     stopColor="currentColor"

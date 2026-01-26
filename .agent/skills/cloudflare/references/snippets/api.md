@@ -1,9 +1,11 @@
 ### HTTP Methods
+
 ```javascript
 request.method // GET, POST, PUT, DELETE, etc.
 ```
 
 ### Response Constructors
+
 ```javascript
 // Plain text
 new Response("Hello", { status: 200 })
@@ -12,7 +14,7 @@ new Response("Hello", { status: 200 })
 Response.json({ key: "value" })
 
 // HTML
-new Response("<h1>Hi</h1>", { 
+new Response("<h1>Hi</h1>", {
   headers: { "Content-Type": "text/html" }
 })
 
@@ -21,6 +23,7 @@ Response.redirect("https://example.com", 301)
 ```
 
 ### Header Operations
+
 ```javascript
 // Request headers
 request.headers.get("X-Header")
@@ -36,6 +39,7 @@ res.headers.delete("X-Header")
 ```
 
 ### URL Operations
+
 ```javascript
 const url = new URL(request.url);
 url.hostname    // "example.com"

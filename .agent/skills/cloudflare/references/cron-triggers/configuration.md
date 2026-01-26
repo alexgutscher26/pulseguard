@@ -8,7 +8,7 @@
   "name": "my-cron-worker",
   "main": "src/index.ts",
   "compatibility_date": "2024-01-01",
-  
+
   "triggers": {
     "crons": [
       "*/5 * * * *",     // Every 5 minutes
@@ -75,11 +75,13 @@ crons = ["*/5 * * * *"]  # Dev: every 5min
 ## Schedule Format
 
 **5-field structure:**
+
 ```
 minute hour day-of-month month day-of-week
 ```
 
 **Special characters:**
+
 - `*` - Any value
 - `,` - List: `1,15,30 * * * *` (minutes 1, 15, 30)
 - `-` - Range: `0 9-17 * * *` (9am-5pm)
@@ -91,6 +93,7 @@ minute hour day-of-month month day-of-week
 ## Managing Triggers
 
 **Remove all:**
+
 ```jsonc
 {
   "triggers": {
@@ -100,6 +103,7 @@ minute hour day-of-month month day-of-week
 ```
 
 **Preserve existing:**
+
 ```jsonc
 {
   // Omit "triggers" entirely to keep existing crons
@@ -124,12 +128,14 @@ npx wrangler deployments list
 ## API Management
 
 **Get triggers:**
+
 ```bash
 curl "https://api.cloudflare.com/client/v4/accounts/{account_id}/workers/scripts/{script_name}/schedules" \
   -H "Authorization: Bearer {api_token}"
 ```
 
 **Update triggers:**
+
 ```bash
 curl -X PUT "https://api.cloudflare.com/client/v4/accounts/{account_id}/workers/scripts/{script_name}/schedules" \
   -H "Authorization: Bearer {api_token}" \
@@ -138,6 +144,7 @@ curl -X PUT "https://api.cloudflare.com/client/v4/accounts/{account_id}/workers/
 ```
 
 **Delete all:**
+
 ```bash
 curl -X PUT "https://api.cloudflare.com/client/v4/accounts/{account_id}/workers/scripts/{script_name}/schedules" \
   -H "Authorization: Bearer {api_token}" \

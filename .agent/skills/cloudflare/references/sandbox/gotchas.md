@@ -3,6 +3,7 @@
 ## Common Issues
 
 ### Container Not Ready
+
 **Error**: `CONTAINER_NOT_READY`  
 **Cause**: Container still provisioning (first request or after sleep)  
 **Fix**: Retry after 2-3s
@@ -24,25 +25,31 @@ async function execWithRetry(sandbox, cmd) {
 ```
 
 ### Port Exposure Fails in Dev
+
 **Error**: "Connection refused: container port not found"  
 **Cause**: Missing `EXPOSE` directive in Dockerfile  
 **Fix**: Add `EXPOSE <port>` to Dockerfile (only needed for `wrangler dev`, production auto-exposes)
 
 ### Preview URLs Not Working
+
 **Checklist**:
+
 1. Custom domain configured? (not `.workers.dev`)
 2. Wildcard DNS set up? (`*.domain.com → worker.domain.com`)
 3. `normalizeId: true` in getSandbox?
 4. `proxyToSandbox()` called first in fetch?
 
 ### Slow First Request
+
 **Cause**: Cold start (container provisioning)  
 **Solutions**:
+
 - Use `sleepAfter` instead of creating new sandboxes
 - Pre-warm with cron triggers
 - Set `keepAlive: true` for critical sandboxes
 
 ### File Not Persisting
+
 **Cause**: Files in `/tmp` or other ephemeral paths  
 **Fix**: Use `/workspace` for persistent files
 
@@ -90,6 +97,7 @@ const sandbox = getSandbox(env.Sandbox, 'id', {
 ## Security Best Practices
 
 ### Sandbox Isolation
+
 - Each sandbox = isolated container (filesystem, network, processes)
 - Use unique sandbox IDs per tenant for multi-tenant apps
 - Sandboxes cannot communicate directly
@@ -130,10 +138,13 @@ const result = await sandbox.exec('git clone ...', {
 ```
 
 ### Preview URL Security
+
 Preview URLs include auto-generated tokens:
+
 ```
 https://8080-sandbox-abc123def456.yourdomain.com
 ```
+
 Token changes on each expose operation, preventing unauthorized access.
 
 ## Limits

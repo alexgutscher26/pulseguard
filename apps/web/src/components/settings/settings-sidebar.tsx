@@ -26,7 +26,7 @@ export function SettingsSidebar() {
               "flex items-center gap-3 px-3 py-2 rounded-sm transition-all font-mono text-sm uppercase tracking-wider",
               currentTab === item.tab
                 ? "bg-primary/10 text-primary border border-primary/20"
-                : "text-primary/60 hover:bg-primary/5 hover:text-primary hover:border-primary/10 border border-transparent"
+                : "text-primary/60 hover:bg-primary/5 hover:text-primary hover:border-primary/10 border border-transparent",
             )}
           >
             <item.icon className="size-4" />

@@ -31,7 +31,7 @@ const auth: PagesFunction<Env> = async (context) => {
   if (context.request.url.includes('/public/')) return context.next();
   const authHeader = context.request.headers.get('Authorization');
   if (!authHeader?.startsWith('Bearer ')) return new Response('Unauthorized', { status: 401 });
-  
+
   try {
     const payload = await verifyJWT(authHeader.substring(7), context.env.JWT_SECRET);
     context.data.user = payload;
@@ -103,7 +103,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request }) => {
   const cacheKey = `data:${url.pathname}`;
   const cached = await env.KV.get(cacheKey, 'json');
   if (cached) return Response.json(cached, { headers: { 'X-Cache': 'HIT' } });
-  
+
   const data = await env.DB.prepare('SELECT * FROM data WHERE path = ?').bind(url.pathname).first();
   await env.KV.put(cacheKey, JSON.stringify(data), {expirationTtl: 3600});
   return Response.json(data, {headers: {'X-Cache': 'MISS', 'Cache-Control': 'public, max-age=3600'}});
@@ -116,6 +116,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request }) => {
 npm create cloudflare@latest my-app -- --framework=<framework>
 # next, svelte, remix, nuxt, astro, qwik
 ```
+
 [Framework Guides](https://developers.cloudflare.com/pages/framework-guides/)
 
 ## Monorepo
@@ -127,18 +128,21 @@ Set to subproject path (e.g., `apps/web`). Only builds when files in that dir ch
 ## Best Practices
 
 ### Performance
+
 1. Exclude static from Functions via `_routes.json`
 2. Cache with KV (API responses, rendered content)
 3. Use Cache API: `await caches.default.match(request)`
 4. Minimize Function size: tree-shake, dynamic imports, keep < 1MB
 
 ### Security
+
 1. Set security headers in `_headers` for static
 2. Use secrets, never commit to wrangler.toml
 3. Validate all inputs
 4. Rate limit with KV/DO
 
 ### Workflow
+
 1. Preview deployments per branch/PR
 2. Local dev: `npx wrangler pages dev ./dist`
 3. Environment-specific configs in `wrangler.toml`

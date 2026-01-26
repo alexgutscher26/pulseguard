@@ -48,11 +48,13 @@ Available hints: `wnam`, `enam`, `sam`, `weur`, `eeur`, `apac`, `oc`, `afr`, `me
 ### SQLite (Recommended)
 
 Configure in wrangler:
+
 ```jsonc
 { "migrations": [{ "tag": "v1", "new_sqlite_classes": ["MyDO"] }] }
 ```
 
 SQL API is synchronous:
+
 ```typescript
 // Write
 this.ctx.storage.sql.exec(
@@ -104,11 +106,11 @@ private async migrate() {
 
 ### State Types
 
-| Type | Speed | Persistence | Use Case |
-|------|-------|-------------|----------|
-| Class properties | Fastest | Lost on eviction | Caching, active connections |
-| SQLite storage | Fast | Durable | Primary data |
-| External (R2, D1) | Variable | Durable, cross-DO | Large files, shared data |
+| Type              | Speed    | Persistence       | Use Case                    |
+| ----------------- | -------- | ----------------- | --------------------------- |
+| Class properties  | Fastest  | Lost on eviction  | Caching, active connections |
+| SQLite storage    | Fast     | Durable           | Primary data                |
+| External (R2, D1) | Variable | Durable, cross-DO | Large files, shared data    |
 
 **Rule**: Always persist critical state to SQLite first, then update in-memory cache.
 
@@ -225,11 +227,11 @@ async alarm(): Promise<void> {
   const tasks = this.ctx.storage.sql.exec<Task>(
     "SELECT * FROM tasks WHERE due_at <= ?", Date.now()
   ).toArray();
-  
+
   for (const task of tasks) {
     await this.processTask(task);
   }
-  
+
   // Reschedule if more work
   const next = this.ctx.storage.sql.exec<{ due_at: number }>(
     "SELECT MIN(due_at) as due_at FROM tasks WHERE due_at > ?", Date.now()

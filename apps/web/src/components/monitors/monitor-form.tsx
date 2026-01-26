@@ -14,10 +14,7 @@ const initialState = {
 };
 
 export function MonitorForm() {
-  const [state, formAction, isPending] = useActionState(
-    createMonitor,
-    initialState,
-  );
+  const [state, formAction, isPending] = useActionState(createMonitor, initialState);
   const router = useRouter();
 
   useEffect(() => {
@@ -29,9 +26,7 @@ export function MonitorForm() {
     }
   }, [state, router]);
 
-  const [monitorType, setMonitorType] = useState<"HTTP" | "PING" | "PORT">(
-    "HTTP",
-  );
+  const [monitorType, setMonitorType] = useState<"HTTP" | "PING" | "PORT">("HTTP");
 
   return (
     <div className="max-w-2xl mx-auto flex flex-col gap-8">
@@ -88,9 +83,7 @@ export function MonitorForm() {
                   onChange={() => setMonitorType("PING")}
                 />
                 <Activity className="size-6 text-primary mb-1" />
-                <span className="text-xs font-bold text-foreground font-mono uppercase">
-                  Ping
-                </span>
+                <span className="text-xs font-bold text-foreground font-mono uppercase">Ping</span>
               </label>
               <label
                 className={`flex flex-col items-center justify-center gap-2 p-4 border ${monitorType === "PORT" ? "border-primary bg-primary/20" : "border-primary/20 bg-primary/5"} cursor-pointer hover:bg-primary/10 hover:border-primary/50 transition-all group/type relative overflow-hidden`}
@@ -104,9 +97,7 @@ export function MonitorForm() {
                   onChange={() => setMonitorType("PORT")}
                 />
                 <Server className="size-6 text-primary mb-1" />
-                <span className="text-xs font-bold text-foreground font-mono uppercase">
-                  Port
-                </span>
+                <span className="text-xs font-bold text-foreground font-mono uppercase">Port</span>
               </label>
             </div>
           </div>
@@ -121,11 +112,7 @@ export function MonitorForm() {
               required
               className="bg-black/50 border border-primary/20 focus:border-primary/60 text-primary text-sm rounded-sm p-3 font-mono placeholder:text-primary/20 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full"
               type="text"
-              placeholder={
-                monitorType === "HTTP"
-                  ? "e.g. Production API"
-                  : "e.g. Game Server"
-              }
+              placeholder={monitorType === "HTTP" ? "e.g. Production API" : "e.g. Game Server"}
             />
           </div>
 

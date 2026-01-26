@@ -7,15 +7,15 @@ State persists automatically to SQLite and broadcasts to connected clients.
 ### Define Typed State
 
 ```typescript
-type State = { 
+type State = {
   count: number;
   items: string[];
   lastUpdated: Date;
 };
 
 export class MyAgent extends Agent<Env, State> {
-  initialState: State = { 
-    count: 0, 
+  initialState: State = {
+    count: 0,
     items: [],
     lastUpdated: new Date()
   };
@@ -29,9 +29,9 @@ export class MyAgent extends Agent<Env, State> {
 const count = this.state.count;
 
 // Update (persists to SQLite, broadcasts to clients)
-this.setState({ 
-  ...this.state, 
-  count: this.state.count + 1 
+this.setState({
+  ...this.state,
+  count: this.state.count + 1
 });
 ```
 
@@ -54,7 +54,7 @@ import { useState } from "react";
 
 function App() {
   const [state, setLocalState] = useState<State>({ count: 0 });
-  
+
   const agent = useAgent<State>({
     agent: "MyAgent",
     name: "instance-1",
@@ -110,8 +110,8 @@ const schedules = this.getSchedules();
 const crons = this.getSchedules({ type: "cron" });
 
 // Get by time range
-const upcoming = this.getSchedules({ 
-  timeRange: { start: new Date(), end: nextWeek } 
+const upcoming = this.getSchedules({
+  timeRange: { start: new Date(), end: nextWeek }
 });
 
 // Cancel

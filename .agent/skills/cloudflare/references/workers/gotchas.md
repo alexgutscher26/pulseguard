@@ -6,6 +6,7 @@
 **Unbound**: 30ms CPU time
 
 **Solutions**:
+
 - Use `ctx.waitUntil()` for background work
 - Offload heavy compute to Durable Objects
 - Consider Workers AI for ML workloads
@@ -65,15 +66,15 @@ export default {
 
 ## Limits
 
-| Resource | Limit |
-|----------|-------|
-| Request size | 100 MB |
-| Response size | Unlimited (streaming) |
-| CPU time | 10ms (standard) / 30ms (unbound) |
-| Subrequests | 1000 per request |
-| KV reads | 1000 per request |
-| KV write size | 25 MB |
-| Environment size | 5 MB |
+| Resource         | Limit                            |
+| ---------------- | -------------------------------- |
+| Request size     | 100 MB                           |
+| Response size    | Unlimited (streaming)            |
+| CPU time         | 10ms (standard) / 30ms (unbound) |
+| Subrequests      | 1000 per request                 |
+| KV reads         | 1000 per request                 |
+| KV write size    | 25 MB                            |
+| Environment size | 5 MB                             |
 
 ## Common Errors
 

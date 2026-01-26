@@ -28,13 +28,13 @@ Search: `blockConcurrencyWhile`, `idFromName`, `getByName`, `setAlarm`, `sql.exe
 
 ### Use Durable Objects For
 
-| Need | Example |
-|------|---------|
-| Coordination | Chat rooms, multiplayer games, collaborative docs |
-| Strong consistency | Inventory, booking systems, turn-based games |
-| Per-entity storage | Multi-tenant SaaS, per-user data |
-| Persistent connections | WebSockets, real-time notifications |
-| Scheduled work per entity | Subscription renewals, game timeouts |
+| Need                      | Example                                           |
+| ------------------------- | ------------------------------------------------- |
+| Coordination              | Chat rooms, multiplayer games, collaborative docs |
+| Strong consistency        | Inventory, booking systems, turn-based games      |
+| Per-entity storage        | Multi-tenant SaaS, per-user data                  |
+| Persistent connections    | WebSockets, real-time notifications               |
+| Scheduled work per entity | Subscription renewals, game timeouts              |
 
 ### Do NOT Use For
 

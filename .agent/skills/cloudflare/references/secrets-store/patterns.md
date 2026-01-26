@@ -16,7 +16,7 @@ export default {
     let resp = await fetch("https://api.example.com", {
       headers: { "Authorization": `Bearer ${key}` }
     });
-    
+
     // Fallback during rotation
     if (!resp.ok && env.FALLBACK_KEY) {
       key = await env.FALLBACK_KEY.get();
@@ -24,13 +24,14 @@ export default {
         headers: { "Authorization": `Bearer ${key}` }
       });
     }
-    
+
     return resp;
   }
 }
 ```
 
 Rotation workflow:
+
 1. Create new secret (`api_key_v2`)
 2. Add fallback binding
 3. Deploy & verify
@@ -55,7 +56,7 @@ async function encryptValue(value: string, key: string): Promise<string> {
   const encrypted = await crypto.subtle.encrypt(
     { name: "AES-GCM", iv }, keyMaterial, enc.encode(value)
   );
-  
+
   const combined = new Uint8Array(iv.length + encrypted.byteLength);
   combined.set(iv);
   combined.set(new Uint8Array(encrypted), iv.length);
@@ -109,7 +110,7 @@ export default {
       const resp = await fetch("https://api.example.com", {
         headers: { "Authorization": `Bearer ${apiKey}` }
       });
-      
+
       ctx.waitUntil(
         fetch("https://log.example.com/log", {
           method: "POST",
@@ -145,22 +146,26 @@ export default {
 ### From Worker Secrets
 
 Before:
+
 ```typescript
 // wrangler secret put API_KEY
 const key = env.API_KEY; // Direct access
 ```
 
 After:
+
 ```toml
 secrets_store_secrets = [
   { binding = "API_KEY", store_id = "abc123", secret_name = "shared_key" }
 ]
 ```
+
 ```typescript
 const key = await env.API_KEY.get(); // Async access
 ```
 
 Steps:
+
 1. Create secret in Secrets Store
 2. Add `secrets_store_secrets` binding
 3. Update code to `await env.BINDING.get()`

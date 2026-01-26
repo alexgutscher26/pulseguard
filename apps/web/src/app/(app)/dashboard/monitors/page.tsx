@@ -15,7 +15,5 @@ export default async function MonitorsPage() {
 
   const monitors = await getMonitors();
 
-  return (
-    <MonitorManager initialMonitors={monitors} />
-  );
+  return <MonitorManager initialMonitors={monitors} />;
 }

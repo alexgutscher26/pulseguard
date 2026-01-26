@@ -22,9 +22,9 @@ const getUrl = () => {
     return (globalThis as any).DATABASE_URL;
   }
   try {
-     // Fallback for Next.js/Node environments using standard env package if process.env is missing (rare)
-     const { env } = require("@pulseguard/env/server");
-     return env.DATABASE_URL;
+    // Fallback for Next.js/Node environments using standard env package if process.env is missing (rare)
+    const { env } = require("@pulseguard/env/server");
+    return env.DATABASE_URL;
   } catch (e) {
     return undefined;
   }
@@ -36,11 +36,13 @@ export const getPrisma = (databaseUrl?: string) => {
     // Actually, for worker logic, we passed explicit URL.
     return createPrisma(databaseUrl);
   }
-  
+
   if (!_prisma) {
     const url = getUrl();
     if (!url) {
-      throw new Error("DATABASE_URL is not set. Ensure it's provided in your environment variables.");
+      throw new Error(
+        "DATABASE_URL is not set. Ensure it's provided in your environment variables.",
+      );
     }
     _prisma = createPrisma(url);
   }

@@ -4,9 +4,9 @@ import { Server, CheckCircle, AlertTriangle, PauseCircle } from "lucide-react";
 
 export function MonitorStats({ monitors = [] }: { monitors: any[] }) {
   const total = monitors.length;
-  const operational = monitors.filter(m => m.status === "UP").length;
-  const down = monitors.filter(m => m.status === "DOWN").length;
-  const maintenance = monitors.filter(m => m.status === "PAUSED").length;
+  const operational = monitors.filter((m) => m.status === "UP").length;
+  const down = monitors.filter((m) => m.status === "DOWN").length;
+  const maintenance = monitors.filter((m) => m.status === "PAUSED").length;
 
   const stats = [
     {
@@ -53,7 +53,7 @@ export function MonitorStats({ monitors = [] }: { monitors: any[] }) {
           <div className="absolute top-0 right-0 p-2 opacity-50">
             <stat.icon className={`size-4 ${stat.iconColor}`} />
           </div>
-          
+
           {/* Corner accents */}
           <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-primary/0 group-hover:border-primary/100 transition-colors"></div>
           <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-primary/0 group-hover:border-primary/100 transition-colors"></div>
