@@ -26,6 +26,17 @@ interface MonitorWithEvents {
 type SortOption = "name" | "status" | "uptime";
 type FilterStatus = "UP" | "DOWN" | "PAUSED" | "MAINTENANCE";
 
+/**
+ * Renders a status bar based on the provided status value.
+ *
+ * The function determines the color and opacity of the bar based on the status.
+ * It uses specific color classes for different status values, including green for normal,
+ * red for an error state, grey for an unknown state, and amber for maintenance.
+ * If the status is 0.5, a specific bar with reduced opacity is returned.
+ *
+ * @param {Object} param0 - The parameters object.
+ * @param {number} param0.status - The status value that determines the bar's appearance.
+ */
 function UptimeBar({ status }: { status: number }) {
   let colorClass = "bg-[#0bda5e]"; // Green
   if (status === 0) colorClass = "bg-[#fa6238]"; // Red
@@ -47,7 +58,7 @@ function UptimeBar({ status }: { status: number }) {
 /**
  * Renders a table displaying the status and details of monitors.
  *
- * This function manages the state for sorting and filtering monitors based on their status. It calculates uptime, retrieves the history of events, and displays the last response time. The monitors are filtered and sorted according to user selections, and the UI is updated accordingly. The function also handles the rendering of dropdown menus for filtering and sorting options.
+ * This function manages the state for sorting and filtering monitors based on their status. It calculates uptime, retrieves the history of events, and displays the last response time. The monitors are filtered and sorted according to user selections, and the UI is updated accordingly. Additionally, it handles the rendering of dropdown menus for filtering and sorting options.
  *
  * @param {Object} param0 - The parameters object.
  * @param {MonitorWithEvents[]} param0.monitors - An array of monitors with their associated events.
@@ -105,6 +116,9 @@ export function MonitorsTable({
     return 0;
   });
 
+  /**
+   * Toggles the filter status in the state.
+   */
   const toggleFilter = (status: FilterStatus) => {
     setFilterStatuses((prev) =>
       prev.includes(status)
