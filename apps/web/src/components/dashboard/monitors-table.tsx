@@ -24,12 +24,13 @@ interface MonitorWithEvents {
 }
 
 type SortOption = "name" | "status" | "uptime";
-type FilterStatus = "UP" | "DOWN" | "PAUSED";
+type FilterStatus = "UP" | "DOWN" | "PAUSED" | "MAINTENANCE";
 
 function UptimeBar({ status }: { status: number }) {
   let colorClass = "bg-[#0bda5e]"; // Green
   if (status === 0) colorClass = "bg-[#fa6238]"; // Red
   if (status === -1) colorClass = "bg-[#3b4554]"; // Grey
+  if (status === 2) colorClass = "bg-amber-500 shadow-[0_0_5px_rgba(245,158,11,0.5)]"; // Maintenance
 
   const opacityClass = status === 0.5 ? "opacity-50" : "";
   if (status === 0.5)
@@ -66,7 +67,10 @@ export function MonitorsTable({ monitors: initialMonitors }: { monitors: Monitor
     // So we take the first 10 (newest), and reverse them so the newest is on the right.
     const history: number[] = events
       .slice(0, 10)
-      .map((e) => (e.status === "UP" ? 1 : 0))
+      .map((e) => {
+        if (e.status === "MAINTENANCE") return 2;
+        return e.status === "UP" ? 1 : 0;
+      })
       .reverse();
 
     // Pad with -1 (grey) on the LEFT if we don't have enough data
@@ -142,6 +146,13 @@ export function MonitorsTable({ monitors: initialMonitors }: { monitors: Monitor
                   className="focus:bg-primary/10 data-[state=checked]:text-foreground"
                 >
                   Paused
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem
+                  checked={filterStatuses.includes("MAINTENANCE")}
+                  onCheckedChange={() => toggleFilter("MAINTENANCE")}
+                  className="focus:bg-primary/10 data-[state=checked]:text-foreground"
+                >
+                  Maintenance
                 </DropdownMenuCheckboxItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
@@ -245,6 +256,12 @@ export function MonitorsTable({ monitors: initialMonitors }: { monitors: Monitor
                       <span className="inline-flex items-center gap-2 px-2.5 py-1 text-xs font-bold bg-gray-500/10 text-gray-400 border border-gray-500/20 font-mono tracking-wider uppercase">
                         <span className="size-1.5 bg-gray-500"></span>
                         Paused
+                      </span>
+                    )}
+                    {site.status === "MAINTENANCE" && (
+                      <span className="inline-flex items-center gap-2 px-2.5 py-1 text-xs font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20 font-mono tracking-wider uppercase">
+                        <span className="size-1.5 bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]"></span>
+                        Maint.
                       </span>
                     )}
                   </td>

@@ -13,6 +13,7 @@ export const createPrisma = (databaseUrl: string) => {
 
 // Default instance for environments where the database URL is available
 let _prisma: PrismaClient | null = null;
+const prismaInstances = new Map<string, PrismaClient>();
 
 const getUrl = () => {
   if (typeof process !== "undefined" && process.env?.DATABASE_URL) {
@@ -32,9 +33,10 @@ const getUrl = () => {
 
 export const getPrisma = (databaseUrl?: string) => {
   if (databaseUrl) {
-    // If specific URL provided, create/return instance (don't cache globally if unique?)
-    // Actually, for worker logic, we passed explicit URL.
-    return createPrisma(databaseUrl);
+    if (!prismaInstances.has(databaseUrl)) {
+      prismaInstances.set(databaseUrl, createPrisma(databaseUrl));
+    }
+    return prismaInstances.get(databaseUrl)!;
   }
 
   if (!_prisma) {
