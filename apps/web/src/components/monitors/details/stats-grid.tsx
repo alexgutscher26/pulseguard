@@ -8,8 +8,7 @@ export function MonitorStatsGrid({ monitor }: { monitor: any }) {
   const upCount = events.filter((e: any) => e.status === "UP").length;
   const downCount = total - upCount;
 
-  // TODO: Fallback to "100%" if no data there should be no fallback since this is an uptime monitor tool
-  const uptime = total > 0 ? ((upCount / total) * 100).toFixed(2) : "100.00";
+  const uptime = total > 0 ? ((upCount / total) * 100).toFixed(2) : "0.00";
 
   // Filter undefined latency if any (though schema says int)
   const latencies = events

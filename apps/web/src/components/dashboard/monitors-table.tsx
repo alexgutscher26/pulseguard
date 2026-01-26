@@ -1,5 +1,18 @@
+"use client";
+
 import { Filter, ArrowUpDown, BarChart2, Edit2 } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuCheckboxItem,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+  DropdownMenuGroup,
+} from "@/components/ui/dropdown-menu";
 
 interface MonitorWithEvents {
   id: string;
@@ -9,6 +22,9 @@ interface MonitorWithEvents {
   events: { status: string; latency: number; timestamp: Date }[];
   interval: number;
 }
+
+type SortOption = "name" | "status" | "uptime";
+type FilterStatus = "UP" | "DOWN" | "PAUSED";
 
 function UptimeBar({ status }: { status: number }) {
   let colorClass = "bg-[#0bda5e]"; // Green
@@ -22,7 +38,10 @@ function UptimeBar({ status }: { status: number }) {
   return <div className={`h-4 w-1 rounded-full ${colorClass} ${opacityClass}`}></div>;
 }
 
-export function MonitorsTable({ monitors }: { monitors: MonitorWithEvents[] }) {
+export function MonitorsTable({ monitors: initialMonitors }: { monitors: MonitorWithEvents[] }) {
+  const [sort, setSort] = useState<SortOption>("name");
+  const [filterStatuses, setFilterStatuses] = useState<FilterStatus[]>([]);
+
   // Calculate uptime (simple mock calculation for now or derived from events)
   const getUptime = (events: any[]) => {
     if (!events || events.length === 0) return 0;
@@ -51,6 +70,25 @@ export function MonitorsTable({ monitors }: { monitors: MonitorWithEvents[] }) {
     return events[0].latency + "ms";
   };
 
+  // Filter & Sort Logic
+  const filteredMonitors = initialMonitors.filter((m) => {
+    if (filterStatuses.length === 0) return true;
+    return filterStatuses.includes(m.status as FilterStatus);
+  });
+
+  const sortedMonitors = [...filteredMonitors].sort((a, b) => {
+    if (sort === "name") return a.name.localeCompare(b.name);
+    if (sort === "status") return a.status.localeCompare(b.status);
+    if (sort === "uptime") return getUptime(b.events) - getUptime(a.events);
+    return 0;
+  });
+
+  const toggleFilter = (status: FilterStatus) => {
+    setFilterStatuses((prev) =>
+      prev.includes(status) ? prev.filter((s) => s !== status) : [...prev, status],
+    );
+  };
+
   return (
     <div>
       {/* SectionHeader */}
@@ -59,14 +97,84 @@ export function MonitorsTable({ monitors }: { monitors: MonitorWithEvents[] }) {
           Your Monitors
         </h2>
         <div className="flex gap-2">
-          <button className="bg-primary/10 text-primary text-[10px] font-bold font-mono px-3 py-1.5 rounded-sm hover:bg-primary/20 transition-colors flex items-center gap-1 uppercase tracking-wider border border-primary/20">
-            <Filter className="size-3" />
-            Filter
-          </button>
-          <button className="bg-primary/10 text-primary text-[10px] font-bold font-mono px-3 py-1.5 rounded-sm hover:bg-primary/20 transition-colors flex items-center gap-1 uppercase tracking-wider border border-primary/20">
-            <ArrowUpDown className="size-3" />
-            Sort
-          </button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="bg-primary/10 text-primary text-[10px] font-bold font-mono px-3 py-1.5 rounded-sm hover:bg-primary/20 transition-colors flex items-center gap-1 uppercase tracking-wider border border-primary/20">
+                <Filter className="size-3" />
+                Filter {filterStatuses.length > 0 && `(${filterStatuses.length})`}
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="w-48 bg-black/95 border-primary/20 text-primary font-mono text-xs backdrop-blur-md"
+            >
+              <DropdownMenuGroup>
+                <DropdownMenuLabel className="uppercase tracking-widest text-primary/50 text-[10px]">
+                  Filter By Status
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-primary/10" />
+                <DropdownMenuCheckboxItem
+                  checked={filterStatuses.includes("UP")}
+                  onCheckedChange={() => toggleFilter("UP")}
+                  className="focus:bg-primary/10 data-[state=checked]:text-foreground"
+                >
+                  Up
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem
+                  checked={filterStatuses.includes("DOWN")}
+                  onCheckedChange={() => toggleFilter("DOWN")}
+                  className="focus:bg-primary/10 data-[state=checked]:text-foreground"
+                >
+                  Down
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem
+                  checked={filterStatuses.includes("PAUSED")}
+                  onCheckedChange={() => toggleFilter("PAUSED")}
+                  className="focus:bg-primary/10 data-[state=checked]:text-foreground"
+                >
+                  Paused
+                </DropdownMenuCheckboxItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="bg-primary/10 text-primary text-[10px] font-bold font-mono px-3 py-1.5 rounded-sm hover:bg-primary/20 transition-colors flex items-center gap-1 uppercase tracking-wider border border-primary/20">
+                <ArrowUpDown className="size-3" />
+                Sort: {sort}
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="w-48 bg-black/95 border-primary/20 text-primary font-mono text-xs backdrop-blur-md"
+            >
+              <DropdownMenuGroup>
+                <DropdownMenuLabel className="uppercase tracking-widest text-primary/50 text-[10px]">
+                  Sort Order
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-primary/10" />
+                <DropdownMenuItem
+                  onClick={() => setSort("name")}
+                  className="focus:bg-primary/10 cursor-pointer"
+                >
+                  Name (A-Z)
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setSort("status")}
+                  className="focus:bg-primary/10 cursor-pointer"
+                >
+                  Status
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setSort("uptime")}
+                  className="focus:bg-primary/10 cursor-pointer"
+                >
+                  Uptime (High-Low)
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
@@ -94,7 +202,7 @@ export function MonitorsTable({ monitors }: { monitors: MonitorWithEvents[] }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-primary/10">
-              {monitors.map((site) => (
+              {sortedMonitors.map((site) => (
                 <tr key={site.id} className="hover:bg-primary/5 transition-colors group">
                   <td className="px-6 py-5">
                     <div className="flex flex-col">
@@ -167,13 +275,13 @@ export function MonitorsTable({ monitors }: { monitors: MonitorWithEvents[] }) {
                   </td>
                 </tr>
               ))}
-              {monitors.length === 0 && (
+              {sortedMonitors.length === 0 && (
                 <tr>
                   <td
                     colSpan={5}
                     className="px-6 py-10 text-center text-muted-foreground font-mono"
                   >
-                    No monitors found. Create one to get started.
+                    No monitors found matching your criteria.
                   </td>
                 </tr>
               )}
