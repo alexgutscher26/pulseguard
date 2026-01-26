@@ -26,6 +26,16 @@ interface MonitorWithEvents {
 type SortOption = "name" | "status" | "uptime";
 type FilterStatus = "UP" | "DOWN" | "PAUSED" | "MAINTENANCE";
 
+/**
+ * Renders a status bar based on the provided status value.
+ * The function determines the color and opacity of the bar based on the status input.
+ * Different status values correspond to specific color classes, including green for normal,
+ * red for error, grey for unknown, and amber for maintenance.
+ * If the status is 0.5, a specific bar with reduced opacity is returned.
+ *
+ * @param {Object} param0 - The parameters object.
+ * @param {number} param0.status - The status value determining the bar's appearance.
+ */
 function UptimeBar({ status }: { status: number }) {
   let colorClass = "bg-[#0bda5e]"; // Green
   if (status === 0) colorClass = "bg-[#fa6238]"; // Red
@@ -42,7 +52,7 @@ function UptimeBar({ status }: { status: number }) {
 /**
  * Renders a table displaying the status and details of monitors.
  *
- * This function manages the state for sorting and filtering monitors based on their status. It calculates uptime, retrieves the history of events, and displays the last response time. The monitors are filtered and sorted according to user selections, and the UI is updated accordingly. The function also handles the rendering of dropdown menus for filtering and sorting options.
+ * This function manages the state for sorting and filtering monitors based on their status. It calculates uptime, retrieves the history of events, and displays the last response time. The monitors are filtered and sorted according to user selections, and the UI is updated accordingly. It also handles the rendering of dropdown menus for filtering and sorting options.
  *
  * @param {Object} param0 - The parameters object.
  * @param {MonitorWithEvents[]} param0.monitors - An array of monitors with their associated events.
@@ -59,6 +69,15 @@ export function MonitorsTable({ monitors: initialMonitors }: { monitors: Monitor
     return Math.round((up / events.length) * 100);
   };
 
+  /**
+   * Retrieves the last 10 events in chronological order for display.
+   *
+   * The function checks if the provided events array is valid. If not, it returns an array filled with -1.
+   * It processes the first 10 events, mapping their statuses to numerical values, and then reverses the order
+   * to ensure the oldest event is first. If there are fewer than 10 events, it pads the result with -1 on the left.
+   *
+   * @param {any[]} events - An array of event objects, each containing a status property.
+   */
   const getHistory = (events: any[]) => {
     // Events are typically DESC (newest first)
     if (!events) return Array(10).fill(-1);
