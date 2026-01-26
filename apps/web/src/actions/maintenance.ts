@@ -14,6 +14,15 @@ const maintenanceSchema = z.object({
   endAt: z.coerce.date(),
 });
 
+/**
+ * Create a maintenance window for a specified monitor.
+ *
+ * This function first retrieves the user's session to ensure authorization. It then validates the input data against a schema and checks that the start time is before the end time. Additionally, it verifies monitor ownership before creating the maintenance window in the database. If successful, it triggers a check on the monitor and revalidates the path for updates.
+ *
+ * @param prevState - The previous state of the application, not used in this function.
+ * @param formData - The form data containing monitorId, description, startAt, and endAt for the maintenance window.
+ * @returns An object indicating success or failure, along with an error message if applicable.
+ */
 export async function createMaintenanceWindow(prevState: any, formData: FormData) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -115,6 +124,17 @@ export async function deleteMaintenanceWindow(id: string) {
   }
 }
 
+/**
+ * Retrieve maintenance windows for a specific monitor.
+ *
+ * The function first obtains the user session and checks if the user is authenticated.
+ * It then verifies the ownership of the monitor by querying the database. If the monitor exists,
+ * it fetches the associated maintenance windows, ordered by their start time.
+ * In case of any errors during the database query, it logs the error and returns an empty array.
+ *
+ * @param monitorId - The ID of the monitor for which to retrieve maintenance windows.
+ * @returns An array of maintenance windows associated with the specified monitor, or an empty array if not found.
+ */
 export async function getMaintenanceWindows(monitorId: string) {
   const session = await auth.api.getSession({
     headers: await headers(),
