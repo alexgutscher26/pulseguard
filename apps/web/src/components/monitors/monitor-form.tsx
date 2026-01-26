@@ -13,6 +13,13 @@ const initialState = {
   error: "",
 };
 
+/**
+ * Renders a form for creating a new monitor with various configuration options.
+ *
+ * The function utilizes the useActionState hook to manage form state and handle submission. It listens for success or error states to provide user feedback via toast notifications. The form allows users to select a monitor type, input a friendly name, specify a target URL or IP, and set check intervals and request timeouts. The form submission is managed with a loading state to prevent multiple submissions.
+ *
+ * @returns A JSX element representing the monitor creation form.
+ */
 export function MonitorForm() {
   const [state, formAction, isPending] = useActionState(createMonitor, initialState);
   const router = useRouter();
