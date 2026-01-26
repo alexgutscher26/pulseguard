@@ -43,6 +43,9 @@ export function MaintenanceManager({
   defaultStart.setHours(defaultStart.getHours() + 1);
 
   // Adjust for timezone offset to get local ISO string
+  /**
+   * Converts a Date object to a local ISO string format.
+   */
   const toLocalISO = (date: Date) => {
     const tzOffset = date.getTimezoneOffset() * 60000; // offset in milliseconds
     const localTime = new Date(date.getTime() - tzOffset);
