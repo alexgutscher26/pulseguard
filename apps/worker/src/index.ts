@@ -8,6 +8,14 @@ export interface Env {
 import { connect } from "cloudflare:sockets";
 
 // Helper: Perform a single check without DB side effects
+/**
+ * Perform a health check on a given monitor URL.
+ *
+ * The function checks the status of the URL by making an HTTP GET request, establishing a TCP connection, or sending a ping based on the URL protocol. It measures the latency and captures any error reasons if the check fails. The function handles various protocols and classifies errors into specific categories for better diagnostics.
+ *
+ * @param monitor - An object containing the URL to be monitored.
+ * @returns An object containing the status ("UP" or "DOWN"), the latency in milliseconds, and an optional error reason.
+ */
 async function performCheck(
   monitor: any,
 ): Promise<{ status: "UP" | "DOWN"; latency: number; errorReason?: string }> {
