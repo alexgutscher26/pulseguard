@@ -152,6 +152,16 @@ export async function createMonitor(prevState: any, formData: FormData) {
   }
 }
 
+/**
+ * Update a monitor's configuration in the database.
+ *
+ * This function first retrieves the current user session and checks for authorization. It then validates the input data against a schema. Depending on the monitor type, it constructs the appropriate URL format. Finally, it attempts to update the monitor in the database and revalidates the relevant paths. If any step fails, it returns an error message.
+ *
+ * @param id - The unique identifier of the monitor to be updated.
+ * @param prevState - The previous state of the monitor (not used in the current implementation).
+ * @param formData - The form data containing the updated monitor information.
+ * @returns An object indicating the success of the operation and any error messages.
+ */
 export async function updateMonitor(id: string, prevState: any, formData: FormData) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -210,6 +220,15 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
   }
 }
 
+/**
+ * Retrieve a list of monitors associated with the authenticated user.
+ *
+ * The function first obtains the user session using the auth.api.getSession method. If the session does not contain a user, it returns an empty array.
+ * If the session is valid, it attempts to fetch the monitors from the database, ordered by creation date, and includes the latest events for each monitor.
+ * In case of an error during the database query, it logs the error and returns an empty array.
+ *
+ * @returns An array of monitors associated with the authenticated user or an empty array if no user is found or an error occurs.
+ */
 export async function getMonitors() {
   const session = await auth.api.getSession({
     headers: await headers(),
