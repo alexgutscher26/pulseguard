@@ -10,6 +10,16 @@ interface MonitorManagerProps {
   initialMonitors: any[];
 }
 
+/**
+ * Manages the display and filtering of monitor data.
+ *
+ * The MonitorManager component retrieves monitor data using the useMonitors hook with the provided initialMonitors.
+ * It maintains local state for search queries and status filters, and computes a filtered list of monitors based on
+ * these criteria. The component renders MonitorStats, MonitorFilters, and MonitorList components to display the
+ * relevant information to the user.
+ *
+ * @param {MonitorManagerProps} props - The properties for the MonitorManager component, including initialMonitors.
+ */
 export function MonitorManager({ initialMonitors }: MonitorManagerProps) {
   const { data: monitors } = useMonitors(initialMonitors);
   const [searchQuery, setSearchQuery] = useState("");
