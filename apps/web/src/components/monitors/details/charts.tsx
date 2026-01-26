@@ -2,6 +2,17 @@
 
 import { Fullscreen } from "lucide-react";
 
+/**
+ * Render a component that displays uptime history and response time charts.
+ *
+ * The function processes the monitor's event history to create a visual representation of uptime and response times.
+ * It generates bars for uptime status and a dynamic SVG path for response times based on the last 50 events.
+ * The component also calculates the average latency and displays it alongside the charts.
+ *
+ * @param {Object} param0 - The parameters object.
+ * @param {any} param0.monitor - The monitor object containing event data.
+ * @returns {JSX.Element} The rendered component displaying uptime and response time charts.
+ */
 export function MonitorCharts({ monitor }: { monitor: any }) {
   // 50 events for history
   const history = monitor.events || [];
