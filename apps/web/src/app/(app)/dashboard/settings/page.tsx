@@ -8,6 +8,17 @@ import { DangerZone } from "@/components/settings/danger-zone";
 import { SecurityForm } from "@/components/settings/security-form";
 import { ApiKeysForm } from "@/components/settings/api-keys-form";
 
+/**
+ * Renders the settings page based on the user's session and selected tab.
+ *
+ * This function retrieves the current user session and checks if the user is authenticated.
+ * It then determines which settings tab to display, defaulting to "general" if none is specified.
+ * Depending on the selected tab, it conditionally renders different components such as ProfileForm,
+ * RegionalForm, DangerZone, SecurityForm, or ApiKeysForm.
+ *
+ * @param {Object} params - The parameters for the function.
+ * @param {Promise<{ tab?: string }>} params.searchParams - A promise that resolves to an object containing the selected tab.
+ */
 export default async function SettingsPage({
   searchParams,
 }: {
