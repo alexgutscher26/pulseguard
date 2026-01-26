@@ -50,6 +50,9 @@ export function MaintenanceManager({
     }
   }, [state, router]);
 
+  /**
+   * Handles the deletion of a maintenance window by its ID.
+   */
   const handleDelete = async (id: string) => {
     const res = await deleteMaintenanceWindow(id);
     if (res.success) {
