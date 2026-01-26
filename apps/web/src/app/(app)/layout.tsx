@@ -3,6 +3,9 @@
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { DashboardHeader } from "@/components/dashboard/header";
 
+/**
+ * A layout component that wraps children with a sidebar and a header.
+ */
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen overflow-hidden bg-[#050505] text-foreground font-mono selection:bg-primary/20">
