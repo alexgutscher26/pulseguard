@@ -270,6 +270,14 @@ export async function getMonitors() {
   }
 }
 
+/**
+ * Retrieve a monitor by its ID.
+ *
+ * This function first obtains the current user session using the auth.api.getSession method. If the session is valid and the user is authenticated, it attempts to fetch the monitor from the database using prisma.monitor.findFirst. The monitor is retrieved along with its associated events and maintenance windows, ordered appropriately. If any error occurs during the fetch, it logs the error and returns null.
+ *
+ * @param id - The unique identifier of the monitor to retrieve.
+ * @returns The monitor object if found, or null if the user is not authenticated or an error occurs.
+ */
 export async function getMonitor(id: string) {
   const session = await auth.api.getSession({
     headers: await headers(),
