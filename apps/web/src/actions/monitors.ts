@@ -104,6 +104,17 @@ const monitorSchema = baseSchema.superRefine((data, ctx) => {
   }
 });
 
+/**
+ * Create a monitor based on the provided form data.
+ *
+ * This function retrieves the current user session and validates the input data from the form.
+ * It constructs the monitor's URL based on the specified type (HTTP, PING, or PORT) and creates a new monitor entry in the database.
+ * If validation fails or an error occurs during the process, it returns an appropriate error message.
+ *
+ * @param prevState - The previous state of the monitor, used for comparison or updates.
+ * @param formData - The form data containing the monitor's configuration details.
+ * @returns An object indicating the success of the operation and any error messages if applicable.
+ */
 export async function createMonitor(prevState: any, formData: FormData) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -165,7 +176,7 @@ export async function createMonitor(prevState: any, formData: FormData) {
 /**
  * Update a monitor's configuration in the database.
  *
- * This function first retrieves the current user session and checks for authorization. It then validates the input data against a schema. Depending on the monitor type, it constructs the appropriate URL format. Finally, it attempts to update the monitor in the database and revalidates the relevant paths. If any step fails, it returns an error message.
+ * This function retrieves the current user session and checks for authorization. It validates the input data against a schema and constructs the appropriate URL format based on the monitor type. It then attempts to update the monitor in the database and revalidates the relevant paths. If any step fails, it returns an error message.
  *
  * @param id - The unique identifier of the monitor to be updated.
  * @param prevState - The previous state of the monitor (not used in the current implementation).
@@ -235,9 +246,7 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
 /**
  * Retrieve a list of monitors associated with the authenticated user.
  *
- * The function first obtains the user session using the auth.api.getSession method. If the session does not contain a user, it returns an empty array.
- * If the session is valid, it attempts to fetch the monitors from the database, ordered by creation date, and includes the latest events for each monitor.
- * In case of an error during the database query, it logs the error and returns an empty array.
+ * The function first obtains the user session using the auth.api.getSession method. If the session does not contain a user, it returns an empty array. If the session is valid, it attempts to fetch the monitors from the database, ordered by creation date, and includes the latest events for each monitor. In case of an error during the database query, it logs the error and returns an empty array.
  *
  * @returns An array of monitors associated with the authenticated user or an empty array if no user is found or an error occurs.
  */
@@ -271,6 +280,14 @@ export async function getMonitors() {
   }
 }
 
+/**
+ * Retrieve a monitor by its ID from the database.
+ *
+ * The function first obtains the user session using the auth.api.getSession method. If the session is valid and the user is authenticated, it attempts to fetch the monitor associated with the provided ID and the user's ID. The monitor's events and maintenance windows are included in the response, with specific ordering applied. If any error occurs during the fetch, it logs the error and returns null.
+ *
+ * @param id - The unique identifier of the monitor to retrieve.
+ * @returns The monitor object if found, or null if the session is invalid or an error occurs.
+ */
 export async function getMonitor(id: string) {
   const session = await auth.api.getSession({
     headers: await headers(),
