@@ -7,6 +7,9 @@ import {
 import { MonitorsTable } from "@/components/dashboard/monitors-table";
 import { useMonitors, useDashboardStats } from "@/hooks/use-monitors";
 
+/**
+ * Renders the Dashboard component with monitors and stats.
+ */
 export default function Dashboard({
   monitors: initialMonitors,
   stats: initialStats,
