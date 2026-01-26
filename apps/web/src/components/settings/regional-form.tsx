@@ -4,6 +4,13 @@ import { authClient } from "@/lib/auth-client";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
+/**
+ * Renders a regional settings form for updating timezone and date format.
+ *
+ * The component retrieves the current user's session data to pre-fill the timezone and date format fields.
+ * It allows users to select their preferred timezone and date format, and provides a button to save these settings.
+ * The save operation is asynchronous and displays success or error messages based on the outcome.
+ */
 export function RegionalForm() {
   const { data: session } = authClient.useSession();
   const [timezone, setTimezone] = useState("UTC");
@@ -19,6 +26,9 @@ export function RegionalForm() {
     }
   }, [session]);
 
+  /**
+   * Handles the save operation for user settings.
+   */
   const handleSave = async () => {
     setIsPending(true);
     try {
