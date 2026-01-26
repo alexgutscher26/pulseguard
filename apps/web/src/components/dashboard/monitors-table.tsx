@@ -39,6 +39,15 @@ function UptimeBar({ status }: { status: number }) {
   return <div className={`h-4 w-1 rounded-full ${colorClass} ${opacityClass}`}></div>;
 }
 
+/**
+ * Renders a table displaying the status and details of monitors.
+ *
+ * This function manages the state for sorting and filtering monitors based on their status. It calculates uptime, retrieves the history of events, and displays the last response time. The monitors are filtered and sorted according to user selections, and the UI is updated accordingly. The function also handles the rendering of dropdown menus for filtering and sorting options.
+ *
+ * @param {Object} param0 - The parameters object.
+ * @param {MonitorWithEvents[]} param0.monitors - An array of monitors with their associated events.
+ * @returns {JSX.Element} The rendered MonitorsTable component.
+ */
 export function MonitorsTable({ monitors: initialMonitors }: { monitors: MonitorWithEvents[] }) {
   const [sort, setSort] = useState<SortOption>("name");
   const [filterStatuses, setFilterStatuses] = useState<FilterStatus[]>([]);
