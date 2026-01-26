@@ -67,6 +67,16 @@ async function performCheck(monitor: any): Promise<{ status: "UP" | "DOWN"; late
 }
 
 // Reusable processing logic (shared between Cron and Queue consumer)
+/**
+ * Process a batch of monitors and perform health checks on each.
+ *
+ * This function iterates over an array of monitors, performing an initial health check using performCheck.
+ * If the check indicates a "DOWN" status, it retries the check after a 2-second delay to account for transient issues.
+ * The results are then saved to a database using Prisma, updating the monitor's status and scheduling the next check.
+ *
+ * @param monitors - An array of monitor objects to be checked.
+ * @param prisma - The Prisma client instance used for database operations.
+ */
 async function processBatch(monitors: any[], prisma: any) {
   console.log(`Processing batch of ${monitors.length} monitors...`);
 
