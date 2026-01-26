@@ -30,13 +30,18 @@ function UptimeBar({ status }: { status: number }) {
   let colorClass = "bg-[#0bda5e]"; // Green
   if (status === 0) colorClass = "bg-[#fa6238]"; // Red
   if (status === -1) colorClass = "bg-[#3b4554]"; // Grey
-  if (status === 2) colorClass = "bg-amber-500 shadow-[0_0_5px_rgba(245,158,11,0.5)]"; // Maintenance
+  if (status === 2)
+    colorClass = "bg-amber-500 shadow-[0_0_5px_rgba(245,158,11,0.5)]"; // Maintenance
 
   const opacityClass = status === 0.5 ? "opacity-50" : "";
   if (status === 0.5)
-    return <div className="h-4 w-1 bg-[#0bda5e] rounded-full opacity-50 bg-green-500"></div>;
+    return (
+      <div className="h-4 w-1 bg-[#0bda5e] rounded-full opacity-50 bg-green-500"></div>
+    );
 
-  return <div className={`h-4 w-1 rounded-full ${colorClass} ${opacityClass}`}></div>;
+  return (
+    <div className={`h-4 w-1 rounded-full ${colorClass} ${opacityClass}`}></div>
+  );
 }
 
 /**
@@ -48,7 +53,11 @@ function UptimeBar({ status }: { status: number }) {
  * @param {MonitorWithEvents[]} param0.monitors - An array of monitors with their associated events.
  * @returns {JSX.Element} The rendered MonitorsTable component.
  */
-export function MonitorsTable({ monitors: initialMonitors }: { monitors: MonitorWithEvents[] }) {
+export function MonitorsTable({
+  monitors: initialMonitors,
+}: {
+  monitors: MonitorWithEvents[];
+}) {
   const [sort, setSort] = useState<SortOption>("name");
   const [filterStatuses, setFilterStatuses] = useState<FilterStatus[]>([]);
 
@@ -98,7 +107,9 @@ export function MonitorsTable({ monitors: initialMonitors }: { monitors: Monitor
 
   const toggleFilter = (status: FilterStatus) => {
     setFilterStatuses((prev) =>
-      prev.includes(status) ? prev.filter((s) => s !== status) : [...prev, status],
+      prev.includes(status)
+        ? prev.filter((s) => s !== status)
+        : [...prev, status],
     );
   };
 
@@ -111,11 +122,9 @@ export function MonitorsTable({ monitors: initialMonitors }: { monitors: Monitor
         </h2>
         <div className="flex gap-2">
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="bg-primary/10 text-primary text-[10px] font-bold font-mono px-3 py-1.5 rounded-sm hover:bg-primary/20 transition-colors flex items-center gap-1 uppercase tracking-wider border border-primary/20">
-                <Filter className="size-3" />
-                Filter {filterStatuses.length > 0 && `(${filterStatuses.length})`}
-              </button>
+            <DropdownMenuTrigger className="bg-primary/10 text-primary text-[10px] font-bold font-mono px-3 py-1.5 rounded-sm hover:bg-primary/20 transition-colors flex items-center gap-1 uppercase tracking-wider border border-primary/20">
+              <Filter className="size-3" />
+              Filter {filterStatuses.length > 0 && `(${filterStatuses.length})`}
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
@@ -159,11 +168,9 @@ export function MonitorsTable({ monitors: initialMonitors }: { monitors: Monitor
           </DropdownMenu>
 
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="bg-primary/10 text-primary text-[10px] font-bold font-mono px-3 py-1.5 rounded-sm hover:bg-primary/20 transition-colors flex items-center gap-1 uppercase tracking-wider border border-primary/20">
-                <ArrowUpDown className="size-3" />
-                Sort: {sort}
-              </button>
+            <DropdownMenuTrigger className="bg-primary/10 text-primary text-[10px] font-bold font-mono px-3 py-1.5 rounded-sm hover:bg-primary/20 transition-colors flex items-center gap-1 uppercase tracking-wider border border-primary/20">
+              <ArrowUpDown className="size-3" />
+              Sort: {sort}
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
@@ -223,7 +230,10 @@ export function MonitorsTable({ monitors: initialMonitors }: { monitors: Monitor
             </thead>
             <tbody className="divide-y divide-primary/10">
               {sortedMonitors.map((site) => (
-                <tr key={site.id} className="hover:bg-primary/5 transition-colors group">
+                <tr
+                  key={site.id}
+                  className="hover:bg-primary/5 transition-colors group"
+                >
                   <td className="px-6 py-5">
                     <div className="flex flex-col">
                       <span className="text-sm font-bold text-foreground font-mono">
@@ -280,7 +290,9 @@ export function MonitorsTable({ monitors: initialMonitors }: { monitors: Monitor
                   <td className="px-6 py-5">
                     <span
                       className={`text-sm font-mono font-bold ${
-                        site.status === "DOWN" ? "text-red-500" : "text-muted-foreground"
+                        site.status === "DOWN"
+                          ? "text-red-500"
+                          : "text-muted-foreground"
                       }`}
                     >
                       {getLastResponse(site.events)}

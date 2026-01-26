@@ -1,15 +1,22 @@
 "use client";
 
-import { DashboardStats, type DashboardStatsData } from "@/components/dashboard/stats";
+import {
+  DashboardStats,
+  type DashboardStatsData,
+} from "@/components/dashboard/stats";
 import { MonitorsTable } from "@/components/dashboard/monitors-table";
+import { useMonitors, useDashboardStats } from "@/hooks/use-monitors";
 
 export default function Dashboard({
-  monitors,
-  stats,
+  monitors: initialMonitors,
+  stats: initialStats,
 }: {
   monitors: any[];
   stats: DashboardStatsData;
 }) {
+  const { data: monitors } = useMonitors(initialMonitors);
+  const { data: stats } = useDashboardStats(initialStats);
+
   return (
     <div className="flex flex-col gap-6">
       <DashboardStats stats={stats} />

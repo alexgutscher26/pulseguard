@@ -2,6 +2,7 @@ import { auth } from "@pulseguard/auth";
 import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { getMonitor } from "@/actions/monitors";
+import { MonitorSettingsView } from "@/components/monitors/settings-view";
 
 /**
  * Renders the monitor settings page.
@@ -11,7 +12,11 @@ import { getMonitor } from "@/actions/monitors";
  * @param {Object} params - An object containing the parameters for the function.
  * @param {Promise<{ id: string }>} params.params - A promise that resolves to an object containing the monitor id.
  */
-export default async function MonitorSettingsPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function MonitorSettingsPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   // ... (auth checks)
   const { id } = await params;
   const monitor = await getMonitor(id);

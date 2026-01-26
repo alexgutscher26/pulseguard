@@ -329,7 +329,7 @@ export async function checkMonitor(id: string) {
         "User-Agent": "PulseGuard-Monitor/1.0",
         Accept: "*/*",
       },
-      signal: AbortSignal.timeout(10000),
+      signal: AbortSignal.timeout((monitor.timeout || 10) * 1000),
     });
 
     latency = Date.now() - start;
@@ -361,6 +361,8 @@ export async function checkMonitor(id: string) {
     ]);
 
     revalidatePath(`/dashboard/monitors/${id}`);
+    revalidatePath("/dashboard/monitors");
+    revalidatePath("/dashboard");
     return { success: true };
   } catch (error) {
     console.error("Failed to save check result", error);
@@ -384,6 +386,8 @@ export async function toggleMonitor(id: string, enabled: boolean) {
     });
 
     revalidatePath(`/dashboard/monitors/${id}`);
+    revalidatePath("/dashboard/monitors");
+    revalidatePath("/dashboard");
     return { success: true };
   } catch (error) {
     console.error("Failed to toggle monitor", error);
