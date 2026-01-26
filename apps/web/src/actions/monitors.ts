@@ -211,6 +211,14 @@ export async function getMonitor(id: string) {
   }
 }
 
+/**
+ * Check the status of a monitor and update its status in the database.
+ *
+ * This function retrieves the user's session and checks if the monitor exists. It then attempts to fetch the monitor's URL to determine its current status (UP or DOWN) and measures the latency. The results are saved in a transaction, which includes creating a monitor event and updating the monitor's last check time. If any errors occur during the process, appropriate error messages are returned.
+ *
+ * @param id - The unique identifier of the monitor to check.
+ * @returns An object indicating the success of the operation and any error messages if applicable.
+ */
 export async function checkMonitor(id: string) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -274,6 +282,15 @@ export async function checkMonitor(id: string) {
   }
 }
 
+/**
+ * Toggle the status of a monitor based on the provided ID and enabled state.
+ *
+ * This function retrieves the current user session and checks for authorization. If authorized, it updates the monitor's status to either "UP" or "PAUSED" based on the enabled parameter. After updating, it triggers a revalidation of the monitor's path. In case of an error during the update, it logs the error and returns a failure response.
+ *
+ * @param id - The unique identifier of the monitor to be toggled.
+ * @param enabled - A boolean indicating whether to enable (true) or pause (false) the monitor.
+ * @returns An object indicating the success status and any error message if applicable.
+ */
 export async function toggleMonitor(id: string, enabled: boolean) {
   const session = await auth.api.getSession({
     headers: await headers(),
