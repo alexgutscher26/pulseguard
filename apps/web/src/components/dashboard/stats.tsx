@@ -9,6 +9,14 @@ export interface DashboardStatsData {
   activeAlerts: number;
 }
 
+/**
+ * Renders a dashboard component displaying various statistics.
+ *
+ * The function constructs an array of statistics based on the provided data, including active monitors, global uptime, average response time, and active alerts. Each statistic is represented with a name, value, change description, trend indicator, and associated icon. The statistics are then displayed in a responsive grid layout, with visual indicators for trends and alerts.
+ *
+ * @param {Object} params - The parameters for the function.
+ * @param {DashboardStatsData} params.stats - The data object containing statistics to be displayed.
+ */
 export function DashboardStats({ stats: data }: { stats: DashboardStatsData }) {
   const stats = [
     {
