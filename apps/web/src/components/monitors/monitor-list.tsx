@@ -9,6 +9,9 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+/**
+ * Renders a bar indicating uptime status with a background color based on the status value.
+ */
 function UptimeBar({ status }: { status: number }) {
   let bgClass = "bg-primary/80";
   if (status === 0) bgClass = "bg-red-500/80";
@@ -16,6 +19,15 @@ function UptimeBar({ status }: { status: number }) {
   return <div className={`w-1 h-3 md:h-4 ${bgClass}`}></div>;
 }
 
+/**
+ * Renders a list of monitors with their status and information.
+ *
+ * The function utilizes the useRouter hook to enable navigation to individual monitor details. It displays a table with monitor statuses, information, history, and response times. If no monitors are active, a message is shown. The history of events is processed to visualize the status over time, and pagination controls are included for navigation.
+ *
+ * @param {Object} param0 - The component props.
+ * @param {any[]} param0.monitors - An array of monitor objects to display.
+ * @returns {JSX.Element} The rendered component.
+ */
 export function MonitorList({ monitors }: { monitors: any[] }) {
   const router = useRouter();
 
