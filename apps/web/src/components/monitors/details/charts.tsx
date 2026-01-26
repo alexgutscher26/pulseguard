@@ -29,7 +29,7 @@ export function MonitorCharts({ monitor }: { monitor: any }) {
   // SVG Path Generation
   let pathD = "";
   if (points.length > 1) {
-    pathD = `M ${points[0].x} ${points[0].y}`;
+    const parts = [`M ${points[0].x} ${points[0].y}`];
     // Simple line for now, or bezier if we want smooth
     for (let i = 1; i < points.length; i++) {
       // Basic smoothing (catmull-rom or similar would be better but this is raw TSX)
@@ -37,8 +37,9 @@ export function MonitorCharts({ monitor }: { monitor: any }) {
       const p = points[i];
       const prev = points[i - 1];
       const midX = (prev.x + p.x) / 2;
-      pathD += ` Q ${midX} ${prev.y}, ${midX} ${p.y} T ${p.x} ${p.y}`;
+      parts.push(` Q ${midX} ${prev.y}, ${midX} ${p.y} T ${p.x} ${p.y}`);
     }
+    pathD = parts.join("");
   } else if (points.length === 1) {
     pathD = `M 0 ${points[0].y} H 478`;
   }

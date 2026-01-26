@@ -111,11 +111,9 @@ export function MonitorsTable({ monitors: initialMonitors }: { monitors: Monitor
         </h2>
         <div className="flex gap-2">
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="bg-primary/10 text-primary text-[10px] font-bold font-mono px-3 py-1.5 rounded-sm hover:bg-primary/20 transition-colors flex items-center gap-1 uppercase tracking-wider border border-primary/20">
-                <Filter className="size-3" />
-                Filter {filterStatuses.length > 0 && `(${filterStatuses.length})`}
-              </button>
+            <DropdownMenuTrigger className="bg-primary/10 text-primary text-[10px] font-bold font-mono px-3 py-1.5 rounded-sm hover:bg-primary/20 transition-colors flex items-center gap-1 uppercase tracking-wider border border-primary/20">
+              <Filter className="size-3" />
+              Filter {filterStatuses.length > 0 && `(${filterStatuses.length})`}
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
@@ -159,11 +157,9 @@ export function MonitorsTable({ monitors: initialMonitors }: { monitors: Monitor
           </DropdownMenu>
 
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="bg-primary/10 text-primary text-[10px] font-bold font-mono px-3 py-1.5 rounded-sm hover:bg-primary/20 transition-colors flex items-center gap-1 uppercase tracking-wider border border-primary/20">
-                <ArrowUpDown className="size-3" />
-                Sort: {sort}
-              </button>
+            <DropdownMenuTrigger className="bg-primary/10 text-primary text-[10px] font-bold font-mono px-3 py-1.5 rounded-sm hover:bg-primary/20 transition-colors flex items-center gap-1 uppercase tracking-wider border border-primary/20">
+              <ArrowUpDown className="size-3" />
+              Sort: {sort}
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
