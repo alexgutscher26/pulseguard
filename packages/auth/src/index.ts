@@ -9,6 +9,20 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+  user: {
+    additionalFields: {
+      timezone: {
+        type: "string",
+        required: false,
+        defaultValue: "UTC",
+      },
+      dateFormat: {
+        type: "string",
+        required: false,
+        defaultValue: "MM/DD/YYYY",
+      },
+    },
+  },
 
   trustedOrigins: [env.CORS_ORIGIN, "mybettertapp://", "exp://"],
   emailAndPassword: {
