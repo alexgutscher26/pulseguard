@@ -471,7 +471,7 @@ export async function getDashboardStats() {
       where: { userId },
       select: { id: true },
     });
-    const monitorIds = userMonitors.map((m) => m.id);
+    const monitorIds = userMonitors.map((m: { id: string }) => m.id);
 
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
@@ -490,14 +490,14 @@ export async function getDashboardStats() {
     let avgLatency = 0;
 
     if (events.length > 0) {
-      const upEvents = events.filter((e) => e.status === "UP").length;
+      const upEvents = events.filter((e: { status: string }) => e.status === "UP").length;
       globalUptime = (upEvents / events.length) * 100;
 
       const latencies = events
-        .filter((e) => e.status === "UP" && e.latency > 0)
-        .map((e) => e.latency);
+        .filter((e: { status: string; latency: number }) => e.status === "UP" && e.latency > 0)
+        .map((e: { latency: number }) => e.latency);
 
-      const totalLatency = latencies.reduce((a, b) => a + b, 0);
+      const totalLatency = latencies.reduce((a: number, b: number) => a + b, 0);
       avgLatency = latencies.length > 0 ? totalLatency / latencies.length : 0;
     }
 

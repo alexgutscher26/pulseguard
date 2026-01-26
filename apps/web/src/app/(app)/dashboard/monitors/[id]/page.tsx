@@ -25,7 +25,7 @@ export default async function MonitorDetailPage({
           href="/dashboard/monitors"
           className={cn(
             buttonVariants({ variant: "ghost", size: "sm" }),
-            "text-muted-foreground hover:text-foreground",
+            "text-muted-foreground hover:text-foreground"
           )}
         >
           <ChevronLeft className="size-4 mr-1" />
