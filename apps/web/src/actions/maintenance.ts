@@ -73,6 +73,17 @@ export async function createMaintenanceWindow(prevState: any, formData: FormData
   }
 }
 
+/**
+ * Deletes a maintenance window identified by the given ID.
+ *
+ * The function first retrieves the current user session and checks for authorization.
+ * It then verifies ownership of the maintenance window by checking the associated monitor's user ID.
+ * If authorized, it deletes the maintenance window and revalidates the corresponding path.
+ * In case of any errors during the process, it logs the error and returns a failure response.
+ *
+ * @param id - The ID of the maintenance window to be deleted.
+ * @returns An object indicating the success status and any error message if applicable.
+ */
 export async function deleteMaintenanceWindow(id: string) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -106,6 +117,14 @@ export async function deleteMaintenanceWindow(id: string) {
   }
 }
 
+/**
+ * Retrieve maintenance windows for a specific monitor.
+ *
+ * The function first obtains the user session to verify ownership of the monitor. If the session is valid, it checks for the existence of the monitor associated with the provided monitorId. If the monitor is found, it retrieves the maintenance windows ordered by their start time. In case of any errors during the retrieval, it logs the error and returns an empty array.
+ *
+ * @param monitorId - The ID of the monitor for which to retrieve maintenance windows.
+ * @returns An array of maintenance windows associated with the specified monitor, or an empty array if the monitor is not found or an error occurs.
+ */
 export async function getMaintenanceWindows(monitorId: string) {
   const session = await auth.api.getSession({
     headers: await headers(),
