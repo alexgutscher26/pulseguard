@@ -167,10 +167,10 @@ export function MonitorForm() {
                 Check Interval
               </label>
               <div className="relative">
-                <Clock className="absolute top-3 left-3 size-4 text-primary/40" />
+                <Clock className="absolute top-3 left-3 size-4 text-primary/40 pointer-events-none" />
                 <select
                   name="interval"
-                  className="bg-black/50 border border-primary/20 focus:border-primary/60 text-primary text-sm rounded-sm p-3 pl-10 font-mono focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full appearance-none"
+                  className="bg-black/50 border border-primary/20 focus:border-primary/60 text-primary text-sm rounded-sm p-3 pl-10 font-mono focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full appearance-none cursor-pointer"
                 >
                   <option value="30">30 Seconds</option>
                   <option value="60">1 Minute</option>
@@ -184,10 +184,10 @@ export function MonitorForm() {
                 Request Timeout
               </label>
               <div className="relative">
-                <Clock className="absolute top-3 left-3 size-4 text-primary/40" />
+                <Clock className="absolute top-3 left-3 size-4 text-primary/40 pointer-events-none" />
                 <select
                   name="timeout"
-                  className="bg-black/50 border border-primary/20 focus:border-primary/60 text-primary text-sm rounded-sm p-3 pl-10 font-mono focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full appearance-none"
+                  className="bg-black/50 border border-primary/20 focus:border-primary/60 text-primary text-sm rounded-sm p-3 pl-10 font-mono focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full appearance-none cursor-pointer"
                 >
                   <option value="5">5 Seconds</option>
                   <option value="10">10 Seconds</option>

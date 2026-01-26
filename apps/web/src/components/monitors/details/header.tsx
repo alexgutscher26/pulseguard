@@ -1,7 +1,7 @@
 "use client";
 
 import { CheckCircle, Play, Loader2 } from "lucide-react";
-import { checkMonitor } from "@/actions/monitors";
+import { checkMonitor, toggleMonitor } from "@/actions/monitors";
 import { toast } from "sonner";
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
   // If status is "UP" but no events, it's pending first check
   const isPending = monitor.status === "UP" && !hasEvents;
 
-  const [pending, startTransition] = useTransition();
+  const [isLoading, startTransition] = useTransition();
 
   const handleRunCheck = () => {
     startTransition(async () => {
@@ -23,6 +23,17 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
         toast.success("Check initiated successfully");
       } else {
         toast.error(result.error || "Failed to initiate check");
+      }
+    });
+  };
+
+  const handleToggle = (enabled: boolean) => {
+    startTransition(async () => {
+      const result = await toggleMonitor(monitor.id, enabled);
+      if (result.success) {
+        toast.success(enabled ? "Monitoring resumed" : "Monitoring paused");
+      } else {
+        toast.error(result.error || "Failed to update monitor");
       }
     });
   };
@@ -74,11 +85,11 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
             <Button
               variant="outline"
               size="sm"
-              disabled={pending}
+              disabled={isLoading}
               onClick={handleRunCheck}
               className="h-8 border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 hover:text-primary font-mono text-[10px] uppercase tracking-wider"
             >
-              {pending ? (
+              {isLoading ? (
                 <Loader2 className="size-3 mr-2 animate-spin" />
               ) : (
                 <Play className="size-3 mr-2" />
@@ -93,7 +104,9 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
                 <input
                   type="checkbox"
                   className="peer sr-only"
-                  defaultChecked={!isPaused}
+                  checked={!isPaused}
+                  disabled={isLoading}
+                  onChange={(e) => handleToggle(e.target.checked)}
                 />
                 <span className="absolute inset-0 rounded-full transition-colors peer-checked:bg-primary/20"></span>
                 <span className="h-4 w-4 rounded-full bg-primary/50 shadow-sm transition-transform peer-checked:translate-x-5 peer-checked:bg-primary"></span>

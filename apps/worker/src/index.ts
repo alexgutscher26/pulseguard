@@ -5,6 +5,8 @@ export interface Env {
   DATABASE_URL: string;
 }
 
+import { connect } from 'cloudflare:sockets';
+
 // Reusable processing logic (shared between Cron and Queue consumer)
 async function processBatch(monitors: any[], prisma: any) {
   console.log(`Processing batch of ${monitors.length} monitors...`);
@@ -15,20 +17,56 @@ async function processBatch(monitors: any[], prisma: any) {
     let latency = 0;
     
     try {
-      const response = await fetch(monitor.url, {
-        method: 'GET',
-        headers: { 
-          'User-Agent': 'PulseGuard-Monitor/1.0',
-          'Accept': '*/*'
-        },
-        signal: AbortSignal.timeout(10000) // 10s timeout
-      });
+      const urlStr = monitor.url;
+      
+      if (urlStr.startsWith("http://") || urlStr.startsWith("https://")) {
+          const response = await fetch(urlStr, {
+            method: 'GET',
+            headers: { 
+              'User-Agent': 'PulseGuard-Monitor/1.0',
+              'Accept': '*/*'
+            },
+            signal: AbortSignal.timeout(10000)
+          });
+          currentStatus = response.ok ? "UP" : "DOWN";
+      } else if (urlStr.startsWith("tcp://")) {
+          // Parse tcp://hostname:port
+          const part = urlStr.replace("tcp://", "");
+          const [hostname, port] = part.split(":");
+          
+          if (!hostname || !port) throw new Error("Invalid TCP URL format");
+          
+          const socket = connect({
+             hostname,
+             port: parseInt(port)
+          });
+          
+          // Wait for connection
+          await socket.opened;
+          await socket.close();
+          currentStatus = "UP";
+      } else if (urlStr.startsWith("ping://")) {
+          // Worker cannot do ICMP. Simulate by connecting to port 80? 
+          // Or just mark as "Not Supported" for now?
+          // Let's try to connect to port 80 as a fallback "ping"
+          const hostname = urlStr.replace("ping://", "");
+          const socket = connect({
+             hostname,
+             port: 80
+          });
+          await socket.opened;
+          await socket.close();
+          currentStatus = "UP";
+      } else {
+          // Fallback or unknown
+          throw new Error("Unknown protocol");
+      }
       
       latency = Date.now() - start;
-      currentStatus = response.ok ? "UP" : "DOWN";
     } catch (err) {
       console.error(`Error checking ${monitor.url}:`, err);
-      latency = Date.now() - start;
+      // latency = Date.now() - start;
+      latency = 0;
       currentStatus = "DOWN";
     }
 

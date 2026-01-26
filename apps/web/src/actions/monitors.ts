@@ -259,10 +259,34 @@ export async function checkMonitor(id: string) {
             })
         ]);
         
+
         revalidatePath(`/dashboard/monitors/${id}`);
         return { success: true };
     } catch (error) {
         console.error("Failed to save check result", error);
         return { success: false, error: "Failed to save result" };
+    }
+}
+
+export async function toggleMonitor(id: string, enabled: boolean) {
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
+
+    if (!session?.user) return { success: false, error: "Unauthorized" };
+
+    try {
+        await prisma.monitor.update({
+            where: { id, userId: session.user.id },
+            data: {
+                status: enabled ? "UP" : "PAUSED", // Reset to UP (pending next check) or PAUSED
+            },
+        });
+        
+        revalidatePath(`/dashboard/monitors/${id}`);
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to toggle monitor", error);
+        return { success: false, error: "Failed to toggle monitor" };
     }
 }
