@@ -20,78 +20,87 @@ const baseSchema = z.object({
 });
 
 const monitorSchema = baseSchema.superRefine((data, ctx) => {
-  if (data.type === "HTTP") {
-    if (!data.url) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "URL is required for HTTP monitors",
-        path: ["url"],
-      });
-      return;
-    }
-    const urlCheck = z.string().url("Must be a valid URL").safeParse(data.url);
-    if (!urlCheck.success) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Must be a valid URL",
-        path: ["url"],
-      });
-      return;
-    }
-    // Shared localhost check
-    try {
-      const urlObj = new URL(data.url);
-      const hostname = urlObj.hostname.toLowerCase();
-      const isLocalhost =
-        hostname === "localhost" ||
-        hostname === "127.0.0.1" ||
-        hostname === "::1" ||
-        hostname === "0.0.0.0";
-      if (isLocalhost) {
+  try {
+    if (data.type === "HTTP") {
+      if (!data.url) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "Localhost URLs are not allowed. Please use a public URL.",
+          message: "URL is required for HTTP monitors",
+          path: ["url"],
+        });
+        return;
+      }
+      const urlCheck = z.string().url("Must be a valid URL").safeParse(data.url);
+      if (!urlCheck.success) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Must be a valid URL",
+          path: ["url"],
+        });
+        return;
+      }
+      // Shared localhost check
+      try {
+        const urlObj = new URL(data.url);
+        const hostname = urlObj.hostname.toLowerCase();
+        const isLocalhost =
+          hostname === "localhost" ||
+          hostname === "127.0.0.1" ||
+          hostname === "::1" ||
+          hostname === "0.0.0.0";
+        if (isLocalhost) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Localhost URLs are not allowed. Please use a public URL.",
+            path: ["url"],
+          });
+        }
+      } catch {
+        // Invalid URL caught above
+      }
+    } else if (data.type === "PING") {
+      if (!data.url) {
+        // We reuse the 'url' input field for Hostname in the form
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Hostname is required",
+          path: ["url"],
+        });
+        return;
+      }
+      // Basic hostname check
+      if (data.url && data.url.includes("://")) {
+        // Should just be hostname
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Enter hostname only (no http://)",
           path: ["url"],
         });
       }
-    } catch {
-      // Invalid URL caught above
+    } else if (data.type === "PORT") {
+      if (!data.url) {
+        // Reusing 'url' input as hostname
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Hostname is required",
+          path: ["url"],
+        });
+      }
+      if (!data.port) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Port is required",
+          path: ["port"],
+        });
+      }
     }
-  } else if (data.type === "PING") {
-    if (!data.url) {
-      // We reuse the 'url' input field for Hostname in the form
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Hostname is required",
-        path: ["url"],
-      });
-      return;
-    }
-    // Basic hostname check
-    if (data.url.includes("://")) {
-      // Should just be hostname
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Enter hostname only (no http://)",
-        path: ["url"],
-      });
-    }
-  } else if (data.type === "PORT") {
-    if (!data.url) {
-      // Reusing 'url' input as hostname
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Hostname is required",
-        path: ["url"],
-      });
-    }
-    if (!data.port) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Port is required",
-        path: ["port"],
-      });
-    }
+  } catch (e) {
+    console.error("Schema validation crashed:", e);
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Validation failed unexpectedly",
+      path: ["url"],
+    });
   }
 });
 
@@ -104,35 +113,35 @@ export async function createMonitor(prevState: any, formData: FormData) {
     return { success: false, error: "Unauthorized" };
   }
 
-  const rawData = {
-    name: formData.get("name"),
-    url: formData.get("url"), // This input is reused for URL or Hostname
-    type: formData.get("type"),
-    interval: formData.get("interval"),
-    timeout: formData.get("timeout"),
-    port: formData.get("port"), // Only present for PORT
-  };
-
-  const validation = monitorSchema.safeParse(rawData);
-
-  if (!validation.success) {
-    console.error(validation.error);
-    const firstError = validation.error.issues[0]?.message || "Invalid input";
-    return { success: false, error: firstError };
-  }
-
-  const data = validation.data;
-  let finalUrl = data.url || "";
-
-  // Construct standard URL format for storage
-  // The worker currently only supports FETCH (HTTP), so these won't work yet, but we store them correctly.
-  if (data.type === "PING") {
-    finalUrl = `ping://${data.url}`;
-  } else if (data.type === "PORT") {
-    finalUrl = `tcp://${data.url}:${data.port}`;
-  }
-
   try {
+    const rawData = {
+      name: (formData.get("name") as string) || "",
+      url: (formData.get("url") as string) || undefined,
+      type: (formData.get("type") as "HTTP" | "PING" | "PORT") || "HTTP",
+      interval: Number(formData.get("interval") || 60),
+      timeout: Number(formData.get("timeout") || 10),
+      port: formData.get("port") ? Number(formData.get("port")) : undefined,
+    };
+
+    console.log("Creating monitor with data:", rawData);
+
+    const validation = monitorSchema.safeParse(rawData);
+
+    if (!validation.success) {
+      console.error("Validation failed:", validation.error);
+      const firstError = validation.error.issues[0]?.message || "Invalid input";
+      return { success: false, error: firstError };
+    }
+
+    const data = validation.data;
+    let finalUrl = data.url || "";
+
+    if (data.type === "PING") {
+      finalUrl = `ping://${data.url}`;
+    } else if (data.type === "PORT") {
+      finalUrl = `tcp://${data.url}:${data.port}`;
+    }
+
     await prisma.monitor.create({
       data: {
         name: data.name,
@@ -147,8 +156,9 @@ export async function createMonitor(prevState: any, formData: FormData) {
     revalidatePath("/dashboard/monitors");
     return { success: true };
   } catch (error) {
-    console.error("Failed to create monitor", error);
-    return { success: false, error: "Failed to create monitor" };
+    console.error("CRITICAL ERROR in createMonitor:", error);
+    // @ts-ignore
+    return { success: false, error: error.message || "Internal server error" };
   }
 }
 
@@ -162,13 +172,15 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
   }
 
   const rawData = {
-    name: formData.get("name"),
-    url: formData.get("url"),
-    type: formData.get("type"),
-    interval: formData.get("interval"),
-    timeout: formData.get("timeout"),
-    port: formData.get("port"),
+    name: (formData.get("name") as string) || "",
+    url: (formData.get("url") as string) || undefined,
+    type: (formData.get("type") as "HTTP" | "PING" | "PORT") || "HTTP",
+    interval: Number(formData.get("interval") || 60),
+    timeout: Number(formData.get("timeout") || 10),
+    port: formData.get("port") ? Number(formData.get("port")) : undefined,
   };
+
+  console.log("Updating monitor with data:", rawData);
 
   const validation = monitorSchema.safeParse(rawData);
 
@@ -248,7 +260,7 @@ export async function getMonitor(id: string) {
   if (!session?.user) return null;
 
   try {
-    const monitor = await prisma.monitor.findUnique({
+    const monitor = await prisma.monitor.findFirst({
       where: {
         id,
         userId: session.user.id,
@@ -258,6 +270,11 @@ export async function getMonitor(id: string) {
           take: 50,
           orderBy: {
             timestamp: "desc",
+          },
+        },
+        maintenanceWindows: {
+          orderBy: {
+            startAt: "asc",
           },
         },
       },

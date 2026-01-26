@@ -18,6 +18,7 @@ enum MonitorStatus {
   UP
   DOWN
   PAUSED
+  MAINTENANCE
 }
 
 model Monitor {
@@ -33,6 +34,7 @@ model Monitor {
   updatedAt DateTime @updatedAt
   
   events    MonitorEvent[]
+  maintenanceWindows MaintenanceWindow[]
 
   nextCheck DateTime?
   lastCheck DateTime?
@@ -53,4 +55,20 @@ model MonitorEvent {
 
   @@index([monitorId])
   @@index([timestamp])
+}
+
+model MaintenanceWindow {
+  id          String   @id @default(cuid())
+  monitorId   String
+  monitor     Monitor  @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  
+  description String?
+  startAt     DateTime
+  endAt       DateTime
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([monitorId])
+  @@index([startAt, endAt])
 }

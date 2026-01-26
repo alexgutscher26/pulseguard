@@ -10,9 +10,14 @@ import { connect } from "cloudflare:sockets";
 // Helper: Perform a single check without DB side effects
 async function performCheck(
   monitor: any,
-): Promise<{ status: "UP" | "DOWN"; latency: number; errorReason?: string }> {
+): Promise<{ status: "UP" | "DOWN" | "MAINTENANCE"; latency: number; errorReason?: string }> {
+  // If explicitly in maintenance (passed from caller), skip check
+  if (monitor.status === "MAINTENANCE") {
+    return { status: "MAINTENANCE", latency: 0 };
+  }
+
   const start = Date.now();
-  let currentStatus: "UP" | "DOWN" = "DOWN";
+  let currentStatus: "UP" | "DOWN" | "MAINTENANCE" = "DOWN";
   let latency = 0;
   let errorReason: string | undefined = undefined;
 
@@ -93,23 +98,37 @@ async function processBatch(monitors: any[], prisma: any) {
 
   await Promise.all(
     monitors.map(async (monitor) => {
-      // 1. Initial Check
-      let result = await performCheck(monitor);
+      // 0. Check for Active Maintenance Window
+      const activeWindow = monitor.maintenanceWindows?.[0];
+      let maintenanceActive = false;
 
-      // 2. Double Check Protocol (Retry on Failure)
-      // If the first check fails, we wait 2 seconds and try ONE more time.
-      // This prevents transient network blips from triggering alerts.
-      if (result.status === "DOWN" && monitor.status !== "DOWN") {
-        console.warn(
-          `[DoubleCheck] First check failed for ${monitor.name} (${monitor.url}). Retrying in 2s...`,
+      if (activeWindow) {
+        console.log(
+          `[Maintenance] Skipping check for ${monitor.name} (Window: ${activeWindow.startAt} - ${activeWindow.endAt})`,
         );
+        maintenanceActive = true;
+      }
 
-        // Wait 2000ms
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-
-        // Retry
+      // 1. Initial Check
+      let result;
+      if (maintenanceActive) {
+        result = { status: "MAINTENANCE", latency: 0, errorReason: undefined };
+      } else {
         result = await performCheck(monitor);
-        console.log(`[DoubleCheck] Retry result for ${monitor.name}: ${result.status}`);
+
+        // 2. Double Check Protocol (Retry on Failure)
+        if (result.status === "DOWN" && monitor.status !== "DOWN") {
+          console.warn(
+            `[DoubleCheck] First check failed for ${monitor.name} (${monitor.url}). Retrying in 2s...`,
+          );
+
+          // Wait 2000ms
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+
+          // Retry
+          result = await performCheck(monitor);
+          console.log(`[DoubleCheck] Retry result for ${monitor.name}: ${result.status}`);
+        }
       }
 
       const { status: currentStatus, latency, errorReason } = result;
@@ -171,7 +190,7 @@ export default {
       // Find active monitors that are due for a check
       const monitors = await prisma.monitor.findMany({
         where: {
-          status: { in: ["UP", "DOWN"] },
+          status: { in: ["UP", "DOWN", "MAINTENANCE"] },
           OR: [{ nextCheck: null }, { nextCheck: { lte: new Date() } }],
         },
         orderBy: { nextCheck: "asc" }, // Prioritize oldest due
@@ -182,6 +201,13 @@ export default {
           interval: true,
           status: true,
           name: true,
+          maintenanceWindows: {
+            where: {
+              startAt: { lte: new Date() },
+              endAt: { gte: new Date() },
+            },
+            take: 1,
+          },
         },
       });
 
@@ -192,17 +218,6 @@ export default {
       // --- FREE PLAN: DIRECT EXECUTION ---
       // We process them right here instead of queuing
       await processBatch(monitors, prisma);
-
-      // --- PAID PLAN: QUEUE DISPATCH (Preserved) ---
-      /*
-      const queueBatchSize = 100;
-      for (let i = 0; i < monitors.length; i += queueBatchSize) {
-        const chunk = monitors.slice(i, i + queueBatchSize).map((m: any) => ({
-          body: m,
-        }));
-        await env.CHECK_QUEUE.sendBatch(chunk);
-      }
-      */
 
       console.log("Monitors processed successfully.");
     } catch (error) {
