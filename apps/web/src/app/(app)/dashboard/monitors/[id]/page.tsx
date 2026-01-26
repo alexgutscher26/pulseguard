@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 
+/**
+ * Renders the monitor detail page based on the provided monitor ID.
+ */
 export default async function MonitorDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const monitor = await getMonitor(id);
