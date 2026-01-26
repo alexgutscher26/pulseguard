@@ -22,6 +22,11 @@ These items block general reliability or user trust.
   - Design valid HTML email templates (Dark mode supported).
 - [ ] **Discord/Slack Webhooks**
   - Payload formatting for rich embeds (Color: Red for Down, Green for Up).
+- [ ] **Incident Management (Core)**
+  - Create `Incident` model linked to Monitors.
+  - Auto-create Incident on DOWN alert.
+  - Allow manual status updates (Investigating, Identified, Monitoring, Resolved).
+  - Broadcast updates to all Notification Channels.
 
 ### 🛡️ False Positive Prevention
 
@@ -86,15 +91,27 @@ Expand what PulseGuard can actually guard.
   - Verify `connect()` to database ports (5432) or Redis (6379) works.
 - [ ] **DNS Watchdog**
   - Check if domain resolves to expected IP.
+- [ ] **Multi-Region Monitoring (Global Pulse)**
+  - **User Requirement**: "Is my site down in Tokyo vs New York?"
+  - **Implementation**:
+    - Allow users to select specific check regions (e.g., `us-east`, `eu-central`, `ap-northeast` / Tokyo).
+    - Deploy Workers to multiple Cloudflare regions.
+    - **Consensus Logic**: Mark DOWN only if X regions fail (configurable).
+    - **Dashboard**: Show a world map or list with status _per region_.
 
 ### 🌐 Public Status Pages
 
-- [ ] **Public Page Generator**
+- [ ] **Public & Private Status Pages**
   - Route: `pulseguard.com/status/[slug]`.
-  - Config: Allow users to select _which_ monitors appear on their status page.
-  - Branding: Allow custom logo/title for Pro users.
-- [ ] **Incident History**
-  - Manually add "Investigating", "Identified", "Resolved" notes to the status page.
+  - **Private Pages**: Password protection or Token-based access for internal team dashboards.
+  - Config: Select specific monitors/groups.
+  - Branding: Custom Logo, Favicon, CNAME support (Custom Domains).
+- [ ] **Incident History & Widgets**
+  - Show active incidents and historical uptake.
+  - **Embeddable Status Widget**: JS snippet to show "All Systems Operational" on user's own website.
+- [ ] **Status Updates Subscription**
+  - 'Subscribe to Updates' button on Status Pages.
+  - Email/RSS feed for end-users.
 
 ### 🗓️ Maintenance Windows
 
