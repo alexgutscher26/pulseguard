@@ -7,25 +7,85 @@ import { redirect } from "next/navigation";
 import { auth } from "@pulseguard/auth";
 import { headers } from "next/headers";
 
-const monitorSchema = z.object({
+// Conditional validation schema
+const baseSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  url: z.string().url("Must be a valid URL").refine((val) => {
-    try {
-      const url = new URL(val);
-      const hostname = url.hostname.toLowerCase();
-      // Block localhost, private IPs, and loopback
-      const isLocalhost = hostname === 'localhost' || 
-                          hostname === '127.0.0.1' || 
-                          hostname === '::1' || 
-                          hostname === '0.0.0.0';
-      return !isLocalhost;
-    } catch {
-      return false;
-    }
-  }, "Localhost URLs are not allowed. Please use a public URL or a tunnel (e.g., ngrok)."),
   type: z.enum(["HTTP", "PING", "PORT"]),
   interval: z.coerce.number().min(30),
   timeout: z.coerce.number().min(1),
+  url: z.string().optional(), // For HTTP/Ping
+  // For Port:
+  hostname: z.string().optional(),
+  port: z.coerce.number().min(1).max(65535).optional(),
+});
+
+const monitorSchema = baseSchema.superRefine((data, ctx) => {
+  if (data.type === "HTTP") {
+    if (!data.url) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "URL is required for HTTP monitors",
+        path: ["url"],
+      });
+      return;
+    }
+    const urlCheck = z.string().url("Must be a valid URL").safeParse(data.url);
+    if (!urlCheck.success) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Must be a valid URL",
+        path: ["url"],
+      });
+      return;
+    }
+    // Shared localhost check
+    try {
+        const urlObj = new URL(data.url);
+        const hostname = urlObj.hostname.toLowerCase();
+        const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1' || hostname === '0.0.0.0';
+        if (isLocalhost) {
+             ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Localhost URLs are not allowed. Please use a public URL.",
+                path: ["url"],
+            });
+        }
+    } catch {
+        // Invalid URL caught above
+    }
+  } else if (data.type === "PING") {
+     if (!data.url) { // We reuse the 'url' input field for Hostname in the form
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Hostname is required",
+            path: ["url"],
+        });
+        return;
+     }
+     // Basic hostname check
+     if (data.url.includes("://")) { // Should just be hostname
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Enter hostname only (no http://)",
+            path: ["url"],
+        });
+     }
+  } else if (data.type === "PORT") {
+      if (!data.url) { // Reusing 'url' input as hostname
+         ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Hostname is required",
+            path: ["url"],
+         });
+      }
+      if (!data.port) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Port is required",
+            path: ["port"],
+         });
+      }
+  }
 });
 
 export async function createMonitor(prevState: any, formData: FormData) {
@@ -39,10 +99,11 @@ export async function createMonitor(prevState: any, formData: FormData) {
 
   const rawData = {
     name: formData.get("name"),
-    url: formData.get("url"),
+    url: formData.get("url"), // This input is reused for URL or Hostname
     type: formData.get("type"),
     interval: formData.get("interval"),
     timeout: formData.get("timeout"),
+    port: formData.get("port"), // Only present for PORT
   };
 
   const validation = monitorSchema.safeParse(rawData);
@@ -54,13 +115,22 @@ export async function createMonitor(prevState: any, formData: FormData) {
   }
 
   const data = validation.data;
+  let finalUrl = data.url || "";
+
+  // Construct standard URL format for storage
+  // The worker currently only supports FETCH (HTTP), so these won't work yet, but we store them correctly.
+  if (data.type === "PING") {
+      finalUrl = `ping://${data.url}`;
+  } else if (data.type === "PORT") {
+      finalUrl = `tcp://${data.url}:${data.port}`;
+  }
 
   try {
     await prisma.monitor.create({
       data: {
         name: data.name,
-        url: data.url,
-        type: data.type as any, // Cast to any to avoid TS issues if enum not generated
+        url: finalUrl,
+        type: data.type as any,
         interval: data.interval,
         timeout: data.timeout,
         userId: session.user.id,
