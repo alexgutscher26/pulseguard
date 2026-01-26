@@ -115,7 +115,7 @@ Expand what PulseGuard can actually guard.
 
 ### 🗓️ Maintenance Windows
 
-- [ ] **Scheduled Downtime**
+- [x] **Scheduled Downtime**
   - Schema: `MaintenanceWindow` (start, end, monitorIds).
   - Logic: Worker checks "Is current time inside maintenance window?" -> If yes, skip alarm logic.
 

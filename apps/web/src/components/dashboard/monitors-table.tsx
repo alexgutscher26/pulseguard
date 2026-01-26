@@ -268,9 +268,12 @@ export function MonitorsTable({ monitors: initialMonitors }: { monitors: Monitor
                       >
                         <BarChart2 className="size-4" />
                       </Link>
-                      <button className="hover:text-primary transition-colors">
+                      <Link
+                        href={`/dashboard/monitors/${site.id}/settings`}
+                        className="hover:text-primary transition-colors"
+                      >
                         <Edit2 className="size-4" />
-                      </button>
+                      </Link>
                     </div>
                   </td>
                 </tr>

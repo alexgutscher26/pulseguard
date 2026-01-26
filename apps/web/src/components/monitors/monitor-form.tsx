@@ -2,7 +2,7 @@
 
 import { Activity, Globe, Server, Clock, Save, X, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { createMonitor } from "@/actions/monitors";
+import { createMonitor, updateMonitor } from "@/actions/monitors";
 import { useActionState, useState } from "react";
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -13,30 +13,61 @@ const initialState = {
   error: "",
 };
 
-export function MonitorForm() {
-  const [state, formAction, isPending] = useActionState(createMonitor, initialState);
+interface MonitorFormProps {
+  monitor?: {
+    id: string;
+    name: string;
+    url: string;
+    type: "HTTP" | "PING" | "PORT";
+    interval: number;
+    timeout: number;
+  };
+}
+
+export function MonitorForm({ monitor }: MonitorFormProps) {
+  // Parse initial values
+  let initialType: "HTTP" | "PING" | "PORT" = monitor?.type || "HTTP";
+  let initialUrl = monitor?.url || "";
+  let initialPort = "";
+
+  if (monitor) {
+    if (monitor.type === "PING" && initialUrl.startsWith("ping://")) {
+      initialUrl = initialUrl.replace("ping://", "");
+    } else if (monitor.type === "PORT" && initialUrl.startsWith("tcp://")) {
+      const trimmed = initialUrl.replace("tcp://", "");
+      const [host, port] = trimmed.split(":");
+      initialUrl = host;
+      initialPort = port;
+    }
+  }
+
+  const [monitorType, setMonitorType] = useState<"HTTP" | "PING" | "PORT">(initialType);
+
+  const action = monitor ? updateMonitor.bind(null, monitor.id) : createMonitor;
+  const [state, formAction, isPending] = useActionState(action, initialState);
   const router = useRouter();
 
   useEffect(() => {
     if (state.success) {
-      toast.success("Monitor created successfully");
+      toast.success(monitor ? "Monitor updated successfully" : "Monitor created successfully");
       router.push("/dashboard/monitors");
+      router.refresh();
     } else if (state.error) {
       toast.error(state.error);
     }
-  }, [state, router]);
-
-  const [monitorType, setMonitorType] = useState<"HTTP" | "PING" | "PORT">("HTTP");
+  }, [state, router, monitor]);
 
   return (
     <div className="max-w-2xl mx-auto flex flex-col gap-8">
       <div className="flex flex-col gap-2">
         <h3 className="text-xl font-bold text-foreground font-mono uppercase tracking-tight flex items-center gap-2">
           <Activity className="size-5 text-primary" />
-          New Monitor Protocol
+          {monitor ? "Edit Monitor" : "New Monitor Protocol"}
         </h3>
         <p className="text-sm text-primary/60 font-mono">
-          Configure a new endpoint for continuous tracking
+          {monitor
+            ? "Update your monitor configuration"
+            : "Configure a new endpoint for continuous tracking"}
         </p>
       </div>
 
@@ -110,6 +141,7 @@ export function MonitorForm() {
             <input
               name="name"
               required
+              defaultValue={monitor?.name}
               className="bg-black/50 border border-primary/20 focus:border-primary/60 text-primary text-sm rounded-sm p-3 font-mono placeholder:text-primary/20 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full"
               type="text"
               placeholder={monitorType === "HTTP" ? "e.g. Production API" : "e.g. Game Server"}
@@ -124,6 +156,7 @@ export function MonitorForm() {
               <input
                 name="url"
                 required
+                defaultValue={initialUrl}
                 className="bg-black/50 border border-primary/20 focus:border-primary/60 text-primary text-sm rounded-sm p-3 font-mono placeholder:text-primary/20 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full"
                 type="text"
                 placeholder={
@@ -137,6 +170,7 @@ export function MonitorForm() {
                   <input
                     name="port"
                     required
+                    defaultValue={initialPort}
                     className="bg-black/50 border border-primary/20 focus:border-primary/60 text-primary text-sm rounded-sm p-3 font-mono placeholder:text-primary/20 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full"
                     type="number"
                     placeholder="8080"
@@ -157,6 +191,7 @@ export function MonitorForm() {
                 <Clock className="absolute top-3 left-3 size-4 text-primary/40 pointer-events-none" />
                 <select
                   name="interval"
+                  defaultValue={monitor?.interval}
                   className="bg-black/50 border border-primary/20 focus:border-primary/60 text-primary text-sm rounded-sm p-3 pl-10 font-mono focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full appearance-none cursor-pointer"
                 >
                   <option value="30">30 Seconds</option>
@@ -174,6 +209,7 @@ export function MonitorForm() {
                 <Clock className="absolute top-3 left-3 size-4 text-primary/40 pointer-events-none" />
                 <select
                   name="timeout"
+                  defaultValue={monitor?.timeout}
                   className="bg-black/50 border border-primary/20 focus:border-primary/60 text-primary text-sm rounded-sm p-3 pl-10 font-mono focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full appearance-none cursor-pointer"
                 >
                   <option value="5">5 Seconds</option>
@@ -203,7 +239,7 @@ export function MonitorForm() {
               ) : (
                 <Save className="size-4" />
               )}
-              Create Monitor
+              {monitor ? "Save Changes" : "Create Monitor"}
             </button>
           </div>
         </div>

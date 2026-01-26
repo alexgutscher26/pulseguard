@@ -152,6 +152,64 @@ export async function createMonitor(prevState: any, formData: FormData) {
   }
 }
 
+export async function updateMonitor(id: string, prevState: any, formData: FormData) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  const rawData = {
+    name: formData.get("name"),
+    url: formData.get("url"),
+    type: formData.get("type"),
+    interval: formData.get("interval"),
+    timeout: formData.get("timeout"),
+    port: formData.get("port"),
+  };
+
+  const validation = monitorSchema.safeParse(rawData);
+
+  if (!validation.success) {
+    const firstError = validation.error.issues[0]?.message || "Invalid input";
+    return { success: false, error: firstError };
+  }
+
+  const data = validation.data;
+  let finalUrl = data.url || "";
+
+  if (data.type === "PING") {
+    finalUrl = `ping://${data.url}`;
+  } else if (data.type === "PORT") {
+    finalUrl = `tcp://${data.url}:${data.port}`;
+  }
+
+  try {
+    await prisma.monitor.update({
+      where: {
+        id,
+        userId: session.user.id,
+      },
+      data: {
+        name: data.name,
+        url: finalUrl,
+        type: data.type as any,
+        interval: data.interval,
+        timeout: data.timeout,
+      },
+    });
+
+    revalidatePath("/dashboard/monitors");
+    revalidatePath(`/dashboard/monitors/${id}`);
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to update monitor", error);
+    return { success: false, error: "Failed to update monitor" };
+  }
+}
+
 export async function getMonitors() {
   const session = await auth.api.getSession({
     headers: await headers(),
