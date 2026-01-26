@@ -3,7 +3,6 @@
 import prisma from "@pulseguard/db";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { auth } from "@pulseguard/auth";
 import { headers } from "next/headers";
 
@@ -291,6 +290,7 @@ export async function getMonitor(id: string) {
             timestamp: "desc",
           },
         },
+        // @ts-ignore
         maintenanceWindows: {
           orderBy: {
             startAt: "asc",
@@ -312,11 +312,48 @@ export async function checkMonitor(id: string) {
 
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
+  /* Updated to include maintenance check */
   const monitor = await prisma.monitor.findUnique({
     where: { id, userId: session.user.id },
+    include: {
+      // @ts-ignore
+      maintenanceWindows: {
+        where: {
+          startAt: { lte: new Date() },
+          endAt: { gte: new Date() },
+        },
+        take: 1,
+      },
+    },
   });
 
   if (!monitor) return { success: false, error: "Monitor not found" };
+
+  // Check for active maintenance
+  if ((monitor as any).maintenanceWindows && (monitor as any).maintenanceWindows.length > 0) {
+    console.log(`[Maintenance] Manual check skipped for ${monitor.name}`);
+    await prisma.$transaction([
+      prisma.monitor.update({
+        where: { id: monitor.id },
+        data: {
+          status: "MAINTENANCE" as any,
+          lastCheck: new Date(),
+        },
+      }),
+      prisma.monitorEvent.create({
+        data: {
+          monitorId: monitor.id,
+          status: "MAINTENANCE" as any,
+          latency: 0,
+          timestamp: new Date(),
+        },
+      }),
+    ]);
+    revalidatePath(`/dashboard/monitors/${id}`);
+    revalidatePath("/dashboard/monitors");
+    revalidatePath("/dashboard");
+    return { success: true };
+    }
 
   const start = Date.now();
   let currentStatus: "UP" | "DOWN" = "DOWN";
@@ -329,7 +366,7 @@ export async function checkMonitor(id: string) {
         "User-Agent": "PulseGuard-Monitor/1.0",
         Accept: "*/*",
       },
-      signal: AbortSignal.timeout(10000),
+      signal: AbortSignal.timeout((monitor.timeout || 10) * 1000),
     });
 
     latency = Date.now() - start;
@@ -361,6 +398,8 @@ export async function checkMonitor(id: string) {
     ]);
 
     revalidatePath(`/dashboard/monitors/${id}`);
+    revalidatePath("/dashboard/monitors");
+    revalidatePath("/dashboard");
     return { success: true };
   } catch (error) {
     console.error("Failed to save check result", error);
@@ -384,6 +423,8 @@ export async function toggleMonitor(id: string, enabled: boolean) {
     });
 
     revalidatePath(`/dashboard/monitors/${id}`);
+    revalidatePath("/dashboard/monitors");
+    revalidatePath("/dashboard");
     return { success: true };
   } catch (error) {
     console.error("Failed to toggle monitor", error);

@@ -1,10 +1,18 @@
 "use client";
 
-import { MoreHorizontal, Zap, WifiOff, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  MoreHorizontal,
+  Zap,
+  WifiOff,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 
 function UptimeBar({ status }: { status: number }) {
-  const bgClass = status === 1 ? "bg-primary/80" : "bg-red-500/80";
+  let bgClass = "bg-primary/80";
+  if (status === 0) bgClass = "bg-red-500/80";
+  if (status === 2) bgClass = "bg-amber-500/80";
   return <div className={`w-1 h-3 md:h-4 ${bgClass}`}></div>;
 }
 
@@ -53,14 +61,19 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
               // Calculate history for bars (last 10 events reversed for display left-to-right?)
               // Assuming events are desc, so [0] is latest. We want old -> new.
               const history = monitor.events
-                ? [...monitor.events].reverse().map((e: any) => (e.status === "UP" ? 1 : 0))
+                ? [...monitor.events].reverse().map((e: any) => {
+                    if (e.status === "MAINTENANCE") return 2;
+                    return e.status === "UP" ? 1 : 0;
+                  })
                 : [];
               const latestLatency = monitor.events?.[0]?.latency;
 
               return (
                 <tr
                   key={monitor.id}
-                  onClick={() => router.push(`/dashboard/monitors/${monitor.id}`)}
+                  onClick={() =>
+                    router.push(`/dashboard/monitors/${monitor.id}`)
+                  }
                   className="group hover:bg-primary/5 transition-colors cursor-pointer font-mono border-l-2 border-transparent hover:border-primary/50"
                 >
                   <td className="p-4 w-32">
@@ -88,8 +101,18 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                         </span>
                       </div>
                     )}
+                    {monitor.status === "MAINTENANCE" && (
+                      <div className="flex items-center gap-2 px-2 py-1 bg-amber-500/10 border border-amber-500/20 w-fit rounded-sm">
+                        <div className="size-1.5 bg-amber-500 rounded-full animate-pulse"></div>
+                        <span className="text-[10px] uppercase text-amber-500 font-bold tracking-wider">
+                          MAINT
+                        </span>
+                      </div>
+                    )}
                   </td>
-                  <td className={`p-4 ${monitor.status === "PAUSED" ? "opacity-75" : ""}`}>
+                  <td
+                    className={`p-4 ${monitor.status === "PAUSED" ? "opacity-75" : ""}`}
+                  >
                     <div className="flex flex-col">
                       <span
                         className={`font-bold text-foreground group-hover:text-primary transition-colors ${monitor.status === "DOWN" ? "group-hover:text-red-500" : monitor.status === "PAUSED" ? "group-hover:text-yellow-500" : ""}`}
@@ -101,7 +124,9 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                       </span>
                     </div>
                   </td>
-                  <td className={`p-4 ${monitor.status === "PAUSED" ? "opacity-50" : ""}`}>
+                  <td
+                    className={`p-4 ${monitor.status === "PAUSED" ? "opacity-50" : ""}`}
+                  >
                     <div className="flex items-center gap-3">
                       {history.length > 0 ? (
                         <div className="flex gap-[1px] h-4 items-end">
@@ -110,7 +135,9 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                           ))}
                         </div>
                       ) : (
-                        <span className="text-xs text-muted-foreground font-bold">--</span>
+                        <span className="text-xs text-muted-foreground font-bold">
+                          --
+                        </span>
                       )}
                       {/* Mock percentage or calculate */}
                       <span
@@ -120,7 +147,9 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                       </span>
                     </div>
                   </td>
-                  <td className={`p-4 ${monitor.status === "PAUSED" ? "opacity-50" : ""}`}>
+                  <td
+                    className={`p-4 ${monitor.status === "PAUSED" ? "opacity-50" : ""}`}
+                  >
                     {monitor.status !== "PAUSED" ? (
                       <div className="flex items-center gap-2 text-xs">
                         {monitor.status === "DOWN" ? (
@@ -129,7 +158,11 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                           <Zap className="size-3 text-primary" />
                         )}
                         <span
-                          className={monitor.status === "DOWN" ? "text-red-500" : "text-foreground"}
+                          className={
+                            monitor.status === "DOWN"
+                              ? "text-red-500"
+                              : "text-foreground"
+                          }
                         >
                           {latestLatency ? latestLatency + "ms" : "--"}
                         </span>

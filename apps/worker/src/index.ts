@@ -31,7 +31,7 @@ async function performCheck(
           "User-Agent": "PulseGuard-Monitor/1.0",
           Accept: "*/*",
         },
-        signal: AbortSignal.timeout(10000),
+        signal: AbortSignal.timeout((monitor.timeout || 10) * 1000),
       });
       currentStatus = response.ok ? "UP" : "DOWN";
 
@@ -141,7 +141,7 @@ async function processBatch(monitors: any[], prisma: any) {
           prisma.monitorEvent.create({
             data: {
               monitorId: monitor.id,
-              status: currentStatus,
+              status: currentStatus as any,
               latency: latency,
               errorReason: errorReason,
               timestamp: new Date(),
@@ -150,7 +150,7 @@ async function processBatch(monitors: any[], prisma: any) {
           prisma.monitor.update({
             where: { id: monitor.id },
             data: {
-              status: currentStatus,
+              status: currentStatus as any,
               lastCheck: new Date(),
               nextCheck: new Date(Date.now() + (monitor.interval || 60) * 1000),
             },
@@ -173,12 +173,12 @@ async function processBatch(monitors: any[], prisma: any) {
 
 export default {
   // Required: Basic fetch handler
-  async fetch(request: Request, env: Env, ctx: ExecutionContext) {
+  async fetch(_request: Request, _env: Env, _ctx: ExecutionContext) {
     return new Response("PulseGuard Worker is Running", { status: 200 });
   },
 
   // 1. Cron: Find pending checks and run them (Free Tier Batch Mode)
-  async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
+  async scheduled(_event: ScheduledEvent, env: Env, _ctx: ExecutionContext) {
     console.log("Cron triggered: checking for due monitors...");
     const prisma = getPrisma(env.DATABASE_URL);
 
@@ -190,7 +190,7 @@ export default {
       // Find active monitors that are due for a check
       const monitors = await prisma.monitor.findMany({
         where: {
-          status: { in: ["UP", "DOWN", "MAINTENANCE"] },
+          status: { in: ["UP", "DOWN", "MAINTENANCE"] as any },
           OR: [{ nextCheck: null }, { nextCheck: { lte: new Date() } }],
         },
         orderBy: { nextCheck: "asc" }, // Prioritize oldest due
@@ -199,8 +199,10 @@ export default {
           id: true,
           url: true,
           interval: true,
+          timeout: true,
           status: true,
           name: true,
+          // @ts-ignore
           maintenanceWindows: {
             where: {
               startAt: { lte: new Date() },
@@ -226,7 +228,7 @@ export default {
   },
 
   // 2. Queue Consumer: (Preserved for Paid Plan Upgrade)
-  async queue(batch: MessageBatch<any>, env: Env, ctx: ExecutionContext) {
+  async queue(batch: MessageBatch<any>, env: Env, _ctx: ExecutionContext) {
     const prisma = getPrisma(env.DATABASE_URL);
     const monitors = batch.messages.map((msg) => msg.body);
 
