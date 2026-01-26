@@ -5,6 +5,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { auth } from "@pulseguard/auth";
 import { headers } from "next/headers";
+import { checkMonitor } from "@/actions/monitors";
 
 const maintenanceSchema = z.object({
   monitorId: z.string(),
@@ -56,7 +57,7 @@ export async function createMaintenanceWindow(prevState: any, formData: FormData
   }
 
   try {
-    await prisma.maintenanceWindow.create({
+    await (prisma as any).maintenanceWindow.create({
       data: {
         monitorId: data.monitorId,
         description: data.description,
@@ -64,6 +65,10 @@ export async function createMaintenanceWindow(prevState: any, formData: FormData
         endAt: data.endAt,
       },
     });
+
+    // Revalidate and update status immediately by triggering a check
+    // If window is active now, checkMonitor will set status to MAINTENANCE
+    await checkMonitor(data.monitorId);
 
     revalidatePath(`/dashboard/monitors/${data.monitorId}/settings`);
     return { success: true };
@@ -85,7 +90,7 @@ export async function deleteMaintenanceWindow(id: string) {
   try {
     // Verify ownership via monitor Relation lookup is complex efficiently in one delete call
     // So we find first
-    const window = await prisma.maintenanceWindow.findUnique({
+    const window = await (prisma as any).maintenanceWindow.findUnique({
       where: { id },
       include: { monitor: true },
     });
@@ -94,9 +99,13 @@ export async function deleteMaintenanceWindow(id: string) {
       return { success: false, error: "Unauthorized" };
     }
 
-    await prisma.maintenanceWindow.delete({
+    await (prisma as any).maintenanceWindow.delete({
       where: { id },
     });
+
+    // Revalidate and update status immediately
+    // If window was active and is now gone, checkMonitor will ping and set status to UP/DOWN
+    await checkMonitor(window.monitorId);
 
     revalidatePath(`/dashboard/monitors/${window.monitorId}/settings`);
     return { success: true };
@@ -121,7 +130,7 @@ export async function getMaintenanceWindows(monitorId: string) {
   if (!monitor) return [];
 
   try {
-    return await prisma.maintenanceWindow.findMany({
+    return await (prisma as any).maintenanceWindow.findMany({
       where: { monitorId },
       orderBy: { startAt: "asc" },
     });

@@ -1,7 +1,10 @@
 "use client";
 
 import { useActionState, useState, useEffect } from "react";
-import { createMaintenanceWindow, deleteMaintenanceWindow } from "@/actions/maintenance";
+import {
+  createMaintenanceWindow,
+  deleteMaintenanceWindow,
+} from "@/actions/maintenance";
 import { toast } from "sonner";
 import { Loader2, Plus, Calendar, Trash2, Construction } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -25,20 +28,32 @@ export function MaintenanceManager({
   monitorId: string;
   windows: MaintenanceWindow[];
 }) {
-  const [state, formAction, isPending] = useActionState(createMaintenanceWindow, initialState);
+  const [state, formAction, isPending] = useActionState(
+    createMaintenanceWindow,
+    initialState,
+  );
   const router = useRouter();
 
   // Reset form on success? Controlled inputs needed.
   const [description, setDescription] = useState("");
   // Default start to next hour
+  // Default start to next hour (Local Time)
   const defaultStart = new Date();
   defaultStart.setMinutes(0, 0, 0);
   defaultStart.setHours(defaultStart.getHours() + 1);
+
+  // Adjust for timezone offset to get local ISO string
+  const toLocalISO = (date: Date) => {
+    const tzOffset = date.getTimezoneOffset() * 60000; // offset in milliseconds
+    const localTime = new Date(date.getTime() - tzOffset);
+    return localTime.toISOString().slice(0, 16);
+  };
+
+  const [startAt, setStartAt] = useState(toLocalISO(defaultStart));
+
   const defaultEnd = new Date(defaultStart);
   defaultEnd.setHours(defaultEnd.getHours() + 1);
-
-  const [startAt, setStartAt] = useState(defaultStart.toISOString().slice(0, 16));
-  const [endAt, setEndAt] = useState(defaultEnd.toISOString().slice(0, 16));
+  const [endAt, setEndAt] = useState(toLocalISO(defaultEnd));
 
   useEffect(() => {
     if (state.success) {
