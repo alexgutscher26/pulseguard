@@ -296,3 +296,89 @@ export async function toggleMonitor(id: string, enabled: boolean) {
     return { success: false, error: "Failed to toggle monitor" };
   }
 }
+
+export async function getDashboardStats() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) {
+    return {
+      activeMonitors: 0,
+      globalUptime: 0,
+      avgLatency: 0,
+      activeAlerts: 0,
+    };
+  }
+
+  try {
+    const userId = session.user.id;
+
+    // 1. Active Monitors
+    const activeMonitorsCount = await prisma.monitor.count({
+      where: {
+        userId,
+        status: { not: "PAUSED" },
+      },
+    });
+
+    // 2. Active Alerts (Monitors currently DOWN)
+    const activeAlertsCount = await prisma.monitor.count({
+      where: {
+        userId,
+        status: "DOWN",
+      },
+    });
+
+    // 3. Global Stats (Uptime & Latency) - Last 24h
+    // We fetch events for all user's monitors
+    const userMonitors = await prisma.monitor.findMany({
+      where: { userId },
+      select: { id: true },
+    });
+    const monitorIds = userMonitors.map((m) => m.id);
+
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+    const events = await prisma.monitorEvent.findMany({
+      where: {
+        monitorId: { in: monitorIds },
+        timestamp: { gte: oneDayAgo },
+      },
+      select: {
+        status: true,
+        latency: true,
+      },
+    });
+
+    let globalUptime = 0;
+    let avgLatency = 0;
+
+    if (events.length > 0) {
+      const upEvents = events.filter((e) => e.status === "UP").length;
+      globalUptime = (upEvents / events.length) * 100;
+
+      const latencies = events
+        .filter((e) => e.status === "UP" && e.latency > 0)
+        .map((e) => e.latency);
+
+      const totalLatency = latencies.reduce((a, b) => a + b, 0);
+      avgLatency = latencies.length > 0 ? totalLatency / latencies.length : 0;
+    }
+
+    return {
+      activeMonitors: activeMonitorsCount,
+      globalUptime: Number(globalUptime.toFixed(2)),
+      avgLatency: Math.round(avgLatency),
+      activeAlerts: activeAlertsCount,
+    };
+  } catch (error) {
+    console.error("Failed to fetch dashboard stats", error);
+    return {
+      activeMonitors: 0,
+      globalUptime: 0,
+      avgLatency: 0,
+      activeAlerts: 0,
+    };
+  }
+}

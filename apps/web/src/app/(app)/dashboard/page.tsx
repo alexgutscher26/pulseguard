@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import Dashboard from "./dashboard";
 
-import { getMonitors } from "@/actions/monitors";
+import { getMonitors, getDashboardStats } from "@/actions/monitors";
 
 export default async function DashboardPage() {
   const session = await auth.api.getSession({
@@ -16,6 +16,7 @@ export default async function DashboardPage() {
   }
 
   const monitors = await getMonitors();
+  const stats = await getDashboardStats();
 
-  return <Dashboard monitors={monitors} />;
+  return <Dashboard monitors={monitors} stats={stats} />;
 }

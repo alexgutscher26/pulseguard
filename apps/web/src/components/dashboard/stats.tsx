@@ -2,46 +2,53 @@
 
 import { Wifi, CheckCircle, Zap, AlertTriangle, TrendingUp, TrendingDown } from "lucide-react";
 
-const stats = [
-  {
-    name: "Active Monitors",
-    value: "12",
-    change: "+2 this week",
-    trend: "up",
-    icon: Wifi,
-    iconColor: "text-primary",
-    changeColor: "text-emerald-500",
-  },
-  {
-    name: "Global Uptime",
-    value: "99.98%",
-    change: "+0.01%",
-    trend: "up",
-    icon: CheckCircle,
-    iconColor: "text-emerald-500",
-    changeColor: "text-emerald-500",
-  },
-  {
-    name: "Avg Response Time",
-    value: "342ms",
-    change: "-12ms (faster)",
-    trend: "down", // actually good
-    icon: Zap,
-    iconColor: "text-amber-500",
-    changeColor: "text-amber-500",
-  },
-  {
-    name: "Active Alerts",
-    value: "1",
-    change: "Currently being resolved",
-    trend: "neutral",
-    icon: AlertTriangle,
-    iconColor: "text-red-500",
-    changeColor: "text-muted-foreground",
-  },
-];
+export interface DashboardStatsData {
+  activeMonitors: number;
+  globalUptime: number;
+  avgLatency: number;
+  activeAlerts: number;
+}
 
-export function DashboardStats() {
+export function DashboardStats({ stats: data }: { stats: DashboardStatsData }) {
+  const stats = [
+    {
+      name: "Active Monitors",
+      value: data.activeMonitors.toString(),
+      change: "Live",
+      trend: "up",
+      icon: Wifi,
+      iconColor: "text-primary",
+      changeColor: "text-emerald-500",
+    },
+    {
+      name: "Global Uptime",
+      value: `${data.globalUptime}%`,
+      change: "Last 24h",
+      trend: "up",
+      icon: CheckCircle,
+      iconColor: "text-emerald-500",
+      changeColor: "text-emerald-500",
+    },
+    {
+      name: "Avg Response Time",
+      value: `${data.avgLatency}ms`,
+      change: "Last 24h",
+      trend: "down", // actually good
+      icon: Zap,
+      iconColor: "text-amber-500",
+      changeColor: "text-amber-500",
+    },
+    {
+      name: "Active Alerts",
+      value: data.activeAlerts.toString(),
+      change: data.activeAlerts > 0 ? "Action Required" : "All Systems Operational",
+      trend: data.activeAlerts > 0 ? "down" : "neutral",
+      icon: AlertTriangle,
+      iconColor: data.activeAlerts > 0 ? "text-red-500" : "text-emerald-500",
+      changeColor: data.activeAlerts > 0 ? "text-red-500" : "text-muted-foreground",
+    },
+  ];
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
       {stats.map((stat) => (
@@ -50,8 +57,8 @@ export function DashboardStats() {
           className="bg-black/40 border border-primary/20 p-6 hover:border-primary/50 transition-all duration-300 group relative overflow-hidden backdrop-blur-sm"
         >
           {/* Hover Corner accents */}
-          <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-primary/0 group-hover:border-primary/100 transition-colors"></div>
-          <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-primary/0 group-hover:border-primary/100 transition-colors"></div>
+          <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-primary/0 group-hover:border-primary transition-colors"></div>
+          <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-primary/0 group-hover:border-primary transition-colors"></div>
 
           <div className="flex items-center justify-between mb-4">
             <p className="text-muted-foreground text-xs font-mono uppercase tracking-widest">
