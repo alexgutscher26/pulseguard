@@ -95,6 +95,15 @@ const monitorSchema = baseSchema.superRefine((data, ctx) => {
   }
 });
 
+/**
+ * Create a new monitor based on the provided form data.
+ *
+ * This function first retrieves the current user session to ensure authorization. It then validates the input data against a schema. Depending on the monitor type, it constructs a standard URL format for storage. Finally, it attempts to create a new monitor entry in the database and revalidates the dashboard path.
+ *
+ * @param prevState - The previous state of the monitor, used for context.
+ * @param formData - The form data containing monitor details such as name, URL, type, interval, timeout, and port.
+ * @returns An object indicating the success of the operation and any associated error message.
+ */
 export async function createMonitor(prevState: any, formData: FormData) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -152,6 +161,13 @@ export async function createMonitor(prevState: any, formData: FormData) {
   }
 }
 
+/**
+ * Retrieve a list of monitors associated with the authenticated user.
+ *
+ * The function first obtains the user session using the auth.api.getSession method. If the session is valid and the user is authenticated, it attempts to fetch the monitors from the database using prisma.monitor.findMany. The monitors are ordered by their creation date, and the latest events are included for each monitor. If any error occurs during the database query, an empty array is returned.
+ *
+ * @returns An array of monitors associated with the authenticated user, or an empty array if the user is not authenticated or an error occurs.
+ */
 export async function getMonitors() {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -182,6 +198,14 @@ export async function getMonitors() {
   }
 }
 
+/**
+ * Retrieve a monitor by its ID.
+ *
+ * This function first obtains the current user session using the auth.api.getSession method. If the session is valid and the user is authenticated, it attempts to fetch the monitor from the database using prisma.monitor.findUnique. The monitor is retrieved along with its latest 50 events, ordered by timestamp in descending order. If any error occurs during the fetch, it logs the error and returns null.
+ *
+ * @param id - The unique identifier of the monitor to retrieve.
+ * @returns The monitor object if found, or null if the session is invalid or an error occurs.
+ */
 export async function getMonitor(id: string) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -211,6 +235,14 @@ export async function getMonitor(id: string) {
   }
 }
 
+/**
+ * Check the status of a monitor and update its status in the database.
+ *
+ * This function retrieves the user's session and checks if the monitor exists. It then attempts to fetch the monitor's URL to determine its current status (UP or DOWN) and measures the latency. The results are saved in a transaction, updating the monitor's status and creating a monitor event. If any errors occur during the process, appropriate error messages are returned.
+ *
+ * @param id - The unique identifier of the monitor to check.
+ * @returns An object indicating the success of the operation and any error messages if applicable.
+ */
 export async function checkMonitor(id: string) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -274,6 +306,15 @@ export async function checkMonitor(id: string) {
   }
 }
 
+/**
+ * Toggle the status of a monitor based on the provided ID and enabled state.
+ *
+ * The function first retrieves the current user session to ensure authorization. If the user is authorized, it updates the monitor's status in the database to either "UP" or "PAUSED" based on the enabled parameter. After updating, it triggers a revalidation of the monitor's path. If any errors occur during the update, it logs the error and returns a failure response.
+ *
+ * @param id - The unique identifier of the monitor to be toggled.
+ * @param enabled - A boolean indicating whether to enable (true) or pause (false) the monitor.
+ * @returns An object indicating the success status and any error message if applicable.
+ */
 export async function toggleMonitor(id: string, enabled: boolean) {
   const session = await auth.api.getSession({
     headers: await headers(),
