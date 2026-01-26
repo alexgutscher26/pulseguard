@@ -6,6 +6,9 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 
+/**
+ * Renders the monitor detail page based on the provided monitor ID.
+ */
 export default async function MonitorDetailPage({
   params,
 }: {
