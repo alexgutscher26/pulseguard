@@ -16,6 +16,9 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
+/**
+ * Renders a Danger Zone section for account deletion with confirmation dialog.
+ */
 export function DangerZone() {
   return (
     <section className="bg-black/40 border border-red-500/30 relative overflow-hidden backdrop-blur-sm hover:border-red-500/60 transition-all">
@@ -67,10 +70,21 @@ export function DangerZone() {
   );
 }
 
+/**
+ * Renders a button that confirms the deletion of a user account.
+ *
+ * The component manages its own state to indicate whether a deletion is in progress.
+ * Upon clicking the button, it triggers the handleDelete function, which attempts to
+ * delete the user account using the authClient. If successful, it navigates to the
+ * login page; if it fails, it displays an error message and resets the deletion state.
+ */
 function DeleteConfirmButton() {
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
 
+  /**
+   * Handles the deletion of a user account.
+   */
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
