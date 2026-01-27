@@ -29,6 +29,7 @@ model Monitor {
   interval  Int      @default(60) // Seconds
   timeout   Int      @default(10) // Seconds
   status    MonitorStatus @default(UP)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
