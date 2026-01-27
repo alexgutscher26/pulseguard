@@ -53,6 +53,9 @@ const DialogContent = React.forwardRef<
 ));
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
+/**
+ * Renders a header for a dialog with customizable class names and props.
+ */
 const DialogHeader = ({
   className,
   ...props
