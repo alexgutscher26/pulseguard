@@ -1,16 +1,17 @@
 model User {
-  id            String    @id
-  name          String
-  email         String
-  emailVerified Boolean   @default(false)
-  image         String?
-  timezone      String?   @default("UTC")
-  dateFormat    String?   @default("MM/DD/YYYY")
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  sessions      Session[]
-  accounts      Account[]
-  monitors      Monitor[]
+  id                   String                @id
+  name                 String
+  email                String
+  emailVerified        Boolean               @default(false)
+  image                String?
+  timezone             String?               @default("UTC")
+  dateFormat           String?               @default("MM/DD/YYYY")
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  sessions             Session[]
+  accounts             Account[]
+  monitors             Monitor[]
+  notificationChannels NotificationChannel[]
 
   @@unique([email])
   @@map("user")

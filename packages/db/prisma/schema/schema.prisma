@@ -1,7 +1,8 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["driverAdapters", "prismaSchemaFolder"]
-  engineType = "wasm"
+  engineType      = "wasm"
+  output          = "../../src/generated/client"
 }
 
 datasource db {
@@ -22,20 +23,21 @@ enum MonitorStatus {
 }
 
 model Monitor {
-  id        String   @id @default(cuid())
+  id        String        @id @default(cuid())
   name      String
   url       String
-  type      MonitorType @default(HTTP)
-  interval  Int      @default(60) // Seconds
-  timeout   Int      @default(10) // Seconds
+  type      MonitorType   @default(HTTP)
+  interval  Int           @default(60) // Seconds
+  timeout   Int           @default(10) // Seconds
   status    MonitorStatus @default(UP)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  events    MonitorEvent[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  events             MonitorEvent[]
   maintenanceWindows MaintenanceWindow[]
+  alertRules         AlertRule[]
 
   nextCheck DateTime?
   lastCheck DateTime?
@@ -45,30 +47,30 @@ model Monitor {
 }
 
 model MonitorEvent {
-  id        String   @id @default(cuid())
-  monitorId String
-  status    MonitorStatus
-  latency   Int      // Milliseconds
+  id          String        @id @default(cuid())
+  monitorId   String
+  status      MonitorStatus
+  latency     Int // Milliseconds
   errorReason String? // "TIMEOUT", "DNS_ERROR", "HTTP_500", etc.
-  timestamp DateTime @default(now())
-  
-  monitor   Monitor  @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  timestamp   DateTime      @default(now())
+
+  monitor Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
 
   @@index([monitorId])
   @@index([timestamp])
 }
 
 model MaintenanceWindow {
-  id          String   @id @default(cuid())
-  monitorId   String
-  monitor     Monitor  @relation(fields: [monitorId], references: [id], onDelete: Cascade)
-  
+  id        String  @id @default(cuid())
+  monitorId String
+  monitor   Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+
   description String?
   startAt     DateTime
   endAt       DateTime
-  
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([monitorId])
   @@index([startAt, endAt])

@@ -1,0 +1,24 @@
+{
+  "name": "@pulseguard/email",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "resend": "^4.0.0",
+    "@react-email/components": "^0.0.25",
+    "@react-email/render": "^1.0.1",
+    "react": "^19.2.3"
+  },
+  "devDependencies": {
+    "@pulseguard/config": "workspace:*",
+    "@types/react": "^19.0.0",
+    "typescript": "catalog:"
+  }
+}

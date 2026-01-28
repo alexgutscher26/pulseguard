@@ -1,61 +1,98 @@
 "use client";
 
-import { AlertTriangle, CheckCircle, Clock, Timer, Filter, Calendar } from "lucide-react";
+import Link from "next/link";
+import {
+  AlertTriangle,
+  CheckCircle,
+  Clock,
+  Timer,
+  Activity,
+  MoreHorizontal,
+  Settings,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 
-const history = [
-  {
-    monitor: "Main Dashboard",
-    type: "Down (502 Bad Gateway)",
-    typeIcon: AlertTriangle,
-    typeColor: "text-red-500",
-    status: "Sent",
-    channel: "Slack (#ops-alerts)",
-    time: "2 Mins Ago",
-  },
-  {
-    monitor: "API Gateway",
-    type: "High Latency (3200ms)",
-    typeIcon: Timer,
-    typeColor: "text-yellow-500",
-    status: "Sent",
-    channel: "Email (admin@)",
-    time: "1 Hour Ago",
-  },
-  {
-    monitor: "Auth Service",
-    type: "Down",
-    typeIcon: AlertTriangle,
-    typeColor: "text-red-500",
-    status: "Failed",
-    statusColor: "text-red-500 bg-red-500/10 border-red-500/20",
-    channel: "Discord",
-    time: "3 Hours Ago",
-  },
-  {
-    monitor: "Staging Site",
-    type: "Resolved",
-    typeIcon: CheckCircle,
-    typeColor: "text-primary",
-    status: "Sent",
-    channel: "Slack (#ops-alerts)",
-    time: "5 Hours Ago",
-  },
-];
+interface AlertEvent {
+  id: string;
+  monitor: { name: string; url: string };
+  status: string;
+  latency: number;
+  timestamp: Date;
+  errorReason?: string | null;
+}
 
-export function AlertHistory() {
+interface AlertHistoryProps {
+  history: AlertEvent[];
+  currentPage: number;
+  totalPages: number;
+  totalCount: number;
+}
+
+export function AlertHistory({
+  history,
+  currentPage,
+  totalPages,
+  totalCount,
+}: AlertHistoryProps) {
+  const formatTimeAgo = (date: Date | string) => {
+    const now = new Date();
+    const diff = now.getTime() - new Date(date).getTime();
+
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (days > 0) return `${days}d ago`;
+    if (hours > 0) return `${hours}h ago`;
+    if (minutes > 0) return `${minutes}m ago`;
+    return "Just now";
+  };
+
+  const getTypeConfig = (event: AlertEvent) => {
+    if (event.status === "DOWN") {
+      return {
+        text: event.errorReason || "System Down",
+        icon: AlertTriangle,
+        color: "text-red-500",
+        statusColor: "text-red-500 bg-red-500/10 border-red-500/20",
+      };
+    }
+    if (event.status === "MAINTENANCE") {
+      return {
+        text: "Maintenance",
+        icon: Settings,
+        color: "text-blue-500",
+        statusColor: "text-blue-500 bg-blue-500/10 border-blue-500/20",
+      };
+    }
+    // UP
+    if (event.latency > 1000) {
+      return {
+        text: `High Latency (${event.latency}ms)`,
+        icon: Timer,
+        color: "text-yellow-500",
+        statusColor: "text-yellow-500 bg-yellow-500/10 border-yellow-500/20",
+      };
+    }
+    return {
+      text: "Operational",
+      icon: CheckCircle,
+      color: "text-green-500",
+      statusColor: "text-green-500 bg-green-500/10 border-green-500/20",
+    };
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div className="flex flex-col">
           <h3 className="text-lg font-bold text-foreground font-mono uppercase tracking-tight">
-            Alert Log
+            System Log
           </h3>
-          <p className="text-xs text-primary/60 font-mono">Recent incident reports</p>
-        </div>
-        <div className="flex gap-2">
-          <button className="flex items-center gap-2 px-3 py-1.5 bg-primary/5 border border-primary/20 hover:border-primary/50 text-primary/70 hover:text-primary text-[10px] font-bold uppercase tracking-wider transition-all font-mono">
-            <Calendar className="size-3" /> Last 24 Hours
-          </button>
+          <p className="text-xs text-primary/60 font-mono">
+            Recent monitor events
+          </p>
         </div>
       </div>
 
@@ -72,71 +109,114 @@ export function AlertHistory() {
                   Target System
                 </th>
                 <th className="px-6 py-4 text-[10px] font-bold text-primary/60 uppercase tracking-widest font-mono">
-                  Incident Type
+                  Event Type
                 </th>
                 <th className="px-6 py-4 text-[10px] font-bold text-primary/60 uppercase tracking-widest font-mono">
-                  Dispatch Status
+                  Status
                 </th>
                 <th className="px-6 py-4 text-[10px] font-bold text-primary/60 uppercase tracking-widest font-mono">
-                  Channel
+                  Details
                 </th>
                 <th className="px-6 py-4 text-[10px] font-bold text-primary/60 uppercase tracking-widest font-mono">
-                  Time Delta
+                  Time
                 </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-primary/10">
-              {history.map((item, idx) => (
-                <tr key={idx} className="hover:bg-primary/5 transition-colors group">
-                  <td className="px-6 py-4">
-                    <span className="text-sm font-bold text-foreground font-mono group-hover:text-primary transition-colors">
-                      {item.monitor}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
-                      <item.typeIcon className={`size-4 ${item.typeColor}`} />
-                      <span className="text-xs font-bold text-foreground font-mono">
-                        {item.type}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 border text-[10px] font-bold uppercase tracking-wider ${item.statusColor || "bg-primary/10 text-primary border-primary/20"}`}
-                    >
-                      {item.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-xs text-primary/70 font-mono">{item.channel}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-1 text-primary/50">
-                      <Clock className="size-3" />
-                      <span className="text-xs font-mono">{item.time}</span>
-                    </div>
+              {history.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="px-6 py-8 text-center text-xs text-primary/50 font-mono uppercase"
+                  >
+                    No events recorded yet
                   </td>
                 </tr>
-              ))}
+              ) : (
+                history.map((item) => {
+                  const config = getTypeConfig(item);
+                  const Icon = config.icon;
+                  return (
+                    <tr
+                      key={item.id}
+                      className="hover:bg-primary/5 transition-colors group"
+                    >
+                      <td className="px-6 py-4">
+                        <span className="text-sm font-bold text-foreground font-mono group-hover:text-primary transition-colors">
+                          {item.monitor.name}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <Icon className={`size-4 ${config.color}`} />
+                          <span className="text-xs font-bold text-foreground font-mono">
+                            {config.text}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 border text-[10px] font-bold uppercase tracking-wider ${config.statusColor}`}
+                        >
+                          {item.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        {item.status === "UP" ? (
+                          <span className="text-xs text-primary/70 font-mono">
+                            {item.latency}ms latency
+                          </span>
+                        ) : (
+                          <span
+                            className="text-xs text-red-400 font-mono truncate max-w-[200px] block"
+                            title={item.errorReason || ""}
+                          >
+                            {item.errorReason || "No details"}
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-1 text-primary/50">
+                          <Clock className="size-3" />
+                          <span className="text-xs font-mono">
+                            {formatTimeAgo(item.timestamp)}
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>
 
+        {/* Pagination Footer */}
         <div className="bg-primary/5 px-6 py-3 flex items-center justify-between border-t border-primary/20 font-mono">
           <p className="text-[10px] text-primary/60 uppercase tracking-widest">
-            Syslog: Showing last 25 incidents
+            Showing page {currentPage} of {totalPages} ({totalCount} entries)
           </p>
           <div className="flex gap-2">
-            <button
-              className="px-3 py-1 border border-primary/20 text-primary/60 hover:text-primary text-[10px] uppercase font-bold disabled:opacity-30 disabled:hover:text-primary/60 transition-all"
-              disabled
+            <Link
+              href={currentPage > 1 ? `?page=${currentPage - 1}` : "#"}
+              className={`px-3 py-1 border border-primary/20 text-primary/60 text-[10px] uppercase font-bold transition-all flex items-center gap-1 ${
+                currentPage <= 1
+                  ? "opacity-30 cursor-not-allowed"
+                  : "hover:text-primary hover:border-primary/50"
+              }`}
             >
-              Prev
-            </button>
-            <button className="px-3 py-1 border border-primary/20 text-primary/60 hover:text-primary text-[10px] uppercase font-bold transition-all">
-              Next
-            </button>
+              <ChevronLeft className="size-3" /> Prev
+            </Link>
+            <Link
+              href={currentPage < totalPages ? `?page=${currentPage + 1}` : "#"}
+              className={`px-3 py-1 border border-primary/20 text-primary/60 text-[10px] uppercase font-bold transition-all flex items-center gap-1 ${
+                currentPage >= totalPages
+                  ? "opacity-30 cursor-not-allowed"
+                  : "hover:text-primary hover:border-primary/50"
+              }`}
+            >
+              Next <ChevronRight className="size-3" />
+            </Link>
           </div>
         </div>
       </div>

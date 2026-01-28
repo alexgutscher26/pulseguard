@@ -2,6 +2,7 @@ import { getPrisma } from "@pulseguard/db";
 
 export interface Env {
   CHECK_QUEUE: Queue<any>;
+  NOTIFICATION_QUEUE: Queue<any>;
   DATABASE_URL: string;
 }
 
@@ -92,8 +93,29 @@ async function performCheck(
   return { status: currentStatus, latency, errorReason };
 }
 
+// Helper: Check for flapping (Rate Limiting)
+async function shouldSendAlert(monitorId: string, prisma: any): Promise<boolean> {
+  const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+  
+  // Count status changes in the last 5 minutes
+  const recentEvents = await prisma.monitorEvent.count({
+    where: {
+      monitorId: monitorId,
+      timestamp: { gt: fiveMinutesAgo },
+      status: { not: "MAINTENANCE" }
+    }
+  });
+
+  // If > 3 events in 5 mins (e.g. DOWN -> UP -> DOWN -> ...), suppress
+  if (recentEvents > 3) {
+    console.warn(`[RateLimit] Flapping detected for ${monitorId}. Suppressing alert.`);
+    return false;
+  }
+  return true;
+}
+
 // Reusable processing logic (shared between Cron and Queue consumer)
-async function processBatch(monitors: any[], prisma: any) {
+async function processBatch(monitors: any[], prisma: any, env?: Env) {
   console.log(`Processing batch of ${monitors.length} monitors...`);
 
   await Promise.all(
@@ -132,7 +154,6 @@ async function processBatch(monitors: any[], prisma: any) {
       }
 
       const { status: currentStatus, latency, errorReason } = result;
-
       const previousStatus = monitor.status;
 
       // Save result and update monitor
@@ -158,9 +179,27 @@ async function processBatch(monitors: any[], prisma: any) {
         ]);
 
         if (previousStatus !== currentStatus) {
-          console.log(
+           console.log(
             `Status change detected for ${monitor.name}: ${previousStatus} -> ${currentStatus}`,
           );
+
+          // 3. Queue Notification if ENV is present and not maintenance
+          if (env && env.NOTIFICATION_QUEUE && currentStatus !== "MAINTENANCE") {
+             const alertable = await shouldSendAlert(monitor.id, prisma);
+             
+             if (alertable) {
+               console.log(`[Notification] Queueing alert for ${monitor.name}`);
+               await env.NOTIFICATION_QUEUE.send({
+                 monitorId: monitor.id,
+                 monitorName: monitor.name,
+                 url: monitor.url,
+                 status: currentStatus,
+                 previousStatus: previousStatus,
+                 timestamp: new Date().toISOString(),
+                 reason: errorReason
+               });
+             }
+          }
         }
       } catch (dbErr) {
         console.error(`Failed to save result for ${monitor.url}`, dbErr);
@@ -219,7 +258,7 @@ export default {
 
       // --- FREE PLAN: DIRECT EXECUTION ---
       // We process them right here instead of queuing
-      await processBatch(monitors, prisma);
+      await processBatch(monitors, prisma, env);
 
       console.log("Monitors processed successfully.");
     } catch (error) {
@@ -232,7 +271,7 @@ export default {
     const prisma = getPrisma(env.DATABASE_URL);
     const monitors = batch.messages.map((msg) => msg.body);
 
-    await processBatch(monitors, prisma);
+    await processBatch(monitors, prisma, env);
 
     // Ack all messages after processing
     batch.ackAll();
