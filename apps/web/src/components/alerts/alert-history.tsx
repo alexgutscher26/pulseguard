@@ -29,12 +29,32 @@ interface AlertHistoryProps {
   totalCount: number;
 }
 
+/**
+ * Render the alert history component displaying recent monitor events.
+ *
+ * This function formats the alert history by mapping through the provided history array, generating a table of events with their respective statuses, types, and timestamps. It also handles pagination and displays appropriate icons and colors based on the event status. The function utilizes helper methods to format time and determine the configuration for each event type.
+ *
+ * @param history - An array of alert events to be displayed.
+ * @param currentPage - The current page number for pagination.
+ * @param totalPages - The total number of pages available for pagination.
+ * @param totalCount - The total number of alert events.
+ */
 export function AlertHistory({
   history,
   currentPage,
   totalPages,
   totalCount,
 }: AlertHistoryProps) {
+  /**
+   * Formats a given date or string into a human-readable time ago format.
+   *
+   * The function calculates the difference between the current time and the provided date.
+   * It then determines whether the difference is in days, hours, or minutes, and returns
+   * a corresponding string indicating how long ago the date was. If the date is very recent,
+   * it returns "Just now".
+   *
+   * @param {Date | string} date - The date or date string to format.
+   */
   const formatTimeAgo = (date: Date | string) => {
     const now = new Date();
     const diff = now.getTime() - new Date(date).getTime();
@@ -49,6 +69,16 @@ export function AlertHistory({
     return "Just now";
   };
 
+  /**
+   * Retrieves the configuration for an alert based on its status.
+   *
+   * The function checks the status of the provided event and returns an object containing
+   * the appropriate text, icon, color, and statusColor for the alert. It handles different
+   * statuses such as "DOWN", "MAINTENANCE", and "UP" with specific configurations,
+   * including a check for latency when the status is "UP".
+   *
+   * @param {AlertEvent} event - The event object containing the status and latency information.
+   */
   const getTypeConfig = (event: AlertEvent) => {
     if (event.status === "DOWN") {
       return {
