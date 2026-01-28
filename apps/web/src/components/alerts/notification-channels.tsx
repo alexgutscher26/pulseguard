@@ -36,11 +36,21 @@ interface Channel {
   createdAt: Date;
 }
 
+/**
+ * Renders the Notification Channels component for managing notification settings.
+ *
+ * This component allows users to add, delete, and test notification channels. It manages the state of the channels, handles form submissions for creating new channels, and provides visual feedback for actions such as deletion and testing notifications. The component also dynamically updates the UI based on the selected notification type and displays relevant details for each channel.
+ *
+ * @param channels - An object containing an array of Channel objects to be displayed.
+ */
 export function NotificationChannels({ channels }: { channels: Channel[] }) {
   const [isPending, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedType, setSelectedType] = useState("EMAIL");
 
+  /**
+   * Prompts the user to confirm deletion of a notification channel.
+   */
   async function handleDelete(id: string) {
     toast("Delete this notification channel?", {
       description: "This action cannot be undone.",
@@ -79,6 +89,16 @@ export function NotificationChannels({ channels }: { channels: Channel[] }) {
     );
   }
 
+  /**
+   * Handles the submission of form data and configures notification settings.
+   *
+   * This function retrieves a value from the provided FormData based on the selected type,
+   * which can be "EMAIL", "SMS", or a default URL. It then sets this value in a configuration
+   * object and updates the FormData. Finally, it initiates a transition to create a notification
+   * channel and displays a success or error message based on the response.
+   *
+   * @param formData - The FormData object containing the submission data.
+   */
   async function handleSubmit(formData: FormData) {
     const config: Record<string, string> = {};
     const value = formData.get("value") as string;
@@ -100,6 +120,16 @@ export function NotificationChannels({ channels }: { channels: Channel[] }) {
     });
   }
 
+  /**
+   * Retrieve the appropriate icon based on the specified type.
+   *
+   * The function uses a switch statement to determine which icon to return based on the input type.
+   * It maps specific types like "EMAIL", "SLACK", "DISCORD", and "SMS" to their corresponding icons,
+   * defaulting to the Terminal icon if the type does not match any case.
+   *
+   * @param type - A string representing the type of icon to retrieve.
+   * @returns The corresponding icon component based on the input type.
+   */
   const getIcon = (type: string) => {
     switch (type) {
       case "EMAIL":
