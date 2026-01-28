@@ -90,6 +90,14 @@ export async function deleteNotificationChannel(id: string) {
   }
 }
 
+/**
+ * Sends a test notification to a specified notification channel.
+ *
+ * The function retrieves the current user session and checks for authorization. It then attempts to find the notification channel by its ID and validates its type and configuration. If all checks pass, it sends a test alert via email. In case of any errors during the process, appropriate error messages are returned.
+ *
+ * @param id - The ID of the notification channel to send the test notification to.
+ * @returns An object indicating the success status and any error messages if applicable.
+ */
 export async function sendTestNotification(id: string) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -168,6 +176,15 @@ export async function getNotificationChannels() {
   }
 }
 
+/**
+ * Retrieve the alert history for a user with pagination.
+ *
+ * This function first checks for a valid user session. If a session exists, it calculates the total count of monitor events for the user and retrieves a paginated list of events. The results include event details along with pagination information. In case of an error during the fetch operation, it logs the error and returns an empty result set.
+ *
+ * @param page - The current page number for pagination, defaults to 1.
+ * @param pageSize - The number of events to retrieve per page, defaults to 10.
+ * @returns An object containing the events, total count of events, and total number of pages.
+ */
 export async function getAlertHistory(page: number = 1, pageSize: number = 10) {
   const session = await auth.api.getSession({
     headers: await headers(),
