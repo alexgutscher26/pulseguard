@@ -8,6 +8,18 @@ import {
   getAlertHistory,
 } from "@/actions/notifications";
 
+/**
+ * Renders the alerts page with notification channels and alert history.
+ *
+ * This function retrieves the user session and checks for authentication.
+ * It then fetches the current page number from search parameters, retrieves
+ * notification channels, and fetches alert history based on the current page
+ * and a fixed page size. Finally, it returns a JSX element containing the
+ * notification channels and alert history components.
+ *
+ * @param {Object} params - The parameters for the function.
+ * @param {Promise<{ [key: string]: string | string[] | undefined }>} params.searchParams - A promise that resolves to an object containing search parameters.
+ */
 export default async function AlertsPage({
   searchParams,
 }: {
