@@ -19,6 +19,15 @@ export async function GET(req: NextRequest) {
   }
 }
 
+/**
+ * Handles POST requests for authentication.
+ *
+ * This function attempts to process the incoming request using the handlers.POST method.
+ * If an error occurs during this process, it logs the error and returns a JSON response
+ * indicating an authentication error along with the error details.
+ *
+ * @param req - The NextRequest object representing the incoming request.
+ */
 export async function POST(req: NextRequest) {
   try {
     return await handlers.POST(req);
