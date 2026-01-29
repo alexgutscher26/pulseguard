@@ -168,6 +168,27 @@ exports.Prisma.VerificationScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.IncidentScalarFieldEnum = {
+  id: 'id',
+  monitorId: 'monitorId',
+  status: 'status',
+  severity: 'severity',
+  title: 'title',
+  description: 'description',
+  startedAt: 'startedAt',
+  resolvedAt: 'resolvedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.IncidentEventScalarFieldEnum = {
+  id: 'id',
+  incidentId: 'incidentId',
+  type: 'type',
+  message: 'message',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.NotificationChannelScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -248,6 +269,26 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
+exports.IncidentStatus = exports.$Enums.IncidentStatus = {
+  INVESTIGATING: 'INVESTIGATING',
+  IDENTIFIED: 'IDENTIFIED',
+  MONITORING: 'MONITORING',
+  RESOLVED: 'RESOLVED'
+};
+
+exports.Severity = exports.$Enums.Severity = {
+  HIGH: 'HIGH',
+  MEDIUM: 'MEDIUM',
+  LOW: 'LOW'
+};
+
+exports.IncidentEventType = exports.$Enums.IncidentEventType = {
+  STATE_CHANGE: 'STATE_CHANGE',
+  ALERT_SENT: 'ALERT_SENT',
+  COMMENT: 'COMMENT',
+  AUTO_RESOLVE: 'AUTO_RESOLVE'
+};
+
 exports.NotificationType = exports.$Enums.NotificationType = {
   EMAIL: 'EMAIL',
   DISCORD: 'DISCORD',
@@ -286,6 +327,8 @@ exports.Prisma.ModelName = {
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification',
+  Incident: 'Incident',
+  IncidentEvent: 'IncidentEvent',
   NotificationChannel: 'NotificationChannel',
   AlertRule: 'AlertRule',
   Monitor: 'Monitor',

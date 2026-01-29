@@ -65,6 +65,59 @@ model Verification {
   @@map("verification")
 }
 
+enum IncidentStatus {
+  INVESTIGATING
+  IDENTIFIED
+  MONITORING
+  RESOLVED
+}
+
+enum Severity {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum IncidentEventType {
+  STATE_CHANGE
+  ALERT_SENT
+  COMMENT
+  AUTO_RESOLVE
+}
+
+model Incident {
+  id          String         @id @default(cuid())
+  monitorId   String
+  monitor     Monitor        @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  status      IncidentStatus @default(INVESTIGATING)
+  severity    Severity       @default(HIGH)
+  title       String
+  description String?
+  startedAt   DateTime       @default(now())
+  resolvedAt  DateTime?
+
+  // Relations
+  events IncidentEvent[]
+
+  // Audits
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([monitorId])
+  @@index([status])
+}
+
+model IncidentEvent {
+  id         String            @id @default(cuid())
+  incidentId String
+  incident   Incident          @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  type       IncidentEventType
+  message    String
+  createdAt  DateTime          @default(now())
+
+  @@index([incidentId])
+}
+
 enum NotificationType {
   EMAIL
   DISCORD
@@ -162,6 +215,7 @@ model Monitor {
   events             MonitorEvent[]
   maintenanceWindows MaintenanceWindow[]
   alertRules         AlertRule[]
+  incidents          Incident[]
 
   nextCheck DateTime?
   lastCheck DateTime?

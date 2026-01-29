@@ -3,10 +3,13 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { NotificationChannels } from "@/components/alerts/notification-channels";
 import { AlertHistory } from "@/components/alerts/alert-history";
+import { AlertRules } from "@/components/alerts/alert-rules";
 import {
   getNotificationChannels,
   getAlertHistory,
+  getAlertRules,
 } from "@/actions/notifications";
+import { getMonitors } from "@/actions/monitors";
 
 export default async function AlertsPage({
   searchParams,
@@ -25,15 +28,22 @@ export default async function AlertsPage({
   const currentPage = Number(page) || 1;
   const pageSize = 10;
 
-  const channels = await getNotificationChannels();
-  const { events, totalCount, totalPages } = await getAlertHistory(
-    currentPage,
-    pageSize,
-  );
+  const [channels, alertRules, monitors, { events, totalCount, totalPages }] =
+    await Promise.all([
+      getNotificationChannels(),
+      getAlertRules(),
+      getMonitors(),
+      getAlertHistory(currentPage, pageSize),
+    ]);
 
   return (
     <div className="flex flex-col gap-10">
-      <NotificationChannels channels={channels} />
+      <NotificationChannels
+        channels={channels}
+        slackClientId={process.env.SLACK_CLIENT_ID}
+        discordClientId={process.env.DISCORD_CLIENT_ID}
+      />
+      <AlertRules rules={alertRules} monitors={monitors} channels={channels} />
       <AlertHistory
         history={events}
         currentPage={currentPage}

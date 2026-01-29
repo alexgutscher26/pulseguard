@@ -24,7 +24,7 @@ export const auth = betterAuth({
     },
   },
 
-  trustedOrigins: [env.CORS_ORIGIN, "mybettertapp://", "exp://"],
+  trustedOrigins: [env.CORS_ORIGIN, process.env.NEXT_PUBLIC_APP_URL ?? "", "mybettertapp://", "exp://"],
   emailAndPassword: {
     enabled: true,
   },

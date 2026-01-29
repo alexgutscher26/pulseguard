@@ -20,24 +20,10 @@ These items block general reliability or user trust.
 - [x] **Email Integration**
   - Integrate Resend or generic SMTP provider.
   - Design valid HTML email templates (Dark mode supported, Cyberpunk accents).
-  Phase 5: Web Integration
- Add email verification to BetterAuth registration flow
- Create tRPC mutation for sending welcome emails
- Add email preferences UI in settings
-Phase 6: Testing
- Test email rendering in Gmail, Outlook, Apple Mail
- Verify dark mode support
- Test rate limiting (trigger 4+ status changes)
- Security audit: Ensure no PII in logs
-🚀 Deployment Checklist
- Replace re_placeholder_key with real Resend API key
- Verify domain in Resend (required for production)
- Test notification flow end-to-end
- Monitor Resend dashboard for delivery rates
-- [ ] **Discord/Slack Webhooks**
+- [x] **Discord/Slack Webhooks**
   - Payload formatting for rich embeds (Color: Red for Down, Green for Up).
   - Include "View in PulseGuard" button.
-- [ ] **Incident Management (Core)**
+- [x] **Incident Management (Core)**
   - Create `Incident` model linked to Monitors.
   - Auto-create Incident on DOWN alert.
   - Allow manual status updates (Investigating, Identified, Monitoring, Resolved).
@@ -303,3 +289,9 @@ For the admin on the go.
 - [ ] **Error Handling**
   - Global Error Boundary in React.
   - Standardized API Error format.
+
+
+Add email verification to BetterAuth registration flow
+Create tRPC mutation for sending welcome emails
+Add email preferences UI in settings
+Ensure no PII in logs

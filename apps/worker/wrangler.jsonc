@@ -5,35 +5,10 @@
   "compatibility_flags": ["nodejs_compat"],
   "vars": {
     "DATABASE_URL": "postgresql://neondb_owner:npg_6hvWIxFBtgA3@ep-little-dawn-ag0aibtt-pooler.c-2.eu-central-1.aws.neon.tech/neondb?channel_binding=require&sslmode=require",
-    "NODE_ENV": "development",
+    "NODE_ENV": "production",
     "RESEND_API_KEY": "re_placeholder_key"
   },
-  "queues": {
-    "producers": [
-      {
-        "binding": "CHECK_QUEUE",
-        "queue": "monitor-checks",
-      },
-      {
-        "binding": "NOTIFICATION_QUEUE",
-        "queue": "notifications",
-      },
-    ],
-    "consumers": [
-      {
-        "queue": "monitor-checks",
-        "max_batch_size": 10,
-        "max_batch_timeout": 5,
-      },
-      {
-        "queue": "notifications",
-        "max_batch_size": 10,
-        "max_batch_timeout": 5,
-        "max_retries": 3,
-      },
-    ],
-  },
   "triggers": {
-    "crons": ["* * * * *"],
-  },
+    "crons": ["* * * * *"]
+  }
 }

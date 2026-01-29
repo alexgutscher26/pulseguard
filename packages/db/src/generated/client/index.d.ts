@@ -34,6 +34,16 @@ export type Account = $Result.DefaultSelection<Prisma.$AccountPayload>
  */
 export type Verification = $Result.DefaultSelection<Prisma.$VerificationPayload>
 /**
+ * Model Incident
+ * 
+ */
+export type Incident = $Result.DefaultSelection<Prisma.$IncidentPayload>
+/**
+ * Model IncidentEvent
+ * 
+ */
+export type IncidentEvent = $Result.DefaultSelection<Prisma.$IncidentEventPayload>
+/**
  * Model NotificationChannel
  * 
  */
@@ -63,7 +73,36 @@ export type MaintenanceWindow = $Result.DefaultSelection<Prisma.$MaintenanceWind
  * Enums
  */
 export namespace $Enums {
-  export const NotificationType: {
+  export const IncidentStatus: {
+  INVESTIGATING: 'INVESTIGATING',
+  IDENTIFIED: 'IDENTIFIED',
+  MONITORING: 'MONITORING',
+  RESOLVED: 'RESOLVED'
+};
+
+export type IncidentStatus = (typeof IncidentStatus)[keyof typeof IncidentStatus]
+
+
+export const Severity: {
+  HIGH: 'HIGH',
+  MEDIUM: 'MEDIUM',
+  LOW: 'LOW'
+};
+
+export type Severity = (typeof Severity)[keyof typeof Severity]
+
+
+export const IncidentEventType: {
+  STATE_CHANGE: 'STATE_CHANGE',
+  ALERT_SENT: 'ALERT_SENT',
+  COMMENT: 'COMMENT',
+  AUTO_RESOLVE: 'AUTO_RESOLVE'
+};
+
+export type IncidentEventType = (typeof IncidentEventType)[keyof typeof IncidentEventType]
+
+
+export const NotificationType: {
   EMAIL: 'EMAIL',
   DISCORD: 'DISCORD',
   SLACK: 'SLACK',
@@ -111,6 +150,18 @@ export const MonitorStatus: {
 export type MonitorStatus = (typeof MonitorStatus)[keyof typeof MonitorStatus]
 
 }
+
+export type IncidentStatus = $Enums.IncidentStatus
+
+export const IncidentStatus: typeof $Enums.IncidentStatus
+
+export type Severity = $Enums.Severity
+
+export const Severity: typeof $Enums.Severity
+
+export type IncidentEventType = $Enums.IncidentEventType
+
+export const IncidentEventType: typeof $Enums.IncidentEventType
 
 export type NotificationType = $Enums.NotificationType
 
@@ -288,6 +339,26 @@ export class PrismaClient<
     * ```
     */
   get verification(): Prisma.VerificationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.incident`: Exposes CRUD operations for the **Incident** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Incidents
+    * const incidents = await prisma.incident.findMany()
+    * ```
+    */
+  get incident(): Prisma.IncidentDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.incidentEvent`: Exposes CRUD operations for the **IncidentEvent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more IncidentEvents
+    * const incidentEvents = await prisma.incidentEvent.findMany()
+    * ```
+    */
+  get incidentEvent(): Prisma.IncidentEventDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.notificationChannel`: Exposes CRUD operations for the **NotificationChannel** model.
@@ -776,6 +847,8 @@ export namespace Prisma {
     Session: 'Session',
     Account: 'Account',
     Verification: 'Verification',
+    Incident: 'Incident',
+    IncidentEvent: 'IncidentEvent',
     NotificationChannel: 'NotificationChannel',
     AlertRule: 'AlertRule',
     Monitor: 'Monitor',
@@ -796,7 +869,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "account" | "verification" | "notificationChannel" | "alertRule" | "monitor" | "monitorEvent" | "maintenanceWindow"
+      modelProps: "user" | "session" | "account" | "verification" | "incident" | "incidentEvent" | "notificationChannel" | "alertRule" | "monitor" | "monitorEvent" | "maintenanceWindow"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1093,6 +1166,154 @@ export namespace Prisma {
           count: {
             args: Prisma.VerificationCountArgs<ExtArgs>
             result: $Utils.Optional<VerificationCountAggregateOutputType> | number
+          }
+        }
+      }
+      Incident: {
+        payload: Prisma.$IncidentPayload<ExtArgs>
+        fields: Prisma.IncidentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.IncidentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.IncidentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentPayload>
+          }
+          findFirst: {
+            args: Prisma.IncidentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.IncidentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentPayload>
+          }
+          findMany: {
+            args: Prisma.IncidentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentPayload>[]
+          }
+          create: {
+            args: Prisma.IncidentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentPayload>
+          }
+          createMany: {
+            args: Prisma.IncidentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.IncidentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentPayload>[]
+          }
+          delete: {
+            args: Prisma.IncidentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentPayload>
+          }
+          update: {
+            args: Prisma.IncidentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentPayload>
+          }
+          deleteMany: {
+            args: Prisma.IncidentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.IncidentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.IncidentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentPayload>[]
+          }
+          upsert: {
+            args: Prisma.IncidentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentPayload>
+          }
+          aggregate: {
+            args: Prisma.IncidentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateIncident>
+          }
+          groupBy: {
+            args: Prisma.IncidentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<IncidentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.IncidentCountArgs<ExtArgs>
+            result: $Utils.Optional<IncidentCountAggregateOutputType> | number
+          }
+        }
+      }
+      IncidentEvent: {
+        payload: Prisma.$IncidentEventPayload<ExtArgs>
+        fields: Prisma.IncidentEventFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.IncidentEventFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentEventPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.IncidentEventFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentEventPayload>
+          }
+          findFirst: {
+            args: Prisma.IncidentEventFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentEventPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.IncidentEventFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentEventPayload>
+          }
+          findMany: {
+            args: Prisma.IncidentEventFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentEventPayload>[]
+          }
+          create: {
+            args: Prisma.IncidentEventCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentEventPayload>
+          }
+          createMany: {
+            args: Prisma.IncidentEventCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.IncidentEventCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentEventPayload>[]
+          }
+          delete: {
+            args: Prisma.IncidentEventDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentEventPayload>
+          }
+          update: {
+            args: Prisma.IncidentEventUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentEventPayload>
+          }
+          deleteMany: {
+            args: Prisma.IncidentEventDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.IncidentEventUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.IncidentEventUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentEventPayload>[]
+          }
+          upsert: {
+            args: Prisma.IncidentEventUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentEventPayload>
+          }
+          aggregate: {
+            args: Prisma.IncidentEventAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateIncidentEvent>
+          }
+          groupBy: {
+            args: Prisma.IncidentEventGroupByArgs<ExtArgs>
+            result: $Utils.Optional<IncidentEventGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.IncidentEventCountArgs<ExtArgs>
+            result: $Utils.Optional<IncidentEventCountAggregateOutputType> | number
           }
         }
       }
@@ -1578,6 +1799,8 @@ export namespace Prisma {
     session?: SessionOmit
     account?: AccountOmit
     verification?: VerificationOmit
+    incident?: IncidentOmit
+    incidentEvent?: IncidentEventOmit
     notificationChannel?: NotificationChannelOmit
     alertRule?: AlertRuleOmit
     monitor?: MonitorOmit
@@ -1717,6 +1940,37 @@ export namespace Prisma {
 
 
   /**
+   * Count Type IncidentCountOutputType
+   */
+
+  export type IncidentCountOutputType = {
+    events: number
+  }
+
+  export type IncidentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    events?: boolean | IncidentCountOutputTypeCountEventsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * IncidentCountOutputType without action
+   */
+  export type IncidentCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentCountOutputType
+     */
+    select?: IncidentCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * IncidentCountOutputType without action
+   */
+  export type IncidentCountOutputTypeCountEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: IncidentEventWhereInput
+  }
+
+
+  /**
    * Count Type NotificationChannelCountOutputType
    */
 
@@ -1786,12 +2040,14 @@ export namespace Prisma {
     events: number
     maintenanceWindows: number
     alertRules: number
+    incidents: number
   }
 
   export type MonitorCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     events?: boolean | MonitorCountOutputTypeCountEventsArgs
     maintenanceWindows?: boolean | MonitorCountOutputTypeCountMaintenanceWindowsArgs
     alertRules?: boolean | MonitorCountOutputTypeCountAlertRulesArgs
+    incidents?: boolean | MonitorCountOutputTypeCountIncidentsArgs
   }
 
   // Custom InputTypes
@@ -1824,6 +2080,13 @@ export namespace Prisma {
    */
   export type MonitorCountOutputTypeCountAlertRulesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AlertRuleWhereInput
+  }
+
+  /**
+   * MonitorCountOutputType without action
+   */
+  export type MonitorCountOutputTypeCountIncidentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: IncidentWhereInput
   }
 
 
@@ -6305,6 +6568,2217 @@ export namespace Prisma {
 
 
   /**
+   * Model Incident
+   */
+
+  export type AggregateIncident = {
+    _count: IncidentCountAggregateOutputType | null
+    _min: IncidentMinAggregateOutputType | null
+    _max: IncidentMaxAggregateOutputType | null
+  }
+
+  export type IncidentMinAggregateOutputType = {
+    id: string | null
+    monitorId: string | null
+    status: $Enums.IncidentStatus | null
+    severity: $Enums.Severity | null
+    title: string | null
+    description: string | null
+    startedAt: Date | null
+    resolvedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type IncidentMaxAggregateOutputType = {
+    id: string | null
+    monitorId: string | null
+    status: $Enums.IncidentStatus | null
+    severity: $Enums.Severity | null
+    title: string | null
+    description: string | null
+    startedAt: Date | null
+    resolvedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type IncidentCountAggregateOutputType = {
+    id: number
+    monitorId: number
+    status: number
+    severity: number
+    title: number
+    description: number
+    startedAt: number
+    resolvedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type IncidentMinAggregateInputType = {
+    id?: true
+    monitorId?: true
+    status?: true
+    severity?: true
+    title?: true
+    description?: true
+    startedAt?: true
+    resolvedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type IncidentMaxAggregateInputType = {
+    id?: true
+    monitorId?: true
+    status?: true
+    severity?: true
+    title?: true
+    description?: true
+    startedAt?: true
+    resolvedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type IncidentCountAggregateInputType = {
+    id?: true
+    monitorId?: true
+    status?: true
+    severity?: true
+    title?: true
+    description?: true
+    startedAt?: true
+    resolvedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type IncidentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Incident to aggregate.
+     */
+    where?: IncidentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Incidents to fetch.
+     */
+    orderBy?: IncidentOrderByWithRelationInput | IncidentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: IncidentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Incidents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Incidents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Incidents
+    **/
+    _count?: true | IncidentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: IncidentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: IncidentMaxAggregateInputType
+  }
+
+  export type GetIncidentAggregateType<T extends IncidentAggregateArgs> = {
+        [P in keyof T & keyof AggregateIncident]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateIncident[P]>
+      : GetScalarType<T[P], AggregateIncident[P]>
+  }
+
+
+
+
+  export type IncidentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: IncidentWhereInput
+    orderBy?: IncidentOrderByWithAggregationInput | IncidentOrderByWithAggregationInput[]
+    by: IncidentScalarFieldEnum[] | IncidentScalarFieldEnum
+    having?: IncidentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: IncidentCountAggregateInputType | true
+    _min?: IncidentMinAggregateInputType
+    _max?: IncidentMaxAggregateInputType
+  }
+
+  export type IncidentGroupByOutputType = {
+    id: string
+    monitorId: string
+    status: $Enums.IncidentStatus
+    severity: $Enums.Severity
+    title: string
+    description: string | null
+    startedAt: Date
+    resolvedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: IncidentCountAggregateOutputType | null
+    _min: IncidentMinAggregateOutputType | null
+    _max: IncidentMaxAggregateOutputType | null
+  }
+
+  type GetIncidentGroupByPayload<T extends IncidentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<IncidentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof IncidentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], IncidentGroupByOutputType[P]>
+            : GetScalarType<T[P], IncidentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type IncidentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    monitorId?: boolean
+    status?: boolean
+    severity?: boolean
+    title?: boolean
+    description?: boolean
+    startedAt?: boolean
+    resolvedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    monitor?: boolean | MonitorDefaultArgs<ExtArgs>
+    events?: boolean | Incident$eventsArgs<ExtArgs>
+    _count?: boolean | IncidentCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["incident"]>
+
+  export type IncidentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    monitorId?: boolean
+    status?: boolean
+    severity?: boolean
+    title?: boolean
+    description?: boolean
+    startedAt?: boolean
+    resolvedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    monitor?: boolean | MonitorDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["incident"]>
+
+  export type IncidentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    monitorId?: boolean
+    status?: boolean
+    severity?: boolean
+    title?: boolean
+    description?: boolean
+    startedAt?: boolean
+    resolvedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    monitor?: boolean | MonitorDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["incident"]>
+
+  export type IncidentSelectScalar = {
+    id?: boolean
+    monitorId?: boolean
+    status?: boolean
+    severity?: boolean
+    title?: boolean
+    description?: boolean
+    startedAt?: boolean
+    resolvedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type IncidentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "monitorId" | "status" | "severity" | "title" | "description" | "startedAt" | "resolvedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["incident"]>
+  export type IncidentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    monitor?: boolean | MonitorDefaultArgs<ExtArgs>
+    events?: boolean | Incident$eventsArgs<ExtArgs>
+    _count?: boolean | IncidentCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type IncidentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    monitor?: boolean | MonitorDefaultArgs<ExtArgs>
+  }
+  export type IncidentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    monitor?: boolean | MonitorDefaultArgs<ExtArgs>
+  }
+
+  export type $IncidentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Incident"
+    objects: {
+      monitor: Prisma.$MonitorPayload<ExtArgs>
+      events: Prisma.$IncidentEventPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      monitorId: string
+      status: $Enums.IncidentStatus
+      severity: $Enums.Severity
+      title: string
+      description: string | null
+      startedAt: Date
+      resolvedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["incident"]>
+    composites: {}
+  }
+
+  type IncidentGetPayload<S extends boolean | null | undefined | IncidentDefaultArgs> = $Result.GetResult<Prisma.$IncidentPayload, S>
+
+  type IncidentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<IncidentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: IncidentCountAggregateInputType | true
+    }
+
+  export interface IncidentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Incident'], meta: { name: 'Incident' } }
+    /**
+     * Find zero or one Incident that matches the filter.
+     * @param {IncidentFindUniqueArgs} args - Arguments to find a Incident
+     * @example
+     * // Get one Incident
+     * const incident = await prisma.incident.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends IncidentFindUniqueArgs>(args: SelectSubset<T, IncidentFindUniqueArgs<ExtArgs>>): Prisma__IncidentClient<$Result.GetResult<Prisma.$IncidentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Incident that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {IncidentFindUniqueOrThrowArgs} args - Arguments to find a Incident
+     * @example
+     * // Get one Incident
+     * const incident = await prisma.incident.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends IncidentFindUniqueOrThrowArgs>(args: SelectSubset<T, IncidentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__IncidentClient<$Result.GetResult<Prisma.$IncidentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Incident that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IncidentFindFirstArgs} args - Arguments to find a Incident
+     * @example
+     * // Get one Incident
+     * const incident = await prisma.incident.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends IncidentFindFirstArgs>(args?: SelectSubset<T, IncidentFindFirstArgs<ExtArgs>>): Prisma__IncidentClient<$Result.GetResult<Prisma.$IncidentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Incident that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IncidentFindFirstOrThrowArgs} args - Arguments to find a Incident
+     * @example
+     * // Get one Incident
+     * const incident = await prisma.incident.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends IncidentFindFirstOrThrowArgs>(args?: SelectSubset<T, IncidentFindFirstOrThrowArgs<ExtArgs>>): Prisma__IncidentClient<$Result.GetResult<Prisma.$IncidentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Incidents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IncidentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Incidents
+     * const incidents = await prisma.incident.findMany()
+     * 
+     * // Get first 10 Incidents
+     * const incidents = await prisma.incident.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const incidentWithIdOnly = await prisma.incident.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends IncidentFindManyArgs>(args?: SelectSubset<T, IncidentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IncidentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Incident.
+     * @param {IncidentCreateArgs} args - Arguments to create a Incident.
+     * @example
+     * // Create one Incident
+     * const Incident = await prisma.incident.create({
+     *   data: {
+     *     // ... data to create a Incident
+     *   }
+     * })
+     * 
+     */
+    create<T extends IncidentCreateArgs>(args: SelectSubset<T, IncidentCreateArgs<ExtArgs>>): Prisma__IncidentClient<$Result.GetResult<Prisma.$IncidentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Incidents.
+     * @param {IncidentCreateManyArgs} args - Arguments to create many Incidents.
+     * @example
+     * // Create many Incidents
+     * const incident = await prisma.incident.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends IncidentCreateManyArgs>(args?: SelectSubset<T, IncidentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Incidents and returns the data saved in the database.
+     * @param {IncidentCreateManyAndReturnArgs} args - Arguments to create many Incidents.
+     * @example
+     * // Create many Incidents
+     * const incident = await prisma.incident.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Incidents and only return the `id`
+     * const incidentWithIdOnly = await prisma.incident.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends IncidentCreateManyAndReturnArgs>(args?: SelectSubset<T, IncidentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IncidentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Incident.
+     * @param {IncidentDeleteArgs} args - Arguments to delete one Incident.
+     * @example
+     * // Delete one Incident
+     * const Incident = await prisma.incident.delete({
+     *   where: {
+     *     // ... filter to delete one Incident
+     *   }
+     * })
+     * 
+     */
+    delete<T extends IncidentDeleteArgs>(args: SelectSubset<T, IncidentDeleteArgs<ExtArgs>>): Prisma__IncidentClient<$Result.GetResult<Prisma.$IncidentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Incident.
+     * @param {IncidentUpdateArgs} args - Arguments to update one Incident.
+     * @example
+     * // Update one Incident
+     * const incident = await prisma.incident.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends IncidentUpdateArgs>(args: SelectSubset<T, IncidentUpdateArgs<ExtArgs>>): Prisma__IncidentClient<$Result.GetResult<Prisma.$IncidentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Incidents.
+     * @param {IncidentDeleteManyArgs} args - Arguments to filter Incidents to delete.
+     * @example
+     * // Delete a few Incidents
+     * const { count } = await prisma.incident.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends IncidentDeleteManyArgs>(args?: SelectSubset<T, IncidentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Incidents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IncidentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Incidents
+     * const incident = await prisma.incident.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends IncidentUpdateManyArgs>(args: SelectSubset<T, IncidentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Incidents and returns the data updated in the database.
+     * @param {IncidentUpdateManyAndReturnArgs} args - Arguments to update many Incidents.
+     * @example
+     * // Update many Incidents
+     * const incident = await prisma.incident.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Incidents and only return the `id`
+     * const incidentWithIdOnly = await prisma.incident.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends IncidentUpdateManyAndReturnArgs>(args: SelectSubset<T, IncidentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IncidentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Incident.
+     * @param {IncidentUpsertArgs} args - Arguments to update or create a Incident.
+     * @example
+     * // Update or create a Incident
+     * const incident = await prisma.incident.upsert({
+     *   create: {
+     *     // ... data to create a Incident
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Incident we want to update
+     *   }
+     * })
+     */
+    upsert<T extends IncidentUpsertArgs>(args: SelectSubset<T, IncidentUpsertArgs<ExtArgs>>): Prisma__IncidentClient<$Result.GetResult<Prisma.$IncidentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Incidents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IncidentCountArgs} args - Arguments to filter Incidents to count.
+     * @example
+     * // Count the number of Incidents
+     * const count = await prisma.incident.count({
+     *   where: {
+     *     // ... the filter for the Incidents we want to count
+     *   }
+     * })
+    **/
+    count<T extends IncidentCountArgs>(
+      args?: Subset<T, IncidentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], IncidentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Incident.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IncidentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends IncidentAggregateArgs>(args: Subset<T, IncidentAggregateArgs>): Prisma.PrismaPromise<GetIncidentAggregateType<T>>
+
+    /**
+     * Group by Incident.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IncidentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends IncidentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: IncidentGroupByArgs['orderBy'] }
+        : { orderBy?: IncidentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, IncidentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetIncidentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Incident model
+   */
+  readonly fields: IncidentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Incident.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__IncidentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    monitor<T extends MonitorDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MonitorDefaultArgs<ExtArgs>>): Prisma__MonitorClient<$Result.GetResult<Prisma.$MonitorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    events<T extends Incident$eventsArgs<ExtArgs> = {}>(args?: Subset<T, Incident$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IncidentEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Incident model
+   */
+  interface IncidentFieldRefs {
+    readonly id: FieldRef<"Incident", 'String'>
+    readonly monitorId: FieldRef<"Incident", 'String'>
+    readonly status: FieldRef<"Incident", 'IncidentStatus'>
+    readonly severity: FieldRef<"Incident", 'Severity'>
+    readonly title: FieldRef<"Incident", 'String'>
+    readonly description: FieldRef<"Incident", 'String'>
+    readonly startedAt: FieldRef<"Incident", 'DateTime'>
+    readonly resolvedAt: FieldRef<"Incident", 'DateTime'>
+    readonly createdAt: FieldRef<"Incident", 'DateTime'>
+    readonly updatedAt: FieldRef<"Incident", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Incident findUnique
+   */
+  export type IncidentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Incident
+     */
+    select?: IncidentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Incident
+     */
+    omit?: IncidentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentInclude<ExtArgs> | null
+    /**
+     * Filter, which Incident to fetch.
+     */
+    where: IncidentWhereUniqueInput
+  }
+
+  /**
+   * Incident findUniqueOrThrow
+   */
+  export type IncidentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Incident
+     */
+    select?: IncidentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Incident
+     */
+    omit?: IncidentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentInclude<ExtArgs> | null
+    /**
+     * Filter, which Incident to fetch.
+     */
+    where: IncidentWhereUniqueInput
+  }
+
+  /**
+   * Incident findFirst
+   */
+  export type IncidentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Incident
+     */
+    select?: IncidentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Incident
+     */
+    omit?: IncidentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentInclude<ExtArgs> | null
+    /**
+     * Filter, which Incident to fetch.
+     */
+    where?: IncidentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Incidents to fetch.
+     */
+    orderBy?: IncidentOrderByWithRelationInput | IncidentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Incidents.
+     */
+    cursor?: IncidentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Incidents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Incidents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Incidents.
+     */
+    distinct?: IncidentScalarFieldEnum | IncidentScalarFieldEnum[]
+  }
+
+  /**
+   * Incident findFirstOrThrow
+   */
+  export type IncidentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Incident
+     */
+    select?: IncidentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Incident
+     */
+    omit?: IncidentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentInclude<ExtArgs> | null
+    /**
+     * Filter, which Incident to fetch.
+     */
+    where?: IncidentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Incidents to fetch.
+     */
+    orderBy?: IncidentOrderByWithRelationInput | IncidentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Incidents.
+     */
+    cursor?: IncidentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Incidents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Incidents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Incidents.
+     */
+    distinct?: IncidentScalarFieldEnum | IncidentScalarFieldEnum[]
+  }
+
+  /**
+   * Incident findMany
+   */
+  export type IncidentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Incident
+     */
+    select?: IncidentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Incident
+     */
+    omit?: IncidentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentInclude<ExtArgs> | null
+    /**
+     * Filter, which Incidents to fetch.
+     */
+    where?: IncidentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Incidents to fetch.
+     */
+    orderBy?: IncidentOrderByWithRelationInput | IncidentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Incidents.
+     */
+    cursor?: IncidentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Incidents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Incidents.
+     */
+    skip?: number
+    distinct?: IncidentScalarFieldEnum | IncidentScalarFieldEnum[]
+  }
+
+  /**
+   * Incident create
+   */
+  export type IncidentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Incident
+     */
+    select?: IncidentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Incident
+     */
+    omit?: IncidentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Incident.
+     */
+    data: XOR<IncidentCreateInput, IncidentUncheckedCreateInput>
+  }
+
+  /**
+   * Incident createMany
+   */
+  export type IncidentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Incidents.
+     */
+    data: IncidentCreateManyInput | IncidentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Incident createManyAndReturn
+   */
+  export type IncidentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Incident
+     */
+    select?: IncidentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Incident
+     */
+    omit?: IncidentOmit<ExtArgs> | null
+    /**
+     * The data used to create many Incidents.
+     */
+    data: IncidentCreateManyInput | IncidentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Incident update
+   */
+  export type IncidentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Incident
+     */
+    select?: IncidentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Incident
+     */
+    omit?: IncidentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Incident.
+     */
+    data: XOR<IncidentUpdateInput, IncidentUncheckedUpdateInput>
+    /**
+     * Choose, which Incident to update.
+     */
+    where: IncidentWhereUniqueInput
+  }
+
+  /**
+   * Incident updateMany
+   */
+  export type IncidentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Incidents.
+     */
+    data: XOR<IncidentUpdateManyMutationInput, IncidentUncheckedUpdateManyInput>
+    /**
+     * Filter which Incidents to update
+     */
+    where?: IncidentWhereInput
+    /**
+     * Limit how many Incidents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Incident updateManyAndReturn
+   */
+  export type IncidentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Incident
+     */
+    select?: IncidentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Incident
+     */
+    omit?: IncidentOmit<ExtArgs> | null
+    /**
+     * The data used to update Incidents.
+     */
+    data: XOR<IncidentUpdateManyMutationInput, IncidentUncheckedUpdateManyInput>
+    /**
+     * Filter which Incidents to update
+     */
+    where?: IncidentWhereInput
+    /**
+     * Limit how many Incidents to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Incident upsert
+   */
+  export type IncidentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Incident
+     */
+    select?: IncidentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Incident
+     */
+    omit?: IncidentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Incident to update in case it exists.
+     */
+    where: IncidentWhereUniqueInput
+    /**
+     * In case the Incident found by the `where` argument doesn't exist, create a new Incident with this data.
+     */
+    create: XOR<IncidentCreateInput, IncidentUncheckedCreateInput>
+    /**
+     * In case the Incident was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<IncidentUpdateInput, IncidentUncheckedUpdateInput>
+  }
+
+  /**
+   * Incident delete
+   */
+  export type IncidentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Incident
+     */
+    select?: IncidentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Incident
+     */
+    omit?: IncidentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentInclude<ExtArgs> | null
+    /**
+     * Filter which Incident to delete.
+     */
+    where: IncidentWhereUniqueInput
+  }
+
+  /**
+   * Incident deleteMany
+   */
+  export type IncidentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Incidents to delete
+     */
+    where?: IncidentWhereInput
+    /**
+     * Limit how many Incidents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Incident.events
+   */
+  export type Incident$eventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentEvent
+     */
+    select?: IncidentEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentEvent
+     */
+    omit?: IncidentEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentEventInclude<ExtArgs> | null
+    where?: IncidentEventWhereInput
+    orderBy?: IncidentEventOrderByWithRelationInput | IncidentEventOrderByWithRelationInput[]
+    cursor?: IncidentEventWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: IncidentEventScalarFieldEnum | IncidentEventScalarFieldEnum[]
+  }
+
+  /**
+   * Incident without action
+   */
+  export type IncidentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Incident
+     */
+    select?: IncidentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Incident
+     */
+    omit?: IncidentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model IncidentEvent
+   */
+
+  export type AggregateIncidentEvent = {
+    _count: IncidentEventCountAggregateOutputType | null
+    _min: IncidentEventMinAggregateOutputType | null
+    _max: IncidentEventMaxAggregateOutputType | null
+  }
+
+  export type IncidentEventMinAggregateOutputType = {
+    id: string | null
+    incidentId: string | null
+    type: $Enums.IncidentEventType | null
+    message: string | null
+    createdAt: Date | null
+  }
+
+  export type IncidentEventMaxAggregateOutputType = {
+    id: string | null
+    incidentId: string | null
+    type: $Enums.IncidentEventType | null
+    message: string | null
+    createdAt: Date | null
+  }
+
+  export type IncidentEventCountAggregateOutputType = {
+    id: number
+    incidentId: number
+    type: number
+    message: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type IncidentEventMinAggregateInputType = {
+    id?: true
+    incidentId?: true
+    type?: true
+    message?: true
+    createdAt?: true
+  }
+
+  export type IncidentEventMaxAggregateInputType = {
+    id?: true
+    incidentId?: true
+    type?: true
+    message?: true
+    createdAt?: true
+  }
+
+  export type IncidentEventCountAggregateInputType = {
+    id?: true
+    incidentId?: true
+    type?: true
+    message?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type IncidentEventAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which IncidentEvent to aggregate.
+     */
+    where?: IncidentEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of IncidentEvents to fetch.
+     */
+    orderBy?: IncidentEventOrderByWithRelationInput | IncidentEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: IncidentEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` IncidentEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` IncidentEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned IncidentEvents
+    **/
+    _count?: true | IncidentEventCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: IncidentEventMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: IncidentEventMaxAggregateInputType
+  }
+
+  export type GetIncidentEventAggregateType<T extends IncidentEventAggregateArgs> = {
+        [P in keyof T & keyof AggregateIncidentEvent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateIncidentEvent[P]>
+      : GetScalarType<T[P], AggregateIncidentEvent[P]>
+  }
+
+
+
+
+  export type IncidentEventGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: IncidentEventWhereInput
+    orderBy?: IncidentEventOrderByWithAggregationInput | IncidentEventOrderByWithAggregationInput[]
+    by: IncidentEventScalarFieldEnum[] | IncidentEventScalarFieldEnum
+    having?: IncidentEventScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: IncidentEventCountAggregateInputType | true
+    _min?: IncidentEventMinAggregateInputType
+    _max?: IncidentEventMaxAggregateInputType
+  }
+
+  export type IncidentEventGroupByOutputType = {
+    id: string
+    incidentId: string
+    type: $Enums.IncidentEventType
+    message: string
+    createdAt: Date
+    _count: IncidentEventCountAggregateOutputType | null
+    _min: IncidentEventMinAggregateOutputType | null
+    _max: IncidentEventMaxAggregateOutputType | null
+  }
+
+  type GetIncidentEventGroupByPayload<T extends IncidentEventGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<IncidentEventGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof IncidentEventGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], IncidentEventGroupByOutputType[P]>
+            : GetScalarType<T[P], IncidentEventGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type IncidentEventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    incidentId?: boolean
+    type?: boolean
+    message?: boolean
+    createdAt?: boolean
+    incident?: boolean | IncidentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["incidentEvent"]>
+
+  export type IncidentEventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    incidentId?: boolean
+    type?: boolean
+    message?: boolean
+    createdAt?: boolean
+    incident?: boolean | IncidentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["incidentEvent"]>
+
+  export type IncidentEventSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    incidentId?: boolean
+    type?: boolean
+    message?: boolean
+    createdAt?: boolean
+    incident?: boolean | IncidentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["incidentEvent"]>
+
+  export type IncidentEventSelectScalar = {
+    id?: boolean
+    incidentId?: boolean
+    type?: boolean
+    message?: boolean
+    createdAt?: boolean
+  }
+
+  export type IncidentEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "incidentId" | "type" | "message" | "createdAt", ExtArgs["result"]["incidentEvent"]>
+  export type IncidentEventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    incident?: boolean | IncidentDefaultArgs<ExtArgs>
+  }
+  export type IncidentEventIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    incident?: boolean | IncidentDefaultArgs<ExtArgs>
+  }
+  export type IncidentEventIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    incident?: boolean | IncidentDefaultArgs<ExtArgs>
+  }
+
+  export type $IncidentEventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "IncidentEvent"
+    objects: {
+      incident: Prisma.$IncidentPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      incidentId: string
+      type: $Enums.IncidentEventType
+      message: string
+      createdAt: Date
+    }, ExtArgs["result"]["incidentEvent"]>
+    composites: {}
+  }
+
+  type IncidentEventGetPayload<S extends boolean | null | undefined | IncidentEventDefaultArgs> = $Result.GetResult<Prisma.$IncidentEventPayload, S>
+
+  type IncidentEventCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<IncidentEventFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: IncidentEventCountAggregateInputType | true
+    }
+
+  export interface IncidentEventDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['IncidentEvent'], meta: { name: 'IncidentEvent' } }
+    /**
+     * Find zero or one IncidentEvent that matches the filter.
+     * @param {IncidentEventFindUniqueArgs} args - Arguments to find a IncidentEvent
+     * @example
+     * // Get one IncidentEvent
+     * const incidentEvent = await prisma.incidentEvent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends IncidentEventFindUniqueArgs>(args: SelectSubset<T, IncidentEventFindUniqueArgs<ExtArgs>>): Prisma__IncidentEventClient<$Result.GetResult<Prisma.$IncidentEventPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one IncidentEvent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {IncidentEventFindUniqueOrThrowArgs} args - Arguments to find a IncidentEvent
+     * @example
+     * // Get one IncidentEvent
+     * const incidentEvent = await prisma.incidentEvent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends IncidentEventFindUniqueOrThrowArgs>(args: SelectSubset<T, IncidentEventFindUniqueOrThrowArgs<ExtArgs>>): Prisma__IncidentEventClient<$Result.GetResult<Prisma.$IncidentEventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first IncidentEvent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IncidentEventFindFirstArgs} args - Arguments to find a IncidentEvent
+     * @example
+     * // Get one IncidentEvent
+     * const incidentEvent = await prisma.incidentEvent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends IncidentEventFindFirstArgs>(args?: SelectSubset<T, IncidentEventFindFirstArgs<ExtArgs>>): Prisma__IncidentEventClient<$Result.GetResult<Prisma.$IncidentEventPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first IncidentEvent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IncidentEventFindFirstOrThrowArgs} args - Arguments to find a IncidentEvent
+     * @example
+     * // Get one IncidentEvent
+     * const incidentEvent = await prisma.incidentEvent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends IncidentEventFindFirstOrThrowArgs>(args?: SelectSubset<T, IncidentEventFindFirstOrThrowArgs<ExtArgs>>): Prisma__IncidentEventClient<$Result.GetResult<Prisma.$IncidentEventPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more IncidentEvents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IncidentEventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all IncidentEvents
+     * const incidentEvents = await prisma.incidentEvent.findMany()
+     * 
+     * // Get first 10 IncidentEvents
+     * const incidentEvents = await prisma.incidentEvent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const incidentEventWithIdOnly = await prisma.incidentEvent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends IncidentEventFindManyArgs>(args?: SelectSubset<T, IncidentEventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IncidentEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a IncidentEvent.
+     * @param {IncidentEventCreateArgs} args - Arguments to create a IncidentEvent.
+     * @example
+     * // Create one IncidentEvent
+     * const IncidentEvent = await prisma.incidentEvent.create({
+     *   data: {
+     *     // ... data to create a IncidentEvent
+     *   }
+     * })
+     * 
+     */
+    create<T extends IncidentEventCreateArgs>(args: SelectSubset<T, IncidentEventCreateArgs<ExtArgs>>): Prisma__IncidentEventClient<$Result.GetResult<Prisma.$IncidentEventPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many IncidentEvents.
+     * @param {IncidentEventCreateManyArgs} args - Arguments to create many IncidentEvents.
+     * @example
+     * // Create many IncidentEvents
+     * const incidentEvent = await prisma.incidentEvent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends IncidentEventCreateManyArgs>(args?: SelectSubset<T, IncidentEventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many IncidentEvents and returns the data saved in the database.
+     * @param {IncidentEventCreateManyAndReturnArgs} args - Arguments to create many IncidentEvents.
+     * @example
+     * // Create many IncidentEvents
+     * const incidentEvent = await prisma.incidentEvent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many IncidentEvents and only return the `id`
+     * const incidentEventWithIdOnly = await prisma.incidentEvent.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends IncidentEventCreateManyAndReturnArgs>(args?: SelectSubset<T, IncidentEventCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IncidentEventPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a IncidentEvent.
+     * @param {IncidentEventDeleteArgs} args - Arguments to delete one IncidentEvent.
+     * @example
+     * // Delete one IncidentEvent
+     * const IncidentEvent = await prisma.incidentEvent.delete({
+     *   where: {
+     *     // ... filter to delete one IncidentEvent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends IncidentEventDeleteArgs>(args: SelectSubset<T, IncidentEventDeleteArgs<ExtArgs>>): Prisma__IncidentEventClient<$Result.GetResult<Prisma.$IncidentEventPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one IncidentEvent.
+     * @param {IncidentEventUpdateArgs} args - Arguments to update one IncidentEvent.
+     * @example
+     * // Update one IncidentEvent
+     * const incidentEvent = await prisma.incidentEvent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends IncidentEventUpdateArgs>(args: SelectSubset<T, IncidentEventUpdateArgs<ExtArgs>>): Prisma__IncidentEventClient<$Result.GetResult<Prisma.$IncidentEventPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more IncidentEvents.
+     * @param {IncidentEventDeleteManyArgs} args - Arguments to filter IncidentEvents to delete.
+     * @example
+     * // Delete a few IncidentEvents
+     * const { count } = await prisma.incidentEvent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends IncidentEventDeleteManyArgs>(args?: SelectSubset<T, IncidentEventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more IncidentEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IncidentEventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many IncidentEvents
+     * const incidentEvent = await prisma.incidentEvent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends IncidentEventUpdateManyArgs>(args: SelectSubset<T, IncidentEventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more IncidentEvents and returns the data updated in the database.
+     * @param {IncidentEventUpdateManyAndReturnArgs} args - Arguments to update many IncidentEvents.
+     * @example
+     * // Update many IncidentEvents
+     * const incidentEvent = await prisma.incidentEvent.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more IncidentEvents and only return the `id`
+     * const incidentEventWithIdOnly = await prisma.incidentEvent.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends IncidentEventUpdateManyAndReturnArgs>(args: SelectSubset<T, IncidentEventUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IncidentEventPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one IncidentEvent.
+     * @param {IncidentEventUpsertArgs} args - Arguments to update or create a IncidentEvent.
+     * @example
+     * // Update or create a IncidentEvent
+     * const incidentEvent = await prisma.incidentEvent.upsert({
+     *   create: {
+     *     // ... data to create a IncidentEvent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the IncidentEvent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends IncidentEventUpsertArgs>(args: SelectSubset<T, IncidentEventUpsertArgs<ExtArgs>>): Prisma__IncidentEventClient<$Result.GetResult<Prisma.$IncidentEventPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of IncidentEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IncidentEventCountArgs} args - Arguments to filter IncidentEvents to count.
+     * @example
+     * // Count the number of IncidentEvents
+     * const count = await prisma.incidentEvent.count({
+     *   where: {
+     *     // ... the filter for the IncidentEvents we want to count
+     *   }
+     * })
+    **/
+    count<T extends IncidentEventCountArgs>(
+      args?: Subset<T, IncidentEventCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], IncidentEventCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a IncidentEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IncidentEventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends IncidentEventAggregateArgs>(args: Subset<T, IncidentEventAggregateArgs>): Prisma.PrismaPromise<GetIncidentEventAggregateType<T>>
+
+    /**
+     * Group by IncidentEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IncidentEventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends IncidentEventGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: IncidentEventGroupByArgs['orderBy'] }
+        : { orderBy?: IncidentEventGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, IncidentEventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetIncidentEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the IncidentEvent model
+   */
+  readonly fields: IncidentEventFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for IncidentEvent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__IncidentEventClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    incident<T extends IncidentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, IncidentDefaultArgs<ExtArgs>>): Prisma__IncidentClient<$Result.GetResult<Prisma.$IncidentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the IncidentEvent model
+   */
+  interface IncidentEventFieldRefs {
+    readonly id: FieldRef<"IncidentEvent", 'String'>
+    readonly incidentId: FieldRef<"IncidentEvent", 'String'>
+    readonly type: FieldRef<"IncidentEvent", 'IncidentEventType'>
+    readonly message: FieldRef<"IncidentEvent", 'String'>
+    readonly createdAt: FieldRef<"IncidentEvent", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * IncidentEvent findUnique
+   */
+  export type IncidentEventFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentEvent
+     */
+    select?: IncidentEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentEvent
+     */
+    omit?: IncidentEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentEventInclude<ExtArgs> | null
+    /**
+     * Filter, which IncidentEvent to fetch.
+     */
+    where: IncidentEventWhereUniqueInput
+  }
+
+  /**
+   * IncidentEvent findUniqueOrThrow
+   */
+  export type IncidentEventFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentEvent
+     */
+    select?: IncidentEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentEvent
+     */
+    omit?: IncidentEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentEventInclude<ExtArgs> | null
+    /**
+     * Filter, which IncidentEvent to fetch.
+     */
+    where: IncidentEventWhereUniqueInput
+  }
+
+  /**
+   * IncidentEvent findFirst
+   */
+  export type IncidentEventFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentEvent
+     */
+    select?: IncidentEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentEvent
+     */
+    omit?: IncidentEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentEventInclude<ExtArgs> | null
+    /**
+     * Filter, which IncidentEvent to fetch.
+     */
+    where?: IncidentEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of IncidentEvents to fetch.
+     */
+    orderBy?: IncidentEventOrderByWithRelationInput | IncidentEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for IncidentEvents.
+     */
+    cursor?: IncidentEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` IncidentEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` IncidentEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of IncidentEvents.
+     */
+    distinct?: IncidentEventScalarFieldEnum | IncidentEventScalarFieldEnum[]
+  }
+
+  /**
+   * IncidentEvent findFirstOrThrow
+   */
+  export type IncidentEventFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentEvent
+     */
+    select?: IncidentEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentEvent
+     */
+    omit?: IncidentEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentEventInclude<ExtArgs> | null
+    /**
+     * Filter, which IncidentEvent to fetch.
+     */
+    where?: IncidentEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of IncidentEvents to fetch.
+     */
+    orderBy?: IncidentEventOrderByWithRelationInput | IncidentEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for IncidentEvents.
+     */
+    cursor?: IncidentEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` IncidentEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` IncidentEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of IncidentEvents.
+     */
+    distinct?: IncidentEventScalarFieldEnum | IncidentEventScalarFieldEnum[]
+  }
+
+  /**
+   * IncidentEvent findMany
+   */
+  export type IncidentEventFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentEvent
+     */
+    select?: IncidentEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentEvent
+     */
+    omit?: IncidentEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentEventInclude<ExtArgs> | null
+    /**
+     * Filter, which IncidentEvents to fetch.
+     */
+    where?: IncidentEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of IncidentEvents to fetch.
+     */
+    orderBy?: IncidentEventOrderByWithRelationInput | IncidentEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing IncidentEvents.
+     */
+    cursor?: IncidentEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` IncidentEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` IncidentEvents.
+     */
+    skip?: number
+    distinct?: IncidentEventScalarFieldEnum | IncidentEventScalarFieldEnum[]
+  }
+
+  /**
+   * IncidentEvent create
+   */
+  export type IncidentEventCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentEvent
+     */
+    select?: IncidentEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentEvent
+     */
+    omit?: IncidentEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentEventInclude<ExtArgs> | null
+    /**
+     * The data needed to create a IncidentEvent.
+     */
+    data: XOR<IncidentEventCreateInput, IncidentEventUncheckedCreateInput>
+  }
+
+  /**
+   * IncidentEvent createMany
+   */
+  export type IncidentEventCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many IncidentEvents.
+     */
+    data: IncidentEventCreateManyInput | IncidentEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * IncidentEvent createManyAndReturn
+   */
+  export type IncidentEventCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentEvent
+     */
+    select?: IncidentEventSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentEvent
+     */
+    omit?: IncidentEventOmit<ExtArgs> | null
+    /**
+     * The data used to create many IncidentEvents.
+     */
+    data: IncidentEventCreateManyInput | IncidentEventCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentEventIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * IncidentEvent update
+   */
+  export type IncidentEventUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentEvent
+     */
+    select?: IncidentEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentEvent
+     */
+    omit?: IncidentEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentEventInclude<ExtArgs> | null
+    /**
+     * The data needed to update a IncidentEvent.
+     */
+    data: XOR<IncidentEventUpdateInput, IncidentEventUncheckedUpdateInput>
+    /**
+     * Choose, which IncidentEvent to update.
+     */
+    where: IncidentEventWhereUniqueInput
+  }
+
+  /**
+   * IncidentEvent updateMany
+   */
+  export type IncidentEventUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update IncidentEvents.
+     */
+    data: XOR<IncidentEventUpdateManyMutationInput, IncidentEventUncheckedUpdateManyInput>
+    /**
+     * Filter which IncidentEvents to update
+     */
+    where?: IncidentEventWhereInput
+    /**
+     * Limit how many IncidentEvents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * IncidentEvent updateManyAndReturn
+   */
+  export type IncidentEventUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentEvent
+     */
+    select?: IncidentEventSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentEvent
+     */
+    omit?: IncidentEventOmit<ExtArgs> | null
+    /**
+     * The data used to update IncidentEvents.
+     */
+    data: XOR<IncidentEventUpdateManyMutationInput, IncidentEventUncheckedUpdateManyInput>
+    /**
+     * Filter which IncidentEvents to update
+     */
+    where?: IncidentEventWhereInput
+    /**
+     * Limit how many IncidentEvents to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentEventIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * IncidentEvent upsert
+   */
+  export type IncidentEventUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentEvent
+     */
+    select?: IncidentEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentEvent
+     */
+    omit?: IncidentEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentEventInclude<ExtArgs> | null
+    /**
+     * The filter to search for the IncidentEvent to update in case it exists.
+     */
+    where: IncidentEventWhereUniqueInput
+    /**
+     * In case the IncidentEvent found by the `where` argument doesn't exist, create a new IncidentEvent with this data.
+     */
+    create: XOR<IncidentEventCreateInput, IncidentEventUncheckedCreateInput>
+    /**
+     * In case the IncidentEvent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<IncidentEventUpdateInput, IncidentEventUncheckedUpdateInput>
+  }
+
+  /**
+   * IncidentEvent delete
+   */
+  export type IncidentEventDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentEvent
+     */
+    select?: IncidentEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentEvent
+     */
+    omit?: IncidentEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentEventInclude<ExtArgs> | null
+    /**
+     * Filter which IncidentEvent to delete.
+     */
+    where: IncidentEventWhereUniqueInput
+  }
+
+  /**
+   * IncidentEvent deleteMany
+   */
+  export type IncidentEventDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which IncidentEvents to delete
+     */
+    where?: IncidentEventWhereInput
+    /**
+     * Limit how many IncidentEvents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * IncidentEvent without action
+   */
+  export type IncidentEventDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentEvent
+     */
+    select?: IncidentEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentEvent
+     */
+    omit?: IncidentEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentEventInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model NotificationChannel
    */
 
@@ -8850,6 +11324,7 @@ export namespace Prisma {
     events?: boolean | Monitor$eventsArgs<ExtArgs>
     maintenanceWindows?: boolean | Monitor$maintenanceWindowsArgs<ExtArgs>
     alertRules?: boolean | Monitor$alertRulesArgs<ExtArgs>
+    incidents?: boolean | Monitor$incidentsArgs<ExtArgs>
     _count?: boolean | MonitorCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["monitor"]>
 
@@ -8906,6 +11381,7 @@ export namespace Prisma {
     events?: boolean | Monitor$eventsArgs<ExtArgs>
     maintenanceWindows?: boolean | Monitor$maintenanceWindowsArgs<ExtArgs>
     alertRules?: boolean | Monitor$alertRulesArgs<ExtArgs>
+    incidents?: boolean | Monitor$incidentsArgs<ExtArgs>
     _count?: boolean | MonitorCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type MonitorIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8922,6 +11398,7 @@ export namespace Prisma {
       events: Prisma.$MonitorEventPayload<ExtArgs>[]
       maintenanceWindows: Prisma.$MaintenanceWindowPayload<ExtArgs>[]
       alertRules: Prisma.$AlertRulePayload<ExtArgs>[]
+      incidents: Prisma.$IncidentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9334,6 +11811,7 @@ export namespace Prisma {
     events<T extends Monitor$eventsArgs<ExtArgs> = {}>(args?: Subset<T, Monitor$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MonitorEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     maintenanceWindows<T extends Monitor$maintenanceWindowsArgs<ExtArgs> = {}>(args?: Subset<T, Monitor$maintenanceWindowsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MaintenanceWindowPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     alertRules<T extends Monitor$alertRulesArgs<ExtArgs> = {}>(args?: Subset<T, Monitor$alertRulesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AlertRulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    incidents<T extends Monitor$incidentsArgs<ExtArgs> = {}>(args?: Subset<T, Monitor$incidentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IncidentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9840,6 +12318,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: AlertRuleScalarFieldEnum | AlertRuleScalarFieldEnum[]
+  }
+
+  /**
+   * Monitor.incidents
+   */
+  export type Monitor$incidentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Incident
+     */
+    select?: IncidentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Incident
+     */
+    omit?: IncidentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentInclude<ExtArgs> | null
+    where?: IncidentWhereInput
+    orderBy?: IncidentOrderByWithRelationInput | IncidentOrderByWithRelationInput[]
+    cursor?: IncidentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: IncidentScalarFieldEnum | IncidentScalarFieldEnum[]
   }
 
   /**
@@ -12124,6 +14626,33 @@ export namespace Prisma {
   export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
 
 
+  export const IncidentScalarFieldEnum: {
+    id: 'id',
+    monitorId: 'monitorId',
+    status: 'status',
+    severity: 'severity',
+    title: 'title',
+    description: 'description',
+    startedAt: 'startedAt',
+    resolvedAt: 'resolvedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type IncidentScalarFieldEnum = (typeof IncidentScalarFieldEnum)[keyof typeof IncidentScalarFieldEnum]
+
+
+  export const IncidentEventScalarFieldEnum: {
+    id: 'id',
+    incidentId: 'incidentId',
+    type: 'type',
+    message: 'message',
+    createdAt: 'createdAt'
+  };
+
+  export type IncidentEventScalarFieldEnum = (typeof IncidentEventScalarFieldEnum)[keyof typeof IncidentEventScalarFieldEnum]
+
+
   export const NotificationChannelScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -12272,6 +14801,48 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'IncidentStatus'
+   */
+  export type EnumIncidentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IncidentStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'IncidentStatus[]'
+   */
+  export type ListEnumIncidentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IncidentStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Severity'
+   */
+  export type EnumSeverityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Severity'>
+    
+
+
+  /**
+   * Reference to a field of type 'Severity[]'
+   */
+  export type ListEnumSeverityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Severity[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'IncidentEventType'
+   */
+  export type EnumIncidentEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IncidentEventType'>
+    
+
+
+  /**
+   * Reference to a field of type 'IncidentEventType[]'
+   */
+  export type ListEnumIncidentEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IncidentEventType[]'>
     
 
 
@@ -12696,6 +15267,144 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Verification"> | Date | string
   }
 
+  export type IncidentWhereInput = {
+    AND?: IncidentWhereInput | IncidentWhereInput[]
+    OR?: IncidentWhereInput[]
+    NOT?: IncidentWhereInput | IncidentWhereInput[]
+    id?: StringFilter<"Incident"> | string
+    monitorId?: StringFilter<"Incident"> | string
+    status?: EnumIncidentStatusFilter<"Incident"> | $Enums.IncidentStatus
+    severity?: EnumSeverityFilter<"Incident"> | $Enums.Severity
+    title?: StringFilter<"Incident"> | string
+    description?: StringNullableFilter<"Incident"> | string | null
+    startedAt?: DateTimeFilter<"Incident"> | Date | string
+    resolvedAt?: DateTimeNullableFilter<"Incident"> | Date | string | null
+    createdAt?: DateTimeFilter<"Incident"> | Date | string
+    updatedAt?: DateTimeFilter<"Incident"> | Date | string
+    monitor?: XOR<MonitorScalarRelationFilter, MonitorWhereInput>
+    events?: IncidentEventListRelationFilter
+  }
+
+  export type IncidentOrderByWithRelationInput = {
+    id?: SortOrder
+    monitorId?: SortOrder
+    status?: SortOrder
+    severity?: SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    startedAt?: SortOrder
+    resolvedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    monitor?: MonitorOrderByWithRelationInput
+    events?: IncidentEventOrderByRelationAggregateInput
+  }
+
+  export type IncidentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: IncidentWhereInput | IncidentWhereInput[]
+    OR?: IncidentWhereInput[]
+    NOT?: IncidentWhereInput | IncidentWhereInput[]
+    monitorId?: StringFilter<"Incident"> | string
+    status?: EnumIncidentStatusFilter<"Incident"> | $Enums.IncidentStatus
+    severity?: EnumSeverityFilter<"Incident"> | $Enums.Severity
+    title?: StringFilter<"Incident"> | string
+    description?: StringNullableFilter<"Incident"> | string | null
+    startedAt?: DateTimeFilter<"Incident"> | Date | string
+    resolvedAt?: DateTimeNullableFilter<"Incident"> | Date | string | null
+    createdAt?: DateTimeFilter<"Incident"> | Date | string
+    updatedAt?: DateTimeFilter<"Incident"> | Date | string
+    monitor?: XOR<MonitorScalarRelationFilter, MonitorWhereInput>
+    events?: IncidentEventListRelationFilter
+  }, "id">
+
+  export type IncidentOrderByWithAggregationInput = {
+    id?: SortOrder
+    monitorId?: SortOrder
+    status?: SortOrder
+    severity?: SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    startedAt?: SortOrder
+    resolvedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: IncidentCountOrderByAggregateInput
+    _max?: IncidentMaxOrderByAggregateInput
+    _min?: IncidentMinOrderByAggregateInput
+  }
+
+  export type IncidentScalarWhereWithAggregatesInput = {
+    AND?: IncidentScalarWhereWithAggregatesInput | IncidentScalarWhereWithAggregatesInput[]
+    OR?: IncidentScalarWhereWithAggregatesInput[]
+    NOT?: IncidentScalarWhereWithAggregatesInput | IncidentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Incident"> | string
+    monitorId?: StringWithAggregatesFilter<"Incident"> | string
+    status?: EnumIncidentStatusWithAggregatesFilter<"Incident"> | $Enums.IncidentStatus
+    severity?: EnumSeverityWithAggregatesFilter<"Incident"> | $Enums.Severity
+    title?: StringWithAggregatesFilter<"Incident"> | string
+    description?: StringNullableWithAggregatesFilter<"Incident"> | string | null
+    startedAt?: DateTimeWithAggregatesFilter<"Incident"> | Date | string
+    resolvedAt?: DateTimeNullableWithAggregatesFilter<"Incident"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Incident"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Incident"> | Date | string
+  }
+
+  export type IncidentEventWhereInput = {
+    AND?: IncidentEventWhereInput | IncidentEventWhereInput[]
+    OR?: IncidentEventWhereInput[]
+    NOT?: IncidentEventWhereInput | IncidentEventWhereInput[]
+    id?: StringFilter<"IncidentEvent"> | string
+    incidentId?: StringFilter<"IncidentEvent"> | string
+    type?: EnumIncidentEventTypeFilter<"IncidentEvent"> | $Enums.IncidentEventType
+    message?: StringFilter<"IncidentEvent"> | string
+    createdAt?: DateTimeFilter<"IncidentEvent"> | Date | string
+    incident?: XOR<IncidentScalarRelationFilter, IncidentWhereInput>
+  }
+
+  export type IncidentEventOrderByWithRelationInput = {
+    id?: SortOrder
+    incidentId?: SortOrder
+    type?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+    incident?: IncidentOrderByWithRelationInput
+  }
+
+  export type IncidentEventWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: IncidentEventWhereInput | IncidentEventWhereInput[]
+    OR?: IncidentEventWhereInput[]
+    NOT?: IncidentEventWhereInput | IncidentEventWhereInput[]
+    incidentId?: StringFilter<"IncidentEvent"> | string
+    type?: EnumIncidentEventTypeFilter<"IncidentEvent"> | $Enums.IncidentEventType
+    message?: StringFilter<"IncidentEvent"> | string
+    createdAt?: DateTimeFilter<"IncidentEvent"> | Date | string
+    incident?: XOR<IncidentScalarRelationFilter, IncidentWhereInput>
+  }, "id">
+
+  export type IncidentEventOrderByWithAggregationInput = {
+    id?: SortOrder
+    incidentId?: SortOrder
+    type?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+    _count?: IncidentEventCountOrderByAggregateInput
+    _max?: IncidentEventMaxOrderByAggregateInput
+    _min?: IncidentEventMinOrderByAggregateInput
+  }
+
+  export type IncidentEventScalarWhereWithAggregatesInput = {
+    AND?: IncidentEventScalarWhereWithAggregatesInput | IncidentEventScalarWhereWithAggregatesInput[]
+    OR?: IncidentEventScalarWhereWithAggregatesInput[]
+    NOT?: IncidentEventScalarWhereWithAggregatesInput | IncidentEventScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"IncidentEvent"> | string
+    incidentId?: StringWithAggregatesFilter<"IncidentEvent"> | string
+    type?: EnumIncidentEventTypeWithAggregatesFilter<"IncidentEvent"> | $Enums.IncidentEventType
+    message?: StringWithAggregatesFilter<"IncidentEvent"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"IncidentEvent"> | Date | string
+  }
+
   export type NotificationChannelWhereInput = {
     AND?: NotificationChannelWhereInput | NotificationChannelWhereInput[]
     OR?: NotificationChannelWhereInput[]
@@ -12864,6 +15573,7 @@ export namespace Prisma {
     events?: MonitorEventListRelationFilter
     maintenanceWindows?: MaintenanceWindowListRelationFilter
     alertRules?: AlertRuleListRelationFilter
+    incidents?: IncidentListRelationFilter
   }
 
   export type MonitorOrderByWithRelationInput = {
@@ -12883,6 +15593,7 @@ export namespace Prisma {
     events?: MonitorEventOrderByRelationAggregateInput
     maintenanceWindows?: MaintenanceWindowOrderByRelationAggregateInput
     alertRules?: AlertRuleOrderByRelationAggregateInput
+    incidents?: IncidentOrderByRelationAggregateInput
   }
 
   export type MonitorWhereUniqueInput = Prisma.AtLeast<{
@@ -12905,6 +15616,7 @@ export namespace Prisma {
     events?: MonitorEventListRelationFilter
     maintenanceWindows?: MaintenanceWindowListRelationFilter
     alertRules?: AlertRuleListRelationFilter
+    incidents?: IncidentListRelationFilter
   }, "id">
 
   export type MonitorOrderByWithAggregationInput = {
@@ -13422,6 +16134,155 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type IncidentCreateInput = {
+    id?: string
+    status?: $Enums.IncidentStatus
+    severity?: $Enums.Severity
+    title: string
+    description?: string | null
+    startedAt?: Date | string
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    monitor: MonitorCreateNestedOneWithoutIncidentsInput
+    events?: IncidentEventCreateNestedManyWithoutIncidentInput
+  }
+
+  export type IncidentUncheckedCreateInput = {
+    id?: string
+    monitorId: string
+    status?: $Enums.IncidentStatus
+    severity?: $Enums.Severity
+    title: string
+    description?: string | null
+    startedAt?: Date | string
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    events?: IncidentEventUncheckedCreateNestedManyWithoutIncidentInput
+  }
+
+  export type IncidentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumIncidentStatusFieldUpdateOperationsInput | $Enums.IncidentStatus
+    severity?: EnumSeverityFieldUpdateOperationsInput | $Enums.Severity
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    monitor?: MonitorUpdateOneRequiredWithoutIncidentsNestedInput
+    events?: IncidentEventUpdateManyWithoutIncidentNestedInput
+  }
+
+  export type IncidentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monitorId?: StringFieldUpdateOperationsInput | string
+    status?: EnumIncidentStatusFieldUpdateOperationsInput | $Enums.IncidentStatus
+    severity?: EnumSeverityFieldUpdateOperationsInput | $Enums.Severity
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    events?: IncidentEventUncheckedUpdateManyWithoutIncidentNestedInput
+  }
+
+  export type IncidentCreateManyInput = {
+    id?: string
+    monitorId: string
+    status?: $Enums.IncidentStatus
+    severity?: $Enums.Severity
+    title: string
+    description?: string | null
+    startedAt?: Date | string
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type IncidentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumIncidentStatusFieldUpdateOperationsInput | $Enums.IncidentStatus
+    severity?: EnumSeverityFieldUpdateOperationsInput | $Enums.Severity
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type IncidentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monitorId?: StringFieldUpdateOperationsInput | string
+    status?: EnumIncidentStatusFieldUpdateOperationsInput | $Enums.IncidentStatus
+    severity?: EnumSeverityFieldUpdateOperationsInput | $Enums.Severity
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type IncidentEventCreateInput = {
+    id?: string
+    type: $Enums.IncidentEventType
+    message: string
+    createdAt?: Date | string
+    incident: IncidentCreateNestedOneWithoutEventsInput
+  }
+
+  export type IncidentEventUncheckedCreateInput = {
+    id?: string
+    incidentId: string
+    type: $Enums.IncidentEventType
+    message: string
+    createdAt?: Date | string
+  }
+
+  export type IncidentEventUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumIncidentEventTypeFieldUpdateOperationsInput | $Enums.IncidentEventType
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    incident?: IncidentUpdateOneRequiredWithoutEventsNestedInput
+  }
+
+  export type IncidentEventUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    incidentId?: StringFieldUpdateOperationsInput | string
+    type?: EnumIncidentEventTypeFieldUpdateOperationsInput | $Enums.IncidentEventType
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type IncidentEventCreateManyInput = {
+    id?: string
+    incidentId: string
+    type: $Enums.IncidentEventType
+    message: string
+    createdAt?: Date | string
+  }
+
+  export type IncidentEventUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumIncidentEventTypeFieldUpdateOperationsInput | $Enums.IncidentEventType
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type IncidentEventUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    incidentId?: StringFieldUpdateOperationsInput | string
+    type?: EnumIncidentEventTypeFieldUpdateOperationsInput | $Enums.IncidentEventType
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type NotificationChannelCreateInput = {
     id?: string
     name: string
@@ -13598,6 +16459,7 @@ export namespace Prisma {
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleCreateNestedManyWithoutMonitorInput
+    incidents?: IncidentCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateInput = {
@@ -13616,6 +16478,7 @@ export namespace Prisma {
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
+    incidents?: IncidentUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUpdateInput = {
@@ -13634,6 +16497,7 @@ export namespace Prisma {
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUpdateManyWithoutMonitorNestedInput
+    incidents?: IncidentUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateInput = {
@@ -13652,6 +16516,7 @@ export namespace Prisma {
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
+    incidents?: IncidentUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorCreateManyInput = {
@@ -14152,6 +17017,140 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type EnumIncidentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.IncidentStatus | EnumIncidentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.IncidentStatus[] | ListEnumIncidentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.IncidentStatus[] | ListEnumIncidentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumIncidentStatusFilter<$PrismaModel> | $Enums.IncidentStatus
+  }
+
+  export type EnumSeverityFilter<$PrismaModel = never> = {
+    equals?: $Enums.Severity | EnumSeverityFieldRefInput<$PrismaModel>
+    in?: $Enums.Severity[] | ListEnumSeverityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Severity[] | ListEnumSeverityFieldRefInput<$PrismaModel>
+    not?: NestedEnumSeverityFilter<$PrismaModel> | $Enums.Severity
+  }
+
+  export type MonitorScalarRelationFilter = {
+    is?: MonitorWhereInput
+    isNot?: MonitorWhereInput
+  }
+
+  export type IncidentEventListRelationFilter = {
+    every?: IncidentEventWhereInput
+    some?: IncidentEventWhereInput
+    none?: IncidentEventWhereInput
+  }
+
+  export type IncidentEventOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type IncidentCountOrderByAggregateInput = {
+    id?: SortOrder
+    monitorId?: SortOrder
+    status?: SortOrder
+    severity?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    startedAt?: SortOrder
+    resolvedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type IncidentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    monitorId?: SortOrder
+    status?: SortOrder
+    severity?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    startedAt?: SortOrder
+    resolvedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type IncidentMinOrderByAggregateInput = {
+    id?: SortOrder
+    monitorId?: SortOrder
+    status?: SortOrder
+    severity?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    startedAt?: SortOrder
+    resolvedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumIncidentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.IncidentStatus | EnumIncidentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.IncidentStatus[] | ListEnumIncidentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.IncidentStatus[] | ListEnumIncidentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumIncidentStatusWithAggregatesFilter<$PrismaModel> | $Enums.IncidentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumIncidentStatusFilter<$PrismaModel>
+    _max?: NestedEnumIncidentStatusFilter<$PrismaModel>
+  }
+
+  export type EnumSeverityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Severity | EnumSeverityFieldRefInput<$PrismaModel>
+    in?: $Enums.Severity[] | ListEnumSeverityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Severity[] | ListEnumSeverityFieldRefInput<$PrismaModel>
+    not?: NestedEnumSeverityWithAggregatesFilter<$PrismaModel> | $Enums.Severity
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSeverityFilter<$PrismaModel>
+    _max?: NestedEnumSeverityFilter<$PrismaModel>
+  }
+
+  export type EnumIncidentEventTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.IncidentEventType | EnumIncidentEventTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.IncidentEventType[] | ListEnumIncidentEventTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.IncidentEventType[] | ListEnumIncidentEventTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumIncidentEventTypeFilter<$PrismaModel> | $Enums.IncidentEventType
+  }
+
+  export type IncidentScalarRelationFilter = {
+    is?: IncidentWhereInput
+    isNot?: IncidentWhereInput
+  }
+
+  export type IncidentEventCountOrderByAggregateInput = {
+    id?: SortOrder
+    incidentId?: SortOrder
+    type?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type IncidentEventMaxOrderByAggregateInput = {
+    id?: SortOrder
+    incidentId?: SortOrder
+    type?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type IncidentEventMinOrderByAggregateInput = {
+    id?: SortOrder
+    incidentId?: SortOrder
+    type?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EnumIncidentEventTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.IncidentEventType | EnumIncidentEventTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.IncidentEventType[] | ListEnumIncidentEventTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.IncidentEventType[] | ListEnumIncidentEventTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumIncidentEventTypeWithAggregatesFilter<$PrismaModel> | $Enums.IncidentEventType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumIncidentEventTypeFilter<$PrismaModel>
+    _max?: NestedEnumIncidentEventTypeFilter<$PrismaModel>
+  }
+
   export type EnumNotificationTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.NotificationType | EnumNotificationTypeFieldRefInput<$PrismaModel>
     in?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel>
@@ -14288,11 +17287,6 @@ export namespace Prisma {
     not?: NestedEnumMonitorStatusNullableFilter<$PrismaModel> | $Enums.MonitorStatus | null
   }
 
-  export type MonitorScalarRelationFilter = {
-    is?: MonitorWhereInput
-    isNot?: MonitorWhereInput
-  }
-
   export type AlertRuleCountOrderByAggregateInput = {
     id?: SortOrder
     monitorId?: SortOrder
@@ -14420,11 +17414,21 @@ export namespace Prisma {
     none?: MaintenanceWindowWhereInput
   }
 
+  export type IncidentListRelationFilter = {
+    every?: IncidentWhereInput
+    some?: IncidentWhereInput
+    none?: IncidentWhereInput
+  }
+
   export type MonitorEventOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type MaintenanceWindowOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type IncidentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -14800,6 +17804,88 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAccountsInput, UserUpdateWithoutAccountsInput>, UserUncheckedUpdateWithoutAccountsInput>
   }
 
+  export type MonitorCreateNestedOneWithoutIncidentsInput = {
+    create?: XOR<MonitorCreateWithoutIncidentsInput, MonitorUncheckedCreateWithoutIncidentsInput>
+    connectOrCreate?: MonitorCreateOrConnectWithoutIncidentsInput
+    connect?: MonitorWhereUniqueInput
+  }
+
+  export type IncidentEventCreateNestedManyWithoutIncidentInput = {
+    create?: XOR<IncidentEventCreateWithoutIncidentInput, IncidentEventUncheckedCreateWithoutIncidentInput> | IncidentEventCreateWithoutIncidentInput[] | IncidentEventUncheckedCreateWithoutIncidentInput[]
+    connectOrCreate?: IncidentEventCreateOrConnectWithoutIncidentInput | IncidentEventCreateOrConnectWithoutIncidentInput[]
+    createMany?: IncidentEventCreateManyIncidentInputEnvelope
+    connect?: IncidentEventWhereUniqueInput | IncidentEventWhereUniqueInput[]
+  }
+
+  export type IncidentEventUncheckedCreateNestedManyWithoutIncidentInput = {
+    create?: XOR<IncidentEventCreateWithoutIncidentInput, IncidentEventUncheckedCreateWithoutIncidentInput> | IncidentEventCreateWithoutIncidentInput[] | IncidentEventUncheckedCreateWithoutIncidentInput[]
+    connectOrCreate?: IncidentEventCreateOrConnectWithoutIncidentInput | IncidentEventCreateOrConnectWithoutIncidentInput[]
+    createMany?: IncidentEventCreateManyIncidentInputEnvelope
+    connect?: IncidentEventWhereUniqueInput | IncidentEventWhereUniqueInput[]
+  }
+
+  export type EnumIncidentStatusFieldUpdateOperationsInput = {
+    set?: $Enums.IncidentStatus
+  }
+
+  export type EnumSeverityFieldUpdateOperationsInput = {
+    set?: $Enums.Severity
+  }
+
+  export type MonitorUpdateOneRequiredWithoutIncidentsNestedInput = {
+    create?: XOR<MonitorCreateWithoutIncidentsInput, MonitorUncheckedCreateWithoutIncidentsInput>
+    connectOrCreate?: MonitorCreateOrConnectWithoutIncidentsInput
+    upsert?: MonitorUpsertWithoutIncidentsInput
+    connect?: MonitorWhereUniqueInput
+    update?: XOR<XOR<MonitorUpdateToOneWithWhereWithoutIncidentsInput, MonitorUpdateWithoutIncidentsInput>, MonitorUncheckedUpdateWithoutIncidentsInput>
+  }
+
+  export type IncidentEventUpdateManyWithoutIncidentNestedInput = {
+    create?: XOR<IncidentEventCreateWithoutIncidentInput, IncidentEventUncheckedCreateWithoutIncidentInput> | IncidentEventCreateWithoutIncidentInput[] | IncidentEventUncheckedCreateWithoutIncidentInput[]
+    connectOrCreate?: IncidentEventCreateOrConnectWithoutIncidentInput | IncidentEventCreateOrConnectWithoutIncidentInput[]
+    upsert?: IncidentEventUpsertWithWhereUniqueWithoutIncidentInput | IncidentEventUpsertWithWhereUniqueWithoutIncidentInput[]
+    createMany?: IncidentEventCreateManyIncidentInputEnvelope
+    set?: IncidentEventWhereUniqueInput | IncidentEventWhereUniqueInput[]
+    disconnect?: IncidentEventWhereUniqueInput | IncidentEventWhereUniqueInput[]
+    delete?: IncidentEventWhereUniqueInput | IncidentEventWhereUniqueInput[]
+    connect?: IncidentEventWhereUniqueInput | IncidentEventWhereUniqueInput[]
+    update?: IncidentEventUpdateWithWhereUniqueWithoutIncidentInput | IncidentEventUpdateWithWhereUniqueWithoutIncidentInput[]
+    updateMany?: IncidentEventUpdateManyWithWhereWithoutIncidentInput | IncidentEventUpdateManyWithWhereWithoutIncidentInput[]
+    deleteMany?: IncidentEventScalarWhereInput | IncidentEventScalarWhereInput[]
+  }
+
+  export type IncidentEventUncheckedUpdateManyWithoutIncidentNestedInput = {
+    create?: XOR<IncidentEventCreateWithoutIncidentInput, IncidentEventUncheckedCreateWithoutIncidentInput> | IncidentEventCreateWithoutIncidentInput[] | IncidentEventUncheckedCreateWithoutIncidentInput[]
+    connectOrCreate?: IncidentEventCreateOrConnectWithoutIncidentInput | IncidentEventCreateOrConnectWithoutIncidentInput[]
+    upsert?: IncidentEventUpsertWithWhereUniqueWithoutIncidentInput | IncidentEventUpsertWithWhereUniqueWithoutIncidentInput[]
+    createMany?: IncidentEventCreateManyIncidentInputEnvelope
+    set?: IncidentEventWhereUniqueInput | IncidentEventWhereUniqueInput[]
+    disconnect?: IncidentEventWhereUniqueInput | IncidentEventWhereUniqueInput[]
+    delete?: IncidentEventWhereUniqueInput | IncidentEventWhereUniqueInput[]
+    connect?: IncidentEventWhereUniqueInput | IncidentEventWhereUniqueInput[]
+    update?: IncidentEventUpdateWithWhereUniqueWithoutIncidentInput | IncidentEventUpdateWithWhereUniqueWithoutIncidentInput[]
+    updateMany?: IncidentEventUpdateManyWithWhereWithoutIncidentInput | IncidentEventUpdateManyWithWhereWithoutIncidentInput[]
+    deleteMany?: IncidentEventScalarWhereInput | IncidentEventScalarWhereInput[]
+  }
+
+  export type IncidentCreateNestedOneWithoutEventsInput = {
+    create?: XOR<IncidentCreateWithoutEventsInput, IncidentUncheckedCreateWithoutEventsInput>
+    connectOrCreate?: IncidentCreateOrConnectWithoutEventsInput
+    connect?: IncidentWhereUniqueInput
+  }
+
+  export type EnumIncidentEventTypeFieldUpdateOperationsInput = {
+    set?: $Enums.IncidentEventType
+  }
+
+  export type IncidentUpdateOneRequiredWithoutEventsNestedInput = {
+    create?: XOR<IncidentCreateWithoutEventsInput, IncidentUncheckedCreateWithoutEventsInput>
+    connectOrCreate?: IncidentCreateOrConnectWithoutEventsInput
+    upsert?: IncidentUpsertWithoutEventsInput
+    connect?: IncidentWhereUniqueInput
+    update?: XOR<XOR<IncidentUpdateToOneWithWhereWithoutEventsInput, IncidentUpdateWithoutEventsInput>, IncidentUncheckedUpdateWithoutEventsInput>
+  }
+
   export type UserCreateNestedOneWithoutNotificationChannelsInput = {
     create?: XOR<UserCreateWithoutNotificationChannelsInput, UserUncheckedCreateWithoutNotificationChannelsInput>
     connectOrCreate?: UserCreateOrConnectWithoutNotificationChannelsInput
@@ -14955,6 +18041,13 @@ export namespace Prisma {
     connect?: AlertRuleWhereUniqueInput | AlertRuleWhereUniqueInput[]
   }
 
+  export type IncidentCreateNestedManyWithoutMonitorInput = {
+    create?: XOR<IncidentCreateWithoutMonitorInput, IncidentUncheckedCreateWithoutMonitorInput> | IncidentCreateWithoutMonitorInput[] | IncidentUncheckedCreateWithoutMonitorInput[]
+    connectOrCreate?: IncidentCreateOrConnectWithoutMonitorInput | IncidentCreateOrConnectWithoutMonitorInput[]
+    createMany?: IncidentCreateManyMonitorInputEnvelope
+    connect?: IncidentWhereUniqueInput | IncidentWhereUniqueInput[]
+  }
+
   export type MonitorEventUncheckedCreateNestedManyWithoutMonitorInput = {
     create?: XOR<MonitorEventCreateWithoutMonitorInput, MonitorEventUncheckedCreateWithoutMonitorInput> | MonitorEventCreateWithoutMonitorInput[] | MonitorEventUncheckedCreateWithoutMonitorInput[]
     connectOrCreate?: MonitorEventCreateOrConnectWithoutMonitorInput | MonitorEventCreateOrConnectWithoutMonitorInput[]
@@ -14974,6 +18067,13 @@ export namespace Prisma {
     connectOrCreate?: AlertRuleCreateOrConnectWithoutMonitorInput | AlertRuleCreateOrConnectWithoutMonitorInput[]
     createMany?: AlertRuleCreateManyMonitorInputEnvelope
     connect?: AlertRuleWhereUniqueInput | AlertRuleWhereUniqueInput[]
+  }
+
+  export type IncidentUncheckedCreateNestedManyWithoutMonitorInput = {
+    create?: XOR<IncidentCreateWithoutMonitorInput, IncidentUncheckedCreateWithoutMonitorInput> | IncidentCreateWithoutMonitorInput[] | IncidentUncheckedCreateWithoutMonitorInput[]
+    connectOrCreate?: IncidentCreateOrConnectWithoutMonitorInput | IncidentCreateOrConnectWithoutMonitorInput[]
+    createMany?: IncidentCreateManyMonitorInputEnvelope
+    connect?: IncidentWhereUniqueInput | IncidentWhereUniqueInput[]
   }
 
   export type EnumMonitorTypeFieldUpdateOperationsInput = {
@@ -15042,6 +18142,20 @@ export namespace Prisma {
     deleteMany?: AlertRuleScalarWhereInput | AlertRuleScalarWhereInput[]
   }
 
+  export type IncidentUpdateManyWithoutMonitorNestedInput = {
+    create?: XOR<IncidentCreateWithoutMonitorInput, IncidentUncheckedCreateWithoutMonitorInput> | IncidentCreateWithoutMonitorInput[] | IncidentUncheckedCreateWithoutMonitorInput[]
+    connectOrCreate?: IncidentCreateOrConnectWithoutMonitorInput | IncidentCreateOrConnectWithoutMonitorInput[]
+    upsert?: IncidentUpsertWithWhereUniqueWithoutMonitorInput | IncidentUpsertWithWhereUniqueWithoutMonitorInput[]
+    createMany?: IncidentCreateManyMonitorInputEnvelope
+    set?: IncidentWhereUniqueInput | IncidentWhereUniqueInput[]
+    disconnect?: IncidentWhereUniqueInput | IncidentWhereUniqueInput[]
+    delete?: IncidentWhereUniqueInput | IncidentWhereUniqueInput[]
+    connect?: IncidentWhereUniqueInput | IncidentWhereUniqueInput[]
+    update?: IncidentUpdateWithWhereUniqueWithoutMonitorInput | IncidentUpdateWithWhereUniqueWithoutMonitorInput[]
+    updateMany?: IncidentUpdateManyWithWhereWithoutMonitorInput | IncidentUpdateManyWithWhereWithoutMonitorInput[]
+    deleteMany?: IncidentScalarWhereInput | IncidentScalarWhereInput[]
+  }
+
   export type MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput = {
     create?: XOR<MonitorEventCreateWithoutMonitorInput, MonitorEventUncheckedCreateWithoutMonitorInput> | MonitorEventCreateWithoutMonitorInput[] | MonitorEventUncheckedCreateWithoutMonitorInput[]
     connectOrCreate?: MonitorEventCreateOrConnectWithoutMonitorInput | MonitorEventCreateOrConnectWithoutMonitorInput[]
@@ -15082,6 +18196,20 @@ export namespace Prisma {
     update?: AlertRuleUpdateWithWhereUniqueWithoutMonitorInput | AlertRuleUpdateWithWhereUniqueWithoutMonitorInput[]
     updateMany?: AlertRuleUpdateManyWithWhereWithoutMonitorInput | AlertRuleUpdateManyWithWhereWithoutMonitorInput[]
     deleteMany?: AlertRuleScalarWhereInput | AlertRuleScalarWhereInput[]
+  }
+
+  export type IncidentUncheckedUpdateManyWithoutMonitorNestedInput = {
+    create?: XOR<IncidentCreateWithoutMonitorInput, IncidentUncheckedCreateWithoutMonitorInput> | IncidentCreateWithoutMonitorInput[] | IncidentUncheckedCreateWithoutMonitorInput[]
+    connectOrCreate?: IncidentCreateOrConnectWithoutMonitorInput | IncidentCreateOrConnectWithoutMonitorInput[]
+    upsert?: IncidentUpsertWithWhereUniqueWithoutMonitorInput | IncidentUpsertWithWhereUniqueWithoutMonitorInput[]
+    createMany?: IncidentCreateManyMonitorInputEnvelope
+    set?: IncidentWhereUniqueInput | IncidentWhereUniqueInput[]
+    disconnect?: IncidentWhereUniqueInput | IncidentWhereUniqueInput[]
+    delete?: IncidentWhereUniqueInput | IncidentWhereUniqueInput[]
+    connect?: IncidentWhereUniqueInput | IncidentWhereUniqueInput[]
+    update?: IncidentUpdateWithWhereUniqueWithoutMonitorInput | IncidentUpdateWithWhereUniqueWithoutMonitorInput[]
+    updateMany?: IncidentUpdateManyWithWhereWithoutMonitorInput | IncidentUpdateManyWithWhereWithoutMonitorInput[]
+    deleteMany?: IncidentScalarWhereInput | IncidentScalarWhereInput[]
   }
 
   export type MonitorCreateNestedOneWithoutEventsInput = {
@@ -15257,6 +18385,57 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumIncidentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.IncidentStatus | EnumIncidentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.IncidentStatus[] | ListEnumIncidentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.IncidentStatus[] | ListEnumIncidentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumIncidentStatusFilter<$PrismaModel> | $Enums.IncidentStatus
+  }
+
+  export type NestedEnumSeverityFilter<$PrismaModel = never> = {
+    equals?: $Enums.Severity | EnumSeverityFieldRefInput<$PrismaModel>
+    in?: $Enums.Severity[] | ListEnumSeverityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Severity[] | ListEnumSeverityFieldRefInput<$PrismaModel>
+    not?: NestedEnumSeverityFilter<$PrismaModel> | $Enums.Severity
+  }
+
+  export type NestedEnumIncidentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.IncidentStatus | EnumIncidentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.IncidentStatus[] | ListEnumIncidentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.IncidentStatus[] | ListEnumIncidentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumIncidentStatusWithAggregatesFilter<$PrismaModel> | $Enums.IncidentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumIncidentStatusFilter<$PrismaModel>
+    _max?: NestedEnumIncidentStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumSeverityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Severity | EnumSeverityFieldRefInput<$PrismaModel>
+    in?: $Enums.Severity[] | ListEnumSeverityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Severity[] | ListEnumSeverityFieldRefInput<$PrismaModel>
+    not?: NestedEnumSeverityWithAggregatesFilter<$PrismaModel> | $Enums.Severity
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSeverityFilter<$PrismaModel>
+    _max?: NestedEnumSeverityFilter<$PrismaModel>
+  }
+
+  export type NestedEnumIncidentEventTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.IncidentEventType | EnumIncidentEventTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.IncidentEventType[] | ListEnumIncidentEventTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.IncidentEventType[] | ListEnumIncidentEventTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumIncidentEventTypeFilter<$PrismaModel> | $Enums.IncidentEventType
+  }
+
+  export type NestedEnumIncidentEventTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.IncidentEventType | EnumIncidentEventTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.IncidentEventType[] | ListEnumIncidentEventTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.IncidentEventType[] | ListEnumIncidentEventTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumIncidentEventTypeWithAggregatesFilter<$PrismaModel> | $Enums.IncidentEventType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumIncidentEventTypeFilter<$PrismaModel>
+    _max?: NestedEnumIncidentEventTypeFilter<$PrismaModel>
   }
 
   export type NestedEnumNotificationTypeFilter<$PrismaModel = never> = {
@@ -15523,6 +18702,7 @@ export namespace Prisma {
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleCreateNestedManyWithoutMonitorInput
+    incidents?: IncidentCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutUserInput = {
@@ -15540,6 +18720,7 @@ export namespace Prisma {
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
+    incidents?: IncidentUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutUserInput = {
@@ -15862,6 +19043,213 @@ export namespace Prisma {
     notificationChannels?: NotificationChannelUncheckedUpdateManyWithoutUserNestedInput
   }
 
+  export type MonitorCreateWithoutIncidentsInput = {
+    id?: string
+    name: string
+    url: string
+    type?: $Enums.MonitorType
+    interval?: number
+    timeout?: number
+    status?: $Enums.MonitorStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    nextCheck?: Date | string | null
+    lastCheck?: Date | string | null
+    user: UserCreateNestedOneWithoutMonitorsInput
+    events?: MonitorEventCreateNestedManyWithoutMonitorInput
+    maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
+    alertRules?: AlertRuleCreateNestedManyWithoutMonitorInput
+  }
+
+  export type MonitorUncheckedCreateWithoutIncidentsInput = {
+    id?: string
+    name: string
+    url: string
+    type?: $Enums.MonitorType
+    interval?: number
+    timeout?: number
+    status?: $Enums.MonitorStatus
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    nextCheck?: Date | string | null
+    lastCheck?: Date | string | null
+    events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
+    maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
+    alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
+  }
+
+  export type MonitorCreateOrConnectWithoutIncidentsInput = {
+    where: MonitorWhereUniqueInput
+    create: XOR<MonitorCreateWithoutIncidentsInput, MonitorUncheckedCreateWithoutIncidentsInput>
+  }
+
+  export type IncidentEventCreateWithoutIncidentInput = {
+    id?: string
+    type: $Enums.IncidentEventType
+    message: string
+    createdAt?: Date | string
+  }
+
+  export type IncidentEventUncheckedCreateWithoutIncidentInput = {
+    id?: string
+    type: $Enums.IncidentEventType
+    message: string
+    createdAt?: Date | string
+  }
+
+  export type IncidentEventCreateOrConnectWithoutIncidentInput = {
+    where: IncidentEventWhereUniqueInput
+    create: XOR<IncidentEventCreateWithoutIncidentInput, IncidentEventUncheckedCreateWithoutIncidentInput>
+  }
+
+  export type IncidentEventCreateManyIncidentInputEnvelope = {
+    data: IncidentEventCreateManyIncidentInput | IncidentEventCreateManyIncidentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type MonitorUpsertWithoutIncidentsInput = {
+    update: XOR<MonitorUpdateWithoutIncidentsInput, MonitorUncheckedUpdateWithoutIncidentsInput>
+    create: XOR<MonitorCreateWithoutIncidentsInput, MonitorUncheckedCreateWithoutIncidentsInput>
+    where?: MonitorWhereInput
+  }
+
+  export type MonitorUpdateToOneWithWhereWithoutIncidentsInput = {
+    where?: MonitorWhereInput
+    data: XOR<MonitorUpdateWithoutIncidentsInput, MonitorUncheckedUpdateWithoutIncidentsInput>
+  }
+
+  export type MonitorUpdateWithoutIncidentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    type?: EnumMonitorTypeFieldUpdateOperationsInput | $Enums.MonitorType
+    interval?: IntFieldUpdateOperationsInput | number
+    timeout?: IntFieldUpdateOperationsInput | number
+    status?: EnumMonitorStatusFieldUpdateOperationsInput | $Enums.MonitorStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nextCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
+    events?: MonitorEventUpdateManyWithoutMonitorNestedInput
+    maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
+    alertRules?: AlertRuleUpdateManyWithoutMonitorNestedInput
+  }
+
+  export type MonitorUncheckedUpdateWithoutIncidentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    type?: EnumMonitorTypeFieldUpdateOperationsInput | $Enums.MonitorType
+    interval?: IntFieldUpdateOperationsInput | number
+    timeout?: IntFieldUpdateOperationsInput | number
+    status?: EnumMonitorStatusFieldUpdateOperationsInput | $Enums.MonitorStatus
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nextCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
+    maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
+    alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
+  }
+
+  export type IncidentEventUpsertWithWhereUniqueWithoutIncidentInput = {
+    where: IncidentEventWhereUniqueInput
+    update: XOR<IncidentEventUpdateWithoutIncidentInput, IncidentEventUncheckedUpdateWithoutIncidentInput>
+    create: XOR<IncidentEventCreateWithoutIncidentInput, IncidentEventUncheckedCreateWithoutIncidentInput>
+  }
+
+  export type IncidentEventUpdateWithWhereUniqueWithoutIncidentInput = {
+    where: IncidentEventWhereUniqueInput
+    data: XOR<IncidentEventUpdateWithoutIncidentInput, IncidentEventUncheckedUpdateWithoutIncidentInput>
+  }
+
+  export type IncidentEventUpdateManyWithWhereWithoutIncidentInput = {
+    where: IncidentEventScalarWhereInput
+    data: XOR<IncidentEventUpdateManyMutationInput, IncidentEventUncheckedUpdateManyWithoutIncidentInput>
+  }
+
+  export type IncidentEventScalarWhereInput = {
+    AND?: IncidentEventScalarWhereInput | IncidentEventScalarWhereInput[]
+    OR?: IncidentEventScalarWhereInput[]
+    NOT?: IncidentEventScalarWhereInput | IncidentEventScalarWhereInput[]
+    id?: StringFilter<"IncidentEvent"> | string
+    incidentId?: StringFilter<"IncidentEvent"> | string
+    type?: EnumIncidentEventTypeFilter<"IncidentEvent"> | $Enums.IncidentEventType
+    message?: StringFilter<"IncidentEvent"> | string
+    createdAt?: DateTimeFilter<"IncidentEvent"> | Date | string
+  }
+
+  export type IncidentCreateWithoutEventsInput = {
+    id?: string
+    status?: $Enums.IncidentStatus
+    severity?: $Enums.Severity
+    title: string
+    description?: string | null
+    startedAt?: Date | string
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    monitor: MonitorCreateNestedOneWithoutIncidentsInput
+  }
+
+  export type IncidentUncheckedCreateWithoutEventsInput = {
+    id?: string
+    monitorId: string
+    status?: $Enums.IncidentStatus
+    severity?: $Enums.Severity
+    title: string
+    description?: string | null
+    startedAt?: Date | string
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type IncidentCreateOrConnectWithoutEventsInput = {
+    where: IncidentWhereUniqueInput
+    create: XOR<IncidentCreateWithoutEventsInput, IncidentUncheckedCreateWithoutEventsInput>
+  }
+
+  export type IncidentUpsertWithoutEventsInput = {
+    update: XOR<IncidentUpdateWithoutEventsInput, IncidentUncheckedUpdateWithoutEventsInput>
+    create: XOR<IncidentCreateWithoutEventsInput, IncidentUncheckedCreateWithoutEventsInput>
+    where?: IncidentWhereInput
+  }
+
+  export type IncidentUpdateToOneWithWhereWithoutEventsInput = {
+    where?: IncidentWhereInput
+    data: XOR<IncidentUpdateWithoutEventsInput, IncidentUncheckedUpdateWithoutEventsInput>
+  }
+
+  export type IncidentUpdateWithoutEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumIncidentStatusFieldUpdateOperationsInput | $Enums.IncidentStatus
+    severity?: EnumSeverityFieldUpdateOperationsInput | $Enums.Severity
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    monitor?: MonitorUpdateOneRequiredWithoutIncidentsNestedInput
+  }
+
+  export type IncidentUncheckedUpdateWithoutEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monitorId?: StringFieldUpdateOperationsInput | string
+    status?: EnumIncidentStatusFieldUpdateOperationsInput | $Enums.IncidentStatus
+    severity?: EnumSeverityFieldUpdateOperationsInput | $Enums.Severity
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserCreateWithoutNotificationChannelsInput = {
     id: string
     name: string
@@ -16013,6 +19401,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
+    incidents?: IncidentCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutAlertRulesInput = {
@@ -16030,6 +19419,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
+    incidents?: IncidentUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutAlertRulesInput = {
@@ -16088,6 +19478,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
+    incidents?: IncidentUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutAlertRulesInput = {
@@ -16105,6 +19496,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
+    incidents?: IncidentUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type NotificationChannelUpsertWithWhereUniqueWithoutAlertRulesInput = {
@@ -16246,6 +19638,42 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type IncidentCreateWithoutMonitorInput = {
+    id?: string
+    status?: $Enums.IncidentStatus
+    severity?: $Enums.Severity
+    title: string
+    description?: string | null
+    startedAt?: Date | string
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    events?: IncidentEventCreateNestedManyWithoutIncidentInput
+  }
+
+  export type IncidentUncheckedCreateWithoutMonitorInput = {
+    id?: string
+    status?: $Enums.IncidentStatus
+    severity?: $Enums.Severity
+    title: string
+    description?: string | null
+    startedAt?: Date | string
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    events?: IncidentEventUncheckedCreateNestedManyWithoutIncidentInput
+  }
+
+  export type IncidentCreateOrConnectWithoutMonitorInput = {
+    where: IncidentWhereUniqueInput
+    create: XOR<IncidentCreateWithoutMonitorInput, IncidentUncheckedCreateWithoutMonitorInput>
+  }
+
+  export type IncidentCreateManyMonitorInputEnvelope = {
+    data: IncidentCreateManyMonitorInput | IncidentCreateManyMonitorInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutMonitorsInput = {
     update: XOR<UserUpdateWithoutMonitorsInput, UserUncheckedUpdateWithoutMonitorsInput>
     create: XOR<UserCreateWithoutMonitorsInput, UserUncheckedCreateWithoutMonitorsInput>
@@ -16360,6 +19788,38 @@ export namespace Prisma {
     data: XOR<AlertRuleUpdateManyMutationInput, AlertRuleUncheckedUpdateManyWithoutMonitorInput>
   }
 
+  export type IncidentUpsertWithWhereUniqueWithoutMonitorInput = {
+    where: IncidentWhereUniqueInput
+    update: XOR<IncidentUpdateWithoutMonitorInput, IncidentUncheckedUpdateWithoutMonitorInput>
+    create: XOR<IncidentCreateWithoutMonitorInput, IncidentUncheckedCreateWithoutMonitorInput>
+  }
+
+  export type IncidentUpdateWithWhereUniqueWithoutMonitorInput = {
+    where: IncidentWhereUniqueInput
+    data: XOR<IncidentUpdateWithoutMonitorInput, IncidentUncheckedUpdateWithoutMonitorInput>
+  }
+
+  export type IncidentUpdateManyWithWhereWithoutMonitorInput = {
+    where: IncidentScalarWhereInput
+    data: XOR<IncidentUpdateManyMutationInput, IncidentUncheckedUpdateManyWithoutMonitorInput>
+  }
+
+  export type IncidentScalarWhereInput = {
+    AND?: IncidentScalarWhereInput | IncidentScalarWhereInput[]
+    OR?: IncidentScalarWhereInput[]
+    NOT?: IncidentScalarWhereInput | IncidentScalarWhereInput[]
+    id?: StringFilter<"Incident"> | string
+    monitorId?: StringFilter<"Incident"> | string
+    status?: EnumIncidentStatusFilter<"Incident"> | $Enums.IncidentStatus
+    severity?: EnumSeverityFilter<"Incident"> | $Enums.Severity
+    title?: StringFilter<"Incident"> | string
+    description?: StringNullableFilter<"Incident"> | string | null
+    startedAt?: DateTimeFilter<"Incident"> | Date | string
+    resolvedAt?: DateTimeNullableFilter<"Incident"> | Date | string | null
+    createdAt?: DateTimeFilter<"Incident"> | Date | string
+    updatedAt?: DateTimeFilter<"Incident"> | Date | string
+  }
+
   export type MonitorCreateWithoutEventsInput = {
     id?: string
     name: string
@@ -16375,6 +19835,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutMonitorsInput
     maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleCreateNestedManyWithoutMonitorInput
+    incidents?: IncidentCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutEventsInput = {
@@ -16392,6 +19853,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
+    incidents?: IncidentUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutEventsInput = {
@@ -16425,6 +19887,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUpdateManyWithoutMonitorNestedInput
+    incidents?: IncidentUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutEventsInput = {
@@ -16442,6 +19905,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
+    incidents?: IncidentUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorCreateWithoutMaintenanceWindowsInput = {
@@ -16459,6 +19923,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleCreateNestedManyWithoutMonitorInput
+    incidents?: IncidentCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutMaintenanceWindowsInput = {
@@ -16476,6 +19941,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
+    incidents?: IncidentUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutMaintenanceWindowsInput = {
@@ -16509,6 +19975,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUpdateManyWithoutMonitorNestedInput
+    incidents?: IncidentUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutMaintenanceWindowsInput = {
@@ -16526,6 +19993,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
+    incidents?: IncidentUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type SessionCreateManyUserInput = {
@@ -16666,6 +20134,7 @@ export namespace Prisma {
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUpdateManyWithoutMonitorNestedInput
+    incidents?: IncidentUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutUserInput = {
@@ -16683,6 +20152,7 @@ export namespace Prisma {
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
+    incidents?: IncidentUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateManyWithoutUserInput = {
@@ -16726,6 +20196,34 @@ export namespace Prisma {
     config?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type IncidentEventCreateManyIncidentInput = {
+    id?: string
+    type: $Enums.IncidentEventType
+    message: string
+    createdAt?: Date | string
+  }
+
+  export type IncidentEventUpdateWithoutIncidentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumIncidentEventTypeFieldUpdateOperationsInput | $Enums.IncidentEventType
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type IncidentEventUncheckedUpdateWithoutIncidentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumIncidentEventTypeFieldUpdateOperationsInput | $Enums.IncidentEventType
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type IncidentEventUncheckedUpdateManyWithoutIncidentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumIncidentEventTypeFieldUpdateOperationsInput | $Enums.IncidentEventType
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AlertRuleUpdateWithoutChannelsInput = {
@@ -16822,6 +20320,18 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type IncidentCreateManyMonitorInput = {
+    id?: string
+    status?: $Enums.IncidentStatus
+    severity?: $Enums.Severity
+    title: string
+    description?: string | null
+    startedAt?: Date | string
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type MonitorEventUpdateWithoutMonitorInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumMonitorStatusFieldUpdateOperationsInput | $Enums.MonitorStatus
@@ -16904,6 +20414,44 @@ export namespace Prisma {
     comparison?: NullableEnumComparisonOperatorFieldUpdateOperationsInput | $Enums.ComparisonOperator | null
     targetStatus?: NullableEnumMonitorStatusFieldUpdateOperationsInput | $Enums.MonitorStatus | null
     enabled?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type IncidentUpdateWithoutMonitorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumIncidentStatusFieldUpdateOperationsInput | $Enums.IncidentStatus
+    severity?: EnumSeverityFieldUpdateOperationsInput | $Enums.Severity
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    events?: IncidentEventUpdateManyWithoutIncidentNestedInput
+  }
+
+  export type IncidentUncheckedUpdateWithoutMonitorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumIncidentStatusFieldUpdateOperationsInput | $Enums.IncidentStatus
+    severity?: EnumSeverityFieldUpdateOperationsInput | $Enums.Severity
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    events?: IncidentEventUncheckedUpdateManyWithoutIncidentNestedInput
+  }
+
+  export type IncidentUncheckedUpdateManyWithoutMonitorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumIncidentStatusFieldUpdateOperationsInput | $Enums.IncidentStatus
+    severity?: EnumSeverityFieldUpdateOperationsInput | $Enums.Severity
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

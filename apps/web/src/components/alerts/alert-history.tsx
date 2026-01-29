@@ -1,6 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { getAlertHistory } from "@/actions/notifications";
 import {
   AlertTriangle,
   CheckCircle,
@@ -30,11 +32,34 @@ interface AlertHistoryProps {
 }
 
 export function AlertHistory({
-  history,
+  history: initialHistory,
   currentPage,
-  totalPages,
-  totalCount,
+  totalPages: initialTotalPages,
+  totalCount: initialTotalCount,
 }: AlertHistoryProps) {
+  const [history, setHistory] = useState<AlertEvent[]>(initialHistory);
+  const [totalPages, setTotalPages] = useState(initialTotalPages);
+  const [totalCount, setTotalCount] = useState(initialTotalCount);
+
+  // Poll for updates
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const data = await getAlertHistory(currentPage);
+        if (data && data.events) {
+          // Type casting might be needed if Prisma return implies specific enum
+          setHistory(data.events as any[]);
+          setTotalPages(data.totalPages);
+          setTotalCount(data.totalCount);
+        }
+      } catch (error) {
+        console.error("Failed to poll history", error);
+      }
+    }, 5000); // 5 seconds
+
+    return () => clearInterval(interval);
+  }, [currentPage]);
+
   const formatTimeAgo = (date: Date | string) => {
     const now = new Date();
     const diff = now.getTime() - new Date(date).getTime();

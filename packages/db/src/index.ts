@@ -60,3 +60,4 @@ const prismaProxy = new Proxy({} as PrismaClient, {
 });
 
 export default prismaProxy;
+export * from "./generated/client";

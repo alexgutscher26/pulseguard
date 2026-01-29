@@ -141,7 +141,8 @@ export async function createMonitor(prevState: any, formData: FormData) {
       finalUrl = `tcp://${data.url}:${data.port}`;
     }
 
-    await prisma.monitor.create({
+    // Create monitor
+    const monitor = await prisma.monitor.create({
       data: {
         name: data.name,
         url: finalUrl,
@@ -152,7 +153,36 @@ export async function createMonitor(prevState: any, formData: FormData) {
       },
     });
 
+    // Auto-create default alert rule if user has notification channels
+    try {
+      const userChannels = await prisma.notificationChannel.findMany({
+        where: { userId: session.user.id },
+        take: 5, // Use up to 5 channels for default rule
+      });
+
+      if (userChannels.length > 0) {
+        await prisma.alertRule.create({
+          data: {
+            monitorId: monitor.id,
+            trigger: "STATUS_CHANGE",
+            targetStatus: "DOWN",
+            enabled: true,
+            channels: {
+              connect: userChannels.map((ch) => ({ id: ch.id })),
+            },
+          },
+        });
+        console.log(`[AutoConfig] Created default alert rule for monitor ${monitor.name}`);
+      } else {
+        console.log(`[AutoConfig] No notification channels found. Skipping default alert rule.`);
+      }
+    } catch (alertError) {
+      // Don't fail monitor creation if alert rule creation fails
+      console.error("Failed to create default alert rule:", alertError);
+    }
+
     revalidatePath("/dashboard/monitors");
+    revalidatePath("/dashboard/alerts");
     return { success: true };
   } catch (error) {
     console.error("CRITICAL ERROR in createMonitor:", error);

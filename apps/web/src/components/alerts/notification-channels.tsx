@@ -36,7 +36,15 @@ interface Channel {
   createdAt: Date;
 }
 
-export function NotificationChannels({ channels }: { channels: Channel[] }) {
+export function NotificationChannels({
+  channels,
+  slackClientId,
+  discordClientId,
+}: {
+  channels: Channel[];
+  slackClientId?: string;
+  discordClientId?: string;
+}) {
   const [isPending, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedType, setSelectedType] = useState("EMAIL");
@@ -83,6 +91,7 @@ export function NotificationChannels({ channels }: { channels: Channel[] }) {
     const config: Record<string, string> = {};
     const value = formData.get("value") as string;
 
+    // Type checking handled in render/state
     if (selectedType === "EMAIL") config.email = value;
     else if (selectedType === "SMS") config.phoneNumber = value;
     else config.url = value;
@@ -166,7 +175,61 @@ export function NotificationChannels({ channels }: { channels: Channel[] }) {
                 Configure a new destination for your alerts.
               </DialogDescription>
             </DialogHeader>
-            <form action={handleSubmit} className="flex flex-col gap-4 mt-4">
+
+            <div className="flex gap-2 mb-4">
+              <Button
+                variant="outline"
+                className="flex-1 border-[#5865F2]/50 text-[#5865F2] hover:bg-[#5865F2]/10"
+                onClick={() => {
+                  if (!discordClientId) {
+                    toast.error("Discord Client ID is not configured");
+                    return;
+                  }
+                  const baseUrl =
+                    process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+                  const redirect = encodeURIComponent(
+                    `${baseUrl}/api/integrations/discord/callback`,
+                  );
+                  window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=${redirect}&response_type=code&scope=bot+webhook.incoming`;
+                }}
+              >
+                <div className="size-4 mr-2 bg-[#5865F2] rounded-full" />
+                Discord
+              </Button>
+              <Button
+                variant="outline"
+                className="flex-1 border-[#E01E5A]/50 text-[#E01E5A] hover:bg-[#E01E5A]/10"
+                onClick={() => {
+                  if (!slackClientId) {
+                    toast.error("Slack Client ID is not configured");
+                    return;
+                  }
+                  const baseUrl =
+                    process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+                  const redirect = encodeURIComponent(
+                    `${baseUrl}/api/integrations/slack/callback`,
+                  );
+                  // Scopes: incoming-webhook (legacy), chat:write (bot messages), commands (slash commands)
+                  window.location.href = `https://slack.com/oauth/v2/authorize?client_id=${slackClientId}&scope=incoming-webhook,chat:write,commands&redirect_uri=${redirect}`;
+                }}
+              >
+                <div className="size-4 mr-2 bg-[#E01E5A] rounded-full" />
+                Slack
+              </Button>
+            </div>
+
+            <div className="relative mb-4">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-primary/20" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-black/90 px-2 text-primary/50 font-mono">
+                  Or Manual Config
+                </span>
+              </div>
+            </div>
+
+            <form action={handleSubmit} className="flex flex-col gap-4">
               <div className="flex flex-col gap-2">
                 <Label htmlFor="name">Name</Label>
                 <Input

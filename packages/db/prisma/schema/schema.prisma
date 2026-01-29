@@ -38,6 +38,7 @@ model Monitor {
   events             MonitorEvent[]
   maintenanceWindows MaintenanceWindow[]
   alertRules         AlertRule[]
+  incidents          Incident[]
 
   nextCheck DateTime?
   lastCheck DateTime?
