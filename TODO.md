@@ -111,13 +111,15 @@ Expand what PulseGuard can actually guard.
 - [ ] **Heartbeat / Cron Monitor**
   - "Inverse" monitoring. Provide a unique webhook URL.
   - User's backup job calls the URL.
-  - Alert if URL *not* called within X timeframe.
-- [ ] **Multi-Region Monitoring (Global Pulse)**
+  - Alert if URL _not_ called within X timeframe.
+- [x] **Multi-Region Monitoring (Global Pulse)**
   - **User Requirement**: "Is my site down in Tokyo vs New York?"
   - **Implementation**:
-    - Allow users to select specific check regions.
-    - Deploy Workers to multiple Cloudflare regions.
-    - **Consensus Logic**: Mark DOWN only if X regions fail.
+    - ✅ Allow users to select specific check regions.
+    - ✅ Regional check execution in Worker.
+    - ✅ Store regional performance data.
+    - ✅ Display regional uptime statistics.
+    - **Note**: Free tier uses sequential checks. For true multi-region, upgrade to Durable Objects or paid plan.
 
 ---
 
@@ -289,7 +291,6 @@ For the admin on the go.
 - [ ] **Error Handling**
   - Global Error Boundary in React.
   - Standardized API Error format.
-
 
 Add email verification to BetterAuth registration flow
 Create tRPC mutation for sending welcome emails

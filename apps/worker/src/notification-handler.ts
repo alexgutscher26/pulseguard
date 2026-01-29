@@ -19,6 +19,7 @@ interface NotificationMessage {
   previousStatus?: "UP" | "DOWN";
   timestamp: string;
   reason?: string;
+  failedRegions?: string[];
 }
 
 export default {
@@ -146,6 +147,7 @@ export default {
             timestamp: notification.timestamp,
             reason: notification.reason,
             downtimeDuration,
+            failedRegions: notification.failedRegions,
           };
 
           // 1. Send Emails
@@ -223,6 +225,13 @@ async function sendDiscordAlert(url: string, data: MonitorAlertData, type?: stri
               value: data.downtimeDuration,
               inline: true
             }
+          ] : []),
+          ...(data.failedRegions && data.failedRegions.length > 0 ? [
+            {
+              name: 'Failed Regions',
+              value: data.failedRegions.join(', '),
+              inline: false
+            }
           ] : [])
         ],
         footer: {
@@ -296,6 +305,15 @@ async function sendSlackAlert(url: string, data: MonitorAlertData, type?: string
             }
         }
       ] : []),
+      ...(data.failedRegions && data.failedRegions.length > 0 ? [
+        {
+            type: 'section',
+            text: {
+                type: 'mrkdwn',
+                text: '*Failed Regions:* ' + data.failedRegions.join(', ')
+            }
+        }
+      ] : []),
       {
         type: 'context',
         elements: [
@@ -314,7 +332,7 @@ async function sendSlackAlert(url: string, data: MonitorAlertData, type?: string
               type: 'plain_text',
               text: 'View Dashboard'
             },
-            url: 'https://rich-truck.outray.app/dashboard/monitors/' + data.monitorId,
+            url: 'https://introverted-history.outray.app/dashboard/monitors/' + data.monitorId,
             style: isDown ? 'danger' : 'primary'
           },
           ...(incidentId && type === "INCIDENT_CREATED" ? [

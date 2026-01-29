@@ -200,7 +200,7 @@ export async function sendTestNotification(id: string) {
                   {
                     type: "button",
                     text: { type: "plain_text", text: "View Dashboard" },
-                    url: "https://rich-truck.outray.app/dashboard",
+                    url: "https://introverted-history.outray.app/dashboard",
                     style: "danger"
                   }
                 ]

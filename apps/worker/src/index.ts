@@ -4,6 +4,7 @@ export interface Env {
   CHECK_QUEUE: Queue<any>;
   NOTIFICATION_QUEUE: Queue<any>;
   DATABASE_URL: string;
+  RESEND_API_KEY: string;
 }
 
 import { connect } from "cloudflare:sockets";
@@ -137,13 +138,59 @@ async function processBatch(monitors: any[], prisma: any, env?: Env) {
 
       // 1. Initial Check
       let result;
+      let failedRegions: string[] = [];
+
       if (maintenanceActive) {
         result = { status: "MAINTENANCE", latency: 0, errorReason: undefined };
       } else {
-        result = await performCheck(monitor);
+        // Check if regional monitoring is enabled
+        if (monitor.checkRegions) {
+          try {
+            const { performRegionalChecks, getOverallStatus, getAverageLatency } = await import("./services/regional-monitor");
+            
+            const regionalResults = await performRegionalChecks(monitor);
+            console.log(`[Regional] Checked ${monitor.name} from ${regionalResults.length} regions`);
 
-        // 2. Double Check Protocol (Retry on Failure)
-        if (result.status === "DOWN" && monitor.status !== "DOWN") {
+            // Capture failed regions
+            failedRegions = regionalResults
+                .filter(r => r.status === 'DOWN')
+                .map(r => r.region);
+            
+            // Store each regional result
+            for (const regionalResult of regionalResults) {
+              await prisma.monitorEvent.create({
+                data: {
+                  monitorId: monitor.id,
+                  status: regionalResult.status as any,
+                  latency: regionalResult.latency,
+                  errorReason: regionalResult.errorReason,
+                  region: regionalResult.region,
+                  timestamp: regionalResult.timestamp,
+                },
+              });
+            }
+            
+            // Determine overall status
+            const overallStatus = getOverallStatus(regionalResults);
+            const avgLatency = getAverageLatency(regionalResults);
+            
+            result = { 
+              status: overallStatus, 
+              latency: avgLatency,
+              errorReason: regionalResults.find(r => r.status === 'DOWN')?.errorReason
+            };
+          } catch (regionalError) {
+            console.error(`[Regional] Failed to perform regional checks for ${monitor.name}:`, regionalError);
+            // Fallback to single check
+            result = await performCheck(monitor);
+          }
+        } else {
+          // Standard single-region check
+          result = await performCheck(monitor);
+        }
+
+        // 2. Double Check Protocol (Retry on Failure) - only for non-regional checks
+        if (result.status === "DOWN" && monitor.status !== "DOWN" && !monitor.checkRegions) {
           console.warn(
             `[DoubleCheck] First check failed for ${monitor.name} (${monitor.url}). Retrying in 2s...`,
           );
@@ -204,7 +251,8 @@ async function processBatch(monitors: any[], prisma: any, env?: Env) {
                     status: "DOWN" as const,
                     incidentId: incident.id,
                     reason: errorReason,
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
+                    failedRegions: failedRegions.length > 0 ? failedRegions : undefined
                 };
 
                 if (env && env.NOTIFICATION_QUEUE) {
@@ -369,6 +417,7 @@ export default {
           timeout: true,
           status: true,
           name: true,
+          checkRegions: true,
           // @ts-ignore
           maintenanceWindows: {
             where: {

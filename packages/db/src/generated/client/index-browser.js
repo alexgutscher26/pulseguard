@@ -223,7 +223,8 @@ exports.Prisma.MonitorScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   nextCheck: 'nextCheck',
-  lastCheck: 'lastCheck'
+  lastCheck: 'lastCheck',
+  checkRegions: 'checkRegions'
 };
 
 exports.Prisma.MonitorEventScalarFieldEnum = {
@@ -232,7 +233,8 @@ exports.Prisma.MonitorEventScalarFieldEnum = {
   status: 'status',
   latency: 'latency',
   errorReason: 'errorReason',
-  timestamp: 'timestamp'
+  timestamp: 'timestamp',
+  region: 'region'
 };
 
 exports.Prisma.MaintenanceWindowScalarFieldEnum = {

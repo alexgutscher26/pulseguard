@@ -7,6 +7,7 @@ import { useActionState, useState } from "react";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { RegionSelector } from "./region-selector";
 
 const initialState = {
   success: false,
@@ -21,6 +22,7 @@ interface MonitorFormProps {
     type: "HTTP" | "PING" | "PORT";
     interval: number;
     timeout: number;
+    checkRegions?: string | null;
   };
 }
 
@@ -36,6 +38,16 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
   let initialType: "HTTP" | "PING" | "PORT" = monitor?.type || "HTTP";
   let initialUrl = monitor?.url || "";
   let initialPort = "";
+  let initialRegions: string[] = [];
+
+  // Parse checkRegions
+  if (monitor?.checkRegions) {
+    try {
+      initialRegions = JSON.parse(monitor.checkRegions);
+    } catch (e) {
+      console.error("Failed to parse checkRegions:", e);
+    }
+  }
 
   if (monitor) {
     if (monitor.type === "PING" && initialUrl.startsWith("ping://")) {
@@ -48,7 +60,11 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
     }
   }
 
-  const [monitorType, setMonitorType] = useState<"HTTP" | "PING" | "PORT">(initialType);
+  const [monitorType, setMonitorType] = useState<"HTTP" | "PING" | "PORT">(
+    initialType,
+  );
+  const [selectedRegions, setSelectedRegions] =
+    useState<string[]>(initialRegions);
 
   const action = monitor ? updateMonitor.bind(null, monitor.id) : createMonitor;
   const [state, formAction, isPending] = useActionState(action, initialState);
@@ -56,7 +72,11 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
 
   useEffect(() => {
     if (state.success) {
-      toast.success(monitor ? "Monitor updated successfully" : "Monitor created successfully");
+      toast.success(
+        monitor
+          ? "Monitor updated successfully"
+          : "Monitor created successfully",
+      );
       router.push("/dashboard/monitors");
       router.refresh();
     } else if (state.error) {
@@ -121,7 +141,9 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                   onChange={() => setMonitorType("PING")}
                 />
                 <Activity className="size-6 text-primary mb-1" />
-                <span className="text-xs font-bold text-foreground font-mono uppercase">Ping</span>
+                <span className="text-xs font-bold text-foreground font-mono uppercase">
+                  Ping
+                </span>
               </label>
               <label
                 className={`flex flex-col items-center justify-center gap-2 p-4 border ${monitorType === "PORT" ? "border-primary bg-primary/20" : "border-primary/20 bg-primary/5"} cursor-pointer hover:bg-primary/10 hover:border-primary/50 transition-all group/type relative overflow-hidden`}
@@ -135,7 +157,9 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                   onChange={() => setMonitorType("PORT")}
                 />
                 <Server className="size-6 text-primary mb-1" />
-                <span className="text-xs font-bold text-foreground font-mono uppercase">Port</span>
+                <span className="text-xs font-bold text-foreground font-mono uppercase">
+                  Port
+                </span>
               </label>
             </div>
           </div>
@@ -151,7 +175,11 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
               defaultValue={monitor?.name}
               className="bg-black/50 border border-primary/20 focus:border-primary/60 text-primary text-sm rounded-sm p-3 font-mono placeholder:text-primary/20 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full"
               type="text"
-              placeholder={monitorType === "HTTP" ? "e.g. Production API" : "e.g. Game Server"}
+              placeholder={
+                monitorType === "HTTP"
+                  ? "e.g. Production API"
+                  : "e.g. Game Server"
+              }
             />
           </div>
 
@@ -188,6 +216,12 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
               )}
             </div>
           </div>
+
+          {/* Region Selector */}
+          <RegionSelector
+            selectedRegions={selectedRegions}
+            onChange={setSelectedRegions}
+          />
 
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col gap-1.5">

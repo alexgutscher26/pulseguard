@@ -84,6 +84,7 @@
         "@pulseguard/db": "workspace:*",
         "@pulseguard/email": "workspace:*",
         "@pulseguard/env": "workspace:*",
+        "@pulseguard/shared": "workspace:*",
         "@radix-ui/react-dialog": "^1.1.15",
         "@tanstack/react-form": "^1.27.3",
         "@tanstack/react-query": "catalog:",
@@ -227,6 +228,14 @@
       "devDependencies": {
         "@pulseguard/config": "workspace:*",
         "alchemy": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "packages/shared": {
+      "name": "@pulseguard/shared",
+      "version": "0.1.0",
+      "devDependencies": {
+        "@pulseguard/config": "workspace:*",
         "typescript": "catalog:",
       },
     },
@@ -1027,6 +1036,8 @@
     "@pulseguard/env": ["@pulseguard/env@workspace:packages/env"],
 
     "@pulseguard/infra": ["@pulseguard/infra@workspace:packages/infra"],
+
+    "@pulseguard/shared": ["@pulseguard/shared@workspace:packages/shared"],
 
     "@pulseguard/worker": ["@pulseguard/worker@workspace:apps/worker"],
 

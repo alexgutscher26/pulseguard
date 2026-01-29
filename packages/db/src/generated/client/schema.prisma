@@ -217,8 +217,9 @@ model Monitor {
   alertRules         AlertRule[]
   incidents          Incident[]
 
-  nextCheck DateTime?
-  lastCheck DateTime?
+  nextCheck    DateTime?
+  lastCheck    DateTime?
+  checkRegions String? // JSON array of region codes: ["us-east", "eu-west", "ap-south"]
 
   @@index([userId])
   @@index([nextCheck])
@@ -231,11 +232,13 @@ model MonitorEvent {
   latency     Int // Milliseconds
   errorReason String? // "TIMEOUT", "DNS_ERROR", "HTTP_500", etc.
   timestamp   DateTime      @default(now())
+  region      String? // Region code where check was performed: "us-east", "eu-west", etc.
 
   monitor Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
 
   @@index([monitorId])
   @@index([timestamp])
+  @@index([region])
 }
 
 model MaintenanceWindow {

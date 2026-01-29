@@ -17,6 +17,7 @@
     "@pulseguard/db": "workspace:*",
     "@pulseguard/email": "workspace:*",
     "@pulseguard/env": "workspace:*",
+    "@pulseguard/shared": "workspace:*",
     "@radix-ui/react-dialog": "^1.1.15",
     "@tanstack/react-form": "^1.27.3",
     "@tanstack/react-query": "catalog:",

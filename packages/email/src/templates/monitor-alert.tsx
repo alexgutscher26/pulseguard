@@ -148,6 +148,19 @@ export function MonitorAlert({ data }: { data: MonitorAlertData }) {
               </Text>
             )}
 
+            {data.failedRegions && data.failedRegions.length > 0 && (
+              <Text
+                style={{
+                  margin: 0,
+                  fontSize: "14px",
+                  color: emailTheme.colors.destructive,
+                  marginBottom: emailTheme.spacing.md,
+                }}
+              >
+                <strong>Failed Regions:</strong> {data.failedRegions.join(", ")}
+              </Text>
+            )}
+
             {/* CTA Button */}
             <Link
               href={dashboardUrl}

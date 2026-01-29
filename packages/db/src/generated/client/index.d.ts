@@ -11097,6 +11097,7 @@ export namespace Prisma {
     updatedAt: Date | null
     nextCheck: Date | null
     lastCheck: Date | null
+    checkRegions: string | null
   }
 
   export type MonitorMaxAggregateOutputType = {
@@ -11112,6 +11113,7 @@ export namespace Prisma {
     updatedAt: Date | null
     nextCheck: Date | null
     lastCheck: Date | null
+    checkRegions: string | null
   }
 
   export type MonitorCountAggregateOutputType = {
@@ -11127,6 +11129,7 @@ export namespace Prisma {
     updatedAt: number
     nextCheck: number
     lastCheck: number
+    checkRegions: number
     _all: number
   }
 
@@ -11154,6 +11157,7 @@ export namespace Prisma {
     updatedAt?: true
     nextCheck?: true
     lastCheck?: true
+    checkRegions?: true
   }
 
   export type MonitorMaxAggregateInputType = {
@@ -11169,6 +11173,7 @@ export namespace Prisma {
     updatedAt?: true
     nextCheck?: true
     lastCheck?: true
+    checkRegions?: true
   }
 
   export type MonitorCountAggregateInputType = {
@@ -11184,6 +11189,7 @@ export namespace Prisma {
     updatedAt?: true
     nextCheck?: true
     lastCheck?: true
+    checkRegions?: true
     _all?: true
   }
 
@@ -11286,6 +11292,7 @@ export namespace Prisma {
     updatedAt: Date
     nextCheck: Date | null
     lastCheck: Date | null
+    checkRegions: string | null
     _count: MonitorCountAggregateOutputType | null
     _avg: MonitorAvgAggregateOutputType | null
     _sum: MonitorSumAggregateOutputType | null
@@ -11320,6 +11327,7 @@ export namespace Prisma {
     updatedAt?: boolean
     nextCheck?: boolean
     lastCheck?: boolean
+    checkRegions?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     events?: boolean | Monitor$eventsArgs<ExtArgs>
     maintenanceWindows?: boolean | Monitor$maintenanceWindowsArgs<ExtArgs>
@@ -11341,6 +11349,7 @@ export namespace Prisma {
     updatedAt?: boolean
     nextCheck?: boolean
     lastCheck?: boolean
+    checkRegions?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["monitor"]>
 
@@ -11357,6 +11366,7 @@ export namespace Prisma {
     updatedAt?: boolean
     nextCheck?: boolean
     lastCheck?: boolean
+    checkRegions?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["monitor"]>
 
@@ -11373,9 +11383,10 @@ export namespace Prisma {
     updatedAt?: boolean
     nextCheck?: boolean
     lastCheck?: boolean
+    checkRegions?: boolean
   }
 
-  export type MonitorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "url" | "type" | "interval" | "timeout" | "status" | "userId" | "createdAt" | "updatedAt" | "nextCheck" | "lastCheck", ExtArgs["result"]["monitor"]>
+  export type MonitorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "url" | "type" | "interval" | "timeout" | "status" | "userId" | "createdAt" | "updatedAt" | "nextCheck" | "lastCheck" | "checkRegions", ExtArgs["result"]["monitor"]>
   export type MonitorInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     events?: boolean | Monitor$eventsArgs<ExtArgs>
@@ -11413,6 +11424,7 @@ export namespace Prisma {
       updatedAt: Date
       nextCheck: Date | null
       lastCheck: Date | null
+      checkRegions: string | null
     }, ExtArgs["result"]["monitor"]>
     composites: {}
   }
@@ -11853,6 +11865,7 @@ export namespace Prisma {
     readonly updatedAt: FieldRef<"Monitor", 'DateTime'>
     readonly nextCheck: FieldRef<"Monitor", 'DateTime'>
     readonly lastCheck: FieldRef<"Monitor", 'DateTime'>
+    readonly checkRegions: FieldRef<"Monitor", 'String'>
   }
     
 
@@ -12390,6 +12403,7 @@ export namespace Prisma {
     latency: number | null
     errorReason: string | null
     timestamp: Date | null
+    region: string | null
   }
 
   export type MonitorEventMaxAggregateOutputType = {
@@ -12399,6 +12413,7 @@ export namespace Prisma {
     latency: number | null
     errorReason: string | null
     timestamp: Date | null
+    region: string | null
   }
 
   export type MonitorEventCountAggregateOutputType = {
@@ -12408,6 +12423,7 @@ export namespace Prisma {
     latency: number
     errorReason: number
     timestamp: number
+    region: number
     _all: number
   }
 
@@ -12427,6 +12443,7 @@ export namespace Prisma {
     latency?: true
     errorReason?: true
     timestamp?: true
+    region?: true
   }
 
   export type MonitorEventMaxAggregateInputType = {
@@ -12436,6 +12453,7 @@ export namespace Prisma {
     latency?: true
     errorReason?: true
     timestamp?: true
+    region?: true
   }
 
   export type MonitorEventCountAggregateInputType = {
@@ -12445,6 +12463,7 @@ export namespace Prisma {
     latency?: true
     errorReason?: true
     timestamp?: true
+    region?: true
     _all?: true
   }
 
@@ -12541,6 +12560,7 @@ export namespace Prisma {
     latency: number
     errorReason: string | null
     timestamp: Date
+    region: string | null
     _count: MonitorEventCountAggregateOutputType | null
     _avg: MonitorEventAvgAggregateOutputType | null
     _sum: MonitorEventSumAggregateOutputType | null
@@ -12569,6 +12589,7 @@ export namespace Prisma {
     latency?: boolean
     errorReason?: boolean
     timestamp?: boolean
+    region?: boolean
     monitor?: boolean | MonitorDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["monitorEvent"]>
 
@@ -12579,6 +12600,7 @@ export namespace Prisma {
     latency?: boolean
     errorReason?: boolean
     timestamp?: boolean
+    region?: boolean
     monitor?: boolean | MonitorDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["monitorEvent"]>
 
@@ -12589,6 +12611,7 @@ export namespace Prisma {
     latency?: boolean
     errorReason?: boolean
     timestamp?: boolean
+    region?: boolean
     monitor?: boolean | MonitorDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["monitorEvent"]>
 
@@ -12599,9 +12622,10 @@ export namespace Prisma {
     latency?: boolean
     errorReason?: boolean
     timestamp?: boolean
+    region?: boolean
   }
 
-  export type MonitorEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "monitorId" | "status" | "latency" | "errorReason" | "timestamp", ExtArgs["result"]["monitorEvent"]>
+  export type MonitorEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "monitorId" | "status" | "latency" | "errorReason" | "timestamp" | "region", ExtArgs["result"]["monitorEvent"]>
   export type MonitorEventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     monitor?: boolean | MonitorDefaultArgs<ExtArgs>
   }
@@ -12624,6 +12648,7 @@ export namespace Prisma {
       latency: number
       errorReason: string | null
       timestamp: Date
+      region: string | null
     }, ExtArgs["result"]["monitorEvent"]>
     composites: {}
   }
@@ -13054,6 +13079,7 @@ export namespace Prisma {
     readonly latency: FieldRef<"MonitorEvent", 'Int'>
     readonly errorReason: FieldRef<"MonitorEvent", 'String'>
     readonly timestamp: FieldRef<"MonitorEvent", 'DateTime'>
+    readonly region: FieldRef<"MonitorEvent", 'String'>
   }
     
 
@@ -14693,7 +14719,8 @@ export namespace Prisma {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     nextCheck: 'nextCheck',
-    lastCheck: 'lastCheck'
+    lastCheck: 'lastCheck',
+    checkRegions: 'checkRegions'
   };
 
   export type MonitorScalarFieldEnum = (typeof MonitorScalarFieldEnum)[keyof typeof MonitorScalarFieldEnum]
@@ -14705,7 +14732,8 @@ export namespace Prisma {
     status: 'status',
     latency: 'latency',
     errorReason: 'errorReason',
-    timestamp: 'timestamp'
+    timestamp: 'timestamp',
+    region: 'region'
   };
 
   export type MonitorEventScalarFieldEnum = (typeof MonitorEventScalarFieldEnum)[keyof typeof MonitorEventScalarFieldEnum]
@@ -15569,6 +15597,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Monitor"> | Date | string
     nextCheck?: DateTimeNullableFilter<"Monitor"> | Date | string | null
     lastCheck?: DateTimeNullableFilter<"Monitor"> | Date | string | null
+    checkRegions?: StringNullableFilter<"Monitor"> | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     events?: MonitorEventListRelationFilter
     maintenanceWindows?: MaintenanceWindowListRelationFilter
@@ -15589,6 +15618,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     nextCheck?: SortOrderInput | SortOrder
     lastCheck?: SortOrderInput | SortOrder
+    checkRegions?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
     events?: MonitorEventOrderByRelationAggregateInput
     maintenanceWindows?: MaintenanceWindowOrderByRelationAggregateInput
@@ -15612,6 +15642,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Monitor"> | Date | string
     nextCheck?: DateTimeNullableFilter<"Monitor"> | Date | string | null
     lastCheck?: DateTimeNullableFilter<"Monitor"> | Date | string | null
+    checkRegions?: StringNullableFilter<"Monitor"> | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     events?: MonitorEventListRelationFilter
     maintenanceWindows?: MaintenanceWindowListRelationFilter
@@ -15632,6 +15663,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     nextCheck?: SortOrderInput | SortOrder
     lastCheck?: SortOrderInput | SortOrder
+    checkRegions?: SortOrderInput | SortOrder
     _count?: MonitorCountOrderByAggregateInput
     _avg?: MonitorAvgOrderByAggregateInput
     _max?: MonitorMaxOrderByAggregateInput
@@ -15655,6 +15687,7 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Monitor"> | Date | string
     nextCheck?: DateTimeNullableWithAggregatesFilter<"Monitor"> | Date | string | null
     lastCheck?: DateTimeNullableWithAggregatesFilter<"Monitor"> | Date | string | null
+    checkRegions?: StringNullableWithAggregatesFilter<"Monitor"> | string | null
   }
 
   export type MonitorEventWhereInput = {
@@ -15667,6 +15700,7 @@ export namespace Prisma {
     latency?: IntFilter<"MonitorEvent"> | number
     errorReason?: StringNullableFilter<"MonitorEvent"> | string | null
     timestamp?: DateTimeFilter<"MonitorEvent"> | Date | string
+    region?: StringNullableFilter<"MonitorEvent"> | string | null
     monitor?: XOR<MonitorScalarRelationFilter, MonitorWhereInput>
   }
 
@@ -15677,6 +15711,7 @@ export namespace Prisma {
     latency?: SortOrder
     errorReason?: SortOrderInput | SortOrder
     timestamp?: SortOrder
+    region?: SortOrderInput | SortOrder
     monitor?: MonitorOrderByWithRelationInput
   }
 
@@ -15690,6 +15725,7 @@ export namespace Prisma {
     latency?: IntFilter<"MonitorEvent"> | number
     errorReason?: StringNullableFilter<"MonitorEvent"> | string | null
     timestamp?: DateTimeFilter<"MonitorEvent"> | Date | string
+    region?: StringNullableFilter<"MonitorEvent"> | string | null
     monitor?: XOR<MonitorScalarRelationFilter, MonitorWhereInput>
   }, "id">
 
@@ -15700,6 +15736,7 @@ export namespace Prisma {
     latency?: SortOrder
     errorReason?: SortOrderInput | SortOrder
     timestamp?: SortOrder
+    region?: SortOrderInput | SortOrder
     _count?: MonitorEventCountOrderByAggregateInput
     _avg?: MonitorEventAvgOrderByAggregateInput
     _max?: MonitorEventMaxOrderByAggregateInput
@@ -15717,6 +15754,7 @@ export namespace Prisma {
     latency?: IntWithAggregatesFilter<"MonitorEvent"> | number
     errorReason?: StringNullableWithAggregatesFilter<"MonitorEvent"> | string | null
     timestamp?: DateTimeWithAggregatesFilter<"MonitorEvent"> | Date | string
+    region?: StringNullableWithAggregatesFilter<"MonitorEvent"> | string | null
   }
 
   export type MaintenanceWindowWhereInput = {
@@ -16455,6 +16493,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     nextCheck?: Date | string | null
     lastCheck?: Date | string | null
+    checkRegions?: string | null
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
@@ -16475,6 +16514,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     nextCheck?: Date | string | null
     lastCheck?: Date | string | null
+    checkRegions?: string | null
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
@@ -16493,6 +16533,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     nextCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
@@ -16513,6 +16554,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     nextCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
@@ -16532,6 +16574,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     nextCheck?: Date | string | null
     lastCheck?: Date | string | null
+    checkRegions?: string | null
   }
 
   export type MonitorUpdateManyMutationInput = {
@@ -16546,6 +16589,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     nextCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MonitorUncheckedUpdateManyInput = {
@@ -16561,6 +16605,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     nextCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MonitorEventCreateInput = {
@@ -16569,6 +16614,7 @@ export namespace Prisma {
     latency: number
     errorReason?: string | null
     timestamp?: Date | string
+    region?: string | null
     monitor: MonitorCreateNestedOneWithoutEventsInput
   }
 
@@ -16579,6 +16625,7 @@ export namespace Prisma {
     latency: number
     errorReason?: string | null
     timestamp?: Date | string
+    region?: string | null
   }
 
   export type MonitorEventUpdateInput = {
@@ -16587,6 +16634,7 @@ export namespace Prisma {
     latency?: IntFieldUpdateOperationsInput | number
     errorReason?: NullableStringFieldUpdateOperationsInput | string | null
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    region?: NullableStringFieldUpdateOperationsInput | string | null
     monitor?: MonitorUpdateOneRequiredWithoutEventsNestedInput
   }
 
@@ -16597,6 +16645,7 @@ export namespace Prisma {
     latency?: IntFieldUpdateOperationsInput | number
     errorReason?: NullableStringFieldUpdateOperationsInput | string | null
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    region?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MonitorEventCreateManyInput = {
@@ -16606,6 +16655,7 @@ export namespace Prisma {
     latency: number
     errorReason?: string | null
     timestamp?: Date | string
+    region?: string | null
   }
 
   export type MonitorEventUpdateManyMutationInput = {
@@ -16614,6 +16664,7 @@ export namespace Prisma {
     latency?: IntFieldUpdateOperationsInput | number
     errorReason?: NullableStringFieldUpdateOperationsInput | string | null
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    region?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MonitorEventUncheckedUpdateManyInput = {
@@ -16623,6 +16674,7 @@ export namespace Prisma {
     latency?: IntFieldUpdateOperationsInput | number
     errorReason?: NullableStringFieldUpdateOperationsInput | string | null
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    region?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MaintenanceWindowCreateInput = {
@@ -17445,6 +17497,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     nextCheck?: SortOrder
     lastCheck?: SortOrder
+    checkRegions?: SortOrder
   }
 
   export type MonitorAvgOrderByAggregateInput = {
@@ -17465,6 +17518,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     nextCheck?: SortOrder
     lastCheck?: SortOrder
+    checkRegions?: SortOrder
   }
 
   export type MonitorMinOrderByAggregateInput = {
@@ -17480,6 +17534,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     nextCheck?: SortOrder
     lastCheck?: SortOrder
+    checkRegions?: SortOrder
   }
 
   export type MonitorSumOrderByAggregateInput = {
@@ -17530,6 +17585,7 @@ export namespace Prisma {
     latency?: SortOrder
     errorReason?: SortOrder
     timestamp?: SortOrder
+    region?: SortOrder
   }
 
   export type MonitorEventAvgOrderByAggregateInput = {
@@ -17543,6 +17599,7 @@ export namespace Prisma {
     latency?: SortOrder
     errorReason?: SortOrder
     timestamp?: SortOrder
+    region?: SortOrder
   }
 
   export type MonitorEventMinOrderByAggregateInput = {
@@ -17552,6 +17609,7 @@ export namespace Prisma {
     latency?: SortOrder
     errorReason?: SortOrder
     timestamp?: SortOrder
+    region?: SortOrder
   }
 
   export type MonitorEventSumOrderByAggregateInput = {
@@ -18699,6 +18757,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     nextCheck?: Date | string | null
     lastCheck?: Date | string | null
+    checkRegions?: string | null
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleCreateNestedManyWithoutMonitorInput
@@ -18717,6 +18776,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     nextCheck?: Date | string | null
     lastCheck?: Date | string | null
+    checkRegions?: string | null
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
@@ -18860,6 +18920,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Monitor"> | Date | string
     nextCheck?: DateTimeNullableFilter<"Monitor"> | Date | string | null
     lastCheck?: DateTimeNullableFilter<"Monitor"> | Date | string | null
+    checkRegions?: StringNullableFilter<"Monitor"> | string | null
   }
 
   export type NotificationChannelUpsertWithWhereUniqueWithoutUserInput = {
@@ -19055,6 +19116,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     nextCheck?: Date | string | null
     lastCheck?: Date | string | null
+    checkRegions?: string | null
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
@@ -19074,6 +19136,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     nextCheck?: Date | string | null
     lastCheck?: Date | string | null
+    checkRegions?: string | null
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
@@ -19131,6 +19194,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     nextCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
@@ -19150,6 +19214,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     nextCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
@@ -19398,6 +19463,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     nextCheck?: Date | string | null
     lastCheck?: Date | string | null
+    checkRegions?: string | null
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
@@ -19417,6 +19483,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     nextCheck?: Date | string | null
     lastCheck?: Date | string | null
+    checkRegions?: string | null
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
     incidents?: IncidentUncheckedCreateNestedManyWithoutMonitorInput
@@ -19475,6 +19542,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     nextCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
@@ -19494,6 +19562,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     nextCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
     incidents?: IncidentUncheckedUpdateManyWithoutMonitorNestedInput
@@ -19556,6 +19625,7 @@ export namespace Prisma {
     latency: number
     errorReason?: string | null
     timestamp?: Date | string
+    region?: string | null
   }
 
   export type MonitorEventUncheckedCreateWithoutMonitorInput = {
@@ -19564,6 +19634,7 @@ export namespace Prisma {
     latency: number
     errorReason?: string | null
     timestamp?: Date | string
+    region?: string | null
   }
 
   export type MonitorEventCreateOrConnectWithoutMonitorInput = {
@@ -19741,6 +19812,7 @@ export namespace Prisma {
     latency?: IntFilter<"MonitorEvent"> | number
     errorReason?: StringNullableFilter<"MonitorEvent"> | string | null
     timestamp?: DateTimeFilter<"MonitorEvent"> | Date | string
+    region?: StringNullableFilter<"MonitorEvent"> | string | null
   }
 
   export type MaintenanceWindowUpsertWithWhereUniqueWithoutMonitorInput = {
@@ -19832,6 +19904,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     nextCheck?: Date | string | null
     lastCheck?: Date | string | null
+    checkRegions?: string | null
     user: UserCreateNestedOneWithoutMonitorsInput
     maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleCreateNestedManyWithoutMonitorInput
@@ -19851,6 +19924,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     nextCheck?: Date | string | null
     lastCheck?: Date | string | null
+    checkRegions?: string | null
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
     incidents?: IncidentUncheckedCreateNestedManyWithoutMonitorInput
@@ -19884,6 +19958,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     nextCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUpdateManyWithoutMonitorNestedInput
@@ -19903,6 +19978,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     nextCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
     incidents?: IncidentUncheckedUpdateManyWithoutMonitorNestedInput
@@ -19920,6 +19996,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     nextCheck?: Date | string | null
     lastCheck?: Date | string | null
+    checkRegions?: string | null
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleCreateNestedManyWithoutMonitorInput
@@ -19939,6 +20016,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     nextCheck?: Date | string | null
     lastCheck?: Date | string | null
+    checkRegions?: string | null
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
     incidents?: IncidentUncheckedCreateNestedManyWithoutMonitorInput
@@ -19972,6 +20050,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     nextCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUpdateManyWithoutMonitorNestedInput
@@ -19991,6 +20070,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     nextCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
     incidents?: IncidentUncheckedUpdateManyWithoutMonitorNestedInput
@@ -20033,6 +20113,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     nextCheck?: Date | string | null
     lastCheck?: Date | string | null
+    checkRegions?: string | null
   }
 
   export type NotificationChannelCreateManyUserInput = {
@@ -20131,6 +20212,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     nextCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUpdateManyWithoutMonitorNestedInput
@@ -20149,6 +20231,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     nextCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
@@ -20167,6 +20250,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     nextCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type NotificationChannelUpdateWithoutUserInput = {
@@ -20298,6 +20382,7 @@ export namespace Prisma {
     latency: number
     errorReason?: string | null
     timestamp?: Date | string
+    region?: string | null
   }
 
   export type MaintenanceWindowCreateManyMonitorInput = {
@@ -20338,6 +20423,7 @@ export namespace Prisma {
     latency?: IntFieldUpdateOperationsInput | number
     errorReason?: NullableStringFieldUpdateOperationsInput | string | null
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    region?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MonitorEventUncheckedUpdateWithoutMonitorInput = {
@@ -20346,6 +20432,7 @@ export namespace Prisma {
     latency?: IntFieldUpdateOperationsInput | number
     errorReason?: NullableStringFieldUpdateOperationsInput | string | null
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    region?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MonitorEventUncheckedUpdateManyWithoutMonitorInput = {
@@ -20354,6 +20441,7 @@ export namespace Prisma {
     latency?: IntFieldUpdateOperationsInput | number
     errorReason?: NullableStringFieldUpdateOperationsInput | string | null
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    region?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MaintenanceWindowUpdateWithoutMonitorInput = {

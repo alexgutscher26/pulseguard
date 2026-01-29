@@ -22,6 +22,7 @@ export interface MonitorAlertData {
   timestamp: string;
   reason?: string;
   downtimeDuration?: string;
+  failedRegions?: string[];
 }
 
 export interface WelcomeEmailData {

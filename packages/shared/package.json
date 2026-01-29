@@ -1,0 +1,23 @@
+{
+  "name": "@pulseguard/shared",
+  "version": "0.1.0",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./regions": "./src/regions.ts"
+  },
+  "typesVersions": {
+    "*": {
+      "regions": [
+        "src/regions.ts"
+      ]
+    }
+  },
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules"
+  },
+  "devDependencies": {
+    "@pulseguard/config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}
