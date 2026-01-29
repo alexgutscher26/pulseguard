@@ -1,5 +1,8 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
+/**
+ * Renders a loading skeleton for the dashboard.
+ */
 export default function DashboardLoading() {
   return (
     <div className="flex flex-col gap-6">
