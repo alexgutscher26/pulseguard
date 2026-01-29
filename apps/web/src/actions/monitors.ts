@@ -531,13 +531,13 @@ export async function checkMonitor(id: string) {
             const incident = await incidentService.createIncident(monitor.id, `Monitor is DOWN: ${monitor.name}`, `Reason: ${errorReason}`);
             
             // Notify
-            await dispatchNotifications(monitor, "DOWN", incident.id, errorReason);
+            await dispatchNotifications(monitor, "DOWN", incident.id, errorReason, ["Manual Check (Server)"]);
          } else {
             await incidentService.logStillDown(activeIncident.id);
              // FORCE NOTIFICATION for Manual Check
              // User explicitly clicked "Run Check", so they expect to verify alerts work.
              console.log("[ManualCheck] Forcing alert dispatch for existing incident");
-             await dispatchNotifications(monitor, "DOWN", activeIncident.id, "Manual Verification: Still Down");
+             await dispatchNotifications(monitor, "DOWN", activeIncident.id, "Manual Verification: Still Down", ["Manual Check (Server)"]);
          }
        } else if (currentStatus === "UP") {
          const activeIncident = await incidentService.findActiveIncident(monitor.id);
@@ -565,7 +565,7 @@ export async function checkMonitor(id: string) {
 
 // --- Notification Helpers ---
 
-async function dispatchNotifications(monitor: any, status: "UP" | "DOWN", incidentId?: string, reason?: string) {
+async function dispatchNotifications(monitor: any, status: "UP" | "DOWN", incidentId?: string, reason?: string, failedRegions?: string[]) {
     const matchingRules = monitor.alertRules || [];
     console.log(`[Notification] Dispatching for ${monitor.name} (${status}). Found ${matchingRules.length} rules.`);
     
@@ -580,6 +580,10 @@ async function dispatchNotifications(monitor: any, status: "UP" | "DOWN", incide
             if (rule.targetStatus) return status === rule.targetStatus;
             return true;
         }
+         if (rule.trigger === "LATENCY" && reason?.includes("High Latency")) {
+             return true;
+         }
+        // Default to false for other triggers (LATENCY, SSL) unless handled
         return false;
     });
 
@@ -612,7 +616,9 @@ async function dispatchNotifications(monitor: any, status: "UP" | "DOWN", incide
         status: status,
         previousStatus: status === "UP" ? "DOWN" : "UP",
         timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString(),
         reason: reason,
+        failedRegions: failedRegions,
         // downtimeDuration: ... calculation omitted for brevity in manual check
     };
     
@@ -658,6 +664,13 @@ async function sendDiscordAlert(url: string, data: MonitorAlertData, type?: stri
             fields: [
               { name: 'Target', value: data.url, inline: true },
               { name: 'Timestamp', value: new Date(data.timestamp).toLocaleString(), inline: true },
+              ...(data.failedRegions && data.failedRegions.length > 0 ? [
+                {
+                  name: 'Failed Regions',
+                  value: data.failedRegions.join(', '),
+                  inline: false
+                }
+              ] : [])
             ],
             footer: { text: 'PulseGuard Sentinel • Monitoring Infrastructure' },
             timestamp: data.timestamp
@@ -692,6 +705,15 @@ async function sendSlackAlert(url: string, data: MonitorAlertData, type?: string
             ]},
           { type: 'section', text: { type: 'mrkdwn', text: '*Details:* ' + (data.reason || 'No detail provided') } },
           { type: 'context', elements: [{ type: 'mrkdwn', text: '⏱ Detected at ' + new Date(data.timestamp).toLocaleTimeString() }] },
+          ...(data.failedRegions && data.failedRegions.length > 0 ? [
+            {
+                type: 'section',
+                text: {
+                    type: 'mrkdwn',
+                    text: '*Failed Regions:* ' + data.failedRegions.join(', ')
+                }
+            }
+          ] : []),
           { type: 'actions', elements: [
               { type: 'button', text: { type: 'plain_text', text: 'View Dashboard' }, url: 'https://pulseguard.com/dashboard/monitors/' + data.monitorId, style: isDown ? 'danger' : 'primary' }
           ]}
@@ -749,43 +771,35 @@ export async function getDashboardStats() {
 
   try {
     const userId = session.user.id;
-
-    // 1. Active Monitors
-    const activeMonitorsCount = await prisma.monitor.count({
-      where: {
-        userId,
-        status: { not: "PAUSED" },
-      },
-    });
-
-    // 2. Active Alerts (Monitors currently DOWN)
-    const activeAlertsCount = await prisma.monitor.count({
-      where: {
-        userId,
-        status: "DOWN",
-      },
-    });
-
-    // 3. Global Stats (Uptime & Latency) - Last 24h
-    // We fetch events for all user's monitors
-    const userMonitors = await prisma.monitor.findMany({
-      where: { userId },
-      select: { id: true },
-    });
-    const monitorIds = userMonitors.map((m: { id: string }) => m.id);
-
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
-    const events = await prisma.monitorEvent.findMany({
-      where: {
-        monitorId: { in: monitorIds },
-        timestamp: { gte: oneDayAgo },
-      },
-      select: {
-        status: true,
-        latency: true,
-      },
-    });
+    const [activeMonitorsCount, activeAlertsCount, events] = await Promise.all([
+      // 1. Active Monitors
+      prisma.monitor.count({
+        where: {
+          userId,
+          status: { not: "PAUSED" },
+        },
+      }),
+      // 2. Active Alerts (Monitors currently DOWN)
+      prisma.monitor.count({
+        where: {
+          userId,
+          status: "DOWN",
+        },
+      }),
+      // 3. Global Stats (Uptime & Latency) - Last 24h
+      prisma.monitorEvent.findMany({
+        where: {
+          monitor: { userId },
+          timestamp: { gte: oneDayAgo },
+        },
+        select: {
+          status: true,
+          latency: true,
+        },
+      }),
+    ]);
 
     let globalUptime = 0;
     let avgLatency = 0;

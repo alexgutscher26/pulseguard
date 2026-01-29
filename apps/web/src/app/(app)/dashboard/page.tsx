@@ -15,8 +15,10 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const monitors = await getMonitors();
-  const stats = await getDashboardStats();
+  const [monitors, stats] = await Promise.all([
+    getMonitors(),
+    getDashboardStats(),
+  ]);
 
   return <Dashboard monitors={monitors} stats={stats} />;
 }
