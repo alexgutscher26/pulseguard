@@ -90,6 +90,14 @@ export async function deleteNotificationChannel(id: string) {
   }
 }
 
+/**
+ * Sends a test notification based on the specified channel type.
+ *
+ * The function retrieves the user's session and checks for authorization. It then fetches the notification channel configuration from the database. Depending on the channel type (EMAIL, DISCORD, SLACK), it sends a formatted test notification using the appropriate method. If the channel type is not implemented, it returns an error. The function handles errors gracefully and logs them for debugging.
+ *
+ * @param id - The unique identifier of the notification channel.
+ * @returns An object indicating the success status and any error messages.
+ */
 export async function sendTestNotification(id: string) {
   const session = await auth.api.getSession({
     headers: await headers(),
