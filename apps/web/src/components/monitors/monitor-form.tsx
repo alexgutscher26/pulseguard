@@ -29,7 +29,7 @@ interface MonitorFormProps {
 /**
  * Renders a form for creating or editing a monitor configuration.
  *
- * The function initializes the form with values from the provided monitor object, handling different monitor types (HTTP, PING, PORT) and their specific input requirements. It manages form submission actions, displays success or error messages based on the submission state, and navigates to the dashboard upon successful submission.
+ * The function initializes the form with values from the provided monitor object, handling different monitor types (HTTP, PING, PORT) and their specific input requirements. It manages form submission actions, displays success or error messages based on the submission state, and navigates to the dashboard upon successful submission. The function also parses checkRegions and updates the state based on user interactions with the form elements.
  *
  * @param {MonitorFormProps} props - The properties for the MonitorForm component, including the monitor object.
  */
