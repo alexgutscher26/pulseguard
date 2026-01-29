@@ -127,6 +127,19 @@ const monitorSchema = baseSchema.superRefine((data, ctx) => {
   }
 });
 
+/**
+ * Create a monitor based on the provided form data and previous state.
+ *
+ * This function retrieves the current user session, validates the input data against a schema, and creates a monitor in the database.
+ * If the monitor type is PING or PORT, it formats the URL accordingly. Additionally, it attempts to create a default alert rule
+ * if the user has notification channels. The function handles errors gracefully, ensuring that monitor creation is not affected
+ * by alert rule creation failures.
+ *
+ * @param prevState - The previous state of the application, used for context.
+ * @param formData - The form data containing monitor details such as name, URL, type, interval, timeout, port, and check regions.
+ * @returns An object indicating the success of the operation and any associated error message.
+ * @throws Error If there is a critical error during the monitor creation process.
+ */
 export async function createMonitor(prevState: any, formData: FormData) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -363,6 +376,18 @@ export async function getMonitor(id: string) {
   }
 }
 
+/**
+ * Check the status of a monitor and handle incidents accordingly.
+ *
+ * This function retrieves the session and monitor details, checks for active maintenance windows,
+ * and performs a status check on the monitor's URL. It logs the status and latency, updates the monitor's
+ * status in the database, and manages incident creation or resolution based on the monitor's state.
+ * Notifications are dispatched for incidents as necessary.
+ *
+ * @param id - The unique identifier of the monitor to check.
+ * @returns An object indicating the success of the operation and any error messages.
+ * @throws Error If there is a failure in saving the check result or processing incidents/notifications.
+ */
 export async function checkMonitor(id: string) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -639,6 +664,16 @@ async function dispatchNotifications(monitor: any, status: "UP" | "DOWN", incide
 
 // --- Adapters (Mirrored from Worker) ---
 
+/**
+ * Sends an alert to a Discord channel based on the status of a monitored system.
+ *
+ * The function constructs a payload containing the alert details, including the system's status, reason for the alert, and relevant timestamps. It then sends this payload to the specified Discord webhook URL using a POST request. If the request fails, an error is thrown for further handling.
+ *
+ * @param url - The Discord webhook URL to send the alert to.
+ * @param data - The data containing the monitor alert information.
+ * @param type - An optional string indicating the type of incident (e.g., "INCIDENT_CREATED" or "INCIDENT_RESOLVED").
+ * @throws Error If the fetch request fails or the response is not ok.
+ */
 async function sendDiscordAlert(url: string, data: MonitorAlertData, type?: string) {
   try {
       const isDown = data.status === 'DOWN';
@@ -674,6 +709,19 @@ async function sendDiscordAlert(url: string, data: MonitorAlertData, type?: stri
   }
 }
 
+/**
+ * Sends an alert to a Slack channel based on the monitor's status.
+ *
+ * The function constructs a message payload depending on the status of the monitor and the type of alert.
+ * It handles different alert types such as incident creation and resolution, and sends the payload to the specified Slack URL.
+ * If the fetch request fails, it logs the error and rethrows the exception.
+ *
+ * @param url - The Slack webhook URL to send the alert to.
+ * @param data - The data containing monitor alert information.
+ * @param type - Optional type of the alert (e.g., "INCIDENT_CREATED", "INCIDENT_RESOLVED").
+ * @param incidentId - Optional identifier for the incident.
+ * @throws Error If the fetch request fails or the response is not ok.
+ */
 async function sendSlackAlert(url: string, data: MonitorAlertData, type?: string, incidentId?: string) {
   try {
       const isDown = data.status === 'DOWN';
@@ -708,6 +756,15 @@ async function sendSlackAlert(url: string, data: MonitorAlertData, type?: string
   }
 }
 
+/**
+ * Toggle the status of a monitor based on the provided ID and enabled state.
+ *
+ * This function retrieves the current user session and checks for authorization. If authorized, it updates the monitor's status to either "UP" or "PAUSED" based on the enabled parameter. It also triggers revalidation of relevant paths to ensure the dashboard reflects the latest state. In case of an error during the update, it logs the error and returns a failure response.
+ *
+ * @param id - The unique identifier of the monitor to be toggled.
+ * @param enabled - A boolean indicating whether to set the monitor status to "UP" (true) or "PAUSED" (false).
+ * @returns An object indicating the success of the operation and any error message if applicable.
+ */
 export async function toggleMonitor(id: string, enabled: boolean) {
   const session = await auth.api.getSession({
     headers: await headers(),
