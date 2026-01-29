@@ -645,6 +645,16 @@ async function dispatchNotifications(monitor: any, status: "UP" | "DOWN", incide
 
 // --- Adapters (Mirrored from Worker) ---
 
+/**
+ * Sends an alert to a Discord channel based on the status of a monitored system.
+ *
+ * The function constructs a payload with relevant information about the system's status, including the monitor name, reason for the alert, and any failed regions. It then sends this payload to the specified Discord webhook URL using a POST request. If the request fails, an error is thrown.
+ *
+ * @param url - The Discord webhook URL to send the alert to.
+ * @param data - The data containing the monitor alert information.
+ * @param type - An optional string indicating the type of incident (e.g., "INCIDENT_CREATED" or "INCIDENT_RESOLVED").
+ * @throws Error If the fetch request fails or the response is not ok.
+ */
 async function sendDiscordAlert(url: string, data: MonitorAlertData, type?: string) {
   try {
       const isDown = data.status === 'DOWN';
@@ -687,6 +697,17 @@ async function sendDiscordAlert(url: string, data: MonitorAlertData, type?: stri
   }
 }
 
+/**
+ * Sends an alert to a Slack channel based on the monitor's status.
+ *
+ * The function constructs a payload with relevant information about the monitor's status, including the monitor name, status, and any failed regions. It handles different alert types such as incident creation and resolution. The payload is then sent to the specified Slack URL using a POST request. If the request fails, an error is thrown.
+ *
+ * @param url - The Slack webhook URL to send the alert to.
+ * @param data - The data containing monitor alert information.
+ * @param type - Optional type of the alert (e.g., "INCIDENT_CREATED", "INCIDENT_RESOLVED").
+ * @param incidentId - Optional identifier for the incident.
+ * @throws Error If the fetch request fails or returns a non-OK status.
+ */
 async function sendSlackAlert(url: string, data: MonitorAlertData, type?: string, incidentId?: string) {
   try {
       const isDown = data.status === 'DOWN';
@@ -755,6 +776,16 @@ export async function toggleMonitor(id: string, enabled: boolean) {
   }
 }
 
+/**
+ * Fetches the dashboard statistics for the authenticated user.
+ *
+ * The function retrieves the user's session and, if valid, counts the active monitors and alerts,
+ * and calculates global uptime and average latency based on monitor events from the last 24 hours.
+ * If the session is invalid or an error occurs during data fetching, it returns default values.
+ *
+ * @returns An object containing the counts of active monitors, global uptime percentage,
+ *          average latency, and active alerts.
+ */
 export async function getDashboardStats() {
   const session = await auth.api.getSession({
     headers: await headers(),
