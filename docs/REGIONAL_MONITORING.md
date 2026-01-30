@@ -193,7 +193,7 @@ On the monitor detail page, the `RegionalUptime` component displays:
 4. **Regional SLA Reports**:
    - Generate uptime reports per region
    - Export regional performance data
-
+// TODO: Implement this 
 5. **True Multi-Region (Paid)**:
    - Implement Durable Objects for guaranteed regional execution
    - Use Cloudflare Load Balancer for advanced routing

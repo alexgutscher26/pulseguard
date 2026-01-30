@@ -13,11 +13,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export function DashboardHeader() {
   const { data: session } = authClient.useSession();
   const pathname = usePathname();
+  const router = useRouter(); // Add router
 
   const getTitle = () => {
     if (pathname.includes("/dashboard/monitors"))
@@ -120,11 +121,17 @@ export function DashboardHeader() {
                   My Account
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-primary/20" />
-                <DropdownMenuItem className="text-xs uppercase tracking-wider focus:bg-primary/10 focus:text-primary cursor-pointer">
+                <DropdownMenuItem
+                  className="text-xs uppercase tracking-wider focus:bg-primary/10 focus:text-primary cursor-pointer"
+                  onClick={() => router.push("/dashboard/settings?tab=general")}
+                >
                   <User className="mr-2 h-4 w-4" />
                   <span>Profile Protocol</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="text-xs uppercase tracking-wider focus:bg-primary/10 focus:text-primary cursor-pointer">
+                <DropdownMenuItem
+                  className="text-xs uppercase tracking-wider focus:bg-primary/10 focus:text-primary cursor-pointer"
+                  onClick={() => router.push("/dashboard/settings")}
+                >
                   <Settings className="mr-2 h-4 w-4" />
                   <span>System Config</span>
                 </DropdownMenuItem>
