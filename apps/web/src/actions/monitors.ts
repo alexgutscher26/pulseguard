@@ -565,6 +565,20 @@ export async function checkMonitor(id: string) {
 
 // --- Notification Helpers ---
 
+/**
+ * Dispatch notifications based on the monitor's alert rules and current status.
+ *
+ * This function filters the alert rules based on the provided status and reason, extracts the relevant notification channels,
+ * and sends alerts via email, Slack, and Discord. It handles the asynchronous sending of notifications and logs the results,
+ * including any failures encountered during the process.
+ *
+ * @param monitor - The monitor object containing alert rules and user information.
+ * @param status - The current status of the monitor, either "UP" or "DOWN".
+ * @param incidentId - An optional identifier for the incident being reported.
+ * @param reason - An optional reason for the status change.
+ * @param failedRegions - An optional array of regions that failed during the monitoring.
+ * @returns Promise<void>
+ */
 async function dispatchNotifications(monitor: any, status: "UP" | "DOWN", incidentId?: string, reason?: string, failedRegions?: string[]) {
     const matchingRules = monitor.alertRules || [];
     console.log(`[Notification] Dispatching for ${monitor.name} (${status}). Found ${matchingRules.length} rules.`);
