@@ -4,6 +4,15 @@ import { useQuery } from "@tanstack/react-query";
 import { getMonitors, getDashboardStats, checkMonitor } from "@/actions/monitors";
 import { useEffect, useRef } from "react";
 
+/**
+ * Manages monitor checks and updates using a query.
+ *
+ * This function utilizes the `useQuery` hook to fetch monitor data and sets up an effect to check for stale monitors.
+ * It checks each monitor's last check time against its interval, logging and triggering a check if the monitor is deemed stale.
+ * The function also manages a reference set to prevent duplicate checks within a grace period.
+ *
+ * @param {any[]} initialMonitors - The initial list of monitors to be used before the query fetches data.
+ */
 export function useMonitors(initialMonitors: any[]) {
   const query = useQuery({
     queryKey: ["monitors"],
