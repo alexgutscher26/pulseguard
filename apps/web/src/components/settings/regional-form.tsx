@@ -4,6 +4,14 @@ import { authClient } from "@/lib/auth-client";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
+/**
+ * Renders a regional settings form for updating user timezone and date format.
+ *
+ * This component utilizes the authClient to retrieve the current user session and
+ * initializes state for timezone and date format. It updates these states based on
+ * the session data if available. The handleSave function is responsible for saving
+ * the updated settings and provides user feedback through toast notifications.
+ */
 export function RegionalForm() {
   const { data: session } = authClient.useSession();
   const [timezone, setTimezone] = useState("UTC");
