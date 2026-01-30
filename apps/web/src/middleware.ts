@@ -8,12 +8,12 @@ export async function middleware(request: NextRequest) {
 
   try {
     // Optimization: Avoid loopback latency through tunnel by fetching localhost directly
-    // This assumes the Next.js server is running on port 3000
-    const res = await fetch("http://127.0.0.1:3000/api/auth/get-session", {
+    const res = await fetch(`${request.nextUrl.origin}/api/auth/get-session`, {
       headers: { cookie },
     });
     session = await res.json();
   } catch (e) {
+    console.error("Middleware auth check failed, falling back to client:", e);
     // Fallback to standard client if local fetch fails
     const { data } = await authClient.getSession({
       fetchOptions: {
