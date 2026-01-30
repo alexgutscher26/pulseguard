@@ -14,7 +14,11 @@ export async function middleware(request: NextRequest) {
       });
       if (res.ok) {
         const data = await res.json();
-        return data;
+        // Ensure the response actually contains a session
+        if (data && (data.session || data.user)) {
+            return data;
+        }
+        return null;
       }
       console.error(`Middleware auth check failed for ${url}: Status ${res.status}`);
     } catch (e) {
@@ -49,11 +53,14 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  if (!session && request.nextUrl.pathname.startsWith("/dashboard")) {
+  // Double check session validity
+  const isValidSession = session && (session.user || session.session);
+
+  if (!isValidSession && request.nextUrl.pathname.startsWith("/dashboard")) {
     return NextResponse.redirect(new URL("/login?source=middleware", request.url));
   }
 
-  if (session) {
+  if (isValidSession) {
     console.log("Middleware auth success for", request.nextUrl.pathname);
   }
 
