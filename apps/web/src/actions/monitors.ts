@@ -363,7 +363,7 @@ export async function getMonitor(id: string) {
   }
 }
 
-export async function checkMonitor(id: string) {
+export async function checkMonitor(id: string, context?: { checkRegions?: string[], reason?: string }) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -523,21 +523,23 @@ export async function checkMonitor(id: string) {
 
        if (currentStatus === "DOWN") {
          const activeIncident = await incidentService.findActiveIncident(monitor.id);
+         const checkSource = context?.checkRegions || ["Manual Check (Server)"];
+         const baseReason = context?.reason || "Manual Check Failed";
+         
          // For manual check, we bypass flapping check for alerts usually, but let's keep it safe
          // Actually, if user clicks "Run Check", they expect an alert if it's down.
          
          if (!activeIncident) {
-            const errorReason = "Manual Check Failed"; // Simplify for manual check
-            const incident = await incidentService.createIncident(monitor.id, `Monitor is DOWN: ${monitor.name}`, `Reason: ${errorReason}`);
+            const incident = await incidentService.createIncident(monitor.id, `Monitor is DOWN: ${monitor.name}`, `Reason: ${baseReason}`);
             
             // Notify
-            await dispatchNotifications(monitor, "DOWN", incident.id, errorReason, ["Manual Check (Server)"]);
+            await dispatchNotifications(monitor, "DOWN", incident.id, baseReason, checkSource);
          } else {
             await incidentService.logStillDown(activeIncident.id);
              // FORCE NOTIFICATION for Manual Check
              // User explicitly clicked "Run Check", so they expect to verify alerts work.
              console.log("[ManualCheck] Forcing alert dispatch for existing incident");
-             await dispatchNotifications(monitor, "DOWN", activeIncident.id, "Manual Verification: Still Down", ["Manual Check (Server)"]);
+             await dispatchNotifications(monitor, "DOWN", activeIncident.id, `Verification: Still Down (${baseReason})`, checkSource);
          }
        } else if (currentStatus === "UP") {
          const activeIncident = await incidentService.findActiveIncident(monitor.id);
