@@ -8,6 +8,17 @@ import { MonitorStatsGrid } from "@/components/monitors/details/stats-grid";
 import { MonitorCharts } from "@/components/monitors/details/charts";
 import { IncidentHistory } from "@/components/monitors/details/incident-history";
 
+/**
+ * Renders the detailed view of a monitor, including its header, stats, charts, and incident history.
+ *
+ * This function utilizes the `useQuery` hook to fetch monitor data based on the provided `initialMonitor` id.
+ * It sets up an effect to periodically check if the monitor data is stale, triggering a check if the data
+ * has not been updated in over 70 seconds. The component will re-render with updated data automatically
+ * based on the defined polling interval.
+ *
+ * @param {Object} param0 - The parameters object.
+ * @param {any} param0.initialMonitor - The initial monitor data to be used for fetching and rendering.
+ */
 export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
   const { data: monitor } = useQuery({
     queryKey: ["monitor", initialMonitor.id],
