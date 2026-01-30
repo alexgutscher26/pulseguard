@@ -205,7 +205,7 @@ async function processBatch(monitors: any[], prisma: any, env?: Env) {
       }
 
       const { status: currentStatus, latency, errorReason } = result;
-      const previousStatus = monitor.status;
+
 
       // Save result and update monitor
       try {

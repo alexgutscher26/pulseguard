@@ -4,9 +4,7 @@
   "compatibility_date": "2026-01-24",
   "compatibility_flags": ["nodejs_compat"],
   "vars": {
-    "DATABASE_URL": "postgresql://neondb_owner:npg_6hvWIxFBtgA3@ep-little-dawn-ag0aibtt-pooler.c-2.eu-central-1.aws.neon.tech/neondb?channel_binding=require&sslmode=require",
-    "NODE_ENV": "production",
-    "RESEND_API_KEY": "re_placeholder_key"
+    "NODE_ENV": "production"
   },
   "triggers": {
     "crons": ["* * * * *"]

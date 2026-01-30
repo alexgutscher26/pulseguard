@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // @ts-expect-error - specific property for Next.js 14+ dev server
+  // TODO: Change Later! 
   allowedDevOrigins: ["localhost:3000", "introverted-history.outray.app"],
 };
 

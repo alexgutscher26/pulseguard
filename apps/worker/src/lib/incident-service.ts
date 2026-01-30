@@ -1,4 +1,4 @@
-import type { PrismaClient } from "@prisma/client";
+import type { PrismaClient } from "@pulseguard/db";
 
 export enum IncidentEventType {
   STATE_CHANGE = "STATE_CHANGE",

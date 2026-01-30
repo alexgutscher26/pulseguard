@@ -20,22 +20,7 @@ export interface Monitor {
   checkRegions?: string | null;
 }
 
-/**
- * Free proxy endpoints for different regions
- * These rotate through various free services
- */
-const REGIONAL_PROXIES: Record<string, string[]> = {
-  'us-east': [
-    'https://cors-anywhere.herokuapp.com/',
-    // Cloudflare Workers automatically route to nearest edge
-  ],
-  'us-west': [],
-  'eu-west': [],
-  'eu-central': [],
-  'ap-south': [],
-  'ap-southeast': [],
-  'ap-northeast': [],
-};
+
 
 /**
  * Perform a check from a specific region
