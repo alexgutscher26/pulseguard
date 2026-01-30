@@ -14,9 +14,16 @@ export function MonitorManager({ initialMonitors }: MonitorManagerProps) {
   const { data: monitors } = useMonitors(initialMonitors);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
+  const [sort, setSort] = useState("name");
+
+  const getUptime = (events: any[]) => {
+    if (!events || events.length === 0) return 0;
+    const up = events.filter((e) => e.status === "UP").length;
+    return Math.round((up / events.length) * 100);
+  };
 
   const filteredMonitors = useMemo(() => {
-    return monitors.filter((monitor) => {
+    const filtered = monitors.filter((monitor) => {
       const matchesSearch =
         monitor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         monitor.url.toLowerCase().includes(searchQuery.toLowerCase());
@@ -26,7 +33,14 @@ export function MonitorManager({ initialMonitors }: MonitorManagerProps) {
 
       return matchesSearch && matchesStatus;
     });
-  }, [monitors, searchQuery, statusFilter]);
+
+    return [...filtered].sort((a, b) => {
+      if (sort === "name") return a.name.localeCompare(b.name);
+      if (sort === "status") return a.status.localeCompare(b.status);
+      if (sort === "uptime") return getUptime(b.events) - getUptime(a.events);
+      return 0;
+    });
+  }, [monitors, searchQuery, statusFilter, sort]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -36,6 +50,8 @@ export function MonitorManager({ initialMonitors }: MonitorManagerProps) {
         setSearchQuery={setSearchQuery}
         statusFilter={statusFilter}
         setStatusFilter={setStatusFilter}
+        sort={sort}
+        setSort={setSort}
       />
       <MonitorList monitors={filteredMonitors} />
     </div>
