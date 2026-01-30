@@ -57,7 +57,7 @@ export function RegionalForm() {
           <select
             value={timezone}
             onChange={(e) => setTimezone(e.target.value)}
-            className="bg-black/50 border border-primary/20 focus:border-primary/60 text-primary text-sm rounded-sm p-2.5 font-mono focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all appearance-none"
+            className="bg-black border border-primary/20 focus:border-primary/60 text-white text-sm rounded-sm p-2.5 font-mono focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all appearance-none"
           >
             <option value="UTC">(GMT+00:00) UTC</option>
             <option value="America/Los_Angeles">
@@ -78,7 +78,7 @@ export function RegionalForm() {
           <select
             value={dateFormat}
             onChange={(e) => setDateFormat(e.target.value)}
-            className="bg-black/50 border border-primary/20 focus:border-primary/60 text-primary text-sm rounded-sm p-2.5 font-mono focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all appearance-none"
+            className="bg-black border border-primary/20 focus:border-primary/60 text-white text-sm rounded-sm p-2.5 font-mono focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all appearance-none"
           >
             <option value="MM/DD/YYYY">MM/DD/YYYY</option>
             <option value="DD/MM/YYYY">DD/MM/YYYY</option>
