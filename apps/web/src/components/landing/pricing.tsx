@@ -5,6 +5,13 @@ import { Check } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
+/**
+ * Renders the pricing section of the application.
+ *
+ * This component manages the billing state, allowing users to toggle between monthly and yearly billing options.
+ * It displays three pricing tiers: The Initiate, The Netrunner, and The Construct, each with its features and pricing based on the selected billing cycle.
+ * The component utilizes the `useState` hook to manage the billing state and conditionally renders pricing information accordingly.
+ */
 export default function Pricing() {
   const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
 
