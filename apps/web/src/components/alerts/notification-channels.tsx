@@ -241,44 +241,16 @@ export function NotificationChannels({
                 />
               </div>
 
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="type">Type</Label>
-                <select
-                  id="type"
-                  name="type"
-                  className="flex h-10 w-full rounded-md border border-primary/20 bg-primary/5 px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  value={selectedType}
-                  onChange={(e) => setSelectedType(e.target.value)}
-                >
-                  <option value="EMAIL">Email</option>
-                  <option value="SLACK">Slack Webhook</option>
-                  <option value="DISCORD">Discord Webhook</option>
-                  <option value="TELEGRAM">Telegram</option>
-                  <option value="SMS">SMS</option>
-                  <option value="WEBHOOK">Generic Webhook</option>
-                </select>
-              </div>
+              <input type="hidden" name="type" value="EMAIL" />
 
               <div className="flex flex-col gap-2">
-                <Label htmlFor="value">
-                  {selectedType === "EMAIL"
-                    ? "Email Address"
-                    : selectedType === "SMS"
-                      ? "Phone Number"
-                      : "Webhook URL"}
-                </Label>
+                <Label htmlFor="value">Email Address</Label>
                 <Input
                   id="value"
                   name="value"
                   required
-                  type={selectedType === "EMAIL" ? "email" : "text"}
-                  placeholder={
-                    selectedType === "EMAIL"
-                      ? "user@example.com"
-                      : selectedType === "SMS"
-                        ? "+1234567890"
-                        : "https://hooks.slack.com/..."
-                  }
+                  type="email"
+                  placeholder="user@example.com"
                   className="bg-primary/5 border-primary/20"
                 />
               </div>
