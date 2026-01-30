@@ -36,6 +36,19 @@ interface Channel {
   createdAt: Date;
 }
 
+/**
+ * Manages notification channels for alerts, allowing users to add, delete, and test channels.
+ *
+ * This function handles the state of notification channels, including opening a dialog for adding new channels,
+ * deleting existing channels, and sending test notifications. It utilizes transitions for asynchronous operations
+ * and provides visual feedback through toasts. The function also determines the appropriate icons and colors
+ * based on the channel type.
+ *
+ * @param channels - An array of Channel objects representing the existing notification channels.
+ * @param slackClientId - An optional string representing the Slack client ID for integration.
+ * @param discordClientId - An optional string representing the Discord client ID for integration.
+ * @returns {JSX.Element} The rendered component for managing notification channels.
+ */
 export function NotificationChannels({
   channels,
   slackClientId,
