@@ -116,6 +116,15 @@ async function shouldSendAlert(monitorId: string, prisma: any): Promise<boolean>
 }
 
 // Helper: Reusable processing logic (shared between Cron and Queue consumer)
+/**
+ * Process a batch of monitors to check their status and handle incidents.
+ *
+ * This function iterates over an array of monitors, performing checks based on their configuration, including maintenance windows and regional checks. It logs results, updates the database, and manages incident creation and resolution based on the monitors' statuses. Notifications are sent for incidents and high latency alerts, with fallback mechanisms for local development environments.
+ *
+ * @param monitors - An array of monitor objects to be processed.
+ * @param prisma - The Prisma client instance for database operations.
+ * @param env - Optional environment configuration for notifications.
+ */
 async function processBatch(monitors: any[], prisma: any, env?: Env) {
   console.log(`Processing batch of ${monitors.length} monitors...`);
   
