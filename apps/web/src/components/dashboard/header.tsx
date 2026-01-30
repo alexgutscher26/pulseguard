@@ -15,6 +15,13 @@ import {
 
 import { usePathname, useRouter } from "next/navigation";
 
+/**
+ * Renders the header for the dashboard with navigation and user session information.
+ *
+ * The function retrieves the current user session and the pathname to determine the appropriate title for the dashboard header. It includes a search input, a button to add a new monitor, and a dropdown menu for user account options. The title changes based on the current route, providing context to the user about their location within the dashboard.
+ *
+ * @returns A JSX element representing the dashboard header.
+ */
 export function DashboardHeader() {
   const { data: session } = authClient.useSession();
   const pathname = usePathname();
