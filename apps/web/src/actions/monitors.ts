@@ -363,6 +363,18 @@ export async function getMonitor(id: string) {
   }
 }
 
+/**
+ * Check the status of a monitor and handle incidents accordingly.
+ *
+ * This function retrieves the monitor details from the database, checks for active maintenance windows,
+ * and performs a status check by sending a request to the monitor's URL. It logs the result and manages
+ * incidents based on the monitor's status, including creating or resolving incidents as necessary.
+ * Notifications are dispatched based on the outcome of the check.
+ *
+ * @param id - The unique identifier of the monitor to check.
+ * @param context - Optional context for the check, including checkRegions and reason for the check.
+ * @returns An object indicating the success of the operation and any error messages if applicable.
+ */
 export async function checkMonitor(id: string, context?: { checkRegions?: string[], reason?: string }) {
   const session = await auth.api.getSession({
     headers: await headers(),
