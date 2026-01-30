@@ -60,6 +60,15 @@ interface Channel {
   type: string;
 }
 
+/**
+ * Component for managing alert rules, including creation, deletion, and toggling of rules.
+ *
+ * This component handles the state for alert rules, monitors, and notification channels. It provides functionality to create new alert rules based on user-defined conditions, delete existing rules, and toggle their enabled state. The component also manages user interactions through forms and notifications, ensuring that the user is informed of the success or failure of their actions.
+ *
+ * @param rules - An array of AlertRule objects representing the existing alert rules.
+ * @param monitors - An array of Monitor objects representing the available monitors.
+ * @param channels - An array of Channel objects representing the available notification channels.
+ */
 export function AlertRules({
   rules,
   monitors,
