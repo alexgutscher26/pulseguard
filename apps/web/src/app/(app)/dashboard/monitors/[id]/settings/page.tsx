@@ -1,6 +1,4 @@
-import { auth } from "@pulseguard/auth";
-import { headers } from "next/headers";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { getMonitor } from "@/actions/monitors";
 import { MonitorSettingsView } from "@/components/monitors/settings-view";
 

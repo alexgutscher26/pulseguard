@@ -616,7 +616,6 @@ async function dispatchNotifications(monitor: any, status: "UP" | "DOWN", incide
         status: status,
         previousStatus: status === "UP" ? "DOWN" : "UP",
         timestamp: new Date().toISOString(),
-        timestamp: new Date().toISOString(),
         reason: reason,
         failedRegions: failedRegions,
         // downtimeDuration: ... calculation omitted for brevity in manual check

@@ -72,7 +72,7 @@ export default function Hero() {
               {/* Terminal Content */}
               <div className="p-6 font-mono text-sm h-[400px] overflow-hidden flex flex-col gap-2 relative">
                 {/* Faux Data Stream */}
-                <div className="absolute inset-0 bg-linear-to-b from-transparent via-primary/5 to-transparent h-[20%] animate-[scan_3s_linear_infinite] pointer-events-none"></div>
+                <div className="absolute inset-0 bg-linear-to-b from-transparent via-primary/5 to-transparent h-[20%] animate-scan pointer-events-none"></div>
 
                 <div className="flex gap-4 text-green-500/80">
                   <span className="opacity-50">09:41:22</span>
@@ -122,7 +122,7 @@ export default function Hero() {
 
       {/* Ticker at bottom */}
       <div className="absolute bottom-0 w-full bg-primary/10 border-t border-primary/20 py-2 overflow-hidden flex whitespace-nowrap">
-        <div className="animate-[marquee_20s_linear_infinite] flex gap-12 items-center font-mono text-xs uppercase tracking-widest text-primary/70">
+        <div className="animate-marquee flex gap-12 items-center font-mono text-xs uppercase tracking-widest text-primary/70">
           <span>System Status: Optimal</span>
           <span>Active Monitors: 8,492</span>
           <span>Global Uptime: 99.99%</span>

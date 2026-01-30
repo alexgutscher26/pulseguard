@@ -24,7 +24,7 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 flex-shrink-0 border-r border-primary/20 bg-[#050505] flex flex-col justify-between p-4 h-full relative overflow-hidden">
+    <aside className="w-64 shrink-0 border-r border-primary/20 bg-[#050505] flex flex-col justify-between p-4 h-full relative overflow-hidden">
       {/* Subtle Grid Background */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#111_1px,transparent_1px),linear-gradient(to_bottom,#111_1px,transparent_1px)] bg-size-[2rem_2rem] opacity-20 pointer-events-none"></div>
 

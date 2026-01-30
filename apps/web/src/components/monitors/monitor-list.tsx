@@ -129,7 +129,7 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                   >
                     <div className="flex items-center gap-3">
                       {history.length > 0 ? (
-                        <div className="flex gap-[1px] h-4 items-end">
+                        <div className="flex gap-px h-4 items-end">
                           {history.map((h: number, i: number) => (
                             <UptimeBar key={i} status={h} />
                           ))}
@@ -195,7 +195,7 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
           >
             <ChevronLeft className="size-3" /> Prev
           </button>
-          <button className="px-3 py-1 border border-primary/20 text-primary/60 hover:text-primary hover:border-primary/50 text-[10px] uppercase font-bold tracking-wider hover:text-primary flex items-center gap-1 font-mono transition-all rounded-sm">
+          <button className="px-3 py-1 border border-primary/20 text-primary/60 hover:text-primary hover:border-primary/50 text-[10px] uppercase font-bold tracking-wider flex items-center gap-1 font-mono transition-all rounded-sm">
             Next <ChevronRight className="size-3" />
           </button>
         </div>

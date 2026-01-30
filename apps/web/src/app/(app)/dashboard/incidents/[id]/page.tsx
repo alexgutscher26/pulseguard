@@ -29,10 +29,6 @@ export default async function IncidentDetailPage({
           <ArrowLeft className="size-4" /> Back to Incidents
         </Link>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <DashboardHeader
-            heading={incident.title}
-            text={`Impacted Monitor: ${incident.monitor.name}`}
-          />
           <IncidentActions
             incidentId={incident.id}
             currentStatus={incident.status}

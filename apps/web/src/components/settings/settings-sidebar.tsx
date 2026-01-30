@@ -16,7 +16,7 @@ export function SettingsSidebar() {
   const currentTab = searchParams.get("tab") || "general";
 
   return (
-    <aside className="w-full md:w-48 flex-shrink-0">
+    <aside className="w-full md:w-48 shrink-0">
       <nav className="flex flex-col gap-1">
         {items.map((item) => (
           <Link

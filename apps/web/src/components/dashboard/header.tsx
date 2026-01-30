@@ -48,7 +48,7 @@ export function DashboardHeader() {
   return (
     <header className="sticky top-0 z-10 flex items-center justify-between border-b border-primary/20 bg-[#050505]/90 backdrop-blur-md px-8 py-4 relative overflow-hidden">
       {/* Scanline effect on border */}
-      <div className="absolute bottom-0 left-0 w-full h-[1px] bg-primary/20">
+      <div className="absolute bottom-0 left-0 w-full h-px bg-primary/20">
         <div className="absolute top-0 left-0 h-full w-1/3 bg-primary/50 blur-[2px] animate-scan-fast"></div>
       </div>
 

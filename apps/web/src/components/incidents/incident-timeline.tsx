@@ -12,7 +12,7 @@ export function IncidentTimeline({ events }: IncidentTimelineProps) {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold font-mono uppercase tracking-wider text-muted-foreground text-sm">
+      <h3 className="text-lg font-semibold font-mono uppercase tracking-wider text-muted-foreground">
         Audit Timeline
       </h3>
       <div className="border-l border-primary/20 pl-6 ml-2 space-y-8 relative">

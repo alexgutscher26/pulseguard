@@ -1,5 +1,4 @@
 import { getIncidents } from "@/actions/incidents";
-import { DashboardHeader } from "@/components/dashboard/header";
 import { IncidentTable } from "@/components/incidents/incident-table";
 
 export const metadata = {

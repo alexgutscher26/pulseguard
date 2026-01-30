@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Check } from "lucide-react";
 
 export default function Pricing() {
   return (
