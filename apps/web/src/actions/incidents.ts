@@ -42,6 +42,14 @@ export async function getIncidents() {
   }
 }
 
+/**
+ * Retrieve an incident by its ID.
+ *
+ * This function first obtains the user session using the auth.api.getSession method. If the session is valid and the user is authenticated, it attempts to fetch the incident from the database using prisma.incident.findFirst. The incident is filtered by the provided ID and the user's ID. If an error occurs during the fetch, it logs the error and returns null.
+ *
+ * @param id - The unique identifier of the incident to retrieve.
+ * @returns The incident object if found, or null if the user is not authenticated or an error occurs.
+ */
 export async function getIncident(id: string) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -73,6 +81,15 @@ export async function getIncident(id: string) {
   }
 }
 
+/**
+ * Update the status of an incident based on its ID.
+ *
+ * This function first retrieves the user's session to ensure authorization. It then verifies the ownership of the incident by checking if it belongs to the user. If the incident is found, it updates the status and logs the event. Finally, it revalidates the relevant paths to reflect the changes. If any step fails, it returns an appropriate error message.
+ *
+ * @param id - The unique identifier of the incident to update.
+ * @param status - The new status to set for the incident, which can be "INVESTIGATING", "IDENTIFIED", "MONITORING", or "RESOLVED".
+ * @returns An object indicating the success of the operation and any error messages if applicable.
+ */
 export async function updateIncidentStatus(
   id: string,
   status: "INVESTIGATING" | "IDENTIFIED" | "MONITORING" | "RESOLVED",
