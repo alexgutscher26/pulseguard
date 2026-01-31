@@ -22,10 +22,16 @@ export function IncidentHistory({ monitor }: { monitor: any }) {
     currentPage * itemsPerPage,
   );
 
+  /**
+   * Sets the current page to a valid page number within the range.
+   */
   const goToPage = (page: number) => {
     setCurrentPage(Math.max(1, Math.min(page, totalPages)));
   };
 
+  /**
+   * Exports event history to a CSV file.
+   */
   const exportToCSV = () => {
     const headers = ["Status", "Timestamp", "Latency"];
     const rows = history.map((event: any) => [
