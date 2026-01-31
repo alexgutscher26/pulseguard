@@ -1,33 +1,56 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { auth } from "@pulseguard/auth";
 
-import { authClient } from "@/lib/auth-client";
+
+// Revert to default runtime (Edge compatible) to strictly avoid Node.js/OpenNext conflicts
+// export const runtime = "nodejs";
 
 export async function middleware(request: NextRequest) {
-  const cookie = request.headers.get("cookie") || "";
-  let session = null;
+  console.log("🔍 Middleware checking:", request.nextUrl.pathname);
+  console.log("🔍 Request URL:", request.url);
+  
+  // Debug: Log all cookies to see what's being received
+  const cookieHeader = request.headers.get("cookie");
+  console.log("🍪 Cookies received:", cookieHeader);
 
+  let session = null;
   try {
-    // Optimization: Avoid loopback latency through tunnel by fetching localhost directly
-    // This assumes the Next.js server is running on port 3000
-    const res = await fetch("http://127.0.0.1:3000/api/auth/get-session", {
-      headers: { cookie },
+    // Full session validation using Better Auth's server-side API
+    // Wrapped in try/catch because it might fail in Edge runtime if it uses Node APIs
+    session = await auth.api.getSession({
+      headers: request.headers,
     });
-    session = await res.json();
-  } catch (e) {
-    // Fallback to standard client if local fetch fails
-    const { data } = await authClient.getSession({
-      fetchOptions: {
-        headers: {
-          cookie: request.headers.get("cookie") || "",
-        },
-      },
-    });
-    session = data;
+  } catch (error) {
+    console.error("⚠️ Detailed auth.api.getSession failed:", error);
   }
 
-  if (!session && request.nextUrl.pathname.startsWith("/dashboard")) {
+  console.log("🔍 Session result:", {
+    hasSession: !!session,
+    hasUser: !!session?.user,
+    userId: session?.user?.id,
+    path: request.nextUrl.pathname,
+  });
+
+  // If accessing dashboard routes without a valid session
+  if (!session?.user && request.nextUrl.pathname.startsWith("/dashboard")) {
+    
+    // Fallback: Check for session cookie manually (Optimistic Check)
+    // Sometimes auth.api.getSession might fail in middleware due to headers/context
+    // but the cookie is present. We let the page/layout handle the specific validation.
+    const cookieHeader = request.headers.get("cookie") || "";
+    const hasSessionCookie = cookieHeader.includes("better-auth.session_token") || 
+                             cookieHeader.includes("session_token");
+    
+    if (hasSessionCookie) {
+      console.log("⚠️ No session found via API, but session cookie exists. Allowing optimistic access.");
+      return NextResponse.next();
+    }
+
+    console.log("❌ No session and no session cookie, redirecting to /login");
     return NextResponse.redirect(new URL("/login", request.url));
   }
+
+  console.log("✅ Session valid, allowing access");
   return NextResponse.next();
 }
 

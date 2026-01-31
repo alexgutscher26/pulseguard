@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   // TODO: Change Later! 
-  allowedDevOrigins: ["localhost:3000", "introverted-history.outray.app"],
+  allowedDevOrigins: ["localhost:3000", "loyal-canyon.outray.app"],
 };
 
 export default nextConfig;

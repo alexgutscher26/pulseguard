@@ -42,6 +42,12 @@ export const auth = betterAuth({
     },
   },
 
+  session: {
+    expiresIn: 60 * 60 * 24 * 7, // 7 days
+    updateAge: 60 * 60 * 24, // 1 day - refresh session expiration when used
+    freshAge: 60 * 60 * 24, // 1 day - session is considered fresh for 1 day
+  },
+
   trustedOrigins: [
     env.CORS_ORIGIN, 
     process.env.NEXT_PUBLIC_APP_URL ?? "", 

@@ -10,7 +10,11 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
-export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () => void }) {
+export default function SignInForm({
+  onSwitchToSignUp,
+}: {
+  onSwitchToSignUp: () => void;
+}) {
   const router = useRouter();
   const { isPending } = authClient.useSession();
 
@@ -20,17 +24,29 @@ export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () 
       password: "",
     },
     onSubmit: async ({ value }) => {
+      console.log("🔐 Starting sign-in...");
+
       await authClient.signIn.email(
         {
           email: value.email,
           password: value.password,
         },
         {
-          onSuccess: () => {
-            router.push("/dashboard");
+          onSuccess: async (ctx) => {
+            console.log("✅ Sign-in successful!", ctx);
             toast.success("Sign in successful");
+
+            // Use window.location.href instead of router.push to ensure
+            // the session cookie is properly set before navigation
+            // Small delay to ensure session is fully established
+            console.log("⏳ Waiting 100ms before redirect...");
+            await new Promise((resolve) => setTimeout(resolve, 100));
+
+            console.log("🔄 Redirecting to dashboard...");
+            window.location.href = "/dashboard";
           },
           onError: (error) => {
+            console.error("❌ Sign-in error:", error);
             toast.error(error.error.message || error.error.statusText);
           },
         },
@@ -79,7 +95,10 @@ export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () 
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
                 {field.state.meta.errors.map((error) => (
-                  <p key={error?.message} className="text-red-500 font-mono text-xs mt-1">
+                  <p
+                    key={error?.message}
+                    className="text-red-500 font-mono text-xs mt-1"
+                  >
                     {">"} {error?.message}
                   </p>
                 ))}
@@ -109,7 +128,10 @@ export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () 
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
                 {field.state.meta.errors.map((error) => (
-                  <p key={error?.message} className="text-red-500 font-mono text-xs mt-1">
+                  <p
+                    key={error?.message}
+                    className="text-red-500 font-mono text-xs mt-1"
+                  >
                     {">"} {error?.message}
                   </p>
                 ))}
