@@ -7,6 +7,17 @@ import { AlertRules } from "@/components/alerts/alert-rules";
 import { getNotificationChannels, getAlertHistory, getAlertRules } from "@/actions/notifications";
 import { getMonitors } from "@/actions/monitors";
 
+/**
+ * Renders the Alerts page with notification channels, alert rules, and alert history.
+ *
+ * This function retrieves the user session and checks for authentication. It then fetches
+ * the current page number from the search parameters and retrieves notification channels,
+ * alert rules, monitors, and alert history using Promise.all for concurrent execution.
+ * Finally, it returns a structured JSX element containing the relevant components.
+ *
+ * @param {Object} params - The parameters for the function.
+ * @param {Promise<{ [key: string]: string | string[] | undefined }>} params.searchParams - A promise that resolves to an object containing search parameters.
+ */
 export default async function AlertsPage({
   searchParams,
 }: {
