@@ -128,6 +128,19 @@ const monitorSchema = baseSchema.superRefine((data, ctx) => {
   }
 });
 
+/**
+ * Create a monitor based on the provided form data and previous state.
+ *
+ * This function retrieves the current user session, validates the input data against a schema, and creates a monitor in the database.
+ * If the monitor type is PING or PORT, it formats the URL accordingly. Additionally, it attempts to create a default alert rule
+ * if the user has notification channels. The function handles errors gracefully, ensuring that monitor creation is not affected
+ * by alert rule creation failures.
+ *
+ * @param prevState - The previous state of the application, used for context.
+ * @param formData - The form data containing monitor details such as name, URL, type, interval, timeout, port, check regions, and alert threshold.
+ * @returns An object indicating the success of the operation and any error messages if applicable.
+ * @throws Error If an internal error occurs during the monitor creation process.
+ */
 export async function createMonitor(prevState: any, formData: FormData) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -223,7 +236,7 @@ export async function createMonitor(prevState: any, formData: FormData) {
 /**
  * Update a monitor's configuration in the database.
  *
- * This function first retrieves the current user session and checks for authorization. It then validates the input data against a schema. Depending on the monitor type, it constructs the appropriate URL format. Finally, it attempts to update the monitor in the database and revalidates the relevant paths. If any step fails, it returns an error message.
+ * This function retrieves the current user session and checks for authorization. It validates the input data against a schema and constructs the appropriate URL format based on the monitor type. It then attempts to update the monitor in the database and revalidates the relevant paths. If any step fails, it returns an error message.
  *
  * @param id - The unique identifier of the monitor to be updated.
  * @param prevState - The previous state of the monitor (not used in the current implementation).
@@ -368,6 +381,17 @@ export async function getMonitor(id: string) {
   }
 }
 
+/**
+ * Check the status of a monitor and handle incidents accordingly.
+ *
+ * This function retrieves the monitor's details and checks its current status by making a request to its URL.
+ * It handles maintenance checks, updates the monitor's status in the database, and manages incident creation or resolution based on the monitor's state.
+ * Notifications are dispatched for incidents, and the function ensures that the database remains consistent throughout the process.
+ *
+ * @param id - The unique identifier of the monitor to check.
+ * @param context - Optional context for the check, including checkRegions and reason for the check.
+ * @returns An object indicating the success of the operation and any error messages if applicable.
+ */
 export async function checkMonitor(
   id: string,
   context?: { checkRegions?: string[]; reason?: string },
@@ -602,6 +626,19 @@ export async function checkMonitor(
 
 // --- Notification Helpers ---
 
+/**
+ * Dispatch notifications based on the monitor's status and alert rules.
+ *
+ * The function retrieves matching alert rules for the given monitor and filters them based on the current status and reason.
+ * It then extracts notification channels (Email, Slack, Discord) and sends alerts using the respective services.
+ * The results of the notifications are logged, including any failures encountered during the dispatch process.
+ *
+ * @param monitor - The monitor object containing alert rules and user information.
+ * @param status - The current status of the monitor, either "UP" or "DOWN".
+ * @param incidentId - An optional identifier for the incident.
+ * @param reason - An optional reason for the status change.
+ * @param failedRegions - An optional array of regions that failed.
+ */
 async function dispatchNotifications(
   monitor: any,
   status: "UP" | "DOWN",
@@ -697,6 +734,16 @@ async function dispatchNotifications(
 
 // --- Adapters (Mirrored from Worker) ---
 
+/**
+ * Sends an alert to a Discord webhook based on the status of a monitored system.
+ *
+ * The function constructs a payload containing the alert details, including the system status, reason for the alert, and any failed regions. It then sends this payload to the specified Discord URL using a POST request. If the request fails, an error is thrown. The function also logs the sending process and any errors encountered.
+ *
+ * @param url - The Discord webhook URL to send the alert to.
+ * @param data - The data containing the alert information, including status, monitor name, reason, URL, timestamp, and any failed regions.
+ * @param type - An optional string indicating the type of incident (e.g., "INCIDENT_CREATED" or "INCIDENT_RESOLVED").
+ * @throws Error If the fetch request fails or if the response is not OK.
+ */
 async function sendDiscordAlert(url: string, data: MonitorAlertData, type?: string) {
   try {
     const isDown = data.status === "DOWN";
@@ -750,6 +797,19 @@ async function sendDiscordAlert(url: string, data: MonitorAlertData, type?: stri
   }
 }
 
+/**
+ * Sends an alert to a Slack channel based on the monitor's status.
+ *
+ * The function constructs a message payload that includes the monitor's status, details, and a button to view the dashboard.
+ * It handles different alert types such as incident creation and resolution, and logs the sending process.
+ * If the request fails, it throws an error with the response status.
+ *
+ * @param url - The Slack webhook URL to send the alert to.
+ * @param data - The data related to the monitor alert, including status and details.
+ * @param type - Optional type of the alert, indicating incident creation or resolution.
+ * @param incidentId - Optional identifier for the incident.
+ * @throws Error If the fetch request to the Slack API fails.
+ */
 async function sendSlackAlert(
   url: string,
   data: MonitorAlertData,
