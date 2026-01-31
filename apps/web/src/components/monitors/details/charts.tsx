@@ -3,9 +3,20 @@
 import { Fullscreen, Download } from "lucide-react";
 import { useRef } from "react";
 
+/**
+ * Renders a monitor chart displaying uptime history and response time.
+ *
+ * This function utilizes the monitor's event data to create visual representations of uptime and response time. It includes functionality to download the chart as an SVG file. The chart is dynamically generated based on the last 50 events, calculating average latencies and configuring SVG paths for rendering. The component also handles the display of uptime status and response time metrics.
+ *
+ * @param monitor - An object containing monitor data, including events and an identifier.
+ * @returns A JSX element representing the monitor charts.
+ */
 export function MonitorCharts({ monitor }: { monitor: any }) {
   const svgRef = useRef<SVGSVGElement>(null);
 
+  /**
+   * Downloads the current SVG referenced by svgRef as a file.
+   */
   const downloadSVG = () => {
     if (!svgRef.current) return;
     const svgData = new XMLSerializer().serializeToString(svgRef.current);
