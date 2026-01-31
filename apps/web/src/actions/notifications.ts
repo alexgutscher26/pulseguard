@@ -124,25 +124,28 @@ export async function sendTestNotification(id: string) {
     };
 
     if (channel.type === "EMAIL") {
-       if (!config?.email) return { success: false, error: "Invalid email configuration" };
-       const result = await sendMonitorAlert(config.email, testData as any);
-       if ("error" in result) return { success: false, error: result.error };
-       return { success: true };
-    } 
-    
+      if (!config?.email) return { success: false, error: "Invalid email configuration" };
+      const result = await sendMonitorAlert(config.email, testData as any);
+      if ("error" in result) return { success: false, error: result.error };
+      return { success: true };
+    }
+
     if (channel.type === "DISCORD") {
-       if (!config?.webhookUrl) return { success: false, error: "Invalid Discord webhook configuration" };
-       
-        // Rich Discord Payload
-        await fetch(config.webhookUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            username: "PulseGuard Sentinel",
-            avatar_url: "https://pulseguard.com/icon.png", // Optional: Add app icon if available
-            embeds: [{
+      if (!config?.webhookUrl)
+        return { success: false, error: "Invalid Discord webhook configuration" };
+
+      // Rich Discord Payload
+      await fetch(config.webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: "PulseGuard Sentinel",
+          avatar_url: "https://pulseguard.com/icon.png", // Optional: Add app icon if available
+          embeds: [
+            {
               title: "🔴 Test Alert: System Down",
-              description: "**Monitor:** Test Monitor\nThis is a test alert to verify your Discord integration.",
+              description:
+                "**Monitor:** Test Monitor\nThis is a test alert to verify your Discord integration.",
               color: 15548997, // Red (Critical)
               fields: [
                 { name: "Target", value: "https://example.com", inline: true },
@@ -150,69 +153,70 @@ export async function sendTestNotification(id: string) {
                 { name: "Severity", value: "Critical", inline: true },
                 { name: "Region", value: "🇺🇸 us-east-1", inline: true },
                 { name: "Response Time", value: "Timeout (>10000ms)", inline: true },
-                { name: "Error", value: "Connection Refused", inline: true }
+                { name: "Error", value: "Connection Refused", inline: true },
               ],
               footer: { text: "PulseGuard Sentinel • Mock Event" },
-              timestamp: new Date().toISOString()
-            }]
-          })
-        });
-        return { success: true };
+              timestamp: new Date().toISOString(),
+            },
+          ],
+        }),
+      });
+      return { success: true };
     }
 
     if (channel.type === "SLACK") {
-        if (!config?.webhookUrl) return { success: false, error: "Invalid Slack webhook configuration" };
+      if (!config?.webhookUrl)
+        return { success: false, error: "Invalid Slack webhook configuration" };
 
-        await fetch(config.webhookUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            text: "🔴 Test Alert: System Down",
-            blocks: [
-              {
-                type: "header",
-                text: { type: "plain_text", text: "🔴 Test Alert: System Down", emoji: true }
-              },
-              { type: "divider" },
-              {
-                type: "section",
-                fields: [
-                  { type: "mrkdwn", text: "*Target:*\n<https://example.com|https://example.com>" },
-                  { type: "mrkdwn", text: "*Status:*\nDOWN" },
-                  { type: "mrkdwn", text: "*Severity:*\nCritical" },
-                  { type: "mrkdwn", text: "*Region:*\nus-east-1" }
-                ]
-              },
-              {
-                type: "section",
-                text: { type: "mrkdwn", text: "*Response Time:*\nTimeout (>10000ms)" }
-              },
-              {
-                type: "context",
-                elements: [
-                  { type: "mrkdwn", text: "⏱ Timestamp: " + new Date().toISOString() },
-                  { type: "mrkdwn", text: "• PulseGuard Sentinel" }
-                ]
-              },
-              {
-                type: "actions",
-                elements: [
-                  {
-                    type: "button",
-                    text: { type: "plain_text", text: "View Dashboard" },
-                    url: "https://introverted-history.outray.app/dashboard",
-                    style: "danger"
-                  }
-                ]
-              }
-            ]
-          })
-        });
-        return { success: true };
+      await fetch(config.webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: "🔴 Test Alert: System Down",
+          blocks: [
+            {
+              type: "header",
+              text: { type: "plain_text", text: "🔴 Test Alert: System Down", emoji: true },
+            },
+            { type: "divider" },
+            {
+              type: "section",
+              fields: [
+                { type: "mrkdwn", text: "*Target:*\n<https://example.com|https://example.com>" },
+                { type: "mrkdwn", text: "*Status:*\nDOWN" },
+                { type: "mrkdwn", text: "*Severity:*\nCritical" },
+                { type: "mrkdwn", text: "*Region:*\nus-east-1" },
+              ],
+            },
+            {
+              type: "section",
+              text: { type: "mrkdwn", text: "*Response Time:*\nTimeout (>10000ms)" },
+            },
+            {
+              type: "context",
+              elements: [
+                { type: "mrkdwn", text: "⏱ Timestamp: " + new Date().toISOString() },
+                { type: "mrkdwn", text: "• PulseGuard Sentinel" },
+              ],
+            },
+            {
+              type: "actions",
+              elements: [
+                {
+                  type: "button",
+                  text: { type: "plain_text", text: "View Dashboard" },
+                  url: "https://introverted-history.outray.app/dashboard",
+                  style: "danger",
+                },
+              ],
+            },
+          ],
+        }),
+      });
+      return { success: true };
     }
 
     return { success: false, error: `Testing for ${channel.type} not implemented yet` };
-
   } catch (error) {
     console.error("Failed to send test notification", error);
     return { success: false, error: "Failed to send test notification" };
@@ -251,7 +255,7 @@ export async function getAlertHistory(page: number = 1, pageSize: number = 10) {
 
   try {
     const skip = (page - 1) * pageSize;
-    
+
     // Get total count for pagination
     const totalCount = await prisma.monitorEvent.count({
       where: {
@@ -281,11 +285,11 @@ export async function getAlertHistory(page: number = 1, pageSize: number = 10) {
         },
       },
     });
-    
+
     return {
       events,
       totalCount,
-      totalPages: Math.ceil(totalCount / pageSize)
+      totalPages: Math.ceil(totalCount / pageSize),
     };
   } catch (error) {
     console.error("Failed to fetch alert history", error);
@@ -327,7 +331,8 @@ export async function createAlertRule(prevState: any, formData: FormData) {
       trigger: formData.get("trigger") as any,
       threshold: thresholdRaw ? Number(thresholdRaw) : undefined,
       comparison: comparisonRaw && comparisonRaw !== "" ? (comparisonRaw as any) : undefined,
-      targetStatus: targetStatusRaw && targetStatusRaw !== "" ? (targetStatusRaw as any) : undefined,
+      targetStatus:
+        targetStatusRaw && targetStatusRaw !== "" ? (targetStatusRaw as any) : undefined,
       channelIds,
     };
 
@@ -410,7 +415,8 @@ export async function updateAlertRule(id: string, prevState: any, formData: Form
       trigger: formData.get("trigger") as any,
       threshold: thresholdRaw ? Number(thresholdRaw) : undefined,
       comparison: comparisonRaw && comparisonRaw !== "" ? (comparisonRaw as any) : undefined,
-      targetStatus: targetStatusRaw && targetStatusRaw !== "" ? (targetStatusRaw as any) : undefined,
+      targetStatus:
+        targetStatusRaw && targetStatusRaw !== "" ? (targetStatusRaw as any) : undefined,
       channelIds,
     };
 

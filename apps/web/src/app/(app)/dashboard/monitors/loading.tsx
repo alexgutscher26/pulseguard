@@ -13,10 +13,7 @@ export default function MonitorsLoading() {
 
       <div className="space-y-4">
         {Array.from({ length: 5 }).map((_, i) => (
-          <div
-            key={i}
-            className="border bg-card p-4 rounded-xl flex items-center justify-between"
-          >
+          <div key={i} className="border bg-card p-4 rounded-xl flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Skeleton className="size-10 rounded-full" />
               <div className="space-y-2">

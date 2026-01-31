@@ -9,7 +9,7 @@ export function useMonitors(initialMonitors: any[]) {
     queryKey: ["monitors"],
     queryFn: () => getMonitors(),
     initialData: initialMonitors,
-    refetchInterval: 5000, 
+    refetchInterval: 5000,
     refetchOnWindowFocus: true,
   });
 
@@ -28,15 +28,15 @@ export function useMonitors(initialMonitors: any[]) {
       if (isStale && !checkedRef.current.has(monitor.id)) {
         console.log(`Monitor ${monitor.name} is stale. Triggering check...`);
         checkedRef.current.add(monitor.id);
-        
-        checkMonitor(monitor.id, { 
-          checkRegions: ["Dashboard Auto-Check"], 
-          reason: "Dashboard Stale Monitor Check" 
+
+        checkMonitor(monitor.id, {
+          checkRegions: ["Dashboard Auto-Check"],
+          reason: "Dashboard Stale Monitor Check",
         }).then(() => {
-           // Remove from checked set after a delay to allow re-check if it fails again later
-           setTimeout(() => {
-              if (checkedRef.current) checkedRef.current.delete(monitor.id);
-           }, 30000); 
+          // Remove from checked set after a delay to allow re-check if it fails again later
+          setTimeout(() => {
+            if (checkedRef.current) checkedRef.current.delete(monitor.id);
+          }, 30000);
         });
       }
     });

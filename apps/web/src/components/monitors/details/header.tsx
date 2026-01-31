@@ -64,8 +64,7 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
               )}
             </div>
             <p className="text-primary/60 text-xs font-mono">
-              TARGET_ENDPOINT:{" "}
-              <code className="text-foreground">{monitor.url}</code>
+              TARGET_ENDPOINT: <code className="text-foreground">{monitor.url}</code>
             </p>
           </div>
 
@@ -110,14 +109,11 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
             {hasEvents
               ? (() => {
                   const diff = Math.floor(
-                    (Date.now() -
-                      new Date(monitor.events[0].timestamp).getTime()) /
-                      1000,
+                    (Date.now() - new Date(monitor.events[0].timestamp).getTime()) / 1000,
                   );
                   if (diff < 2) return "Just now";
                   if (diff < 60) return `${diff} seconds ago`;
-                  if (diff < 3600)
-                    return `${Math.floor(diff / 60)} minutes ago`;
+                  if (diff < 3600) return `${Math.floor(diff / 60)} minutes ago`;
                   return `${Math.floor(diff / 3600)} hours ago`;
                 })()
               : "Pending..."}

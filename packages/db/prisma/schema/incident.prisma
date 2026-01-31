@@ -50,3 +50,20 @@ model IncidentEvent {
 
   @@index([incidentId])
 }
+
+model RegionalIncident {
+  id              String           @id @default(cuid())
+  monitorId       String
+  monitor         Monitor          @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  region          String
+  status          IncidentStatus   @default(INVESTIGATING)
+  startedAt       DateTime         @default(now())
+  resolvedAt      DateTime?
+  
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([monitorId])
+  @@index([region])
+  @@index([status])
+}

@@ -34,13 +34,10 @@ export function ApiKeysForm() {
       </section>
 
       <section className="border border-primary/10 p-6 rounded-sm bg-primary/5">
-        <h4 className="text-sm font-bold text-primary font-mono uppercase mb-2">
-          Security Note
-        </h4>
+        <h4 className="text-sm font-bold text-primary font-mono uppercase mb-2">Security Note</h4>
         <p className="text-xs text-primary/60 font-mono leading-relaxed">
-          API keys grant full access to your PulseGuard account. Keep them
-          secure. Do not share them in publicly accessible areas such as GitHub,
-          client-side code, or insecure messaging apps.
+          API keys grant full access to your PulseGuard account. Keep them secure. Do not share them
+          in publicly accessible areas such as GitHub, client-side code, or insecure messaging apps.
         </p>
       </section>
     </div>

@@ -49,12 +49,12 @@ export const auth = betterAuth({
   },
 
   trustedOrigins: [
-    env.CORS_ORIGIN, 
-    process.env.NEXT_PUBLIC_APP_URL ?? "", 
+    env.CORS_ORIGIN,
+    process.env.NEXT_PUBLIC_APP_URL ?? "",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "mybettertapp://", 
-    "exp://"
+    "mybettertapp://",
+    "exp://",
   ],
   emailAndPassword: {
     enabled: true,

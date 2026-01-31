@@ -4,11 +4,7 @@ import { redirect } from "next/navigation";
 import { NotificationChannels } from "@/components/alerts/notification-channels";
 import { AlertHistory } from "@/components/alerts/alert-history";
 import { AlertRules } from "@/components/alerts/alert-rules";
-import {
-  getNotificationChannels,
-  getAlertHistory,
-  getAlertRules,
-} from "@/actions/notifications";
+import { getNotificationChannels, getAlertHistory, getAlertRules } from "@/actions/notifications";
 import { getMonitors } from "@/actions/monitors";
 
 export default async function AlertsPage({
@@ -28,13 +24,12 @@ export default async function AlertsPage({
   const currentPage = Number(page) || 1;
   const pageSize = 10;
 
-  const [channels, alertRules, monitors, { events, totalCount, totalPages }] =
-    await Promise.all([
-      getNotificationChannels(),
-      getAlertRules(),
-      getMonitors(),
-      getAlertHistory(currentPage, pageSize),
-    ]);
+  const [channels, alertRules, monitors, { events, totalCount, totalPages }] = await Promise.all([
+    getNotificationChannels(),
+    getAlertRules(),
+    getMonitors(),
+    getAlertHistory(currentPage, pageSize),
+  ]);
 
   return (
     <div className="flex flex-col gap-10">

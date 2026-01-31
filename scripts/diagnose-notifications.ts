@@ -1,6 +1,6 @@
 /**
  * Diagnostic Script: Check Notification Setup
- * 
+ *
  * This script checks your notification configuration to diagnose why alerts aren't being sent.
  */
 
@@ -8,7 +8,7 @@ import prisma from "@pulseguard/db";
 
 async function main() {
   console.log("🔍 PulseGuard Notification Diagnostic\n");
-  console.log("=" .repeat(60));
+  console.log("=".repeat(60));
 
   // 1. Check Notification Channels
   console.log("\n📢 NOTIFICATION CHANNELS:");
@@ -106,7 +106,7 @@ async function main() {
     console.log(
       `${i + 1}. [${time}] ${event.monitor.name}: ${event.status} (${event.latency}ms)${
         event.errorReason ? ` - ${event.errorReason}` : ""
-      }`
+      }`,
     );
   });
 

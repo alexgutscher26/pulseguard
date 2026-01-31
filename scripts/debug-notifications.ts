@@ -1,4 +1,3 @@
-
 import { getPrisma } from "../packages/db/src/index";
 import * as dotenv from "dotenv";
 
@@ -23,17 +22,17 @@ async function debugNotifications() {
       include: {
         alertRules: {
           include: {
-            channels: true
-          }
+            channels: true,
+          },
         },
-        user: true
-      }
+        user: true,
+      },
     });
 
     if (!monitor) {
       console.log("❌ Monitor 'VOICEFORGE' not found. Listing top 5 monitors:");
       const monitors = await prisma.monitor.findMany({ take: 5, select: { name: true, id: true } });
-      monitors.forEach(m => console.log(` - [${m.name}] (${m.id})`));
+      monitors.forEach((m) => console.log(` - [${m.name}] (${m.id})`));
       return;
     }
 
@@ -42,17 +41,17 @@ async function debugNotifications() {
 
     // 2. Check Alert Rules
     console.log(`\n📋 Alert Rules (${monitor.alertRules.length} found):`);
-    
+
     if (monitor.alertRules.length === 0) {
       console.log("   ❌ No alert rules active!");
     }
 
     monitor.alertRules.forEach((rule, idx) => {
-      console.log(`   [Rule ${idx+1}] Trigger: ${rule.trigger}, Enabled: ${rule.enabled}`);
+      console.log(`   [Rule ${idx + 1}] Trigger: ${rule.trigger}, Enabled: ${rule.enabled}`);
       console.log(`      TargetStatus: ${rule.targetStatus}`);
       console.log(`      Channels (${rule.channels.length}):`);
-      
-      rule.channels.forEach(ch => {
+
+      rule.channels.forEach((ch) => {
         console.log(`        - [${ch.type}] ${ch.name}`);
         console.log(`          Config: ${JSON.stringify(ch.config)}`);
       });
@@ -61,24 +60,22 @@ async function debugNotifications() {
     // 3. User Channels
     console.log(`\n📡 User Notification Channels:`);
     const channels = await prisma.notificationChannel.findMany({
-        where: { userId: monitor.userId }
+      where: { userId: monitor.userId },
     });
 
     if (channels.length === 0) {
-        console.log("   ❌ No notification channels configured for this user.");
+      console.log("   ❌ No notification channels configured for this user.");
     } else {
-        channels.forEach(ch => {
-            console.log(`   - [${ch.type}] ${ch.name} (ID: ${ch.id})`);
-            console.log(`     Config: ${JSON.stringify(ch.config)}`);
-        });
+      channels.forEach((ch) => {
+        console.log(`   - [${ch.type}] ${ch.name} (ID: ${ch.id})`);
+        console.log(`     Config: ${JSON.stringify(ch.config)}`);
+      });
     }
-
   } catch (error) {
     console.error("💥 Error:", error);
   } finally {
     process.exit(0);
   }
 }
-
 
 debugNotifications();

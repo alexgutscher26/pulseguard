@@ -9,10 +9,7 @@ interface RegionSelectorProps {
   onChange: (regions: string[]) => void;
 }
 
-export function RegionSelector({
-  selectedRegions,
-  onChange,
-}: RegionSelectorProps) {
+export function RegionSelector({ selectedRegions, onChange }: RegionSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleRegion = (regionCode: string) => {
@@ -24,24 +21,18 @@ export function RegionSelector({
   };
 
   const selectAllInContinent = (continent: string) => {
-    const continentRegions = AVAILABLE_REGIONS.filter(
-      (r) => r.continent === continent,
-    ).map((r) => r.code);
-
-    const allSelected = continentRegions.every((code) =>
-      selectedRegions.includes(code),
+    const continentRegions = AVAILABLE_REGIONS.filter((r) => r.continent === continent).map(
+      (r) => r.code,
     );
+
+    const allSelected = continentRegions.every((code) => selectedRegions.includes(code));
 
     if (allSelected) {
       // Deselect all from this continent
-      onChange(
-        selectedRegions.filter((code) => !continentRegions.includes(code)),
-      );
+      onChange(selectedRegions.filter((code) => !continentRegions.includes(code)));
     } else {
       // Select all from this continent
-      const newSelection = [
-        ...new Set([...selectedRegions, ...continentRegions]),
-      ];
+      const newSelection = [...new Set([...selectedRegions, ...continentRegions])];
       onChange(newSelection);
     }
   };
@@ -56,8 +47,7 @@ export function RegionSelector({
       </label>
 
       <div className="text-sm text-primary/60 font-mono mb-2">
-        Select regions to monitor your service from. Leave empty for
-        single-region monitoring.
+        Select regions to monitor your service from. Leave empty for single-region monitoring.
       </div>
 
       <div className="border border-primary/20 bg-secondary/20 backdrop-blur-sm relative group/regions">
@@ -77,27 +67,16 @@ export function RegionSelector({
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         </button>
 
         {isOpen && (
           <div className="border-t border-primary/20 p-4 max-h-96 overflow-y-auto custom-scrollbar bg-background/50">
             {CONTINENTS.map((continent) => {
-              const continentRegions = AVAILABLE_REGIONS.filter(
-                (r) => r.continent === continent,
-              );
-              const allSelected = continentRegions.every((r) =>
-                selectedRegions.includes(r.code),
-              );
-              const someSelected = continentRegions.some((r) =>
-                selectedRegions.includes(r.code),
-              );
+              const continentRegions = AVAILABLE_REGIONS.filter((r) => r.continent === continent);
+              const allSelected = continentRegions.every((r) => selectedRegions.includes(r.code));
+              const someSelected = continentRegions.some((r) => selectedRegions.includes(r.code));
 
               return (
                 <div key={continent} className="mb-4 last:mb-0">
@@ -139,19 +118,13 @@ export function RegionSelector({
                         >
                           <div
                             className={`w-4 h-4 border flex items-center justify-center transition-all ${
-                              isSelected
-                                ? "bg-primary border-primary"
-                                : "border-primary/20"
+                              isSelected ? "bg-primary border-primary" : "border-primary/20"
                             }`}
                           >
-                            {isSelected && (
-                              <Check className="w-3 h-3 text-primary-foreground" />
-                            )}
+                            {isSelected && <Check className="w-3 h-3 text-primary-foreground" />}
                           </div>
                           <span className="text-lg">{region.flag}</span>
-                          <span className="flex-1 text-left">
-                            {region.name}
-                          </span>
+                          <span className="flex-1 text-left">{region.name}</span>
                         </button>
                       );
                     })}
@@ -164,11 +137,7 @@ export function RegionSelector({
       </div>
 
       {/* Hidden input for form submission */}
-      <input
-        type="hidden"
-        name="checkRegions"
-        value={JSON.stringify(selectedRegions)}
-      />
+      <input type="hidden" name="checkRegions" value={JSON.stringify(selectedRegions)} />
     </div>
   );
 }

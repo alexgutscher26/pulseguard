@@ -37,20 +37,22 @@ export async function GET(req: NextRequest) {
     const data = (await tokenResponse.json()) as any;
 
     if (!data.ok) {
-        console.error("Slack OAuth Error:", data);
-        return NextResponse.redirect(new URL("/dashboard/alerts?error=slack_exchange_failed", req.url));
+      console.error("Slack OAuth Error:", data);
+      return NextResponse.redirect(
+        new URL("/dashboard/alerts?error=slack_exchange_failed", req.url),
+      );
     }
 
     // 2. Identify User
     const session = await auth.api.getSession({ headers: await headers() });
     if (!session?.user) {
-         return NextResponse.redirect(new URL("/login", req.url));
+      return NextResponse.redirect(new URL("/login", req.url));
     }
 
     // 3. Save as NotificationChannel
     const prisma = getPrisma(process.env.DATABASE_URL!);
-    
-    // Check if channel already exists for this Team/Channel combo? 
+
+    // Check if channel already exists for this Team/Channel combo?
     // Ideally we store: team_id, channel_id, channel_name, access_token, incoming_webhook.url
 
     const webhookUrl = data.incoming_webhook?.url;
@@ -58,28 +60,27 @@ export async function GET(req: NextRequest) {
     const channelId = data.incoming_webhook?.channel_id; // OR incoming_webhook config
 
     if (!webhookUrl) {
-         return NextResponse.redirect(new URL("/dashboard/alerts?error=slack_no_webhook", req.url));
+      return NextResponse.redirect(new URL("/dashboard/alerts?error=slack_no_webhook", req.url));
     }
 
     await prisma.notificationChannel.create({
-        data: {
-            name: `Slack (${channelName})`,
-            type: "SLACK",
-            userId: session.user.id,
-            config: {
-                provider: "SLACK",
-                teamId: data.team?.id,
-                teamName: data.team?.name,
-                channelId: channelId,
-                channelName: channelName,
-                accessToken: data.access_token, // Encrypt this in real prod
-                webhookUrl: webhookUrl
-            }
-        }
+      data: {
+        name: `Slack (${channelName})`,
+        type: "SLACK",
+        userId: session.user.id,
+        config: {
+          provider: "SLACK",
+          teamId: data.team?.id,
+          teamName: data.team?.name,
+          channelId: channelId,
+          channelName: channelName,
+          accessToken: data.access_token, // Encrypt this in real prod
+          webhookUrl: webhookUrl,
+        },
+      },
     });
 
     return NextResponse.redirect(new URL("/dashboard/alerts?success=slack_connected", req.url));
-
   } catch (err) {
     console.error("Slack OAuth Exception:", err);
     return NextResponse.redirect(new URL("/dashboard/alerts?error=internal_error", req.url));

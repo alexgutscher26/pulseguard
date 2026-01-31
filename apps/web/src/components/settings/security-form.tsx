@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Smartphone,
-  Lock,
-  Loader2,
-  CheckCircle,
-  AlertCircle,
-} from "lucide-react";
+import { Smartphone, Lock, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
@@ -82,9 +76,7 @@ export function SecurityForm() {
           <h3 className="text-lg font-bold text-foreground font-mono uppercase tracking-tight">
             Two-Factor Authentication
           </h3>
-          <p className="text-xs text-primary/60 font-mono">
-            Enhance account security protocols
-          </p>
+          <p className="text-xs text-primary/60 font-mono">Enhance account security protocols</p>
         </div>
         <div className="p-6 flex items-start justify-between gap-4">
           <div className="flex items-start gap-4">
@@ -96,8 +88,8 @@ export function SecurityForm() {
                 Authenticator App
               </h4>
               <p className="text-xs text-primary/60 font-mono max-w-sm">
-                Use an authenticator app like Google Authenticator or Authy to
-                generate one-time codes.
+                Use an authenticator app like Google Authenticator or Authy to generate one-time
+                codes.
               </p>
             </div>
           </div>
@@ -116,9 +108,7 @@ export function SecurityForm() {
           <h3 className="text-lg font-bold text-foreground font-mono uppercase tracking-tight">
             Password Management
           </h3>
-          <p className="text-xs text-primary/60 font-mono">
-            Update access credentials
-          </p>
+          <p className="text-xs text-primary/60 font-mono">Update access credentials</p>
         </div>
         <div className="p-6 grid grid-cols-1 gap-4 max-w-xl">
           {message && (

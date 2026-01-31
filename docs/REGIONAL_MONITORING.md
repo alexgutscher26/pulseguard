@@ -176,16 +176,6 @@ On the monitor detail page, the `RegionalUptime` component displays:
 2. **Adjust intervals**: Use longer intervals for multi-region monitors
 3. **Monitor quota**: Track Worker request usage in Cloudflare dashboard
 
-## Future Enhancements
-
-1. **Regional Incident Tracking**:
-   - Create incidents per region
-   - Alert only when multiple regions fail
-
-2. **Latency Heatmap**:
-   - Visual map showing latency by region
-   - Historical trends per region
-
 3. **Smart Region Selection**:
    - Auto-suggest regions based on user's traffic
    - Recommend regions based on target service location
@@ -193,7 +183,7 @@ On the monitor detail page, the `RegionalUptime` component displays:
 4. **Regional SLA Reports**:
    - Generate uptime reports per region
    - Export regional performance data
-// TODO: Implement this 
+     // TODO: Implement this
 5. **True Multi-Region (Paid)**:
    - Implement Durable Objects for guaranteed regional execution
    - Use Cloudflare Load Balancer for advanced routing

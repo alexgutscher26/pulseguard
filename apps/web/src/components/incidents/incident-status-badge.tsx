@@ -13,25 +13,19 @@ const statusMap = {
   },
   IDENTIFIED: {
     label: "Identified",
-    color:
-      "bg-orange-500/10 text-orange-500 border-orange-500/20 hover:bg-orange-500/20",
+    color: "bg-orange-500/10 text-orange-500 border-orange-500/20 hover:bg-orange-500/20",
   },
   MONITORING: {
     label: "Monitoring",
-    color:
-      "bg-blue-500/10 text-blue-500 border-blue-500/20 hover:bg-blue-500/20",
+    color: "bg-blue-500/10 text-blue-500 border-blue-500/20 hover:bg-blue-500/20",
   },
   RESOLVED: {
     label: "Resolved",
-    color:
-      "bg-green-500/10 text-green-500 border-green-500/20 hover:bg-green-500/20",
+    color: "bg-green-500/10 text-green-500 border-green-500/20 hover:bg-green-500/20",
   },
 };
 
-export function IncidentStatusBadge({
-  status,
-  className,
-}: IncidentStatusBadgeProps) {
+export function IncidentStatusBadge({ status, className }: IncidentStatusBadgeProps) {
   const config = statusMap[status] || statusMap.INVESTIGATING;
 
   return (

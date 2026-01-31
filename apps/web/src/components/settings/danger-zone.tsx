@@ -29,8 +29,7 @@ export function DangerZone() {
               Danger Zone
             </h3>
             <p className="text-xs text-red-500/70 font-mono">
-              Permanently delete account and all associated data. This action is
-              irreversible.
+              Permanently delete account and all associated data. This action is irreversible.
             </p>
           </div>
         </div>
@@ -47,14 +46,13 @@ export function DangerZone() {
                 Confirm Deletion
               </DialogTitle>
               <DialogDescription className="text-primary/70 font-mono text-xs">
-                This action cannot be undone. This will permanently delete your
-                account and remove your data from our servers.
+                This action cannot be undone. This will permanently delete your account and remove
+                your data from our servers.
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col gap-4 py-4">
               <p className="text-primary/50 text-xs font-mono border-l-2 border-red-500/50 pl-3">
-                All monitors, metrics, and incident history will be erased
-                immediately.
+                All monitors, metrics, and incident history will be erased immediately.
               </p>
             </div>
             <DialogFooter>

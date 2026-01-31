@@ -12,11 +12,7 @@ import {
   PowerOff,
 } from "lucide-react";
 import { useState, useTransition } from "react";
-import {
-  createAlertRule,
-  deleteAlertRule,
-  toggleAlertRule,
-} from "@/actions/notifications";
+import { createAlertRule, deleteAlertRule, toggleAlertRule } from "@/actions/notifications";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -146,9 +142,7 @@ export function AlertRules({
 
   const getTriggerLabel = (rule: AlertRule) => {
     if (rule.trigger === "STATUS_CHANGE") {
-      return rule.targetStatus
-        ? `Status → ${rule.targetStatus}`
-        : "Any Status Change";
+      return rule.targetStatus ? `Status → ${rule.targetStatus}` : "Any Status Change";
     }
     if (rule.trigger === "LATENCY") {
       const comp = rule.comparison === "GT" ? ">" : "<";
@@ -162,9 +156,7 @@ export function AlertRules({
 
   const toggleChannel = (channelId: string) => {
     setSelectedChannels((prev) =>
-      prev.includes(channelId)
-        ? prev.filter((id) => id !== channelId)
-        : [...prev, channelId],
+      prev.includes(channelId) ? prev.filter((id) => id !== channelId) : [...prev, channelId],
     );
   };
 
@@ -195,9 +187,7 @@ export function AlertRules({
               <DialogTitle className="font-mono uppercase tracking-wider text-primary">
                 New Alert Rule
               </DialogTitle>
-              <DialogDescription>
-                Define conditions for triggering notifications.
-              </DialogDescription>
+              <DialogDescription>Define conditions for triggering notifications.</DialogDescription>
             </DialogHeader>
 
             <form action={handleSubmit} className="flex flex-col gap-4">
@@ -316,9 +306,7 @@ export function AlertRules({
                             onChange={() => toggleChannel(channel.id)}
                             className="rounded border-primary/20"
                           />
-                          <span className="text-sm font-mono">
-                            {channel.name}
-                          </span>
+                          <span className="text-sm font-mono">{channel.name}</span>
                           <span className="text-[10px] text-primary/50 ml-auto">
                             {channel.type}
                           </span>
@@ -335,9 +323,7 @@ export function AlertRules({
                   disabled={isPending || selectedChannels.length === 0}
                   className="font-mono uppercase"
                 >
-                  {isPending ? (
-                    <Loader2 className="animate-spin size-4 mr-2" />
-                  ) : null}
+                  {isPending ? <Loader2 className="animate-spin size-4 mr-2" /> : null}
                   Create Rule
                 </Button>
               </DialogFooter>
@@ -350,12 +336,9 @@ export function AlertRules({
         <div className="border border-dashed border-yellow-500/30 bg-yellow-500/5 p-4 rounded flex items-start gap-3">
           <AlertTriangle className="size-5 text-yellow-500 shrink-0 mt-0.5" />
           <div className="flex flex-col gap-1">
-            <p className="text-sm font-mono text-yellow-500">
-              No Notification Channels
-            </p>
+            <p className="text-sm font-mono text-yellow-500">No Notification Channels</p>
             <p className="text-xs text-yellow-500/70">
-              Create at least one notification channel above to start receiving
-              alerts.
+              Create at least one notification channel above to start receiving alerts.
             </p>
           </div>
         </div>
@@ -438,9 +421,7 @@ export function AlertRules({
           <div className="col-span-full border border-dashed border-primary/20 p-8 flex flex-col items-center justify-center text-center gap-2 text-primary/50">
             <Bell className="size-8 mb-2 opacity-50" />
             <p className="font-mono text-sm">No alert rules configured</p>
-            <p className="text-xs">
-              Alert rules are automatically created when you add a monitor
-            </p>
+            <p className="text-xs">Alert rules are automatically created when you add a monitor</p>
           </div>
         )}
       </div>

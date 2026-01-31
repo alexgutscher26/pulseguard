@@ -1,4 +1,3 @@
-
 import { getPrisma } from "../packages/db/src/index";
 import * as dotenv from "dotenv";
 
@@ -13,14 +12,14 @@ async function fixLinks() {
   try {
     const monitor = await prisma.monitor.findFirst({
       where: { name: { contains: "VOICEFORGE", mode: "insensitive" } },
-      include: { alertRules: true }
+      include: { alertRules: true },
     });
 
     if (!monitor) return;
 
     // Get user channels
     const channels = await prisma.notificationChannel.findMany({
-        where: { userId: monitor.userId }
+      where: { userId: monitor.userId },
     });
 
     if (channels.length === 0) return;
@@ -29,19 +28,18 @@ async function fixLinks() {
 
     // Link to alert rules
     for (const rule of monitor.alertRules) {
-        console.log(`Linking channels to Rule ${rule.id} (Trigger: ${rule.trigger})...`);
-        await prisma.alertRule.update({
-            where: { id: rule.id },
-            data: {
-                channels: {
-                    connect: channels.map(c => ({ id: c.id }))
-                }
-            }
-        });
+      console.log(`Linking channels to Rule ${rule.id} (Trigger: ${rule.trigger})...`);
+      await prisma.alertRule.update({
+        where: { id: rule.id },
+        data: {
+          channels: {
+            connect: channels.map((c) => ({ id: c.id })),
+          },
+        },
+      });
     }
 
     console.log("✅ Fixed! Channels are now linked.");
-
   } catch (error) {
     console.error("Error:", error);
   } finally {

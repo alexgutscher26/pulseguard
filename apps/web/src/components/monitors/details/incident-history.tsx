@@ -1,10 +1,4 @@
-import {
-  CheckCircle,
-  AlertTriangle,
-  Download,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { CheckCircle, AlertTriangle, Download, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -35,8 +29,7 @@ export function IncidentHistory({ monitor }: { monitor: any }) {
     ]);
 
     const csvContent =
-      "data:text/csv;charset=utf-8," +
-      [headers, ...rows].map((row) => row.join(",")).join("\n");
+      "data:text/csv;charset=utf-8," + [headers, ...rows].map((row) => row.join(",")).join("\n");
 
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
@@ -54,9 +47,7 @@ export function IncidentHistory({ monitor }: { monitor: any }) {
           <h3 className="text-foreground text-lg font-bold font-mono uppercase tracking-tight">
             Event Log
           </h3>
-          <p className="text-muted-foreground/60 text-xs font-mono">
-            Recent heartbeat activity
-          </p>
+          <p className="text-muted-foreground/60 text-xs font-mono">Recent heartbeat activity</p>
         </div>
         <button
           onClick={exportToCSV}
@@ -73,6 +64,9 @@ export function IncidentHistory({ monitor }: { monitor: any }) {
             <tr className="border-b border-primary/20 bg-primary/5">
               <th className="py-4 px-4 text-primary/60 text-[10px] font-bold uppercase tracking-widest font-mono">
                 Status
+              </th>
+              <th className="py-4 px-4 text-primary/60 text-[10px] font-bold uppercase tracking-widest font-mono">
+                Region
               </th>
               <th className="py-4 px-4 text-primary/60 text-[10px] font-bold uppercase tracking-widest font-mono">
                 Timestamp
@@ -97,10 +91,7 @@ export function IncidentHistory({ monitor }: { monitor: any }) {
               </tr>
             )}
             {paginatedHistory.map((event: any) => (
-              <tr
-                key={event.id}
-                className="hover:bg-primary/5 transition-colors group font-mono"
-              >
+              <tr key={event.id} className="hover:bg-primary/5 transition-colors group font-mono">
                 <td className="py-4 px-4">
                   {event.status === "UP" ? (
                     <span className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider">
@@ -113,6 +104,9 @@ export function IncidentHistory({ monitor }: { monitor: any }) {
                       Downtime
                     </span>
                   )}
+                </td>
+                <td className="py-4 px-4 text-[10px] font-mono uppercase tracking-widest text-primary/60">
+                  {event.region || "Global"}
                 </td>
                 <td className="py-4 px-4 text-xs text-foreground/80">
                   {new Date(event.timestamp).toLocaleString()}
@@ -146,22 +140,20 @@ export function IncidentHistory({ monitor }: { monitor: any }) {
               <ChevronLeft className="size-4" />
             </button>
             <div className="flex gap-1">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (page) => (
-                  <button
-                    key={page}
-                    onClick={() => goToPage(page)}
-                    className={cn(
-                      "w-8 h-8 flex items-center justify-center text-[10px] font-mono font-bold transition-all border",
-                      currentPage === page
-                        ? "bg-primary text-primary-foreground border-primary"
-                        : "border-primary/10 text-primary/40 hover:text-primary hover:border-primary/40 hover:bg-primary/5",
-                    )}
-                  >
-                    {page}
-                  </button>
-                ),
-              )}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  onClick={() => goToPage(page)}
+                  className={cn(
+                    "w-8 h-8 flex items-center justify-center text-[10px] font-mono font-bold transition-all border",
+                    currentPage === page
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "border-primary/10 text-primary/40 hover:text-primary hover:border-primary/40 hover:bg-primary/5",
+                  )}
+                >
+                  {page}
+                </button>
+              ))}
             </div>
             <button
               onClick={() => goToPage(currentPage + 1)}

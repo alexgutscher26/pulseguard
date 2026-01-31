@@ -1,15 +1,6 @@
 import React from "react";
 import { render } from "@react-email/render";
-import {
-  Html,
-  Head,
-  Body,
-  Container,
-  Section,
-  Text,
-  Link,
-  Hr,
-} from "@react-email/components";
+import { Html, Head, Body, Container, Section, Text, Link, Hr } from "@react-email/components";
 import { emailTheme } from "../styles/theme";
 import type { VerificationEmailData } from "../index";
 
@@ -94,8 +85,8 @@ export function Verification({ data }: { data: VerificationEmailData }) {
                 marginBottom: emailTheme.spacing.md,
               }}
             >
-              Click the button below to verify your email address and activate
-              your PulseGuard account.
+              Click the button below to verify your email address and activate your PulseGuard
+              account.
             </Text>
 
             {/* CTA Button */}
@@ -133,8 +124,7 @@ export function Verification({ data }: { data: VerificationEmailData }) {
                 lineHeight: "1.6",
               }}
             >
-              If you didn't create a PulseGuard account, you can safely ignore
-              this email.
+              If you didn't create a PulseGuard account, you can safely ignore this email.
             </Text>
 
             <Text
@@ -187,8 +177,6 @@ export function Verification({ data }: { data: VerificationEmailData }) {
   );
 }
 
-export async function renderVerification(
-  data: VerificationEmailData,
-): Promise<string> {
+export async function renderVerification(data: VerificationEmailData): Promise<string> {
   return await render(<Verification data={data} />);
 }

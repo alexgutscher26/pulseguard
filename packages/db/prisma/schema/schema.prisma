@@ -39,10 +39,12 @@ model Monitor {
   maintenanceWindows MaintenanceWindow[]
   alertRules         AlertRule[]
   incidents          Incident[]
+  regionalIncidents  RegionalIncident[]
 
   nextCheck DateTime?
   lastCheck DateTime?
   checkRegions String? // JSON array of region codes: ["us-east", "eu-west", "ap-south"]
+  alertThreshold Int @default(1)
 
   @@index([userId])
   @@index([nextCheck])

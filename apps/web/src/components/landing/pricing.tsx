@@ -9,10 +9,7 @@ export default function Pricing() {
   const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
 
   return (
-    <section
-      className="py-24 bg-background border-b border-border"
-      id="pricing"
-    >
+    <section className="py-24 bg-background border-b border-border" id="pricing">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
           <div className="border-l-2 border-primary pl-6">
@@ -62,9 +59,7 @@ export default function Pricing() {
                 [ THE INITIATE ]
               </h3>
               <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-foreground text-4xl font-black font-mono">
-                  $0
-                </span>
+                <span className="text-foreground text-4xl font-black font-mono">$0</span>
                 <span className="text-muted-foreground text-sm font-mono">
                   /{billing === "yearly" ? "YR" : "MO"}
                 </span>
@@ -133,15 +128,11 @@ export default function Pricing() {
               <ul className="font-mono text-xs space-y-3 text-muted-foreground">
                 <li className="flex items-center gap-2">
                   <Check className="size-3 text-primary" />
-                  <span className="text-foreground font-bold">
-                    200 Active Monitors
-                  </span>
+                  <span className="text-foreground font-bold">200 Active Monitors</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="size-3 text-primary" />
-                  <span className="text-foreground font-bold">
-                    30-Second Heartbeat
-                  </span>
+                  <span className="text-foreground font-bold">30-Second Heartbeat</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="size-3 text-primary" />
@@ -198,9 +189,7 @@ export default function Pricing() {
               <ul className="font-mono text-xs space-y-3 text-muted-foreground">
                 <li className="flex items-center gap-2">
                   <Check className="size-3 text-primary" />
-                  <span className="text-foreground">
-                    Unlimited Monitors (~1k Cap)
-                  </span>
+                  <span className="text-foreground">Unlimited Monitors (~1k Cap)</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="size-3 text-primary" />

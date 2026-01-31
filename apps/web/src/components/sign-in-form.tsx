@@ -10,11 +10,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
-export default function SignInForm({
-  onSwitchToSignUp,
-}: {
-  onSwitchToSignUp: () => void;
-}) {
+export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () => void }) {
   const router = useRouter();
   const { isPending } = authClient.useSession();
 
@@ -95,10 +91,7 @@ export default function SignInForm({
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
                 {field.state.meta.errors.map((error) => (
-                  <p
-                    key={error?.message}
-                    className="text-red-500 font-mono text-xs mt-1"
-                  >
+                  <p key={error?.message} className="text-red-500 font-mono text-xs mt-1">
                     {">"} {error?.message}
                   </p>
                 ))}
@@ -128,10 +121,7 @@ export default function SignInForm({
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
                 {field.state.meta.errors.map((error) => (
-                  <p
-                    key={error?.message}
-                    className="text-red-500 font-mono text-xs mt-1"
-                  >
+                  <p key={error?.message} className="text-red-500 font-mono text-xs mt-1">
                     {">"} {error?.message}
                   </p>
                 ))}

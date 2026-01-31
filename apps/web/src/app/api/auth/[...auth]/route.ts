@@ -13,8 +13,11 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error("❌ Auth GET Error:", error);
     return NextResponse.json(
-      { error: "Authentication error", details: error instanceof Error ? error.message : String(error) },
-      { status: 500 }
+      {
+        error: "Authentication error",
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 },
     );
   }
 }
@@ -25,8 +28,11 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("❌ Auth POST Error:", error);
     return NextResponse.json(
-      { error: "Authentication error", details: error instanceof Error ? error.message : String(error) },
-      { status: 500 }
+      {
+        error: "Authentication error",
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 },
     );
   }
 }

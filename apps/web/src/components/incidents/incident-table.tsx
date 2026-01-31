@@ -23,9 +23,7 @@ export function IncidentTable({ incidents }: IncidentTableProps) {
       <div className="flex min-h-[400px] flex-col items-center justify-center rounded-md border border-dashed p-8 text-center animate-in fade-in-50">
         <div className="mx-auto flex max-w-[420px] flex-col items-center justify-center text-center">
           <h3 className="mt-4 text-lg font-semibold">No incidents recorded</h3>
-          <p className="mb-4 mt-2 text-sm text-muted-foreground">
-            Everything is running smoothly.
-          </p>
+          <p className="mb-4 mt-2 text-sm text-muted-foreground">Everything is running smoothly.</p>
         </div>
       </div>
     );
@@ -46,16 +44,12 @@ export function IncidentTable({ incidents }: IncidentTableProps) {
         <TableBody>
           {incidents.map((incident) => (
             <TableRow key={incident.id}>
-              <TableCell className="font-medium">
-                {incident.monitor.name}
-              </TableCell>
+              <TableCell className="font-medium">{incident.monitor.name}</TableCell>
               <TableCell>{incident.title}</TableCell>
               <TableCell>
                 <IncidentStatusBadge status={incident.status} />
               </TableCell>
-              <TableCell>
-                {format(new Date(incident.startedAt), "MMM d, HH:mm")}
-              </TableCell>
+              <TableCell>{format(new Date(incident.startedAt), "MMM d, HH:mm")}</TableCell>
               <TableCell className="text-right">
                 <Link href={`/dashboard/incidents/${incident.id}`}>
                   <Button variant="ghost" size="sm">

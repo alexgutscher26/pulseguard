@@ -12,20 +12,20 @@ enum IncidentEventType {
   STATE_CHANGE = "STATE_CHANGE",
   ALERT_SENT = "ALERT_SENT",
   COMMENT = "COMMENT",
-  AUTO_RESOLVE = "AUTO_RESOLVE"
+  AUTO_RESOLVE = "AUTO_RESOLVE",
 }
 
 enum IncidentStatus {
   INVESTIGATING = "INVESTIGATING",
   IDENTIFIED = "IDENTIFIED",
   MONITORING = "MONITORING",
-  RESOLVED = "RESOLVED"
+  RESOLVED = "RESOLVED",
 }
 
 enum Severity {
   HIGH = "HIGH",
   MEDIUM = "MEDIUM",
-  LOW = "LOW"
+  LOW = "LOW",
 }
 
 // Conditional validation schema
@@ -40,6 +40,7 @@ const baseSchema = z.object({
   port: z.coerce.number().min(1).max(65535).optional(),
   // Multi-region support
   checkRegions: z.string().optional(), // JSON stringified array of region codes
+  alertThreshold: z.coerce.number().min(1).default(1),
 });
 
 const monitorSchema = baseSchema.superRefine((data, ctx) => {
@@ -145,6 +146,7 @@ export async function createMonitor(prevState: any, formData: FormData) {
       timeout: Number(formData.get("timeout") || 10),
       port: formData.get("port") ? Number(formData.get("port")) : undefined,
       checkRegions: (formData.get("checkRegions") as string) || undefined,
+      alertThreshold: formData.get("alertThreshold") ? Number(formData.get("alertThreshold")) : 1,
     };
 
     console.log("Creating monitor with data:", rawData);
@@ -176,6 +178,7 @@ export async function createMonitor(prevState: any, formData: FormData) {
         timeout: data.timeout,
         userId: session.user.id,
         checkRegions: data.checkRegions,
+        alertThreshold: data.alertThreshold,
       },
     });
 
@@ -244,6 +247,7 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
     timeout: Number(formData.get("timeout") || 10),
     port: formData.get("port") ? Number(formData.get("port")) : undefined,
     checkRegions: (formData.get("checkRegions") as string) || undefined,
+    alertThreshold: formData.get("alertThreshold") ? Number(formData.get("alertThreshold")) : 1,
   };
 
   console.log("Updating monitor with data:", rawData);
@@ -277,6 +281,7 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
         interval: data.interval,
         timeout: data.timeout,
         checkRegions: data.checkRegions,
+        alertThreshold: data.alertThreshold,
       },
     });
 
@@ -363,7 +368,10 @@ export async function getMonitor(id: string) {
   }
 }
 
-export async function checkMonitor(id: string, context?: { checkRegions?: string[], reason?: string }) {
+export async function checkMonitor(
+  id: string,
+  context?: { checkRegions?: string[]; reason?: string },
+) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -422,7 +430,7 @@ export async function checkMonitor(id: string, context?: { checkRegions?: string
     revalidatePath("/dashboard/monitors");
     revalidatePath("/dashboard");
     return { success: true };
-    }
+  }
 
   const start = Date.now();
   let currentStatus: "UP" | "DOWN" = "DOWN";
@@ -469,89 +477,116 @@ export async function checkMonitor(id: string, context?: { checkRegions?: string
     // --- INCIDENT & NOTIFICATION LOGIC (Mirrors Worker) ---
     // We do this AFTER the status update so the DB is consistent
     try {
-       const incidentService = {
-         findActiveIncident: async (monitorId: string) => {
-           return prisma.incident.findFirst({
-             where: { monitorId, resolvedAt: null },
-             orderBy: { createdAt: "desc" },
-           });
-         },
-         createIncident: async (monitorId: string, title: string, description: string) => {
-           // Check for flapping (recently resolved)
-           const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-           const recent = await prisma.incident.findFirst({
-             where: { monitorId, resolvedAt: { gt: fiveMinutesAgo } },
-             orderBy: { resolvedAt: "desc" }
-           });
-           
-           if (recent) {
-              return prisma.incident.update({
-                where: { id: recent.id },
-                data: {
-                  status: IncidentStatus.INVESTIGATING,
-                  resolvedAt: null,
-                  events: { create: { type: IncidentEventType.STATE_CHANGE, message: `Monitor unstable. Incident re-opened. (Flapping detected)` } }
-                }
-              });
-           }
+      const incidentService = {
+        findActiveIncident: async (monitorId: string) => {
+          return prisma.incident.findFirst({
+            where: { monitorId, resolvedAt: null },
+            orderBy: { createdAt: "desc" },
+          });
+        },
+        createIncident: async (monitorId: string, title: string, description: string) => {
+          // Check for flapping (recently resolved)
+          const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+          const recent = await prisma.incident.findFirst({
+            where: { monitorId, resolvedAt: { gt: fiveMinutesAgo } },
+            orderBy: { resolvedAt: "desc" },
+          });
 
-           return prisma.incident.create({
-             data: {
-               monitorId,
-               title,
-               description,
-               status: IncidentStatus.INVESTIGATING,
-               severity: Severity.HIGH,
-               events: { create: { type: IncidentEventType.STATE_CHANGE, message: `Incident started: ${title}` } },
-             },
-           });
-         },
-         resolveIncident: async (incidentId: string) => {
-           return prisma.incident.update({
-             where: { id: incidentId },
-             data: {
-               status: IncidentStatus.RESOLVED,
-               resolvedAt: new Date(),
-               events: { create: { type: IncidentEventType.AUTO_RESOLVE, message: "Monitor recovered. Auto-resolving incident." } },
-             },
-           });
-         },
-         logStillDown: async (incidentId: string) => {
-           await prisma.incident.update({ where: { id: incidentId }, data: { updatedAt: new Date() } });
-         }
-       };
+          if (recent) {
+            return prisma.incident.update({
+              where: { id: recent.id },
+              data: {
+                status: IncidentStatus.INVESTIGATING,
+                resolvedAt: null,
+                events: {
+                  create: {
+                    type: IncidentEventType.STATE_CHANGE,
+                    message: `Monitor unstable. Incident re-opened. (Flapping detected)`,
+                  },
+                },
+              },
+            });
+          }
 
-       if (currentStatus === "DOWN") {
-         const activeIncident = await incidentService.findActiveIncident(monitor.id);
-         const checkSource = context?.checkRegions || ["Manual Check (Server)"];
-         const baseReason = context?.reason || "Manual Check Failed";
-         
-         // For manual check, we bypass flapping check for alerts usually, but let's keep it safe
-         // Actually, if user clicks "Run Check", they expect an alert if it's down.
-         
-         if (!activeIncident) {
-            const incident = await incidentService.createIncident(monitor.id, `Monitor is DOWN: ${monitor.name}`, `Reason: ${baseReason}`);
-            
-            // Notify
-            await dispatchNotifications(monitor, "DOWN", incident.id, baseReason, checkSource);
-         } else {
-            await incidentService.logStillDown(activeIncident.id);
-             // FORCE NOTIFICATION for Manual Check
-             // User explicitly clicked "Run Check", so they expect to verify alerts work.
-             console.log("[ManualCheck] Forcing alert dispatch for existing incident");
-             await dispatchNotifications(monitor, "DOWN", activeIncident.id, `Verification: Still Down (${baseReason})`, checkSource);
-         }
-       } else if (currentStatus === "UP") {
-         const activeIncident = await incidentService.findActiveIncident(monitor.id);
-         if (activeIncident) {
-            await incidentService.resolveIncident(activeIncident.id);
-            // Notify Resolved
-             await dispatchNotifications(monitor, "UP", activeIncident.id);
-         }
-       }
+          return prisma.incident.create({
+            data: {
+              monitorId,
+              title,
+              description,
+              status: IncidentStatus.INVESTIGATING,
+              severity: Severity.HIGH,
+              events: {
+                create: {
+                  type: IncidentEventType.STATE_CHANGE,
+                  message: `Incident started: ${title}`,
+                },
+              },
+            },
+          });
+        },
+        resolveIncident: async (incidentId: string) => {
+          return prisma.incident.update({
+            where: { id: incidentId },
+            data: {
+              status: IncidentStatus.RESOLVED,
+              resolvedAt: new Date(),
+              events: {
+                create: {
+                  type: IncidentEventType.AUTO_RESOLVE,
+                  message: "Monitor recovered. Auto-resolving incident.",
+                },
+              },
+            },
+          });
+        },
+        logStillDown: async (incidentId: string) => {
+          await prisma.incident.update({
+            where: { id: incidentId },
+            data: { updatedAt: new Date() },
+          });
+        },
+      };
 
+      if (currentStatus === "DOWN") {
+        const activeIncident = await incidentService.findActiveIncident(monitor.id);
+        const checkSource = context?.checkRegions || ["Manual Check (Server)"];
+        const baseReason = context?.reason || "Manual Check Failed";
+
+        // For manual check, we bypass flapping check for alerts usually, but let's keep it safe
+        // Actually, if user clicks "Run Check", they expect an alert if it's down.
+
+        if (!activeIncident) {
+          const incident = await incidentService.createIncident(
+            monitor.id,
+            `Monitor is DOWN: ${monitor.name}`,
+            `Reason: ${baseReason}`,
+          );
+
+          // Notify
+          await dispatchNotifications(monitor, "DOWN", incident.id, baseReason, checkSource);
+        } else {
+          await incidentService.logStillDown(activeIncident.id);
+          // FORCE NOTIFICATION for Manual Check
+          // User explicitly clicked "Run Check", so they expect to verify alerts work.
+          console.log("[ManualCheck] Forcing alert dispatch for existing incident");
+          await dispatchNotifications(
+            monitor,
+            "DOWN",
+            activeIncident.id,
+            `Verification: Still Down (${baseReason})`,
+            checkSource,
+          );
+        }
+      } else if (currentStatus === "UP") {
+        const activeIncident = await incidentService.findActiveIncident(monitor.id);
+        if (activeIncident) {
+          await incidentService.resolveIncident(activeIncident.id);
+          // Notify Resolved
+          await dispatchNotifications(monitor, "UP", activeIncident.id);
+        }
+      }
     } catch (notifError) {
-       console.error("Failed to process incidents/notifications in manual check:", notifError);
+      console.error("Failed to process incidents/notifications in manual check:", notifError);
     }
     // -----------------------------------------------------
 
@@ -567,167 +602,229 @@ export async function checkMonitor(id: string, context?: { checkRegions?: string
 
 // --- Notification Helpers ---
 
-async function dispatchNotifications(monitor: any, status: "UP" | "DOWN", incidentId?: string, reason?: string, failedRegions?: string[]) {
-    const matchingRules = monitor.alertRules || [];
-    console.log(`[Notification] Dispatching for ${monitor.name} (${status}). Found ${matchingRules.length} rules.`);
-    
-    if (matchingRules.length === 0) {
-        console.log("[Notification] No alert rules found.");
-        return;
+async function dispatchNotifications(
+  monitor: any,
+  status: "UP" | "DOWN",
+  incidentId?: string,
+  reason?: string,
+  failedRegions?: string[],
+) {
+  const matchingRules = monitor.alertRules || [];
+  console.log(
+    `[Notification] Dispatching for ${monitor.name} (${status}). Found ${matchingRules.length} rules.`,
+  );
+
+  if (matchingRules.length === 0) {
+    console.log("[Notification] No alert rules found.");
+    return;
+  }
+
+  // Filter rules
+  const activeRules = matchingRules.filter((rule: any) => {
+    if (rule.trigger === "STATUS_CHANGE") {
+      if (rule.targetStatus) return status === rule.targetStatus;
+      return true;
     }
-
-    // Filter rules
-    const activeRules = matchingRules.filter((rule: any) => {
-        if (rule.trigger === "STATUS_CHANGE") {
-            if (rule.targetStatus) return status === rule.targetStatus;
-            return true;
-        }
-         if (rule.trigger === "LATENCY" && reason?.includes("High Latency")) {
-             return true;
-         }
-        // Default to false for other triggers (LATENCY, SSL) unless handled
-        return false;
-    });
-
-    console.log(`[Notification] Active rules matching trigger: ${activeRules.length}`);
-
-    if (activeRules.length === 0) return;
-
-    // Channels
-    const emailChannels = new Set<string>();
-    const slackChannels = new Set<{ url: string; token?: string }>();
-    const discordChannels = new Set<{ url: string; token?: string }>();
-
-    if (monitor.user?.email) emailChannels.add(monitor.user.email);
-
-    activeRules.forEach((rule: any) => {
-        rule.channels.forEach((channel: any) => {
-            const config = channel.config as any;
-             if (channel.type === "EMAIL" && config?.email) emailChannels.add(config.email);
-            else if (channel.type === "SLACK" && config?.webhookUrl) slackChannels.add({ url: config.webhookUrl, token: config.accessToken });
-            else if (channel.type === "DISCORD" && config?.webhookUrl) discordChannels.add({ url: config.webhookUrl });
-        });
-    });
-
-    console.log(`[Notification] Channels extracted: Email=${emailChannels.size}, Slack=${slackChannels.size}, Discord=${discordChannels.size}`);
-
-    const emailData: MonitorAlertData = {
-        monitorId: monitor.id,
-        monitorName: monitor.name,
-        url: monitor.url,
-        status: status,
-        previousStatus: status === "UP" ? "DOWN" : "UP",
-        timestamp: new Date().toISOString(),
-        reason: reason,
-        failedRegions: failedRegions,
-        // downtimeDuration: ... calculation omitted for brevity in manual check
-    };
-    
-    const notificationType = status === "DOWN" ? "INCIDENT_CREATED" : "INCIDENT_RESOLVED";
-    const apiKey = process.env.RESEND_API_KEY;
-
-    if (!apiKey) console.warn("[Notification] RESEND_API_KEY is missing!");
-
-    const promises = [
-        ...Array.from(emailChannels).map(email => sendMonitorAlert(email, emailData, apiKey)),
-        ...Array.from(slackChannels).map(target => sendSlackAlert(target.url, emailData, notificationType, incidentId)),
-        ...Array.from(discordChannels).map(target => sendDiscordAlert(target.url, emailData, notificationType))
-    ];
-
-    const results = await Promise.allSettled(promises);
-    const rejected = results.filter(r => r.status === "rejected");
-    if (rejected.length > 0) {
-        console.error(`[Notification] ${rejected.length} alerts failed to send.`);
-        rejected.forEach(r => console.error((r as PromiseRejectedResult).reason));
-    } else {
-        console.log(`[Notification] All ${results.length} alerts sent successfully.`);
+    if (rule.trigger === "LATENCY" && reason?.includes("High Latency")) {
+      return true;
     }
+    // Default to false for other triggers (LATENCY, SSL) unless handled
+    return false;
+  });
+
+  console.log(`[Notification] Active rules matching trigger: ${activeRules.length}`);
+
+  if (activeRules.length === 0) return;
+
+  // Channels
+  const emailChannels = new Set<string>();
+  const slackChannels = new Set<{ url: string; token?: string }>();
+  const discordChannels = new Set<{ url: string; token?: string }>();
+
+  if (monitor.user?.email) emailChannels.add(monitor.user.email);
+
+  activeRules.forEach((rule: any) => {
+    rule.channels.forEach((channel: any) => {
+      const config = channel.config as any;
+      if (channel.type === "EMAIL" && config?.email) emailChannels.add(config.email);
+      else if (channel.type === "SLACK" && config?.webhookUrl)
+        slackChannels.add({ url: config.webhookUrl, token: config.accessToken });
+      else if (channel.type === "DISCORD" && config?.webhookUrl)
+        discordChannels.add({ url: config.webhookUrl });
+    });
+  });
+
+  console.log(
+    `[Notification] Channels extracted: Email=${emailChannels.size}, Slack=${slackChannels.size}, Discord=${discordChannels.size}`,
+  );
+
+  const emailData: MonitorAlertData = {
+    monitorId: monitor.id,
+    monitorName: monitor.name,
+    url: monitor.url,
+    status: status,
+    previousStatus: status === "UP" ? "DOWN" : "UP",
+    timestamp: new Date().toISOString(),
+    reason: reason,
+    failedRegions: failedRegions,
+    // downtimeDuration: ... calculation omitted for brevity in manual check
+  };
+
+  const notificationType = status === "DOWN" ? "INCIDENT_CREATED" : "INCIDENT_RESOLVED";
+  const apiKey = process.env.RESEND_API_KEY;
+
+  if (!apiKey) console.warn("[Notification] RESEND_API_KEY is missing!");
+
+  const promises = [
+    ...Array.from(emailChannels).map((email) => sendMonitorAlert(email, emailData, apiKey)),
+    ...Array.from(slackChannels).map((target) =>
+      sendSlackAlert(target.url, emailData, notificationType, incidentId),
+    ),
+    ...Array.from(discordChannels).map((target) =>
+      sendDiscordAlert(target.url, emailData, notificationType),
+    ),
+  ];
+
+  const results = await Promise.allSettled(promises);
+  const rejected = results.filter((r) => r.status === "rejected");
+  if (rejected.length > 0) {
+    console.error(`[Notification] ${rejected.length} alerts failed to send.`);
+    rejected.forEach((r) => console.error((r as PromiseRejectedResult).reason));
+  } else {
+    console.log(`[Notification] All ${results.length} alerts sent successfully.`);
+  }
 }
 
 // --- Adapters (Mirrored from Worker) ---
 
 async function sendDiscordAlert(url: string, data: MonitorAlertData, type?: string) {
   try {
-      const isDown = data.status === 'DOWN';
-      let color = isDown ? 15548997 : 5763719; 
-      let title = isDown ? '🚨 System Critical: ' + data.monitorName + ' is DOWN' : '✅ System Recovered: ' + data.monitorName + ' is ONLINE';
+    const isDown = data.status === "DOWN";
+    let color = isDown ? 15548997 : 5763719;
+    let title = isDown
+      ? "🚨 System Critical: " + data.monitorName + " is DOWN"
+      : "✅ System Recovered: " + data.monitorName + " is ONLINE";
 
-       if (type === "INCIDENT_CREATED") title = `🔥 Incident Opened: ${data.monitorName}`;
-       if (type === "INCIDENT_RESOLVED") title = `✅ Incident Resolved: ${data.monitorName}`;
+    if (type === "INCIDENT_CREATED") title = `🔥 Incident Opened: ${data.monitorName}`;
+    if (type === "INCIDENT_RESOLVED") title = `✅ Incident Resolved: ${data.monitorName}`;
 
-      const payload = {
-        username: 'PulseGuard',
-        embeds: [{
-            title: title,
-            description: data.reason || (isDown ? 'Connection timeout or error' : 'Service is reachable'),
-            url: data.url,
-            color: color,
-            fields: [
-              { name: 'Target', value: data.url, inline: true },
-              { name: 'Timestamp', value: new Date(data.timestamp).toLocaleString(), inline: true },
-              ...(data.failedRegions && data.failedRegions.length > 0 ? [
-                {
-                  name: 'Failed Regions',
-                  value: data.failedRegions.join(', '),
-                  inline: false
-                }
-              ] : [])
-            ],
-            footer: { text: 'PulseGuard Sentinel • Monitoring Infrastructure' },
-            timestamp: data.timestamp
-          }]
-      };
+    const payload = {
+      username: "PulseGuard",
+      embeds: [
+        {
+          title: title,
+          description:
+            data.reason || (isDown ? "Connection timeout or error" : "Service is reachable"),
+          url: data.url,
+          color: color,
+          fields: [
+            { name: "Target", value: data.url, inline: true },
+            { name: "Timestamp", value: new Date(data.timestamp).toLocaleString(), inline: true },
+            ...(data.failedRegions && data.failedRegions.length > 0
+              ? [
+                  {
+                    name: "Failed Regions",
+                    value: data.failedRegions.join(", "),
+                    inline: false,
+                  },
+                ]
+              : []),
+          ],
+          footer: { text: "PulseGuard Sentinel • Monitoring Infrastructure" },
+          timestamp: data.timestamp,
+        },
+      ],
+    };
 
-      console.log(`[Discord] Sending to ${url}...`);
-      const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-      if (!res.ok) throw new Error(`Status ${res.status}: ${res.statusText}`);
-      console.log(`[Discord] Sent successfully.`);
+    console.log(`[Discord] Sending to ${url}...`);
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error(`Status ${res.status}: ${res.statusText}`);
+    console.log(`[Discord] Sent successfully.`);
   } catch (e) {
-      console.error(`[Discord] Failed to send alert:`, e);
-      throw e;
+    console.error(`[Discord] Failed to send alert:`, e);
+    throw e;
   }
 }
 
-async function sendSlackAlert(url: string, data: MonitorAlertData, type?: string, incidentId?: string) {
+async function sendSlackAlert(
+  url: string,
+  data: MonitorAlertData,
+  type?: string,
+  incidentId?: string,
+) {
   try {
-      const isDown = data.status === 'DOWN';
-      let headerText = isDown ? '🚨 Alert: ' + data.monitorName + ' Unreachable' : '✅ Recovery: ' + data.monitorName + ' Restored';
+    const isDown = data.status === "DOWN";
+    let headerText = isDown
+      ? "🚨 Alert: " + data.monitorName + " Unreachable"
+      : "✅ Recovery: " + data.monitorName + " Restored";
 
-       if (type === "INCIDENT_CREATED") headerText = `🔥 Incident: ${data.monitorName} is DOWN`;
-       if (type === "INCIDENT_RESOLVED") headerText = `✅ Resolved: ${data.monitorName} Recovered`;
+    if (type === "INCIDENT_CREATED") headerText = `🔥 Incident: ${data.monitorName} is DOWN`;
+    if (type === "INCIDENT_RESOLVED") headerText = `✅ Resolved: ${data.monitorName} Recovered`;
 
-      const payload = {
-        text: headerText,
-        blocks: [
-          { type: 'header', text: { type: 'plain_text', text: headerText, emoji: true } },
-          { type: 'section', fields: [
-              { type: 'mrkdwn', text: '*Target:*\n<' + data.url + '|' + data.url + '>' },
-              { type: 'mrkdwn', text: '*Status:*\n' + data.status }
-            ]},
-          { type: 'section', text: { type: 'mrkdwn', text: '*Details:* ' + (data.reason || 'No detail provided') } },
-          { type: 'context', elements: [{ type: 'mrkdwn', text: '⏱ Detected at ' + new Date(data.timestamp).toLocaleTimeString() }] },
-          ...(data.failedRegions && data.failedRegions.length > 0 ? [
+    const payload = {
+      text: headerText,
+      blocks: [
+        { type: "header", text: { type: "plain_text", text: headerText, emoji: true } },
+        {
+          type: "section",
+          fields: [
+            { type: "mrkdwn", text: "*Target:*\n<" + data.url + "|" + data.url + ">" },
+            { type: "mrkdwn", text: "*Status:*\n" + data.status },
+          ],
+        },
+        {
+          type: "section",
+          text: { type: "mrkdwn", text: "*Details:* " + (data.reason || "No detail provided") },
+        },
+        {
+          type: "context",
+          elements: [
             {
-                type: 'section',
+              type: "mrkdwn",
+              text: "⏱ Detected at " + new Date(data.timestamp).toLocaleTimeString(),
+            },
+          ],
+        },
+        ...(data.failedRegions && data.failedRegions.length > 0
+          ? [
+              {
+                type: "section",
                 text: {
-                    type: 'mrkdwn',
-                    text: '*Failed Regions:* ' + data.failedRegions.join(', ')
-                }
-            }
-          ] : []),
-          { type: 'actions', elements: [
-              { type: 'button', text: { type: 'plain_text', text: 'View Dashboard' }, url: 'https://pulseguard.com/dashboard/monitors/' + data.monitorId, style: isDown ? 'danger' : 'primary' }
-          ]}
-        ]
-      };
+                  type: "mrkdwn",
+                  text: "*Failed Regions:* " + data.failedRegions.join(", "),
+                },
+              },
+            ]
+          : []),
+        {
+          type: "actions",
+          elements: [
+            {
+              type: "button",
+              text: { type: "plain_text", text: "View Dashboard" },
+              url: "https://pulseguard.com/dashboard/monitors/" + data.monitorId,
+              style: isDown ? "danger" : "primary",
+            },
+          ],
+        },
+      ],
+    };
 
-      console.log(`[Slack] Sending to ${url}...`);
-      const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-      if (!res.ok) throw new Error(`Status ${res.status}: ${res.statusText}`);
-      console.log(`[Slack] Sent successfully.`);
+    console.log(`[Slack] Sending to ${url}...`);
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error(`Status ${res.status}: ${res.statusText}`);
+    console.log(`[Slack] Sent successfully.`);
   } catch (e) {
-      console.error(`[Slack] Failed to send alert:`, e);
-      throw e;
+    console.error(`[Slack] Failed to send alert:`, e);
+    throw e;
   }
 }
 

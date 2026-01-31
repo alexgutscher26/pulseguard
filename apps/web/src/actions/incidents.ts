@@ -20,7 +20,7 @@ export async function getIncidents() {
         },
       },
       orderBy: {
-        updatedAt: "desc", 
+        updatedAt: "desc",
       },
       include: {
         monitor: {
@@ -61,7 +61,7 @@ export async function getIncident(id: string) {
         monitor: true,
         events: {
           orderBy: {
-            createdAt: "asc", 
+            createdAt: "asc",
           },
         },
       },
@@ -73,7 +73,10 @@ export async function getIncident(id: string) {
   }
 }
 
-export async function updateIncidentStatus(id: string, status: "INVESTIGATING" | "IDENTIFIED" | "MONITORING" | "RESOLVED") {
+export async function updateIncidentStatus(
+  id: string,
+  status: "INVESTIGATING" | "IDENTIFIED" | "MONITORING" | "RESOLVED",
+) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });

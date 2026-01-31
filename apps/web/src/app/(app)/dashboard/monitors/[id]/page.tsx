@@ -2,11 +2,7 @@ import { notFound } from "next/navigation";
 import { getMonitor } from "@/actions/monitors";
 import { MonitorDetailView } from "@/components/monitors/details/monitor-detail-view";
 
-export default async function MonitorDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function MonitorDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const monitor = await getMonitor(id);
 

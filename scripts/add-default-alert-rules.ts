@@ -1,14 +1,13 @@
 /**
  * Migration Script: Add Default Alert Rules to Existing Monitors
- * 
+ *
  * This script creates default alert rules for monitors that don't have any.
  * It will connect all available notification channels to each monitor.
- * 
+ *
  * Usage: bun run scripts/add-default-alert-rules.ts
  */
 
 import prisma from "@pulseguard/db";
-
 
 async function main() {
   console.log("🔍 Scanning for monitors without alert rules...\n");
@@ -31,7 +30,9 @@ async function main() {
   for (const monitor of monitors) {
     // Skip if monitor already has alert rules
     if (monitor.alertRules.length > 0) {
-      console.log(`⏭️  Skipping "${monitor.name}" - already has ${monitor.alertRules.length} rule(s)`);
+      console.log(
+        `⏭️  Skipping "${monitor.name}" - already has ${monitor.alertRules.length} rule(s)`,
+      );
       skipped++;
       continue;
     }
@@ -58,7 +59,7 @@ async function main() {
       });
 
       console.log(
-        `✅ Created default alert rule for "${monitor.name}" with ${monitor.user.notificationChannels.length} channel(s)`
+        `✅ Created default alert rule for "${monitor.name}" with ${monitor.user.notificationChannels.length} channel(s)`,
       );
       created++;
     } catch (error) {

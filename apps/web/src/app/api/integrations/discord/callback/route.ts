@@ -38,49 +38,52 @@ export async function GET(req: NextRequest) {
     const data = (await tokenResponse.json()) as any;
 
     if (data.error) {
-        console.error("Discord OAuth Error:", data);
-        return NextResponse.redirect(new URL("/dashboard/alerts?error=discord_exchange_failed", req.url));
+      console.error("Discord OAuth Error:", data);
+      return NextResponse.redirect(
+        new URL("/dashboard/alerts?error=discord_exchange_failed", req.url),
+      );
     }
 
     // data contains: access_token, webhook: { token, id, url, channel_id, guild_id }
     // Discord OAuth scope 'webhook.incoming' MUST be requested to get the webhook object
-    
+
     if (!data.webhook) {
-         return NextResponse.redirect(new URL("/dashboard/alerts?error=discord_no_webhook_permission", req.url));
+      return NextResponse.redirect(
+        new URL("/dashboard/alerts?error=discord_no_webhook_permission", req.url),
+      );
     }
 
     // 2. Identify User
     const session = await auth.api.getSession({ headers: await headers() });
     if (!session?.user) {
-         return NextResponse.redirect(new URL("/login", req.url));
+      return NextResponse.redirect(new URL("/login", req.url));
     }
 
     // 3. Save as NotificationChannel
     const prisma = getPrisma(process.env.DATABASE_URL!);
-    
+
     const webhook = data.webhook;
 
     // Optional: Fetch Channel Name using Bot Token or assume ID is enough
 
     await prisma.notificationChannel.create({
-        data: {
-            name: `Discord (Channel ${webhook.channel_id})`,
-            type: "DISCORD",
-            userId: session.user.id,
-            config: {
-                provider: "DISCORD",
-                guildId: webhook.guild_id,
-                channelId: webhook.channel_id,
-                accessToken: data.access_token,
-                webhookUrl: webhook.url,
-                webhookToken: webhook.token,
-                webhookId: webhook.id
-            }
-        }
+      data: {
+        name: `Discord (Channel ${webhook.channel_id})`,
+        type: "DISCORD",
+        userId: session.user.id,
+        config: {
+          provider: "DISCORD",
+          guildId: webhook.guild_id,
+          channelId: webhook.channel_id,
+          accessToken: data.access_token,
+          webhookUrl: webhook.url,
+          webhookToken: webhook.token,
+          webhookId: webhook.id,
+        },
+      },
     });
 
     return NextResponse.redirect(new URL("/dashboard/alerts?success=discord_connected", req.url));
-
   } catch (err) {
     console.error("Discord OAuth Exception:", err);
     return NextResponse.redirect(new URL("/dashboard/alerts?error=internal_error", req.url));

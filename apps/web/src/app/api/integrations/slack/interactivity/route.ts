@@ -27,16 +27,16 @@ export async function POST(req: NextRequest) {
               create: {
                 type: IncidentEventType.STATE_CHANGE,
                 message: `Incident acknowledged via Slack by @${userName}`,
-              }
-            }
-          }
+              },
+            },
+          },
         });
 
         return NextResponse.json({ text: "✅ Incident Acknowledged" });
       }
 
       if (action.action_id === "resolve_incident") {
-         await prisma.incident.update({
+        await prisma.incident.update({
           where: { id: incidentId },
           data: {
             status: IncidentStatus.RESOLVED,
@@ -45,9 +45,9 @@ export async function POST(req: NextRequest) {
               create: {
                 type: IncidentEventType.STATE_CHANGE,
                 message: `Incident resolved via Slack by @${userName}`,
-              }
-            }
-          }
+              },
+            },
+          },
         });
         return NextResponse.json({ text: "✅ Incident Resolved" });
       }

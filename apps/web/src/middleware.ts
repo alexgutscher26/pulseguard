@@ -1,14 +1,13 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@pulseguard/auth";
 
-
 // Revert to default runtime (Edge compatible) to strictly avoid Node.js/OpenNext conflicts
 // export const runtime = "nodejs";
 
 export async function middleware(request: NextRequest) {
   console.log("🔍 Middleware checking:", request.nextUrl.pathname);
   console.log("🔍 Request URL:", request.url);
-  
+
   // Debug: Log all cookies to see what's being received
   const cookieHeader = request.headers.get("cookie");
   console.log("🍪 Cookies received:", cookieHeader);
@@ -33,16 +32,17 @@ export async function middleware(request: NextRequest) {
 
   // If accessing dashboard routes without a valid session
   if (!session?.user && request.nextUrl.pathname.startsWith("/dashboard")) {
-    
     // Fallback: Check for session cookie manually (Optimistic Check)
     // Sometimes auth.api.getSession might fail in middleware due to headers/context
     // but the cookie is present. We let the page/layout handle the specific validation.
     const cookieHeader = request.headers.get("cookie") || "";
-    const hasSessionCookie = cookieHeader.includes("better-auth.session_token") || 
-                             cookieHeader.includes("session_token");
-    
+    const hasSessionCookie =
+      cookieHeader.includes("better-auth.session_token") || cookieHeader.includes("session_token");
+
     if (hasSessionCookie) {
-      console.log("⚠️ No session found via API, but session cookie exists. Allowing optimistic access.");
+      console.log(
+        "⚠️ No session found via API, but session cookie exists. Allowing optimistic access.",
+      );
       return NextResponse.next();
     }
 

@@ -28,31 +28,28 @@ export function RegionalUptime({ events }: RegionalUptimeProps) {
   );
 
   // Calculate stats for each region
-  const regionalStats = Object.entries(eventsByRegion).map(
-    ([regionCode, regionEvents]) => {
-      const upEvents = regionEvents.filter((e) => e.status === "UP").length;
-      const uptime =
-        regionEvents.length > 0 ? (upEvents / regionEvents.length) * 100 : 0;
-      const avgLatency =
-        regionEvents.length > 0
-          ? regionEvents
-              .filter((e) => e.status === "UP" && e.latency > 0)
-              .reduce((sum, e) => sum + e.latency, 0) /
-            regionEvents.filter((e) => e.status === "UP").length
-          : 0;
+  const regionalStats = Object.entries(eventsByRegion).map(([regionCode, regionEvents]) => {
+    const upEvents = regionEvents.filter((e) => e.status === "UP").length;
+    const uptime = regionEvents.length > 0 ? (upEvents / regionEvents.length) * 100 : 0;
+    const avgLatency =
+      regionEvents.length > 0
+        ? regionEvents
+            .filter((e) => e.status === "UP" && e.latency > 0)
+            .reduce((sum, e) => sum + e.latency, 0) /
+          regionEvents.filter((e) => e.status === "UP").length
+        : 0;
 
-      const region = getRegionByCode(regionCode);
+    const region = getRegionByCode(regionCode);
 
-      return {
-        code: regionCode,
-        name: region?.name || regionCode,
-        flag: region?.flag || "🌍",
-        uptime: uptime.toFixed(2),
-        avgLatency: Math.round(avgLatency),
-        totalChecks: regionEvents.length,
-      };
-    },
-  );
+    return {
+      code: regionCode,
+      name: region?.name || regionCode,
+      flag: region?.flag || "🌍",
+      uptime: uptime.toFixed(2),
+      avgLatency: Math.round(avgLatency),
+      totalChecks: regionEvents.length,
+    };
+  });
 
   // If no regional data, show message
   if (
@@ -63,8 +60,8 @@ export function RegionalUptime({ events }: RegionalUptimeProps) {
       <div className="border border-cyan-500/20 bg-black/20 backdrop-blur-sm p-6 text-center">
         <Activity className="w-8 h-8 text-cyan-500/40 mx-auto mb-2" />
         <p className="text-sm text-gray-400">
-          No regional monitoring configured. Enable multi-region monitoring to
-          see uptime by location.
+          No regional monitoring configured. Enable multi-region monitoring to see uptime by
+          location.
         </p>
       </div>
     );
@@ -90,9 +87,7 @@ export function RegionalUptime({ events }: RegionalUptimeProps) {
                   <h4 className="text-xs font-bold text-gray-300 uppercase tracking-wide">
                     {stat.name}
                   </h4>
-                  <p className="text-[10px] text-gray-500 font-mono">
-                    {stat.totalChecks} checks
-                  </p>
+                  <p className="text-[10px] text-gray-500 font-mono">{stat.totalChecks} checks</p>
                 </div>
               </div>
 

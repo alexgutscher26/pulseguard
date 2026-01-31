@@ -151,9 +151,7 @@ export function ProfileForm() {
               />
               <button
                 onClick={handleRemoveImage}
-                disabled={
-                  isRemoving || (!session?.user?.image && !optimisticImage)
-                }
+                disabled={isRemoving || (!session?.user?.image && !optimisticImage)}
                 className="text-red-500 hover:bg-red-500/10 text-[10px] font-bold px-3 py-1.5 uppercase tracking-wider border border-transparent hover:border-red-500/20 transition-all font-mono disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isRemoving ? "Removing..." : "Remove"}

@@ -69,12 +69,14 @@ pulseguard/
 ### Installation
 
 1.  **Clone the repository:**
+
     ```bash
     git clone https://github.com/your-username/pulseguard.git
     cd pulseguard
     ```
 
 2.  **Install dependencies:**
+
     ```bash
     bun install
     ```
@@ -83,7 +85,8 @@ pulseguard/
     - Copy `.env.example` to `.env` in `apps/web` and `apps/worker` (if applicable).
     - Ensure your `DATABASE_URL` is set correctly in `packages/db/.env` or the root `.env`.
 
-    *Example `apps/web/.env`:*
+    _Example `apps/web/.env`:_
+
     ```env
     DATABASE_URL="postgresql://user:password@localhost:5432/pulseguard"
     better_auth_secret="your_secret_here"
@@ -94,6 +97,7 @@ pulseguard/
 4.  **Database Setup:**
     d
     Push the Prisma schema to your database:
+
     ```bash
     bun run db:push
     ```
@@ -103,6 +107,7 @@ pulseguard/
     ```bash
     bun run dev
     ```
+
     - Web Dashboard: [http://localhost:3000](http://localhost:3000)
     - Database Studio: `bun run db:studio`
 
@@ -110,14 +115,14 @@ pulseguard/
 
 ## 📜 Scripts
 
-| Command | Description |
-| :--- | :--- |
-| `bun run dev` | Start all applications in development mode. |
-| `bun run build` | Build all apps and packages for production. |
-| `bun run check` | Run linter (Oxlint) and formatter (Oxfmt). |
-| `bun run db:push` | Push schema changes to the database (prototyping). |
-| `bun run db:migrate` | Run production migrations. |
-| `bun run deploy` | Deploy the application stack (Web + Workers). |
+| Command              | Description                                        |
+| :------------------- | :------------------------------------------------- |
+| `bun run dev`        | Start all applications in development mode.        |
+| `bun run build`      | Build all apps and packages for production.        |
+| `bun run check`      | Run linter (Oxlint) and formatter (Oxfmt).         |
+| `bun run db:push`    | Push schema changes to the database (prototyping). |
+| `bun run db:migrate` | Run production migrations.                         |
+| `bun run deploy`     | Deploy the application stack (Web + Workers).      |
 
 ---
 
@@ -129,7 +134,9 @@ PulseGuard is optimized for deployment on **Cloudflare**.
 2.  **Workers**: Monitoring agents deployed to Cloudflare Workers for global distribution.
 
 To deploy manualy:
+
 ```bash
 bun run deploy
 ```
-*Ensure you have `wrangler` authenticated with your Cloudflare account.*
+
+_Ensure you have `wrangler` authenticated with your Cloudflare account._
