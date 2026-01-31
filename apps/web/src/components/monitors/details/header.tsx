@@ -1,10 +1,9 @@
 "use client";
 
-import { CheckCircle, Play, Loader2 } from "lucide-react";
-import { checkMonitor, toggleMonitor } from "@/actions/monitors";
+import { CheckCircle } from "lucide-react";
+import { toggleMonitor } from "@/actions/monitors";
 import { toast } from "sonner";
-import { useState, useTransition } from "react";
-import { Button } from "@/components/ui/button";
+import { useTransition } from "react";
 
 export function MonitorDetailHeader({ monitor }: { monitor: any }) {
   const hasEvents = monitor.events && monitor.events.length > 0;
@@ -15,17 +14,6 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
   const isPending = monitor.status === "UP" && !hasEvents;
 
   const [isLoading, startTransition] = useTransition();
-
-  const handleRunCheck = () => {
-    startTransition(async () => {
-      const result = await checkMonitor(monitor.id);
-      if (result.success) {
-        toast.success("Check initiated successfully");
-      } else {
-        toast.error(result.error || "Failed to initiate check");
-      }
-    });
-  };
 
   const handleToggle = (enabled: boolean) => {
     startTransition(async () => {
@@ -41,7 +29,7 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2 flex flex-col gap-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 rounded-sm border border-primary/20 bg-black/40 p-6 backdrop-blur-sm relative overflow-hidden group">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 rounded-sm border border-primary/20 bg-card/40 p-6 backdrop-blur-sm relative overflow-hidden group">
           {/* Decor */}
           <div className="absolute top-0 left-0 w-2 h-full bg-primary/10 border-r border-primary/20"></div>
 
@@ -76,30 +64,17 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
               )}
             </div>
             <p className="text-primary/60 text-xs font-mono">
-              TARGET_ENDPOINT: <code className="text-foreground">{monitor.url}</code>
+              TARGET_ENDPOINT:{" "}
+              <code className="text-foreground">{monitor.url}</code>
             </p>
           </div>
 
-          <div className="flex items-center gap-4 pl-4 md:pl-0">
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={isLoading}
-              onClick={handleRunCheck}
-              className="h-8 border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 hover:text-primary font-mono text-[10px] uppercase tracking-wider"
-            >
-              {isLoading ? (
-                <Loader2 className="size-3 mr-2 animate-spin" />
-              ) : (
-                <Play className="size-3 mr-2" />
-              )}
-              Run Check
-            </Button>
+          <div className="flex items-center justify-end flex-1 pl-4 md:pl-0">
             <div className="flex flex-col items-end gap-1">
               <p className="text-[10px] font-bold text-primary/50 uppercase tracking-widest font-mono">
                 Monitoring State
               </p>
-              <label className="relative flex h-[24px] w-[44px] cursor-pointer items-center rounded-full border border-primary/20 bg-black p-1">
+              <label className="relative flex h-[24px] w-[44px] cursor-pointer items-center rounded-full border border-primary/20 bg-secondary/50 p-1">
                 <input
                   type="checkbox"
                   className="peer sr-only"
@@ -116,7 +91,7 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
       </div>
 
       {/* Last checked card */}
-      <div className="flex flex-col justify-between gap-2 rounded-sm border border-primary/20 bg-black/40 p-6 backdrop-blur-sm relative overflow-hidden">
+      <div className="flex flex-col justify-between gap-2 rounded-sm border border-primary/20 bg-card/40 p-6 backdrop-blur-sm relative overflow-hidden">
         <div className="absolute top-0 right-0 p-2">
           <span className="flex size-2">
             <span
@@ -135,11 +110,14 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
             {hasEvents
               ? (() => {
                   const diff = Math.floor(
-                    (Date.now() - new Date(monitor.events[0].timestamp).getTime()) / 1000,
+                    (Date.now() -
+                      new Date(monitor.events[0].timestamp).getTime()) /
+                      1000,
                   );
                   if (diff < 2) return "Just now";
                   if (diff < 60) return `${diff} seconds ago`;
-                  if (diff < 3600) return `${Math.floor(diff / 60)} minutes ago`;
+                  if (diff < 3600)
+                    return `${Math.floor(diff / 60)} minutes ago`;
                   return `${Math.floor(diff / 3600)} hours ago`;
                 })()
               : "Pending..."}

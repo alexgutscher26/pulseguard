@@ -85,14 +85,14 @@ export function MaintenanceManager({
           <Construction className="size-5 text-amber-500" />
           Scheduled Maintenance
         </h3>
-        <p className="text-sm text-primary/60 font-mono">
+        <p className="text-sm text-muted-foreground/60 font-mono">
           Schedule downtime windows where alerts are suppressed.
         </p>
       </div>
 
       <form
         action={formAction}
-        className="bg-black/40 border border-amber-500/20 p-6 backdrop-blur-sm relative group"
+        className="bg-card/40 border border-amber-500/20 p-6 backdrop-blur-sm relative group"
       >
         <input type="hidden" name="monitorId" value={monitorId} />
         <div className="flex flex-col gap-4">
@@ -104,7 +104,7 @@ export function MaintenanceManager({
               name="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="bg-black/50 border border-amber-500/20 focus:border-amber-500/60 text-primary text-sm rounded-sm p-3 font-mono placeholder:text-primary/20 focus:outline-none focus:ring-1 focus:ring-amber-500/20 transition-all w-full"
+              className="bg-secondary/20 border border-amber-500/20 focus:border-amber-500/60 text-foreground text-sm rounded-sm p-3 font-mono placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-amber-500/20 transition-all w-full"
               type="text"
               placeholder="e.g. Weekly Server Patching"
             />
@@ -122,7 +122,7 @@ export function MaintenanceManager({
                   name="startAt"
                   value={startAt}
                   onChange={(e) => setStartAt(e.target.value)}
-                  className="bg-black/50 border border-amber-500/20 focus:border-amber-500/60 text-primary text-sm rounded-sm p-3 pl-10 font-mono focus:outline-none focus:ring-1 focus:ring-amber-500/20 transition-all w-full calendar-picker-indicator:invert"
+                  className="bg-secondary/20 border border-amber-500/20 focus:border-amber-500/60 text-foreground text-sm rounded-sm p-3 pl-10 font-mono focus:outline-none focus:ring-1 focus:ring-amber-500/20 transition-all w-full calendar-picker-indicator:invert dark:calendar-picker-indicator:invert-0"
                 />
               </div>
             </div>
@@ -137,7 +137,7 @@ export function MaintenanceManager({
                   name="endAt"
                   value={endAt}
                   onChange={(e) => setEndAt(e.target.value)}
-                  className="bg-black/50 border border-amber-500/20 focus:border-amber-500/60 text-primary text-sm rounded-sm p-3 pl-10 font-mono focus:outline-none focus:ring-1 focus:ring-amber-500/20 transition-all w-full calendar-picker-indicator:invert"
+                  className="bg-secondary/20 border border-amber-500/20 focus:border-amber-500/60 text-foreground text-sm rounded-sm p-3 pl-10 font-mono focus:outline-none focus:ring-1 focus:ring-amber-500/20 transition-all w-full calendar-picker-indicator:invert dark:calendar-picker-indicator:invert-0"
                 />
               </div>
             </div>
@@ -147,7 +147,7 @@ export function MaintenanceManager({
             <button
               type="submit"
               disabled={isPending}
-              className="px-6 py-2.5 bg-amber-500 hover:bg-amber-400 text-black text-xs font-bold uppercase tracking-wider font-mono transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2.5 bg-amber-500 hover:bg-amber-400 text-amber-950 text-xs font-bold uppercase tracking-wider font-mono transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isPending ? (
                 <Loader2 className="size-4 animate-spin" />

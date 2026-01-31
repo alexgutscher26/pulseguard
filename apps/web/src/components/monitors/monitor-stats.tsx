@@ -13,7 +13,7 @@ export function MonitorStats({ monitors = [] }: { monitors: any[] }) {
       label: "Total Targets",
       value: total,
       icon: Server,
-      color: "text-white",
+      color: "text-foreground",
       iconColor: "text-primary",
     },
     {
@@ -44,12 +44,14 @@ export function MonitorStats({ monitors = [] }: { monitors: any[] }) {
       {stats.map((stat) => (
         <div
           key={stat.label}
-          className="bg-black/40 border border-primary/20 p-4 relative group hover:border-primary/40 transition-colors"
+          className="bg-card/40 border border-primary/20 p-4 relative group hover:border-primary/40 transition-colors backdrop-blur-sm"
         >
           <p className="text-[10px] text-primary/60 uppercase tracking-widest mb-1 font-mono">
             {stat.label}
           </p>
-          <p className={`text-2xl font-bold font-mono ${stat.color}`}>{stat.value}</p>
+          <p className={`text-2xl font-bold font-mono ${stat.color}`}>
+            {stat.value}
+          </p>
           <div className="absolute top-0 right-0 p-2 opacity-50">
             <stat.icon className={`size-4 ${stat.iconColor}`} />
           </div>

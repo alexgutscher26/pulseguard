@@ -20,7 +20,7 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
   const router = useRouter();
 
   return (
-    <div className="border border-primary/20 bg-black/40 relative overflow-hidden shadow-lg backdrop-blur-sm">
+    <div className="border border-primary/20 bg-card/40 relative overflow-hidden shadow-lg backdrop-blur-sm">
       {/* Decor corners */}
       <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-primary/50 pointer-events-none"></div>
       <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-primary/50 pointer-events-none"></div>

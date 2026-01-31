@@ -1,6 +1,15 @@
 "use client";
 
-import { Activity, Globe, Server, Clock, Save, X, Loader2 } from "lucide-react";
+import {
+  Activity,
+  Globe,
+  Server,
+  Clock,
+  Save,
+  X,
+  Loader2,
+  ChevronDown,
+} from "lucide-react";
 import Link from "next/link";
 import { createMonitor, updateMonitor } from "@/actions/monitors";
 import { useActionState, useState } from "react";
@@ -100,7 +109,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
 
       <form
         action={formAction}
-        className="bg-black/40 border border-primary/20 p-8 backdrop-blur-sm relative group"
+        className="bg-card/40 border border-primary/20 p-8 backdrop-blur-sm relative group"
       >
         {/* Decor */}
         <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-primary/30 group-hover:border-primary/60 transition-colors pointer-events-none"></div>
@@ -173,7 +182,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
               name="name"
               required
               defaultValue={monitor?.name}
-              className="bg-black/50 border border-primary/20 focus:border-primary/60 text-primary text-sm rounded-sm p-3 font-mono placeholder:text-primary/20 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full"
+              className="bg-secondary/20 border border-primary/20 focus:border-primary/60 text-foreground text-sm rounded-sm p-3 font-mono placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full"
               type="text"
               placeholder={
                 monitorType === "HTTP"
@@ -192,7 +201,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                 name="url"
                 required
                 defaultValue={initialUrl}
-                className="bg-black/50 border border-primary/20 focus:border-primary/60 text-primary text-sm rounded-sm p-3 font-mono placeholder:text-primary/20 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full"
+                className="bg-secondary/20 border border-primary/20 focus:border-primary/60 text-foreground text-sm rounded-sm p-3 font-mono placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full"
                 type="text"
                 placeholder={
                   monitorType === "HTTP"
@@ -206,7 +215,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                     name="port"
                     required
                     defaultValue={initialPort}
-                    className="bg-black/50 border border-primary/20 focus:border-primary/60 text-primary text-sm rounded-sm p-3 font-mono placeholder:text-primary/20 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full"
+                    className="bg-secondary/20 border border-primary/20 focus:border-primary/60 text-foreground text-sm rounded-sm p-3 font-mono placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full"
                     type="number"
                     placeholder="8080"
                     min="1"
@@ -228,35 +237,51 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
               <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
                 Check Interval
               </label>
-              <div className="relative">
-                <Clock className="absolute top-3 left-3 size-4 text-primary/40 pointer-events-none" />
+              <div className="relative group/select">
+                <Clock className="absolute top-3 left-3 size-4 text-primary/40 pointer-events-none group-focus-within/select:text-primary transition-colors" />
                 <select
                   name="interval"
                   defaultValue={monitor?.interval}
-                  className="bg-black/50 border border-primary/20 focus:border-primary/60 text-primary text-sm rounded-sm p-3 pl-10 font-mono focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full appearance-none cursor-pointer"
+                  className="bg-secondary/20 border border-primary/20 focus:border-primary/60 text-foreground text-sm rounded-sm p-3 pl-10 pr-10 font-mono focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full appearance-none cursor-pointer"
                 >
-                  <option value="30">30 Seconds</option>
-                  <option value="60">1 Minute</option>
-                  <option value="300">5 Minutes</option>
-                  <option value="600">10 Minutes</option>
+                  <option value="30" className="bg-background text-foreground">
+                    30 Seconds
+                  </option>
+                  <option value="60" className="bg-background text-foreground">
+                    1 Minute
+                  </option>
+                  <option value="300" className="bg-background text-foreground">
+                    5 Minutes
+                  </option>
+                  <option value="600" className="bg-background text-foreground">
+                    10 Minutes
+                  </option>
                 </select>
+                <ChevronDown className="absolute top-3.5 right-3 size-3 text-primary/40 pointer-events-none group-focus-within/select:text-primary transition-colors" />
               </div>
             </div>
             <div className="flex flex-col gap-1.5">
               <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
                 Request Timeout
               </label>
-              <div className="relative">
-                <Clock className="absolute top-3 left-3 size-4 text-primary/40 pointer-events-none" />
+              <div className="relative group/select">
+                <Clock className="absolute top-3 left-3 size-4 text-primary/40 pointer-events-none group-focus-within/select:text-primary transition-colors" />
                 <select
                   name="timeout"
                   defaultValue={monitor?.timeout}
-                  className="bg-black/50 border border-primary/20 focus:border-primary/60 text-primary text-sm rounded-sm p-3 pl-10 font-mono focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full appearance-none cursor-pointer"
+                  className="bg-secondary/20 border border-primary/20 focus:border-primary/60 text-foreground text-sm rounded-sm p-3 pl-10 pr-10 font-mono focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full appearance-none cursor-pointer"
                 >
-                  <option value="5">5 Seconds</option>
-                  <option value="10">10 Seconds</option>
-                  <option value="30">30 Seconds</option>
+                  <option value="5" className="bg-background text-foreground">
+                    5 Seconds
+                  </option>
+                  <option value="10" className="bg-background text-foreground">
+                    10 Seconds
+                  </option>
+                  <option value="30" className="bg-background text-foreground">
+                    30 Seconds
+                  </option>
                 </select>
+                <ChevronDown className="absolute top-3.5 right-3 size-3 text-primary/40 pointer-events-none group-focus-within/select:text-primary transition-colors" />
               </div>
             </div>
           </div>
@@ -273,7 +298,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
             <button
               type="submit"
               disabled={isPending}
-              className="px-6 py-2.5 bg-primary hover:bg-primary/90 text-black text-xs font-bold uppercase tracking-wider font-mono transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-bold uppercase tracking-wider font-mono transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isPending ? (
                 <Loader2 className="size-4 animate-spin" />

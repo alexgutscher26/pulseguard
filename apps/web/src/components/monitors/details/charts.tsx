@@ -1,8 +1,26 @@
 "use client";
 
-import { Fullscreen } from "lucide-react";
+import { Fullscreen, Download } from "lucide-react";
+import { useRef } from "react";
 
 export function MonitorCharts({ monitor }: { monitor: any }) {
+  const svgRef = useRef<SVGSVGElement>(null);
+
+  const downloadSVG = () => {
+    if (!svgRef.current) return;
+    const svgData = new XMLSerializer().serializeToString(svgRef.current);
+    const svgBlob = new Blob([svgData], {
+      type: "image/svg+xml;charset=utf-8",
+    });
+    const svgUrl = URL.createObjectURL(svgBlob);
+    const downloadLink = document.createElement("a");
+    downloadLink.href = svgUrl;
+    downloadLink.download = `monitor_latency_${monitor.id}.svg`;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  };
+
   // 50 events for history
   const history = monitor.events || [];
   const displayEvents = [...history].slice(0, 50).reverse();
@@ -45,14 +63,16 @@ export function MonitorCharts({ monitor }: { monitor: any }) {
   }
 
   const avgLatency =
-    latencies.length > 0 ? Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length) : 0;
+    latencies.length > 0
+      ? Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length)
+      : 0;
 
   const areaPath = pathD ? `${pathD} V 150 H 0 Z` : "";
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Uptime Bar Chart */}
-      <div className="flex flex-col gap-4 rounded-sm border border-primary/20 bg-black/40 p-6 backdrop-blur-sm shadow-sm relative overflow-hidden">
+      <div className="flex flex-col gap-4 rounded-sm border border-primary/20 bg-card/40 p-6 backdrop-blur-sm shadow-sm relative overflow-hidden">
         <div className="flex justify-between items-center">
           <h3 className="text-foreground text-lg font-bold font-mono uppercase tracking-tight">
             Uptime History
@@ -65,7 +85,8 @@ export function MonitorCharts({ monitor }: { monitor: any }) {
           <p className="text-foreground text-3xl font-bold font-mono tracking-tighter">
             {displayEvents.length > 0
               ? (
-                  (displayEvents.filter((e) => e.status === "UP").length / displayEvents.length) *
+                  (displayEvents.filter((e) => e.status === "UP").length /
+                    displayEvents.length) *
                   100
                 ).toFixed(0)
               : "100"}
@@ -100,24 +121,36 @@ export function MonitorCharts({ monitor }: { monitor: any }) {
       </div>
 
       {/* Response Time - Dynamic SVG */}
-      <div className="flex flex-col gap-4 rounded-sm border border-primary/20 bg-black/40 p-6 backdrop-blur-sm shadow-sm relative overflow-hidden">
+      <div className="flex flex-col gap-4 rounded-sm border border-primary/20 bg-card/40 p-6 backdrop-blur-sm shadow-sm relative overflow-hidden">
         <div className="flex justify-between items-center">
           <h3 className="text-foreground text-lg font-bold font-mono uppercase tracking-tight">
             Response Time (ms)
           </h3>
-          <button className="p-1 hover:bg-primary/10 rounded-sm text-primary/60 hover:text-primary transition-colors">
-            <Fullscreen className="size-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={downloadSVG}
+              className="p-1 hover:bg-primary/10 rounded-sm text-primary/60 hover:text-primary transition-colors"
+              title="Export SVG"
+            >
+              <Download className="size-4" />
+            </button>
+            <button className="p-1 hover:bg-primary/10 rounded-sm text-primary/60 hover:text-primary transition-colors">
+              <Fullscreen className="size-4" />
+            </button>
+          </div>
         </div>
         <div className="flex items-baseline gap-2">
           <p className="text-foreground text-3xl font-bold font-mono tracking-tighter">
             {avgLatency}ms
           </p>
-          <p className="text-primary/60 text-xs font-mono">Last 50 Events Average</p>
+          <p className="text-primary/60 text-xs font-mono">
+            Last 50 Events Average
+          </p>
         </div>
         <div className="flex flex-1 flex-col pt-4 min-h-[160px]">
           {latencies.length > 0 ? (
             <svg
+              ref={svgRef}
               fill="none"
               height="100%"
               preserveAspectRatio="none"
@@ -142,7 +175,11 @@ export function MonitorCharts({ monitor }: { monitor: any }) {
                   y1="0"
                   y2="150"
                 >
-                  <stop stopColor="currentColor" className="text-primary" stopOpacity="0.2"></stop>
+                  <stop
+                    stopColor="currentColor"
+                    className="text-primary"
+                    stopOpacity="0.2"
+                  ></stop>
                   <stop
                     offset="1"
                     stopColor="currentColor"
