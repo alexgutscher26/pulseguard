@@ -5,6 +5,16 @@ import { auth } from "@pulseguard/auth";
 // Revert to default runtime (Edge compatible) to strictly avoid Node.js/OpenNext conflicts
 // export const runtime = "nodejs";
 
+/**
+ * Middleware function to handle session validation for incoming requests.
+ *
+ * It logs the request details and attempts to retrieve the session using Better Auth's API.
+ * If the session is not valid and the request is for dashboard routes, it checks for a session cookie
+ * to allow optimistic access. If no valid session or cookie is found, it redirects to the login page.
+ *
+ * @param request - The incoming NextRequest object containing request details and headers.
+ * @returns A NextResponse object indicating whether to proceed with the request or redirect to login.
+ */
 export async function middleware(request: NextRequest) {
   console.log("🔍 Middleware checking:", request.nextUrl.pathname);
   console.log("🔍 Request URL:", request.url);
