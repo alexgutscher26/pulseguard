@@ -13,6 +13,15 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
+/**
+ * Renders the detail view of a monitor and manages its state.
+ *
+ * This function utilizes the useQuery hook to fetch monitor data and sets up a polling mechanism to refresh the data every 5 seconds. It also includes a transition for running checks on the monitor, with automatic checks triggered if the data is stale. The component renders various subcomponents to display monitor details, statistics, charts, and incident history.
+ *
+ * @param {Object} params - The parameters for the component.
+ * @param {any} params.initialMonitor - The initial monitor data to be displayed.
+ * @returns {JSX.Element | null} The rendered component or null if the monitor data is not available.
+ */
 export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
   const { data: monitor } = useQuery({
     queryKey: ["monitor", initialMonitor.id],
@@ -24,6 +33,9 @@ export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
 
   const [isLoading, startTransition] = useTransition();
 
+  /**
+   * Initiates a check on the monitor and displays the result.
+   */
   const handleRunCheck = () => {
     startTransition(async () => {
       const result = await checkMonitor(initialMonitor.id);
