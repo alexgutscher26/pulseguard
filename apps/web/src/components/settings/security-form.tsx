@@ -11,7 +11,9 @@ export function SecurityForm() {
           <h3 className="text-lg font-bold text-foreground font-mono uppercase tracking-tight">
             Two-Factor Authentication
           </h3>
-          <p className="text-xs text-primary/60 font-mono">Enhance account security protocols</p>
+          <p className="text-xs text-primary/60 font-mono">
+            Enhance account security protocols
+          </p>
         </div>
         <div className="p-6 flex items-start justify-between gap-4">
           <div className="flex items-start gap-4">
@@ -23,13 +25,16 @@ export function SecurityForm() {
                 Authenticator App
               </h4>
               <p className="text-xs text-primary/60 font-mono max-w-sm">
-                Use an authenticator app like Google Authenticator or Authy to generate one-time
-                codes.
+                Use an authenticator app like Google Authenticator or Authy to
+                generate one-time codes.
               </p>
             </div>
           </div>
-          <button className="bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 hover:border-primary/50 text-xs font-bold px-4 py-2 uppercase tracking-wider transition-all font-mono">
-            Enable 2FA
+          <button
+            disabled
+            className="bg-primary/5 text-primary/50 border border-primary/10 text-xs font-bold px-4 py-2 uppercase tracking-wider font-mono cursor-not-allowed"
+          >
+            Coming Soon
           </button>
         </div>
       </section>
@@ -40,7 +45,9 @@ export function SecurityForm() {
           <h3 className="text-lg font-bold text-foreground font-mono uppercase tracking-tight">
             Password Management
           </h3>
-          <p className="text-xs text-primary/60 font-mono">Update access credentials</p>
+          <p className="text-xs text-primary/60 font-mono">
+            Update access credentials
+          </p>
         </div>
         <div className="p-6 grid grid-cols-1 gap-4 max-w-xl">
           <div className="flex flex-col gap-1.5">
