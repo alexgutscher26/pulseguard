@@ -11,6 +11,15 @@ import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 
+/**
+ * Renders a security form for updating the user's password and managing two-factor authentication.
+ *
+ * This component manages the state for current, new, and confirmed passwords, as well as loading and message states.
+ * It validates the input fields, ensuring all are filled, that the new passwords match, and that the new password meets length requirements.
+ * Upon successful validation, it attempts to update the password using the authClient, handling any errors that may arise and providing user feedback.
+ *
+ * @returns {JSX.Element} The rendered security form component.
+ */
 export function SecurityForm() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -21,6 +30,16 @@ export function SecurityForm() {
     text: string;
   } | null>(null);
 
+  /**
+   * Handles the process of updating a user's password.
+   *
+   * This function performs several validation checks on the current and new passwords, ensuring that all fields are filled, the new passwords match, and the new password meets the minimum length requirement. It then attempts to change the password using the authClient. If successful, it resets the form fields and displays a success message; otherwise, it handles errors appropriately and displays error messages.
+   *
+   * @param currentPassword - The user's current password.
+   * @param newPassword - The new password the user wants to set.
+   * @param confirmPassword - A confirmation of the new password.
+   * @returns void
+   */
   const handleUpdatePassword = async () => {
     setMessage(null);
 
