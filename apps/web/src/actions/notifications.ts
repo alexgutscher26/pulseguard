@@ -90,6 +90,14 @@ export async function deleteNotificationChannel(id: string) {
   }
 }
 
+/**
+ * Sends a test notification based on the specified channel type.
+ *
+ * The function retrieves the user's session and checks for authorization. It then fetches the notification channel configuration from the database. Depending on the channel type (EMAIL, DISCORD, SLACK), it sends a formatted test notification using the appropriate method. If the channel type is not implemented, it returns an error. The function handles various error scenarios and logs failures to the console.
+ *
+ * @param id - The unique identifier of the notification channel.
+ * @returns An object indicating the success status and any error messages.
+ */
 export async function sendTestNotification(id: string) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -246,6 +254,15 @@ export async function getNotificationChannels() {
   }
 }
 
+/**
+ * Retrieve the alert history for a user with pagination.
+ *
+ * The function first checks for a valid user session. If a session exists, it calculates the total count of monitor events for the user and retrieves a paginated list of events. The results include event details and pagination information. In case of an error during the database operations, it logs the error and returns an empty result set.
+ *
+ * @param page - The current page number for pagination, defaults to 1.
+ * @param pageSize - The number of events to retrieve per page, defaults to 10.
+ * @returns An object containing the events, total count of events, and total number of pages.
+ */
 export async function getAlertHistory(page: number = 1, pageSize: number = 10) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -308,6 +325,17 @@ const alertRuleSchema = z.object({
   channelIds: z.array(z.string()).min(1, "At least one notification channel is required"),
 });
 
+/**
+ * Create an alert rule based on the provided form data and previous state.
+ *
+ * This function retrieves the user's session, validates the input data against a schema,
+ * and checks the existence of the monitor and notification channels associated with the user.
+ * If all validations pass, it creates a new alert rule in the database and revalidates the relevant paths.
+ *
+ * @param prevState - The previous state of the application, used for context.
+ * @param formData - The form data containing the necessary information to create the alert rule.
+ * @returns An object indicating the success of the operation and any associated error message.
+ */
 export async function createAlertRule(prevState: any, formData: FormData) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -392,6 +420,16 @@ export async function createAlertRule(prevState: any, formData: FormData) {
   }
 }
 
+/**
+ * Update an existing alert rule based on the provided form data.
+ *
+ * This function retrieves the user's session and validates the input data against a schema. It checks for the existence of the alert rule and verifies that all specified notification channels belong to the user. If all validations pass, it updates the alert rule in the database and triggers revalidation of relevant paths.
+ *
+ * @param id - The identifier of the alert rule to be updated.
+ * @param prevState - The previous state of the alert rule (not used in the current implementation).
+ * @param formData - The form data containing the new values for the alert rule.
+ * @returns An object indicating the success of the operation and any associated error message.
+ */
 export async function updateAlertRule(id: string, prevState: any, formData: FormData) {
   const session = await auth.api.getSession({
     headers: await headers(),
