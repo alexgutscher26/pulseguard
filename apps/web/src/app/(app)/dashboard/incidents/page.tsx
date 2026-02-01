@@ -8,6 +8,9 @@ export const metadata = {
 
 import { getUserPreferences } from "@/actions/user";
 
+/**
+ * Renders the incidents page with a table of incidents and user preferences.
+ */
 export default async function IncidentsPage() {
   const incidents = await getIncidents();
   const preferences = await getUserPreferences();
