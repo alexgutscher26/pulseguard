@@ -20,31 +20,36 @@
   "migrations": [
     {
       "tag": "v1",
-      "new_classes": ["LatencyAggregator"]
+      "new_sqlite_classes": ["LatencyAggregator"]
     }
   ],
-  "queues": {
-    "producers": [
-      {
-        "binding": "CHECK_QUEUE",
-        "queue": "monitor-checks"
-      },
-      {
-        "binding": "NOTIFICATION_QUEUE",
-        "queue": "notifications"
-      }
-    ],
-    "consumers": [
-      {
-        "queue": "monitor-checks",
-        "max_batch_size": 10,
-        "max_batch_timeout": 5
-      },
-      {
-        "queue": "notifications",
-        "max_batch_size": 10,
-        "max_batch_timeout": 5
-      }
-    ]
-  }
+  // Queues are dormant for Free Plan (Upgrade required)
+  // "queues": {
+  //   "producers": [
+  //     {
+  //       "binding": "CHECK_QUEUE",
+  //       "queue": "monitor-checks"
+  //     },
+  //     {
+  //       "binding": "NOTIFICATION_QUEUE",
+  //       "queue": "notifications"
+  //     }
+  //   ],
+  //   "consumers": [
+  //     {
+  //       "queue": "monitor-checks",
+  //       "max_batch_size": 10,
+  //       "max_batch_timeout": 5,
+  //       "max_retries": 5,
+  //       "dead_letter_queue": "monitor-checks-dlq"
+  //     },
+  //     {
+  //       "queue": "notifications",
+  //       "max_batch_size": 10,
+  //       "max_batch_timeout": 5,
+  //       "max_retries": 5,
+  //       "dead_letter_queue": "notifications-dlq"
+  //     }
+  //   ]
+  // }
 }

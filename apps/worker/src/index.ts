@@ -150,16 +150,31 @@ async function recordLatencyToAggregator(
 }
 
 
-// Helper: Reusable processing logic (shared between Cron and Queue consumer)
-async function processBatch(monitors: any[], prisma: any, env?: Env) {
+// Helper: Reusable processing logic with Time-Based Limit
+export async function processBatch(monitors: any[], prisma: any, env?: Env): Promise<{ processed: string[]; remaining: any[] }> {
   console.log(`Processing batch of ${monitors.length} monitors...`);
-
+  
   // Dynamic import since we just created it
   const { IncidentService } = await import("./lib/incident-service");
   const incidentService = new IncidentService(prisma);
+  const startTime = performance.now();
+  const TIME_LIMIT_MS = 8; // Safety buffer for 10ms CPU limit (Free Tier)
 
-  await Promise.all(
-    monitors.map(async (monitor) => {
+  const processedIds: string[] = [];
+  const remainingMonitors: any[] = [];
+
+  for (let i = 0; i < monitors.length; i++) {
+    const monitor = monitors[i];
+
+    // Check Time Budget
+    if (performance.now() - startTime > TIME_LIMIT_MS) {
+      console.warn(`[SmartBatch] CPU time limit reached (${(performance.now() - startTime).toFixed(2)}ms). Offloading ${monitors.length - i} monitors.`);
+      remainingMonitors.push(...monitors.slice(i));
+      break; 
+    }
+
+    // --- PROCESSING LOGIC START ---
+    try {
       // 0. Check for Active Maintenance Window
       const activeWindow = monitor.maintenanceWindows?.[0];
       let maintenanceActive = false;
@@ -275,196 +290,199 @@ async function processBatch(monitors: any[], prisma: any, env?: Env) {
       const { status: currentStatus, latency, errorReason } = result;
 
       // Save result and update monitor
-      try {
-        await prisma.$transaction([
-          prisma.monitorEvent.create({
-            data: {
-              monitorId: monitor.id,
-              status: currentStatus as any,
-              latency: latency,
-              errorReason: errorReason,
-              timestamp: new Date(),
-            },
-          }),
-          prisma.monitor.update({
-            where: { id: monitor.id },
-            data: {
-              status: currentStatus as any,
-              lastCheck: new Date(),
-              nextCheck: new Date(Date.now() + (monitor.interval || 60) * 1000),
-            },
-          }),
-        ]);
+      await prisma.$transaction([
+        prisma.monitorEvent.create({
+          data: {
+            monitorId: monitor.id,
+            status: currentStatus as any,
+            latency: latency,
+            errorReason: errorReason,
+            timestamp: new Date(),
+          },
+        }),
+        prisma.monitor.update({
+          where: { id: monitor.id },
+          data: {
+            status: currentStatus as any,
+            lastCheck: new Date(),
+            nextCheck: new Date(Date.now() + (monitor.interval || 60) * 1000),
+          },
+        }),
+      ]);
 
-        // --- INCIDENT MANAGEMENT ---
-        if (currentStatus === "DOWN" && !maintenanceActive) {
-          const activeIncident = await incidentService.findActiveIncident(monitor.id);
-          const alertable = await shouldSendAlert(monitor.id, prisma);
+      // --- INCIDENT MANAGEMENT ---
+      if (currentStatus === "DOWN" && !maintenanceActive) {
+        const activeIncident = await incidentService.findActiveIncident(monitor.id);
+        const alertable = await shouldSendAlert(monitor.id, prisma);
 
-          if (!activeIncident && alertable) {
-            // CREATE NEW INCIDENT
-            const incident = await incidentService.createIncident(
-              monitor.id,
-              `Monitor is DOWN: ${monitor.name}`,
-              errorReason ? `Reason: ${errorReason}` : "No error details provided.",
+        if (!activeIncident && alertable) {
+          // CREATE NEW INCIDENT
+          const incident = await incidentService.createIncident(
+            monitor.id,
+            `Monitor is DOWN: ${monitor.name}`,
+            errorReason ? `Reason: ${errorReason}` : "No error details provided.",
+          );
+
+          // Notify (CREATED)
+          const notificationPayload = {
+            type: "INCIDENT_CREATED" as const,
+            monitorId: monitor.id,
+            monitorName: monitor.name,
+            url: monitor.url,
+            status: "DOWN" as const,
+            incidentId: incident.id,
+            reason: errorReason,
+            timestamp: new Date().toISOString(),
+            failedRegions: failedRegions.length > 0 ? failedRegions : undefined,
+          };
+
+          if (env && env.NOTIFICATION_QUEUE) {
+            console.log(`[Notification] Queueing incident ALERT for ${monitor.name}`);
+            await env.NOTIFICATION_QUEUE.send(notificationPayload);
+          } else {
+            // FALLBACK: Direct notification for local dev (queues don't work in dev)
+            console.warn(
+              `[Notification] Queue not available - sending notification directly for ${monitor.name}`,
             );
-
-            // Notify (CREATED)
-            const notificationPayload = {
-              type: "INCIDENT_CREATED" as const,
-              monitorId: monitor.id,
-              monitorName: monitor.name,
-              url: monitor.url,
-              status: "DOWN" as const,
-              incidentId: incident.id,
-              reason: errorReason,
-              timestamp: new Date().toISOString(),
-              failedRegions: failedRegions.length > 0 ? failedRegions : undefined,
-            };
-
-            if (env && env.NOTIFICATION_QUEUE) {
-              console.log(`[Notification] Queueing incident ALERT for ${monitor.name}`);
-              await env.NOTIFICATION_QUEUE.send(notificationPayload);
-            } else {
-              // FALLBACK: Direct notification for local dev (queues don't work in dev)
-              console.warn(
-                `[Notification] Queue not available - sending notification directly for ${monitor.name}`,
+            try {
+              const { default: notificationHandler } = await import("./notification-handler");
+              await notificationHandler.queue(
+                {
+                  queue: "notifications",
+                  messages: [
+                    {
+                      id: `local-${Date.now()}`,
+                      timestamp: new Date(),
+                      body: notificationPayload,
+                      ack: () => {},
+                      retry: () => {},
+                    },
+                  ],
+                  ackAll: () => {},
+                  retryAll: () => {},
+                } as any,
+                env as any,
+                {} as any,
               );
-              try {
-                const { default: notificationHandler } = await import("./notification-handler");
-                await notificationHandler.queue(
-                  {
-                    queue: "notifications",
-                    messages: [
-                      {
-                        id: `local-${Date.now()}`,
-                        timestamp: new Date(),
-                        body: notificationPayload,
-                        ack: () => {},
-                        retry: () => {},
-                      },
-                    ],
-                    ackAll: () => {},
-                    retryAll: () => {},
-                  } as any,
-                  env as any,
-                  {} as any,
-                );
-              } catch (notifError) {
-                console.error(`[Notification] Failed to send direct notification:`, notifError);
-              }
+            } catch (notifError) {
+              console.error(`[Notification] Failed to send direct notification:`, notifError);
             }
-          } else if (activeIncident) {
-            // Still DOWN
-            await incidentService.logStillDown(activeIncident.id);
           }
-        } else if (currentStatus === "UP" && !maintenanceActive) {
-          const activeIncident = await incidentService.findActiveIncident(monitor.id);
+        } else if (activeIncident) {
+          // Still DOWN
+          await incidentService.logStillDown(activeIncident.id);
+        }
+      } else if (currentStatus === "UP" && !maintenanceActive) {
+        const activeIncident = await incidentService.findActiveIncident(monitor.id);
 
-          if (activeIncident) {
-            // RESOLVE INCIDENT
-            await incidentService.resolveIncident(activeIncident.id);
+        if (activeIncident) {
+          // RESOLVE INCIDENT
+          await incidentService.resolveIncident(activeIncident.id);
 
-            // Notify (RESOLVED)
-            const notificationPayload = {
-              type: "INCIDENT_RESOLVED" as const,
-              monitorId: monitor.id,
-              monitorName: monitor.name,
-              url: monitor.url,
-              status: "UP" as const,
-              incidentId: activeIncident.id,
-              timestamp: new Date().toISOString(),
-            };
+          // Notify (RESOLVED)
+          const notificationPayload = {
+            type: "INCIDENT_RESOLVED" as const,
+            monitorId: monitor.id,
+            monitorName: monitor.name,
+            url: monitor.url,
+            status: "UP" as const,
+            incidentId: activeIncident.id,
+            timestamp: new Date().toISOString(),
+          };
 
-            if (env && env.NOTIFICATION_QUEUE) {
-              console.log(`[Notification] Queueing incident RESOLVED for ${monitor.name}`);
-              await env.NOTIFICATION_QUEUE.send(notificationPayload);
-            } else {
-              // FALLBACK: Direct notification for local dev
-              console.warn(
-                `[Notification] Queue not available - sending notification directly for ${monitor.name}`,
+          if (env && env.NOTIFICATION_QUEUE) {
+            console.log(`[Notification] Queueing incident RESOLVED for ${monitor.name}`);
+            await env.NOTIFICATION_QUEUE.send(notificationPayload);
+          } else {
+            // FALLBACK: Direct notification for local dev
+            console.warn(
+              `[Notification] Queue not available - sending notification directly for ${monitor.name}`,
+            );
+            try {
+              const { default: notificationHandler } = await import("./notification-handler");
+              await notificationHandler.queue(
+                {
+                  queue: "notifications",
+                  messages: [
+                    {
+                      id: `local-${Date.now()}`,
+                      timestamp: new Date(),
+                      body: notificationPayload,
+                      ack: () => {},
+                      retry: () => {},
+                    },
+                  ],
+                  ackAll: () => {},
+                  retryAll: () => {},
+                } as any,
+                env as any,
+                {} as any,
               );
-              try {
-                const { default: notificationHandler } = await import("./notification-handler");
-                await notificationHandler.queue(
-                  {
-                    queue: "notifications",
-                    messages: [
-                      {
-                        id: `local-${Date.now()}`,
-                        timestamp: new Date(),
-                        body: notificationPayload,
-                        ack: () => {},
-                        retry: () => {},
-                      },
-                    ],
-                    ackAll: () => {},
-                    retryAll: () => {},
-                  } as any,
-                  env as any,
-                  {} as any,
-                );
-              } catch (notifError) {
-                console.error(`[Notification] Failed to send direct notification:`, notifError);
-              }
+            } catch (notifError) {
+              console.error(`[Notification] Failed to send direct notification:`, notifError);
             }
-          } else if (latency > 1000) {
-            // High Latency Threshold (1000ms)
-            // HIGH LATENCY ALERT
-            const notificationPayload = {
-              type: "HIGH_LATENCY" as const,
-              monitorId: monitor.id,
-              monitorName: monitor.name,
-              url: monitor.url,
-              status: "UP" as const,
-              latency: latency,
-              timestamp: new Date().toISOString(),
-              reason: `High Latency: ${latency}ms`,
-            };
+          }
+        } else if (latency > 1000) {
+          // High Latency Threshold (1000ms)
+          // HIGH LATENCY ALERT
+          const notificationPayload = {
+            type: "HIGH_LATENCY" as const,
+            monitorId: monitor.id,
+            monitorName: monitor.name,
+            url: monitor.url,
+            status: "UP" as const,
+            latency: latency,
+            timestamp: new Date().toISOString(),
+            reason: `High Latency: ${latency}ms`,
+          };
 
-            if (env && env.NOTIFICATION_QUEUE) {
-              console.log(
-                `[Notification] Queueing HIGH LATENCY alert for ${monitor.name} (${latency}ms)`,
+          if (env && env.NOTIFICATION_QUEUE) {
+            console.log(
+              `[Notification] Queueing HIGH LATENCY alert for ${monitor.name} (${latency}ms)`,
+            );
+            await env.NOTIFICATION_QUEUE.send(notificationPayload);
+          } else {
+            // FALLBACK: Direct notification for local dev
+            console.warn(
+              `[Notification] Queue not available - sending notification directly for ${monitor.name}`,
+            );
+            try {
+              const { default: notificationHandler } = await import("./notification-handler");
+              await notificationHandler.queue(
+                {
+                  queue: "notifications",
+                  messages: [
+                    {
+                      id: `local-${Date.now()}`,
+                      timestamp: new Date(),
+                      body: notificationPayload,
+                      ack: () => {},
+                      retry: () => {},
+                    },
+                  ],
+                  ackAll: () => {},
+                  retryAll: () => {},
+                } as any,
+                env as any,
+                {} as any,
               );
-              await env.NOTIFICATION_QUEUE.send(notificationPayload);
-            } else {
-              // FALLBACK: Direct notification for local dev
-              console.warn(
-                `[Notification] Queue not available - sending notification directly for ${monitor.name}`,
-              );
-              try {
-                const { default: notificationHandler } = await import("./notification-handler");
-                await notificationHandler.queue(
-                  {
-                    queue: "notifications",
-                    messages: [
-                      {
-                        id: `local-${Date.now()}`,
-                        timestamp: new Date(),
-                        body: notificationPayload,
-                        ack: () => {},
-                        retry: () => {},
-                      },
-                    ],
-                    ackAll: () => {},
-                    retryAll: () => {},
-                  } as any,
-                  env as any,
-                  {} as any,
-                );
-              } catch (notifError) {
-                console.error(`[Notification] Failed to send direct notification:`, notifError);
-              }
+            } catch (notifError) {
+              console.error(`[Notification] Failed to send direct notification:`, notifError);
             }
           }
         }
-      } catch (dbErr) {
-        console.error(`Failed to save result for ${monitor.url}`, dbErr);
       }
-
+      processedIds.push(monitor.id);
       console.log(`Checked ${monitor.url}: ${currentStatus} (${latency}ms)`);
-    }),
-  );
+    } catch (err) {
+      console.error(`Failed to process monitor ${monitor.id}:`, err);
+      // We count it as processed (failed) to avoid infinite retry loops for bad data
+      // Unless it's a timeout error, which might be retryable
+      processedIds.push(monitor.id); 
+    }
+  }
+
+  return { processed: processedIds, remaining: remainingMonitors };
 }
 
 export default {
@@ -517,9 +535,21 @@ export default {
 
       // --- FREE PLAN: DIRECT EXECUTION ---
       // We process them right here instead of queuing
-      await processBatch(monitors, prisma, env);
+      const { remaining } = await processBatch(monitors, prisma, env);
 
-      console.log("Monitors processed successfully.");
+      // Offload remaining to Queue if any
+      if (remaining.length > 0) {
+        if (env.CHECK_QUEUE) {
+          console.warn(`[SmartBatch] Offloading ${remaining.length} monitors to Queue due to CPU limits.`);
+          // Send remaining monitors as individual messages or small batches
+          const messages = remaining.map((m) => ({ body: m }));
+          await env.CHECK_QUEUE.sendBatch(messages); 
+        } else {
+          console.error("[SmartBatch] Critical: CPU limit reached but NO CHECK_QUEUE defined. Checks dropped.");
+        }
+      }
+
+      console.log(`Monitors processed successfully.`);
     } catch (error) {
       console.error("Error in scheduled handler:", error);
     }
@@ -538,9 +568,26 @@ export default {
     const prisma = getPrisma(env.DATABASE_URL);
     const monitors = batch.messages.map((msg) => msg.body);
 
-    await processBatch(monitors, prisma, env);
+    const { remaining } = await processBatch(monitors, prisma, env);
 
-    // Ack all messages after processing
-    batch.ackAll();
+    // Ack processed messages, Retry remaining
+    if (remaining.length > 0) {
+      console.warn(`[SmartBatch] Queue processing hit limit. Retrying ${remaining.length} messages.`);
+      
+      // Get IDs of remaining monitors for lookup
+      const remainingIds = new Set(remaining.map(m => m.id));
+
+      // Retry specific messages
+      for (const msg of batch.messages) {
+        if (remainingIds.has(msg.body.id)) {
+          msg.retry();
+        } else {
+          msg.ack();
+        }
+      }
+    } else {
+      // All done
+      batch.ackAll();
+    }
   },
 };

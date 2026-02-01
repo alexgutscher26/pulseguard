@@ -42,11 +42,11 @@ These items block general reliability or user trust.
 
 ### ⚡ Worker Reliability
 
-- [ ] **Dead Letter Queues (DLQ)**
+- [x] **Dead Letter Queues (DLQ)**
   - Ensure failed jobs in Cloudflare Queues are not lost but moved to a DLQ for manual inspection.
-- [ ] **Cloudflare Limits Management**
+- [x] **Cloudflare Limits Management**
   - Enhance batch processing to respect the 10ms CPU time on free workers (split batches dynamically).
-- [ ] **Circuit Breaker**
+- [x] **Circuit Breaker**
   - If a monitor fails consistently for > 1 hour, reduce check frequency to save resources until it recovers.
 
 ---
