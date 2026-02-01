@@ -9,6 +9,16 @@ import { ArrowLeft } from "lucide-react";
 
 import { getUserPreferences } from "@/actions/user";
 
+/**
+ * Renders the incident detail page.
+ *
+ * This function retrieves the incident details and user preferences based on the provided parameters.
+ * It checks if the incident exists and formats the incident's date based on the user's timezone and time format preferences.
+ * The page displays the incident description, timeline, and various details including status and severity.
+ *
+ * @param {Object} params - The parameters for the function.
+ * @param {Promise<{ id: string }>} params.params - A promise that resolves to an object containing the incident ID.
+ */
 export default async function IncidentDetailPage({
   params,
 }: {
@@ -22,6 +32,9 @@ export default async function IncidentDetailPage({
     notFound();
   }
 
+  /**
+   * Formats a Date object into a localized string based on user preferences.
+   */
   const formatDate = (date: Date) => {
     return date.toLocaleString("en-US", {
       timeZone: preferences.timezone,
