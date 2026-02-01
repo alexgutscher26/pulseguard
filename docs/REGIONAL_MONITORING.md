@@ -176,14 +176,6 @@ On the monitor detail page, the `RegionalUptime` component displays:
 2. **Adjust intervals**: Use longer intervals for multi-region monitors
 3. **Monitor quota**: Track Worker request usage in Cloudflare dashboard
 
-3. **Smart Region Selection**:
-   - Auto-suggest regions based on user's traffic
-   - Recommend regions based on target service location
-
-4. **Regional SLA Reports**:
-   - Generate uptime reports per region
-   - Export regional performance data
-
 ## Testing
 
 To test regional monitoring:
