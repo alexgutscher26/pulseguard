@@ -13,6 +13,14 @@ export type LiveCheckResult = {
   timestamp: number;
 };
 
+/**
+ * Establishes a WebSocket connection to monitor live events based on the provided monitorId.
+ *
+ * The function sets up state for the last event received and the connection status. It determines the appropriate WebSocket URL based on the WORKER_URL and the current protocol. Upon connection, it listens for messages, updates the last event state, and handles reconnection logic if the connection is lost. The cleanup function ensures the WebSocket is closed and any timers are cleared when the component unmounts or monitorId changes.
+ *
+ * @param monitorId - The identifier for the monitor to connect to.
+ * @returns An object containing the last event received and the connection status.
+ */
 export function useLiveMonitor(monitorId: string) {
   const [lastEvent, setLastEvent] = useState<LiveCheckResult | null>(null);
   const [isConnected, setIsConnected] = useState(false);
