@@ -9,8 +9,17 @@ interface LatencyHeatmapParams {
 }
 
 /**
- * GET /api/monitors/[id]/latency-heatmap
- * Fetches latency heatmap data for a specific monitor
+ * Fetches latency heatmap data for a specific monitor.
+ *
+ * This function handles the GET request to retrieve latency data by first checking user authentication,
+ * then determining the appropriate time range and granularity for the data. It queries the database for
+ * monitor ownership, latency aggregates, regional baselines, and active incidents, and organizes the
+ * results by region before returning a structured response with color scale ranges.
+ *
+ * @param request - The NextRequest object containing the request details.
+ * @param params - An object containing the parameters for the request, including the monitor ID.
+ * @returns A JSON response containing the monitor ID, time range, granularity, regions data, and color scale.
+ * @throws Error If an internal server error occurs during the process.
  */
 export async function GET(
   request: NextRequest,
