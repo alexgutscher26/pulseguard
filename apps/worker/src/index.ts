@@ -151,6 +151,16 @@ async function recordLatencyToAggregator(
 
 
 // Helper: Reusable processing logic with Time-Based Limit
+/**
+ * Process a batch of monitors and manage their status and incidents.
+ *
+ * This function iterates through the provided monitors, checking their status and handling incidents based on their current state. It incorporates a time budget to ensure processing does not exceed limits, performs regional checks if enabled, and manages incident creation and resolution. The results of each monitor are saved to the database, and notifications are sent based on the monitor's status and latency.
+ *
+ * @param monitors - An array of monitor objects to be processed.
+ * @param prisma - The Prisma client instance for database operations.
+ * @param env - Optional environment configuration for notifications.
+ * @returns A promise that resolves to an object containing processed monitor IDs and any remaining monitors.
+ */
 export async function processBatch(monitors: any[], prisma: any, env?: Env): Promise<{ processed: string[]; remaining: any[] }> {
   console.log(`Processing batch of ${monitors.length} monitors...`);
   
