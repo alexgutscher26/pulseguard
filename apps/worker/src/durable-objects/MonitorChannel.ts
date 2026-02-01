@@ -17,6 +17,17 @@ export class MonitorChannel extends DurableObject {
     });
   }
 
+  /**
+   * Fetch and handle incoming requests for WebSocket connections and broadcast updates.
+   *
+   * The function first checks if the request is for a WebSocket upgrade and validates the upgrade header.
+   * If valid, it establishes a WebSocket connection. If the request is a POST to "/broadcast", it attempts
+   * to parse the JSON payload and broadcasts it to connected sessions. If the request does not match any
+   * expected routes, it returns a 404 response.
+   *
+   * @param request - The incoming Request object containing the request details.
+   * @returns A Promise that resolves to a Response object indicating the result of the request handling.
+   */
   async fetch(request: Request): Promise<Response> {
     const url = new URL(request.url);
 
