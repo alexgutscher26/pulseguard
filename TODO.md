@@ -397,3 +397,8 @@ Bolt on AI in focused places: anomaly detection, smarter alerts, and "explain wh
 - [ ] **Phase 3**
   - Predictive hints ("Sunday deploys fail often").
   - Auto-generated runbooks from repeated incidents.
+
+
+**True Multi-Region (Paid)**:
+   - Implement Durable Objects for guaranteed regional execution
+   - Use Cloudflare Load Balancer for advanced routing

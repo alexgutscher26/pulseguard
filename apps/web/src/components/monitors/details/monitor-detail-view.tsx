@@ -7,6 +7,7 @@ import { MonitorDetailHeader } from "@/components/monitors/details/header";
 import { MonitorStatsGrid } from "@/components/monitors/details/stats-grid";
 import { MonitorCharts } from "@/components/monitors/details/charts";
 import { IncidentHistory } from "@/components/monitors/details/incident-history";
+import { LatencyHeatmap } from "@/components/monitors/latency";
 import { ChevronLeft, Play, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -41,7 +42,9 @@ export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
 
     const checkStale = async () => {
       const lastEvent = monitor.events?.[0];
-      const lastCheckTime = lastEvent ? new Date(lastEvent.timestamp).getTime() : 0;
+      const lastCheckTime = lastEvent
+        ? new Date(lastEvent.timestamp).getTime()
+        : 0;
       const now = Date.now();
       const diffSeconds = (now - lastCheckTime) / 1000;
 
@@ -97,6 +100,14 @@ export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
       <MonitorDetailHeader monitor={monitor} />
       <MonitorStatsGrid monitor={monitor} />
       <MonitorCharts monitor={monitor} />
+
+      {/* Latency Heatmap - Only show if regional monitoring is enabled */}
+      {monitor.checkRegions && (
+        <div className="mt-6">
+          <LatencyHeatmap monitorId={monitor.id} />
+        </div>
+      )}
+
       <IncidentHistory monitor={monitor} />
     </div>
   );

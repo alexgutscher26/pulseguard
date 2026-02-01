@@ -4,9 +4,47 @@
   "compatibility_date": "2026-01-24",
   "compatibility_flags": ["nodejs_compat"],
   "vars": {
-    "NODE_ENV": "production",
+    "NODE_ENV": "production"
   },
   "triggers": {
-    "crons": ["* * * * *"],
+    "crons": ["* * * * *"]
   },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "LATENCY_AGGREGATOR",
+        "class_name": "LatencyAggregator"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_classes": ["LatencyAggregator"]
+    }
+  ],
+  "queues": {
+    "producers": [
+      {
+        "binding": "CHECK_QUEUE",
+        "queue": "monitor-checks"
+      },
+      {
+        "binding": "NOTIFICATION_QUEUE",
+        "queue": "notifications"
+      }
+    ],
+    "consumers": [
+      {
+        "queue": "monitor-checks",
+        "max_batch_size": 10,
+        "max_batch_timeout": 5
+      },
+      {
+        "queue": "notifications",
+        "max_batch_size": 10,
+        "max_batch_timeout": 5
+      }
+    ]
+  }
 }

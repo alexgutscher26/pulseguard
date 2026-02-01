@@ -6,12 +6,19 @@ export const metadata = {
   description: "Manage system incidents",
 };
 
+import { getUserPreferences } from "@/actions/user";
+
 export default async function IncidentsPage() {
   const incidents = await getIncidents();
+  const preferences = await getUserPreferences();
 
   return (
     <div className="space-y-6">
-      <IncidentTable incidents={incidents} />
+      <IncidentTable
+        incidents={incidents}
+        userTimezone={preferences.timezone}
+        userTimeFormat={preferences.timeFormat}
+      />
     </div>
   );
 }

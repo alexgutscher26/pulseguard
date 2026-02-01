@@ -59,6 +59,8 @@ model RegionalIncident {
   status          IncidentStatus   @default(INVESTIGATING)
   startedAt       DateTime         @default(now())
   resolvedAt      DateTime?
+  avgLatency      Float?           // Average latency during incident (ms)
+  latencyThreshold Float?          // Threshold that was breached (ms)
   
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt

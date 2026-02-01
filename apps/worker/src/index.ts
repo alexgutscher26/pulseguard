@@ -1,10 +1,12 @@
 import { getPrisma } from "@pulseguard/db";
+export { LatencyAggregator } from "./durable-objects/latency-aggregator";
 
 export interface Env {
   CHECK_QUEUE: Queue<any>;
   NOTIFICATION_QUEUE: Queue<any>;
   DATABASE_URL: string;
   RESEND_API_KEY: string;
+  LATENCY_AGGREGATOR: DurableObjectNamespace;
 }
 
 import { connect } from "cloudflare:sockets";
@@ -115,6 +117,39 @@ async function shouldSendAlert(monitorId: string, prisma: any): Promise<boolean>
   return true;
 }
 
+// Helper: Record latency to Aggregator DO
+async function recordLatencyToAggregator(
+  env: Env | undefined,
+  monitorId: string,
+  region: string,
+  latency: number,
+  success: boolean
+): Promise<void> {
+  if (!env?.LATENCY_AGGREGATOR) return;
+
+  try {
+    // Get DO instance (using monitorId as the DO ID for consistent routing)
+    const id = env.LATENCY_AGGREGATOR.idFromName(monitorId);
+    const stub = env.LATENCY_AGGREGATOR.get(id);
+
+    // Send latency data
+    await stub.fetch("https://latency-aggregator/record", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        monitorId,
+        region,
+        latency,
+        success,
+        timestamp: Date.now(),
+      }),
+    });
+  } catch (error) {
+    console.error(`[LatencyAggregator] Failed to record latency:`, error);
+  }
+}
+
+
 // Helper: Reusable processing logic (shared between Cron and Queue consumer)
 async function processBatch(monitors: any[], prisma: any, env?: Env) {
   console.log(`Processing batch of ${monitors.length} monitors...`);
@@ -169,6 +204,15 @@ async function processBatch(monitors: any[], prisma: any, env?: Env) {
                   timestamp: regionalResult.timestamp,
                 },
               });
+
+              // Record latency to aggregator
+              await recordLatencyToAggregator(
+                env,
+                monitor.id,
+                regionalResult.region,
+                regionalResult.latency,
+                regionalResult.status === "UP"
+              );
 
               // Manage Regional Incidents
               if (regionalResult.status === "DOWN") {

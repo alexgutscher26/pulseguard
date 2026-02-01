@@ -6,6 +6,7 @@ model User {
   image                String?
   timezone             String?               @default("UTC")
   dateFormat           String?               @default("MM/DD/YYYY")
+  timeFormat           String?               @default("HH:mm")
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @updatedAt
   sessions             Session[]

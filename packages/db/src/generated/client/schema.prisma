@@ -6,6 +6,7 @@ model User {
   image                String?
   timezone             String?               @default("UTC")
   dateFormat           String?               @default("MM/DD/YYYY")
+  timeFormat           String?               @default("HH:mm")
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @updatedAt
   sessions             Session[]
@@ -119,13 +120,15 @@ model IncidentEvent {
 }
 
 model RegionalIncident {
-  id         String         @id @default(cuid())
-  monitorId  String
-  monitor    Monitor        @relation(fields: [monitorId], references: [id], onDelete: Cascade)
-  region     String
-  status     IncidentStatus @default(INVESTIGATING)
-  startedAt  DateTime       @default(now())
-  resolvedAt DateTime?
+  id               String         @id @default(cuid())
+  monitorId        String
+  monitor          Monitor        @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  region           String
+  status           IncidentStatus @default(INVESTIGATING)
+  startedAt        DateTime       @default(now())
+  resolvedAt       DateTime?
+  avgLatency       Float? // Average latency during incident (ms)
+  latencyThreshold Float? // Threshold that was breached (ms)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -133,6 +136,53 @@ model RegionalIncident {
   @@index([monitorId])
   @@index([region])
   @@index([status])
+}
+
+enum LatencyGranularity {
+  ONE_MINUTE
+  FIVE_MINUTE
+  ONE_HOUR
+}
+
+model LatencyAggregate {
+  id          String             @id @default(cuid())
+  monitorId   String
+  monitor     Monitor            @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  region      String
+  timestamp   DateTime
+  granularity LatencyGranularity
+
+  // Latency metrics (in milliseconds)
+  avgLatency Float
+  minLatency Float
+  maxLatency Float
+  p50Latency Float
+  p95Latency Float
+  p99Latency Float
+
+  // Metadata
+  sampleCount Int
+  successRate Float
+
+  createdAt DateTime @default(now())
+
+  @@index([monitorId, region, granularity, timestamp(sort: Desc)])
+  @@index([timestamp])
+  @@index([monitorId, timestamp])
+}
+
+model RegionalBaseline {
+  id              String   @id @default(cuid())
+  monitorId       String
+  monitor         Monitor  @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  region          String
+  baselineLatency Float // 30-day rolling average in milliseconds
+  lastUpdated     DateTime @updatedAt
+
+  createdAt DateTime @default(now())
+
+  @@unique([monitorId, region])
+  @@index([monitorId])
 }
 
 enum NotificationType {
@@ -234,6 +284,8 @@ model Monitor {
   alertRules         AlertRule[]
   incidents          Incident[]
   regionalIncidents  RegionalIncident[]
+  latencyAggregates  LatencyAggregate[]
+  regionalBaselines  RegionalBaseline[]
 
   nextCheck      DateTime?
   lastCheck      DateTime?

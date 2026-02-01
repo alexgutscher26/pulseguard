@@ -39,6 +39,11 @@ export const auth = betterAuth({
         required: false,
         defaultValue: "MM/DD/YYYY",
       },
+      timeFormat: {
+        type: "string",
+        required: false,
+        defaultValue: "HH:mm",
+      },
     },
   },
 

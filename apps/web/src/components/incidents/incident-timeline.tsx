@@ -5,9 +5,15 @@ import { cn } from "@/lib/utils";
 
 interface IncidentTimelineProps {
   events: any[];
+  userTimezone?: string;
+  userTimeFormat?: string;
 }
 
-export function IncidentTimeline({ events }: IncidentTimelineProps) {
+export function IncidentTimeline({
+  events,
+  userTimezone = "UTC",
+  userTimeFormat = "HH:mm",
+}: IncidentTimelineProps) {
   if (!events || events.length === 0) return null;
 
   return (
@@ -45,7 +51,15 @@ export function IncidentTimeline({ events }: IncidentTimelineProps) {
                   {event.type.replace("_", " ")}
                 </span>
                 <span className="text-xs font-mono text-muted-foreground/60">
-                  {format(new Date(event.createdAt), "MMM d, HH:mm:ss")}
+                  {new Date(event.createdAt).toLocaleString("en-US", {
+                    timeZone: userTimezone,
+                    month: "short",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    hour12: userTimeFormat === "hh:mm a",
+                  })}
                 </span>
               </div>
               <p className="text-sm mt-1 text-foreground/90">{event.message}</p>

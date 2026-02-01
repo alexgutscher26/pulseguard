@@ -7,13 +7,32 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
-export default async function IncidentDetailPage({ params }: { params: Promise<{ id: string }> }) {
+import { getUserPreferences } from "@/actions/user";
+
+export default async function IncidentDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const incident = await getIncident(id);
+  const preferences = await getUserPreferences();
 
   if (!incident) {
     notFound();
   }
+
+  const formatDate = (date: Date) => {
+    return date.toLocaleString("en-US", {
+      timeZone: preferences.timezone,
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: preferences.timeFormat === "hh:mm a",
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -25,7 +44,10 @@ export default async function IncidentDetailPage({ params }: { params: Promise<{
           <ArrowLeft className="size-4" /> Back to Incidents
         </Link>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <IncidentActions incidentId={incident.id} currentStatus={incident.status} />
+          <IncidentActions
+            incidentId={incident.id}
+            currentStatus={incident.status}
+          />
         </div>
       </div>
 
@@ -37,12 +59,17 @@ export default async function IncidentDetailPage({ params }: { params: Promise<{
               {incident.description || "No description provided."}
             </p>
             <div className="mt-4 pt-4 border-t text-xs text-muted-foreground font-mono">
-              Monitor URL: <span className="text-foreground">{incident.monitor.url}</span>
+              Monitor URL:{" "}
+              <span className="text-foreground">{incident.monitor.url}</span>
             </div>
           </div>
 
           <div className="rounded-md border p-6 bg-card">
-            <IncidentTimeline events={incident.events} />
+            <IncidentTimeline
+              events={incident.events}
+              userTimezone={preferences.timezone}
+              userTimeFormat={preferences.timeFormat}
+            />
           </div>
         </div>
 
@@ -56,17 +83,21 @@ export default async function IncidentDetailPage({ params }: { params: Promise<{
               </div>
               <div className="flex justify-between items-center py-2 border-b">
                 <span className="text-muted-foreground">Severity</span>
-                <span className="font-medium text-destructive">{incident.severity}</span>
+                <span className="font-medium text-destructive">
+                  {incident.severity}
+                </span>
               </div>
               <div className="flex justify-between items-center py-2 border-b">
                 <span className="text-muted-foreground">Started</span>
-                <span className="font-mono">{new Date(incident.startedAt).toLocaleString()}</span>
+                <span className="font-mono">
+                  {formatDate(new Date(incident.startedAt))}
+                </span>
               </div>
               {incident.resolvedAt && (
                 <div className="flex justify-between items-center py-2 border-b bg-green-500/5 -mx-2 px-2">
                   <span className="text-muted-foreground">Resolved</span>
                   <span className="font-mono text-green-500">
-                    {new Date(incident.resolvedAt).toLocaleString()}
+                    {formatDate(new Date(incident.resolvedAt))}
                   </span>
                 </div>
               )}

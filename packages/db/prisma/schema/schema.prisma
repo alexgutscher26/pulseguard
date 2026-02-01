@@ -40,6 +40,8 @@ model Monitor {
   alertRules         AlertRule[]
   incidents          Incident[]
   regionalIncidents  RegionalIncident[]
+  latencyAggregates  LatencyAggregate[]
+  regionalBaselines  RegionalBaseline[]
 
   nextCheck DateTime?
   lastCheck DateTime?
