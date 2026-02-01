@@ -1,5 +1,6 @@
 import { getPrisma } from "@pulseguard/db";
 export { LatencyAggregator } from "./durable-objects/latency-aggregator";
+export { MonitorChannel } from "./durable-objects/MonitorChannel";
 
 export interface Env {
   CHECK_QUEUE: Queue<any>;
@@ -7,6 +8,7 @@ export interface Env {
   DATABASE_URL: string;
   RESEND_API_KEY: string;
   LATENCY_AGGREGATOR: DurableObjectNamespace;
+  MONITOR_CHANNEL: DurableObjectNamespace;
 }
 
 import { connect } from "cloudflare:sockets";
@@ -146,6 +148,32 @@ async function recordLatencyToAggregator(
     });
   } catch (error) {
     console.error(`[LatencyAggregator] Failed to record latency:`, error);
+  }
+}
+
+// Helper: Broadcast live event to MonitorChannel DO
+async function broadcastLiveEvent(
+  env: Env | undefined,
+  monitorId: string,
+  event: any
+): Promise<void> {
+  if (!env?.MONITOR_CHANNEL) return;
+
+  try {
+    // Get DO instance (using monitorId as the DO ID)
+    const id = env.MONITOR_CHANNEL.idFromName(monitorId);
+    const stub = env.MONITOR_CHANNEL.get(id);
+
+    // Send broadcast
+    // We don't await this to avoid blocking the check loop (fire and forget)
+    stub.fetch("https://monitor-channel/broadcast", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(event),
+    }).catch(err => console.error(`[MonitorChannel] Broadcast failed:`, err));
+
+  } catch (error) {
+    console.error(`[MonitorChannel] Failed to setup broadcast:`, error);
   }
 }
 
@@ -331,6 +359,16 @@ export async function processBatch(monitors: any[], prisma: any, env?: Env): Pro
         }),
       ]);
 
+      // BROADCAST LIVE EVENT
+      broadcastLiveEvent(env, monitor.id, {
+        type: "check_result",
+        monitorId: monitor.id,
+        status: currentStatus,
+        latency: latency,
+        region: "global", // Default for now, update if regional
+        timestamp: new Date().getTime(),
+      });
+
       // --- INCIDENT MANAGEMENT ---
       if (currentStatus === "DOWN" && !maintenanceActive) {
         const activeIncident = await incidentService.findActiveIncident(monitor.id);
@@ -508,7 +546,27 @@ export async function processBatch(monitors: any[], prisma: any, env?: Env): Pro
 
 export default {
   // Required: Basic fetch handler
-  async fetch(_request: Request, _env: Env, _ctx: ExecutionContext) {
+  async fetch(request: Request, env: Env, _ctx: ExecutionContext) {
+    const url = new URL(request.url);
+
+    // WebSocket Route: /ws/monitors/:id
+    if (url.pathname.startsWith("/ws/monitors/")) {
+      const monitorId = url.pathname.split("/")[3];
+      if (!monitorId) return new Response("Missing Monitor ID", { status: 400 });
+
+      // TODO: Add Auth Check here (verify session cookie)
+
+      // Forward to Durable Object
+      const id = env.MONITOR_CHANNEL.idFromName(monitorId);
+      const stub = env.MONITOR_CHANNEL.get(id);
+
+      // We rewrite the URL to /websocket so the DO knows it's a client connection
+      const doUrl = new URL("https://monitor-channel/websocket");
+      
+      // Pass the original request (headers, upgrade, etc) but with new URL
+      return stub.fetch(doUrl.toString(), request);
+    }
+
     return new Response("PulseGuard Worker is Running", { status: 200 });
   },
 

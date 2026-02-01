@@ -57,7 +57,7 @@ The goal is to wow the user. Think _Tron Legacy_ meets _Mr. Robot_.
 
 ### 🖥️ Dashboard 2.0
 
-- [ ] **Live WebSocket Feeds**
+- [x] **Live WebSocket Feeds**
   - Replace `useQuery` polling with true WebSockets (Cloudflare Durable Objects or Pusher).
   - Show real-time "ping" animations on the dashboard.
 - [ ] **Data Visualization**

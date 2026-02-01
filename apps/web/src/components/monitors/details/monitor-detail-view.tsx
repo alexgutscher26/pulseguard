@@ -1,8 +1,9 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useTransition } from "react";
 import { getMonitor, checkMonitor } from "@/actions/monitors";
+import { useLiveMonitor } from "@/hooks/use-live-monitor";
 import { MonitorDetailHeader } from "@/components/monitors/details/header";
 import { MonitorStatsGrid } from "@/components/monitors/details/stats-grid";
 import { MonitorCharts } from "@/components/monitors/details/charts";
@@ -19,9 +20,51 @@ export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
     queryKey: ["monitor", initialMonitor.id],
     queryFn: () => getMonitor(initialMonitor.id),
     initialData: initialMonitor,
-    refetchInterval: 5000, // Poll every 5 seconds
+    refetchInterval: 0, // Disable polling in favor of WebSockets
     refetchOnWindowFocus: true,
   });
+
+  const queryClient = useQueryClient();
+  const { lastEvent, isConnected } = useLiveMonitor(initialMonitor.id);
+
+  // Sync Live Events to Query Cache
+  useEffect(() => {
+    if (lastEvent) {
+      console.log("Received Live Event:", lastEvent);
+      queryClient.setQueryData(
+        ["monitor", initialMonitor.id],
+        (oldData: any) => {
+          if (!oldData) return oldData;
+
+          const newEvent = {
+            id: `live-${Date.now()}`,
+            status: lastEvent.status,
+            latency: lastEvent.latency,
+            timestamp: new Date(lastEvent.timestamp).toISOString(),
+            errorReason: null,
+            region: lastEvent.region,
+          };
+
+          return {
+            ...oldData,
+            status: lastEvent.status,
+            events: [newEvent, ...(oldData.events || [])],
+          };
+        },
+      );
+
+      // Optional: Toast for major status changes
+      if (monitor?.status !== lastEvent.status) {
+        toast(
+          lastEvent.status === "UP" ? "Monitor Recovered" : "Monitor Down",
+          {
+            description: `Latency: ${lastEvent.latency}ms`,
+            action: { label: "Dismiss", onClick: () => {} },
+          },
+        );
+      }
+    }
+  }, [lastEvent, initialMonitor.id, queryClient, monitor?.status]);
 
   const [isLoading, startTransition] = useTransition();
 
@@ -81,20 +124,34 @@ export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
           Back to Monitors
         </Link>
 
-        <Button
-          variant="outline"
-          size="sm"
-          disabled={isLoading}
-          onClick={handleRunCheck}
-          className="h-8 border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 hover:text-primary font-mono text-[10px] uppercase tracking-wider"
-        >
-          {isLoading ? (
-            <Loader2 className="size-3 mr-2 animate-spin" />
-          ) : (
-            <Play className="size-3 mr-2" />
+        <div className="flex items-center gap-2">
+          {isConnected && (
+            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+              </span>
+              <span className="text-[10px] uppercase font-bold text-emerald-500 tracking-wider">
+                Live
+              </span>
+            </div>
           )}
-          Run Check
-        </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={isLoading}
+            onClick={handleRunCheck}
+            className="h-8 border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 hover:text-primary font-mono text-[10px] uppercase tracking-wider"
+          >
+            {isLoading ? (
+              <Loader2 className="size-3 mr-2 animate-spin" />
+            ) : (
+              <Play className="size-3 mr-2" />
+            )}
+            Run Check
+          </Button>
+        </div>
       </div>
 
       <MonitorDetailHeader monitor={monitor} />
