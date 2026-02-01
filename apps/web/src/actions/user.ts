@@ -3,6 +3,13 @@
 import { auth } from "@pulseguard/auth";
 import { headers } from "next/headers";
 
+/**
+ * Retrieves user preferences based on the current session.
+ *
+ * The function first attempts to get the user session using the auth.api.getSession method with appropriate headers.
+ * If no user session is found, it returns default preferences for timezone, date format, and time format.
+ * If a user session exists, it returns the user's preferences, falling back to defaults if any are missing.
+ */
 export async function getUserPreferences() {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -26,6 +33,15 @@ export async function getUserPreferences() {
   };
 }
 
+/**
+ * Update user preferences in the database.
+ *
+ * This function retrieves the current user session and checks for authorization. If authorized, it attempts to update the user's preferences in the database using Prisma. In case of an error during the update, it logs the error details and returns a failure response.
+ *
+ * @param data - An object containing optional user preference fields: timezone, dateFormat, and timeFormat.
+ * @returns An object indicating the success of the update operation.
+ * @throws Error If the user is not authorized.
+ */
 export async function updateUserPreferences(data: {
   timezone?: string;
   dateFormat?: string;
