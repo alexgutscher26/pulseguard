@@ -152,6 +152,15 @@ async function recordLatencyToAggregator(
 }
 
 // Helper: Broadcast live event to MonitorChannel DO
+/**
+ * Broadcasts a live event to the specified monitor channel.
+ *
+ * This function checks if the MONITOR_CHANNEL is defined in the environment. If it is, it retrieves the DO instance using the monitorId and sends a broadcast request with the event data. The request is sent without awaiting the response to prevent blocking the check loop, allowing for a fire-and-forget approach. Errors during the broadcast setup or execution are logged to the console.
+ *
+ * @param {Env | undefined} env - The environment object that may contain the MONITOR_CHANNEL.
+ * @param {string} monitorId - The identifier for the monitor to which the event is being broadcasted.
+ * @param {any} event - The event data to be broadcasted.
+ */
 async function broadcastLiveEvent(
   env: Env | undefined,
   monitorId: string,
@@ -179,6 +188,16 @@ async function broadcastLiveEvent(
 
 
 // Helper: Reusable processing logic with Time-Based Limit
+/**
+ * Process a batch of monitors and manage their status checks.
+ *
+ * This function iterates through the provided monitors, performing checks based on their configuration, including maintenance windows and regional checks. It handles incidents, alerts, and updates the monitor status in the database. If the processing time exceeds a defined limit, it offloads remaining monitors for later processing. The function also implements a double-check protocol for monitors that fail initial checks and manages notifications for incidents and high latency.
+ *
+ * @param monitors - An array of monitor objects to be processed.
+ * @param prisma - The Prisma client instance for database operations.
+ * @param env - Optional environment configuration for notifications.
+ * @returns A promise that resolves to an object containing processed monitor IDs and any remaining monitors.
+ */
 export async function processBatch(monitors: any[], prisma: any, env?: Env): Promise<{ processed: string[]; remaining: any[] }> {
   console.log(`Processing batch of ${monitors.length} monitors...`);
   
