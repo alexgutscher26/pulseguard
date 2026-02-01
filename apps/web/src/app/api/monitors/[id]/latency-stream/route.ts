@@ -9,8 +9,16 @@ interface LatencyStreamParams {
 }
 
 /**
- * GET /api/monitors/[id]/latency-stream
- * Server-Sent Events endpoint for real-time latency updates
+ * Server-Sent Events endpoint for real-time latency updates.
+ *
+ * This function handles the GET request for the latency stream by first verifying the user's authentication and monitor ownership.
+ * It then establishes a stream that sends connection messages, heartbeat signals, and updates on latency aggregates at specified intervals.
+ * The stream is cleaned up when the request is aborted, ensuring proper resource management.
+ *
+ * @param request - The NextRequest object representing the incoming request.
+ * @param params - An object containing the parameters for the latency stream, including the monitor ID.
+ * @returns A Response object containing the latency stream.
+ * @throws Error If an internal server error occurs during processing.
  */
 export async function GET(
   request: NextRequest,
