@@ -289,6 +289,27 @@ export async function processBatch(monitors: any[], prisma: any, env?: Env): Pro
 
       const { status: currentStatus, latency, errorReason } = result;
 
+      // Circuit Breaker Calculation
+      let nextCheckTime = new Date(Date.now() + (monitor.interval || 60) * 1000);
+      
+      if (currentStatus === "DOWN") {
+        try {
+           const activeIncident = await incidentService.findActiveIncident(monitor.id);
+           if (activeIncident) {
+             const downtimeDuration = Date.now() - activeIncident.createdAt.getTime();
+             const ONE_HOUR = 60 * 60 * 1000;
+             
+             if (downtimeDuration > ONE_HOUR) {
+               console.log(`[CircuitBreaker] Monitor ${monitor.id} down for >1h. Applying 10m backoff.`);
+               const BACKOFF_INTERVAL = 10 * 60 * 1000; // 600s
+               nextCheckTime = new Date(Date.now() + BACKOFF_INTERVAL);
+             }
+           }
+        } catch (cbError) {
+           console.error(`[CircuitBreaker] Error checking incident duration:`, cbError);
+        }
+      }
+
       // Save result and update monitor
       await prisma.$transaction([
         prisma.monitorEvent.create({
@@ -305,7 +326,7 @@ export async function processBatch(monitors: any[], prisma: any, env?: Env): Pro
           data: {
             status: currentStatus as any,
             lastCheck: new Date(),
-            nextCheck: new Date(Date.now() + (monitor.interval || 60) * 1000),
+            nextCheck: nextCheckTime,
           },
         }),
       ]);
