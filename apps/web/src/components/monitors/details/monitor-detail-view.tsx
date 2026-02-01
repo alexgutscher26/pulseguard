@@ -15,6 +15,15 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
+/**
+ * Renders the detailed view of a monitor, displaying its status and events.
+ *
+ * This function utilizes the useQuery hook to fetch monitor data and the useLiveMonitor hook to receive live updates. It synchronizes live events to the query cache and triggers checks for stale data. The component also provides a button to manually run a check on the monitor and displays various details including a latency heatmap if applicable.
+ *
+ * @param {Object} param0 - The parameters for the component.
+ * @param {any} param0.initialMonitor - The initial monitor data to be displayed.
+ * @returns {JSX.Element | null} The rendered component or null if the monitor data is not available.
+ */
 export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
   const { data: monitor } = useQuery({
     queryKey: ["monitor", initialMonitor.id],
