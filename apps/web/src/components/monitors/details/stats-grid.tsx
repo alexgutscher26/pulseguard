@@ -7,6 +7,16 @@ import {
   ArrowDownRight,
 } from "lucide-react";
 
+/**
+ * Renders a grid displaying monitoring statistics for a given monitor.
+ *
+ * This function calculates uptime percentage, average latency, and total downtime based on the events from the monitor.
+ * It filters the events to derive the necessary statistics, handling cases where latency may be undefined.
+ * The results are displayed in a structured grid format, with each statistic presented in its own card.
+ *
+ * @param {Object} param0 - The parameters object.
+ * @param {any} param0.monitor - The monitor object containing events and interval data.
+ */
 export function MonitorStatsGrid({ monitor }: { monitor: any }) {
   // Calculate stats
   const events = monitor.events || [];
