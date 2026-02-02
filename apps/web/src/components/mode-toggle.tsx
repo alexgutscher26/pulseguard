@@ -12,6 +12,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+/**
+ * Renders a theme toggle dropdown menu.
+ */
 export function ModeToggle() {
   const { setTheme } = useTheme();
 
