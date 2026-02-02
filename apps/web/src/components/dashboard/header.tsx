@@ -29,6 +29,18 @@ interface DashboardHeaderProps {
   onMenuClick?: () => void;
 }
 
+/**
+ * Renders the header for the dashboard with navigation and user options.
+ *
+ * This component utilizes hooks to retrieve session data, current pathname, and mobile state.
+ * It conditionally renders the title based on the current route and includes interactive elements
+ * such as a menu button for mobile, a search button, and a user menu with account options.
+ * The layout is responsive and adapts to different screen sizes.
+ *
+ * @param {DashboardHeaderProps} props - The properties for the DashboardHeader component.
+ * @param {function} props.onMenuClick - Callback function to handle menu click events.
+ * @returns {JSX.Element} The rendered header component.
+ */
 export function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
   const { data: session } = authClient.useSession();
   const pathname = usePathname();
