@@ -60,7 +60,7 @@ The goal is to wow the user. Think _Tron Legacy_ meets _Mr. Robot_.
 - [x] **Live WebSocket Feeds**
   - Replace `useQuery` polling with true WebSockets (Cloudflare Durable Objects or Pusher).
   - Show real-time "ping" animations on the dashboard.
-- [ ] **Data Visualization**
+- [x] **Data Visualization**
   - **Response Time Chart**: Use `Recharts` for a neon-line area chart showing latency over 24h.
   - **Uptime Heatmap**: GitHub-style contribution graph where blocks are days/hours (Green=100%, Yellow=99%, Red=<90%).
   - **Geomap**: SVG map showing _where_ the request was initiated from.

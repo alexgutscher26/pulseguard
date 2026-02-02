@@ -3,12 +3,14 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useTransition } from "react";
 import { getMonitor, checkMonitor } from "@/actions/monitors";
+import { getMonitorLatencyHistory } from "@/actions/latency";
 import { useLiveMonitor } from "@/hooks/use-live-monitor";
 import { MonitorDetailHeader } from "@/components/monitors/details/header";
 import { MonitorStatsGrid } from "@/components/monitors/details/stats-grid";
 import { MonitorCharts } from "@/components/monitors/details/charts";
 import { IncidentHistory } from "@/components/monitors/details/incident-history";
 import { LatencyHeatmap } from "@/components/monitors/latency";
+import { ResponseTimeChart } from "@/components/charts/response-time-chart";
 import { ChevronLeft, Play, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -22,6 +24,12 @@ export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
     initialData: initialMonitor,
     refetchInterval: 0, // Disable polling in favor of WebSockets
     refetchOnWindowFocus: true,
+  });
+
+  // Query for latency history
+  const { data: latencyHistory, isLoading: isLoadingLatency } = useQuery({
+    queryKey: ["monitor-latency", initialMonitor.id],
+    queryFn: () => getMonitorLatencyHistory(initialMonitor.id),
   });
 
   const queryClient = useQueryClient();
@@ -156,6 +164,13 @@ export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
 
       <MonitorDetailHeader monitor={monitor} />
       <MonitorStatsGrid monitor={monitor} />
+
+      {/* 24h Response Time Chart */}
+      <ResponseTimeChart
+        data={latencyHistory || []}
+        isLoading={isLoadingLatency}
+      />
+
       <MonitorCharts monitor={monitor} />
 
       {/* Latency Heatmap - Only show if regional monitoring is enabled */}
