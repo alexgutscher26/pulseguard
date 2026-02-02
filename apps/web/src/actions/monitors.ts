@@ -871,7 +871,13 @@ export async function getDashboardStats() {
     const userId = session.user.id;
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
-    const [activeMonitorsCount, activeAlertsCount, events] = await Promise.all([
+    const [
+      activeMonitorsCount,
+      activeAlertsCount,
+      totalEventsCount,
+      upEventsCount,
+      latencyAgg,
+    ] = await Promise.all([
       // 1. Active Monitors
       prisma.monitor.count({
         where: {
@@ -886,38 +892,46 @@ export async function getDashboardStats() {
           status: "DOWN",
         },
       }),
-      // 3. Global Stats (Uptime & Latency) - Last 24h
-      prisma.monitorEvent.findMany({
+      // 3. Total Events (Last 24h)
+      prisma.monitorEvent.count({
         where: {
           monitor: { userId },
           timestamp: { gte: oneDayAgo },
         },
-        select: {
-          status: true,
+      }),
+      // 4. UP Events (Last 24h)
+      prisma.monitorEvent.count({
+        where: {
+          monitor: { userId },
+          timestamp: { gte: oneDayAgo },
+          status: "UP",
+        },
+      }),
+      // 5. Avg Latency for UP events (Last 24h)
+      prisma.monitorEvent.aggregate({
+        where: {
+          monitor: { userId },
+          timestamp: { gte: oneDayAgo },
+          status: "UP",
+          latency: { gt: 0 },
+        },
+        _avg: {
           latency: true,
         },
       }),
     ]);
 
     let globalUptime = 0;
-    let avgLatency = 0;
-
-    if (events.length > 0) {
-      const upEvents = events.filter((e: { status: string }) => e.status === "UP").length;
-      globalUptime = (upEvents / events.length) * 100;
-
-      const latencies = events
-        .filter((e: { status: string; latency: number }) => e.status === "UP" && e.latency > 0)
-        .map((e: { latency: number }) => e.latency);
-
-      const totalLatency = latencies.reduce((a: number, b: number) => a + b, 0);
-      avgLatency = latencies.length > 0 ? totalLatency / latencies.length : 0;
+    if (totalEventsCount > 0) {
+      globalUptime = (upEventsCount / totalEventsCount) * 100;
     }
+
+    const avgLatency = Math.round(latencyAgg._avg.latency || 0);
 
     return {
       activeMonitors: activeMonitorsCount,
       globalUptime: Number(globalUptime.toFixed(2)),
-      avgLatency: Math.round(avgLatency),
+      avgLatency,
       activeAlerts: activeAlertsCount,
     };
   } catch (error) {
