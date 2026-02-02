@@ -17,6 +17,15 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
+/**
+ * Monitors the detail view of a specific monitor and manages its state and events.
+ *
+ * This function utilizes the useQuery hook to fetch monitor data and latency history, and it synchronizes live events to the query cache. It also handles automatic checks for stale data and provides a user interface for running checks. The component updates based on live events and manages loading states effectively.
+ *
+ * @param {Object} params - The parameters for the function.
+ * @param {any} params.initialMonitor - The initial monitor object containing monitor details.
+ * @returns {JSX.Element | null} The rendered component or null if the monitor data is not available.
+ */
 export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
   const { data: monitor } = useQuery({
     queryKey: ["monitor", initialMonitor.id],
