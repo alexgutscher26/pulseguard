@@ -1,6 +1,6 @@
 "use server";
 
-import prisma from "@pulseguard/db";
+import prisma, { IncidentEventType } from "@pulseguard/db";
 import { auth } from "@pulseguard/auth";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
@@ -105,7 +105,7 @@ export async function updateIncidentStatus(
         resolvedAt: status === "RESOLVED" ? new Date() : incident.resolvedAt,
         events: {
           create: {
-            type: "STATE_CHANGE", // IncidentEventType not exported? Use string literal if mapped in DB or fix types
+            type: IncidentEventType.STATE_CHANGE,
             message: eventMessage,
           },
         },
