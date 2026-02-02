@@ -88,9 +88,41 @@ The goal is to wow the user. Think _Tron Legacy_ meets _Mr. Robot_.
 - [x] **Touch Targets**
   - Increase size of "Run Check" and "Toggle" buttons for thumb usage.
 
+### 📱 Mobile Enhancements (Nice to Have)
+
+- [ ] **Swipe-to-close gesture** for drawer
+- [ ] **Haptic feedback** on mobile devices
+- [ ] **Additional touch target optimizations** for form elements
+- [ ] **Mobile-specific header condensing**
+- [ ] **Mobile optimization improvements** (currently works but could be better)
+
+### � Advanced UI Features (Post-MVP)
+
+- [ ] **Command Palette Enhancements**:
+  - Recent commands history
+  - Command aliases ("new monitor" → "Create HTTP Monitor")
+  - Fuzzy search
+  - Command history navigation (↑↓ in empty search)
+  - Custom user-defined shortcuts
+  - AI-powered command suggestions
+- [ ] **Advanced Visualizations**:
+  - D3.js heatmap visualization
+  - WebGL rendering for 100+ regions
+  - Global map visualization
+  - Region comparison view
+  - Custom region grouping
+- [ ] **Data Export**:
+  - Export to CSV/PNG
+  - Latency SLA tracking
+  - Correlation analysis
+- [ ] **Dashboard Customization**:
+  - Multi-monitor comparison
+  - Custom dashboards
+  - Real-time anomaly detection visualization
+
 ---
 
-## 🛠️ P2: Advanced Monitoring Features
+## �🛠️ P2: Advanced Monitoring Features
 
 Expand what PulseGuard can actually guard.
 
@@ -125,6 +157,14 @@ Expand what PulseGuard can actually guard.
     - ✅ Store regional performance data.
     - ✅ Display regional uptime statistics.
     - **Note**: Free tier uses sequential checks. For true multi-region, upgrade to Durable Objects or paid plan.
+
+### 🔄 Multi-Region Enhancements
+
+**True Multi-Region (Paid)**:
+
+- [ ] Implement Durable Objects for guaranteed regional execution
+- [ ] Use Cloudflare Load Balancer for advanced routing
+- [ ] Predictive latency alerts (ML-based)
 
 ---
 
@@ -170,15 +210,21 @@ Connect PulseGuard to the world.
 
 - [ ] **Telegram Bot**
   - Start a chat with `@PulseGuardBot` to get alerts.
+  - Telegram messages are a great way how to stay alerted.
 - [ ] **SMS & Voice Call**
   - Twilio/Vonage integration for critical P0 alerts (wake up call).
 - [ ] **Matrix / Rocket.Chat**
   - Support open-source chat protocols.
+- [ ] **Mattermost**
+  - Get status update on your Mattermost.
+- [ ] **MS Teams**
+  - Get notifications inside your MS Teams app to alert everyone in the group.
 
 ### 🏢 DevOps Tools
 
 - [ ] **PagerDuty / Opsgenie**
   - Bidirectional sync (Ack in PagerDuty -> Ack in PulseGuard).
+  - Send up & down events and auto-resolve your incidents in PagerDuty.
 - [ ] **Linear / Jira**
   - Auto-create tickets when downtime > X minutes.
 
@@ -187,19 +233,7 @@ Connect PulseGuard to the world.
 - [ ] **Custom Webhooks**
   - Support Handlebars/Mustache templates for payload customization.
   - "Test Webhook" button.
-
-### 📥 Incoming Integration Requests
-
-- [ ] **Telegram**
-  - Telegram messages are a great way how to stay alerted.
-- [ ] **Webhook**
   - For advanced alerting you can setup webhooks to your own system or app.
-- [ ] **Mattermost**
-  - Get status update on your Mattermost.
-- [ ] **MS Teams**
-  - Get notifications inside your MS Teams app to alert everyone in the group.
-- [ ] **PagerDuty**
-  - Send up & down events and auto-resolve your incidents in PagerDuty.
 
 ---
 
@@ -240,6 +274,11 @@ Enterprise-grade controls.
   - Track who created/deleted monitors, who changed status page settings.
 - [ ] **API Access Tokens**
   - Create Scoped API Keys (Read-only, Write-only) for CI/CD integration.
+- [ ] **Email Verification**
+  - Add email verification to BetterAuth registration flow
+  - Create tRPC mutation for sending welcome emails
+  - Add email preferences UI in settings
+  - Ensure no PII in logs
 
 ### 👥 Team Collaboration
 
@@ -263,6 +302,10 @@ Enterprise-grade controls.
   - Documented REST API with Swagger/OpenAPI.
 - [ ] **Terraform Provider**
   - Manage PulseGuard monitors via Infrastructure as Code (IaC).
+- [ ] **Backend API Enhancements**
+  - Monitor pause/resume endpoints
+  - Monitor deletion endpoints
+  - Bulk monitor actions endpoints
 
 ---
 
@@ -317,7 +360,7 @@ For the admin on the go.
 
 ---
 
-## 🧹 Refactoring
+## 🧹 P11: Refactoring & Code Quality
 
 - [ ] **Shared Core Package**
   - Move `fetch` and `ping` logic to a shared `@pulseguard/core` package.
@@ -325,14 +368,9 @@ For the admin on the go.
   - Global Error Boundary in React.
   - Standardized API Error format.
 
-Add email verification to BetterAuth registration flow
-Create tRPC mutation for sending welcome emails
-Add email preferences UI in settings
-Ensure no PII in logs
-
 ---
 
-## 🚀 Indie Dev Focus (Key Differentiators)
+## 🚀 P12: Indie Dev Focus (Key Differentiators)
 
 Strategies to win the indie developer market against established giants.
 
@@ -378,7 +416,7 @@ Strategies to win the indie developer market against established giants.
 
 ---
 
-## 🧠 AI Empowerment Layer (Invisible & Low-Friction)
+## 🧠 P13: AI Empowerment Layer (Invisible & Low-Friction)
 
 Bolt on AI in focused places: anomaly detection, smarter alerts, and "explain what went wrong" helpers.
 
@@ -419,7 +457,7 @@ Bolt on AI in focused places: anomaly detection, smarter alerts, and "explain wh
 - [ ] **Actionable Suggestions**
   - Buttons: "Mute Check", "Auto-create Runbook", "Add Alert Rule".
 
-### 📅 Phasing Plan
+### 📅 AI Phasing Plan
 
 - [ ] **Phase 1 (Weekend)**
   - Simple baseline anomaly model (latency/uptime).
@@ -431,14 +469,9 @@ Bolt on AI in focused places: anomaly detection, smarter alerts, and "explain wh
   - Predictive hints ("Sunday deploys fail often").
   - Auto-generated runbooks from repeated incidents.
 
-**True Multi-Region (Paid)**:
-
-- Implement Durable Objects for guaranteed regional execution
-- Use Cloudflare Load Balancer for advanced routing
-
 ---
 
-## 🧲 P11: Growth Engines (SEO Magnets)
+## 🧲 P14: Growth Engines (SEO Magnets)
 
 High-value, free utilities to drive SEO traffic and capture developer leads.
 
@@ -472,3 +505,27 @@ High-value, free utilities to drive SEO traffic and capture developer leads.
   - Simple check: "Is port 25565 open?" (Gamers/Home labbers).
 - [ ] **Regex Tester for Monitoring**
   - Sandbox for testing "Keyword Monitor" regular expressions against real HTML.
+
+---
+
+## 🐛 Known Issues & Technical Debt
+
+### Current Issues
+
+- [ ] **RegionalDetailModal** is a placeholder (needs full implementation)
+- [ ] **Mobile optimization** (currently works but could be improved)
+
+### Future Considerations
+
+- [ ] Consider adding **D3.js** for advanced visualizations (optional enhancement)
+- [ ] Add **export functionality** (CSV/PNG) - future enhancement
+- [ ] Evaluate **WebGL rendering** for large-scale visualizations
+
+---
+
+## � Notes
+
+- All completed features are marked with [x]
+- Priority levels (P0-P14) indicate implementation order
+- Items without checkboxes are informational or context
+- See README.md for current implemented features
