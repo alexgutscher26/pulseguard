@@ -2,6 +2,9 @@ import Link from "next/link";
 import { GlitchText } from "@/components/ui/effects/glitch-text";
 import { Button } from "@/components/ui/button";
 
+/**
+ * Renders a 404 Not Found page.
+ */
 export default function NotFound() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] bg-background text-foreground space-y-6 text-center p-4">
