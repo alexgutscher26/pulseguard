@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { GlitchText } from "@/components/ui/effects/glitch-text";
-import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
   return (

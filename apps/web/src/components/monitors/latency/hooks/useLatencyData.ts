@@ -74,7 +74,7 @@ export function useLatencyData(
       }
 
       const json = await res.json();
-      setData(json);
+      setData(json as LatencyHeatmapData);
     } catch (err) {
       console.error("[useLatencyData] Fetch error:", err);
       setError(err as Error);

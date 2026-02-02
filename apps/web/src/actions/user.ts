@@ -17,11 +17,8 @@ export async function getUserPreferences() {
   }
 
   return {
-    // @ts-expect-error - additionalFields type extension
     timezone: session.user.timezone || "UTC",
-    // @ts-expect-error - additionalFields type extension
     dateFormat: session.user.dateFormat || "MM/DD/YYYY",
-    // @ts-expect-error - additionalFields type extension
     timeFormat: session.user.timeFormat || "HH:mm",
   };
 }

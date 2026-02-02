@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import type { MetricType } from "../hooks/useHeatmapScale";
+import type { MetricType } from "./hooks/useHeatmapScale";
 
 export type TimeRange = "1h" | "6h" | "24h" | "7d" | "30d";
 

@@ -28,7 +28,7 @@ export function NavigationCommands() {
   });
 
   const navigate = (path: string) => {
-    router.push(path);
+    router.push(path as any);
     close();
   };
 
@@ -84,8 +84,8 @@ export function NavigationCommands() {
               icon={ArrowRight}
               label={`Go to ${monitor.name}`}
               badge={{
-                label: monitor.status === "up" ? "Up" : "Down",
-                variant: monitor.status === "up" ? "success" : "danger",
+                label: monitor.status === "UP" ? "Up" : "Down",
+                variant: monitor.status === "UP" ? "success" : "danger",
               }}
               onSelect={() => navigate(`/dashboard/monitors/${monitor.id}`)}
             />

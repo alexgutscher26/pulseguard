@@ -42,7 +42,7 @@ export function RegionalDetailModal({
           `/api/monitors/${monitorId}/latency-heatmap?timeRange=24h&region=${region}`,
         );
         if (!res.ok) throw new Error("Failed to fetch regional data");
-        const data = await res.json();
+        const data = (await res.json()) as any;
         const regionInfo = data.regions.find(
           (r: RegionData) => r.region === region,
         );

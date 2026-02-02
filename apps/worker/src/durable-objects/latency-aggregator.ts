@@ -1,5 +1,5 @@
 import { DurableObject } from "cloudflare:workers";
-import { getPrisma } from "@pulseguard/db";
+import { getPrisma, LatencyGranularity } from "@pulseguard/db";
 import { LatencyBuffer } from "../lib/latency-calculator";
 
 interface LatencyRecord {
@@ -21,16 +21,15 @@ interface Env {
  */
 export class LatencyAggregator extends DurableObject {
   private buffers: Map<string, LatencyBuffer> = new Map();
-  private flushInterval: number | null = null;
   private subscribers: Set<(data: any) => void> = new Set();
 
   constructor(state: DurableObjectState, env: Env) {
     super(state, env);
     
     // Start flush interval (every 60 seconds)
-    this.flushInterval = setInterval(() => {
+    setInterval(() => {
       this.flushAggregates().catch(console.error);
-    }, 60_000) as unknown as number;
+    }, 60_000);
   }
 
   /**
@@ -73,6 +72,7 @@ export class LatencyAggregator extends DurableObject {
 
       for (const [key, buffer] of this.buffers.entries()) {
         const [monitorId, region] = key.split(":");
+        if (!monitorId || !region) continue;
         const data = buffer.getAggregates();
 
         if (data.sampleCount > 0) {
@@ -80,7 +80,7 @@ export class LatencyAggregator extends DurableObject {
             monitorId,
             region,
             timestamp,
-            granularity: "ONE_MINUTE",
+            granularity: LatencyGranularity.ONE_MINUTE,
             avgLatency: data.avgLatency,
             minLatency: data.minLatency,
             maxLatency: data.maxLatency,

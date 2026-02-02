@@ -1,6 +1,5 @@
 "use client";
 
-import { Command } from "cmdk";
 import { cn } from "@/lib/utils";
 
 interface ConfirmationDialogProps {
