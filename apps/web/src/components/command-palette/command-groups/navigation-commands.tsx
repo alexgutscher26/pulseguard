@@ -17,6 +17,11 @@ import {
 } from "lucide-react";
 import { getMonitors } from "@/actions/monitors";
 
+/**
+ * Renders navigation commands for the application.
+ *
+ * This function utilizes the `useRouter` and `useCommandPalette` hooks to manage navigation and command palette interactions. It fetches monitor data using `useQuery` and displays navigation options for various sections of the application. The function handles loading states and conditionally renders monitor navigation items based on the fetched data.
+ */
 export function NavigationCommands() {
   const router = useRouter();
   const { close } = useCommandPalette();
