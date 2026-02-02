@@ -29,10 +29,13 @@ interface MobileSidebarProps {
 }
 
 /**
- * Mobile sidebar drawer component
- * - Full-height drawer with navigation
- * - Close button (X) in top-right
- * - Maintains cyberpunk aesthetic
+ * Renders a mobile sidebar drawer component.
+ *
+ * The MobileSidebar component displays a full-height drawer with navigation links, a close button, and a cyberpunk aesthetic. It utilizes the `usePathname` hook to determine the current path and highlight the active navigation link. The sidebar includes a header with a logo and a call-to-action button at the bottom for upgrading the plan.
+ *
+ * @param {MobileSidebarProps} props - The properties for the MobileSidebar component.
+ * @param {boolean} props.isOpen - Indicates whether the sidebar is open.
+ * @param {function} props.onClose - Function to call when the sidebar should be closed.
  */
 export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   const pathname = usePathname();
