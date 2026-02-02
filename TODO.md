@@ -108,6 +108,11 @@ Expand what PulseGuard can actually guard.
 - [ ] **DNS Watchdog**
   - Check if domain resolves to expected IP.
   - Detect DNS propagation issues.
+- [ ] **Domain Expiration Guard**
+  - **Whois/RDAP Logic**: Fetch domain registry data to track `Expiration Date`.
+  - **Alert Schedule**: Notify 30, 14, 7, and 1 day before expiration to prevent loss.
+  - **Dashboard**: Display graphical "Days Remaining" countdown.
+  - **Status Checks**: Alert on `serverHold`, `clientHold`, or `pendingDelete` statuses.
 - [ ] **Heartbeat / Cron Monitor**
   - "Inverse" monitoring. Provide a unique webhook URL.
   - User's backup job calls the URL.
@@ -130,12 +135,19 @@ Public-facing transparency for users.
 ### 🌐 Status Pages
 
 - [ ] **Public & Private Status Pages**
-  - Route: `status.pulseguard.com/[slug]` or Custom Domain.
-  - **Private Pages**: Password protection or SSO-based access.
-  - Config: Select specific monitors/groups to display.
-  - Branding: Custom Logo, Favicon, CNAME support.
+  - Route: `status.pulseguard.com/[slug]` or Custom Domain (CNAME).
+  - **Private Pages**: Password protection, SSO-based access, or IP Whitelisting.
+  - **SEO Control**: Toggle `robots.txt` to index/no-index status pages.
+  - **Granular Visibility**: Toggle display of Uptime %, Response Time Charts, specific URLs, or "Paused" monitors.
+  - Branding: Custom Logo, Favicon, CSS overrides.
+- [ ] **Status Page Analytics**
+  - Text: "Who is checking my status?"
+  - Integration: Google Analytics, Plausible, or minimal built-in view counter.
+- [ ] **Global Audience (i18n)**
+  - Auto-translate status page based on browser locale.
+  - Support manual language toggle for status page visitors.
 - [ ] **Incident History & Widgets**
-  - Show active incidents and historical uptime.
+  - Show active incidents, planned maintenance timelines, and historical uptime.
   - **Embeddable Status Widget**: JS snippet to show "All Systems Operational" on user's own website.
 - [ ] **Subscription System**
   - 'Subscribe to Updates' button on Status Pages.
@@ -175,6 +187,19 @@ Connect PulseGuard to the world.
 - [ ] **Custom Webhooks**
   - Support Handlebars/Mustache templates for payload customization.
   - "Test Webhook" button.
+
+### 📥 Incoming Integration Requests
+
+- [ ] **Telegram**
+  - Telegram messages are a great way how to stay alerted.
+- [ ] **Webhook**
+  - For advanced alerting you can setup webhooks to your own system or app.
+- [ ] **Mattermost**
+  - Get status update on your Mattermost.
+- [ ] **MS Teams**
+  - Get notifications inside your MS Teams app to alert everyone in the group.
+- [ ] **PagerDuty**
+  - Send up & down events and auto-resolve your incidents in PagerDuty.
 
 ---
 
@@ -250,6 +275,14 @@ Preparing for launch.
 - [ ] **Stripe Integration**
   - Subscriptions: Free (5 monitors), Pro (50 monitors), Business (Unlimited).
   - Webhooks: Listen for `invoice.payment_failed` to downgrade/pause workspace.
+- [ ] **Add-ons & Upsells**
+  - **Full White Label**: +$200/month.
+    - Removes "Powered by PulseGuard".
+    - Full custom domain & CSS control.
+  - **Status Pages (Pro/Business)**:
+    - Base: 1 Status Page included in Pro? (User specified +$20/mo/each).
+    - Add-on: +$20/month per status page.
+    - Bundle: 5 pages for $100/mo ($20/each).
 - [ ] **Usage Tracking**
   - Track "Check Runs" per month.
   - Hard limits on free tier.
@@ -398,7 +431,44 @@ Bolt on AI in focused places: anomaly detection, smarter alerts, and "explain wh
   - Predictive hints ("Sunday deploys fail often").
   - Auto-generated runbooks from repeated incidents.
 
-
 **True Multi-Region (Paid)**:
-   - Implement Durable Objects for guaranteed regional execution
-   - Use Cloudflare Load Balancer for advanced routing
+
+- Implement Durable Objects for guaranteed regional execution
+- Use Cloudflare Load Balancer for advanced routing
+
+---
+
+## 🧲 P11: Growth Engines (SEO Magnets)
+
+High-value, free utilities to drive SEO traffic and capture developer leads.
+
+### 🛠️ Requested Tools
+
+- [ ] **IP Subnet Calculator**
+  - CIDR to IP range conversion.
+  - Visualization of subnet masks.
+- [ ] **MX Record Lookup**
+  - Verify mail server configurations (SPF/DKIM/DMARC analysis).
+  - Instant deliverability score.
+- [ ] **Uptime & Downtime Calculator**
+  - SLA Translator: "What does 99.999% mean in minutes per year?"
+  - Marketing hook: "See how much downtime costs you."
+- [ ] **Cron Expression Generator**
+  - Natural language to Cron syntax (e.g., "Every weekday at 5 PM").
+  - Explanation of complex cron strings.
+- [ ] **Website Change Detector**
+  - Visual diff tool for web pages.
+  - Alert on specific HTML element changes.
+
+### 🚀 PulseGuard Exclusive Tools
+
+- [ ] **Global Latency Checker**
+  - "Ping my site from 10 cities instantly."
+  - Showcase PulseGuard's multi-region capability.
+- [ ] **SSL/TLS Health Check**
+  - Visualize certificate chain and expiry.
+  - Check for legacy protocols (TLS 1.0/1.1).
+- [ ] **Port Forwarding Tester**
+  - Simple check: "Is port 25565 open?" (Gamers/Home labbers).
+- [ ] **Regex Tester for Monitoring**
+  - Sandbox for testing "Keyword Monitor" regular expressions against real HTML.
