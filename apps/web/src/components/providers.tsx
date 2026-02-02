@@ -8,6 +8,9 @@ import { queryClient } from "@/utils/trpc";
 import { ThemeProvider } from "./theme-provider";
 import { Toaster } from "./ui/sonner";
 
+/**
+ * A component that provides theme and query context to its children.
+ */
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider
