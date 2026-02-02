@@ -12,6 +12,7 @@ export interface Env {
 }
 
 import { connect } from "cloudflare:sockets";
+import { performRegionalChecks, getAverageLatency } from "./services/regional-monitor";
 
 // Helper: Perform a single check without DB side effects
 async function performCheck(
@@ -224,9 +225,6 @@ export async function processBatch(monitors: any[], prisma: any, env?: Env): Pro
         // Check if regional monitoring is enabled
         if (monitor.checkRegions) {
           try {
-            const { performRegionalChecks, getAverageLatency } =
-              await import("./services/regional-monitor");
-
             const regionalResults = await performRegionalChecks(monitor);
             console.log(
               `[Regional] Checked ${monitor.name} from ${regionalResults.length} regions`,
