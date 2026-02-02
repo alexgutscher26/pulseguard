@@ -64,17 +64,26 @@ export function DashboardHeader() {
       </div>
 
       <div className="flex items-center gap-6 relative z-20">
-        <label className="relative hidden md:block group">
-          <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-            <Search className="text-primary/50 size-4 group-focus-within:text-primary transition-colors" />
+        <button
+          onClick={() => {
+            const event = new KeyboardEvent("keydown", {
+              key: "k",
+              metaKey: true,
+              ctrlKey: true,
+            });
+            document.dispatchEvent(event);
+          }}
+          className="relative hidden md:flex items-center gap-3 bg-black/50 text-primary font-mono rounded-sm border border-primary/20 hover:border-primary/60 focus:border-primary/60 focus:ring-1 focus:ring-primary/20 w-80 px-4 py-2 transition-all group cursor-pointer"
+        >
+          <Search className="text-primary/50 size-4 group-hover:text-primary transition-colors" />
+          <span className="flex-1 text-left text-sm text-primary/30 group-hover:text-primary/50 transition-colors">
+            SEARCH_TARGETS...
           </span>
-          <input
-            className="bg-black/50 text-base text-primary font-mono rounded-sm border border-primary/20 focus:border-primary/60 focus:ring-1 focus:ring-primary/20 w-80 pl-10 py-2 placeholder:text-primary/30 outline-none transition-all"
-            placeholder="SEARCH_TARGETS..."
-            type="text"
-            spellCheck={false}
-          />
-        </label>
+          <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-1 text-[10px] font-mono bg-primary/10 text-primary/60 rounded border border-primary/20">
+            <span>⌘</span>
+            <span>K</span>
+          </kbd>
+        </button>
 
         <Link
           href="/dashboard/monitors/new"

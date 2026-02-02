@@ -2,6 +2,7 @@
 
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { DashboardHeader } from "@/components/dashboard/header";
+import { CommandPalette } from "@/components/command-palette/command-palette";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -16,6 +17,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           {children}
         </div>
       </main>
+
+      {/* Global Command Palette */}
+      <CommandPalette />
     </div>
   );
 }

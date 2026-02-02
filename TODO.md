@@ -72,10 +72,10 @@ The goal is to wow the user. Think _Tron Legacy_ meets _Mr. Robot_.
 
 ### ⌨️ Power User Features
 
-- [ ] **Command Palette (Cmd+K)**
+- [x] **Command Palette (Cmd+K)**
   - Quick navigation: "Go to Monitor X", "Create New Monitor", "View Incidents".
-  - Actions: "Pause all monitors", "Acknowledge all alerts".
-- [ ] **Keyboard Shortcuts**
+  - Actions: "Acknowledge all alerts".
+- [x] **Keyboard Shortcuts**
   - `j/k` to navigate monitor list.
   - `/` to search.
   - `c` to create monitor.
