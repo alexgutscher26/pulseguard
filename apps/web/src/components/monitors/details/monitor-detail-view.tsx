@@ -150,7 +150,7 @@ export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
             size="sm"
             disabled={isLoading}
             onClick={handleRunCheck}
-            className="h-8 border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 hover:text-primary font-mono text-[10px] uppercase tracking-wider"
+            className="min-h-[44px] md:h-8 px-4 border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 hover:text-primary font-mono text-[10px] uppercase tracking-wider"
           >
             {isLoading ? (
               <Loader2 className="size-3 mr-2 animate-spin" />

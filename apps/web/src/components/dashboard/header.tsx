@@ -1,6 +1,14 @@
 "use client";
 
-import { Search, Plus, Terminal, LogOut, User, Settings } from "lucide-react";
+import {
+  Search,
+  Plus,
+  Terminal,
+  LogOut,
+  User,
+  Settings,
+  Menu,
+} from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { ModeToggle } from "@/components/mode-toggle";
@@ -15,11 +23,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { usePathname, useRouter } from "next/navigation";
+import { useMobile } from "@/hooks/use-mobile";
 
-export function DashboardHeader() {
+interface DashboardHeaderProps {
+  onMenuClick?: () => void;
+}
+
+export function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
   const { data: session } = authClient.useSession();
   const pathname = usePathname();
-  const router = useRouter(); // Add router
+  const router = useRouter();
+  const isMobile = useMobile();
 
   const getTitle = () => {
     if (pathname.includes("/dashboard/monitors"))
@@ -48,22 +62,34 @@ export function DashboardHeader() {
   };
 
   return (
-    <header className="sticky top-0 z-10 flex items-center justify-between border-b border-primary/20 bg-[#050505]/90 backdrop-blur-md px-8 py-4 relative overflow-hidden">
+    <header className="sticky top-0 z-10 flex items-center justify-between border-b border-primary/20 bg-[#050505]/90 backdrop-blur-md px-3 md:px-8 py-3 md:py-4 relative overflow-hidden">
       {/* Scanline effect on border */}
       <div className="absolute bottom-0 left-0 w-full h-px bg-primary/20">
         <div className="absolute top-0 left-0 h-full w-1/3 bg-primary/50 blur-[2px] animate-scan-fast"></div>
       </div>
 
-      <div className="flex items-center gap-4 relative z-20">
-        <div className="p-1.5 bg-primary/10 border border-primary/20 rounded-sm">
+      <div className="flex items-center gap-2 md:gap-4 relative z-20">
+        {/* Hamburger Menu - Mobile Only */}
+        {isMobile && onMenuClick && (
+          <button
+            onClick={onMenuClick}
+            className="flex items-center justify-center size-11 border border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors shrink-0"
+            aria-label="Open navigation menu"
+          >
+            <Menu className="size-5 text-primary" />
+          </button>
+        )}
+
+        <div className="p-1.5 bg-primary/10 border border-primary/20 rounded-sm shrink-0">
           <Terminal className="size-4 text-primary" />
         </div>
-        <h2 className="text-lg font-bold tracking-tighter uppercase font-mono text-primary/90 text-glow-sm">
+        <h2 className="text-sm md:text-lg font-bold tracking-tighter uppercase font-mono text-primary/90 text-glow-sm truncate">
           {getTitle()}
         </h2>
       </div>
 
-      <div className="flex items-center gap-6 relative z-20">
+      <div className="flex items-center gap-2 md:gap-6 relative z-20">
+        {/* Search - Desktop Only */}
         <button
           onClick={() => {
             const event = new KeyboardEvent("keydown", {
@@ -85,21 +111,27 @@ export function DashboardHeader() {
           </kbd>
         </button>
 
+        {/* Add Monitor Button - Hidden on Mobile */}
         <Link
           href="/dashboard/monitors/new"
-          className="flex items-center justify-center h-9 px-4 bg-primary/10 text-primary text-xs font-mono font-bold uppercase tracking-wider hover:bg-primary/20 transition-all border border-primary/50 hover:border-primary gap-2 group cursor-pointer relative overflow-hidden"
+          className="hidden md:flex items-center justify-center h-9 px-4 bg-primary/10 text-primary text-xs font-mono font-bold uppercase tracking-wider hover:bg-primary/20 transition-all border border-primary/50 hover:border-primary gap-2 group cursor-pointer relative overflow-hidden"
         >
           <div className="absolute inset-0 bg-primary/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
           <Plus className="size-4 relative z-10" />
           <span className="relative z-10">Add Monitor</span>
         </Link>
 
-        <ModeToggle />
+        {/* Mode Toggle - Hidden on Small Mobile */}
+        <div className="hidden sm:block">
+          <ModeToggle />
+        </div>
 
-        <div className="flex items-center gap-3 border-l border-primary/20 pl-6 h-8">
+        {/* User Menu */}
+        <div className="flex items-center gap-3 border-l border-primary/20 pl-2 md:pl-6 h-8">
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-3 outline-none group cursor-pointer">
-              <div className="text-right hidden sm:block">
+              {/* User Name - Desktop Only */}
+              <div className="text-right hidden lg:block">
                 <p className="text-xs text-foreground font-mono font-bold uppercase tracking-tight">
                   {session?.user?.name || "OPERATOR"}
                 </p>
@@ -107,7 +139,8 @@ export function DashboardHeader() {
                   ADMIN_ACCESS
                 </p>
               </div>
-              <div className="size-9 rounded-sm border border-primary/50 p-0.5 relative hover:border-primary transition-colors">
+              {/* Avatar */}
+              <div className="size-9 rounded-sm border border-primary/50 p-0.5 relative hover:border-primary transition-colors shrink-0">
                 {/* Corner markers for avatar */}
                 <div className="absolute -top-px -left-px w-1 h-1 bg-primary"></div>
                 <div className="absolute -bottom-px -right-px w-1 h-1 bg-primary"></div>

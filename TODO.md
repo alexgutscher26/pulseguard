@@ -82,10 +82,10 @@ The goal is to wow the user. Think _Tron Legacy_ meets _Mr. Robot_.
 
 ### 📱 Mobile Experience
 
-- [ ] **Responsive Grid**
+- [x] **Responsive Grid**
   - Ensure `MonitorStatsGrid` collapses to 1 column on mobile.
   - Sidebar should be a drawer on mobile.
-- [ ] **Touch Targets**
+- [x] **Touch Targets**
   - Increase size of "Run Check" and "Toggle" buttons for thumb usage.
 
 ---

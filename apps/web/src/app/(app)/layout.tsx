@@ -1,15 +1,31 @@
 "use client";
 
+import { useState } from "react";
 import { Sidebar } from "@/components/dashboard/sidebar";
+import { MobileSidebar } from "@/components/dashboard/mobile-sidebar";
 import { DashboardHeader } from "@/components/dashboard/header";
 import { CommandPalette } from "@/components/command-palette/command-palette";
+import { useMobile } from "@/hooks/use-mobile";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const isMobile = useMobile();
+
   return (
     <div className="flex h-screen overflow-hidden bg-[#050505] text-foreground font-mono selection:bg-primary/20">
-      <Sidebar />
+      {/* Desktop Sidebar - Hidden on Mobile */}
+      {!isMobile && <Sidebar />}
+
+      {/* Mobile Sidebar Drawer */}
+      {isMobile && (
+        <MobileSidebar
+          isOpen={isMobileMenuOpen}
+          onClose={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       <main className="flex-1 flex flex-col overflow-y-auto">
-        <DashboardHeader />
+        <DashboardHeader onMenuClick={() => setIsMobileMenuOpen(true)} />
         <div className="p-8 max-w-[1400px] mx-auto w-full relative">
           {/* Dashboard Background FX */}
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#111_1px,transparent_1px),linear-gradient(to_bottom,#111_1px,transparent_1px)] bg-size-[4rem_4rem] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-20 pointer-events-none -z-10"></div>
