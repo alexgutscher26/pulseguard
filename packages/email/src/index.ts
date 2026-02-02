@@ -59,9 +59,8 @@ export async function sendMonitorAlert(
         : `✅ [RESOLVED] ${data.monitorName} is UP`;
 
     const html = await renderMonitorAlert(data);
-    // TODO: Change this email later on.
     const result = await resend.emails.send({
-      from: "PulseGuard <onboarding@resend.dev>",
+      from: "PulseGuard <alerts@pulseguard.com>",
       to,
       subject,
       html,
