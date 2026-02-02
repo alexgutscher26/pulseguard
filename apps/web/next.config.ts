@@ -9,8 +9,10 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // TODO: Change Later!
-  allowedDevOrigins: ["localhost:3000", "loyal-canyon.outray.app"],
+  allowedDevOrigins: [
+    "localhost:3000",
+    ...(process.env.ALLOWED_DEV_ORIGINS?.split(",") || []),
+  ],
 };
 
 export default nextConfig;
