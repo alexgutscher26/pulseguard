@@ -64,7 +64,7 @@ The goal is to wow the user. Think _Tron Legacy_ meets _Mr. Robot_.
   - **Response Time Chart**: Use `Recharts` for a neon-line area chart showing latency over 24h.
   - **Uptime Heatmap**: GitHub-style contribution graph where blocks are days/hours (Green=100%, Yellow=99%, Red=<90%).
   - **Geomap**: SVG map showing _where_ the request was initiated from.
-- [ ] **Aesthetic Elements**
+- [x] **Aesthetic Elements**
   - **Scanlines**: CSS overlay with strict pointer-events-none to give CRT texture.
   - **Glitch Text**: On 404 pages or critical errors, use CSS glitch effects.
   - **Sound FX (Toggleable)**: Subtle "blip" on successful check, "alarm" sound on critical failure.

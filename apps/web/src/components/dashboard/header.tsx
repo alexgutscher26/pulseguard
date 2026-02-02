@@ -3,6 +3,7 @@
 import { Search, Plus, Terminal, LogOut, User, Settings } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
+import { ModeToggle } from "@/components/mode-toggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -83,6 +84,8 @@ export function DashboardHeader() {
           <Plus className="size-4 relative z-10" />
           <span className="relative z-10">Add Monitor</span>
         </Link>
+
+        <ModeToggle />
 
         <div className="flex items-center gap-3 border-l border-primary/20 pl-6 h-8">
           <DropdownMenu>
