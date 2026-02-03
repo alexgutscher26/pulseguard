@@ -128,6 +128,15 @@ const monitorSchema = baseSchema.superRefine((data, ctx) => {
   }
 });
 
+/**
+ * Create a new monitor based on the provided form data.
+ *
+ * This function retrieves the current user session, validates the input data against a schema, and constructs a standard URL format based on the monitor type. It then attempts to create a new monitor entry in the database and revalidates the dashboard path. If any step fails, it returns an appropriate error message.
+ *
+ * @param prevState - The previous state of the monitor, used for context.
+ * @param formData - The form data containing monitor details such as name, URL, type, interval, timeout, and port.
+ * @returns An object indicating the success of the operation and any error messages if applicable.
+ */
 export async function createMonitor(prevState: any, formData: FormData) {
   const session = await auth.api.getSession({
     headers: await headers(),
