@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 
 import Dashboard from "./dashboard";
 
+import { getMonitors, getDashboardStats } from "@/actions/monitors";
+
 export default async function DashboardPage() {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -13,5 +15,7 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  return <Dashboard />;
+  const [monitors, stats] = await Promise.all([getMonitors(), getDashboardStats()]);
+
+  return <Dashboard monitors={monitors} stats={stats} />;
 }

@@ -1,0 +1,36 @@
+{
+  "status": {
+    "operational": "Tous les systèmes sont opérationnels",
+    "major_outage": "Panne majeure",
+    "partial_outage": "Panne partielle",
+    "degraded_performance": "Performance dégradée",
+    "maintenance": "En maintenance",
+    "issue_detected": "Problèmes système détectés",
+    "system_integrity_100": "Intégrité du système 100%",
+    "critical_failures": "Défaillances critiques détectées"
+  },
+  "headings": {
+    "status": "Statut",
+    "events": "Événements",
+    "monitors": "Moniteurs",
+    "past_incidents": "Incidents passés",
+    "current_status": "Statut actuel",
+    "subscribe": "S'abonner aux mises à jour",
+    "uptime": "Disponibilité",
+    "system_modules": "Modules système",
+    "real_time_status": "Statut en temps réel"
+  },
+  "actions": {
+    "subscribe": "S'abonner",
+    "get_updates": "Obtenir des mises à jour",
+    "view_incident": "Voir l'incident"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue",
+    "back_to_home": "Retour à l'accueil",
+    "powered_by": "Propulsé par PulseGuard",
+    "no_monitors": "Aucun moniteur actif configuré.",
+    "system_status": "État du système"
+  }
+}

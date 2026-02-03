@@ -10,7 +10,13 @@ import { Toaster } from "./ui/sonner";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+      themes={["light", "dark", "matrix", "cyberpunk", "blade"]}
+    >
       <QueryClientProvider client={queryClient}>
         {children}
         <ReactQueryDevtools />

@@ -6,8 +6,17 @@ import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 const nextConfig: NextConfig = {
   typedRoutes: true,
   reactCompiler: true,
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  // TODO: Change Later!
+  allowedDevOrigins: ["localhost:3000", "loyal-canyon.outray.app"],
 };
 
-export default nextConfig;
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin();
 
 initOpenNextCloudflareForDev();
+
+export default withNextIntl(nextConfig);

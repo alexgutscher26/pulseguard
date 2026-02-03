@@ -45,8 +45,8 @@ export default function Features() {
       className="py-24 bg-background border-b border-border relative overflow-hidden"
       id="features"
     >
-      <div className="absolute left-0 top-0 h-full w-[1px] bg-border/50"></div>
-      <div className="absolute right-0 top-0 h-full w-[1px] bg-border/50"></div>
+      <div className="absolute left-0 top-0 h-full w-px bg-border/50"></div>
+      <div className="absolute right-0 top-0 h-full w-px bg-border/50"></div>
 
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="flex flex-col gap-12">
@@ -85,7 +85,7 @@ export default function Features() {
                 </div>
 
                 {/* Corner Accent */}
-                <div className="absolute bottom-0 right-0 w-0 h-0 border-b-[20px] border-r-[20px] border-b-transparent border-r-primary/0 group-hover:border-r-primary transition-all duration-300"></div>
+                <div className="absolute bottom-0 right-0 w-0 h-0 border-b-20 border-r-20 border-b-transparent border-r-primary/0 group-hover:border-r-primary transition-all duration-300"></div>
               </div>
             ))}
           </div>

@@ -1,0 +1,423 @@
+model User {
+  id                   String                @id
+  name                 String
+  email                String
+  emailVerified        Boolean               @default(false)
+  image                String?
+  timezone             String?               @default("UTC")
+  dateFormat           String?               @default("MM/DD/YYYY")
+  timeFormat           String?               @default("HH:mm")
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  sessions             Session[]
+  accounts             Account[]
+  monitors             Monitor[]
+  notificationChannels NotificationChannel[]
+  statusPages          StatusPage[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+enum IncidentStatus {
+  INVESTIGATING
+  IDENTIFIED
+  MONITORING
+  RESOLVED
+}
+
+enum Severity {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum IncidentEventType {
+  STATE_CHANGE
+  ALERT_SENT
+  COMMENT
+  AUTO_RESOLVE
+}
+
+model Incident {
+  id          String         @id @default(cuid())
+  monitorId   String
+  monitor     Monitor        @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  status      IncidentStatus @default(INVESTIGATING)
+  severity    Severity       @default(HIGH)
+  title       String
+  description String?
+  startedAt   DateTime       @default(now())
+  resolvedAt  DateTime?
+
+  // Relations
+  events IncidentEvent[]
+
+  // Audits
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([monitorId])
+  @@index([status])
+}
+
+model IncidentEvent {
+  id         String            @id @default(cuid())
+  incidentId String
+  incident   Incident          @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  type       IncidentEventType
+  message    String
+  createdAt  DateTime          @default(now())
+
+  @@index([incidentId])
+}
+
+model RegionalIncident {
+  id               String         @id @default(cuid())
+  monitorId        String
+  monitor          Monitor        @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  region           String
+  status           IncidentStatus @default(INVESTIGATING)
+  startedAt        DateTime       @default(now())
+  resolvedAt       DateTime?
+  avgLatency       Float? // Average latency during incident (ms)
+  latencyThreshold Float? // Threshold that was breached (ms)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([monitorId])
+  @@index([region])
+  @@index([status])
+}
+
+enum LatencyGranularity {
+  ONE_MINUTE
+  FIVE_MINUTE
+  ONE_HOUR
+}
+
+model LatencyAggregate {
+  id          String             @id @default(cuid())
+  monitorId   String
+  monitor     Monitor            @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  region      String
+  timestamp   DateTime
+  granularity LatencyGranularity
+
+  // Latency metrics (in milliseconds)
+  avgLatency Float
+  minLatency Float
+  maxLatency Float
+  p50Latency Float
+  p95Latency Float
+  p99Latency Float
+
+  // Metadata
+  sampleCount Int
+  successRate Float
+
+  createdAt DateTime @default(now())
+
+  @@index([monitorId, region, granularity, timestamp(sort: Desc)])
+  @@index([timestamp])
+  @@index([monitorId, timestamp])
+}
+
+model RegionalBaseline {
+  id              String   @id @default(cuid())
+  monitorId       String
+  monitor         Monitor  @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  region          String
+  baselineLatency Float // 30-day rolling average in milliseconds
+  lastUpdated     DateTime @updatedAt
+
+  createdAt DateTime @default(now())
+
+  @@unique([monitorId, region])
+  @@index([monitorId])
+}
+
+enum NotificationType {
+  EMAIL
+  DISCORD
+  SLACK
+  WEBHOOK
+  TELEGRAM
+  SMS
+}
+
+enum AlertTrigger {
+  STATUS_CHANGE
+  LATENCY
+  SSL_EXPIRY
+}
+
+enum ComparisonOperator {
+  GT
+  LT
+}
+
+model NotificationChannel {
+  id     String           @id @default(cuid())
+  name   String
+  type   NotificationType
+  config Json // Webhook URL, token, email address, phone number, etc.
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  alertRules AlertRule[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model AlertRule {
+  id        String  @id @default(cuid())
+  monitorId String
+  monitor   Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+
+  trigger      AlertTrigger
+  threshold    Int? // e.g. 2000ms for LATENCY, 7 days for SSL_EXPIRY
+  comparison   ComparisonOperator? // e.g. GT for latency > 2000, LT for cert < 7 days
+  targetStatus MonitorStatus? // e.g. DOWN for status changes
+
+  enabled Boolean @default(true)
+
+  channels NotificationChannel[] // Many-to-many relation for channels to notify
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([monitorId])
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters", "prismaSchemaFolder"]
+  engineType      = "wasm"
+  output          = "../../src/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum MonitorType {
+  HTTP
+  PING
+  PORT
+}
+
+enum MonitorStatus {
+  UP
+  DOWN
+  PAUSED
+  MAINTENANCE
+}
+
+model Monitor {
+  id        String        @id @default(cuid())
+  name      String
+  url       String
+  type      MonitorType   @default(HTTP)
+  interval  Int           @default(60) // Seconds
+  timeout   Int           @default(10) // Seconds
+  status    MonitorStatus @default(UP)
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  events             MonitorEvent[]
+  maintenanceWindows MaintenanceWindow[]
+  alertRules         AlertRule[]
+  incidents          Incident[]
+  regionalIncidents  RegionalIncident[]
+  latencyAggregates  LatencyAggregate[]
+  regionalBaselines  RegionalBaseline[]
+  statusPages        StatusPageMonitor[]
+
+  nextCheck      DateTime?
+  lastCheck      DateTime?
+  checkRegions   String? // JSON array of region codes: ["us-east", "eu-west", "ap-south"]
+  alertThreshold Int       @default(1)
+
+  @@index([userId])
+  @@index([nextCheck])
+}
+
+model MonitorEvent {
+  id          String        @id @default(cuid())
+  monitorId   String
+  status      MonitorStatus
+  latency     Int // Milliseconds
+  errorReason String? // "TIMEOUT", "DNS_ERROR", "HTTP_500", etc.
+  timestamp   DateTime      @default(now())
+  region      String? // Region code where check was performed: "us-east", "eu-west", etc.
+
+  monitor Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+
+  @@index([monitorId])
+  @@index([timestamp])
+  @@index([region])
+}
+
+model MaintenanceWindow {
+  id        String  @id @default(cuid())
+  monitorId String
+  monitor   Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+
+  description String?
+  startAt     DateTime
+  endAt       DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([monitorId])
+  @@index([startAt, endAt])
+}
+
+model StatusPageI18n {
+  id           String     @id @default(cuid())
+  statusPageId String
+  statusPage   StatusPage @relation(fields: [statusPageId], references: [id], onDelete: Cascade)
+
+  locale    String // e.g., "en", "es", "fr", "de"
+  enabled   Boolean @default(true)
+  overrides Json? // Store key-value pairs for text overrides: { "status.operational": "All Good" }
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([statusPageId, locale])
+  @@index([statusPageId])
+}
+
+model StatusPage {
+  id           String  @id @default(cuid())
+  slug         String  @unique
+  customDomain String? @unique
+  title        String
+  description  String?
+  favicon      String? // URL
+  logo         String? // URL
+
+  // Design & Config
+  theme  Json? // { colors: { primary: "#...", bg: "#..." }, mode: "dark" | "light" }
+  layout Json? // Ordered list of component definitions
+
+  // Access Control
+  password    String? // Plaintext for simple, or Hashed. For now simplest implementation.
+  isPrivate   Boolean @default(false)
+  ipWhitelist String? // Comma separated list of IPs
+
+  // SEO & Visibility
+  seoIndex         Boolean @default(true)
+  showUptime       Boolean @default(true)
+  showResponseTime Boolean @default(true)
+  showPaused       Boolean @default(false)
+  customCss        String?
+
+  // Relations
+  userId       String
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  monitors     StatusPageMonitor[]
+  views        StatusPageView[]
+  i18nSettings StatusPageI18n[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@index([customDomain])
+  @@index([userId])
+}
+
+model StatusPageMonitor {
+  id String @id @default(cuid())
+
+  statusPageId String
+  statusPage   StatusPage @relation(fields: [statusPageId], references: [id], onDelete: Cascade)
+
+  monitorId String
+  monitor   Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+
+  displayName  String? // Override monitor name contextually
+  displayGroup String? // "API", "Database", etc.
+  sortOrder    Int     @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@unique([statusPageId, monitorId])
+  @@index([statusPageId])
+  @@index([monitorId])
+}
+
+model StatusPageView {
+  id String @id @default(cuid())
+
+  statusPageId String
+  statusPage   StatusPage @relation(fields: [statusPageId], references: [id], onDelete: Cascade)
+
+  visitorHash String
+  userAgent   String?
+  country     String?
+
+  timestamp DateTime @default(now())
+
+  @@index([statusPageId])
+  @@index([timestamp])
+}

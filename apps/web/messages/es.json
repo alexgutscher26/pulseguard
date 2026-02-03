@@ -1,0 +1,36 @@
+{
+  "status": {
+    "operational": "Todos los sistemas operativos",
+    "major_outage": "Interrupción mayor",
+    "partial_outage": "Interrupción parcial",
+    "degraded_performance": "Rendimiento degradado",
+    "maintenance": "En mantenimiento",
+    "issue_detected": "Problemas detectados",
+    "system_integrity_100": "Integridad del sistema 100%",
+    "critical_failures": "Fallas críticas detectadas"
+  },
+  "headings": {
+    "status": "Estado",
+    "events": "Eventos",
+    "monitors": "Monitores",
+    "past_incidents": "Incidentes anteriores",
+    "current_status": "Estado actual",
+    "subscribe": "Suscribirse a actualizaciones",
+    "uptime": "Tiempo de actividad",
+    "system_modules": "Módulos del sistema",
+    "real_time_status": "Estado en tiempo real"
+  },
+  "actions": {
+    "subscribe": "Suscribirse",
+    "get_updates": "Obtener actualizaciones",
+    "view_incident": "Ver incidente"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Algo salió mal",
+    "back_to_home": "Volver al inicio",
+    "powered_by": "Con tecnología de PulseGuard",
+    "no_monitors": "No hay monitores activos configurados.",
+    "system_status": "Estado del sistema"
+  }
+}
