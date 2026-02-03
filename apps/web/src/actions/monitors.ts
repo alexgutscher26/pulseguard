@@ -330,7 +330,7 @@ export async function getMonitors() {
       },
       include: {
         events: {
-          take: 10,
+          take: 20,
           orderBy: { timestamp: "desc" },
         },
       },

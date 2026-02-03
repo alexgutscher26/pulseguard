@@ -14,7 +14,14 @@ function UptimeBar({ status }: { status: number }) {
   let bgClass = "bg-primary/80";
   if (status === 0) bgClass = "bg-red-500/80";
   if (status === 2) bgClass = "bg-amber-500/80";
-  return <div className={`w-1 h-3 md:h-4 ${bgClass}`}></div>;
+  if (status === 3) bgClass = "bg-zinc-800/80 dark:bg-zinc-700/50"; // Placeholder for no data (more visible)
+
+  return (
+    <div
+      className={`w-1 h-3 md:h-4 ${bgClass} rounded-[1px]`}
+      title={status === 3 ? "No Data" : ""}
+    ></div>
+  );
 }
 
 export function MonitorList({ monitors }: { monitors: any[] }) {
@@ -87,9 +94,22 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                 const recentEvents = monitor.events
                   ? monitor.events.slice(0, 20)
                   : [];
-                const history = [...recentEvents].reverse().map((e: any) => {
+
+                // Map events to status codes
+                const rawHistory = [...recentEvents].reverse().map((e: any) => {
                   if (e.status === "MAINTENANCE") return 2;
                   return e.status === "UP" ? 1 : 0;
+                });
+
+                // Pad with "empty" slots (3) to ensure 20 bars
+                const history = Array(20).fill(3);
+                // Fill the end of the array with the actual history
+                // We want [empty, empty, ..., old, new]
+                const startIndex = 20 - rawHistory.length;
+                rawHistory.forEach((status, index) => {
+                  if (startIndex + index < 20) {
+                    history[startIndex + index] = status;
+                  }
                 });
 
                 const latestLatency = monitor.events?.[0]?.latency;
@@ -155,17 +175,11 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                       className={`p-4 ${monitor.status === "PAUSED" ? "opacity-50" : ""}`}
                     >
                       <div className="flex items-center gap-3">
-                        {history.length > 0 ? (
-                          <div className="flex gap-px h-4 items-end">
-                            {history.map((h: number, i: number) => (
-                              <UptimeBar key={i} status={h} />
-                            ))}
-                          </div>
-                        ) : (
-                          <span className="text-xs text-muted-foreground font-bold">
-                            --
-                          </span>
-                        )}
+                        <div className="flex gap-px h-4 items-end">
+                          {history.map((h: number, i: number) => (
+                            <UptimeBar key={i} status={h} />
+                          ))}
+                        </div>
                         <span
                           className={`text-xs font-bold ${uptime < 100 ? "text-red-500" : "text-primary"}`}
                         >
