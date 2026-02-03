@@ -313,6 +313,10 @@ async function sendDiscordAlert(url: string, data: MonitorAlertData, type?: stri
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
+  
+  // Consume body
+  // Consume body
+  await res.text();
 
   if (!res.ok) {
     throw new Error("Discord Webhook failed: " + res.status + " " + res.statusText);
@@ -443,6 +447,9 @@ async function sendSlackAlert(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
+
+  // Consume body
+  await res.text();
 
   if (!res.ok) {
     throw new Error("Slack Webhook failed: " + res.status + " " + res.statusText);

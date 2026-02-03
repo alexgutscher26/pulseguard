@@ -44,6 +44,9 @@ async function checkFromRegion(
       signal: AbortSignal.timeout(timeout * 1000),
     });
 
+    // CRITICAL: Consume body to prevent deadlock
+    await response.text();
+
     const latency = Date.now() - start;
 
     return {

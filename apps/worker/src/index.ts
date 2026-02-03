@@ -49,6 +49,10 @@ async function performCheck(
       });
       currentStatus = response.ok ? "UP" : "DOWN";
 
+      // CRITICAL: Always read the body to prevent Cloudflare Worker deadlock
+      // We don't need the content for UP checks, but we must consume the stream
+      await response.text(); 
+
       if (!response.ok) {
         errorReason = `HTTP_${response.status}`;
       }
@@ -153,7 +157,7 @@ async function recordLatencyToAggregator(
         success,
         timestamp: Date.now(),
       }),
-    });
+    }).then(r => r.text()); // Consume body
   } catch (error) {
     console.error(`[LatencyAggregator] Failed to record latency:`, error);
   }
@@ -178,7 +182,7 @@ async function broadcastLiveEvent(
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(event),
-    }).catch(err => console.error(`[MonitorChannel] Broadcast failed:`, err));
+    }).then(r => r.text()).catch(err => console.error(`[MonitorChannel] Broadcast failed:`, err));
 
   } catch (error) {
     console.error(`[MonitorChannel] Failed to setup broadcast:`, error);

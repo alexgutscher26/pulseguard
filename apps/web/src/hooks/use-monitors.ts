@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react";
 export function useMonitors(initialMonitors: any[]) {
   const query = useQuery({
     queryKey: ["monitors"],
-    queryFn: () => getMonitors(),
+    queryFn: async () => await getMonitors(),
     initialData: initialMonitors,
     refetchInterval: 5000,
     refetchOnWindowFocus: true,
@@ -48,7 +48,7 @@ export function useMonitors(initialMonitors: any[]) {
 export function useDashboardStats(initialStats: any) {
   return useQuery({
     queryKey: ["dashboard-stats"],
-    queryFn: () => getDashboardStats(),
+    queryFn: async () => await getDashboardStats(),
     initialData: initialStats,
     refetchInterval: 5000,
     refetchOnWindowFocus: true,

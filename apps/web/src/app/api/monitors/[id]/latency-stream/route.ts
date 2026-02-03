@@ -3,9 +3,9 @@ import { auth } from "@pulseguard/auth";
 import { getPrisma } from "@pulseguard/db";
 
 interface LatencyStreamParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 /**
@@ -14,7 +14,7 @@ interface LatencyStreamParams {
  */
 export async function GET(
   request: NextRequest,
-  { params }: LatencyStreamParams
+  props: LatencyStreamParams
 ) {
   try {
     // Auth check
@@ -26,6 +26,7 @@ export async function GET(
       return new Response("Unauthorized", { status: 401 });
     }
 
+    const params = await props.params;
     const { id: monitorId } = params;
 
     // Verify monitor ownership

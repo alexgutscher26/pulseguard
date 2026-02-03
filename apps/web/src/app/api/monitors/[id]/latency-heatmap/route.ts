@@ -3,9 +3,9 @@ import { getPrisma } from "@pulseguard/db";
 import { auth } from "@pulseguard/auth";
 
 interface LatencyHeatmapParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 /**
@@ -14,7 +14,7 @@ interface LatencyHeatmapParams {
  */
 export async function GET(
   request: NextRequest,
-  { params }: LatencyHeatmapParams
+  props: LatencyHeatmapParams
 ) {
   try {
     // Auth check
@@ -26,6 +26,7 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const params = await props.params;
     const { id: monitorId } = params;
     const { searchParams } = new URL(request.url);
     

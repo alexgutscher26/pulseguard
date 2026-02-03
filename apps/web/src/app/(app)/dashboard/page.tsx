@@ -2,6 +2,7 @@ import { auth } from "@pulseguard/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { getDashboardStats, getMonitors } from "@/actions/monitors";
 import Dashboard from "./dashboard";
 
 /**
@@ -20,7 +21,10 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const [monitors, stats] = await Promise.all([getMonitors(), getDashboardStats()]);
+  const [monitors, stats] = await Promise.all([
+    getMonitors(),
+    getDashboardStats(),
+  ]);
 
   return <Dashboard monitors={monitors} stats={stats} />;
 }
