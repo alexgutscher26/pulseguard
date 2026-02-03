@@ -10,7 +10,9 @@ import Dashboard from "./dashboard";
  *
  * This function retrieves the user session using the auth.api.getSession method,
  * passing the necessary headers. If the session does not contain a user, it redirects
- * the user to the login page. If the session is valid, it returns the Dashboard component.
+ * the user to the login page. If the session is valid, it fetches monitors and
+ * dashboard statistics concurrently, then returns the Dashboard component with the
+ * retrieved data.
  */
 export default async function DashboardPage() {
   const session = await auth.api.getSession({
