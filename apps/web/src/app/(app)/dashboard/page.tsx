@@ -20,5 +20,7 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  return <Dashboard />;
+  const [monitors, stats] = await Promise.all([getMonitors(), getDashboardStats()]);
+
+  return <Dashboard monitors={monitors} stats={stats} />;
 }

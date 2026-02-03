@@ -10,7 +10,7 @@ export default function LoginPage() {
 
   return (
     <AuthLayout title={showSignIn ? "System Login" : "New User Registration"}>
-       {showSignIn ? (
+      {showSignIn ? (
         <SignInForm onSwitchToSignUp={() => setShowSignIn(false)} />
       ) : (
         <SignUpForm onSwitchToSignIn={() => setShowSignIn(true)} />

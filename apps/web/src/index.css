@@ -64,6 +64,110 @@
   --sidebar-ring: #39ff14;
 }
 
+.matrix {
+  /* Explicit Matrix Mode (Same as Dark) */
+  --background: #050505;
+  --foreground: #e0e0e0;
+  --card: #0a0a0a;
+  --card-foreground: #e0e0e0;
+  --popover: #0a0a0a;
+  --popover-foreground: #e0e0e0;
+  --primary: #39ff14;
+  --primary-foreground: #000000;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #39ff14;
+  --muted: #111111;
+  --muted-foreground: #666666;
+  --accent: #111111;
+  --accent-foreground: #39ff14;
+  --destructive: #ff3333;
+  --border: #333333;
+  --input: #222222;
+  --ring: #39ff14;
+  --sidebar: #050505;
+  --sidebar-foreground: #e0e0e0;
+  --sidebar-primary: #39ff14;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #111111;
+  --sidebar-accent-foreground: #39ff14;
+  --sidebar-border: #333333;
+  --sidebar-ring: #39ff14;
+}
+
+.cyberpunk {
+  /* Cyberpunk 2077 Mode */
+  --background: #020005; /* Deep Purple Black */
+  --foreground: #e0e0e0;
+  --card: #0e0014;
+  --card-foreground: #e0e0e0;
+  --popover: #0e0014;
+  --popover-foreground: #e0e0e0;
+  
+  /* Primary Neon Pink */
+  --primary: #fa2a55;
+  --primary-foreground: #000000;
+  
+  /* Secondary Cyan */
+  --secondary: #00f0ff;
+  --secondary-foreground: #000000;
+  
+  --muted: #1a0b1e;
+  --muted-foreground: #9d5bb5;
+  
+  --accent: #2d0036;
+  --accent-foreground: #ff00ff;
+  
+  --destructive: #ff003c;
+  --border: #4a0052;
+  --input: #2a0030;
+  --ring: #fa2a55;
+
+  --sidebar: #020005;
+  --sidebar-foreground: #e0e0e0;
+  --sidebar-primary: #fa2a55;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #2d0036;
+  --sidebar-accent-foreground: #ff00ff;
+  --sidebar-border: #4a0052;
+  --sidebar-ring: #fa2a55;
+}
+
+.blade {
+  /* Blade Runner 2049 Mode (Orange/Sepia) */
+  --background: #0a0a0a;
+  --foreground: #d4d4d4;
+  --card: #141414;
+  --card-foreground: #d4d4d4;
+  --popover: #141414;
+  --popover-foreground: #d4d4d4;
+  
+  /* Primary Industrial Orange */
+  --primary: #ff9900;
+  --primary-foreground: #000000;
+  
+  --secondary: #1f2937;
+  --secondary-foreground: #ff9900;
+  
+  --muted: #1c1917;
+  --muted-foreground: #a8a29e;
+  
+  --accent: #292524;
+  --accent-foreground: #ff9900;
+  
+  --destructive: #dc2626;
+  --border: #44403c;
+  --input: #292524;
+  --ring: #ff9900;
+
+  --sidebar: #0a0a0a;
+  --sidebar-foreground: #d4d4d4;
+  --sidebar-primary: #ff9900;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #292524;
+  --sidebar-accent-foreground: #ff9900;
+  --sidebar-border: #44403c;
+  --sidebar-ring: #ff9900;
+}
 @theme inline {
   --font-sans: var(--font-geist-sans), sans-serif;
   --font-mono: var(--font-geist-mono), monospace;
@@ -119,6 +223,26 @@
     100% {
       transform: translateY(100%);
     }
+  }
+
+  --animate-glitch-1: glitch-1 0.6s infinite linear alternate-reverse;
+  --animate-glitch-2: glitch-2 0.6s infinite linear alternate-reverse;
+
+  @keyframes glitch-1 {
+    0% { clip-path: inset(20% 0 80% 0); }
+    20% { clip-path: inset(60% 0 10% 0); }
+    40% { clip-path: inset(40% 0 50% 0); }
+    60% { clip-path: inset(80% 0 5% 0); }
+    80% { clip-path: inset(10% 0 60% 0); }
+    100% { clip-path: inset(30% 0 30% 0); }
+  }
+  @keyframes glitch-2 {
+    0% { clip-path: inset(10% 0 60% 0); }
+    20% { clip-path: inset(30% 0 20% 0); }
+    40% { clip-path: inset(10% 0 80% 0); }
+    60% { clip-path: inset(70% 0 10% 0); }
+    80% { clip-path: inset(40% 0 30% 0); }
+    100% { clip-path: inset(50% 0 50% 0); }
   }
 }
 
