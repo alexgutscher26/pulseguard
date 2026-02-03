@@ -13,6 +13,8 @@ model User {
   accounts             Account[]
   monitors             Monitor[]
   notificationChannels NotificationChannel[]
+  statusPages          StatusPage[]
+
 
   @@unique([email])
   @@map("user")

@@ -1,13 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { Activity, LayoutDashboard, Monitor, Bell, Settings, TriangleAlert } from "lucide-react";
+import {
+  Activity,
+  LayoutDashboard,
+  Monitor,
+  Bell,
+  Settings,
+  TriangleAlert,
+  Globe,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Monitors", href: "/dashboard/monitors", icon: Monitor },
+  { name: "Status Pages", href: "/dashboard/pages", icon: Globe },
   { name: "Incidents", href: "/dashboard/incidents", icon: TriangleAlert },
   { name: "Alerts", href: "/dashboard/alerts", icon: Bell },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
@@ -60,10 +69,14 @@ export function Sidebar() {
                 <item.icon
                   className={cn(
                     "size-4",
-                    isActive ? "text-primary" : "text-muted-foreground group-hover:text-primary",
+                    isActive
+                      ? "text-primary"
+                      : "text-muted-foreground group-hover:text-primary",
                   )}
                 />
-                <p className="text-xs font-bold uppercase tracking-wider">{item.name}</p>
+                <p className="text-xs font-bold uppercase tracking-wider">
+                  {item.name}
+                </p>
                 {isActive && (
                   <span className="ml-auto w-1.5 h-1.5 bg-primary rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.5)]"></span>
                 )}
@@ -75,7 +88,9 @@ export function Sidebar() {
 
       {/* Bottom CTA */}
       <div className="relative z-10 p-4 rounded-sm border border-primary/20 bg-primary/5 flex flex-col gap-3">
-        <p className="text-[10px] text-primary/80 font-mono uppercase">System Capacity Low</p>
+        <p className="text-[10px] text-primary/80 font-mono uppercase">
+          System Capacity Low
+        </p>
         <button className="w-full bg-primary text-black text-xs font-mono font-bold uppercase tracking-widest hover:bg-primary/90 transition-all border border-primary relative overflow-hidden group py-2">
           <span className="relative z-10">Upgrade Plan</span>
           <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>

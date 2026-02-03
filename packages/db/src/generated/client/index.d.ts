@@ -83,6 +83,26 @@ export type MonitorEvent = $Result.DefaultSelection<Prisma.$MonitorEventPayload>
  * 
  */
 export type MaintenanceWindow = $Result.DefaultSelection<Prisma.$MaintenanceWindowPayload>
+/**
+ * Model StatusPageI18n
+ * 
+ */
+export type StatusPageI18n = $Result.DefaultSelection<Prisma.$StatusPageI18nPayload>
+/**
+ * Model StatusPage
+ * 
+ */
+export type StatusPage = $Result.DefaultSelection<Prisma.$StatusPagePayload>
+/**
+ * Model StatusPageMonitor
+ * 
+ */
+export type StatusPageMonitor = $Result.DefaultSelection<Prisma.$StatusPageMonitorPayload>
+/**
+ * Model StatusPageView
+ * 
+ */
+export type StatusPageView = $Result.DefaultSelection<Prisma.$StatusPageViewPayload>
 
 /**
  * Enums
@@ -467,6 +487,46 @@ export class PrismaClient<
     * ```
     */
   get maintenanceWindow(): Prisma.MaintenanceWindowDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.statusPageI18n`: Exposes CRUD operations for the **StatusPageI18n** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more StatusPageI18ns
+    * const statusPageI18ns = await prisma.statusPageI18n.findMany()
+    * ```
+    */
+  get statusPageI18n(): Prisma.StatusPageI18nDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.statusPage`: Exposes CRUD operations for the **StatusPage** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more StatusPages
+    * const statusPages = await prisma.statusPage.findMany()
+    * ```
+    */
+  get statusPage(): Prisma.StatusPageDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.statusPageMonitor`: Exposes CRUD operations for the **StatusPageMonitor** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more StatusPageMonitors
+    * const statusPageMonitors = await prisma.statusPageMonitor.findMany()
+    * ```
+    */
+  get statusPageMonitor(): Prisma.StatusPageMonitorDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.statusPageView`: Exposes CRUD operations for the **StatusPageView** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more StatusPageViews
+    * const statusPageViews = await prisma.statusPageView.findMany()
+    * ```
+    */
+  get statusPageView(): Prisma.StatusPageViewDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -914,7 +974,11 @@ export namespace Prisma {
     AlertRule: 'AlertRule',
     Monitor: 'Monitor',
     MonitorEvent: 'MonitorEvent',
-    MaintenanceWindow: 'MaintenanceWindow'
+    MaintenanceWindow: 'MaintenanceWindow',
+    StatusPageI18n: 'StatusPageI18n',
+    StatusPage: 'StatusPage',
+    StatusPageMonitor: 'StatusPageMonitor',
+    StatusPageView: 'StatusPageView'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -930,7 +994,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "account" | "verification" | "incident" | "incidentEvent" | "regionalIncident" | "latencyAggregate" | "regionalBaseline" | "notificationChannel" | "alertRule" | "monitor" | "monitorEvent" | "maintenanceWindow"
+      modelProps: "user" | "session" | "account" | "verification" | "incident" | "incidentEvent" | "regionalIncident" | "latencyAggregate" | "regionalBaseline" | "notificationChannel" | "alertRule" | "monitor" | "monitorEvent" | "maintenanceWindow" | "statusPageI18n" | "statusPage" | "statusPageMonitor" | "statusPageView"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1970,6 +2034,302 @@ export namespace Prisma {
           }
         }
       }
+      StatusPageI18n: {
+        payload: Prisma.$StatusPageI18nPayload<ExtArgs>
+        fields: Prisma.StatusPageI18nFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.StatusPageI18nFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageI18nPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.StatusPageI18nFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageI18nPayload>
+          }
+          findFirst: {
+            args: Prisma.StatusPageI18nFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageI18nPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.StatusPageI18nFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageI18nPayload>
+          }
+          findMany: {
+            args: Prisma.StatusPageI18nFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageI18nPayload>[]
+          }
+          create: {
+            args: Prisma.StatusPageI18nCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageI18nPayload>
+          }
+          createMany: {
+            args: Prisma.StatusPageI18nCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.StatusPageI18nCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageI18nPayload>[]
+          }
+          delete: {
+            args: Prisma.StatusPageI18nDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageI18nPayload>
+          }
+          update: {
+            args: Prisma.StatusPageI18nUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageI18nPayload>
+          }
+          deleteMany: {
+            args: Prisma.StatusPageI18nDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.StatusPageI18nUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.StatusPageI18nUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageI18nPayload>[]
+          }
+          upsert: {
+            args: Prisma.StatusPageI18nUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageI18nPayload>
+          }
+          aggregate: {
+            args: Prisma.StatusPageI18nAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateStatusPageI18n>
+          }
+          groupBy: {
+            args: Prisma.StatusPageI18nGroupByArgs<ExtArgs>
+            result: $Utils.Optional<StatusPageI18nGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.StatusPageI18nCountArgs<ExtArgs>
+            result: $Utils.Optional<StatusPageI18nCountAggregateOutputType> | number
+          }
+        }
+      }
+      StatusPage: {
+        payload: Prisma.$StatusPagePayload<ExtArgs>
+        fields: Prisma.StatusPageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.StatusPageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.StatusPageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPagePayload>
+          }
+          findFirst: {
+            args: Prisma.StatusPageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.StatusPageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPagePayload>
+          }
+          findMany: {
+            args: Prisma.StatusPageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPagePayload>[]
+          }
+          create: {
+            args: Prisma.StatusPageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPagePayload>
+          }
+          createMany: {
+            args: Prisma.StatusPageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.StatusPageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPagePayload>[]
+          }
+          delete: {
+            args: Prisma.StatusPageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPagePayload>
+          }
+          update: {
+            args: Prisma.StatusPageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPagePayload>
+          }
+          deleteMany: {
+            args: Prisma.StatusPageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.StatusPageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.StatusPageUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPagePayload>[]
+          }
+          upsert: {
+            args: Prisma.StatusPageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPagePayload>
+          }
+          aggregate: {
+            args: Prisma.StatusPageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateStatusPage>
+          }
+          groupBy: {
+            args: Prisma.StatusPageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<StatusPageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.StatusPageCountArgs<ExtArgs>
+            result: $Utils.Optional<StatusPageCountAggregateOutputType> | number
+          }
+        }
+      }
+      StatusPageMonitor: {
+        payload: Prisma.$StatusPageMonitorPayload<ExtArgs>
+        fields: Prisma.StatusPageMonitorFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.StatusPageMonitorFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageMonitorPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.StatusPageMonitorFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageMonitorPayload>
+          }
+          findFirst: {
+            args: Prisma.StatusPageMonitorFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageMonitorPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.StatusPageMonitorFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageMonitorPayload>
+          }
+          findMany: {
+            args: Prisma.StatusPageMonitorFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageMonitorPayload>[]
+          }
+          create: {
+            args: Prisma.StatusPageMonitorCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageMonitorPayload>
+          }
+          createMany: {
+            args: Prisma.StatusPageMonitorCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.StatusPageMonitorCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageMonitorPayload>[]
+          }
+          delete: {
+            args: Prisma.StatusPageMonitorDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageMonitorPayload>
+          }
+          update: {
+            args: Prisma.StatusPageMonitorUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageMonitorPayload>
+          }
+          deleteMany: {
+            args: Prisma.StatusPageMonitorDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.StatusPageMonitorUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.StatusPageMonitorUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageMonitorPayload>[]
+          }
+          upsert: {
+            args: Prisma.StatusPageMonitorUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageMonitorPayload>
+          }
+          aggregate: {
+            args: Prisma.StatusPageMonitorAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateStatusPageMonitor>
+          }
+          groupBy: {
+            args: Prisma.StatusPageMonitorGroupByArgs<ExtArgs>
+            result: $Utils.Optional<StatusPageMonitorGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.StatusPageMonitorCountArgs<ExtArgs>
+            result: $Utils.Optional<StatusPageMonitorCountAggregateOutputType> | number
+          }
+        }
+      }
+      StatusPageView: {
+        payload: Prisma.$StatusPageViewPayload<ExtArgs>
+        fields: Prisma.StatusPageViewFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.StatusPageViewFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageViewPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.StatusPageViewFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageViewPayload>
+          }
+          findFirst: {
+            args: Prisma.StatusPageViewFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageViewPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.StatusPageViewFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageViewPayload>
+          }
+          findMany: {
+            args: Prisma.StatusPageViewFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageViewPayload>[]
+          }
+          create: {
+            args: Prisma.StatusPageViewCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageViewPayload>
+          }
+          createMany: {
+            args: Prisma.StatusPageViewCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.StatusPageViewCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageViewPayload>[]
+          }
+          delete: {
+            args: Prisma.StatusPageViewDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageViewPayload>
+          }
+          update: {
+            args: Prisma.StatusPageViewUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageViewPayload>
+          }
+          deleteMany: {
+            args: Prisma.StatusPageViewDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.StatusPageViewUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.StatusPageViewUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageViewPayload>[]
+          }
+          upsert: {
+            args: Prisma.StatusPageViewUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageViewPayload>
+          }
+          aggregate: {
+            args: Prisma.StatusPageViewAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateStatusPageView>
+          }
+          groupBy: {
+            args: Prisma.StatusPageViewGroupByArgs<ExtArgs>
+            result: $Utils.Optional<StatusPageViewGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.StatusPageViewCountArgs<ExtArgs>
+            result: $Utils.Optional<StatusPageViewCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2092,6 +2452,10 @@ export namespace Prisma {
     monitor?: MonitorOmit
     monitorEvent?: MonitorEventOmit
     maintenanceWindow?: MaintenanceWindowOmit
+    statusPageI18n?: StatusPageI18nOmit
+    statusPage?: StatusPageOmit
+    statusPageMonitor?: StatusPageMonitorOmit
+    statusPageView?: StatusPageViewOmit
   }
 
   /* Types for Logging */
@@ -2176,6 +2540,7 @@ export namespace Prisma {
     accounts: number
     monitors: number
     notificationChannels: number
+    statusPages: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2183,6 +2548,7 @@ export namespace Prisma {
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
     monitors?: boolean | UserCountOutputTypeCountMonitorsArgs
     notificationChannels?: boolean | UserCountOutputTypeCountNotificationChannelsArgs
+    statusPages?: boolean | UserCountOutputTypeCountStatusPagesArgs
   }
 
   // Custom InputTypes
@@ -2222,6 +2588,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountNotificationChannelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: NotificationChannelWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountStatusPagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StatusPageWhereInput
   }
 
 
@@ -2330,6 +2703,7 @@ export namespace Prisma {
     regionalIncidents: number
     latencyAggregates: number
     regionalBaselines: number
+    statusPages: number
   }
 
   export type MonitorCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2340,6 +2714,7 @@ export namespace Prisma {
     regionalIncidents?: boolean | MonitorCountOutputTypeCountRegionalIncidentsArgs
     latencyAggregates?: boolean | MonitorCountOutputTypeCountLatencyAggregatesArgs
     regionalBaselines?: boolean | MonitorCountOutputTypeCountRegionalBaselinesArgs
+    statusPages?: boolean | MonitorCountOutputTypeCountStatusPagesArgs
   }
 
   // Custom InputTypes
@@ -2400,6 +2775,62 @@ export namespace Prisma {
    */
   export type MonitorCountOutputTypeCountRegionalBaselinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RegionalBaselineWhereInput
+  }
+
+  /**
+   * MonitorCountOutputType without action
+   */
+  export type MonitorCountOutputTypeCountStatusPagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StatusPageMonitorWhereInput
+  }
+
+
+  /**
+   * Count Type StatusPageCountOutputType
+   */
+
+  export type StatusPageCountOutputType = {
+    monitors: number
+    views: number
+    i18nSettings: number
+  }
+
+  export type StatusPageCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    monitors?: boolean | StatusPageCountOutputTypeCountMonitorsArgs
+    views?: boolean | StatusPageCountOutputTypeCountViewsArgs
+    i18nSettings?: boolean | StatusPageCountOutputTypeCountI18nSettingsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * StatusPageCountOutputType without action
+   */
+  export type StatusPageCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageCountOutputType
+     */
+    select?: StatusPageCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * StatusPageCountOutputType without action
+   */
+  export type StatusPageCountOutputTypeCountMonitorsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StatusPageMonitorWhereInput
+  }
+
+  /**
+   * StatusPageCountOutputType without action
+   */
+  export type StatusPageCountOutputTypeCountViewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StatusPageViewWhereInput
+  }
+
+  /**
+   * StatusPageCountOutputType without action
+   */
+  export type StatusPageCountOutputTypeCountI18nSettingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StatusPageI18nWhereInput
   }
 
 
@@ -2615,6 +3046,7 @@ export namespace Prisma {
     accounts?: boolean | User$accountsArgs<ExtArgs>
     monitors?: boolean | User$monitorsArgs<ExtArgs>
     notificationChannels?: boolean | User$notificationChannelsArgs<ExtArgs>
+    statusPages?: boolean | User$statusPagesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2663,6 +3095,7 @@ export namespace Prisma {
     accounts?: boolean | User$accountsArgs<ExtArgs>
     monitors?: boolean | User$monitorsArgs<ExtArgs>
     notificationChannels?: boolean | User$notificationChannelsArgs<ExtArgs>
+    statusPages?: boolean | User$statusPagesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2675,6 +3108,7 @@ export namespace Prisma {
       accounts: Prisma.$AccountPayload<ExtArgs>[]
       monitors: Prisma.$MonitorPayload<ExtArgs>[]
       notificationChannels: Prisma.$NotificationChannelPayload<ExtArgs>[]
+      statusPages: Prisma.$StatusPagePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3085,6 +3519,7 @@ export namespace Prisma {
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     monitors<T extends User$monitorsArgs<ExtArgs> = {}>(args?: Subset<T, User$monitorsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MonitorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     notificationChannels<T extends User$notificationChannelsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationChannelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationChannelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    statusPages<T extends User$statusPagesArgs<ExtArgs> = {}>(args?: Subset<T, User$statusPagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3605,6 +4040,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: NotificationChannelScalarFieldEnum | NotificationChannelScalarFieldEnum[]
+  }
+
+  /**
+   * User.statusPages
+   */
+  export type User$statusPagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPage
+     */
+    select?: StatusPageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPage
+     */
+    omit?: StatusPageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageInclude<ExtArgs> | null
+    where?: StatusPageWhereInput
+    orderBy?: StatusPageOrderByWithRelationInput | StatusPageOrderByWithRelationInput[]
+    cursor?: StatusPageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StatusPageScalarFieldEnum | StatusPageScalarFieldEnum[]
   }
 
   /**
@@ -15177,6 +15636,7 @@ export namespace Prisma {
     regionalIncidents?: boolean | Monitor$regionalIncidentsArgs<ExtArgs>
     latencyAggregates?: boolean | Monitor$latencyAggregatesArgs<ExtArgs>
     regionalBaselines?: boolean | Monitor$regionalBaselinesArgs<ExtArgs>
+    statusPages?: boolean | Monitor$statusPagesArgs<ExtArgs>
     _count?: boolean | MonitorCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["monitor"]>
 
@@ -15243,6 +15703,7 @@ export namespace Prisma {
     regionalIncidents?: boolean | Monitor$regionalIncidentsArgs<ExtArgs>
     latencyAggregates?: boolean | Monitor$latencyAggregatesArgs<ExtArgs>
     regionalBaselines?: boolean | Monitor$regionalBaselinesArgs<ExtArgs>
+    statusPages?: boolean | Monitor$statusPagesArgs<ExtArgs>
     _count?: boolean | MonitorCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type MonitorIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -15263,6 +15724,7 @@ export namespace Prisma {
       regionalIncidents: Prisma.$RegionalIncidentPayload<ExtArgs>[]
       latencyAggregates: Prisma.$LatencyAggregatePayload<ExtArgs>[]
       regionalBaselines: Prisma.$RegionalBaselinePayload<ExtArgs>[]
+      statusPages: Prisma.$StatusPageMonitorPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -15681,6 +16143,7 @@ export namespace Prisma {
     regionalIncidents<T extends Monitor$regionalIncidentsArgs<ExtArgs> = {}>(args?: Subset<T, Monitor$regionalIncidentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RegionalIncidentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     latencyAggregates<T extends Monitor$latencyAggregatesArgs<ExtArgs> = {}>(args?: Subset<T, Monitor$latencyAggregatesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LatencyAggregatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     regionalBaselines<T extends Monitor$regionalBaselinesArgs<ExtArgs> = {}>(args?: Subset<T, Monitor$regionalBaselinesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RegionalBaselinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    statusPages<T extends Monitor$statusPagesArgs<ExtArgs> = {}>(args?: Subset<T, Monitor$statusPagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPageMonitorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -16285,6 +16748,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: RegionalBaselineScalarFieldEnum | RegionalBaselineScalarFieldEnum[]
+  }
+
+  /**
+   * Monitor.statusPages
+   */
+  export type Monitor$statusPagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageMonitor
+     */
+    select?: StatusPageMonitorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageMonitor
+     */
+    omit?: StatusPageMonitorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageMonitorInclude<ExtArgs> | null
+    where?: StatusPageMonitorWhereInput
+    orderBy?: StatusPageMonitorOrderByWithRelationInput | StatusPageMonitorOrderByWithRelationInput[]
+    cursor?: StatusPageMonitorWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StatusPageMonitorScalarFieldEnum | StatusPageMonitorScalarFieldEnum[]
   }
 
   /**
@@ -18509,6 +18996,4614 @@ export namespace Prisma {
 
 
   /**
+   * Model StatusPageI18n
+   */
+
+  export type AggregateStatusPageI18n = {
+    _count: StatusPageI18nCountAggregateOutputType | null
+    _min: StatusPageI18nMinAggregateOutputType | null
+    _max: StatusPageI18nMaxAggregateOutputType | null
+  }
+
+  export type StatusPageI18nMinAggregateOutputType = {
+    id: string | null
+    statusPageId: string | null
+    locale: string | null
+    enabled: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StatusPageI18nMaxAggregateOutputType = {
+    id: string | null
+    statusPageId: string | null
+    locale: string | null
+    enabled: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StatusPageI18nCountAggregateOutputType = {
+    id: number
+    statusPageId: number
+    locale: number
+    enabled: number
+    overrides: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type StatusPageI18nMinAggregateInputType = {
+    id?: true
+    statusPageId?: true
+    locale?: true
+    enabled?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StatusPageI18nMaxAggregateInputType = {
+    id?: true
+    statusPageId?: true
+    locale?: true
+    enabled?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StatusPageI18nCountAggregateInputType = {
+    id?: true
+    statusPageId?: true
+    locale?: true
+    enabled?: true
+    overrides?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type StatusPageI18nAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StatusPageI18n to aggregate.
+     */
+    where?: StatusPageI18nWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StatusPageI18ns to fetch.
+     */
+    orderBy?: StatusPageI18nOrderByWithRelationInput | StatusPageI18nOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: StatusPageI18nWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StatusPageI18ns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StatusPageI18ns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned StatusPageI18ns
+    **/
+    _count?: true | StatusPageI18nCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: StatusPageI18nMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: StatusPageI18nMaxAggregateInputType
+  }
+
+  export type GetStatusPageI18nAggregateType<T extends StatusPageI18nAggregateArgs> = {
+        [P in keyof T & keyof AggregateStatusPageI18n]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateStatusPageI18n[P]>
+      : GetScalarType<T[P], AggregateStatusPageI18n[P]>
+  }
+
+
+
+
+  export type StatusPageI18nGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StatusPageI18nWhereInput
+    orderBy?: StatusPageI18nOrderByWithAggregationInput | StatusPageI18nOrderByWithAggregationInput[]
+    by: StatusPageI18nScalarFieldEnum[] | StatusPageI18nScalarFieldEnum
+    having?: StatusPageI18nScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: StatusPageI18nCountAggregateInputType | true
+    _min?: StatusPageI18nMinAggregateInputType
+    _max?: StatusPageI18nMaxAggregateInputType
+  }
+
+  export type StatusPageI18nGroupByOutputType = {
+    id: string
+    statusPageId: string
+    locale: string
+    enabled: boolean
+    overrides: JsonValue | null
+    createdAt: Date
+    updatedAt: Date
+    _count: StatusPageI18nCountAggregateOutputType | null
+    _min: StatusPageI18nMinAggregateOutputType | null
+    _max: StatusPageI18nMaxAggregateOutputType | null
+  }
+
+  type GetStatusPageI18nGroupByPayload<T extends StatusPageI18nGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<StatusPageI18nGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof StatusPageI18nGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], StatusPageI18nGroupByOutputType[P]>
+            : GetScalarType<T[P], StatusPageI18nGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type StatusPageI18nSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    statusPageId?: boolean
+    locale?: boolean
+    enabled?: boolean
+    overrides?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    statusPage?: boolean | StatusPageDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["statusPageI18n"]>
+
+  export type StatusPageI18nSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    statusPageId?: boolean
+    locale?: boolean
+    enabled?: boolean
+    overrides?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    statusPage?: boolean | StatusPageDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["statusPageI18n"]>
+
+  export type StatusPageI18nSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    statusPageId?: boolean
+    locale?: boolean
+    enabled?: boolean
+    overrides?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    statusPage?: boolean | StatusPageDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["statusPageI18n"]>
+
+  export type StatusPageI18nSelectScalar = {
+    id?: boolean
+    statusPageId?: boolean
+    locale?: boolean
+    enabled?: boolean
+    overrides?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type StatusPageI18nOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "statusPageId" | "locale" | "enabled" | "overrides" | "createdAt" | "updatedAt", ExtArgs["result"]["statusPageI18n"]>
+  export type StatusPageI18nInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    statusPage?: boolean | StatusPageDefaultArgs<ExtArgs>
+  }
+  export type StatusPageI18nIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    statusPage?: boolean | StatusPageDefaultArgs<ExtArgs>
+  }
+  export type StatusPageI18nIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    statusPage?: boolean | StatusPageDefaultArgs<ExtArgs>
+  }
+
+  export type $StatusPageI18nPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "StatusPageI18n"
+    objects: {
+      statusPage: Prisma.$StatusPagePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      statusPageId: string
+      locale: string
+      enabled: boolean
+      overrides: Prisma.JsonValue | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["statusPageI18n"]>
+    composites: {}
+  }
+
+  type StatusPageI18nGetPayload<S extends boolean | null | undefined | StatusPageI18nDefaultArgs> = $Result.GetResult<Prisma.$StatusPageI18nPayload, S>
+
+  type StatusPageI18nCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<StatusPageI18nFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: StatusPageI18nCountAggregateInputType | true
+    }
+
+  export interface StatusPageI18nDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['StatusPageI18n'], meta: { name: 'StatusPageI18n' } }
+    /**
+     * Find zero or one StatusPageI18n that matches the filter.
+     * @param {StatusPageI18nFindUniqueArgs} args - Arguments to find a StatusPageI18n
+     * @example
+     * // Get one StatusPageI18n
+     * const statusPageI18n = await prisma.statusPageI18n.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StatusPageI18nFindUniqueArgs>(args: SelectSubset<T, StatusPageI18nFindUniqueArgs<ExtArgs>>): Prisma__StatusPageI18nClient<$Result.GetResult<Prisma.$StatusPageI18nPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one StatusPageI18n that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StatusPageI18nFindUniqueOrThrowArgs} args - Arguments to find a StatusPageI18n
+     * @example
+     * // Get one StatusPageI18n
+     * const statusPageI18n = await prisma.statusPageI18n.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StatusPageI18nFindUniqueOrThrowArgs>(args: SelectSubset<T, StatusPageI18nFindUniqueOrThrowArgs<ExtArgs>>): Prisma__StatusPageI18nClient<$Result.GetResult<Prisma.$StatusPageI18nPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StatusPageI18n that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageI18nFindFirstArgs} args - Arguments to find a StatusPageI18n
+     * @example
+     * // Get one StatusPageI18n
+     * const statusPageI18n = await prisma.statusPageI18n.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StatusPageI18nFindFirstArgs>(args?: SelectSubset<T, StatusPageI18nFindFirstArgs<ExtArgs>>): Prisma__StatusPageI18nClient<$Result.GetResult<Prisma.$StatusPageI18nPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StatusPageI18n that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageI18nFindFirstOrThrowArgs} args - Arguments to find a StatusPageI18n
+     * @example
+     * // Get one StatusPageI18n
+     * const statusPageI18n = await prisma.statusPageI18n.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StatusPageI18nFindFirstOrThrowArgs>(args?: SelectSubset<T, StatusPageI18nFindFirstOrThrowArgs<ExtArgs>>): Prisma__StatusPageI18nClient<$Result.GetResult<Prisma.$StatusPageI18nPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more StatusPageI18ns that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageI18nFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all StatusPageI18ns
+     * const statusPageI18ns = await prisma.statusPageI18n.findMany()
+     * 
+     * // Get first 10 StatusPageI18ns
+     * const statusPageI18ns = await prisma.statusPageI18n.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const statusPageI18nWithIdOnly = await prisma.statusPageI18n.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends StatusPageI18nFindManyArgs>(args?: SelectSubset<T, StatusPageI18nFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPageI18nPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a StatusPageI18n.
+     * @param {StatusPageI18nCreateArgs} args - Arguments to create a StatusPageI18n.
+     * @example
+     * // Create one StatusPageI18n
+     * const StatusPageI18n = await prisma.statusPageI18n.create({
+     *   data: {
+     *     // ... data to create a StatusPageI18n
+     *   }
+     * })
+     * 
+     */
+    create<T extends StatusPageI18nCreateArgs>(args: SelectSubset<T, StatusPageI18nCreateArgs<ExtArgs>>): Prisma__StatusPageI18nClient<$Result.GetResult<Prisma.$StatusPageI18nPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many StatusPageI18ns.
+     * @param {StatusPageI18nCreateManyArgs} args - Arguments to create many StatusPageI18ns.
+     * @example
+     * // Create many StatusPageI18ns
+     * const statusPageI18n = await prisma.statusPageI18n.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends StatusPageI18nCreateManyArgs>(args?: SelectSubset<T, StatusPageI18nCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many StatusPageI18ns and returns the data saved in the database.
+     * @param {StatusPageI18nCreateManyAndReturnArgs} args - Arguments to create many StatusPageI18ns.
+     * @example
+     * // Create many StatusPageI18ns
+     * const statusPageI18n = await prisma.statusPageI18n.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many StatusPageI18ns and only return the `id`
+     * const statusPageI18nWithIdOnly = await prisma.statusPageI18n.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends StatusPageI18nCreateManyAndReturnArgs>(args?: SelectSubset<T, StatusPageI18nCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPageI18nPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a StatusPageI18n.
+     * @param {StatusPageI18nDeleteArgs} args - Arguments to delete one StatusPageI18n.
+     * @example
+     * // Delete one StatusPageI18n
+     * const StatusPageI18n = await prisma.statusPageI18n.delete({
+     *   where: {
+     *     // ... filter to delete one StatusPageI18n
+     *   }
+     * })
+     * 
+     */
+    delete<T extends StatusPageI18nDeleteArgs>(args: SelectSubset<T, StatusPageI18nDeleteArgs<ExtArgs>>): Prisma__StatusPageI18nClient<$Result.GetResult<Prisma.$StatusPageI18nPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one StatusPageI18n.
+     * @param {StatusPageI18nUpdateArgs} args - Arguments to update one StatusPageI18n.
+     * @example
+     * // Update one StatusPageI18n
+     * const statusPageI18n = await prisma.statusPageI18n.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends StatusPageI18nUpdateArgs>(args: SelectSubset<T, StatusPageI18nUpdateArgs<ExtArgs>>): Prisma__StatusPageI18nClient<$Result.GetResult<Prisma.$StatusPageI18nPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more StatusPageI18ns.
+     * @param {StatusPageI18nDeleteManyArgs} args - Arguments to filter StatusPageI18ns to delete.
+     * @example
+     * // Delete a few StatusPageI18ns
+     * const { count } = await prisma.statusPageI18n.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends StatusPageI18nDeleteManyArgs>(args?: SelectSubset<T, StatusPageI18nDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StatusPageI18ns.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageI18nUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many StatusPageI18ns
+     * const statusPageI18n = await prisma.statusPageI18n.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends StatusPageI18nUpdateManyArgs>(args: SelectSubset<T, StatusPageI18nUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StatusPageI18ns and returns the data updated in the database.
+     * @param {StatusPageI18nUpdateManyAndReturnArgs} args - Arguments to update many StatusPageI18ns.
+     * @example
+     * // Update many StatusPageI18ns
+     * const statusPageI18n = await prisma.statusPageI18n.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more StatusPageI18ns and only return the `id`
+     * const statusPageI18nWithIdOnly = await prisma.statusPageI18n.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends StatusPageI18nUpdateManyAndReturnArgs>(args: SelectSubset<T, StatusPageI18nUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPageI18nPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one StatusPageI18n.
+     * @param {StatusPageI18nUpsertArgs} args - Arguments to update or create a StatusPageI18n.
+     * @example
+     * // Update or create a StatusPageI18n
+     * const statusPageI18n = await prisma.statusPageI18n.upsert({
+     *   create: {
+     *     // ... data to create a StatusPageI18n
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the StatusPageI18n we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StatusPageI18nUpsertArgs>(args: SelectSubset<T, StatusPageI18nUpsertArgs<ExtArgs>>): Prisma__StatusPageI18nClient<$Result.GetResult<Prisma.$StatusPageI18nPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of StatusPageI18ns.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageI18nCountArgs} args - Arguments to filter StatusPageI18ns to count.
+     * @example
+     * // Count the number of StatusPageI18ns
+     * const count = await prisma.statusPageI18n.count({
+     *   where: {
+     *     // ... the filter for the StatusPageI18ns we want to count
+     *   }
+     * })
+    **/
+    count<T extends StatusPageI18nCountArgs>(
+      args?: Subset<T, StatusPageI18nCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], StatusPageI18nCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a StatusPageI18n.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageI18nAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StatusPageI18nAggregateArgs>(args: Subset<T, StatusPageI18nAggregateArgs>): Prisma.PrismaPromise<GetStatusPageI18nAggregateType<T>>
+
+    /**
+     * Group by StatusPageI18n.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageI18nGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends StatusPageI18nGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: StatusPageI18nGroupByArgs['orderBy'] }
+        : { orderBy?: StatusPageI18nGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, StatusPageI18nGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStatusPageI18nGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the StatusPageI18n model
+   */
+  readonly fields: StatusPageI18nFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for StatusPageI18n.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__StatusPageI18nClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    statusPage<T extends StatusPageDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StatusPageDefaultArgs<ExtArgs>>): Prisma__StatusPageClient<$Result.GetResult<Prisma.$StatusPagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the StatusPageI18n model
+   */
+  interface StatusPageI18nFieldRefs {
+    readonly id: FieldRef<"StatusPageI18n", 'String'>
+    readonly statusPageId: FieldRef<"StatusPageI18n", 'String'>
+    readonly locale: FieldRef<"StatusPageI18n", 'String'>
+    readonly enabled: FieldRef<"StatusPageI18n", 'Boolean'>
+    readonly overrides: FieldRef<"StatusPageI18n", 'Json'>
+    readonly createdAt: FieldRef<"StatusPageI18n", 'DateTime'>
+    readonly updatedAt: FieldRef<"StatusPageI18n", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * StatusPageI18n findUnique
+   */
+  export type StatusPageI18nFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageI18n
+     */
+    select?: StatusPageI18nSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageI18n
+     */
+    omit?: StatusPageI18nOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageI18nInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPageI18n to fetch.
+     */
+    where: StatusPageI18nWhereUniqueInput
+  }
+
+  /**
+   * StatusPageI18n findUniqueOrThrow
+   */
+  export type StatusPageI18nFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageI18n
+     */
+    select?: StatusPageI18nSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageI18n
+     */
+    omit?: StatusPageI18nOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageI18nInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPageI18n to fetch.
+     */
+    where: StatusPageI18nWhereUniqueInput
+  }
+
+  /**
+   * StatusPageI18n findFirst
+   */
+  export type StatusPageI18nFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageI18n
+     */
+    select?: StatusPageI18nSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageI18n
+     */
+    omit?: StatusPageI18nOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageI18nInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPageI18n to fetch.
+     */
+    where?: StatusPageI18nWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StatusPageI18ns to fetch.
+     */
+    orderBy?: StatusPageI18nOrderByWithRelationInput | StatusPageI18nOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StatusPageI18ns.
+     */
+    cursor?: StatusPageI18nWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StatusPageI18ns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StatusPageI18ns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StatusPageI18ns.
+     */
+    distinct?: StatusPageI18nScalarFieldEnum | StatusPageI18nScalarFieldEnum[]
+  }
+
+  /**
+   * StatusPageI18n findFirstOrThrow
+   */
+  export type StatusPageI18nFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageI18n
+     */
+    select?: StatusPageI18nSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageI18n
+     */
+    omit?: StatusPageI18nOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageI18nInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPageI18n to fetch.
+     */
+    where?: StatusPageI18nWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StatusPageI18ns to fetch.
+     */
+    orderBy?: StatusPageI18nOrderByWithRelationInput | StatusPageI18nOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StatusPageI18ns.
+     */
+    cursor?: StatusPageI18nWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StatusPageI18ns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StatusPageI18ns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StatusPageI18ns.
+     */
+    distinct?: StatusPageI18nScalarFieldEnum | StatusPageI18nScalarFieldEnum[]
+  }
+
+  /**
+   * StatusPageI18n findMany
+   */
+  export type StatusPageI18nFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageI18n
+     */
+    select?: StatusPageI18nSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageI18n
+     */
+    omit?: StatusPageI18nOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageI18nInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPageI18ns to fetch.
+     */
+    where?: StatusPageI18nWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StatusPageI18ns to fetch.
+     */
+    orderBy?: StatusPageI18nOrderByWithRelationInput | StatusPageI18nOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing StatusPageI18ns.
+     */
+    cursor?: StatusPageI18nWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StatusPageI18ns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StatusPageI18ns.
+     */
+    skip?: number
+    distinct?: StatusPageI18nScalarFieldEnum | StatusPageI18nScalarFieldEnum[]
+  }
+
+  /**
+   * StatusPageI18n create
+   */
+  export type StatusPageI18nCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageI18n
+     */
+    select?: StatusPageI18nSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageI18n
+     */
+    omit?: StatusPageI18nOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageI18nInclude<ExtArgs> | null
+    /**
+     * The data needed to create a StatusPageI18n.
+     */
+    data: XOR<StatusPageI18nCreateInput, StatusPageI18nUncheckedCreateInput>
+  }
+
+  /**
+   * StatusPageI18n createMany
+   */
+  export type StatusPageI18nCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many StatusPageI18ns.
+     */
+    data: StatusPageI18nCreateManyInput | StatusPageI18nCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StatusPageI18n createManyAndReturn
+   */
+  export type StatusPageI18nCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageI18n
+     */
+    select?: StatusPageI18nSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageI18n
+     */
+    omit?: StatusPageI18nOmit<ExtArgs> | null
+    /**
+     * The data used to create many StatusPageI18ns.
+     */
+    data: StatusPageI18nCreateManyInput | StatusPageI18nCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageI18nIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StatusPageI18n update
+   */
+  export type StatusPageI18nUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageI18n
+     */
+    select?: StatusPageI18nSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageI18n
+     */
+    omit?: StatusPageI18nOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageI18nInclude<ExtArgs> | null
+    /**
+     * The data needed to update a StatusPageI18n.
+     */
+    data: XOR<StatusPageI18nUpdateInput, StatusPageI18nUncheckedUpdateInput>
+    /**
+     * Choose, which StatusPageI18n to update.
+     */
+    where: StatusPageI18nWhereUniqueInput
+  }
+
+  /**
+   * StatusPageI18n updateMany
+   */
+  export type StatusPageI18nUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update StatusPageI18ns.
+     */
+    data: XOR<StatusPageI18nUpdateManyMutationInput, StatusPageI18nUncheckedUpdateManyInput>
+    /**
+     * Filter which StatusPageI18ns to update
+     */
+    where?: StatusPageI18nWhereInput
+    /**
+     * Limit how many StatusPageI18ns to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StatusPageI18n updateManyAndReturn
+   */
+  export type StatusPageI18nUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageI18n
+     */
+    select?: StatusPageI18nSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageI18n
+     */
+    omit?: StatusPageI18nOmit<ExtArgs> | null
+    /**
+     * The data used to update StatusPageI18ns.
+     */
+    data: XOR<StatusPageI18nUpdateManyMutationInput, StatusPageI18nUncheckedUpdateManyInput>
+    /**
+     * Filter which StatusPageI18ns to update
+     */
+    where?: StatusPageI18nWhereInput
+    /**
+     * Limit how many StatusPageI18ns to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageI18nIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StatusPageI18n upsert
+   */
+  export type StatusPageI18nUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageI18n
+     */
+    select?: StatusPageI18nSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageI18n
+     */
+    omit?: StatusPageI18nOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageI18nInclude<ExtArgs> | null
+    /**
+     * The filter to search for the StatusPageI18n to update in case it exists.
+     */
+    where: StatusPageI18nWhereUniqueInput
+    /**
+     * In case the StatusPageI18n found by the `where` argument doesn't exist, create a new StatusPageI18n with this data.
+     */
+    create: XOR<StatusPageI18nCreateInput, StatusPageI18nUncheckedCreateInput>
+    /**
+     * In case the StatusPageI18n was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<StatusPageI18nUpdateInput, StatusPageI18nUncheckedUpdateInput>
+  }
+
+  /**
+   * StatusPageI18n delete
+   */
+  export type StatusPageI18nDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageI18n
+     */
+    select?: StatusPageI18nSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageI18n
+     */
+    omit?: StatusPageI18nOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageI18nInclude<ExtArgs> | null
+    /**
+     * Filter which StatusPageI18n to delete.
+     */
+    where: StatusPageI18nWhereUniqueInput
+  }
+
+  /**
+   * StatusPageI18n deleteMany
+   */
+  export type StatusPageI18nDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StatusPageI18ns to delete
+     */
+    where?: StatusPageI18nWhereInput
+    /**
+     * Limit how many StatusPageI18ns to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * StatusPageI18n without action
+   */
+  export type StatusPageI18nDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageI18n
+     */
+    select?: StatusPageI18nSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageI18n
+     */
+    omit?: StatusPageI18nOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageI18nInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model StatusPage
+   */
+
+  export type AggregateStatusPage = {
+    _count: StatusPageCountAggregateOutputType | null
+    _min: StatusPageMinAggregateOutputType | null
+    _max: StatusPageMaxAggregateOutputType | null
+  }
+
+  export type StatusPageMinAggregateOutputType = {
+    id: string | null
+    slug: string | null
+    customDomain: string | null
+    title: string | null
+    description: string | null
+    favicon: string | null
+    logo: string | null
+    password: string | null
+    isPrivate: boolean | null
+    ipWhitelist: string | null
+    seoIndex: boolean | null
+    showUptime: boolean | null
+    showResponseTime: boolean | null
+    showPaused: boolean | null
+    customCss: string | null
+    userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StatusPageMaxAggregateOutputType = {
+    id: string | null
+    slug: string | null
+    customDomain: string | null
+    title: string | null
+    description: string | null
+    favicon: string | null
+    logo: string | null
+    password: string | null
+    isPrivate: boolean | null
+    ipWhitelist: string | null
+    seoIndex: boolean | null
+    showUptime: boolean | null
+    showResponseTime: boolean | null
+    showPaused: boolean | null
+    customCss: string | null
+    userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StatusPageCountAggregateOutputType = {
+    id: number
+    slug: number
+    customDomain: number
+    title: number
+    description: number
+    favicon: number
+    logo: number
+    theme: number
+    layout: number
+    password: number
+    isPrivate: number
+    ipWhitelist: number
+    seoIndex: number
+    showUptime: number
+    showResponseTime: number
+    showPaused: number
+    customCss: number
+    userId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type StatusPageMinAggregateInputType = {
+    id?: true
+    slug?: true
+    customDomain?: true
+    title?: true
+    description?: true
+    favicon?: true
+    logo?: true
+    password?: true
+    isPrivate?: true
+    ipWhitelist?: true
+    seoIndex?: true
+    showUptime?: true
+    showResponseTime?: true
+    showPaused?: true
+    customCss?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StatusPageMaxAggregateInputType = {
+    id?: true
+    slug?: true
+    customDomain?: true
+    title?: true
+    description?: true
+    favicon?: true
+    logo?: true
+    password?: true
+    isPrivate?: true
+    ipWhitelist?: true
+    seoIndex?: true
+    showUptime?: true
+    showResponseTime?: true
+    showPaused?: true
+    customCss?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StatusPageCountAggregateInputType = {
+    id?: true
+    slug?: true
+    customDomain?: true
+    title?: true
+    description?: true
+    favicon?: true
+    logo?: true
+    theme?: true
+    layout?: true
+    password?: true
+    isPrivate?: true
+    ipWhitelist?: true
+    seoIndex?: true
+    showUptime?: true
+    showResponseTime?: true
+    showPaused?: true
+    customCss?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type StatusPageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StatusPage to aggregate.
+     */
+    where?: StatusPageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StatusPages to fetch.
+     */
+    orderBy?: StatusPageOrderByWithRelationInput | StatusPageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: StatusPageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StatusPages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StatusPages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned StatusPages
+    **/
+    _count?: true | StatusPageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: StatusPageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: StatusPageMaxAggregateInputType
+  }
+
+  export type GetStatusPageAggregateType<T extends StatusPageAggregateArgs> = {
+        [P in keyof T & keyof AggregateStatusPage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateStatusPage[P]>
+      : GetScalarType<T[P], AggregateStatusPage[P]>
+  }
+
+
+
+
+  export type StatusPageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StatusPageWhereInput
+    orderBy?: StatusPageOrderByWithAggregationInput | StatusPageOrderByWithAggregationInput[]
+    by: StatusPageScalarFieldEnum[] | StatusPageScalarFieldEnum
+    having?: StatusPageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: StatusPageCountAggregateInputType | true
+    _min?: StatusPageMinAggregateInputType
+    _max?: StatusPageMaxAggregateInputType
+  }
+
+  export type StatusPageGroupByOutputType = {
+    id: string
+    slug: string
+    customDomain: string | null
+    title: string
+    description: string | null
+    favicon: string | null
+    logo: string | null
+    theme: JsonValue | null
+    layout: JsonValue | null
+    password: string | null
+    isPrivate: boolean
+    ipWhitelist: string | null
+    seoIndex: boolean
+    showUptime: boolean
+    showResponseTime: boolean
+    showPaused: boolean
+    customCss: string | null
+    userId: string
+    createdAt: Date
+    updatedAt: Date
+    _count: StatusPageCountAggregateOutputType | null
+    _min: StatusPageMinAggregateOutputType | null
+    _max: StatusPageMaxAggregateOutputType | null
+  }
+
+  type GetStatusPageGroupByPayload<T extends StatusPageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<StatusPageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof StatusPageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], StatusPageGroupByOutputType[P]>
+            : GetScalarType<T[P], StatusPageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type StatusPageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    slug?: boolean
+    customDomain?: boolean
+    title?: boolean
+    description?: boolean
+    favicon?: boolean
+    logo?: boolean
+    theme?: boolean
+    layout?: boolean
+    password?: boolean
+    isPrivate?: boolean
+    ipWhitelist?: boolean
+    seoIndex?: boolean
+    showUptime?: boolean
+    showResponseTime?: boolean
+    showPaused?: boolean
+    customCss?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    monitors?: boolean | StatusPage$monitorsArgs<ExtArgs>
+    views?: boolean | StatusPage$viewsArgs<ExtArgs>
+    i18nSettings?: boolean | StatusPage$i18nSettingsArgs<ExtArgs>
+    _count?: boolean | StatusPageCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["statusPage"]>
+
+  export type StatusPageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    slug?: boolean
+    customDomain?: boolean
+    title?: boolean
+    description?: boolean
+    favicon?: boolean
+    logo?: boolean
+    theme?: boolean
+    layout?: boolean
+    password?: boolean
+    isPrivate?: boolean
+    ipWhitelist?: boolean
+    seoIndex?: boolean
+    showUptime?: boolean
+    showResponseTime?: boolean
+    showPaused?: boolean
+    customCss?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["statusPage"]>
+
+  export type StatusPageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    slug?: boolean
+    customDomain?: boolean
+    title?: boolean
+    description?: boolean
+    favicon?: boolean
+    logo?: boolean
+    theme?: boolean
+    layout?: boolean
+    password?: boolean
+    isPrivate?: boolean
+    ipWhitelist?: boolean
+    seoIndex?: boolean
+    showUptime?: boolean
+    showResponseTime?: boolean
+    showPaused?: boolean
+    customCss?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["statusPage"]>
+
+  export type StatusPageSelectScalar = {
+    id?: boolean
+    slug?: boolean
+    customDomain?: boolean
+    title?: boolean
+    description?: boolean
+    favicon?: boolean
+    logo?: boolean
+    theme?: boolean
+    layout?: boolean
+    password?: boolean
+    isPrivate?: boolean
+    ipWhitelist?: boolean
+    seoIndex?: boolean
+    showUptime?: boolean
+    showResponseTime?: boolean
+    showPaused?: boolean
+    customCss?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type StatusPageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "slug" | "customDomain" | "title" | "description" | "favicon" | "logo" | "theme" | "layout" | "password" | "isPrivate" | "ipWhitelist" | "seoIndex" | "showUptime" | "showResponseTime" | "showPaused" | "customCss" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["statusPage"]>
+  export type StatusPageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    monitors?: boolean | StatusPage$monitorsArgs<ExtArgs>
+    views?: boolean | StatusPage$viewsArgs<ExtArgs>
+    i18nSettings?: boolean | StatusPage$i18nSettingsArgs<ExtArgs>
+    _count?: boolean | StatusPageCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type StatusPageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type StatusPageIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $StatusPagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "StatusPage"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      monitors: Prisma.$StatusPageMonitorPayload<ExtArgs>[]
+      views: Prisma.$StatusPageViewPayload<ExtArgs>[]
+      i18nSettings: Prisma.$StatusPageI18nPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      slug: string
+      customDomain: string | null
+      title: string
+      description: string | null
+      favicon: string | null
+      logo: string | null
+      theme: Prisma.JsonValue | null
+      layout: Prisma.JsonValue | null
+      password: string | null
+      isPrivate: boolean
+      ipWhitelist: string | null
+      seoIndex: boolean
+      showUptime: boolean
+      showResponseTime: boolean
+      showPaused: boolean
+      customCss: string | null
+      userId: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["statusPage"]>
+    composites: {}
+  }
+
+  type StatusPageGetPayload<S extends boolean | null | undefined | StatusPageDefaultArgs> = $Result.GetResult<Prisma.$StatusPagePayload, S>
+
+  type StatusPageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<StatusPageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: StatusPageCountAggregateInputType | true
+    }
+
+  export interface StatusPageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['StatusPage'], meta: { name: 'StatusPage' } }
+    /**
+     * Find zero or one StatusPage that matches the filter.
+     * @param {StatusPageFindUniqueArgs} args - Arguments to find a StatusPage
+     * @example
+     * // Get one StatusPage
+     * const statusPage = await prisma.statusPage.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StatusPageFindUniqueArgs>(args: SelectSubset<T, StatusPageFindUniqueArgs<ExtArgs>>): Prisma__StatusPageClient<$Result.GetResult<Prisma.$StatusPagePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one StatusPage that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StatusPageFindUniqueOrThrowArgs} args - Arguments to find a StatusPage
+     * @example
+     * // Get one StatusPage
+     * const statusPage = await prisma.statusPage.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StatusPageFindUniqueOrThrowArgs>(args: SelectSubset<T, StatusPageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__StatusPageClient<$Result.GetResult<Prisma.$StatusPagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StatusPage that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageFindFirstArgs} args - Arguments to find a StatusPage
+     * @example
+     * // Get one StatusPage
+     * const statusPage = await prisma.statusPage.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StatusPageFindFirstArgs>(args?: SelectSubset<T, StatusPageFindFirstArgs<ExtArgs>>): Prisma__StatusPageClient<$Result.GetResult<Prisma.$StatusPagePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StatusPage that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageFindFirstOrThrowArgs} args - Arguments to find a StatusPage
+     * @example
+     * // Get one StatusPage
+     * const statusPage = await prisma.statusPage.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StatusPageFindFirstOrThrowArgs>(args?: SelectSubset<T, StatusPageFindFirstOrThrowArgs<ExtArgs>>): Prisma__StatusPageClient<$Result.GetResult<Prisma.$StatusPagePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more StatusPages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all StatusPages
+     * const statusPages = await prisma.statusPage.findMany()
+     * 
+     * // Get first 10 StatusPages
+     * const statusPages = await prisma.statusPage.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const statusPageWithIdOnly = await prisma.statusPage.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends StatusPageFindManyArgs>(args?: SelectSubset<T, StatusPageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a StatusPage.
+     * @param {StatusPageCreateArgs} args - Arguments to create a StatusPage.
+     * @example
+     * // Create one StatusPage
+     * const StatusPage = await prisma.statusPage.create({
+     *   data: {
+     *     // ... data to create a StatusPage
+     *   }
+     * })
+     * 
+     */
+    create<T extends StatusPageCreateArgs>(args: SelectSubset<T, StatusPageCreateArgs<ExtArgs>>): Prisma__StatusPageClient<$Result.GetResult<Prisma.$StatusPagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many StatusPages.
+     * @param {StatusPageCreateManyArgs} args - Arguments to create many StatusPages.
+     * @example
+     * // Create many StatusPages
+     * const statusPage = await prisma.statusPage.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends StatusPageCreateManyArgs>(args?: SelectSubset<T, StatusPageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many StatusPages and returns the data saved in the database.
+     * @param {StatusPageCreateManyAndReturnArgs} args - Arguments to create many StatusPages.
+     * @example
+     * // Create many StatusPages
+     * const statusPage = await prisma.statusPage.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many StatusPages and only return the `id`
+     * const statusPageWithIdOnly = await prisma.statusPage.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends StatusPageCreateManyAndReturnArgs>(args?: SelectSubset<T, StatusPageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPagePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a StatusPage.
+     * @param {StatusPageDeleteArgs} args - Arguments to delete one StatusPage.
+     * @example
+     * // Delete one StatusPage
+     * const StatusPage = await prisma.statusPage.delete({
+     *   where: {
+     *     // ... filter to delete one StatusPage
+     *   }
+     * })
+     * 
+     */
+    delete<T extends StatusPageDeleteArgs>(args: SelectSubset<T, StatusPageDeleteArgs<ExtArgs>>): Prisma__StatusPageClient<$Result.GetResult<Prisma.$StatusPagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one StatusPage.
+     * @param {StatusPageUpdateArgs} args - Arguments to update one StatusPage.
+     * @example
+     * // Update one StatusPage
+     * const statusPage = await prisma.statusPage.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends StatusPageUpdateArgs>(args: SelectSubset<T, StatusPageUpdateArgs<ExtArgs>>): Prisma__StatusPageClient<$Result.GetResult<Prisma.$StatusPagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more StatusPages.
+     * @param {StatusPageDeleteManyArgs} args - Arguments to filter StatusPages to delete.
+     * @example
+     * // Delete a few StatusPages
+     * const { count } = await prisma.statusPage.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends StatusPageDeleteManyArgs>(args?: SelectSubset<T, StatusPageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StatusPages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many StatusPages
+     * const statusPage = await prisma.statusPage.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends StatusPageUpdateManyArgs>(args: SelectSubset<T, StatusPageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StatusPages and returns the data updated in the database.
+     * @param {StatusPageUpdateManyAndReturnArgs} args - Arguments to update many StatusPages.
+     * @example
+     * // Update many StatusPages
+     * const statusPage = await prisma.statusPage.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more StatusPages and only return the `id`
+     * const statusPageWithIdOnly = await prisma.statusPage.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends StatusPageUpdateManyAndReturnArgs>(args: SelectSubset<T, StatusPageUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPagePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one StatusPage.
+     * @param {StatusPageUpsertArgs} args - Arguments to update or create a StatusPage.
+     * @example
+     * // Update or create a StatusPage
+     * const statusPage = await prisma.statusPage.upsert({
+     *   create: {
+     *     // ... data to create a StatusPage
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the StatusPage we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StatusPageUpsertArgs>(args: SelectSubset<T, StatusPageUpsertArgs<ExtArgs>>): Prisma__StatusPageClient<$Result.GetResult<Prisma.$StatusPagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of StatusPages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageCountArgs} args - Arguments to filter StatusPages to count.
+     * @example
+     * // Count the number of StatusPages
+     * const count = await prisma.statusPage.count({
+     *   where: {
+     *     // ... the filter for the StatusPages we want to count
+     *   }
+     * })
+    **/
+    count<T extends StatusPageCountArgs>(
+      args?: Subset<T, StatusPageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], StatusPageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a StatusPage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StatusPageAggregateArgs>(args: Subset<T, StatusPageAggregateArgs>): Prisma.PrismaPromise<GetStatusPageAggregateType<T>>
+
+    /**
+     * Group by StatusPage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends StatusPageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: StatusPageGroupByArgs['orderBy'] }
+        : { orderBy?: StatusPageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, StatusPageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStatusPageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the StatusPage model
+   */
+  readonly fields: StatusPageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for StatusPage.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__StatusPageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    monitors<T extends StatusPage$monitorsArgs<ExtArgs> = {}>(args?: Subset<T, StatusPage$monitorsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPageMonitorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    views<T extends StatusPage$viewsArgs<ExtArgs> = {}>(args?: Subset<T, StatusPage$viewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPageViewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    i18nSettings<T extends StatusPage$i18nSettingsArgs<ExtArgs> = {}>(args?: Subset<T, StatusPage$i18nSettingsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPageI18nPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the StatusPage model
+   */
+  interface StatusPageFieldRefs {
+    readonly id: FieldRef<"StatusPage", 'String'>
+    readonly slug: FieldRef<"StatusPage", 'String'>
+    readonly customDomain: FieldRef<"StatusPage", 'String'>
+    readonly title: FieldRef<"StatusPage", 'String'>
+    readonly description: FieldRef<"StatusPage", 'String'>
+    readonly favicon: FieldRef<"StatusPage", 'String'>
+    readonly logo: FieldRef<"StatusPage", 'String'>
+    readonly theme: FieldRef<"StatusPage", 'Json'>
+    readonly layout: FieldRef<"StatusPage", 'Json'>
+    readonly password: FieldRef<"StatusPage", 'String'>
+    readonly isPrivate: FieldRef<"StatusPage", 'Boolean'>
+    readonly ipWhitelist: FieldRef<"StatusPage", 'String'>
+    readonly seoIndex: FieldRef<"StatusPage", 'Boolean'>
+    readonly showUptime: FieldRef<"StatusPage", 'Boolean'>
+    readonly showResponseTime: FieldRef<"StatusPage", 'Boolean'>
+    readonly showPaused: FieldRef<"StatusPage", 'Boolean'>
+    readonly customCss: FieldRef<"StatusPage", 'String'>
+    readonly userId: FieldRef<"StatusPage", 'String'>
+    readonly createdAt: FieldRef<"StatusPage", 'DateTime'>
+    readonly updatedAt: FieldRef<"StatusPage", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * StatusPage findUnique
+   */
+  export type StatusPageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPage
+     */
+    select?: StatusPageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPage
+     */
+    omit?: StatusPageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPage to fetch.
+     */
+    where: StatusPageWhereUniqueInput
+  }
+
+  /**
+   * StatusPage findUniqueOrThrow
+   */
+  export type StatusPageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPage
+     */
+    select?: StatusPageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPage
+     */
+    omit?: StatusPageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPage to fetch.
+     */
+    where: StatusPageWhereUniqueInput
+  }
+
+  /**
+   * StatusPage findFirst
+   */
+  export type StatusPageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPage
+     */
+    select?: StatusPageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPage
+     */
+    omit?: StatusPageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPage to fetch.
+     */
+    where?: StatusPageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StatusPages to fetch.
+     */
+    orderBy?: StatusPageOrderByWithRelationInput | StatusPageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StatusPages.
+     */
+    cursor?: StatusPageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StatusPages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StatusPages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StatusPages.
+     */
+    distinct?: StatusPageScalarFieldEnum | StatusPageScalarFieldEnum[]
+  }
+
+  /**
+   * StatusPage findFirstOrThrow
+   */
+  export type StatusPageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPage
+     */
+    select?: StatusPageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPage
+     */
+    omit?: StatusPageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPage to fetch.
+     */
+    where?: StatusPageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StatusPages to fetch.
+     */
+    orderBy?: StatusPageOrderByWithRelationInput | StatusPageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StatusPages.
+     */
+    cursor?: StatusPageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StatusPages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StatusPages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StatusPages.
+     */
+    distinct?: StatusPageScalarFieldEnum | StatusPageScalarFieldEnum[]
+  }
+
+  /**
+   * StatusPage findMany
+   */
+  export type StatusPageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPage
+     */
+    select?: StatusPageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPage
+     */
+    omit?: StatusPageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPages to fetch.
+     */
+    where?: StatusPageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StatusPages to fetch.
+     */
+    orderBy?: StatusPageOrderByWithRelationInput | StatusPageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing StatusPages.
+     */
+    cursor?: StatusPageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StatusPages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StatusPages.
+     */
+    skip?: number
+    distinct?: StatusPageScalarFieldEnum | StatusPageScalarFieldEnum[]
+  }
+
+  /**
+   * StatusPage create
+   */
+  export type StatusPageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPage
+     */
+    select?: StatusPageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPage
+     */
+    omit?: StatusPageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageInclude<ExtArgs> | null
+    /**
+     * The data needed to create a StatusPage.
+     */
+    data: XOR<StatusPageCreateInput, StatusPageUncheckedCreateInput>
+  }
+
+  /**
+   * StatusPage createMany
+   */
+  export type StatusPageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many StatusPages.
+     */
+    data: StatusPageCreateManyInput | StatusPageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StatusPage createManyAndReturn
+   */
+  export type StatusPageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPage
+     */
+    select?: StatusPageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPage
+     */
+    omit?: StatusPageOmit<ExtArgs> | null
+    /**
+     * The data used to create many StatusPages.
+     */
+    data: StatusPageCreateManyInput | StatusPageCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StatusPage update
+   */
+  export type StatusPageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPage
+     */
+    select?: StatusPageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPage
+     */
+    omit?: StatusPageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageInclude<ExtArgs> | null
+    /**
+     * The data needed to update a StatusPage.
+     */
+    data: XOR<StatusPageUpdateInput, StatusPageUncheckedUpdateInput>
+    /**
+     * Choose, which StatusPage to update.
+     */
+    where: StatusPageWhereUniqueInput
+  }
+
+  /**
+   * StatusPage updateMany
+   */
+  export type StatusPageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update StatusPages.
+     */
+    data: XOR<StatusPageUpdateManyMutationInput, StatusPageUncheckedUpdateManyInput>
+    /**
+     * Filter which StatusPages to update
+     */
+    where?: StatusPageWhereInput
+    /**
+     * Limit how many StatusPages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StatusPage updateManyAndReturn
+   */
+  export type StatusPageUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPage
+     */
+    select?: StatusPageSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPage
+     */
+    omit?: StatusPageOmit<ExtArgs> | null
+    /**
+     * The data used to update StatusPages.
+     */
+    data: XOR<StatusPageUpdateManyMutationInput, StatusPageUncheckedUpdateManyInput>
+    /**
+     * Filter which StatusPages to update
+     */
+    where?: StatusPageWhereInput
+    /**
+     * Limit how many StatusPages to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StatusPage upsert
+   */
+  export type StatusPageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPage
+     */
+    select?: StatusPageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPage
+     */
+    omit?: StatusPageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageInclude<ExtArgs> | null
+    /**
+     * The filter to search for the StatusPage to update in case it exists.
+     */
+    where: StatusPageWhereUniqueInput
+    /**
+     * In case the StatusPage found by the `where` argument doesn't exist, create a new StatusPage with this data.
+     */
+    create: XOR<StatusPageCreateInput, StatusPageUncheckedCreateInput>
+    /**
+     * In case the StatusPage was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<StatusPageUpdateInput, StatusPageUncheckedUpdateInput>
+  }
+
+  /**
+   * StatusPage delete
+   */
+  export type StatusPageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPage
+     */
+    select?: StatusPageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPage
+     */
+    omit?: StatusPageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageInclude<ExtArgs> | null
+    /**
+     * Filter which StatusPage to delete.
+     */
+    where: StatusPageWhereUniqueInput
+  }
+
+  /**
+   * StatusPage deleteMany
+   */
+  export type StatusPageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StatusPages to delete
+     */
+    where?: StatusPageWhereInput
+    /**
+     * Limit how many StatusPages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * StatusPage.monitors
+   */
+  export type StatusPage$monitorsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageMonitor
+     */
+    select?: StatusPageMonitorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageMonitor
+     */
+    omit?: StatusPageMonitorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageMonitorInclude<ExtArgs> | null
+    where?: StatusPageMonitorWhereInput
+    orderBy?: StatusPageMonitorOrderByWithRelationInput | StatusPageMonitorOrderByWithRelationInput[]
+    cursor?: StatusPageMonitorWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StatusPageMonitorScalarFieldEnum | StatusPageMonitorScalarFieldEnum[]
+  }
+
+  /**
+   * StatusPage.views
+   */
+  export type StatusPage$viewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageView
+     */
+    select?: StatusPageViewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageView
+     */
+    omit?: StatusPageViewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageViewInclude<ExtArgs> | null
+    where?: StatusPageViewWhereInput
+    orderBy?: StatusPageViewOrderByWithRelationInput | StatusPageViewOrderByWithRelationInput[]
+    cursor?: StatusPageViewWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StatusPageViewScalarFieldEnum | StatusPageViewScalarFieldEnum[]
+  }
+
+  /**
+   * StatusPage.i18nSettings
+   */
+  export type StatusPage$i18nSettingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageI18n
+     */
+    select?: StatusPageI18nSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageI18n
+     */
+    omit?: StatusPageI18nOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageI18nInclude<ExtArgs> | null
+    where?: StatusPageI18nWhereInput
+    orderBy?: StatusPageI18nOrderByWithRelationInput | StatusPageI18nOrderByWithRelationInput[]
+    cursor?: StatusPageI18nWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StatusPageI18nScalarFieldEnum | StatusPageI18nScalarFieldEnum[]
+  }
+
+  /**
+   * StatusPage without action
+   */
+  export type StatusPageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPage
+     */
+    select?: StatusPageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPage
+     */
+    omit?: StatusPageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model StatusPageMonitor
+   */
+
+  export type AggregateStatusPageMonitor = {
+    _count: StatusPageMonitorCountAggregateOutputType | null
+    _avg: StatusPageMonitorAvgAggregateOutputType | null
+    _sum: StatusPageMonitorSumAggregateOutputType | null
+    _min: StatusPageMonitorMinAggregateOutputType | null
+    _max: StatusPageMonitorMaxAggregateOutputType | null
+  }
+
+  export type StatusPageMonitorAvgAggregateOutputType = {
+    sortOrder: number | null
+  }
+
+  export type StatusPageMonitorSumAggregateOutputType = {
+    sortOrder: number | null
+  }
+
+  export type StatusPageMonitorMinAggregateOutputType = {
+    id: string | null
+    statusPageId: string | null
+    monitorId: string | null
+    displayName: string | null
+    displayGroup: string | null
+    sortOrder: number | null
+    createdAt: Date | null
+  }
+
+  export type StatusPageMonitorMaxAggregateOutputType = {
+    id: string | null
+    statusPageId: string | null
+    monitorId: string | null
+    displayName: string | null
+    displayGroup: string | null
+    sortOrder: number | null
+    createdAt: Date | null
+  }
+
+  export type StatusPageMonitorCountAggregateOutputType = {
+    id: number
+    statusPageId: number
+    monitorId: number
+    displayName: number
+    displayGroup: number
+    sortOrder: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type StatusPageMonitorAvgAggregateInputType = {
+    sortOrder?: true
+  }
+
+  export type StatusPageMonitorSumAggregateInputType = {
+    sortOrder?: true
+  }
+
+  export type StatusPageMonitorMinAggregateInputType = {
+    id?: true
+    statusPageId?: true
+    monitorId?: true
+    displayName?: true
+    displayGroup?: true
+    sortOrder?: true
+    createdAt?: true
+  }
+
+  export type StatusPageMonitorMaxAggregateInputType = {
+    id?: true
+    statusPageId?: true
+    monitorId?: true
+    displayName?: true
+    displayGroup?: true
+    sortOrder?: true
+    createdAt?: true
+  }
+
+  export type StatusPageMonitorCountAggregateInputType = {
+    id?: true
+    statusPageId?: true
+    monitorId?: true
+    displayName?: true
+    displayGroup?: true
+    sortOrder?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type StatusPageMonitorAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StatusPageMonitor to aggregate.
+     */
+    where?: StatusPageMonitorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StatusPageMonitors to fetch.
+     */
+    orderBy?: StatusPageMonitorOrderByWithRelationInput | StatusPageMonitorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: StatusPageMonitorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StatusPageMonitors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StatusPageMonitors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned StatusPageMonitors
+    **/
+    _count?: true | StatusPageMonitorCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: StatusPageMonitorAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: StatusPageMonitorSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: StatusPageMonitorMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: StatusPageMonitorMaxAggregateInputType
+  }
+
+  export type GetStatusPageMonitorAggregateType<T extends StatusPageMonitorAggregateArgs> = {
+        [P in keyof T & keyof AggregateStatusPageMonitor]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateStatusPageMonitor[P]>
+      : GetScalarType<T[P], AggregateStatusPageMonitor[P]>
+  }
+
+
+
+
+  export type StatusPageMonitorGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StatusPageMonitorWhereInput
+    orderBy?: StatusPageMonitorOrderByWithAggregationInput | StatusPageMonitorOrderByWithAggregationInput[]
+    by: StatusPageMonitorScalarFieldEnum[] | StatusPageMonitorScalarFieldEnum
+    having?: StatusPageMonitorScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: StatusPageMonitorCountAggregateInputType | true
+    _avg?: StatusPageMonitorAvgAggregateInputType
+    _sum?: StatusPageMonitorSumAggregateInputType
+    _min?: StatusPageMonitorMinAggregateInputType
+    _max?: StatusPageMonitorMaxAggregateInputType
+  }
+
+  export type StatusPageMonitorGroupByOutputType = {
+    id: string
+    statusPageId: string
+    monitorId: string
+    displayName: string | null
+    displayGroup: string | null
+    sortOrder: number
+    createdAt: Date
+    _count: StatusPageMonitorCountAggregateOutputType | null
+    _avg: StatusPageMonitorAvgAggregateOutputType | null
+    _sum: StatusPageMonitorSumAggregateOutputType | null
+    _min: StatusPageMonitorMinAggregateOutputType | null
+    _max: StatusPageMonitorMaxAggregateOutputType | null
+  }
+
+  type GetStatusPageMonitorGroupByPayload<T extends StatusPageMonitorGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<StatusPageMonitorGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof StatusPageMonitorGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], StatusPageMonitorGroupByOutputType[P]>
+            : GetScalarType<T[P], StatusPageMonitorGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type StatusPageMonitorSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    statusPageId?: boolean
+    monitorId?: boolean
+    displayName?: boolean
+    displayGroup?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    statusPage?: boolean | StatusPageDefaultArgs<ExtArgs>
+    monitor?: boolean | MonitorDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["statusPageMonitor"]>
+
+  export type StatusPageMonitorSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    statusPageId?: boolean
+    monitorId?: boolean
+    displayName?: boolean
+    displayGroup?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    statusPage?: boolean | StatusPageDefaultArgs<ExtArgs>
+    monitor?: boolean | MonitorDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["statusPageMonitor"]>
+
+  export type StatusPageMonitorSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    statusPageId?: boolean
+    monitorId?: boolean
+    displayName?: boolean
+    displayGroup?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    statusPage?: boolean | StatusPageDefaultArgs<ExtArgs>
+    monitor?: boolean | MonitorDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["statusPageMonitor"]>
+
+  export type StatusPageMonitorSelectScalar = {
+    id?: boolean
+    statusPageId?: boolean
+    monitorId?: boolean
+    displayName?: boolean
+    displayGroup?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+  }
+
+  export type StatusPageMonitorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "statusPageId" | "monitorId" | "displayName" | "displayGroup" | "sortOrder" | "createdAt", ExtArgs["result"]["statusPageMonitor"]>
+  export type StatusPageMonitorInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    statusPage?: boolean | StatusPageDefaultArgs<ExtArgs>
+    monitor?: boolean | MonitorDefaultArgs<ExtArgs>
+  }
+  export type StatusPageMonitorIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    statusPage?: boolean | StatusPageDefaultArgs<ExtArgs>
+    monitor?: boolean | MonitorDefaultArgs<ExtArgs>
+  }
+  export type StatusPageMonitorIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    statusPage?: boolean | StatusPageDefaultArgs<ExtArgs>
+    monitor?: boolean | MonitorDefaultArgs<ExtArgs>
+  }
+
+  export type $StatusPageMonitorPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "StatusPageMonitor"
+    objects: {
+      statusPage: Prisma.$StatusPagePayload<ExtArgs>
+      monitor: Prisma.$MonitorPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      statusPageId: string
+      monitorId: string
+      displayName: string | null
+      displayGroup: string | null
+      sortOrder: number
+      createdAt: Date
+    }, ExtArgs["result"]["statusPageMonitor"]>
+    composites: {}
+  }
+
+  type StatusPageMonitorGetPayload<S extends boolean | null | undefined | StatusPageMonitorDefaultArgs> = $Result.GetResult<Prisma.$StatusPageMonitorPayload, S>
+
+  type StatusPageMonitorCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<StatusPageMonitorFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: StatusPageMonitorCountAggregateInputType | true
+    }
+
+  export interface StatusPageMonitorDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['StatusPageMonitor'], meta: { name: 'StatusPageMonitor' } }
+    /**
+     * Find zero or one StatusPageMonitor that matches the filter.
+     * @param {StatusPageMonitorFindUniqueArgs} args - Arguments to find a StatusPageMonitor
+     * @example
+     * // Get one StatusPageMonitor
+     * const statusPageMonitor = await prisma.statusPageMonitor.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StatusPageMonitorFindUniqueArgs>(args: SelectSubset<T, StatusPageMonitorFindUniqueArgs<ExtArgs>>): Prisma__StatusPageMonitorClient<$Result.GetResult<Prisma.$StatusPageMonitorPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one StatusPageMonitor that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StatusPageMonitorFindUniqueOrThrowArgs} args - Arguments to find a StatusPageMonitor
+     * @example
+     * // Get one StatusPageMonitor
+     * const statusPageMonitor = await prisma.statusPageMonitor.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StatusPageMonitorFindUniqueOrThrowArgs>(args: SelectSubset<T, StatusPageMonitorFindUniqueOrThrowArgs<ExtArgs>>): Prisma__StatusPageMonitorClient<$Result.GetResult<Prisma.$StatusPageMonitorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StatusPageMonitor that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageMonitorFindFirstArgs} args - Arguments to find a StatusPageMonitor
+     * @example
+     * // Get one StatusPageMonitor
+     * const statusPageMonitor = await prisma.statusPageMonitor.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StatusPageMonitorFindFirstArgs>(args?: SelectSubset<T, StatusPageMonitorFindFirstArgs<ExtArgs>>): Prisma__StatusPageMonitorClient<$Result.GetResult<Prisma.$StatusPageMonitorPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StatusPageMonitor that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageMonitorFindFirstOrThrowArgs} args - Arguments to find a StatusPageMonitor
+     * @example
+     * // Get one StatusPageMonitor
+     * const statusPageMonitor = await prisma.statusPageMonitor.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StatusPageMonitorFindFirstOrThrowArgs>(args?: SelectSubset<T, StatusPageMonitorFindFirstOrThrowArgs<ExtArgs>>): Prisma__StatusPageMonitorClient<$Result.GetResult<Prisma.$StatusPageMonitorPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more StatusPageMonitors that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageMonitorFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all StatusPageMonitors
+     * const statusPageMonitors = await prisma.statusPageMonitor.findMany()
+     * 
+     * // Get first 10 StatusPageMonitors
+     * const statusPageMonitors = await prisma.statusPageMonitor.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const statusPageMonitorWithIdOnly = await prisma.statusPageMonitor.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends StatusPageMonitorFindManyArgs>(args?: SelectSubset<T, StatusPageMonitorFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPageMonitorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a StatusPageMonitor.
+     * @param {StatusPageMonitorCreateArgs} args - Arguments to create a StatusPageMonitor.
+     * @example
+     * // Create one StatusPageMonitor
+     * const StatusPageMonitor = await prisma.statusPageMonitor.create({
+     *   data: {
+     *     // ... data to create a StatusPageMonitor
+     *   }
+     * })
+     * 
+     */
+    create<T extends StatusPageMonitorCreateArgs>(args: SelectSubset<T, StatusPageMonitorCreateArgs<ExtArgs>>): Prisma__StatusPageMonitorClient<$Result.GetResult<Prisma.$StatusPageMonitorPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many StatusPageMonitors.
+     * @param {StatusPageMonitorCreateManyArgs} args - Arguments to create many StatusPageMonitors.
+     * @example
+     * // Create many StatusPageMonitors
+     * const statusPageMonitor = await prisma.statusPageMonitor.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends StatusPageMonitorCreateManyArgs>(args?: SelectSubset<T, StatusPageMonitorCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many StatusPageMonitors and returns the data saved in the database.
+     * @param {StatusPageMonitorCreateManyAndReturnArgs} args - Arguments to create many StatusPageMonitors.
+     * @example
+     * // Create many StatusPageMonitors
+     * const statusPageMonitor = await prisma.statusPageMonitor.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many StatusPageMonitors and only return the `id`
+     * const statusPageMonitorWithIdOnly = await prisma.statusPageMonitor.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends StatusPageMonitorCreateManyAndReturnArgs>(args?: SelectSubset<T, StatusPageMonitorCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPageMonitorPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a StatusPageMonitor.
+     * @param {StatusPageMonitorDeleteArgs} args - Arguments to delete one StatusPageMonitor.
+     * @example
+     * // Delete one StatusPageMonitor
+     * const StatusPageMonitor = await prisma.statusPageMonitor.delete({
+     *   where: {
+     *     // ... filter to delete one StatusPageMonitor
+     *   }
+     * })
+     * 
+     */
+    delete<T extends StatusPageMonitorDeleteArgs>(args: SelectSubset<T, StatusPageMonitorDeleteArgs<ExtArgs>>): Prisma__StatusPageMonitorClient<$Result.GetResult<Prisma.$StatusPageMonitorPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one StatusPageMonitor.
+     * @param {StatusPageMonitorUpdateArgs} args - Arguments to update one StatusPageMonitor.
+     * @example
+     * // Update one StatusPageMonitor
+     * const statusPageMonitor = await prisma.statusPageMonitor.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends StatusPageMonitorUpdateArgs>(args: SelectSubset<T, StatusPageMonitorUpdateArgs<ExtArgs>>): Prisma__StatusPageMonitorClient<$Result.GetResult<Prisma.$StatusPageMonitorPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more StatusPageMonitors.
+     * @param {StatusPageMonitorDeleteManyArgs} args - Arguments to filter StatusPageMonitors to delete.
+     * @example
+     * // Delete a few StatusPageMonitors
+     * const { count } = await prisma.statusPageMonitor.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends StatusPageMonitorDeleteManyArgs>(args?: SelectSubset<T, StatusPageMonitorDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StatusPageMonitors.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageMonitorUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many StatusPageMonitors
+     * const statusPageMonitor = await prisma.statusPageMonitor.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends StatusPageMonitorUpdateManyArgs>(args: SelectSubset<T, StatusPageMonitorUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StatusPageMonitors and returns the data updated in the database.
+     * @param {StatusPageMonitorUpdateManyAndReturnArgs} args - Arguments to update many StatusPageMonitors.
+     * @example
+     * // Update many StatusPageMonitors
+     * const statusPageMonitor = await prisma.statusPageMonitor.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more StatusPageMonitors and only return the `id`
+     * const statusPageMonitorWithIdOnly = await prisma.statusPageMonitor.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends StatusPageMonitorUpdateManyAndReturnArgs>(args: SelectSubset<T, StatusPageMonitorUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPageMonitorPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one StatusPageMonitor.
+     * @param {StatusPageMonitorUpsertArgs} args - Arguments to update or create a StatusPageMonitor.
+     * @example
+     * // Update or create a StatusPageMonitor
+     * const statusPageMonitor = await prisma.statusPageMonitor.upsert({
+     *   create: {
+     *     // ... data to create a StatusPageMonitor
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the StatusPageMonitor we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StatusPageMonitorUpsertArgs>(args: SelectSubset<T, StatusPageMonitorUpsertArgs<ExtArgs>>): Prisma__StatusPageMonitorClient<$Result.GetResult<Prisma.$StatusPageMonitorPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of StatusPageMonitors.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageMonitorCountArgs} args - Arguments to filter StatusPageMonitors to count.
+     * @example
+     * // Count the number of StatusPageMonitors
+     * const count = await prisma.statusPageMonitor.count({
+     *   where: {
+     *     // ... the filter for the StatusPageMonitors we want to count
+     *   }
+     * })
+    **/
+    count<T extends StatusPageMonitorCountArgs>(
+      args?: Subset<T, StatusPageMonitorCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], StatusPageMonitorCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a StatusPageMonitor.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageMonitorAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StatusPageMonitorAggregateArgs>(args: Subset<T, StatusPageMonitorAggregateArgs>): Prisma.PrismaPromise<GetStatusPageMonitorAggregateType<T>>
+
+    /**
+     * Group by StatusPageMonitor.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageMonitorGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends StatusPageMonitorGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: StatusPageMonitorGroupByArgs['orderBy'] }
+        : { orderBy?: StatusPageMonitorGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, StatusPageMonitorGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStatusPageMonitorGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the StatusPageMonitor model
+   */
+  readonly fields: StatusPageMonitorFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for StatusPageMonitor.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__StatusPageMonitorClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    statusPage<T extends StatusPageDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StatusPageDefaultArgs<ExtArgs>>): Prisma__StatusPageClient<$Result.GetResult<Prisma.$StatusPagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    monitor<T extends MonitorDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MonitorDefaultArgs<ExtArgs>>): Prisma__MonitorClient<$Result.GetResult<Prisma.$MonitorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the StatusPageMonitor model
+   */
+  interface StatusPageMonitorFieldRefs {
+    readonly id: FieldRef<"StatusPageMonitor", 'String'>
+    readonly statusPageId: FieldRef<"StatusPageMonitor", 'String'>
+    readonly monitorId: FieldRef<"StatusPageMonitor", 'String'>
+    readonly displayName: FieldRef<"StatusPageMonitor", 'String'>
+    readonly displayGroup: FieldRef<"StatusPageMonitor", 'String'>
+    readonly sortOrder: FieldRef<"StatusPageMonitor", 'Int'>
+    readonly createdAt: FieldRef<"StatusPageMonitor", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * StatusPageMonitor findUnique
+   */
+  export type StatusPageMonitorFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageMonitor
+     */
+    select?: StatusPageMonitorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageMonitor
+     */
+    omit?: StatusPageMonitorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageMonitorInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPageMonitor to fetch.
+     */
+    where: StatusPageMonitorWhereUniqueInput
+  }
+
+  /**
+   * StatusPageMonitor findUniqueOrThrow
+   */
+  export type StatusPageMonitorFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageMonitor
+     */
+    select?: StatusPageMonitorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageMonitor
+     */
+    omit?: StatusPageMonitorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageMonitorInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPageMonitor to fetch.
+     */
+    where: StatusPageMonitorWhereUniqueInput
+  }
+
+  /**
+   * StatusPageMonitor findFirst
+   */
+  export type StatusPageMonitorFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageMonitor
+     */
+    select?: StatusPageMonitorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageMonitor
+     */
+    omit?: StatusPageMonitorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageMonitorInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPageMonitor to fetch.
+     */
+    where?: StatusPageMonitorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StatusPageMonitors to fetch.
+     */
+    orderBy?: StatusPageMonitorOrderByWithRelationInput | StatusPageMonitorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StatusPageMonitors.
+     */
+    cursor?: StatusPageMonitorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StatusPageMonitors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StatusPageMonitors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StatusPageMonitors.
+     */
+    distinct?: StatusPageMonitorScalarFieldEnum | StatusPageMonitorScalarFieldEnum[]
+  }
+
+  /**
+   * StatusPageMonitor findFirstOrThrow
+   */
+  export type StatusPageMonitorFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageMonitor
+     */
+    select?: StatusPageMonitorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageMonitor
+     */
+    omit?: StatusPageMonitorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageMonitorInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPageMonitor to fetch.
+     */
+    where?: StatusPageMonitorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StatusPageMonitors to fetch.
+     */
+    orderBy?: StatusPageMonitorOrderByWithRelationInput | StatusPageMonitorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StatusPageMonitors.
+     */
+    cursor?: StatusPageMonitorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StatusPageMonitors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StatusPageMonitors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StatusPageMonitors.
+     */
+    distinct?: StatusPageMonitorScalarFieldEnum | StatusPageMonitorScalarFieldEnum[]
+  }
+
+  /**
+   * StatusPageMonitor findMany
+   */
+  export type StatusPageMonitorFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageMonitor
+     */
+    select?: StatusPageMonitorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageMonitor
+     */
+    omit?: StatusPageMonitorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageMonitorInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPageMonitors to fetch.
+     */
+    where?: StatusPageMonitorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StatusPageMonitors to fetch.
+     */
+    orderBy?: StatusPageMonitorOrderByWithRelationInput | StatusPageMonitorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing StatusPageMonitors.
+     */
+    cursor?: StatusPageMonitorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StatusPageMonitors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StatusPageMonitors.
+     */
+    skip?: number
+    distinct?: StatusPageMonitorScalarFieldEnum | StatusPageMonitorScalarFieldEnum[]
+  }
+
+  /**
+   * StatusPageMonitor create
+   */
+  export type StatusPageMonitorCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageMonitor
+     */
+    select?: StatusPageMonitorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageMonitor
+     */
+    omit?: StatusPageMonitorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageMonitorInclude<ExtArgs> | null
+    /**
+     * The data needed to create a StatusPageMonitor.
+     */
+    data: XOR<StatusPageMonitorCreateInput, StatusPageMonitorUncheckedCreateInput>
+  }
+
+  /**
+   * StatusPageMonitor createMany
+   */
+  export type StatusPageMonitorCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many StatusPageMonitors.
+     */
+    data: StatusPageMonitorCreateManyInput | StatusPageMonitorCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StatusPageMonitor createManyAndReturn
+   */
+  export type StatusPageMonitorCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageMonitor
+     */
+    select?: StatusPageMonitorSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageMonitor
+     */
+    omit?: StatusPageMonitorOmit<ExtArgs> | null
+    /**
+     * The data used to create many StatusPageMonitors.
+     */
+    data: StatusPageMonitorCreateManyInput | StatusPageMonitorCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageMonitorIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StatusPageMonitor update
+   */
+  export type StatusPageMonitorUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageMonitor
+     */
+    select?: StatusPageMonitorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageMonitor
+     */
+    omit?: StatusPageMonitorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageMonitorInclude<ExtArgs> | null
+    /**
+     * The data needed to update a StatusPageMonitor.
+     */
+    data: XOR<StatusPageMonitorUpdateInput, StatusPageMonitorUncheckedUpdateInput>
+    /**
+     * Choose, which StatusPageMonitor to update.
+     */
+    where: StatusPageMonitorWhereUniqueInput
+  }
+
+  /**
+   * StatusPageMonitor updateMany
+   */
+  export type StatusPageMonitorUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update StatusPageMonitors.
+     */
+    data: XOR<StatusPageMonitorUpdateManyMutationInput, StatusPageMonitorUncheckedUpdateManyInput>
+    /**
+     * Filter which StatusPageMonitors to update
+     */
+    where?: StatusPageMonitorWhereInput
+    /**
+     * Limit how many StatusPageMonitors to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StatusPageMonitor updateManyAndReturn
+   */
+  export type StatusPageMonitorUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageMonitor
+     */
+    select?: StatusPageMonitorSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageMonitor
+     */
+    omit?: StatusPageMonitorOmit<ExtArgs> | null
+    /**
+     * The data used to update StatusPageMonitors.
+     */
+    data: XOR<StatusPageMonitorUpdateManyMutationInput, StatusPageMonitorUncheckedUpdateManyInput>
+    /**
+     * Filter which StatusPageMonitors to update
+     */
+    where?: StatusPageMonitorWhereInput
+    /**
+     * Limit how many StatusPageMonitors to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageMonitorIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StatusPageMonitor upsert
+   */
+  export type StatusPageMonitorUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageMonitor
+     */
+    select?: StatusPageMonitorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageMonitor
+     */
+    omit?: StatusPageMonitorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageMonitorInclude<ExtArgs> | null
+    /**
+     * The filter to search for the StatusPageMonitor to update in case it exists.
+     */
+    where: StatusPageMonitorWhereUniqueInput
+    /**
+     * In case the StatusPageMonitor found by the `where` argument doesn't exist, create a new StatusPageMonitor with this data.
+     */
+    create: XOR<StatusPageMonitorCreateInput, StatusPageMonitorUncheckedCreateInput>
+    /**
+     * In case the StatusPageMonitor was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<StatusPageMonitorUpdateInput, StatusPageMonitorUncheckedUpdateInput>
+  }
+
+  /**
+   * StatusPageMonitor delete
+   */
+  export type StatusPageMonitorDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageMonitor
+     */
+    select?: StatusPageMonitorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageMonitor
+     */
+    omit?: StatusPageMonitorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageMonitorInclude<ExtArgs> | null
+    /**
+     * Filter which StatusPageMonitor to delete.
+     */
+    where: StatusPageMonitorWhereUniqueInput
+  }
+
+  /**
+   * StatusPageMonitor deleteMany
+   */
+  export type StatusPageMonitorDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StatusPageMonitors to delete
+     */
+    where?: StatusPageMonitorWhereInput
+    /**
+     * Limit how many StatusPageMonitors to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * StatusPageMonitor without action
+   */
+  export type StatusPageMonitorDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageMonitor
+     */
+    select?: StatusPageMonitorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageMonitor
+     */
+    omit?: StatusPageMonitorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageMonitorInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model StatusPageView
+   */
+
+  export type AggregateStatusPageView = {
+    _count: StatusPageViewCountAggregateOutputType | null
+    _min: StatusPageViewMinAggregateOutputType | null
+    _max: StatusPageViewMaxAggregateOutputType | null
+  }
+
+  export type StatusPageViewMinAggregateOutputType = {
+    id: string | null
+    statusPageId: string | null
+    visitorHash: string | null
+    userAgent: string | null
+    country: string | null
+    timestamp: Date | null
+  }
+
+  export type StatusPageViewMaxAggregateOutputType = {
+    id: string | null
+    statusPageId: string | null
+    visitorHash: string | null
+    userAgent: string | null
+    country: string | null
+    timestamp: Date | null
+  }
+
+  export type StatusPageViewCountAggregateOutputType = {
+    id: number
+    statusPageId: number
+    visitorHash: number
+    userAgent: number
+    country: number
+    timestamp: number
+    _all: number
+  }
+
+
+  export type StatusPageViewMinAggregateInputType = {
+    id?: true
+    statusPageId?: true
+    visitorHash?: true
+    userAgent?: true
+    country?: true
+    timestamp?: true
+  }
+
+  export type StatusPageViewMaxAggregateInputType = {
+    id?: true
+    statusPageId?: true
+    visitorHash?: true
+    userAgent?: true
+    country?: true
+    timestamp?: true
+  }
+
+  export type StatusPageViewCountAggregateInputType = {
+    id?: true
+    statusPageId?: true
+    visitorHash?: true
+    userAgent?: true
+    country?: true
+    timestamp?: true
+    _all?: true
+  }
+
+  export type StatusPageViewAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StatusPageView to aggregate.
+     */
+    where?: StatusPageViewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StatusPageViews to fetch.
+     */
+    orderBy?: StatusPageViewOrderByWithRelationInput | StatusPageViewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: StatusPageViewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StatusPageViews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StatusPageViews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned StatusPageViews
+    **/
+    _count?: true | StatusPageViewCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: StatusPageViewMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: StatusPageViewMaxAggregateInputType
+  }
+
+  export type GetStatusPageViewAggregateType<T extends StatusPageViewAggregateArgs> = {
+        [P in keyof T & keyof AggregateStatusPageView]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateStatusPageView[P]>
+      : GetScalarType<T[P], AggregateStatusPageView[P]>
+  }
+
+
+
+
+  export type StatusPageViewGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StatusPageViewWhereInput
+    orderBy?: StatusPageViewOrderByWithAggregationInput | StatusPageViewOrderByWithAggregationInput[]
+    by: StatusPageViewScalarFieldEnum[] | StatusPageViewScalarFieldEnum
+    having?: StatusPageViewScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: StatusPageViewCountAggregateInputType | true
+    _min?: StatusPageViewMinAggregateInputType
+    _max?: StatusPageViewMaxAggregateInputType
+  }
+
+  export type StatusPageViewGroupByOutputType = {
+    id: string
+    statusPageId: string
+    visitorHash: string
+    userAgent: string | null
+    country: string | null
+    timestamp: Date
+    _count: StatusPageViewCountAggregateOutputType | null
+    _min: StatusPageViewMinAggregateOutputType | null
+    _max: StatusPageViewMaxAggregateOutputType | null
+  }
+
+  type GetStatusPageViewGroupByPayload<T extends StatusPageViewGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<StatusPageViewGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof StatusPageViewGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], StatusPageViewGroupByOutputType[P]>
+            : GetScalarType<T[P], StatusPageViewGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type StatusPageViewSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    statusPageId?: boolean
+    visitorHash?: boolean
+    userAgent?: boolean
+    country?: boolean
+    timestamp?: boolean
+    statusPage?: boolean | StatusPageDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["statusPageView"]>
+
+  export type StatusPageViewSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    statusPageId?: boolean
+    visitorHash?: boolean
+    userAgent?: boolean
+    country?: boolean
+    timestamp?: boolean
+    statusPage?: boolean | StatusPageDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["statusPageView"]>
+
+  export type StatusPageViewSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    statusPageId?: boolean
+    visitorHash?: boolean
+    userAgent?: boolean
+    country?: boolean
+    timestamp?: boolean
+    statusPage?: boolean | StatusPageDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["statusPageView"]>
+
+  export type StatusPageViewSelectScalar = {
+    id?: boolean
+    statusPageId?: boolean
+    visitorHash?: boolean
+    userAgent?: boolean
+    country?: boolean
+    timestamp?: boolean
+  }
+
+  export type StatusPageViewOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "statusPageId" | "visitorHash" | "userAgent" | "country" | "timestamp", ExtArgs["result"]["statusPageView"]>
+  export type StatusPageViewInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    statusPage?: boolean | StatusPageDefaultArgs<ExtArgs>
+  }
+  export type StatusPageViewIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    statusPage?: boolean | StatusPageDefaultArgs<ExtArgs>
+  }
+  export type StatusPageViewIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    statusPage?: boolean | StatusPageDefaultArgs<ExtArgs>
+  }
+
+  export type $StatusPageViewPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "StatusPageView"
+    objects: {
+      statusPage: Prisma.$StatusPagePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      statusPageId: string
+      visitorHash: string
+      userAgent: string | null
+      country: string | null
+      timestamp: Date
+    }, ExtArgs["result"]["statusPageView"]>
+    composites: {}
+  }
+
+  type StatusPageViewGetPayload<S extends boolean | null | undefined | StatusPageViewDefaultArgs> = $Result.GetResult<Prisma.$StatusPageViewPayload, S>
+
+  type StatusPageViewCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<StatusPageViewFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: StatusPageViewCountAggregateInputType | true
+    }
+
+  export interface StatusPageViewDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['StatusPageView'], meta: { name: 'StatusPageView' } }
+    /**
+     * Find zero or one StatusPageView that matches the filter.
+     * @param {StatusPageViewFindUniqueArgs} args - Arguments to find a StatusPageView
+     * @example
+     * // Get one StatusPageView
+     * const statusPageView = await prisma.statusPageView.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StatusPageViewFindUniqueArgs>(args: SelectSubset<T, StatusPageViewFindUniqueArgs<ExtArgs>>): Prisma__StatusPageViewClient<$Result.GetResult<Prisma.$StatusPageViewPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one StatusPageView that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StatusPageViewFindUniqueOrThrowArgs} args - Arguments to find a StatusPageView
+     * @example
+     * // Get one StatusPageView
+     * const statusPageView = await prisma.statusPageView.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StatusPageViewFindUniqueOrThrowArgs>(args: SelectSubset<T, StatusPageViewFindUniqueOrThrowArgs<ExtArgs>>): Prisma__StatusPageViewClient<$Result.GetResult<Prisma.$StatusPageViewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StatusPageView that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageViewFindFirstArgs} args - Arguments to find a StatusPageView
+     * @example
+     * // Get one StatusPageView
+     * const statusPageView = await prisma.statusPageView.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StatusPageViewFindFirstArgs>(args?: SelectSubset<T, StatusPageViewFindFirstArgs<ExtArgs>>): Prisma__StatusPageViewClient<$Result.GetResult<Prisma.$StatusPageViewPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StatusPageView that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageViewFindFirstOrThrowArgs} args - Arguments to find a StatusPageView
+     * @example
+     * // Get one StatusPageView
+     * const statusPageView = await prisma.statusPageView.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StatusPageViewFindFirstOrThrowArgs>(args?: SelectSubset<T, StatusPageViewFindFirstOrThrowArgs<ExtArgs>>): Prisma__StatusPageViewClient<$Result.GetResult<Prisma.$StatusPageViewPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more StatusPageViews that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageViewFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all StatusPageViews
+     * const statusPageViews = await prisma.statusPageView.findMany()
+     * 
+     * // Get first 10 StatusPageViews
+     * const statusPageViews = await prisma.statusPageView.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const statusPageViewWithIdOnly = await prisma.statusPageView.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends StatusPageViewFindManyArgs>(args?: SelectSubset<T, StatusPageViewFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPageViewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a StatusPageView.
+     * @param {StatusPageViewCreateArgs} args - Arguments to create a StatusPageView.
+     * @example
+     * // Create one StatusPageView
+     * const StatusPageView = await prisma.statusPageView.create({
+     *   data: {
+     *     // ... data to create a StatusPageView
+     *   }
+     * })
+     * 
+     */
+    create<T extends StatusPageViewCreateArgs>(args: SelectSubset<T, StatusPageViewCreateArgs<ExtArgs>>): Prisma__StatusPageViewClient<$Result.GetResult<Prisma.$StatusPageViewPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many StatusPageViews.
+     * @param {StatusPageViewCreateManyArgs} args - Arguments to create many StatusPageViews.
+     * @example
+     * // Create many StatusPageViews
+     * const statusPageView = await prisma.statusPageView.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends StatusPageViewCreateManyArgs>(args?: SelectSubset<T, StatusPageViewCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many StatusPageViews and returns the data saved in the database.
+     * @param {StatusPageViewCreateManyAndReturnArgs} args - Arguments to create many StatusPageViews.
+     * @example
+     * // Create many StatusPageViews
+     * const statusPageView = await prisma.statusPageView.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many StatusPageViews and only return the `id`
+     * const statusPageViewWithIdOnly = await prisma.statusPageView.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends StatusPageViewCreateManyAndReturnArgs>(args?: SelectSubset<T, StatusPageViewCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPageViewPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a StatusPageView.
+     * @param {StatusPageViewDeleteArgs} args - Arguments to delete one StatusPageView.
+     * @example
+     * // Delete one StatusPageView
+     * const StatusPageView = await prisma.statusPageView.delete({
+     *   where: {
+     *     // ... filter to delete one StatusPageView
+     *   }
+     * })
+     * 
+     */
+    delete<T extends StatusPageViewDeleteArgs>(args: SelectSubset<T, StatusPageViewDeleteArgs<ExtArgs>>): Prisma__StatusPageViewClient<$Result.GetResult<Prisma.$StatusPageViewPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one StatusPageView.
+     * @param {StatusPageViewUpdateArgs} args - Arguments to update one StatusPageView.
+     * @example
+     * // Update one StatusPageView
+     * const statusPageView = await prisma.statusPageView.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends StatusPageViewUpdateArgs>(args: SelectSubset<T, StatusPageViewUpdateArgs<ExtArgs>>): Prisma__StatusPageViewClient<$Result.GetResult<Prisma.$StatusPageViewPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more StatusPageViews.
+     * @param {StatusPageViewDeleteManyArgs} args - Arguments to filter StatusPageViews to delete.
+     * @example
+     * // Delete a few StatusPageViews
+     * const { count } = await prisma.statusPageView.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends StatusPageViewDeleteManyArgs>(args?: SelectSubset<T, StatusPageViewDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StatusPageViews.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageViewUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many StatusPageViews
+     * const statusPageView = await prisma.statusPageView.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends StatusPageViewUpdateManyArgs>(args: SelectSubset<T, StatusPageViewUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StatusPageViews and returns the data updated in the database.
+     * @param {StatusPageViewUpdateManyAndReturnArgs} args - Arguments to update many StatusPageViews.
+     * @example
+     * // Update many StatusPageViews
+     * const statusPageView = await prisma.statusPageView.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more StatusPageViews and only return the `id`
+     * const statusPageViewWithIdOnly = await prisma.statusPageView.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends StatusPageViewUpdateManyAndReturnArgs>(args: SelectSubset<T, StatusPageViewUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPageViewPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one StatusPageView.
+     * @param {StatusPageViewUpsertArgs} args - Arguments to update or create a StatusPageView.
+     * @example
+     * // Update or create a StatusPageView
+     * const statusPageView = await prisma.statusPageView.upsert({
+     *   create: {
+     *     // ... data to create a StatusPageView
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the StatusPageView we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StatusPageViewUpsertArgs>(args: SelectSubset<T, StatusPageViewUpsertArgs<ExtArgs>>): Prisma__StatusPageViewClient<$Result.GetResult<Prisma.$StatusPageViewPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of StatusPageViews.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageViewCountArgs} args - Arguments to filter StatusPageViews to count.
+     * @example
+     * // Count the number of StatusPageViews
+     * const count = await prisma.statusPageView.count({
+     *   where: {
+     *     // ... the filter for the StatusPageViews we want to count
+     *   }
+     * })
+    **/
+    count<T extends StatusPageViewCountArgs>(
+      args?: Subset<T, StatusPageViewCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], StatusPageViewCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a StatusPageView.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageViewAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StatusPageViewAggregateArgs>(args: Subset<T, StatusPageViewAggregateArgs>): Prisma.PrismaPromise<GetStatusPageViewAggregateType<T>>
+
+    /**
+     * Group by StatusPageView.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageViewGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends StatusPageViewGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: StatusPageViewGroupByArgs['orderBy'] }
+        : { orderBy?: StatusPageViewGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, StatusPageViewGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStatusPageViewGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the StatusPageView model
+   */
+  readonly fields: StatusPageViewFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for StatusPageView.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__StatusPageViewClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    statusPage<T extends StatusPageDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StatusPageDefaultArgs<ExtArgs>>): Prisma__StatusPageClient<$Result.GetResult<Prisma.$StatusPagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the StatusPageView model
+   */
+  interface StatusPageViewFieldRefs {
+    readonly id: FieldRef<"StatusPageView", 'String'>
+    readonly statusPageId: FieldRef<"StatusPageView", 'String'>
+    readonly visitorHash: FieldRef<"StatusPageView", 'String'>
+    readonly userAgent: FieldRef<"StatusPageView", 'String'>
+    readonly country: FieldRef<"StatusPageView", 'String'>
+    readonly timestamp: FieldRef<"StatusPageView", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * StatusPageView findUnique
+   */
+  export type StatusPageViewFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageView
+     */
+    select?: StatusPageViewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageView
+     */
+    omit?: StatusPageViewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageViewInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPageView to fetch.
+     */
+    where: StatusPageViewWhereUniqueInput
+  }
+
+  /**
+   * StatusPageView findUniqueOrThrow
+   */
+  export type StatusPageViewFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageView
+     */
+    select?: StatusPageViewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageView
+     */
+    omit?: StatusPageViewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageViewInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPageView to fetch.
+     */
+    where: StatusPageViewWhereUniqueInput
+  }
+
+  /**
+   * StatusPageView findFirst
+   */
+  export type StatusPageViewFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageView
+     */
+    select?: StatusPageViewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageView
+     */
+    omit?: StatusPageViewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageViewInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPageView to fetch.
+     */
+    where?: StatusPageViewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StatusPageViews to fetch.
+     */
+    orderBy?: StatusPageViewOrderByWithRelationInput | StatusPageViewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StatusPageViews.
+     */
+    cursor?: StatusPageViewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StatusPageViews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StatusPageViews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StatusPageViews.
+     */
+    distinct?: StatusPageViewScalarFieldEnum | StatusPageViewScalarFieldEnum[]
+  }
+
+  /**
+   * StatusPageView findFirstOrThrow
+   */
+  export type StatusPageViewFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageView
+     */
+    select?: StatusPageViewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageView
+     */
+    omit?: StatusPageViewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageViewInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPageView to fetch.
+     */
+    where?: StatusPageViewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StatusPageViews to fetch.
+     */
+    orderBy?: StatusPageViewOrderByWithRelationInput | StatusPageViewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StatusPageViews.
+     */
+    cursor?: StatusPageViewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StatusPageViews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StatusPageViews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StatusPageViews.
+     */
+    distinct?: StatusPageViewScalarFieldEnum | StatusPageViewScalarFieldEnum[]
+  }
+
+  /**
+   * StatusPageView findMany
+   */
+  export type StatusPageViewFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageView
+     */
+    select?: StatusPageViewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageView
+     */
+    omit?: StatusPageViewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageViewInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPageViews to fetch.
+     */
+    where?: StatusPageViewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StatusPageViews to fetch.
+     */
+    orderBy?: StatusPageViewOrderByWithRelationInput | StatusPageViewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing StatusPageViews.
+     */
+    cursor?: StatusPageViewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StatusPageViews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StatusPageViews.
+     */
+    skip?: number
+    distinct?: StatusPageViewScalarFieldEnum | StatusPageViewScalarFieldEnum[]
+  }
+
+  /**
+   * StatusPageView create
+   */
+  export type StatusPageViewCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageView
+     */
+    select?: StatusPageViewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageView
+     */
+    omit?: StatusPageViewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageViewInclude<ExtArgs> | null
+    /**
+     * The data needed to create a StatusPageView.
+     */
+    data: XOR<StatusPageViewCreateInput, StatusPageViewUncheckedCreateInput>
+  }
+
+  /**
+   * StatusPageView createMany
+   */
+  export type StatusPageViewCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many StatusPageViews.
+     */
+    data: StatusPageViewCreateManyInput | StatusPageViewCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StatusPageView createManyAndReturn
+   */
+  export type StatusPageViewCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageView
+     */
+    select?: StatusPageViewSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageView
+     */
+    omit?: StatusPageViewOmit<ExtArgs> | null
+    /**
+     * The data used to create many StatusPageViews.
+     */
+    data: StatusPageViewCreateManyInput | StatusPageViewCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageViewIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StatusPageView update
+   */
+  export type StatusPageViewUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageView
+     */
+    select?: StatusPageViewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageView
+     */
+    omit?: StatusPageViewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageViewInclude<ExtArgs> | null
+    /**
+     * The data needed to update a StatusPageView.
+     */
+    data: XOR<StatusPageViewUpdateInput, StatusPageViewUncheckedUpdateInput>
+    /**
+     * Choose, which StatusPageView to update.
+     */
+    where: StatusPageViewWhereUniqueInput
+  }
+
+  /**
+   * StatusPageView updateMany
+   */
+  export type StatusPageViewUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update StatusPageViews.
+     */
+    data: XOR<StatusPageViewUpdateManyMutationInput, StatusPageViewUncheckedUpdateManyInput>
+    /**
+     * Filter which StatusPageViews to update
+     */
+    where?: StatusPageViewWhereInput
+    /**
+     * Limit how many StatusPageViews to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StatusPageView updateManyAndReturn
+   */
+  export type StatusPageViewUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageView
+     */
+    select?: StatusPageViewSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageView
+     */
+    omit?: StatusPageViewOmit<ExtArgs> | null
+    /**
+     * The data used to update StatusPageViews.
+     */
+    data: XOR<StatusPageViewUpdateManyMutationInput, StatusPageViewUncheckedUpdateManyInput>
+    /**
+     * Filter which StatusPageViews to update
+     */
+    where?: StatusPageViewWhereInput
+    /**
+     * Limit how many StatusPageViews to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageViewIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StatusPageView upsert
+   */
+  export type StatusPageViewUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageView
+     */
+    select?: StatusPageViewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageView
+     */
+    omit?: StatusPageViewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageViewInclude<ExtArgs> | null
+    /**
+     * The filter to search for the StatusPageView to update in case it exists.
+     */
+    where: StatusPageViewWhereUniqueInput
+    /**
+     * In case the StatusPageView found by the `where` argument doesn't exist, create a new StatusPageView with this data.
+     */
+    create: XOR<StatusPageViewCreateInput, StatusPageViewUncheckedCreateInput>
+    /**
+     * In case the StatusPageView was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<StatusPageViewUpdateInput, StatusPageViewUncheckedUpdateInput>
+  }
+
+  /**
+   * StatusPageView delete
+   */
+  export type StatusPageViewDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageView
+     */
+    select?: StatusPageViewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageView
+     */
+    omit?: StatusPageViewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageViewInclude<ExtArgs> | null
+    /**
+     * Filter which StatusPageView to delete.
+     */
+    where: StatusPageViewWhereUniqueInput
+  }
+
+  /**
+   * StatusPageView deleteMany
+   */
+  export type StatusPageViewDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StatusPageViews to delete
+     */
+    where?: StatusPageViewWhereInput
+    /**
+     * Limit how many StatusPageViews to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * StatusPageView without action
+   */
+  export type StatusPageViewDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageView
+     */
+    select?: StatusPageViewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageView
+     */
+    omit?: StatusPageViewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageViewInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -18732,6 +23827,70 @@ export namespace Prisma {
   export type MaintenanceWindowScalarFieldEnum = (typeof MaintenanceWindowScalarFieldEnum)[keyof typeof MaintenanceWindowScalarFieldEnum]
 
 
+  export const StatusPageI18nScalarFieldEnum: {
+    id: 'id',
+    statusPageId: 'statusPageId',
+    locale: 'locale',
+    enabled: 'enabled',
+    overrides: 'overrides',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type StatusPageI18nScalarFieldEnum = (typeof StatusPageI18nScalarFieldEnum)[keyof typeof StatusPageI18nScalarFieldEnum]
+
+
+  export const StatusPageScalarFieldEnum: {
+    id: 'id',
+    slug: 'slug',
+    customDomain: 'customDomain',
+    title: 'title',
+    description: 'description',
+    favicon: 'favicon',
+    logo: 'logo',
+    theme: 'theme',
+    layout: 'layout',
+    password: 'password',
+    isPrivate: 'isPrivate',
+    ipWhitelist: 'ipWhitelist',
+    seoIndex: 'seoIndex',
+    showUptime: 'showUptime',
+    showResponseTime: 'showResponseTime',
+    showPaused: 'showPaused',
+    customCss: 'customCss',
+    userId: 'userId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type StatusPageScalarFieldEnum = (typeof StatusPageScalarFieldEnum)[keyof typeof StatusPageScalarFieldEnum]
+
+
+  export const StatusPageMonitorScalarFieldEnum: {
+    id: 'id',
+    statusPageId: 'statusPageId',
+    monitorId: 'monitorId',
+    displayName: 'displayName',
+    displayGroup: 'displayGroup',
+    sortOrder: 'sortOrder',
+    createdAt: 'createdAt'
+  };
+
+  export type StatusPageMonitorScalarFieldEnum = (typeof StatusPageMonitorScalarFieldEnum)[keyof typeof StatusPageMonitorScalarFieldEnum]
+
+
+  export const StatusPageViewScalarFieldEnum: {
+    id: 'id',
+    statusPageId: 'statusPageId',
+    visitorHash: 'visitorHash',
+    userAgent: 'userAgent',
+    country: 'country',
+    timestamp: 'timestamp'
+  };
+
+  export type StatusPageViewScalarFieldEnum = (typeof StatusPageViewScalarFieldEnum)[keyof typeof StatusPageViewScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -18745,6 +23904,14 @@ export namespace Prisma {
   };
 
   export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
   export const QueryMode: {
@@ -19001,6 +24168,7 @@ export namespace Prisma {
     accounts?: AccountListRelationFilter
     monitors?: MonitorListRelationFilter
     notificationChannels?: NotificationChannelListRelationFilter
+    statusPages?: StatusPageListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -19018,6 +24186,7 @@ export namespace Prisma {
     accounts?: AccountOrderByRelationAggregateInput
     monitors?: MonitorOrderByRelationAggregateInput
     notificationChannels?: NotificationChannelOrderByRelationAggregateInput
+    statusPages?: StatusPageOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -19038,6 +24207,7 @@ export namespace Prisma {
     accounts?: AccountListRelationFilter
     monitors?: MonitorListRelationFilter
     notificationChannels?: NotificationChannelListRelationFilter
+    statusPages?: StatusPageListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -19853,6 +25023,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentListRelationFilter
     latencyAggregates?: LatencyAggregateListRelationFilter
     regionalBaselines?: RegionalBaselineListRelationFilter
+    statusPages?: StatusPageMonitorListRelationFilter
   }
 
   export type MonitorOrderByWithRelationInput = {
@@ -19878,6 +25049,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentOrderByRelationAggregateInput
     latencyAggregates?: LatencyAggregateOrderByRelationAggregateInput
     regionalBaselines?: RegionalBaselineOrderByRelationAggregateInput
+    statusPages?: StatusPageMonitorOrderByRelationAggregateInput
   }
 
   export type MonitorWhereUniqueInput = Prisma.AtLeast<{
@@ -19906,6 +25078,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentListRelationFilter
     latencyAggregates?: LatencyAggregateListRelationFilter
     regionalBaselines?: RegionalBaselineListRelationFilter
+    statusPages?: StatusPageMonitorListRelationFilter
   }, "id">
 
   export type MonitorOrderByWithAggregationInput = {
@@ -20082,6 +25255,342 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"MaintenanceWindow"> | Date | string
   }
 
+  export type StatusPageI18nWhereInput = {
+    AND?: StatusPageI18nWhereInput | StatusPageI18nWhereInput[]
+    OR?: StatusPageI18nWhereInput[]
+    NOT?: StatusPageI18nWhereInput | StatusPageI18nWhereInput[]
+    id?: StringFilter<"StatusPageI18n"> | string
+    statusPageId?: StringFilter<"StatusPageI18n"> | string
+    locale?: StringFilter<"StatusPageI18n"> | string
+    enabled?: BoolFilter<"StatusPageI18n"> | boolean
+    overrides?: JsonNullableFilter<"StatusPageI18n">
+    createdAt?: DateTimeFilter<"StatusPageI18n"> | Date | string
+    updatedAt?: DateTimeFilter<"StatusPageI18n"> | Date | string
+    statusPage?: XOR<StatusPageScalarRelationFilter, StatusPageWhereInput>
+  }
+
+  export type StatusPageI18nOrderByWithRelationInput = {
+    id?: SortOrder
+    statusPageId?: SortOrder
+    locale?: SortOrder
+    enabled?: SortOrder
+    overrides?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    statusPage?: StatusPageOrderByWithRelationInput
+  }
+
+  export type StatusPageI18nWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    statusPageId_locale?: StatusPageI18nStatusPageIdLocaleCompoundUniqueInput
+    AND?: StatusPageI18nWhereInput | StatusPageI18nWhereInput[]
+    OR?: StatusPageI18nWhereInput[]
+    NOT?: StatusPageI18nWhereInput | StatusPageI18nWhereInput[]
+    statusPageId?: StringFilter<"StatusPageI18n"> | string
+    locale?: StringFilter<"StatusPageI18n"> | string
+    enabled?: BoolFilter<"StatusPageI18n"> | boolean
+    overrides?: JsonNullableFilter<"StatusPageI18n">
+    createdAt?: DateTimeFilter<"StatusPageI18n"> | Date | string
+    updatedAt?: DateTimeFilter<"StatusPageI18n"> | Date | string
+    statusPage?: XOR<StatusPageScalarRelationFilter, StatusPageWhereInput>
+  }, "id" | "statusPageId_locale">
+
+  export type StatusPageI18nOrderByWithAggregationInput = {
+    id?: SortOrder
+    statusPageId?: SortOrder
+    locale?: SortOrder
+    enabled?: SortOrder
+    overrides?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: StatusPageI18nCountOrderByAggregateInput
+    _max?: StatusPageI18nMaxOrderByAggregateInput
+    _min?: StatusPageI18nMinOrderByAggregateInput
+  }
+
+  export type StatusPageI18nScalarWhereWithAggregatesInput = {
+    AND?: StatusPageI18nScalarWhereWithAggregatesInput | StatusPageI18nScalarWhereWithAggregatesInput[]
+    OR?: StatusPageI18nScalarWhereWithAggregatesInput[]
+    NOT?: StatusPageI18nScalarWhereWithAggregatesInput | StatusPageI18nScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"StatusPageI18n"> | string
+    statusPageId?: StringWithAggregatesFilter<"StatusPageI18n"> | string
+    locale?: StringWithAggregatesFilter<"StatusPageI18n"> | string
+    enabled?: BoolWithAggregatesFilter<"StatusPageI18n"> | boolean
+    overrides?: JsonNullableWithAggregatesFilter<"StatusPageI18n">
+    createdAt?: DateTimeWithAggregatesFilter<"StatusPageI18n"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"StatusPageI18n"> | Date | string
+  }
+
+  export type StatusPageWhereInput = {
+    AND?: StatusPageWhereInput | StatusPageWhereInput[]
+    OR?: StatusPageWhereInput[]
+    NOT?: StatusPageWhereInput | StatusPageWhereInput[]
+    id?: StringFilter<"StatusPage"> | string
+    slug?: StringFilter<"StatusPage"> | string
+    customDomain?: StringNullableFilter<"StatusPage"> | string | null
+    title?: StringFilter<"StatusPage"> | string
+    description?: StringNullableFilter<"StatusPage"> | string | null
+    favicon?: StringNullableFilter<"StatusPage"> | string | null
+    logo?: StringNullableFilter<"StatusPage"> | string | null
+    theme?: JsonNullableFilter<"StatusPage">
+    layout?: JsonNullableFilter<"StatusPage">
+    password?: StringNullableFilter<"StatusPage"> | string | null
+    isPrivate?: BoolFilter<"StatusPage"> | boolean
+    ipWhitelist?: StringNullableFilter<"StatusPage"> | string | null
+    seoIndex?: BoolFilter<"StatusPage"> | boolean
+    showUptime?: BoolFilter<"StatusPage"> | boolean
+    showResponseTime?: BoolFilter<"StatusPage"> | boolean
+    showPaused?: BoolFilter<"StatusPage"> | boolean
+    customCss?: StringNullableFilter<"StatusPage"> | string | null
+    userId?: StringFilter<"StatusPage"> | string
+    createdAt?: DateTimeFilter<"StatusPage"> | Date | string
+    updatedAt?: DateTimeFilter<"StatusPage"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    monitors?: StatusPageMonitorListRelationFilter
+    views?: StatusPageViewListRelationFilter
+    i18nSettings?: StatusPageI18nListRelationFilter
+  }
+
+  export type StatusPageOrderByWithRelationInput = {
+    id?: SortOrder
+    slug?: SortOrder
+    customDomain?: SortOrderInput | SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    favicon?: SortOrderInput | SortOrder
+    logo?: SortOrderInput | SortOrder
+    theme?: SortOrderInput | SortOrder
+    layout?: SortOrderInput | SortOrder
+    password?: SortOrderInput | SortOrder
+    isPrivate?: SortOrder
+    ipWhitelist?: SortOrderInput | SortOrder
+    seoIndex?: SortOrder
+    showUptime?: SortOrder
+    showResponseTime?: SortOrder
+    showPaused?: SortOrder
+    customCss?: SortOrderInput | SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    monitors?: StatusPageMonitorOrderByRelationAggregateInput
+    views?: StatusPageViewOrderByRelationAggregateInput
+    i18nSettings?: StatusPageI18nOrderByRelationAggregateInput
+  }
+
+  export type StatusPageWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    slug?: string
+    customDomain?: string
+    AND?: StatusPageWhereInput | StatusPageWhereInput[]
+    OR?: StatusPageWhereInput[]
+    NOT?: StatusPageWhereInput | StatusPageWhereInput[]
+    title?: StringFilter<"StatusPage"> | string
+    description?: StringNullableFilter<"StatusPage"> | string | null
+    favicon?: StringNullableFilter<"StatusPage"> | string | null
+    logo?: StringNullableFilter<"StatusPage"> | string | null
+    theme?: JsonNullableFilter<"StatusPage">
+    layout?: JsonNullableFilter<"StatusPage">
+    password?: StringNullableFilter<"StatusPage"> | string | null
+    isPrivate?: BoolFilter<"StatusPage"> | boolean
+    ipWhitelist?: StringNullableFilter<"StatusPage"> | string | null
+    seoIndex?: BoolFilter<"StatusPage"> | boolean
+    showUptime?: BoolFilter<"StatusPage"> | boolean
+    showResponseTime?: BoolFilter<"StatusPage"> | boolean
+    showPaused?: BoolFilter<"StatusPage"> | boolean
+    customCss?: StringNullableFilter<"StatusPage"> | string | null
+    userId?: StringFilter<"StatusPage"> | string
+    createdAt?: DateTimeFilter<"StatusPage"> | Date | string
+    updatedAt?: DateTimeFilter<"StatusPage"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    monitors?: StatusPageMonitorListRelationFilter
+    views?: StatusPageViewListRelationFilter
+    i18nSettings?: StatusPageI18nListRelationFilter
+  }, "id" | "slug" | "customDomain">
+
+  export type StatusPageOrderByWithAggregationInput = {
+    id?: SortOrder
+    slug?: SortOrder
+    customDomain?: SortOrderInput | SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    favicon?: SortOrderInput | SortOrder
+    logo?: SortOrderInput | SortOrder
+    theme?: SortOrderInput | SortOrder
+    layout?: SortOrderInput | SortOrder
+    password?: SortOrderInput | SortOrder
+    isPrivate?: SortOrder
+    ipWhitelist?: SortOrderInput | SortOrder
+    seoIndex?: SortOrder
+    showUptime?: SortOrder
+    showResponseTime?: SortOrder
+    showPaused?: SortOrder
+    customCss?: SortOrderInput | SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: StatusPageCountOrderByAggregateInput
+    _max?: StatusPageMaxOrderByAggregateInput
+    _min?: StatusPageMinOrderByAggregateInput
+  }
+
+  export type StatusPageScalarWhereWithAggregatesInput = {
+    AND?: StatusPageScalarWhereWithAggregatesInput | StatusPageScalarWhereWithAggregatesInput[]
+    OR?: StatusPageScalarWhereWithAggregatesInput[]
+    NOT?: StatusPageScalarWhereWithAggregatesInput | StatusPageScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"StatusPage"> | string
+    slug?: StringWithAggregatesFilter<"StatusPage"> | string
+    customDomain?: StringNullableWithAggregatesFilter<"StatusPage"> | string | null
+    title?: StringWithAggregatesFilter<"StatusPage"> | string
+    description?: StringNullableWithAggregatesFilter<"StatusPage"> | string | null
+    favicon?: StringNullableWithAggregatesFilter<"StatusPage"> | string | null
+    logo?: StringNullableWithAggregatesFilter<"StatusPage"> | string | null
+    theme?: JsonNullableWithAggregatesFilter<"StatusPage">
+    layout?: JsonNullableWithAggregatesFilter<"StatusPage">
+    password?: StringNullableWithAggregatesFilter<"StatusPage"> | string | null
+    isPrivate?: BoolWithAggregatesFilter<"StatusPage"> | boolean
+    ipWhitelist?: StringNullableWithAggregatesFilter<"StatusPage"> | string | null
+    seoIndex?: BoolWithAggregatesFilter<"StatusPage"> | boolean
+    showUptime?: BoolWithAggregatesFilter<"StatusPage"> | boolean
+    showResponseTime?: BoolWithAggregatesFilter<"StatusPage"> | boolean
+    showPaused?: BoolWithAggregatesFilter<"StatusPage"> | boolean
+    customCss?: StringNullableWithAggregatesFilter<"StatusPage"> | string | null
+    userId?: StringWithAggregatesFilter<"StatusPage"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"StatusPage"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"StatusPage"> | Date | string
+  }
+
+  export type StatusPageMonitorWhereInput = {
+    AND?: StatusPageMonitorWhereInput | StatusPageMonitorWhereInput[]
+    OR?: StatusPageMonitorWhereInput[]
+    NOT?: StatusPageMonitorWhereInput | StatusPageMonitorWhereInput[]
+    id?: StringFilter<"StatusPageMonitor"> | string
+    statusPageId?: StringFilter<"StatusPageMonitor"> | string
+    monitorId?: StringFilter<"StatusPageMonitor"> | string
+    displayName?: StringNullableFilter<"StatusPageMonitor"> | string | null
+    displayGroup?: StringNullableFilter<"StatusPageMonitor"> | string | null
+    sortOrder?: IntFilter<"StatusPageMonitor"> | number
+    createdAt?: DateTimeFilter<"StatusPageMonitor"> | Date | string
+    statusPage?: XOR<StatusPageScalarRelationFilter, StatusPageWhereInput>
+    monitor?: XOR<MonitorScalarRelationFilter, MonitorWhereInput>
+  }
+
+  export type StatusPageMonitorOrderByWithRelationInput = {
+    id?: SortOrder
+    statusPageId?: SortOrder
+    monitorId?: SortOrder
+    displayName?: SortOrderInput | SortOrder
+    displayGroup?: SortOrderInput | SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    statusPage?: StatusPageOrderByWithRelationInput
+    monitor?: MonitorOrderByWithRelationInput
+  }
+
+  export type StatusPageMonitorWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    statusPageId_monitorId?: StatusPageMonitorStatusPageIdMonitorIdCompoundUniqueInput
+    AND?: StatusPageMonitorWhereInput | StatusPageMonitorWhereInput[]
+    OR?: StatusPageMonitorWhereInput[]
+    NOT?: StatusPageMonitorWhereInput | StatusPageMonitorWhereInput[]
+    statusPageId?: StringFilter<"StatusPageMonitor"> | string
+    monitorId?: StringFilter<"StatusPageMonitor"> | string
+    displayName?: StringNullableFilter<"StatusPageMonitor"> | string | null
+    displayGroup?: StringNullableFilter<"StatusPageMonitor"> | string | null
+    sortOrder?: IntFilter<"StatusPageMonitor"> | number
+    createdAt?: DateTimeFilter<"StatusPageMonitor"> | Date | string
+    statusPage?: XOR<StatusPageScalarRelationFilter, StatusPageWhereInput>
+    monitor?: XOR<MonitorScalarRelationFilter, MonitorWhereInput>
+  }, "id" | "statusPageId_monitorId">
+
+  export type StatusPageMonitorOrderByWithAggregationInput = {
+    id?: SortOrder
+    statusPageId?: SortOrder
+    monitorId?: SortOrder
+    displayName?: SortOrderInput | SortOrder
+    displayGroup?: SortOrderInput | SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    _count?: StatusPageMonitorCountOrderByAggregateInput
+    _avg?: StatusPageMonitorAvgOrderByAggregateInput
+    _max?: StatusPageMonitorMaxOrderByAggregateInput
+    _min?: StatusPageMonitorMinOrderByAggregateInput
+    _sum?: StatusPageMonitorSumOrderByAggregateInput
+  }
+
+  export type StatusPageMonitorScalarWhereWithAggregatesInput = {
+    AND?: StatusPageMonitorScalarWhereWithAggregatesInput | StatusPageMonitorScalarWhereWithAggregatesInput[]
+    OR?: StatusPageMonitorScalarWhereWithAggregatesInput[]
+    NOT?: StatusPageMonitorScalarWhereWithAggregatesInput | StatusPageMonitorScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"StatusPageMonitor"> | string
+    statusPageId?: StringWithAggregatesFilter<"StatusPageMonitor"> | string
+    monitorId?: StringWithAggregatesFilter<"StatusPageMonitor"> | string
+    displayName?: StringNullableWithAggregatesFilter<"StatusPageMonitor"> | string | null
+    displayGroup?: StringNullableWithAggregatesFilter<"StatusPageMonitor"> | string | null
+    sortOrder?: IntWithAggregatesFilter<"StatusPageMonitor"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"StatusPageMonitor"> | Date | string
+  }
+
+  export type StatusPageViewWhereInput = {
+    AND?: StatusPageViewWhereInput | StatusPageViewWhereInput[]
+    OR?: StatusPageViewWhereInput[]
+    NOT?: StatusPageViewWhereInput | StatusPageViewWhereInput[]
+    id?: StringFilter<"StatusPageView"> | string
+    statusPageId?: StringFilter<"StatusPageView"> | string
+    visitorHash?: StringFilter<"StatusPageView"> | string
+    userAgent?: StringNullableFilter<"StatusPageView"> | string | null
+    country?: StringNullableFilter<"StatusPageView"> | string | null
+    timestamp?: DateTimeFilter<"StatusPageView"> | Date | string
+    statusPage?: XOR<StatusPageScalarRelationFilter, StatusPageWhereInput>
+  }
+
+  export type StatusPageViewOrderByWithRelationInput = {
+    id?: SortOrder
+    statusPageId?: SortOrder
+    visitorHash?: SortOrder
+    userAgent?: SortOrderInput | SortOrder
+    country?: SortOrderInput | SortOrder
+    timestamp?: SortOrder
+    statusPage?: StatusPageOrderByWithRelationInput
+  }
+
+  export type StatusPageViewWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: StatusPageViewWhereInput | StatusPageViewWhereInput[]
+    OR?: StatusPageViewWhereInput[]
+    NOT?: StatusPageViewWhereInput | StatusPageViewWhereInput[]
+    statusPageId?: StringFilter<"StatusPageView"> | string
+    visitorHash?: StringFilter<"StatusPageView"> | string
+    userAgent?: StringNullableFilter<"StatusPageView"> | string | null
+    country?: StringNullableFilter<"StatusPageView"> | string | null
+    timestamp?: DateTimeFilter<"StatusPageView"> | Date | string
+    statusPage?: XOR<StatusPageScalarRelationFilter, StatusPageWhereInput>
+  }, "id">
+
+  export type StatusPageViewOrderByWithAggregationInput = {
+    id?: SortOrder
+    statusPageId?: SortOrder
+    visitorHash?: SortOrder
+    userAgent?: SortOrderInput | SortOrder
+    country?: SortOrderInput | SortOrder
+    timestamp?: SortOrder
+    _count?: StatusPageViewCountOrderByAggregateInput
+    _max?: StatusPageViewMaxOrderByAggregateInput
+    _min?: StatusPageViewMinOrderByAggregateInput
+  }
+
+  export type StatusPageViewScalarWhereWithAggregatesInput = {
+    AND?: StatusPageViewScalarWhereWithAggregatesInput | StatusPageViewScalarWhereWithAggregatesInput[]
+    OR?: StatusPageViewScalarWhereWithAggregatesInput[]
+    NOT?: StatusPageViewScalarWhereWithAggregatesInput | StatusPageViewScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"StatusPageView"> | string
+    statusPageId?: StringWithAggregatesFilter<"StatusPageView"> | string
+    visitorHash?: StringWithAggregatesFilter<"StatusPageView"> | string
+    userAgent?: StringNullableWithAggregatesFilter<"StatusPageView"> | string | null
+    country?: StringNullableWithAggregatesFilter<"StatusPageView"> | string | null
+    timestamp?: DateTimeWithAggregatesFilter<"StatusPageView"> | Date | string
+  }
+
   export type UserCreateInput = {
     id: string
     name: string
@@ -20097,6 +25606,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     monitors?: MonitorCreateNestedManyWithoutUserInput
     notificationChannels?: NotificationChannelCreateNestedManyWithoutUserInput
+    statusPages?: StatusPageCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -20114,6 +25624,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     monitors?: MonitorUncheckedCreateNestedManyWithoutUserInput
     notificationChannels?: NotificationChannelUncheckedCreateNestedManyWithoutUserInput
+    statusPages?: StatusPageUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -20131,6 +25642,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     monitors?: MonitorUpdateManyWithoutUserNestedInput
     notificationChannels?: NotificationChannelUpdateManyWithoutUserNestedInput
+    statusPages?: StatusPageUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -20148,6 +25660,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     monitors?: MonitorUncheckedUpdateManyWithoutUserNestedInput
     notificationChannels?: NotificationChannelUncheckedUpdateManyWithoutUserNestedInput
+    statusPages?: StatusPageUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -21040,6 +26553,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentCreateNestedManyWithoutMonitorInput
     latencyAggregates?: LatencyAggregateCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
+    statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateInput = {
@@ -21064,6 +26578,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUncheckedCreateNestedManyWithoutMonitorInput
     latencyAggregates?: LatencyAggregateUncheckedCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
+    statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUpdateInput = {
@@ -21088,6 +26603,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUpdateManyWithoutMonitorNestedInput
     latencyAggregates?: LatencyAggregateUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
+    statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateInput = {
@@ -21112,6 +26628,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUncheckedUpdateManyWithoutMonitorNestedInput
     latencyAggregates?: LatencyAggregateUncheckedUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
+    statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorCreateManyInput = {
@@ -21302,6 +26819,377 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type StatusPageI18nCreateInput = {
+    id?: string
+    locale: string
+    enabled?: boolean
+    overrides?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    statusPage: StatusPageCreateNestedOneWithoutI18nSettingsInput
+  }
+
+  export type StatusPageI18nUncheckedCreateInput = {
+    id?: string
+    statusPageId: string
+    locale: string
+    enabled?: boolean
+    overrides?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StatusPageI18nUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    locale?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    overrides?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    statusPage?: StatusPageUpdateOneRequiredWithoutI18nSettingsNestedInput
+  }
+
+  export type StatusPageI18nUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    statusPageId?: StringFieldUpdateOperationsInput | string
+    locale?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    overrides?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusPageI18nCreateManyInput = {
+    id?: string
+    statusPageId: string
+    locale: string
+    enabled?: boolean
+    overrides?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StatusPageI18nUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    locale?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    overrides?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusPageI18nUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    statusPageId?: StringFieldUpdateOperationsInput | string
+    locale?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    overrides?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusPageCreateInput = {
+    id?: string
+    slug: string
+    customDomain?: string | null
+    title: string
+    description?: string | null
+    favicon?: string | null
+    logo?: string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: string | null
+    isPrivate?: boolean
+    ipWhitelist?: string | null
+    seoIndex?: boolean
+    showUptime?: boolean
+    showResponseTime?: boolean
+    showPaused?: boolean
+    customCss?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutStatusPagesInput
+    monitors?: StatusPageMonitorCreateNestedManyWithoutStatusPageInput
+    views?: StatusPageViewCreateNestedManyWithoutStatusPageInput
+    i18nSettings?: StatusPageI18nCreateNestedManyWithoutStatusPageInput
+  }
+
+  export type StatusPageUncheckedCreateInput = {
+    id?: string
+    slug: string
+    customDomain?: string | null
+    title: string
+    description?: string | null
+    favicon?: string | null
+    logo?: string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: string | null
+    isPrivate?: boolean
+    ipWhitelist?: string | null
+    seoIndex?: boolean
+    showUptime?: boolean
+    showResponseTime?: boolean
+    showPaused?: boolean
+    customCss?: string | null
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    monitors?: StatusPageMonitorUncheckedCreateNestedManyWithoutStatusPageInput
+    views?: StatusPageViewUncheckedCreateNestedManyWithoutStatusPageInput
+    i18nSettings?: StatusPageI18nUncheckedCreateNestedManyWithoutStatusPageInput
+  }
+
+  export type StatusPageUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    customDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    favicon?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrivate?: BoolFieldUpdateOperationsInput | boolean
+    ipWhitelist?: NullableStringFieldUpdateOperationsInput | string | null
+    seoIndex?: BoolFieldUpdateOperationsInput | boolean
+    showUptime?: BoolFieldUpdateOperationsInput | boolean
+    showResponseTime?: BoolFieldUpdateOperationsInput | boolean
+    showPaused?: BoolFieldUpdateOperationsInput | boolean
+    customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutStatusPagesNestedInput
+    monitors?: StatusPageMonitorUpdateManyWithoutStatusPageNestedInput
+    views?: StatusPageViewUpdateManyWithoutStatusPageNestedInput
+    i18nSettings?: StatusPageI18nUpdateManyWithoutStatusPageNestedInput
+  }
+
+  export type StatusPageUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    customDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    favicon?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrivate?: BoolFieldUpdateOperationsInput | boolean
+    ipWhitelist?: NullableStringFieldUpdateOperationsInput | string | null
+    seoIndex?: BoolFieldUpdateOperationsInput | boolean
+    showUptime?: BoolFieldUpdateOperationsInput | boolean
+    showResponseTime?: BoolFieldUpdateOperationsInput | boolean
+    showPaused?: BoolFieldUpdateOperationsInput | boolean
+    customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    monitors?: StatusPageMonitorUncheckedUpdateManyWithoutStatusPageNestedInput
+    views?: StatusPageViewUncheckedUpdateManyWithoutStatusPageNestedInput
+    i18nSettings?: StatusPageI18nUncheckedUpdateManyWithoutStatusPageNestedInput
+  }
+
+  export type StatusPageCreateManyInput = {
+    id?: string
+    slug: string
+    customDomain?: string | null
+    title: string
+    description?: string | null
+    favicon?: string | null
+    logo?: string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: string | null
+    isPrivate?: boolean
+    ipWhitelist?: string | null
+    seoIndex?: boolean
+    showUptime?: boolean
+    showResponseTime?: boolean
+    showPaused?: boolean
+    customCss?: string | null
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StatusPageUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    customDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    favicon?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrivate?: BoolFieldUpdateOperationsInput | boolean
+    ipWhitelist?: NullableStringFieldUpdateOperationsInput | string | null
+    seoIndex?: BoolFieldUpdateOperationsInput | boolean
+    showUptime?: BoolFieldUpdateOperationsInput | boolean
+    showResponseTime?: BoolFieldUpdateOperationsInput | boolean
+    showPaused?: BoolFieldUpdateOperationsInput | boolean
+    customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusPageUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    customDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    favicon?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrivate?: BoolFieldUpdateOperationsInput | boolean
+    ipWhitelist?: NullableStringFieldUpdateOperationsInput | string | null
+    seoIndex?: BoolFieldUpdateOperationsInput | boolean
+    showUptime?: BoolFieldUpdateOperationsInput | boolean
+    showResponseTime?: BoolFieldUpdateOperationsInput | boolean
+    showPaused?: BoolFieldUpdateOperationsInput | boolean
+    customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusPageMonitorCreateInput = {
+    id?: string
+    displayName?: string | null
+    displayGroup?: string | null
+    sortOrder?: number
+    createdAt?: Date | string
+    statusPage: StatusPageCreateNestedOneWithoutMonitorsInput
+    monitor: MonitorCreateNestedOneWithoutStatusPagesInput
+  }
+
+  export type StatusPageMonitorUncheckedCreateInput = {
+    id?: string
+    statusPageId: string
+    monitorId: string
+    displayName?: string | null
+    displayGroup?: string | null
+    sortOrder?: number
+    createdAt?: Date | string
+  }
+
+  export type StatusPageMonitorUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    displayGroup?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    statusPage?: StatusPageUpdateOneRequiredWithoutMonitorsNestedInput
+    monitor?: MonitorUpdateOneRequiredWithoutStatusPagesNestedInput
+  }
+
+  export type StatusPageMonitorUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    statusPageId?: StringFieldUpdateOperationsInput | string
+    monitorId?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    displayGroup?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusPageMonitorCreateManyInput = {
+    id?: string
+    statusPageId: string
+    monitorId: string
+    displayName?: string | null
+    displayGroup?: string | null
+    sortOrder?: number
+    createdAt?: Date | string
+  }
+
+  export type StatusPageMonitorUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    displayGroup?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusPageMonitorUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    statusPageId?: StringFieldUpdateOperationsInput | string
+    monitorId?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    displayGroup?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusPageViewCreateInput = {
+    id?: string
+    visitorHash: string
+    userAgent?: string | null
+    country?: string | null
+    timestamp?: Date | string
+    statusPage: StatusPageCreateNestedOneWithoutViewsInput
+  }
+
+  export type StatusPageViewUncheckedCreateInput = {
+    id?: string
+    statusPageId: string
+    visitorHash: string
+    userAgent?: string | null
+    country?: string | null
+    timestamp?: Date | string
+  }
+
+  export type StatusPageViewUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    visitorHash?: StringFieldUpdateOperationsInput | string
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    statusPage?: StatusPageUpdateOneRequiredWithoutViewsNestedInput
+  }
+
+  export type StatusPageViewUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    statusPageId?: StringFieldUpdateOperationsInput | string
+    visitorHash?: StringFieldUpdateOperationsInput | string
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusPageViewCreateManyInput = {
+    id?: string
+    statusPageId: string
+    visitorHash: string
+    userAgent?: string | null
+    country?: string | null
+    timestamp?: Date | string
+  }
+
+  export type StatusPageViewUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    visitorHash?: StringFieldUpdateOperationsInput | string
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusPageViewUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    statusPageId?: StringFieldUpdateOperationsInput | string
+    visitorHash?: StringFieldUpdateOperationsInput | string
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -21372,6 +27260,12 @@ export namespace Prisma {
     none?: NotificationChannelWhereInput
   }
 
+  export type StatusPageListRelationFilter = {
+    every?: StatusPageWhereInput
+    some?: StatusPageWhereInput
+    none?: StatusPageWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -21390,6 +27284,10 @@ export namespace Prisma {
   }
 
   export type NotificationChannelOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type StatusPageOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -22298,6 +28196,12 @@ export namespace Prisma {
     none?: RegionalBaselineWhereInput
   }
 
+  export type StatusPageMonitorListRelationFilter = {
+    every?: StatusPageMonitorWhereInput
+    some?: StatusPageMonitorWhereInput
+    none?: StatusPageMonitorWhereInput
+  }
+
   export type MonitorEventOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -22319,6 +28223,10 @@ export namespace Prisma {
   }
 
   export type RegionalBaselineOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type StatusPageMonitorOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -22472,6 +28380,248 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type StatusPageScalarRelationFilter = {
+    is?: StatusPageWhereInput
+    isNot?: StatusPageWhereInput
+  }
+
+  export type StatusPageI18nStatusPageIdLocaleCompoundUniqueInput = {
+    statusPageId: string
+    locale: string
+  }
+
+  export type StatusPageI18nCountOrderByAggregateInput = {
+    id?: SortOrder
+    statusPageId?: SortOrder
+    locale?: SortOrder
+    enabled?: SortOrder
+    overrides?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StatusPageI18nMaxOrderByAggregateInput = {
+    id?: SortOrder
+    statusPageId?: SortOrder
+    locale?: SortOrder
+    enabled?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StatusPageI18nMinOrderByAggregateInput = {
+    id?: SortOrder
+    statusPageId?: SortOrder
+    locale?: SortOrder
+    enabled?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
+
+  export type StatusPageViewListRelationFilter = {
+    every?: StatusPageViewWhereInput
+    some?: StatusPageViewWhereInput
+    none?: StatusPageViewWhereInput
+  }
+
+  export type StatusPageI18nListRelationFilter = {
+    every?: StatusPageI18nWhereInput
+    some?: StatusPageI18nWhereInput
+    none?: StatusPageI18nWhereInput
+  }
+
+  export type StatusPageViewOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type StatusPageI18nOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type StatusPageCountOrderByAggregateInput = {
+    id?: SortOrder
+    slug?: SortOrder
+    customDomain?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    favicon?: SortOrder
+    logo?: SortOrder
+    theme?: SortOrder
+    layout?: SortOrder
+    password?: SortOrder
+    isPrivate?: SortOrder
+    ipWhitelist?: SortOrder
+    seoIndex?: SortOrder
+    showUptime?: SortOrder
+    showResponseTime?: SortOrder
+    showPaused?: SortOrder
+    customCss?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StatusPageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    slug?: SortOrder
+    customDomain?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    favicon?: SortOrder
+    logo?: SortOrder
+    password?: SortOrder
+    isPrivate?: SortOrder
+    ipWhitelist?: SortOrder
+    seoIndex?: SortOrder
+    showUptime?: SortOrder
+    showResponseTime?: SortOrder
+    showPaused?: SortOrder
+    customCss?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StatusPageMinOrderByAggregateInput = {
+    id?: SortOrder
+    slug?: SortOrder
+    customDomain?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    favicon?: SortOrder
+    logo?: SortOrder
+    password?: SortOrder
+    isPrivate?: SortOrder
+    ipWhitelist?: SortOrder
+    seoIndex?: SortOrder
+    showUptime?: SortOrder
+    showResponseTime?: SortOrder
+    showPaused?: SortOrder
+    customCss?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StatusPageMonitorStatusPageIdMonitorIdCompoundUniqueInput = {
+    statusPageId: string
+    monitorId: string
+  }
+
+  export type StatusPageMonitorCountOrderByAggregateInput = {
+    id?: SortOrder
+    statusPageId?: SortOrder
+    monitorId?: SortOrder
+    displayName?: SortOrder
+    displayGroup?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type StatusPageMonitorAvgOrderByAggregateInput = {
+    sortOrder?: SortOrder
+  }
+
+  export type StatusPageMonitorMaxOrderByAggregateInput = {
+    id?: SortOrder
+    statusPageId?: SortOrder
+    monitorId?: SortOrder
+    displayName?: SortOrder
+    displayGroup?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type StatusPageMonitorMinOrderByAggregateInput = {
+    id?: SortOrder
+    statusPageId?: SortOrder
+    monitorId?: SortOrder
+    displayName?: SortOrder
+    displayGroup?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type StatusPageMonitorSumOrderByAggregateInput = {
+    sortOrder?: SortOrder
+  }
+
+  export type StatusPageViewCountOrderByAggregateInput = {
+    id?: SortOrder
+    statusPageId?: SortOrder
+    visitorHash?: SortOrder
+    userAgent?: SortOrder
+    country?: SortOrder
+    timestamp?: SortOrder
+  }
+
+  export type StatusPageViewMaxOrderByAggregateInput = {
+    id?: SortOrder
+    statusPageId?: SortOrder
+    visitorHash?: SortOrder
+    userAgent?: SortOrder
+    country?: SortOrder
+    timestamp?: SortOrder
+  }
+
+  export type StatusPageViewMinOrderByAggregateInput = {
+    id?: SortOrder
+    statusPageId?: SortOrder
+    visitorHash?: SortOrder
+    userAgent?: SortOrder
+    country?: SortOrder
+    timestamp?: SortOrder
+  }
 
   export type SessionCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
@@ -22501,6 +28651,13 @@ export namespace Prisma {
     connect?: NotificationChannelWhereUniqueInput | NotificationChannelWhereUniqueInput[]
   }
 
+  export type StatusPageCreateNestedManyWithoutUserInput = {
+    create?: XOR<StatusPageCreateWithoutUserInput, StatusPageUncheckedCreateWithoutUserInput> | StatusPageCreateWithoutUserInput[] | StatusPageUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: StatusPageCreateOrConnectWithoutUserInput | StatusPageCreateOrConnectWithoutUserInput[]
+    createMany?: StatusPageCreateManyUserInputEnvelope
+    connect?: StatusPageWhereUniqueInput | StatusPageWhereUniqueInput[]
+  }
+
   export type SessionUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -22527,6 +28684,13 @@ export namespace Prisma {
     connectOrCreate?: NotificationChannelCreateOrConnectWithoutUserInput | NotificationChannelCreateOrConnectWithoutUserInput[]
     createMany?: NotificationChannelCreateManyUserInputEnvelope
     connect?: NotificationChannelWhereUniqueInput | NotificationChannelWhereUniqueInput[]
+  }
+
+  export type StatusPageUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<StatusPageCreateWithoutUserInput, StatusPageUncheckedCreateWithoutUserInput> | StatusPageCreateWithoutUserInput[] | StatusPageUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: StatusPageCreateOrConnectWithoutUserInput | StatusPageCreateOrConnectWithoutUserInput[]
+    createMany?: StatusPageCreateManyUserInputEnvelope
+    connect?: StatusPageWhereUniqueInput | StatusPageWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -22601,6 +28765,20 @@ export namespace Prisma {
     deleteMany?: NotificationChannelScalarWhereInput | NotificationChannelScalarWhereInput[]
   }
 
+  export type StatusPageUpdateManyWithoutUserNestedInput = {
+    create?: XOR<StatusPageCreateWithoutUserInput, StatusPageUncheckedCreateWithoutUserInput> | StatusPageCreateWithoutUserInput[] | StatusPageUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: StatusPageCreateOrConnectWithoutUserInput | StatusPageCreateOrConnectWithoutUserInput[]
+    upsert?: StatusPageUpsertWithWhereUniqueWithoutUserInput | StatusPageUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: StatusPageCreateManyUserInputEnvelope
+    set?: StatusPageWhereUniqueInput | StatusPageWhereUniqueInput[]
+    disconnect?: StatusPageWhereUniqueInput | StatusPageWhereUniqueInput[]
+    delete?: StatusPageWhereUniqueInput | StatusPageWhereUniqueInput[]
+    connect?: StatusPageWhereUniqueInput | StatusPageWhereUniqueInput[]
+    update?: StatusPageUpdateWithWhereUniqueWithoutUserInput | StatusPageUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: StatusPageUpdateManyWithWhereWithoutUserInput | StatusPageUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: StatusPageScalarWhereInput | StatusPageScalarWhereInput[]
+  }
+
   export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -22655,6 +28833,20 @@ export namespace Prisma {
     update?: NotificationChannelUpdateWithWhereUniqueWithoutUserInput | NotificationChannelUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: NotificationChannelUpdateManyWithWhereWithoutUserInput | NotificationChannelUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: NotificationChannelScalarWhereInput | NotificationChannelScalarWhereInput[]
+  }
+
+  export type StatusPageUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<StatusPageCreateWithoutUserInput, StatusPageUncheckedCreateWithoutUserInput> | StatusPageCreateWithoutUserInput[] | StatusPageUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: StatusPageCreateOrConnectWithoutUserInput | StatusPageCreateOrConnectWithoutUserInput[]
+    upsert?: StatusPageUpsertWithWhereUniqueWithoutUserInput | StatusPageUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: StatusPageCreateManyUserInputEnvelope
+    set?: StatusPageWhereUniqueInput | StatusPageWhereUniqueInput[]
+    disconnect?: StatusPageWhereUniqueInput | StatusPageWhereUniqueInput[]
+    delete?: StatusPageWhereUniqueInput | StatusPageWhereUniqueInput[]
+    connect?: StatusPageWhereUniqueInput | StatusPageWhereUniqueInput[]
+    update?: StatusPageUpdateWithWhereUniqueWithoutUserInput | StatusPageUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: StatusPageUpdateManyWithWhereWithoutUserInput | StatusPageUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: StatusPageScalarWhereInput | StatusPageScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutSessionsInput = {
@@ -23024,6 +29216,13 @@ export namespace Prisma {
     connect?: RegionalBaselineWhereUniqueInput | RegionalBaselineWhereUniqueInput[]
   }
 
+  export type StatusPageMonitorCreateNestedManyWithoutMonitorInput = {
+    create?: XOR<StatusPageMonitorCreateWithoutMonitorInput, StatusPageMonitorUncheckedCreateWithoutMonitorInput> | StatusPageMonitorCreateWithoutMonitorInput[] | StatusPageMonitorUncheckedCreateWithoutMonitorInput[]
+    connectOrCreate?: StatusPageMonitorCreateOrConnectWithoutMonitorInput | StatusPageMonitorCreateOrConnectWithoutMonitorInput[]
+    createMany?: StatusPageMonitorCreateManyMonitorInputEnvelope
+    connect?: StatusPageMonitorWhereUniqueInput | StatusPageMonitorWhereUniqueInput[]
+  }
+
   export type MonitorEventUncheckedCreateNestedManyWithoutMonitorInput = {
     create?: XOR<MonitorEventCreateWithoutMonitorInput, MonitorEventUncheckedCreateWithoutMonitorInput> | MonitorEventCreateWithoutMonitorInput[] | MonitorEventUncheckedCreateWithoutMonitorInput[]
     connectOrCreate?: MonitorEventCreateOrConnectWithoutMonitorInput | MonitorEventCreateOrConnectWithoutMonitorInput[]
@@ -23071,6 +29270,13 @@ export namespace Prisma {
     connectOrCreate?: RegionalBaselineCreateOrConnectWithoutMonitorInput | RegionalBaselineCreateOrConnectWithoutMonitorInput[]
     createMany?: RegionalBaselineCreateManyMonitorInputEnvelope
     connect?: RegionalBaselineWhereUniqueInput | RegionalBaselineWhereUniqueInput[]
+  }
+
+  export type StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput = {
+    create?: XOR<StatusPageMonitorCreateWithoutMonitorInput, StatusPageMonitorUncheckedCreateWithoutMonitorInput> | StatusPageMonitorCreateWithoutMonitorInput[] | StatusPageMonitorUncheckedCreateWithoutMonitorInput[]
+    connectOrCreate?: StatusPageMonitorCreateOrConnectWithoutMonitorInput | StatusPageMonitorCreateOrConnectWithoutMonitorInput[]
+    createMany?: StatusPageMonitorCreateManyMonitorInputEnvelope
+    connect?: StatusPageMonitorWhereUniqueInput | StatusPageMonitorWhereUniqueInput[]
   }
 
   export type EnumMonitorTypeFieldUpdateOperationsInput = {
@@ -23187,6 +29393,20 @@ export namespace Prisma {
     deleteMany?: RegionalBaselineScalarWhereInput | RegionalBaselineScalarWhereInput[]
   }
 
+  export type StatusPageMonitorUpdateManyWithoutMonitorNestedInput = {
+    create?: XOR<StatusPageMonitorCreateWithoutMonitorInput, StatusPageMonitorUncheckedCreateWithoutMonitorInput> | StatusPageMonitorCreateWithoutMonitorInput[] | StatusPageMonitorUncheckedCreateWithoutMonitorInput[]
+    connectOrCreate?: StatusPageMonitorCreateOrConnectWithoutMonitorInput | StatusPageMonitorCreateOrConnectWithoutMonitorInput[]
+    upsert?: StatusPageMonitorUpsertWithWhereUniqueWithoutMonitorInput | StatusPageMonitorUpsertWithWhereUniqueWithoutMonitorInput[]
+    createMany?: StatusPageMonitorCreateManyMonitorInputEnvelope
+    set?: StatusPageMonitorWhereUniqueInput | StatusPageMonitorWhereUniqueInput[]
+    disconnect?: StatusPageMonitorWhereUniqueInput | StatusPageMonitorWhereUniqueInput[]
+    delete?: StatusPageMonitorWhereUniqueInput | StatusPageMonitorWhereUniqueInput[]
+    connect?: StatusPageMonitorWhereUniqueInput | StatusPageMonitorWhereUniqueInput[]
+    update?: StatusPageMonitorUpdateWithWhereUniqueWithoutMonitorInput | StatusPageMonitorUpdateWithWhereUniqueWithoutMonitorInput[]
+    updateMany?: StatusPageMonitorUpdateManyWithWhereWithoutMonitorInput | StatusPageMonitorUpdateManyWithWhereWithoutMonitorInput[]
+    deleteMany?: StatusPageMonitorScalarWhereInput | StatusPageMonitorScalarWhereInput[]
+  }
+
   export type MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput = {
     create?: XOR<MonitorEventCreateWithoutMonitorInput, MonitorEventUncheckedCreateWithoutMonitorInput> | MonitorEventCreateWithoutMonitorInput[] | MonitorEventUncheckedCreateWithoutMonitorInput[]
     connectOrCreate?: MonitorEventCreateOrConnectWithoutMonitorInput | MonitorEventCreateOrConnectWithoutMonitorInput[]
@@ -23285,6 +29505,20 @@ export namespace Prisma {
     deleteMany?: RegionalBaselineScalarWhereInput | RegionalBaselineScalarWhereInput[]
   }
 
+  export type StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput = {
+    create?: XOR<StatusPageMonitorCreateWithoutMonitorInput, StatusPageMonitorUncheckedCreateWithoutMonitorInput> | StatusPageMonitorCreateWithoutMonitorInput[] | StatusPageMonitorUncheckedCreateWithoutMonitorInput[]
+    connectOrCreate?: StatusPageMonitorCreateOrConnectWithoutMonitorInput | StatusPageMonitorCreateOrConnectWithoutMonitorInput[]
+    upsert?: StatusPageMonitorUpsertWithWhereUniqueWithoutMonitorInput | StatusPageMonitorUpsertWithWhereUniqueWithoutMonitorInput[]
+    createMany?: StatusPageMonitorCreateManyMonitorInputEnvelope
+    set?: StatusPageMonitorWhereUniqueInput | StatusPageMonitorWhereUniqueInput[]
+    disconnect?: StatusPageMonitorWhereUniqueInput | StatusPageMonitorWhereUniqueInput[]
+    delete?: StatusPageMonitorWhereUniqueInput | StatusPageMonitorWhereUniqueInput[]
+    connect?: StatusPageMonitorWhereUniqueInput | StatusPageMonitorWhereUniqueInput[]
+    update?: StatusPageMonitorUpdateWithWhereUniqueWithoutMonitorInput | StatusPageMonitorUpdateWithWhereUniqueWithoutMonitorInput[]
+    updateMany?: StatusPageMonitorUpdateManyWithWhereWithoutMonitorInput | StatusPageMonitorUpdateManyWithWhereWithoutMonitorInput[]
+    deleteMany?: StatusPageMonitorScalarWhereInput | StatusPageMonitorScalarWhereInput[]
+  }
+
   export type MonitorCreateNestedOneWithoutEventsInput = {
     create?: XOR<MonitorCreateWithoutEventsInput, MonitorUncheckedCreateWithoutEventsInput>
     connectOrCreate?: MonitorCreateOrConnectWithoutEventsInput
@@ -23311,6 +29545,202 @@ export namespace Prisma {
     upsert?: MonitorUpsertWithoutMaintenanceWindowsInput
     connect?: MonitorWhereUniqueInput
     update?: XOR<XOR<MonitorUpdateToOneWithWhereWithoutMaintenanceWindowsInput, MonitorUpdateWithoutMaintenanceWindowsInput>, MonitorUncheckedUpdateWithoutMaintenanceWindowsInput>
+  }
+
+  export type StatusPageCreateNestedOneWithoutI18nSettingsInput = {
+    create?: XOR<StatusPageCreateWithoutI18nSettingsInput, StatusPageUncheckedCreateWithoutI18nSettingsInput>
+    connectOrCreate?: StatusPageCreateOrConnectWithoutI18nSettingsInput
+    connect?: StatusPageWhereUniqueInput
+  }
+
+  export type StatusPageUpdateOneRequiredWithoutI18nSettingsNestedInput = {
+    create?: XOR<StatusPageCreateWithoutI18nSettingsInput, StatusPageUncheckedCreateWithoutI18nSettingsInput>
+    connectOrCreate?: StatusPageCreateOrConnectWithoutI18nSettingsInput
+    upsert?: StatusPageUpsertWithoutI18nSettingsInput
+    connect?: StatusPageWhereUniqueInput
+    update?: XOR<XOR<StatusPageUpdateToOneWithWhereWithoutI18nSettingsInput, StatusPageUpdateWithoutI18nSettingsInput>, StatusPageUncheckedUpdateWithoutI18nSettingsInput>
+  }
+
+  export type UserCreateNestedOneWithoutStatusPagesInput = {
+    create?: XOR<UserCreateWithoutStatusPagesInput, UserUncheckedCreateWithoutStatusPagesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutStatusPagesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type StatusPageMonitorCreateNestedManyWithoutStatusPageInput = {
+    create?: XOR<StatusPageMonitorCreateWithoutStatusPageInput, StatusPageMonitorUncheckedCreateWithoutStatusPageInput> | StatusPageMonitorCreateWithoutStatusPageInput[] | StatusPageMonitorUncheckedCreateWithoutStatusPageInput[]
+    connectOrCreate?: StatusPageMonitorCreateOrConnectWithoutStatusPageInput | StatusPageMonitorCreateOrConnectWithoutStatusPageInput[]
+    createMany?: StatusPageMonitorCreateManyStatusPageInputEnvelope
+    connect?: StatusPageMonitorWhereUniqueInput | StatusPageMonitorWhereUniqueInput[]
+  }
+
+  export type StatusPageViewCreateNestedManyWithoutStatusPageInput = {
+    create?: XOR<StatusPageViewCreateWithoutStatusPageInput, StatusPageViewUncheckedCreateWithoutStatusPageInput> | StatusPageViewCreateWithoutStatusPageInput[] | StatusPageViewUncheckedCreateWithoutStatusPageInput[]
+    connectOrCreate?: StatusPageViewCreateOrConnectWithoutStatusPageInput | StatusPageViewCreateOrConnectWithoutStatusPageInput[]
+    createMany?: StatusPageViewCreateManyStatusPageInputEnvelope
+    connect?: StatusPageViewWhereUniqueInput | StatusPageViewWhereUniqueInput[]
+  }
+
+  export type StatusPageI18nCreateNestedManyWithoutStatusPageInput = {
+    create?: XOR<StatusPageI18nCreateWithoutStatusPageInput, StatusPageI18nUncheckedCreateWithoutStatusPageInput> | StatusPageI18nCreateWithoutStatusPageInput[] | StatusPageI18nUncheckedCreateWithoutStatusPageInput[]
+    connectOrCreate?: StatusPageI18nCreateOrConnectWithoutStatusPageInput | StatusPageI18nCreateOrConnectWithoutStatusPageInput[]
+    createMany?: StatusPageI18nCreateManyStatusPageInputEnvelope
+    connect?: StatusPageI18nWhereUniqueInput | StatusPageI18nWhereUniqueInput[]
+  }
+
+  export type StatusPageMonitorUncheckedCreateNestedManyWithoutStatusPageInput = {
+    create?: XOR<StatusPageMonitorCreateWithoutStatusPageInput, StatusPageMonitorUncheckedCreateWithoutStatusPageInput> | StatusPageMonitorCreateWithoutStatusPageInput[] | StatusPageMonitorUncheckedCreateWithoutStatusPageInput[]
+    connectOrCreate?: StatusPageMonitorCreateOrConnectWithoutStatusPageInput | StatusPageMonitorCreateOrConnectWithoutStatusPageInput[]
+    createMany?: StatusPageMonitorCreateManyStatusPageInputEnvelope
+    connect?: StatusPageMonitorWhereUniqueInput | StatusPageMonitorWhereUniqueInput[]
+  }
+
+  export type StatusPageViewUncheckedCreateNestedManyWithoutStatusPageInput = {
+    create?: XOR<StatusPageViewCreateWithoutStatusPageInput, StatusPageViewUncheckedCreateWithoutStatusPageInput> | StatusPageViewCreateWithoutStatusPageInput[] | StatusPageViewUncheckedCreateWithoutStatusPageInput[]
+    connectOrCreate?: StatusPageViewCreateOrConnectWithoutStatusPageInput | StatusPageViewCreateOrConnectWithoutStatusPageInput[]
+    createMany?: StatusPageViewCreateManyStatusPageInputEnvelope
+    connect?: StatusPageViewWhereUniqueInput | StatusPageViewWhereUniqueInput[]
+  }
+
+  export type StatusPageI18nUncheckedCreateNestedManyWithoutStatusPageInput = {
+    create?: XOR<StatusPageI18nCreateWithoutStatusPageInput, StatusPageI18nUncheckedCreateWithoutStatusPageInput> | StatusPageI18nCreateWithoutStatusPageInput[] | StatusPageI18nUncheckedCreateWithoutStatusPageInput[]
+    connectOrCreate?: StatusPageI18nCreateOrConnectWithoutStatusPageInput | StatusPageI18nCreateOrConnectWithoutStatusPageInput[]
+    createMany?: StatusPageI18nCreateManyStatusPageInputEnvelope
+    connect?: StatusPageI18nWhereUniqueInput | StatusPageI18nWhereUniqueInput[]
+  }
+
+  export type UserUpdateOneRequiredWithoutStatusPagesNestedInput = {
+    create?: XOR<UserCreateWithoutStatusPagesInput, UserUncheckedCreateWithoutStatusPagesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutStatusPagesInput
+    upsert?: UserUpsertWithoutStatusPagesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutStatusPagesInput, UserUpdateWithoutStatusPagesInput>, UserUncheckedUpdateWithoutStatusPagesInput>
+  }
+
+  export type StatusPageMonitorUpdateManyWithoutStatusPageNestedInput = {
+    create?: XOR<StatusPageMonitorCreateWithoutStatusPageInput, StatusPageMonitorUncheckedCreateWithoutStatusPageInput> | StatusPageMonitorCreateWithoutStatusPageInput[] | StatusPageMonitorUncheckedCreateWithoutStatusPageInput[]
+    connectOrCreate?: StatusPageMonitorCreateOrConnectWithoutStatusPageInput | StatusPageMonitorCreateOrConnectWithoutStatusPageInput[]
+    upsert?: StatusPageMonitorUpsertWithWhereUniqueWithoutStatusPageInput | StatusPageMonitorUpsertWithWhereUniqueWithoutStatusPageInput[]
+    createMany?: StatusPageMonitorCreateManyStatusPageInputEnvelope
+    set?: StatusPageMonitorWhereUniqueInput | StatusPageMonitorWhereUniqueInput[]
+    disconnect?: StatusPageMonitorWhereUniqueInput | StatusPageMonitorWhereUniqueInput[]
+    delete?: StatusPageMonitorWhereUniqueInput | StatusPageMonitorWhereUniqueInput[]
+    connect?: StatusPageMonitorWhereUniqueInput | StatusPageMonitorWhereUniqueInput[]
+    update?: StatusPageMonitorUpdateWithWhereUniqueWithoutStatusPageInput | StatusPageMonitorUpdateWithWhereUniqueWithoutStatusPageInput[]
+    updateMany?: StatusPageMonitorUpdateManyWithWhereWithoutStatusPageInput | StatusPageMonitorUpdateManyWithWhereWithoutStatusPageInput[]
+    deleteMany?: StatusPageMonitorScalarWhereInput | StatusPageMonitorScalarWhereInput[]
+  }
+
+  export type StatusPageViewUpdateManyWithoutStatusPageNestedInput = {
+    create?: XOR<StatusPageViewCreateWithoutStatusPageInput, StatusPageViewUncheckedCreateWithoutStatusPageInput> | StatusPageViewCreateWithoutStatusPageInput[] | StatusPageViewUncheckedCreateWithoutStatusPageInput[]
+    connectOrCreate?: StatusPageViewCreateOrConnectWithoutStatusPageInput | StatusPageViewCreateOrConnectWithoutStatusPageInput[]
+    upsert?: StatusPageViewUpsertWithWhereUniqueWithoutStatusPageInput | StatusPageViewUpsertWithWhereUniqueWithoutStatusPageInput[]
+    createMany?: StatusPageViewCreateManyStatusPageInputEnvelope
+    set?: StatusPageViewWhereUniqueInput | StatusPageViewWhereUniqueInput[]
+    disconnect?: StatusPageViewWhereUniqueInput | StatusPageViewWhereUniqueInput[]
+    delete?: StatusPageViewWhereUniqueInput | StatusPageViewWhereUniqueInput[]
+    connect?: StatusPageViewWhereUniqueInput | StatusPageViewWhereUniqueInput[]
+    update?: StatusPageViewUpdateWithWhereUniqueWithoutStatusPageInput | StatusPageViewUpdateWithWhereUniqueWithoutStatusPageInput[]
+    updateMany?: StatusPageViewUpdateManyWithWhereWithoutStatusPageInput | StatusPageViewUpdateManyWithWhereWithoutStatusPageInput[]
+    deleteMany?: StatusPageViewScalarWhereInput | StatusPageViewScalarWhereInput[]
+  }
+
+  export type StatusPageI18nUpdateManyWithoutStatusPageNestedInput = {
+    create?: XOR<StatusPageI18nCreateWithoutStatusPageInput, StatusPageI18nUncheckedCreateWithoutStatusPageInput> | StatusPageI18nCreateWithoutStatusPageInput[] | StatusPageI18nUncheckedCreateWithoutStatusPageInput[]
+    connectOrCreate?: StatusPageI18nCreateOrConnectWithoutStatusPageInput | StatusPageI18nCreateOrConnectWithoutStatusPageInput[]
+    upsert?: StatusPageI18nUpsertWithWhereUniqueWithoutStatusPageInput | StatusPageI18nUpsertWithWhereUniqueWithoutStatusPageInput[]
+    createMany?: StatusPageI18nCreateManyStatusPageInputEnvelope
+    set?: StatusPageI18nWhereUniqueInput | StatusPageI18nWhereUniqueInput[]
+    disconnect?: StatusPageI18nWhereUniqueInput | StatusPageI18nWhereUniqueInput[]
+    delete?: StatusPageI18nWhereUniqueInput | StatusPageI18nWhereUniqueInput[]
+    connect?: StatusPageI18nWhereUniqueInput | StatusPageI18nWhereUniqueInput[]
+    update?: StatusPageI18nUpdateWithWhereUniqueWithoutStatusPageInput | StatusPageI18nUpdateWithWhereUniqueWithoutStatusPageInput[]
+    updateMany?: StatusPageI18nUpdateManyWithWhereWithoutStatusPageInput | StatusPageI18nUpdateManyWithWhereWithoutStatusPageInput[]
+    deleteMany?: StatusPageI18nScalarWhereInput | StatusPageI18nScalarWhereInput[]
+  }
+
+  export type StatusPageMonitorUncheckedUpdateManyWithoutStatusPageNestedInput = {
+    create?: XOR<StatusPageMonitorCreateWithoutStatusPageInput, StatusPageMonitorUncheckedCreateWithoutStatusPageInput> | StatusPageMonitorCreateWithoutStatusPageInput[] | StatusPageMonitorUncheckedCreateWithoutStatusPageInput[]
+    connectOrCreate?: StatusPageMonitorCreateOrConnectWithoutStatusPageInput | StatusPageMonitorCreateOrConnectWithoutStatusPageInput[]
+    upsert?: StatusPageMonitorUpsertWithWhereUniqueWithoutStatusPageInput | StatusPageMonitorUpsertWithWhereUniqueWithoutStatusPageInput[]
+    createMany?: StatusPageMonitorCreateManyStatusPageInputEnvelope
+    set?: StatusPageMonitorWhereUniqueInput | StatusPageMonitorWhereUniqueInput[]
+    disconnect?: StatusPageMonitorWhereUniqueInput | StatusPageMonitorWhereUniqueInput[]
+    delete?: StatusPageMonitorWhereUniqueInput | StatusPageMonitorWhereUniqueInput[]
+    connect?: StatusPageMonitorWhereUniqueInput | StatusPageMonitorWhereUniqueInput[]
+    update?: StatusPageMonitorUpdateWithWhereUniqueWithoutStatusPageInput | StatusPageMonitorUpdateWithWhereUniqueWithoutStatusPageInput[]
+    updateMany?: StatusPageMonitorUpdateManyWithWhereWithoutStatusPageInput | StatusPageMonitorUpdateManyWithWhereWithoutStatusPageInput[]
+    deleteMany?: StatusPageMonitorScalarWhereInput | StatusPageMonitorScalarWhereInput[]
+  }
+
+  export type StatusPageViewUncheckedUpdateManyWithoutStatusPageNestedInput = {
+    create?: XOR<StatusPageViewCreateWithoutStatusPageInput, StatusPageViewUncheckedCreateWithoutStatusPageInput> | StatusPageViewCreateWithoutStatusPageInput[] | StatusPageViewUncheckedCreateWithoutStatusPageInput[]
+    connectOrCreate?: StatusPageViewCreateOrConnectWithoutStatusPageInput | StatusPageViewCreateOrConnectWithoutStatusPageInput[]
+    upsert?: StatusPageViewUpsertWithWhereUniqueWithoutStatusPageInput | StatusPageViewUpsertWithWhereUniqueWithoutStatusPageInput[]
+    createMany?: StatusPageViewCreateManyStatusPageInputEnvelope
+    set?: StatusPageViewWhereUniqueInput | StatusPageViewWhereUniqueInput[]
+    disconnect?: StatusPageViewWhereUniqueInput | StatusPageViewWhereUniqueInput[]
+    delete?: StatusPageViewWhereUniqueInput | StatusPageViewWhereUniqueInput[]
+    connect?: StatusPageViewWhereUniqueInput | StatusPageViewWhereUniqueInput[]
+    update?: StatusPageViewUpdateWithWhereUniqueWithoutStatusPageInput | StatusPageViewUpdateWithWhereUniqueWithoutStatusPageInput[]
+    updateMany?: StatusPageViewUpdateManyWithWhereWithoutStatusPageInput | StatusPageViewUpdateManyWithWhereWithoutStatusPageInput[]
+    deleteMany?: StatusPageViewScalarWhereInput | StatusPageViewScalarWhereInput[]
+  }
+
+  export type StatusPageI18nUncheckedUpdateManyWithoutStatusPageNestedInput = {
+    create?: XOR<StatusPageI18nCreateWithoutStatusPageInput, StatusPageI18nUncheckedCreateWithoutStatusPageInput> | StatusPageI18nCreateWithoutStatusPageInput[] | StatusPageI18nUncheckedCreateWithoutStatusPageInput[]
+    connectOrCreate?: StatusPageI18nCreateOrConnectWithoutStatusPageInput | StatusPageI18nCreateOrConnectWithoutStatusPageInput[]
+    upsert?: StatusPageI18nUpsertWithWhereUniqueWithoutStatusPageInput | StatusPageI18nUpsertWithWhereUniqueWithoutStatusPageInput[]
+    createMany?: StatusPageI18nCreateManyStatusPageInputEnvelope
+    set?: StatusPageI18nWhereUniqueInput | StatusPageI18nWhereUniqueInput[]
+    disconnect?: StatusPageI18nWhereUniqueInput | StatusPageI18nWhereUniqueInput[]
+    delete?: StatusPageI18nWhereUniqueInput | StatusPageI18nWhereUniqueInput[]
+    connect?: StatusPageI18nWhereUniqueInput | StatusPageI18nWhereUniqueInput[]
+    update?: StatusPageI18nUpdateWithWhereUniqueWithoutStatusPageInput | StatusPageI18nUpdateWithWhereUniqueWithoutStatusPageInput[]
+    updateMany?: StatusPageI18nUpdateManyWithWhereWithoutStatusPageInput | StatusPageI18nUpdateManyWithWhereWithoutStatusPageInput[]
+    deleteMany?: StatusPageI18nScalarWhereInput | StatusPageI18nScalarWhereInput[]
+  }
+
+  export type StatusPageCreateNestedOneWithoutMonitorsInput = {
+    create?: XOR<StatusPageCreateWithoutMonitorsInput, StatusPageUncheckedCreateWithoutMonitorsInput>
+    connectOrCreate?: StatusPageCreateOrConnectWithoutMonitorsInput
+    connect?: StatusPageWhereUniqueInput
+  }
+
+  export type MonitorCreateNestedOneWithoutStatusPagesInput = {
+    create?: XOR<MonitorCreateWithoutStatusPagesInput, MonitorUncheckedCreateWithoutStatusPagesInput>
+    connectOrCreate?: MonitorCreateOrConnectWithoutStatusPagesInput
+    connect?: MonitorWhereUniqueInput
+  }
+
+  export type StatusPageUpdateOneRequiredWithoutMonitorsNestedInput = {
+    create?: XOR<StatusPageCreateWithoutMonitorsInput, StatusPageUncheckedCreateWithoutMonitorsInput>
+    connectOrCreate?: StatusPageCreateOrConnectWithoutMonitorsInput
+    upsert?: StatusPageUpsertWithoutMonitorsInput
+    connect?: StatusPageWhereUniqueInput
+    update?: XOR<XOR<StatusPageUpdateToOneWithWhereWithoutMonitorsInput, StatusPageUpdateWithoutMonitorsInput>, StatusPageUncheckedUpdateWithoutMonitorsInput>
+  }
+
+  export type MonitorUpdateOneRequiredWithoutStatusPagesNestedInput = {
+    create?: XOR<MonitorCreateWithoutStatusPagesInput, MonitorUncheckedCreateWithoutStatusPagesInput>
+    connectOrCreate?: MonitorCreateOrConnectWithoutStatusPagesInput
+    upsert?: MonitorUpsertWithoutStatusPagesInput
+    connect?: MonitorWhereUniqueInput
+    update?: XOR<XOR<MonitorUpdateToOneWithWhereWithoutStatusPagesInput, MonitorUpdateWithoutStatusPagesInput>, MonitorUncheckedUpdateWithoutStatusPagesInput>
+  }
+
+  export type StatusPageCreateNestedOneWithoutViewsInput = {
+    create?: XOR<StatusPageCreateWithoutViewsInput, StatusPageUncheckedCreateWithoutViewsInput>
+    connectOrCreate?: StatusPageCreateOrConnectWithoutViewsInput
+    connect?: StatusPageWhereUniqueInput
+  }
+
+  export type StatusPageUpdateOneRequiredWithoutViewsNestedInput = {
+    create?: XOR<StatusPageCreateWithoutViewsInput, StatusPageUncheckedCreateWithoutViewsInput>
+    connectOrCreate?: StatusPageCreateOrConnectWithoutViewsInput
+    upsert?: StatusPageUpsertWithoutViewsInput
+    connect?: StatusPageWhereUniqueInput
+    update?: XOR<XOR<StatusPageUpdateToOneWithWhereWithoutViewsInput, StatusPageUpdateWithoutViewsInput>, StatusPageUncheckedUpdateWithoutViewsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -23738,6 +30168,29 @@ export namespace Prisma {
     _min?: NestedEnumMonitorStatusFilter<$PrismaModel>
     _max?: NestedEnumMonitorStatusFilter<$PrismaModel>
   }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type SessionCreateWithoutUserInput = {
     id: string
@@ -23830,6 +30283,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentCreateNestedManyWithoutMonitorInput
     latencyAggregates?: LatencyAggregateCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
+    statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutUserInput = {
@@ -23853,6 +30307,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUncheckedCreateNestedManyWithoutMonitorInput
     latencyAggregates?: LatencyAggregateUncheckedCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
+    statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutUserInput = {
@@ -23892,6 +30347,66 @@ export namespace Prisma {
 
   export type NotificationChannelCreateManyUserInputEnvelope = {
     data: NotificationChannelCreateManyUserInput | NotificationChannelCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StatusPageCreateWithoutUserInput = {
+    id?: string
+    slug: string
+    customDomain?: string | null
+    title: string
+    description?: string | null
+    favicon?: string | null
+    logo?: string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: string | null
+    isPrivate?: boolean
+    ipWhitelist?: string | null
+    seoIndex?: boolean
+    showUptime?: boolean
+    showResponseTime?: boolean
+    showPaused?: boolean
+    customCss?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    monitors?: StatusPageMonitorCreateNestedManyWithoutStatusPageInput
+    views?: StatusPageViewCreateNestedManyWithoutStatusPageInput
+    i18nSettings?: StatusPageI18nCreateNestedManyWithoutStatusPageInput
+  }
+
+  export type StatusPageUncheckedCreateWithoutUserInput = {
+    id?: string
+    slug: string
+    customDomain?: string | null
+    title: string
+    description?: string | null
+    favicon?: string | null
+    logo?: string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: string | null
+    isPrivate?: boolean
+    ipWhitelist?: string | null
+    seoIndex?: boolean
+    showUptime?: boolean
+    showResponseTime?: boolean
+    showPaused?: boolean
+    customCss?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    monitors?: StatusPageMonitorUncheckedCreateNestedManyWithoutStatusPageInput
+    views?: StatusPageViewUncheckedCreateNestedManyWithoutStatusPageInput
+    i18nSettings?: StatusPageI18nUncheckedCreateNestedManyWithoutStatusPageInput
+  }
+
+  export type StatusPageCreateOrConnectWithoutUserInput = {
+    where: StatusPageWhereUniqueInput
+    create: XOR<StatusPageCreateWithoutUserInput, StatusPageUncheckedCreateWithoutUserInput>
+  }
+
+  export type StatusPageCreateManyUserInputEnvelope = {
+    data: StatusPageCreateManyUserInput | StatusPageCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -24025,6 +30540,48 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"NotificationChannel"> | Date | string
   }
 
+  export type StatusPageUpsertWithWhereUniqueWithoutUserInput = {
+    where: StatusPageWhereUniqueInput
+    update: XOR<StatusPageUpdateWithoutUserInput, StatusPageUncheckedUpdateWithoutUserInput>
+    create: XOR<StatusPageCreateWithoutUserInput, StatusPageUncheckedCreateWithoutUserInput>
+  }
+
+  export type StatusPageUpdateWithWhereUniqueWithoutUserInput = {
+    where: StatusPageWhereUniqueInput
+    data: XOR<StatusPageUpdateWithoutUserInput, StatusPageUncheckedUpdateWithoutUserInput>
+  }
+
+  export type StatusPageUpdateManyWithWhereWithoutUserInput = {
+    where: StatusPageScalarWhereInput
+    data: XOR<StatusPageUpdateManyMutationInput, StatusPageUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type StatusPageScalarWhereInput = {
+    AND?: StatusPageScalarWhereInput | StatusPageScalarWhereInput[]
+    OR?: StatusPageScalarWhereInput[]
+    NOT?: StatusPageScalarWhereInput | StatusPageScalarWhereInput[]
+    id?: StringFilter<"StatusPage"> | string
+    slug?: StringFilter<"StatusPage"> | string
+    customDomain?: StringNullableFilter<"StatusPage"> | string | null
+    title?: StringFilter<"StatusPage"> | string
+    description?: StringNullableFilter<"StatusPage"> | string | null
+    favicon?: StringNullableFilter<"StatusPage"> | string | null
+    logo?: StringNullableFilter<"StatusPage"> | string | null
+    theme?: JsonNullableFilter<"StatusPage">
+    layout?: JsonNullableFilter<"StatusPage">
+    password?: StringNullableFilter<"StatusPage"> | string | null
+    isPrivate?: BoolFilter<"StatusPage"> | boolean
+    ipWhitelist?: StringNullableFilter<"StatusPage"> | string | null
+    seoIndex?: BoolFilter<"StatusPage"> | boolean
+    showUptime?: BoolFilter<"StatusPage"> | boolean
+    showResponseTime?: BoolFilter<"StatusPage"> | boolean
+    showPaused?: BoolFilter<"StatusPage"> | boolean
+    customCss?: StringNullableFilter<"StatusPage"> | string | null
+    userId?: StringFilter<"StatusPage"> | string
+    createdAt?: DateTimeFilter<"StatusPage"> | Date | string
+    updatedAt?: DateTimeFilter<"StatusPage"> | Date | string
+  }
+
   export type UserCreateWithoutSessionsInput = {
     id: string
     name: string
@@ -24039,6 +30596,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     monitors?: MonitorCreateNestedManyWithoutUserInput
     notificationChannels?: NotificationChannelCreateNestedManyWithoutUserInput
+    statusPages?: StatusPageCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -24055,6 +30613,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     monitors?: MonitorUncheckedCreateNestedManyWithoutUserInput
     notificationChannels?: NotificationChannelUncheckedCreateNestedManyWithoutUserInput
+    statusPages?: StatusPageUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -24087,6 +30646,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     monitors?: MonitorUpdateManyWithoutUserNestedInput
     notificationChannels?: NotificationChannelUpdateManyWithoutUserNestedInput
+    statusPages?: StatusPageUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -24103,6 +30663,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     monitors?: MonitorUncheckedUpdateManyWithoutUserNestedInput
     notificationChannels?: NotificationChannelUncheckedUpdateManyWithoutUserNestedInput
+    statusPages?: StatusPageUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -24119,6 +30680,7 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     monitors?: MonitorCreateNestedManyWithoutUserInput
     notificationChannels?: NotificationChannelCreateNestedManyWithoutUserInput
+    statusPages?: StatusPageCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -24135,6 +30697,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     monitors?: MonitorUncheckedCreateNestedManyWithoutUserInput
     notificationChannels?: NotificationChannelUncheckedCreateNestedManyWithoutUserInput
+    statusPages?: StatusPageUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -24167,6 +30730,7 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     monitors?: MonitorUpdateManyWithoutUserNestedInput
     notificationChannels?: NotificationChannelUpdateManyWithoutUserNestedInput
+    statusPages?: StatusPageUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -24183,6 +30747,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     monitors?: MonitorUncheckedUpdateManyWithoutUserNestedInput
     notificationChannels?: NotificationChannelUncheckedUpdateManyWithoutUserNestedInput
+    statusPages?: StatusPageUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type MonitorCreateWithoutIncidentsInput = {
@@ -24206,6 +30771,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentCreateNestedManyWithoutMonitorInput
     latencyAggregates?: LatencyAggregateCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
+    statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutIncidentsInput = {
@@ -24229,6 +30795,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUncheckedCreateNestedManyWithoutMonitorInput
     latencyAggregates?: LatencyAggregateUncheckedCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
+    statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutIncidentsInput = {
@@ -24292,6 +30859,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUpdateManyWithoutMonitorNestedInput
     latencyAggregates?: LatencyAggregateUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
+    statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutIncidentsInput = {
@@ -24315,6 +30883,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUncheckedUpdateManyWithoutMonitorNestedInput
     latencyAggregates?: LatencyAggregateUncheckedUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
+    statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type IncidentEventUpsertWithWhereUniqueWithoutIncidentInput = {
@@ -24433,6 +31002,7 @@ export namespace Prisma {
     incidents?: IncidentCreateNestedManyWithoutMonitorInput
     latencyAggregates?: LatencyAggregateCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
+    statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutRegionalIncidentsInput = {
@@ -24456,6 +31026,7 @@ export namespace Prisma {
     incidents?: IncidentUncheckedCreateNestedManyWithoutMonitorInput
     latencyAggregates?: LatencyAggregateUncheckedCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
+    statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutRegionalIncidentsInput = {
@@ -24495,6 +31066,7 @@ export namespace Prisma {
     incidents?: IncidentUpdateManyWithoutMonitorNestedInput
     latencyAggregates?: LatencyAggregateUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
+    statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutRegionalIncidentsInput = {
@@ -24518,6 +31090,7 @@ export namespace Prisma {
     incidents?: IncidentUncheckedUpdateManyWithoutMonitorNestedInput
     latencyAggregates?: LatencyAggregateUncheckedUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
+    statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorCreateWithoutLatencyAggregatesInput = {
@@ -24541,6 +31114,7 @@ export namespace Prisma {
     incidents?: IncidentCreateNestedManyWithoutMonitorInput
     regionalIncidents?: RegionalIncidentCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
+    statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutLatencyAggregatesInput = {
@@ -24564,6 +31138,7 @@ export namespace Prisma {
     incidents?: IncidentUncheckedCreateNestedManyWithoutMonitorInput
     regionalIncidents?: RegionalIncidentUncheckedCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
+    statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutLatencyAggregatesInput = {
@@ -24603,6 +31178,7 @@ export namespace Prisma {
     incidents?: IncidentUpdateManyWithoutMonitorNestedInput
     regionalIncidents?: RegionalIncidentUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
+    statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutLatencyAggregatesInput = {
@@ -24626,6 +31202,7 @@ export namespace Prisma {
     incidents?: IncidentUncheckedUpdateManyWithoutMonitorNestedInput
     regionalIncidents?: RegionalIncidentUncheckedUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
+    statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorCreateWithoutRegionalBaselinesInput = {
@@ -24649,6 +31226,7 @@ export namespace Prisma {
     incidents?: IncidentCreateNestedManyWithoutMonitorInput
     regionalIncidents?: RegionalIncidentCreateNestedManyWithoutMonitorInput
     latencyAggregates?: LatencyAggregateCreateNestedManyWithoutMonitorInput
+    statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutRegionalBaselinesInput = {
@@ -24672,6 +31250,7 @@ export namespace Prisma {
     incidents?: IncidentUncheckedCreateNestedManyWithoutMonitorInput
     regionalIncidents?: RegionalIncidentUncheckedCreateNestedManyWithoutMonitorInput
     latencyAggregates?: LatencyAggregateUncheckedCreateNestedManyWithoutMonitorInput
+    statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutRegionalBaselinesInput = {
@@ -24711,6 +31290,7 @@ export namespace Prisma {
     incidents?: IncidentUpdateManyWithoutMonitorNestedInput
     regionalIncidents?: RegionalIncidentUpdateManyWithoutMonitorNestedInput
     latencyAggregates?: LatencyAggregateUpdateManyWithoutMonitorNestedInput
+    statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutRegionalBaselinesInput = {
@@ -24734,6 +31314,7 @@ export namespace Prisma {
     incidents?: IncidentUncheckedUpdateManyWithoutMonitorNestedInput
     regionalIncidents?: RegionalIncidentUncheckedUpdateManyWithoutMonitorNestedInput
     latencyAggregates?: LatencyAggregateUncheckedUpdateManyWithoutMonitorNestedInput
+    statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type UserCreateWithoutNotificationChannelsInput = {
@@ -24750,6 +31331,7 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     monitors?: MonitorCreateNestedManyWithoutUserInput
+    statusPages?: StatusPageCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutNotificationChannelsInput = {
@@ -24766,6 +31348,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     monitors?: MonitorUncheckedCreateNestedManyWithoutUserInput
+    statusPages?: StatusPageUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutNotificationChannelsInput = {
@@ -24827,6 +31410,7 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     monitors?: MonitorUpdateManyWithoutUserNestedInput
+    statusPages?: StatusPageUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationChannelsInput = {
@@ -24843,6 +31427,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     monitors?: MonitorUncheckedUpdateManyWithoutUserNestedInput
+    statusPages?: StatusPageUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AlertRuleUpsertWithWhereUniqueWithoutChannelsInput = {
@@ -24897,6 +31482,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentCreateNestedManyWithoutMonitorInput
     latencyAggregates?: LatencyAggregateCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
+    statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutAlertRulesInput = {
@@ -24920,6 +31506,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUncheckedCreateNestedManyWithoutMonitorInput
     latencyAggregates?: LatencyAggregateUncheckedCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
+    statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutAlertRulesInput = {
@@ -24984,6 +31571,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUpdateManyWithoutMonitorNestedInput
     latencyAggregates?: LatencyAggregateUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
+    statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutAlertRulesInput = {
@@ -25007,6 +31595,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUncheckedUpdateManyWithoutMonitorNestedInput
     latencyAggregates?: LatencyAggregateUncheckedUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
+    statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type NotificationChannelUpsertWithWhereUniqueWithoutAlertRulesInput = {
@@ -25039,6 +31628,7 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     notificationChannels?: NotificationChannelCreateNestedManyWithoutUserInput
+    statusPages?: StatusPageCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMonitorsInput = {
@@ -25055,6 +31645,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     notificationChannels?: NotificationChannelUncheckedCreateNestedManyWithoutUserInput
+    statusPages?: StatusPageUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMonitorsInput = {
@@ -25290,6 +31881,34 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type StatusPageMonitorCreateWithoutMonitorInput = {
+    id?: string
+    displayName?: string | null
+    displayGroup?: string | null
+    sortOrder?: number
+    createdAt?: Date | string
+    statusPage: StatusPageCreateNestedOneWithoutMonitorsInput
+  }
+
+  export type StatusPageMonitorUncheckedCreateWithoutMonitorInput = {
+    id?: string
+    statusPageId: string
+    displayName?: string | null
+    displayGroup?: string | null
+    sortOrder?: number
+    createdAt?: Date | string
+  }
+
+  export type StatusPageMonitorCreateOrConnectWithoutMonitorInput = {
+    where: StatusPageMonitorWhereUniqueInput
+    create: XOR<StatusPageMonitorCreateWithoutMonitorInput, StatusPageMonitorUncheckedCreateWithoutMonitorInput>
+  }
+
+  export type StatusPageMonitorCreateManyMonitorInputEnvelope = {
+    data: StatusPageMonitorCreateManyMonitorInput | StatusPageMonitorCreateManyMonitorInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutMonitorsInput = {
     update: XOR<UserUpdateWithoutMonitorsInput, UserUncheckedUpdateWithoutMonitorsInput>
     create: XOR<UserCreateWithoutMonitorsInput, UserUncheckedCreateWithoutMonitorsInput>
@@ -25315,6 +31934,7 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     notificationChannels?: NotificationChannelUpdateManyWithoutUserNestedInput
+    statusPages?: StatusPageUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMonitorsInput = {
@@ -25331,6 +31951,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     notificationChannels?: NotificationChannelUncheckedUpdateManyWithoutUserNestedInput
+    statusPages?: StatusPageUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type MonitorEventUpsertWithWhereUniqueWithoutMonitorInput = {
@@ -25535,6 +32156,35 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"RegionalBaseline"> | Date | string
   }
 
+  export type StatusPageMonitorUpsertWithWhereUniqueWithoutMonitorInput = {
+    where: StatusPageMonitorWhereUniqueInput
+    update: XOR<StatusPageMonitorUpdateWithoutMonitorInput, StatusPageMonitorUncheckedUpdateWithoutMonitorInput>
+    create: XOR<StatusPageMonitorCreateWithoutMonitorInput, StatusPageMonitorUncheckedCreateWithoutMonitorInput>
+  }
+
+  export type StatusPageMonitorUpdateWithWhereUniqueWithoutMonitorInput = {
+    where: StatusPageMonitorWhereUniqueInput
+    data: XOR<StatusPageMonitorUpdateWithoutMonitorInput, StatusPageMonitorUncheckedUpdateWithoutMonitorInput>
+  }
+
+  export type StatusPageMonitorUpdateManyWithWhereWithoutMonitorInput = {
+    where: StatusPageMonitorScalarWhereInput
+    data: XOR<StatusPageMonitorUpdateManyMutationInput, StatusPageMonitorUncheckedUpdateManyWithoutMonitorInput>
+  }
+
+  export type StatusPageMonitorScalarWhereInput = {
+    AND?: StatusPageMonitorScalarWhereInput | StatusPageMonitorScalarWhereInput[]
+    OR?: StatusPageMonitorScalarWhereInput[]
+    NOT?: StatusPageMonitorScalarWhereInput | StatusPageMonitorScalarWhereInput[]
+    id?: StringFilter<"StatusPageMonitor"> | string
+    statusPageId?: StringFilter<"StatusPageMonitor"> | string
+    monitorId?: StringFilter<"StatusPageMonitor"> | string
+    displayName?: StringNullableFilter<"StatusPageMonitor"> | string | null
+    displayGroup?: StringNullableFilter<"StatusPageMonitor"> | string | null
+    sortOrder?: IntFilter<"StatusPageMonitor"> | number
+    createdAt?: DateTimeFilter<"StatusPageMonitor"> | Date | string
+  }
+
   export type MonitorCreateWithoutEventsInput = {
     id?: string
     name: string
@@ -25556,6 +32206,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentCreateNestedManyWithoutMonitorInput
     latencyAggregates?: LatencyAggregateCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
+    statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutEventsInput = {
@@ -25579,6 +32230,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUncheckedCreateNestedManyWithoutMonitorInput
     latencyAggregates?: LatencyAggregateUncheckedCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
+    statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutEventsInput = {
@@ -25618,6 +32270,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUpdateManyWithoutMonitorNestedInput
     latencyAggregates?: LatencyAggregateUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
+    statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutEventsInput = {
@@ -25641,6 +32294,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUncheckedUpdateManyWithoutMonitorNestedInput
     latencyAggregates?: LatencyAggregateUncheckedUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
+    statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorCreateWithoutMaintenanceWindowsInput = {
@@ -25664,6 +32318,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentCreateNestedManyWithoutMonitorInput
     latencyAggregates?: LatencyAggregateCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
+    statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutMaintenanceWindowsInput = {
@@ -25687,6 +32342,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUncheckedCreateNestedManyWithoutMonitorInput
     latencyAggregates?: LatencyAggregateUncheckedCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
+    statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutMaintenanceWindowsInput = {
@@ -25726,6 +32382,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUpdateManyWithoutMonitorNestedInput
     latencyAggregates?: LatencyAggregateUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
+    statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutMaintenanceWindowsInput = {
@@ -25749,6 +32406,706 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUncheckedUpdateManyWithoutMonitorNestedInput
     latencyAggregates?: LatencyAggregateUncheckedUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
+    statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
+  }
+
+  export type StatusPageCreateWithoutI18nSettingsInput = {
+    id?: string
+    slug: string
+    customDomain?: string | null
+    title: string
+    description?: string | null
+    favicon?: string | null
+    logo?: string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: string | null
+    isPrivate?: boolean
+    ipWhitelist?: string | null
+    seoIndex?: boolean
+    showUptime?: boolean
+    showResponseTime?: boolean
+    showPaused?: boolean
+    customCss?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutStatusPagesInput
+    monitors?: StatusPageMonitorCreateNestedManyWithoutStatusPageInput
+    views?: StatusPageViewCreateNestedManyWithoutStatusPageInput
+  }
+
+  export type StatusPageUncheckedCreateWithoutI18nSettingsInput = {
+    id?: string
+    slug: string
+    customDomain?: string | null
+    title: string
+    description?: string | null
+    favicon?: string | null
+    logo?: string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: string | null
+    isPrivate?: boolean
+    ipWhitelist?: string | null
+    seoIndex?: boolean
+    showUptime?: boolean
+    showResponseTime?: boolean
+    showPaused?: boolean
+    customCss?: string | null
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    monitors?: StatusPageMonitorUncheckedCreateNestedManyWithoutStatusPageInput
+    views?: StatusPageViewUncheckedCreateNestedManyWithoutStatusPageInput
+  }
+
+  export type StatusPageCreateOrConnectWithoutI18nSettingsInput = {
+    where: StatusPageWhereUniqueInput
+    create: XOR<StatusPageCreateWithoutI18nSettingsInput, StatusPageUncheckedCreateWithoutI18nSettingsInput>
+  }
+
+  export type StatusPageUpsertWithoutI18nSettingsInput = {
+    update: XOR<StatusPageUpdateWithoutI18nSettingsInput, StatusPageUncheckedUpdateWithoutI18nSettingsInput>
+    create: XOR<StatusPageCreateWithoutI18nSettingsInput, StatusPageUncheckedCreateWithoutI18nSettingsInput>
+    where?: StatusPageWhereInput
+  }
+
+  export type StatusPageUpdateToOneWithWhereWithoutI18nSettingsInput = {
+    where?: StatusPageWhereInput
+    data: XOR<StatusPageUpdateWithoutI18nSettingsInput, StatusPageUncheckedUpdateWithoutI18nSettingsInput>
+  }
+
+  export type StatusPageUpdateWithoutI18nSettingsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    customDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    favicon?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrivate?: BoolFieldUpdateOperationsInput | boolean
+    ipWhitelist?: NullableStringFieldUpdateOperationsInput | string | null
+    seoIndex?: BoolFieldUpdateOperationsInput | boolean
+    showUptime?: BoolFieldUpdateOperationsInput | boolean
+    showResponseTime?: BoolFieldUpdateOperationsInput | boolean
+    showPaused?: BoolFieldUpdateOperationsInput | boolean
+    customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutStatusPagesNestedInput
+    monitors?: StatusPageMonitorUpdateManyWithoutStatusPageNestedInput
+    views?: StatusPageViewUpdateManyWithoutStatusPageNestedInput
+  }
+
+  export type StatusPageUncheckedUpdateWithoutI18nSettingsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    customDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    favicon?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrivate?: BoolFieldUpdateOperationsInput | boolean
+    ipWhitelist?: NullableStringFieldUpdateOperationsInput | string | null
+    seoIndex?: BoolFieldUpdateOperationsInput | boolean
+    showUptime?: BoolFieldUpdateOperationsInput | boolean
+    showResponseTime?: BoolFieldUpdateOperationsInput | boolean
+    showPaused?: BoolFieldUpdateOperationsInput | boolean
+    customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    monitors?: StatusPageMonitorUncheckedUpdateManyWithoutStatusPageNestedInput
+    views?: StatusPageViewUncheckedUpdateManyWithoutStatusPageNestedInput
+  }
+
+  export type UserCreateWithoutStatusPagesInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    timezone?: string | null
+    dateFormat?: string | null
+    timeFormat?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    monitors?: MonitorCreateNestedManyWithoutUserInput
+    notificationChannels?: NotificationChannelCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutStatusPagesInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    timezone?: string | null
+    dateFormat?: string | null
+    timeFormat?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    monitors?: MonitorUncheckedCreateNestedManyWithoutUserInput
+    notificationChannels?: NotificationChannelUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutStatusPagesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutStatusPagesInput, UserUncheckedCreateWithoutStatusPagesInput>
+  }
+
+  export type StatusPageMonitorCreateWithoutStatusPageInput = {
+    id?: string
+    displayName?: string | null
+    displayGroup?: string | null
+    sortOrder?: number
+    createdAt?: Date | string
+    monitor: MonitorCreateNestedOneWithoutStatusPagesInput
+  }
+
+  export type StatusPageMonitorUncheckedCreateWithoutStatusPageInput = {
+    id?: string
+    monitorId: string
+    displayName?: string | null
+    displayGroup?: string | null
+    sortOrder?: number
+    createdAt?: Date | string
+  }
+
+  export type StatusPageMonitorCreateOrConnectWithoutStatusPageInput = {
+    where: StatusPageMonitorWhereUniqueInput
+    create: XOR<StatusPageMonitorCreateWithoutStatusPageInput, StatusPageMonitorUncheckedCreateWithoutStatusPageInput>
+  }
+
+  export type StatusPageMonitorCreateManyStatusPageInputEnvelope = {
+    data: StatusPageMonitorCreateManyStatusPageInput | StatusPageMonitorCreateManyStatusPageInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StatusPageViewCreateWithoutStatusPageInput = {
+    id?: string
+    visitorHash: string
+    userAgent?: string | null
+    country?: string | null
+    timestamp?: Date | string
+  }
+
+  export type StatusPageViewUncheckedCreateWithoutStatusPageInput = {
+    id?: string
+    visitorHash: string
+    userAgent?: string | null
+    country?: string | null
+    timestamp?: Date | string
+  }
+
+  export type StatusPageViewCreateOrConnectWithoutStatusPageInput = {
+    where: StatusPageViewWhereUniqueInput
+    create: XOR<StatusPageViewCreateWithoutStatusPageInput, StatusPageViewUncheckedCreateWithoutStatusPageInput>
+  }
+
+  export type StatusPageViewCreateManyStatusPageInputEnvelope = {
+    data: StatusPageViewCreateManyStatusPageInput | StatusPageViewCreateManyStatusPageInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StatusPageI18nCreateWithoutStatusPageInput = {
+    id?: string
+    locale: string
+    enabled?: boolean
+    overrides?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StatusPageI18nUncheckedCreateWithoutStatusPageInput = {
+    id?: string
+    locale: string
+    enabled?: boolean
+    overrides?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StatusPageI18nCreateOrConnectWithoutStatusPageInput = {
+    where: StatusPageI18nWhereUniqueInput
+    create: XOR<StatusPageI18nCreateWithoutStatusPageInput, StatusPageI18nUncheckedCreateWithoutStatusPageInput>
+  }
+
+  export type StatusPageI18nCreateManyStatusPageInputEnvelope = {
+    data: StatusPageI18nCreateManyStatusPageInput | StatusPageI18nCreateManyStatusPageInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutStatusPagesInput = {
+    update: XOR<UserUpdateWithoutStatusPagesInput, UserUncheckedUpdateWithoutStatusPagesInput>
+    create: XOR<UserCreateWithoutStatusPagesInput, UserUncheckedCreateWithoutStatusPagesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutStatusPagesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutStatusPagesInput, UserUncheckedUpdateWithoutStatusPagesInput>
+  }
+
+  export type UserUpdateWithoutStatusPagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    dateFormat?: NullableStringFieldUpdateOperationsInput | string | null
+    timeFormat?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    monitors?: MonitorUpdateManyWithoutUserNestedInput
+    notificationChannels?: NotificationChannelUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutStatusPagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    dateFormat?: NullableStringFieldUpdateOperationsInput | string | null
+    timeFormat?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    monitors?: MonitorUncheckedUpdateManyWithoutUserNestedInput
+    notificationChannels?: NotificationChannelUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type StatusPageMonitorUpsertWithWhereUniqueWithoutStatusPageInput = {
+    where: StatusPageMonitorWhereUniqueInput
+    update: XOR<StatusPageMonitorUpdateWithoutStatusPageInput, StatusPageMonitorUncheckedUpdateWithoutStatusPageInput>
+    create: XOR<StatusPageMonitorCreateWithoutStatusPageInput, StatusPageMonitorUncheckedCreateWithoutStatusPageInput>
+  }
+
+  export type StatusPageMonitorUpdateWithWhereUniqueWithoutStatusPageInput = {
+    where: StatusPageMonitorWhereUniqueInput
+    data: XOR<StatusPageMonitorUpdateWithoutStatusPageInput, StatusPageMonitorUncheckedUpdateWithoutStatusPageInput>
+  }
+
+  export type StatusPageMonitorUpdateManyWithWhereWithoutStatusPageInput = {
+    where: StatusPageMonitorScalarWhereInput
+    data: XOR<StatusPageMonitorUpdateManyMutationInput, StatusPageMonitorUncheckedUpdateManyWithoutStatusPageInput>
+  }
+
+  export type StatusPageViewUpsertWithWhereUniqueWithoutStatusPageInput = {
+    where: StatusPageViewWhereUniqueInput
+    update: XOR<StatusPageViewUpdateWithoutStatusPageInput, StatusPageViewUncheckedUpdateWithoutStatusPageInput>
+    create: XOR<StatusPageViewCreateWithoutStatusPageInput, StatusPageViewUncheckedCreateWithoutStatusPageInput>
+  }
+
+  export type StatusPageViewUpdateWithWhereUniqueWithoutStatusPageInput = {
+    where: StatusPageViewWhereUniqueInput
+    data: XOR<StatusPageViewUpdateWithoutStatusPageInput, StatusPageViewUncheckedUpdateWithoutStatusPageInput>
+  }
+
+  export type StatusPageViewUpdateManyWithWhereWithoutStatusPageInput = {
+    where: StatusPageViewScalarWhereInput
+    data: XOR<StatusPageViewUpdateManyMutationInput, StatusPageViewUncheckedUpdateManyWithoutStatusPageInput>
+  }
+
+  export type StatusPageViewScalarWhereInput = {
+    AND?: StatusPageViewScalarWhereInput | StatusPageViewScalarWhereInput[]
+    OR?: StatusPageViewScalarWhereInput[]
+    NOT?: StatusPageViewScalarWhereInput | StatusPageViewScalarWhereInput[]
+    id?: StringFilter<"StatusPageView"> | string
+    statusPageId?: StringFilter<"StatusPageView"> | string
+    visitorHash?: StringFilter<"StatusPageView"> | string
+    userAgent?: StringNullableFilter<"StatusPageView"> | string | null
+    country?: StringNullableFilter<"StatusPageView"> | string | null
+    timestamp?: DateTimeFilter<"StatusPageView"> | Date | string
+  }
+
+  export type StatusPageI18nUpsertWithWhereUniqueWithoutStatusPageInput = {
+    where: StatusPageI18nWhereUniqueInput
+    update: XOR<StatusPageI18nUpdateWithoutStatusPageInput, StatusPageI18nUncheckedUpdateWithoutStatusPageInput>
+    create: XOR<StatusPageI18nCreateWithoutStatusPageInput, StatusPageI18nUncheckedCreateWithoutStatusPageInput>
+  }
+
+  export type StatusPageI18nUpdateWithWhereUniqueWithoutStatusPageInput = {
+    where: StatusPageI18nWhereUniqueInput
+    data: XOR<StatusPageI18nUpdateWithoutStatusPageInput, StatusPageI18nUncheckedUpdateWithoutStatusPageInput>
+  }
+
+  export type StatusPageI18nUpdateManyWithWhereWithoutStatusPageInput = {
+    where: StatusPageI18nScalarWhereInput
+    data: XOR<StatusPageI18nUpdateManyMutationInput, StatusPageI18nUncheckedUpdateManyWithoutStatusPageInput>
+  }
+
+  export type StatusPageI18nScalarWhereInput = {
+    AND?: StatusPageI18nScalarWhereInput | StatusPageI18nScalarWhereInput[]
+    OR?: StatusPageI18nScalarWhereInput[]
+    NOT?: StatusPageI18nScalarWhereInput | StatusPageI18nScalarWhereInput[]
+    id?: StringFilter<"StatusPageI18n"> | string
+    statusPageId?: StringFilter<"StatusPageI18n"> | string
+    locale?: StringFilter<"StatusPageI18n"> | string
+    enabled?: BoolFilter<"StatusPageI18n"> | boolean
+    overrides?: JsonNullableFilter<"StatusPageI18n">
+    createdAt?: DateTimeFilter<"StatusPageI18n"> | Date | string
+    updatedAt?: DateTimeFilter<"StatusPageI18n"> | Date | string
+  }
+
+  export type StatusPageCreateWithoutMonitorsInput = {
+    id?: string
+    slug: string
+    customDomain?: string | null
+    title: string
+    description?: string | null
+    favicon?: string | null
+    logo?: string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: string | null
+    isPrivate?: boolean
+    ipWhitelist?: string | null
+    seoIndex?: boolean
+    showUptime?: boolean
+    showResponseTime?: boolean
+    showPaused?: boolean
+    customCss?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutStatusPagesInput
+    views?: StatusPageViewCreateNestedManyWithoutStatusPageInput
+    i18nSettings?: StatusPageI18nCreateNestedManyWithoutStatusPageInput
+  }
+
+  export type StatusPageUncheckedCreateWithoutMonitorsInput = {
+    id?: string
+    slug: string
+    customDomain?: string | null
+    title: string
+    description?: string | null
+    favicon?: string | null
+    logo?: string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: string | null
+    isPrivate?: boolean
+    ipWhitelist?: string | null
+    seoIndex?: boolean
+    showUptime?: boolean
+    showResponseTime?: boolean
+    showPaused?: boolean
+    customCss?: string | null
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    views?: StatusPageViewUncheckedCreateNestedManyWithoutStatusPageInput
+    i18nSettings?: StatusPageI18nUncheckedCreateNestedManyWithoutStatusPageInput
+  }
+
+  export type StatusPageCreateOrConnectWithoutMonitorsInput = {
+    where: StatusPageWhereUniqueInput
+    create: XOR<StatusPageCreateWithoutMonitorsInput, StatusPageUncheckedCreateWithoutMonitorsInput>
+  }
+
+  export type MonitorCreateWithoutStatusPagesInput = {
+    id?: string
+    name: string
+    url: string
+    type?: $Enums.MonitorType
+    interval?: number
+    timeout?: number
+    status?: $Enums.MonitorStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    nextCheck?: Date | string | null
+    lastCheck?: Date | string | null
+    checkRegions?: string | null
+    alertThreshold?: number
+    user: UserCreateNestedOneWithoutMonitorsInput
+    events?: MonitorEventCreateNestedManyWithoutMonitorInput
+    maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
+    alertRules?: AlertRuleCreateNestedManyWithoutMonitorInput
+    incidents?: IncidentCreateNestedManyWithoutMonitorInput
+    regionalIncidents?: RegionalIncidentCreateNestedManyWithoutMonitorInput
+    latencyAggregates?: LatencyAggregateCreateNestedManyWithoutMonitorInput
+    regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
+  }
+
+  export type MonitorUncheckedCreateWithoutStatusPagesInput = {
+    id?: string
+    name: string
+    url: string
+    type?: $Enums.MonitorType
+    interval?: number
+    timeout?: number
+    status?: $Enums.MonitorStatus
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    nextCheck?: Date | string | null
+    lastCheck?: Date | string | null
+    checkRegions?: string | null
+    alertThreshold?: number
+    events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
+    maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
+    alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
+    incidents?: IncidentUncheckedCreateNestedManyWithoutMonitorInput
+    regionalIncidents?: RegionalIncidentUncheckedCreateNestedManyWithoutMonitorInput
+    latencyAggregates?: LatencyAggregateUncheckedCreateNestedManyWithoutMonitorInput
+    regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
+  }
+
+  export type MonitorCreateOrConnectWithoutStatusPagesInput = {
+    where: MonitorWhereUniqueInput
+    create: XOR<MonitorCreateWithoutStatusPagesInput, MonitorUncheckedCreateWithoutStatusPagesInput>
+  }
+
+  export type StatusPageUpsertWithoutMonitorsInput = {
+    update: XOR<StatusPageUpdateWithoutMonitorsInput, StatusPageUncheckedUpdateWithoutMonitorsInput>
+    create: XOR<StatusPageCreateWithoutMonitorsInput, StatusPageUncheckedCreateWithoutMonitorsInput>
+    where?: StatusPageWhereInput
+  }
+
+  export type StatusPageUpdateToOneWithWhereWithoutMonitorsInput = {
+    where?: StatusPageWhereInput
+    data: XOR<StatusPageUpdateWithoutMonitorsInput, StatusPageUncheckedUpdateWithoutMonitorsInput>
+  }
+
+  export type StatusPageUpdateWithoutMonitorsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    customDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    favicon?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrivate?: BoolFieldUpdateOperationsInput | boolean
+    ipWhitelist?: NullableStringFieldUpdateOperationsInput | string | null
+    seoIndex?: BoolFieldUpdateOperationsInput | boolean
+    showUptime?: BoolFieldUpdateOperationsInput | boolean
+    showResponseTime?: BoolFieldUpdateOperationsInput | boolean
+    showPaused?: BoolFieldUpdateOperationsInput | boolean
+    customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutStatusPagesNestedInput
+    views?: StatusPageViewUpdateManyWithoutStatusPageNestedInput
+    i18nSettings?: StatusPageI18nUpdateManyWithoutStatusPageNestedInput
+  }
+
+  export type StatusPageUncheckedUpdateWithoutMonitorsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    customDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    favicon?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrivate?: BoolFieldUpdateOperationsInput | boolean
+    ipWhitelist?: NullableStringFieldUpdateOperationsInput | string | null
+    seoIndex?: BoolFieldUpdateOperationsInput | boolean
+    showUptime?: BoolFieldUpdateOperationsInput | boolean
+    showResponseTime?: BoolFieldUpdateOperationsInput | boolean
+    showPaused?: BoolFieldUpdateOperationsInput | boolean
+    customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    views?: StatusPageViewUncheckedUpdateManyWithoutStatusPageNestedInput
+    i18nSettings?: StatusPageI18nUncheckedUpdateManyWithoutStatusPageNestedInput
+  }
+
+  export type MonitorUpsertWithoutStatusPagesInput = {
+    update: XOR<MonitorUpdateWithoutStatusPagesInput, MonitorUncheckedUpdateWithoutStatusPagesInput>
+    create: XOR<MonitorCreateWithoutStatusPagesInput, MonitorUncheckedCreateWithoutStatusPagesInput>
+    where?: MonitorWhereInput
+  }
+
+  export type MonitorUpdateToOneWithWhereWithoutStatusPagesInput = {
+    where?: MonitorWhereInput
+    data: XOR<MonitorUpdateWithoutStatusPagesInput, MonitorUncheckedUpdateWithoutStatusPagesInput>
+  }
+
+  export type MonitorUpdateWithoutStatusPagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    type?: EnumMonitorTypeFieldUpdateOperationsInput | $Enums.MonitorType
+    interval?: IntFieldUpdateOperationsInput | number
+    timeout?: IntFieldUpdateOperationsInput | number
+    status?: EnumMonitorStatusFieldUpdateOperationsInput | $Enums.MonitorStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nextCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
+    alertThreshold?: IntFieldUpdateOperationsInput | number
+    user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
+    events?: MonitorEventUpdateManyWithoutMonitorNestedInput
+    maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
+    alertRules?: AlertRuleUpdateManyWithoutMonitorNestedInput
+    incidents?: IncidentUpdateManyWithoutMonitorNestedInput
+    regionalIncidents?: RegionalIncidentUpdateManyWithoutMonitorNestedInput
+    latencyAggregates?: LatencyAggregateUpdateManyWithoutMonitorNestedInput
+    regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
+  }
+
+  export type MonitorUncheckedUpdateWithoutStatusPagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    type?: EnumMonitorTypeFieldUpdateOperationsInput | $Enums.MonitorType
+    interval?: IntFieldUpdateOperationsInput | number
+    timeout?: IntFieldUpdateOperationsInput | number
+    status?: EnumMonitorStatusFieldUpdateOperationsInput | $Enums.MonitorStatus
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nextCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
+    alertThreshold?: IntFieldUpdateOperationsInput | number
+    events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
+    maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
+    alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
+    incidents?: IncidentUncheckedUpdateManyWithoutMonitorNestedInput
+    regionalIncidents?: RegionalIncidentUncheckedUpdateManyWithoutMonitorNestedInput
+    latencyAggregates?: LatencyAggregateUncheckedUpdateManyWithoutMonitorNestedInput
+    regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
+  }
+
+  export type StatusPageCreateWithoutViewsInput = {
+    id?: string
+    slug: string
+    customDomain?: string | null
+    title: string
+    description?: string | null
+    favicon?: string | null
+    logo?: string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: string | null
+    isPrivate?: boolean
+    ipWhitelist?: string | null
+    seoIndex?: boolean
+    showUptime?: boolean
+    showResponseTime?: boolean
+    showPaused?: boolean
+    customCss?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutStatusPagesInput
+    monitors?: StatusPageMonitorCreateNestedManyWithoutStatusPageInput
+    i18nSettings?: StatusPageI18nCreateNestedManyWithoutStatusPageInput
+  }
+
+  export type StatusPageUncheckedCreateWithoutViewsInput = {
+    id?: string
+    slug: string
+    customDomain?: string | null
+    title: string
+    description?: string | null
+    favicon?: string | null
+    logo?: string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: string | null
+    isPrivate?: boolean
+    ipWhitelist?: string | null
+    seoIndex?: boolean
+    showUptime?: boolean
+    showResponseTime?: boolean
+    showPaused?: boolean
+    customCss?: string | null
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    monitors?: StatusPageMonitorUncheckedCreateNestedManyWithoutStatusPageInput
+    i18nSettings?: StatusPageI18nUncheckedCreateNestedManyWithoutStatusPageInput
+  }
+
+  export type StatusPageCreateOrConnectWithoutViewsInput = {
+    where: StatusPageWhereUniqueInput
+    create: XOR<StatusPageCreateWithoutViewsInput, StatusPageUncheckedCreateWithoutViewsInput>
+  }
+
+  export type StatusPageUpsertWithoutViewsInput = {
+    update: XOR<StatusPageUpdateWithoutViewsInput, StatusPageUncheckedUpdateWithoutViewsInput>
+    create: XOR<StatusPageCreateWithoutViewsInput, StatusPageUncheckedCreateWithoutViewsInput>
+    where?: StatusPageWhereInput
+  }
+
+  export type StatusPageUpdateToOneWithWhereWithoutViewsInput = {
+    where?: StatusPageWhereInput
+    data: XOR<StatusPageUpdateWithoutViewsInput, StatusPageUncheckedUpdateWithoutViewsInput>
+  }
+
+  export type StatusPageUpdateWithoutViewsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    customDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    favicon?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrivate?: BoolFieldUpdateOperationsInput | boolean
+    ipWhitelist?: NullableStringFieldUpdateOperationsInput | string | null
+    seoIndex?: BoolFieldUpdateOperationsInput | boolean
+    showUptime?: BoolFieldUpdateOperationsInput | boolean
+    showResponseTime?: BoolFieldUpdateOperationsInput | boolean
+    showPaused?: BoolFieldUpdateOperationsInput | boolean
+    customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutStatusPagesNestedInput
+    monitors?: StatusPageMonitorUpdateManyWithoutStatusPageNestedInput
+    i18nSettings?: StatusPageI18nUpdateManyWithoutStatusPageNestedInput
+  }
+
+  export type StatusPageUncheckedUpdateWithoutViewsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    customDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    favicon?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrivate?: BoolFieldUpdateOperationsInput | boolean
+    ipWhitelist?: NullableStringFieldUpdateOperationsInput | string | null
+    seoIndex?: BoolFieldUpdateOperationsInput | boolean
+    showUptime?: BoolFieldUpdateOperationsInput | boolean
+    showResponseTime?: BoolFieldUpdateOperationsInput | boolean
+    showPaused?: BoolFieldUpdateOperationsInput | boolean
+    customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    monitors?: StatusPageMonitorUncheckedUpdateManyWithoutStatusPageNestedInput
+    i18nSettings?: StatusPageI18nUncheckedUpdateManyWithoutStatusPageNestedInput
   }
 
   export type SessionCreateManyUserInput = {
@@ -25797,6 +33154,28 @@ export namespace Prisma {
     name: string
     type: $Enums.NotificationType
     config: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StatusPageCreateManyUserInput = {
+    id?: string
+    slug: string
+    customDomain?: string | null
+    title: string
+    description?: string | null
+    favicon?: string | null
+    logo?: string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: string | null
+    isPrivate?: boolean
+    ipWhitelist?: string | null
+    seoIndex?: boolean
+    showUptime?: boolean
+    showResponseTime?: boolean
+    showPaused?: boolean
+    customCss?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -25897,6 +33276,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUpdateManyWithoutMonitorNestedInput
     latencyAggregates?: LatencyAggregateUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
+    statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutUserInput = {
@@ -25920,6 +33300,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUncheckedUpdateManyWithoutMonitorNestedInput
     latencyAggregates?: LatencyAggregateUncheckedUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
+    statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateManyWithoutUserInput = {
@@ -25963,6 +33344,78 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
     config?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusPageUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    customDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    favicon?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrivate?: BoolFieldUpdateOperationsInput | boolean
+    ipWhitelist?: NullableStringFieldUpdateOperationsInput | string | null
+    seoIndex?: BoolFieldUpdateOperationsInput | boolean
+    showUptime?: BoolFieldUpdateOperationsInput | boolean
+    showResponseTime?: BoolFieldUpdateOperationsInput | boolean
+    showPaused?: BoolFieldUpdateOperationsInput | boolean
+    customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    monitors?: StatusPageMonitorUpdateManyWithoutStatusPageNestedInput
+    views?: StatusPageViewUpdateManyWithoutStatusPageNestedInput
+    i18nSettings?: StatusPageI18nUpdateManyWithoutStatusPageNestedInput
+  }
+
+  export type StatusPageUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    customDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    favicon?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrivate?: BoolFieldUpdateOperationsInput | boolean
+    ipWhitelist?: NullableStringFieldUpdateOperationsInput | string | null
+    seoIndex?: BoolFieldUpdateOperationsInput | boolean
+    showUptime?: BoolFieldUpdateOperationsInput | boolean
+    showResponseTime?: BoolFieldUpdateOperationsInput | boolean
+    showPaused?: BoolFieldUpdateOperationsInput | boolean
+    customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    monitors?: StatusPageMonitorUncheckedUpdateManyWithoutStatusPageNestedInput
+    views?: StatusPageViewUncheckedUpdateManyWithoutStatusPageNestedInput
+    i18nSettings?: StatusPageI18nUncheckedUpdateManyWithoutStatusPageNestedInput
+  }
+
+  export type StatusPageUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    customDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    favicon?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrivate?: BoolFieldUpdateOperationsInput | boolean
+    ipWhitelist?: NullableStringFieldUpdateOperationsInput | string | null
+    seoIndex?: BoolFieldUpdateOperationsInput | boolean
+    showUptime?: BoolFieldUpdateOperationsInput | boolean
+    showResponseTime?: BoolFieldUpdateOperationsInput | boolean
+    showPaused?: BoolFieldUpdateOperationsInput | boolean
+    customCss?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -26135,6 +33588,15 @@ export namespace Prisma {
     region: string
     baselineLatency: number
     lastUpdated?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type StatusPageMonitorCreateManyMonitorInput = {
+    id?: string
+    statusPageId: string
+    displayName?: string | null
+    displayGroup?: string | null
+    sortOrder?: number
     createdAt?: Date | string
   }
 
@@ -26371,6 +33833,137 @@ export namespace Prisma {
     baselineLatency?: FloatFieldUpdateOperationsInput | number
     lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusPageMonitorUpdateWithoutMonitorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    displayGroup?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    statusPage?: StatusPageUpdateOneRequiredWithoutMonitorsNestedInput
+  }
+
+  export type StatusPageMonitorUncheckedUpdateWithoutMonitorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    statusPageId?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    displayGroup?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusPageMonitorUncheckedUpdateManyWithoutMonitorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    statusPageId?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    displayGroup?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusPageMonitorCreateManyStatusPageInput = {
+    id?: string
+    monitorId: string
+    displayName?: string | null
+    displayGroup?: string | null
+    sortOrder?: number
+    createdAt?: Date | string
+  }
+
+  export type StatusPageViewCreateManyStatusPageInput = {
+    id?: string
+    visitorHash: string
+    userAgent?: string | null
+    country?: string | null
+    timestamp?: Date | string
+  }
+
+  export type StatusPageI18nCreateManyStatusPageInput = {
+    id?: string
+    locale: string
+    enabled?: boolean
+    overrides?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StatusPageMonitorUpdateWithoutStatusPageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    displayGroup?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    monitor?: MonitorUpdateOneRequiredWithoutStatusPagesNestedInput
+  }
+
+  export type StatusPageMonitorUncheckedUpdateWithoutStatusPageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monitorId?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    displayGroup?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusPageMonitorUncheckedUpdateManyWithoutStatusPageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monitorId?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    displayGroup?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusPageViewUpdateWithoutStatusPageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    visitorHash?: StringFieldUpdateOperationsInput | string
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusPageViewUncheckedUpdateWithoutStatusPageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    visitorHash?: StringFieldUpdateOperationsInput | string
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusPageViewUncheckedUpdateManyWithoutStatusPageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    visitorHash?: StringFieldUpdateOperationsInput | string
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusPageI18nUpdateWithoutStatusPageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    locale?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    overrides?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusPageI18nUncheckedUpdateWithoutStatusPageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    locale?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    overrides?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusPageI18nUncheckedUpdateManyWithoutStatusPageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    locale?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    overrides?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

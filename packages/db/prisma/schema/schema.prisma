@@ -42,6 +42,8 @@ model Monitor {
   regionalIncidents  RegionalIncident[]
   latencyAggregates  LatencyAggregate[]
   regionalBaselines  RegionalBaseline[]
+  statusPages        StatusPageMonitor[]
+
 
   nextCheck DateTime?
   lastCheck DateTime?

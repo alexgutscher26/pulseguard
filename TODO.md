@@ -174,19 +174,19 @@ Public-facing transparency for users.
 
 ### 🌐 Status Pages
 
-- [ ] **Public & Private Status Pages**
+- [x] **Public & Private Status Pages**
   - Route: `status.pulseguard.com/[slug]` or Custom Domain (CNAME).
   - **Private Pages**: Password protection, SSO-based access, or IP Whitelisting.
   - **SEO Control**: Toggle `robots.txt` to index/no-index status pages.
   - **Granular Visibility**: Toggle display of Uptime %, Response Time Charts, specific URLs, or "Paused" monitors.
   - Branding: Custom Logo, Favicon, CSS overrides.
-- [ ] **Status Page Analytics**
+- [x] **Status Page Analytics**
   - Text: "Who is checking my status?"
   - Integration: Google Analytics, Plausible, or minimal built-in view counter.
-- [ ] **Global Audience (i18n)**
+- [x] **Global Audience (i18n)**
   - Auto-translate status page based on browser locale.
   - Support manual language toggle for status page visitors.
-- [ ] **Incident History & Widgets**
+- [x] **Incident History & Widgets**
   - Show active incidents, planned maintenance timelines, and historical uptime.
   - **Embeddable Status Widget**: JS snippet to show "All Systems Operational" on user's own website.
 - [ ] **Subscription System**

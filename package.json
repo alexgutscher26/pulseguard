@@ -43,6 +43,7 @@
   "dependencies": {
     "@pulseguard/env": "workspace:*",
     "dotenv": "catalog:",
+    "next-intl": "^4.8.2",
     "port-nuker": "^1.0.8",
     "zod": "catalog:"
   },

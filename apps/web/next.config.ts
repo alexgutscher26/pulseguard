@@ -13,6 +13,10 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ["localhost:3000", "loyal-canyon.outray.app"],
 };
 
-export default nextConfig;
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin();
 
 initOpenNextCloudflareForDev();
+
+export default withNextIntl(nextConfig);

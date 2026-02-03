@@ -13,6 +13,7 @@ model User {
   accounts             Account[]
   monitors             Monitor[]
   notificationChannels NotificationChannel[]
+  statusPages          StatusPage[]
 
   @@unique([email])
   @@map("user")
@@ -286,6 +287,7 @@ model Monitor {
   regionalIncidents  RegionalIncident[]
   latencyAggregates  LatencyAggregate[]
   regionalBaselines  RegionalBaseline[]
+  statusPages        StatusPageMonitor[]
 
   nextCheck      DateTime?
   lastCheck      DateTime?
@@ -326,4 +328,96 @@ model MaintenanceWindow {
 
   @@index([monitorId])
   @@index([startAt, endAt])
+}
+
+model StatusPageI18n {
+  id           String     @id @default(cuid())
+  statusPageId String
+  statusPage   StatusPage @relation(fields: [statusPageId], references: [id], onDelete: Cascade)
+
+  locale    String // e.g., "en", "es", "fr", "de"
+  enabled   Boolean @default(true)
+  overrides Json? // Store key-value pairs for text overrides: { "status.operational": "All Good" }
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([statusPageId, locale])
+  @@index([statusPageId])
+}
+
+model StatusPage {
+  id           String  @id @default(cuid())
+  slug         String  @unique
+  customDomain String? @unique
+  title        String
+  description  String?
+  favicon      String? // URL
+  logo         String? // URL
+
+  // Design & Config
+  theme  Json? // { colors: { primary: "#...", bg: "#..." }, mode: "dark" | "light" }
+  layout Json? // Ordered list of component definitions
+
+  // Access Control
+  password    String? // Plaintext for simple, or Hashed. For now simplest implementation.
+  isPrivate   Boolean @default(false)
+  ipWhitelist String? // Comma separated list of IPs
+
+  // SEO & Visibility
+  seoIndex         Boolean @default(true)
+  showUptime       Boolean @default(true)
+  showResponseTime Boolean @default(true)
+  showPaused       Boolean @default(false)
+  customCss        String?
+
+  // Relations
+  userId       String
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  monitors     StatusPageMonitor[]
+  views        StatusPageView[]
+  i18nSettings StatusPageI18n[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@index([customDomain])
+  @@index([userId])
+}
+
+model StatusPageMonitor {
+  id String @id @default(cuid())
+
+  statusPageId String
+  statusPage   StatusPage @relation(fields: [statusPageId], references: [id], onDelete: Cascade)
+
+  monitorId String
+  monitor   Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+
+  displayName  String? // Override monitor name contextually
+  displayGroup String? // "API", "Database", etc.
+  sortOrder    Int     @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@unique([statusPageId, monitorId])
+  @@index([statusPageId])
+  @@index([monitorId])
+}
+
+model StatusPageView {
+  id String @id @default(cuid())
+
+  statusPageId String
+  statusPage   StatusPage @relation(fields: [statusPageId], references: [id], onDelete: Cascade)
+
+  visitorHash String
+  userAgent   String?
+  country     String?
+
+  timestamp DateTime @default(now())
+
+  @@index([statusPageId])
+  @@index([timestamp])
 }

@@ -288,12 +288,69 @@ exports.Prisma.MaintenanceWindowScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.StatusPageI18nScalarFieldEnum = {
+  id: 'id',
+  statusPageId: 'statusPageId',
+  locale: 'locale',
+  enabled: 'enabled',
+  overrides: 'overrides',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.StatusPageScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  customDomain: 'customDomain',
+  title: 'title',
+  description: 'description',
+  favicon: 'favicon',
+  logo: 'logo',
+  theme: 'theme',
+  layout: 'layout',
+  password: 'password',
+  isPrivate: 'isPrivate',
+  ipWhitelist: 'ipWhitelist',
+  seoIndex: 'seoIndex',
+  showUptime: 'showUptime',
+  showResponseTime: 'showResponseTime',
+  showPaused: 'showPaused',
+  customCss: 'customCss',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.StatusPageMonitorScalarFieldEnum = {
+  id: 'id',
+  statusPageId: 'statusPageId',
+  monitorId: 'monitorId',
+  displayName: 'displayName',
+  displayGroup: 'displayGroup',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.StatusPageViewScalarFieldEnum = {
+  id: 'id',
+  statusPageId: 'statusPageId',
+  visitorHash: 'visitorHash',
+  userAgent: 'userAgent',
+  country: 'country',
+  timestamp: 'timestamp'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
 };
 
 exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull
 };
 
@@ -385,7 +442,11 @@ exports.Prisma.ModelName = {
   AlertRule: 'AlertRule',
   Monitor: 'Monitor',
   MonitorEvent: 'MonitorEvent',
-  MaintenanceWindow: 'MaintenanceWindow'
+  MaintenanceWindow: 'MaintenanceWindow',
+  StatusPageI18n: 'StatusPageI18n',
+  StatusPage: 'StatusPage',
+  StatusPageMonitor: 'StatusPageMonitor',
+  StatusPageView: 'StatusPageView'
 };
 
 /**

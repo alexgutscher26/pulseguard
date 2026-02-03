@@ -1,0 +1,36 @@
+{
+  "status": {
+    "operational": "Alle Systeme funktionsfähig",
+    "major_outage": "Großer Ausfall",
+    "partial_outage": "Teilweiser Ausfall",
+    "degraded_performance": "Leistung beeinträchtigt",
+    "maintenance": "Wartungsarbeiten",
+    "issue_detected": "Systemprobleme erkannt",
+    "system_integrity_100": "Systemintegrität 100%",
+    "critical_failures": "Kritische Fehler erkannt"
+  },
+  "headings": {
+    "status": "Status",
+    "events": "Ereignisse",
+    "monitors": "Monitore",
+    "past_incidents": "Vergangene Vorfälle",
+    "current_status": "Aktueller Status",
+    "subscribe": "Abonnieren Sie Updates",
+    "uptime": "Betriebszeit",
+    "system_modules": "Systemmodule",
+    "real_time_status": "Echtzeit-Status"
+  },
+  "actions": {
+    "subscribe": "Abonnieren",
+    "get_updates": "Updates erhalten",
+    "view_incident": "Vorfall anzeigen"
+  },
+  "common": {
+    "loading": "Wird geladen...",
+    "error": "Etwas ist schief gelaufen",
+    "back_to_home": "Zurück zur Startseite",
+    "powered_by": "Bereitgestellt von PulseGuard",
+    "no_monitors": "Keine aktiven Monitore konfiguriert.",
+    "system_status": "Systemstatus"
+  }
+}
