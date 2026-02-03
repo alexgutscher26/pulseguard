@@ -11,6 +11,9 @@ const items = [
   { name: "API Keys", icon: Key, tab: "api-keys" },
 ];
 
+/**
+ * Renders the settings sidebar with navigation links based on the current tab.
+ */
 export function SettingsSidebar() {
   const searchParams = useSearchParams();
   const currentTab = searchParams.get("tab") || "general";

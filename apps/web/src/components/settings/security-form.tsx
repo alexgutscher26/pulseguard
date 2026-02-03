@@ -5,6 +5,9 @@ import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 
+/**
+ * Renders a security form for managing two-factor authentication and password changes.
+ */
 export function SecurityForm() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
