@@ -5,6 +5,17 @@ import { toggleMonitor } from "@/actions/monitors";
 import { toast } from "sonner";
 import { useTransition } from "react";
 
+/**
+ * Render the detailed header for a monitor, displaying its status and controls.
+ *
+ * This function evaluates the monitor's status, including whether it is operational, down, paused, or pending.
+ * It provides controls to run a check on the monitor and toggle its monitoring state, handling asynchronous operations
+ * and displaying appropriate feedback messages. The component also shows the last heartbeat time based on the monitor's events.
+ *
+ * @param {Object} param0 - The properties object.
+ * @param {any} param0.monitor - The monitor object containing its details and status.
+ * @returns {JSX.Element} The rendered monitor detail header component.
+ */
 export function MonitorDetailHeader({ monitor }: { monitor: any }) {
   const hasEvents = monitor.events && monitor.events.length > 0;
   const isUp = monitor.status === "UP" && hasEvents;
