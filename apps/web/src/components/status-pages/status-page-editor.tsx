@@ -1,11 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   addMonitorToPage,
   removeMonitorFromPage,
+  getStatusPageIncidents,
+  getStatusPageMaintenance,
+  updateHistoryDays,
+  getStatusPageUptimeData,
 } from "@/actions/status-pages";
-import { Monitor, Plus, Trash2, ArrowLeft, ExternalLink } from "lucide-react";
+import {
+  Monitor,
+  Plus,
+  Trash2,
+  ArrowLeft,
+  ExternalLink,
+  History,
+  Code2,
+} from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -13,6 +25,12 @@ import { useRouter } from "next/navigation";
 import { StatusPageSettings } from "./status-page-settings";
 import { TrafficChart } from "../dashboard/analytics/traffic-chart";
 import { StatsCards } from "../dashboard/analytics/stats-cards";
+import { IncidentHistoryTab } from "./incident-history-tab";
+import { MaintenanceTimeline } from "./maintenance-timeline";
+import { UptimePercentageCard } from "./uptime-percentage-card";
+import { WidgetConfigurator } from "./widget-configurator";
+
+type TabType = "monitors" | "settings" | "analytics" | "history" | "widget";
 
 export function StatusPageEditor({
   page,
@@ -22,12 +40,57 @@ export function StatusPageEditor({
   allMonitors: any[];
 }) {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<
-    "monitors" | "settings" | "analytics"
-  >("monitors");
+  const [activeTab, setActiveTab] = useState<TabType>("monitors");
   const [isPending, setIsPending] = useState(false);
 
-  // ... (keep handleAdd/Remove) ...
+  // History tab state
+  const [historyDays, setHistoryDays] = useState(page.historyDays || 90);
+  const [incidents, setIncidents] = useState<any[]>([]);
+  const [maintenance, setMaintenance] = useState<any[]>([]);
+  const [uptimeData, setUptimeData] = useState({
+    current: 100,
+    previous: 100,
+    trend: "stable" as "up" | "down" | "stable",
+    difference: 0,
+  });
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+
+  // Load history data when tab becomes active or days change
+  useEffect(() => {
+    if (activeTab === "history") {
+      loadHistoryData();
+    }
+  }, [activeTab, historyDays]);
+
+  const loadHistoryData = async () => {
+    setIsLoadingHistory(true);
+    try {
+      const [incidentsData, maintenanceData] = await Promise.all([
+        getStatusPageIncidents(page.id, historyDays),
+        getStatusPageMaintenance(page.id),
+      ]);
+
+      setIncidents(incidentsData);
+      setMaintenance(maintenanceData);
+
+      // Get uptime data via server action
+      const trendData = await getStatusPageUptimeData(page.id, historyDays);
+      setUptimeData(trendData);
+    } catch (error) {
+      console.error("Failed to load history data:", error);
+      toast.error("Failed to load history data");
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
+
+  const handleHistoryDaysChange = async (days: number) => {
+    setHistoryDays(days);
+    const result = await updateHistoryDays(page.id, days);
+    if (!result.success) {
+      toast.error(result.error || "Failed to update history setting");
+    }
+  };
 
   const assignedMonitorIds = new Set(
     page.monitors.map((m: any) => m.monitorId),
@@ -61,9 +124,17 @@ export function StatusPageEditor({
     setIsPending(false);
   };
 
+  const tabs: { id: TabType; label: string; icon?: React.ReactNode }[] = [
+    { id: "monitors", label: "Monitors" },
+    { id: "history", label: "History", icon: <History className="size-3" /> },
+    { id: "widget", label: "Widget", icon: <Code2 className="size-3" /> },
+    { id: "analytics", label: "Analytics" },
+    { id: "settings", label: "Settings" },
+  ];
+
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         {/* Header */}
         <div className="flex items-center gap-4">
           <Link
@@ -88,25 +159,21 @@ export function StatusPageEditor({
         </div>
 
         {/* Tabs */}
-        <div className="flex bg-secondary/20 p-1 rounded-sm border border-primary/20">
-          <button
-            onClick={() => setActiveTab("monitors")}
-            className={`px-4 py-1.5 text-xs font-bold uppercase font-mono rounded-sm transition-all ${activeTab === "monitors" ? "bg-primary text-black" : "text-muted-foreground hover:text-foreground hover:bg-white/5"}`}
-          >
-            Monitors
-          </button>
-          <button
-            onClick={() => setActiveTab("analytics")}
-            className={`px-4 py-1.5 text-xs font-bold uppercase font-mono rounded-sm transition-all ${activeTab === "analytics" ? "bg-primary text-black" : "text-muted-foreground hover:text-foreground hover:bg-white/5"}`}
-          >
-            Analytics
-          </button>
-          <button
-            onClick={() => setActiveTab("settings")}
-            className={`px-4 py-1.5 text-xs font-bold uppercase font-mono rounded-sm transition-all ${activeTab === "settings" ? "bg-primary text-black" : "text-muted-foreground hover:text-foreground hover:bg-white/5"}`}
-          >
-            Settings
-          </button>
+        <div className="flex bg-secondary/20 p-1 rounded-sm border border-primary/20 overflow-x-auto">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold uppercase font-mono rounded-sm transition-all whitespace-nowrap ${
+                activeTab === tab.id
+                  ? "bg-primary text-black"
+                  : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+              }`}
+            >
+              {tab.icon}
+              {tab.label}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -190,6 +257,57 @@ export function StatusPageEditor({
             </div>
           </div>
         </div>
+      )}
+
+      {activeTab === "history" && (
+        <div className="space-y-6">
+          {isLoadingHistory ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <div className="grid lg:grid-cols-3 gap-6">
+              {/* Uptime Card */}
+              <div className="lg:col-span-1">
+                <UptimePercentageCard
+                  current={uptimeData.current}
+                  previous={uptimeData.previous}
+                  trend={uptimeData.trend}
+                  difference={uptimeData.difference}
+                  period={historyDays}
+                />
+              </div>
+
+              {/* Maintenance Timeline */}
+              <div className="lg:col-span-2">
+                <MaintenanceTimeline maintenanceWindows={maintenance} />
+              </div>
+
+              {/* Incident History */}
+              <div className="lg:col-span-3">
+                <IncidentHistoryTab
+                  incidents={incidents}
+                  uptimeData={uptimeData}
+                  historyDays={historyDays}
+                  onHistoryDaysChange={handleHistoryDaysChange}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {activeTab === "widget" && (
+        <WidgetConfigurator
+          pageId={page.id}
+          pageSlug={page.slug}
+          initialConfig={{
+            widgetEnabled: page.widgetEnabled || false,
+            widgetAllowedDomains: page.widgetAllowedDomains || null,
+            widgetBadgeText: page.widgetBadgeText || null,
+            widgetTheme: page.widgetTheme || null,
+          }}
+        />
       )}
 
       {activeTab === "analytics" && (

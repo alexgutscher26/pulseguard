@@ -316,6 +316,11 @@ exports.Prisma.StatusPageScalarFieldEnum = {
   showResponseTime: 'showResponseTime',
   showPaused: 'showPaused',
   customCss: 'customCss',
+  widgetEnabled: 'widgetEnabled',
+  widgetAllowedDomains: 'widgetAllowedDomains',
+  widgetBadgeText: 'widgetBadgeText',
+  widgetTheme: 'widgetTheme',
+  historyDays: 'historyDays',
   userId: 'userId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

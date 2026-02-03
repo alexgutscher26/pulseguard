@@ -1,6 +1,6 @@
 "use server";
 
-import prisma from "@pulseguard/db";
+import prisma, { Prisma } from "@pulseguard/db";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { auth } from "@pulseguard/auth";
@@ -322,4 +322,334 @@ export async function verifyStatusPagePassword(pageId: string, password: string)
   }
 
   return { success: false, error: "Invalid password" };
+}
+
+// Widget Configuration Schema
+const widgetConfigSchema = z.object({
+  widgetEnabled: z.boolean(),
+  widgetAllowedDomains: z.string().optional().nullable(),
+  widgetBadgeText: z.object({
+    operational: z.string().min(1).max(100),
+    partial: z.string().min(1).max(100),
+    major: z.string().min(1).max(100),
+  }).optional().nullable(),
+  widgetTheme: z.object({
+    bgColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Invalid hex color"),
+    textColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Invalid hex color"),
+    borderRadius: z.string().optional(),
+  }).optional().nullable(),
+});
+
+/**
+ * Validate domain format (simple check)
+ */
+function validateDomainFormat(domains: string | null | undefined): boolean {
+  if (!domains) return true;
+  if (domains === "*") return true;
+  
+  const domainList = domains.split(",").map(d => d.trim());
+  const domainRegex = /^(\*\.)?[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z]{2,})+$/;
+  
+  return domainList.every(domain => domainRegex.test(domain));
+}
+
+/**
+ * Update widget configuration for a status page
+ */
+export async function updateWidgetConfig(
+  pageId: string,
+  config: z.infer<typeof widgetConfigSchema>
+) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session?.user) return { success: false, error: "Unauthorized" };
+
+  const validation = widgetConfigSchema.safeParse(config);
+  if (!validation.success) {
+    return { success: false, error: validation.error.issues[0].message };
+  }
+
+  const data = validation.data;
+
+  // Validate domain format
+  if (!validateDomainFormat(data.widgetAllowedDomains)) {
+    return { success: false, error: "Invalid domain format. Use comma-separated domains like: example.com, *.example.org" };
+  }
+
+  try {
+    const page = await prisma.statusPage.findUnique({
+      where: { id: pageId, userId: session.user.id },
+    });
+    
+    if (!page) {
+      return { success: false, error: "Status page not found" };
+    }
+
+    await prisma.statusPage.update({
+      where: { id: pageId, userId: session.user.id },
+      data: {
+        widgetEnabled: data.widgetEnabled,
+        widgetAllowedDomains: data.widgetAllowedDomains,
+        widgetBadgeText: data.widgetBadgeText ?? Prisma.JsonNull,
+        widgetTheme: data.widgetTheme ?? Prisma.JsonNull,
+      },
+    });
+
+    revalidatePath(`/dashboard/pages/${pageId}`);
+    revalidatePath(`/status-page/${page.slug}`);
+    return { success: true };
+  } catch (e) {
+    console.error("Failed to update widget config:", e);
+    return { success: false, error: "Failed to update widget configuration" };
+  }
+}
+
+/**
+ * Update history days setting for a status page
+ */
+export async function updateHistoryDays(pageId: string, historyDays: number) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session?.user) return { success: false, error: "Unauthorized" };
+
+  // Validate history days
+  if (![30, 60, 90].includes(historyDays)) {
+    return { success: false, error: "History days must be 30, 60, or 90" };
+  }
+
+  try {
+    const page = await prisma.statusPage.findUnique({
+      where: { id: pageId, userId: session.user.id },
+    });
+    
+    if (!page) {
+      return { success: false, error: "Status page not found" };
+    }
+
+    await prisma.statusPage.update({
+      where: { id: pageId, userId: session.user.id },
+      data: { historyDays },
+    });
+
+    revalidatePath(`/dashboard/pages/${pageId}`);
+    return { success: true };
+  } catch (e) {
+    console.error("Failed to update history days:", e);
+    return { success: false, error: "Failed to update history setting" };
+  }
+}
+
+/**
+ * Get incidents for status page monitors within a time range
+ */
+export async function getStatusPageIncidents(pageId: string, days: number = 90) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session?.user) return [];
+
+  const startDate = new Date();
+  startDate.setDate(startDate.getDate() - days);
+
+  const page = await prisma.statusPage.findUnique({
+    where: { id: pageId, userId: session.user.id },
+    include: {
+      monitors: {
+        select: { monitorId: true },
+      },
+    },
+  });
+
+  if (!page) return [];
+
+  const monitorIds = page.monitors.map((m) => m.monitorId);
+
+  return prisma.incident.findMany({
+    where: {
+      monitorId: { in: monitorIds },
+      startedAt: { gte: startDate },
+    },
+    orderBy: { startedAt: "desc" },
+    include: {
+      monitor: {
+        select: { name: true },
+      },
+      events: {
+        orderBy: { createdAt: "desc" },
+        take: 5,
+      },
+    },
+  });
+}
+
+/**
+ * Get maintenance windows for status page monitors
+ */
+export async function getStatusPageMaintenance(pageId: string) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session?.user) return [];
+
+  const page = await prisma.statusPage.findUnique({
+    where: { id: pageId, userId: session.user.id },
+    include: {
+      monitors: {
+        select: { monitorId: true },
+      },
+    },
+  });
+
+  if (!page) return [];
+
+  const monitorIds = page.monitors.map((m) => m.monitorId);
+  const now = new Date();
+  const thirtyDaysFromNow = new Date();
+  thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
+
+  return prisma.maintenanceWindow.findMany({
+    where: {
+      monitorId: { in: monitorIds },
+      OR: [
+        // Upcoming or active maintenance
+        { endAt: { gte: now } },
+        // Recently completed (last 7 days)
+        { endAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), lt: now } },
+      ],
+    },
+    orderBy: { startAt: "asc" },
+    include: {
+      monitor: {
+        select: { name: true },
+      },
+    },
+  });
+}
+
+/**
+ * Get uptime data for status page monitors
+ */
+export async function getStatusPageUptimeData(pageId: string, days: number = 90) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session?.user) {
+    return {
+      current: 100,
+      previous: 100,
+      trend: "stable" as const,
+      difference: 0,
+    };
+  }
+
+  const page = await prisma.statusPage.findUnique({
+    where: { id: pageId, userId: session.user.id },
+    include: {
+      monitors: {
+        select: { monitorId: true },
+      },
+    },
+  });
+
+  if (!page || page.monitors.length === 0) {
+    return {
+      current: 100,
+      previous: 100,
+      trend: "stable" as const,
+      difference: 0,
+    };
+  }
+
+  const monitorId = page.monitors[0].monitorId;
+  
+  // Calculate current period uptime
+  const startDate = new Date();
+  startDate.setDate(startDate.getDate() - days);
+  startDate.setHours(0, 0, 0, 0);
+
+  const events = await prisma.monitorEvent.findMany({
+    where: {
+      monitorId,
+      timestamp: { gte: startDate },
+    },
+    orderBy: { timestamp: "asc" },
+    select: {
+      status: true,
+      timestamp: true,
+    },
+  });
+
+  // Calculate uptime percentage
+  let current = 100;
+  if (events.length > 0) {
+    const totalDurationMs = Date.now() - startDate.getTime();
+    let downtimeMs = 0;
+    let lastDownTime: Date | null = null;
+
+    for (const event of events) {
+      if (event.status === "DOWN" && lastDownTime === null) {
+        lastDownTime = event.timestamp;
+      } else if (event.status === "UP" && lastDownTime !== null) {
+        downtimeMs += event.timestamp.getTime() - lastDownTime.getTime();
+        lastDownTime = null;
+      }
+    }
+
+    if (lastDownTime !== null) {
+      downtimeMs += Date.now() - lastDownTime.getTime();
+    }
+
+    const uptimeMs = totalDurationMs - downtimeMs;
+    current = Math.round(Math.max(0, Math.min(100, (uptimeMs / totalDurationMs) * 100)) * 100) / 100;
+  }
+
+  // Calculate previous period
+  const currentStart = new Date();
+  currentStart.setDate(currentStart.getDate() - days);
+  
+  const previousStart = new Date(currentStart);
+  previousStart.setDate(previousStart.getDate() - days);
+
+  const previousEvents = await prisma.monitorEvent.findMany({
+    where: {
+      monitorId,
+      timestamp: { 
+        gte: previousStart,
+        lt: currentStart,
+      },
+    },
+    orderBy: { timestamp: "asc" },
+    select: {
+      status: true,
+      timestamp: true,
+    },
+  });
+
+  let previous = 100;
+  if (previousEvents.length > 0) {
+    const periodMs = days * 24 * 60 * 60 * 1000;
+    let downtimeMs = 0;
+    let lastDownTime: Date | null = null;
+
+    for (const event of previousEvents) {
+      if (event.status === "DOWN" && lastDownTime === null) {
+        lastDownTime = event.timestamp;
+      } else if (event.status === "UP" && lastDownTime !== null) {
+        downtimeMs += event.timestamp.getTime() - lastDownTime.getTime();
+        lastDownTime = null;
+      }
+    }
+
+    if (lastDownTime !== null) {
+      downtimeMs += currentStart.getTime() - lastDownTime.getTime();
+    }
+
+    const uptimeMs = periodMs - downtimeMs;
+    previous = Math.round(Math.max(0, Math.min(100, (uptimeMs / periodMs) * 100)) * 100) / 100;
+  }
+
+  const difference = Math.round((current - previous) * 100) / 100;
+  
+  let trend: "up" | "down" | "stable";
+  if (difference > 0.01) {
+    trend = "up";
+  } else if (difference < -0.01) {
+    trend = "down";
+  } else {
+    trend = "stable";
+  }
+
+  return { current, previous, trend, difference };
 }

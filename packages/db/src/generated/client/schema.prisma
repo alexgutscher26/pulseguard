@@ -371,6 +371,15 @@ model StatusPage {
   showPaused       Boolean @default(false)
   customCss        String?
 
+  // Widget Configuration
+  widgetEnabled        Boolean @default(false)
+  widgetAllowedDomains String? // Comma-separated domains, "*" = any, null = same-origin only
+  widgetBadgeText      Json? // { operational: "All Systems Operational", partial: "Partial Outage", major: "Major Outage" }
+  widgetTheme          Json? // { bgColor: "#1a1a2e", textColor: "#00ff88", borderRadius: "8px" }
+
+  // History Configuration
+  historyDays Int @default(90) // 30, 60, or 90 day lookback
+
   // Relations
   userId       String
   user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)

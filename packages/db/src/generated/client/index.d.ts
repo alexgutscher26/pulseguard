@@ -20081,8 +20081,18 @@ export namespace Prisma {
 
   export type AggregateStatusPage = {
     _count: StatusPageCountAggregateOutputType | null
+    _avg: StatusPageAvgAggregateOutputType | null
+    _sum: StatusPageSumAggregateOutputType | null
     _min: StatusPageMinAggregateOutputType | null
     _max: StatusPageMaxAggregateOutputType | null
+  }
+
+  export type StatusPageAvgAggregateOutputType = {
+    historyDays: number | null
+  }
+
+  export type StatusPageSumAggregateOutputType = {
+    historyDays: number | null
   }
 
   export type StatusPageMinAggregateOutputType = {
@@ -20101,6 +20111,9 @@ export namespace Prisma {
     showResponseTime: boolean | null
     showPaused: boolean | null
     customCss: string | null
+    widgetEnabled: boolean | null
+    widgetAllowedDomains: string | null
+    historyDays: number | null
     userId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -20122,6 +20135,9 @@ export namespace Prisma {
     showResponseTime: boolean | null
     showPaused: boolean | null
     customCss: string | null
+    widgetEnabled: boolean | null
+    widgetAllowedDomains: string | null
+    historyDays: number | null
     userId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -20145,12 +20161,25 @@ export namespace Prisma {
     showResponseTime: number
     showPaused: number
     customCss: number
+    widgetEnabled: number
+    widgetAllowedDomains: number
+    widgetBadgeText: number
+    widgetTheme: number
+    historyDays: number
     userId: number
     createdAt: number
     updatedAt: number
     _all: number
   }
 
+
+  export type StatusPageAvgAggregateInputType = {
+    historyDays?: true
+  }
+
+  export type StatusPageSumAggregateInputType = {
+    historyDays?: true
+  }
 
   export type StatusPageMinAggregateInputType = {
     id?: true
@@ -20168,6 +20197,9 @@ export namespace Prisma {
     showResponseTime?: true
     showPaused?: true
     customCss?: true
+    widgetEnabled?: true
+    widgetAllowedDomains?: true
+    historyDays?: true
     userId?: true
     createdAt?: true
     updatedAt?: true
@@ -20189,6 +20221,9 @@ export namespace Prisma {
     showResponseTime?: true
     showPaused?: true
     customCss?: true
+    widgetEnabled?: true
+    widgetAllowedDomains?: true
+    historyDays?: true
     userId?: true
     createdAt?: true
     updatedAt?: true
@@ -20212,6 +20247,11 @@ export namespace Prisma {
     showResponseTime?: true
     showPaused?: true
     customCss?: true
+    widgetEnabled?: true
+    widgetAllowedDomains?: true
+    widgetBadgeText?: true
+    widgetTheme?: true
+    historyDays?: true
     userId?: true
     createdAt?: true
     updatedAt?: true
@@ -20256,6 +20296,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: StatusPageAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: StatusPageSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: StatusPageMinAggregateInputType
@@ -20286,6 +20338,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: StatusPageCountAggregateInputType | true
+    _avg?: StatusPageAvgAggregateInputType
+    _sum?: StatusPageSumAggregateInputType
     _min?: StatusPageMinAggregateInputType
     _max?: StatusPageMaxAggregateInputType
   }
@@ -20308,10 +20362,17 @@ export namespace Prisma {
     showResponseTime: boolean
     showPaused: boolean
     customCss: string | null
+    widgetEnabled: boolean
+    widgetAllowedDomains: string | null
+    widgetBadgeText: JsonValue | null
+    widgetTheme: JsonValue | null
+    historyDays: number
     userId: string
     createdAt: Date
     updatedAt: Date
     _count: StatusPageCountAggregateOutputType | null
+    _avg: StatusPageAvgAggregateOutputType | null
+    _sum: StatusPageSumAggregateOutputType | null
     _min: StatusPageMinAggregateOutputType | null
     _max: StatusPageMaxAggregateOutputType | null
   }
@@ -20348,6 +20409,11 @@ export namespace Prisma {
     showResponseTime?: boolean
     showPaused?: boolean
     customCss?: boolean
+    widgetEnabled?: boolean
+    widgetAllowedDomains?: boolean
+    widgetBadgeText?: boolean
+    widgetTheme?: boolean
+    historyDays?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -20376,6 +20442,11 @@ export namespace Prisma {
     showResponseTime?: boolean
     showPaused?: boolean
     customCss?: boolean
+    widgetEnabled?: boolean
+    widgetAllowedDomains?: boolean
+    widgetBadgeText?: boolean
+    widgetTheme?: boolean
+    historyDays?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -20400,6 +20471,11 @@ export namespace Prisma {
     showResponseTime?: boolean
     showPaused?: boolean
     customCss?: boolean
+    widgetEnabled?: boolean
+    widgetAllowedDomains?: boolean
+    widgetBadgeText?: boolean
+    widgetTheme?: boolean
+    historyDays?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -20424,12 +20500,17 @@ export namespace Prisma {
     showResponseTime?: boolean
     showPaused?: boolean
     customCss?: boolean
+    widgetEnabled?: boolean
+    widgetAllowedDomains?: boolean
+    widgetBadgeText?: boolean
+    widgetTheme?: boolean
+    historyDays?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type StatusPageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "slug" | "customDomain" | "title" | "description" | "favicon" | "logo" | "theme" | "layout" | "password" | "isPrivate" | "ipWhitelist" | "seoIndex" | "showUptime" | "showResponseTime" | "showPaused" | "customCss" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["statusPage"]>
+  export type StatusPageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "slug" | "customDomain" | "title" | "description" | "favicon" | "logo" | "theme" | "layout" | "password" | "isPrivate" | "ipWhitelist" | "seoIndex" | "showUptime" | "showResponseTime" | "showPaused" | "customCss" | "widgetEnabled" | "widgetAllowedDomains" | "widgetBadgeText" | "widgetTheme" | "historyDays" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["statusPage"]>
   export type StatusPageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     monitors?: boolean | StatusPage$monitorsArgs<ExtArgs>
@@ -20470,6 +20551,11 @@ export namespace Prisma {
       showResponseTime: boolean
       showPaused: boolean
       customCss: string | null
+      widgetEnabled: boolean
+      widgetAllowedDomains: string | null
+      widgetBadgeText: Prisma.JsonValue | null
+      widgetTheme: Prisma.JsonValue | null
+      historyDays: number
       userId: string
       createdAt: Date
       updatedAt: Date
@@ -20917,6 +21003,11 @@ export namespace Prisma {
     readonly showResponseTime: FieldRef<"StatusPage", 'Boolean'>
     readonly showPaused: FieldRef<"StatusPage", 'Boolean'>
     readonly customCss: FieldRef<"StatusPage", 'String'>
+    readonly widgetEnabled: FieldRef<"StatusPage", 'Boolean'>
+    readonly widgetAllowedDomains: FieldRef<"StatusPage", 'String'>
+    readonly widgetBadgeText: FieldRef<"StatusPage", 'Json'>
+    readonly widgetTheme: FieldRef<"StatusPage", 'Json'>
+    readonly historyDays: FieldRef<"StatusPage", 'Int'>
     readonly userId: FieldRef<"StatusPage", 'String'>
     readonly createdAt: FieldRef<"StatusPage", 'DateTime'>
     readonly updatedAt: FieldRef<"StatusPage", 'DateTime'>
@@ -23858,6 +23949,11 @@ export namespace Prisma {
     showResponseTime: 'showResponseTime',
     showPaused: 'showPaused',
     customCss: 'customCss',
+    widgetEnabled: 'widgetEnabled',
+    widgetAllowedDomains: 'widgetAllowedDomains',
+    widgetBadgeText: 'widgetBadgeText',
+    widgetTheme: 'widgetTheme',
+    historyDays: 'historyDays',
     userId: 'userId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -25342,6 +25438,11 @@ export namespace Prisma {
     showResponseTime?: BoolFilter<"StatusPage"> | boolean
     showPaused?: BoolFilter<"StatusPage"> | boolean
     customCss?: StringNullableFilter<"StatusPage"> | string | null
+    widgetEnabled?: BoolFilter<"StatusPage"> | boolean
+    widgetAllowedDomains?: StringNullableFilter<"StatusPage"> | string | null
+    widgetBadgeText?: JsonNullableFilter<"StatusPage">
+    widgetTheme?: JsonNullableFilter<"StatusPage">
+    historyDays?: IntFilter<"StatusPage"> | number
     userId?: StringFilter<"StatusPage"> | string
     createdAt?: DateTimeFilter<"StatusPage"> | Date | string
     updatedAt?: DateTimeFilter<"StatusPage"> | Date | string
@@ -25369,6 +25470,11 @@ export namespace Prisma {
     showResponseTime?: SortOrder
     showPaused?: SortOrder
     customCss?: SortOrderInput | SortOrder
+    widgetEnabled?: SortOrder
+    widgetAllowedDomains?: SortOrderInput | SortOrder
+    widgetBadgeText?: SortOrderInput | SortOrder
+    widgetTheme?: SortOrderInput | SortOrder
+    historyDays?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -25399,6 +25505,11 @@ export namespace Prisma {
     showResponseTime?: BoolFilter<"StatusPage"> | boolean
     showPaused?: BoolFilter<"StatusPage"> | boolean
     customCss?: StringNullableFilter<"StatusPage"> | string | null
+    widgetEnabled?: BoolFilter<"StatusPage"> | boolean
+    widgetAllowedDomains?: StringNullableFilter<"StatusPage"> | string | null
+    widgetBadgeText?: JsonNullableFilter<"StatusPage">
+    widgetTheme?: JsonNullableFilter<"StatusPage">
+    historyDays?: IntFilter<"StatusPage"> | number
     userId?: StringFilter<"StatusPage"> | string
     createdAt?: DateTimeFilter<"StatusPage"> | Date | string
     updatedAt?: DateTimeFilter<"StatusPage"> | Date | string
@@ -25426,12 +25537,19 @@ export namespace Prisma {
     showResponseTime?: SortOrder
     showPaused?: SortOrder
     customCss?: SortOrderInput | SortOrder
+    widgetEnabled?: SortOrder
+    widgetAllowedDomains?: SortOrderInput | SortOrder
+    widgetBadgeText?: SortOrderInput | SortOrder
+    widgetTheme?: SortOrderInput | SortOrder
+    historyDays?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: StatusPageCountOrderByAggregateInput
+    _avg?: StatusPageAvgOrderByAggregateInput
     _max?: StatusPageMaxOrderByAggregateInput
     _min?: StatusPageMinOrderByAggregateInput
+    _sum?: StatusPageSumOrderByAggregateInput
   }
 
   export type StatusPageScalarWhereWithAggregatesInput = {
@@ -25455,6 +25573,11 @@ export namespace Prisma {
     showResponseTime?: BoolWithAggregatesFilter<"StatusPage"> | boolean
     showPaused?: BoolWithAggregatesFilter<"StatusPage"> | boolean
     customCss?: StringNullableWithAggregatesFilter<"StatusPage"> | string | null
+    widgetEnabled?: BoolWithAggregatesFilter<"StatusPage"> | boolean
+    widgetAllowedDomains?: StringNullableWithAggregatesFilter<"StatusPage"> | string | null
+    widgetBadgeText?: JsonNullableWithAggregatesFilter<"StatusPage">
+    widgetTheme?: JsonNullableWithAggregatesFilter<"StatusPage">
+    historyDays?: IntWithAggregatesFilter<"StatusPage"> | number
     userId?: StringWithAggregatesFilter<"StatusPage"> | string
     createdAt?: DateTimeWithAggregatesFilter<"StatusPage"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"StatusPage"> | Date | string
@@ -26906,6 +27029,11 @@ export namespace Prisma {
     showResponseTime?: boolean
     showPaused?: boolean
     customCss?: string | null
+    widgetEnabled?: boolean
+    widgetAllowedDomains?: string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutStatusPagesInput
@@ -26932,6 +27060,11 @@ export namespace Prisma {
     showResponseTime?: boolean
     showPaused?: boolean
     customCss?: string | null
+    widgetEnabled?: boolean
+    widgetAllowedDomains?: string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: number
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -26958,6 +27091,11 @@ export namespace Prisma {
     showResponseTime?: BoolFieldUpdateOperationsInput | boolean
     showPaused?: BoolFieldUpdateOperationsInput | boolean
     customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetEnabled?: BoolFieldUpdateOperationsInput | boolean
+    widgetAllowedDomains?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutStatusPagesNestedInput
@@ -26984,6 +27122,11 @@ export namespace Prisma {
     showResponseTime?: BoolFieldUpdateOperationsInput | boolean
     showPaused?: BoolFieldUpdateOperationsInput | boolean
     customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetEnabled?: BoolFieldUpdateOperationsInput | boolean
+    widgetAllowedDomains?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: IntFieldUpdateOperationsInput | number
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27010,6 +27153,11 @@ export namespace Prisma {
     showResponseTime?: boolean
     showPaused?: boolean
     customCss?: string | null
+    widgetEnabled?: boolean
+    widgetAllowedDomains?: string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: number
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -27033,6 +27181,11 @@ export namespace Prisma {
     showResponseTime?: BoolFieldUpdateOperationsInput | boolean
     showPaused?: BoolFieldUpdateOperationsInput | boolean
     customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetEnabled?: BoolFieldUpdateOperationsInput | boolean
+    widgetAllowedDomains?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -27055,6 +27208,11 @@ export namespace Prisma {
     showResponseTime?: BoolFieldUpdateOperationsInput | boolean
     showPaused?: BoolFieldUpdateOperationsInput | boolean
     customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetEnabled?: BoolFieldUpdateOperationsInput | boolean
+    widgetAllowedDomains?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: IntFieldUpdateOperationsInput | number
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28506,9 +28664,18 @@ export namespace Prisma {
     showResponseTime?: SortOrder
     showPaused?: SortOrder
     customCss?: SortOrder
+    widgetEnabled?: SortOrder
+    widgetAllowedDomains?: SortOrder
+    widgetBadgeText?: SortOrder
+    widgetTheme?: SortOrder
+    historyDays?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type StatusPageAvgOrderByAggregateInput = {
+    historyDays?: SortOrder
   }
 
   export type StatusPageMaxOrderByAggregateInput = {
@@ -28527,6 +28694,9 @@ export namespace Prisma {
     showResponseTime?: SortOrder
     showPaused?: SortOrder
     customCss?: SortOrder
+    widgetEnabled?: SortOrder
+    widgetAllowedDomains?: SortOrder
+    historyDays?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -28548,9 +28718,16 @@ export namespace Prisma {
     showResponseTime?: SortOrder
     showPaused?: SortOrder
     customCss?: SortOrder
+    widgetEnabled?: SortOrder
+    widgetAllowedDomains?: SortOrder
+    historyDays?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type StatusPageSumOrderByAggregateInput = {
+    historyDays?: SortOrder
   }
 
   export type StatusPageMonitorStatusPageIdMonitorIdCompoundUniqueInput = {
@@ -30368,6 +30545,11 @@ export namespace Prisma {
     showResponseTime?: boolean
     showPaused?: boolean
     customCss?: string | null
+    widgetEnabled?: boolean
+    widgetAllowedDomains?: string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     monitors?: StatusPageMonitorCreateNestedManyWithoutStatusPageInput
@@ -30393,6 +30575,11 @@ export namespace Prisma {
     showResponseTime?: boolean
     showPaused?: boolean
     customCss?: string | null
+    widgetEnabled?: boolean
+    widgetAllowedDomains?: string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     monitors?: StatusPageMonitorUncheckedCreateNestedManyWithoutStatusPageInput
@@ -30577,6 +30764,11 @@ export namespace Prisma {
     showResponseTime?: BoolFilter<"StatusPage"> | boolean
     showPaused?: BoolFilter<"StatusPage"> | boolean
     customCss?: StringNullableFilter<"StatusPage"> | string | null
+    widgetEnabled?: BoolFilter<"StatusPage"> | boolean
+    widgetAllowedDomains?: StringNullableFilter<"StatusPage"> | string | null
+    widgetBadgeText?: JsonNullableFilter<"StatusPage">
+    widgetTheme?: JsonNullableFilter<"StatusPage">
+    historyDays?: IntFilter<"StatusPage"> | number
     userId?: StringFilter<"StatusPage"> | string
     createdAt?: DateTimeFilter<"StatusPage"> | Date | string
     updatedAt?: DateTimeFilter<"StatusPage"> | Date | string
@@ -32427,6 +32619,11 @@ export namespace Prisma {
     showResponseTime?: boolean
     showPaused?: boolean
     customCss?: string | null
+    widgetEnabled?: boolean
+    widgetAllowedDomains?: string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutStatusPagesInput
@@ -32452,6 +32649,11 @@ export namespace Prisma {
     showResponseTime?: boolean
     showPaused?: boolean
     customCss?: string | null
+    widgetEnabled?: boolean
+    widgetAllowedDomains?: string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: number
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -32493,6 +32695,11 @@ export namespace Prisma {
     showResponseTime?: BoolFieldUpdateOperationsInput | boolean
     showPaused?: BoolFieldUpdateOperationsInput | boolean
     customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetEnabled?: BoolFieldUpdateOperationsInput | boolean
+    widgetAllowedDomains?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutStatusPagesNestedInput
@@ -32518,6 +32725,11 @@ export namespace Prisma {
     showResponseTime?: BoolFieldUpdateOperationsInput | boolean
     showPaused?: BoolFieldUpdateOperationsInput | boolean
     customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetEnabled?: BoolFieldUpdateOperationsInput | boolean
+    widgetAllowedDomains?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: IntFieldUpdateOperationsInput | number
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32782,6 +32994,11 @@ export namespace Prisma {
     showResponseTime?: boolean
     showPaused?: boolean
     customCss?: string | null
+    widgetEnabled?: boolean
+    widgetAllowedDomains?: string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutStatusPagesInput
@@ -32807,6 +33024,11 @@ export namespace Prisma {
     showResponseTime?: boolean
     showPaused?: boolean
     customCss?: string | null
+    widgetEnabled?: boolean
+    widgetAllowedDomains?: string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: number
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -32901,6 +33123,11 @@ export namespace Prisma {
     showResponseTime?: BoolFieldUpdateOperationsInput | boolean
     showPaused?: BoolFieldUpdateOperationsInput | boolean
     customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetEnabled?: BoolFieldUpdateOperationsInput | boolean
+    widgetAllowedDomains?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutStatusPagesNestedInput
@@ -32926,6 +33153,11 @@ export namespace Prisma {
     showResponseTime?: BoolFieldUpdateOperationsInput | boolean
     showPaused?: BoolFieldUpdateOperationsInput | boolean
     customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetEnabled?: BoolFieldUpdateOperationsInput | boolean
+    widgetAllowedDomains?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: IntFieldUpdateOperationsInput | number
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33010,6 +33242,11 @@ export namespace Prisma {
     showResponseTime?: boolean
     showPaused?: boolean
     customCss?: string | null
+    widgetEnabled?: boolean
+    widgetAllowedDomains?: string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutStatusPagesInput
@@ -33035,6 +33272,11 @@ export namespace Prisma {
     showResponseTime?: boolean
     showPaused?: boolean
     customCss?: string | null
+    widgetEnabled?: boolean
+    widgetAllowedDomains?: string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: number
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -33076,6 +33318,11 @@ export namespace Prisma {
     showResponseTime?: BoolFieldUpdateOperationsInput | boolean
     showPaused?: BoolFieldUpdateOperationsInput | boolean
     customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetEnabled?: BoolFieldUpdateOperationsInput | boolean
+    widgetAllowedDomains?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutStatusPagesNestedInput
@@ -33101,6 +33348,11 @@ export namespace Prisma {
     showResponseTime?: BoolFieldUpdateOperationsInput | boolean
     showPaused?: BoolFieldUpdateOperationsInput | boolean
     customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetEnabled?: BoolFieldUpdateOperationsInput | boolean
+    widgetAllowedDomains?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: IntFieldUpdateOperationsInput | number
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33176,6 +33428,11 @@ export namespace Prisma {
     showResponseTime?: boolean
     showPaused?: boolean
     customCss?: string | null
+    widgetEnabled?: boolean
+    widgetAllowedDomains?: string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -33366,6 +33623,11 @@ export namespace Prisma {
     showResponseTime?: BoolFieldUpdateOperationsInput | boolean
     showPaused?: BoolFieldUpdateOperationsInput | boolean
     customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetEnabled?: BoolFieldUpdateOperationsInput | boolean
+    widgetAllowedDomains?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     monitors?: StatusPageMonitorUpdateManyWithoutStatusPageNestedInput
@@ -33391,6 +33653,11 @@ export namespace Prisma {
     showResponseTime?: BoolFieldUpdateOperationsInput | boolean
     showPaused?: BoolFieldUpdateOperationsInput | boolean
     customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetEnabled?: BoolFieldUpdateOperationsInput | boolean
+    widgetAllowedDomains?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     monitors?: StatusPageMonitorUncheckedUpdateManyWithoutStatusPageNestedInput
@@ -33416,6 +33683,11 @@ export namespace Prisma {
     showResponseTime?: BoolFieldUpdateOperationsInput | boolean
     showPaused?: BoolFieldUpdateOperationsInput | boolean
     customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetEnabled?: BoolFieldUpdateOperationsInput | boolean
+    widgetAllowedDomains?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

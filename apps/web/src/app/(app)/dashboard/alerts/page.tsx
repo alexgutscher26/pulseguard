@@ -4,7 +4,11 @@ import { redirect } from "next/navigation";
 import { NotificationChannels } from "@/components/alerts/notification-channels";
 import { AlertHistory } from "@/components/alerts/alert-history";
 import { AlertRules } from "@/components/alerts/alert-rules";
-import { getNotificationChannels, getAlertHistory, getAlertRules } from "@/actions/notifications";
+import {
+  getNotificationChannels,
+  getAlertHistory,
+  getAlertRules,
+} from "@/actions/notifications";
 import { getMonitors } from "@/actions/monitors";
 
 /**
@@ -12,7 +16,11 @@ import { getMonitors } from "@/actions/monitors";
  *
  * This function retrieves the user session using the auth.api.getSession method. If no user session is found, it redirects the user to the login page. Upon successful retrieval of the session, it returns a JSX element containing NotificationChannels and AlertHistory components.
  */
-export default async function AlertsPage() {
+export default async function AlertsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -25,12 +33,13 @@ export default async function AlertsPage() {
   const currentPage = Number(page) || 1;
   const pageSize = 10;
 
-  const [channels, alertRules, monitors, { events, totalCount, totalPages }] = await Promise.all([
-    getNotificationChannels(),
-    getAlertRules(),
-    getMonitors(),
-    getAlertHistory(currentPage, pageSize),
-  ]);
+  const [channels, alertRules, monitors, { events, totalCount, totalPages }] =
+    await Promise.all([
+      getNotificationChannels(),
+      getAlertRules(),
+      getMonitors(),
+      getAlertHistory(currentPage, pageSize),
+    ]);
 
   return (
     <div className="flex flex-col gap-10">

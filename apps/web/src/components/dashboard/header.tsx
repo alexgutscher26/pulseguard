@@ -11,7 +11,9 @@ import {
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { ModeToggle } from "@/components/mode-toggle";
+import { useMobile } from "@/hooks/use-mobile";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,7 +29,9 @@ import {
  *
  * The DashboardHeader function utilizes the authClient to retrieve the current session data. It constructs a header with a sticky position that includes a scanline effect, a title, a search input, an "Add Monitor" button, and user information. The user profile image is displayed if available, otherwise a default image is used. The layout is responsive and adapts to different screen sizes.
  */
-export function DashboardHeader() {
+export function DashboardHeader({
+  onMenuClick,
+}: { onMenuClick?: () => void } = {}) {
   const { data: session } = authClient.useSession();
   const pathname = usePathname();
   const router = useRouter();

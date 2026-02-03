@@ -2,7 +2,7 @@
 
 import { Filter, ArrowUpDown, BarChart2, Edit2 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,37 +28,133 @@ type FilterStatus = "UP" | "DOWN" | "PAUSED" | "MAINTENANCE";
 
 /**
  * Renders a visual representation of uptime status as a bar.
- *
- * The function determines the color and opacity of the bar based on the provided status.
- * It uses specific color classes for different status values: green for normal, red for failure,
- * and grey for unknown. Additionally, it handles a special case for a status of 0.5 to render
- * a bar with reduced opacity.
- *
- * @param {Object} param0 - The parameters object.
- * @param {number} param0.status - The uptime status value that influences the bar's appearance.
  */
 function UptimeBar({ status }: { status: number }) {
   let colorClass = "bg-[#0bda5e]"; // Green
   if (status === 0) colorClass = "bg-[#fa6238]"; // Red
   if (status === -1) colorClass = "bg-[#3b4554]"; // Grey
-  if (status === 2) colorClass = "bg-amber-500 shadow-[0_0_5px_rgba(245,158,11,0.5)]"; // Maintenance
+  if (status === 2)
+    colorClass = "bg-amber-500 shadow-[0_0_5px_rgba(245,158,11,0.5)]"; // Maintenance
 
   const opacityClass = status === 0.5 ? "opacity-50" : "";
   if (status === 0.5)
-    return <div className="h-4 w-1 bg-[#0bda5e] rounded-full opacity-50 bg-green-500"></div>;
+    return (
+      <div className="h-4 w-1 bg-[#0bda5e] rounded-full opacity-50 bg-green-500"></div>
+    );
 
-  return <div className={`h-4 w-1 rounded-full ${colorClass} ${opacityClass}`}></div>;
+  return (
+    <div className={`h-4 w-1 rounded-full ${colorClass} ${opacityClass}`}></div>
+  );
+}
+
+/**
+ * Converts events into a visual history array for the uptime bar
+ */
+function getHistory(
+  events: { status: string; latency: number; timestamp: Date }[],
+): number[] {
+  const history: number[] = [];
+  const sorted = [...events].sort(
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+  );
+
+  for (let i = 0; i < Math.min(20, sorted.length); i++) {
+    const event = sorted[i];
+    if (event.status === "UP") {
+      history.push(1);
+    } else if (event.status === "DOWN") {
+      history.push(0);
+    } else if (event.status === "MAINTENANCE") {
+      history.push(2);
+    } else {
+      history.push(-1);
+    }
+  }
+
+  // Pad with grey if not enough events
+  while (history.length < 20) {
+    history.push(-1);
+  }
+
+  return history.reverse();
+}
+
+/**
+ * Calculate uptime percentage from events
+ */
+function getUptime(events: { status: string }[]): string {
+  if (events.length === 0) return "100.0";
+  const upCount = events.filter((e) => e.status === "UP").length;
+  return ((upCount / events.length) * 100).toFixed(1);
+}
+
+/**
+ * Get last response time from events
+ */
+function getLastResponse(
+  events: { latency: number; status: string }[],
+): string {
+  if (events.length === 0) return "N/A";
+  const sorted = [...events].sort(
+    (a, b) =>
+      new Date((b as any).timestamp).getTime() -
+      new Date((a as any).timestamp).getTime(),
+  );
+  const latest = sorted[0];
+  if (latest.status === "DOWN") return "Error";
+  return `${latest.latency}ms`;
+}
+
+interface MonitorsTableProps {
+  monitors: MonitorWithEvents[];
 }
 
 /**
  * Renders a table displaying the status of monitors.
- *
- * The MonitorsTable function creates a structured layout that includes a header with filter and sort buttons,
- * a table with monitor details such as site name, status, uptime, and response time,
- * and a footer for pagination. It utilizes the monitors data to dynamically populate the table rows
- * and displays the status of each monitor with appropriate styling based on their state.
  */
-export function MonitorsTable() {
+export function MonitorsTable({ monitors }: MonitorsTableProps) {
+  const [sort, setSort] = useState<SortOption>("name");
+  const [filterStatuses, setFilterStatuses] = useState<FilterStatus[]>([]);
+
+  const toggleFilter = (status: FilterStatus) => {
+    setFilterStatuses((prev) =>
+      prev.includes(status)
+        ? prev.filter((s) => s !== status)
+        : [...prev, status],
+    );
+  };
+
+  const sortedMonitors = useMemo(() => {
+    let filtered = monitors;
+
+    // Apply filters
+    if (filterStatuses.length > 0) {
+      filtered = monitors.filter((m) =>
+        filterStatuses.includes(m.status as FilterStatus),
+      );
+    }
+
+    // Apply sorting
+    return [...filtered].sort((a, b) => {
+      if (sort === "name") {
+        return a.name.localeCompare(b.name);
+      }
+      if (sort === "status") {
+        const statusOrder = { DOWN: 0, MAINTENANCE: 1, PAUSED: 2, UP: 3 };
+        return (
+          (statusOrder[a.status as keyof typeof statusOrder] || 0) -
+          (statusOrder[b.status as keyof typeof statusOrder] || 0)
+        );
+      }
+      if (sort === "uptime") {
+        return (
+          parseFloat(getUptime(b.events)) - parseFloat(getUptime(a.events))
+        );
+      }
+      return 0;
+    });
+  }, [monitors, sort, filterStatuses]);
+
   return (
     <div>
       {/* SectionHeader */}
@@ -176,7 +272,10 @@ export function MonitorsTable() {
             </thead>
             <tbody className="divide-y divide-primary/10">
               {sortedMonitors.map((site) => (
-                <tr key={site.id} className="hover:bg-primary/5 transition-colors group">
+                <tr
+                  key={site.id}
+                  className="hover:bg-primary/5 transition-colors group"
+                >
                   <td className="px-6 py-5">
                     <div className="flex flex-col">
                       <span className="text-sm font-bold text-foreground font-mono">
@@ -233,7 +332,9 @@ export function MonitorsTable() {
                   <td className="px-6 py-5">
                     <span
                       className={`text-sm font-mono font-bold ${
-                        site.status === "DOWN" ? "text-red-500" : "text-muted-foreground"
+                        site.status === "DOWN"
+                          ? "text-red-500"
+                          : "text-muted-foreground"
                       }`}
                     >
                       {getLastResponse(site.events)}
