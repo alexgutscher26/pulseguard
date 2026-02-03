@@ -197,21 +197,16 @@ export async function processBatch(monitors: any[], prisma: any, env?: Env): Pro
   // Dynamic import since we just created it
   const { IncidentService } = await import("./lib/incident-service");
   const incidentService = new IncidentService(prisma);
-  const startTime = performance.now();
-  const TIME_LIMIT_MS = 8; // Safety buffer for 10ms CPU limit (Free Tier)
-
+  // REMOVED: Wall-time limit check. 
+  // Reason: performance.now() measures wall time (including IO), not CPU time. 
+  // Cloudflare Free Plan has 10ms CPU limit but allows longer wall time for IO.
+  // Using wall time to limit execution caused premature stops and dropped checks because Queues are not available.
+  
   const processedIds: string[] = [];
   const remainingMonitors: any[] = [];
 
   for (let i = 0; i < monitors.length; i++) {
     const monitor = monitors[i];
-
-    // Check Time Budget
-    if (performance.now() - startTime > TIME_LIMIT_MS) {
-      console.warn(`[SmartBatch] CPU time limit reached (${(performance.now() - startTime).toFixed(2)}ms). Offloading ${monitors.length - i} monitors.`);
-      remainingMonitors.push(...monitors.slice(i));
-      break; 
-    }
 
     // --- PROCESSING LOGIC START ---
     try {
@@ -587,9 +582,9 @@ export default {
     console.log("Cron triggered: checking for due monitors...");
     const prisma = getPrisma(env.DATABASE_URL);
 
-    // FREE TIER CONFIG: Process 10 monitors per cron tick (1 min)
-    // This avoids CPU limits and Queue costs.
-    const BATCH_SIZE = 10;
+    // FREE TIER CONFIG: Process 5 monitors per cron tick (1 min)
+    // Decreased to 5 to avoid CPU limits (exceededCpu error).
+    const BATCH_SIZE = 5;
 
     try {
       // Find active monitors that are due for a check
