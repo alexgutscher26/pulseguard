@@ -47,6 +47,16 @@ interface Subscriber {
   }>;
 }
 
+/**
+ * Manage the subscription preferences for a user.
+ *
+ * This component handles loading the subscriber's data based on the provided manageToken,
+ * allowing the user to update their notification preferences and unsubscribe if desired.
+ * It manages various states including loading, pending actions, and results of operations,
+ * and renders the appropriate UI based on the subscriber's status and actions taken.
+ *
+ * @param manageToken - The token used to manage the subscription for the user.
+ */
 export default function ManagePageClient({
   manageToken,
 }: ManagePageClientProps) {
@@ -66,6 +76,9 @@ export default function ManagePageClient({
   const [selectedMonitorIds, setSelectedMonitorIds] = useState<string[]>([]);
 
   useEffect(() => {
+    /**
+     * Loads subscriber data and updates the state accordingly.
+     */
     async function loadSubscriber() {
       const data = await getSubscriberByManageToken(manageToken);
       if (data) {
@@ -81,6 +94,9 @@ export default function ManagePageClient({
     loadSubscriber();
   }, [manageToken]);
 
+  /**
+   * Handles saving subscription preferences asynchronously.
+   */
   const handleSave = () => {
     startTransition(async () => {
       const response = await updateSubscriptionPreferences(manageToken, {
@@ -93,6 +109,9 @@ export default function ManagePageClient({
     });
   };
 
+  /**
+   * Handles the unsubscribe process and updates the state accordingly.
+   */
   const handleUnsubscribe = () => {
     startTransition(async () => {
       const response = await unsubscribe(manageToken);
