@@ -191,6 +191,16 @@ async function broadcastLiveEvent(
 
 
 // Helper: Reusable processing logic with Time-Based Limit
+/**
+ * Process a batch of monitors and manage their status checks.
+ *
+ * This function iterates through the provided monitors, performing checks based on their configuration, including maintenance windows and regional checks. It handles incident management, including creating and resolving incidents based on the monitors' statuses, and broadcasts live events. The function also implements a double-check protocol for failed checks and manages notifications for incidents and high latency alerts.
+ *
+ * @param monitors - An array of monitor objects to be processed.
+ * @param prisma - The Prisma client instance for database operations.
+ * @param env - Optional environment configuration for notifications.
+ * @returns An object containing processed monitor IDs and any remaining monitors.
+ */
 export async function processBatch(monitors: any[], prisma: any, env?: Env): Promise<{ processed: string[]; remaining: any[] }> {
   console.log(`Processing batch of ${monitors.length} monitors...`);
   
