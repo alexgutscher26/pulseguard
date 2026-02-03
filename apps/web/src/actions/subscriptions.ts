@@ -6,11 +6,17 @@ import { randomBytes } from "crypto";
 import { sendSubscriptionConfirm } from "@pulseguard/email";
 
 // Generate a secure random token
+/**
+ * Generates a random token as a hexadecimal string.
+ */
 function generateToken(): string {
   return randomBytes(32).toString("hex");
 }
 
 // Get base URL from environment
+/**
+ * Returns the base URL from the environment variable or a default value.
+ */
 function getBaseUrl(): string {
   return process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 }
@@ -22,8 +28,16 @@ interface SubscriptionResult {
 }
 
 /**
- * Initiate a new subscription (double opt-in first step)
- * Creates unverified subscriber and sends confirmation email
+ * Initiate a new subscription with a double opt-in first step.
+ *
+ * This function validates the email format, checks for the existence of the status page, and verifies that the selected monitor IDs belong to that status page.
+ * It also checks for existing subscribers and generates a verification token if the email is not already subscribed.
+ * Finally, it sends a confirmation email to the user with a verification link.
+ *
+ * @param statusPageId - The ID of the status page to which the subscription is related.
+ * @param email - The email address of the subscriber.
+ * @param monitorIds - An array of monitor IDs that the subscriber wishes to subscribe to.
+ * @returns A promise that resolves to a SubscriptionResult indicating the success or failure of the subscription initiation.
  */
 export async function initiateSubscription(
   statusPageId: string,
@@ -188,7 +202,13 @@ export async function verifySubscription(token: string): Promise<SubscriptionRes
 }
 
 /**
- * Get subscriber info by manage token
+ * Retrieves subscriber information using a manage token.
+ *
+ * This function queries the database for a subscriber associated with the provided manageToken.
+ * It includes related status page information, monitors, and monitor subscriptions.
+ * If an error occurs during the database operation, it logs the error and returns null.
+ *
+ * @param manageToken - The token used to identify the subscriber in the database.
  */
 export async function getSubscriberByManageToken(manageToken: string) {
   try {
@@ -214,7 +234,18 @@ export async function getSubscriberByManageToken(manageToken: string) {
 }
 
 /**
- * Update subscription preferences
+ * Update subscription preferences for a status page subscriber.
+ *
+ * This function retrieves a subscriber using the provided manageToken and validates the provided monitor IDs against the subscriber's status page monitors.
+ * It updates the subscriber's notification preferences and monitor subscriptions accordingly. If the subscriber is not found, it returns an error message.
+ * In case of an error during the process, it logs the error and returns a failure message.
+ *
+ * @param manageToken - The token used to identify the subscriber.
+ * @param preferences - An object containing the subscription preferences to update.
+ * @param preferences.notifyIncidents - Optional flag to notify about incidents.
+ * @param preferences.notifyMaintenance - Optional flag to notify about maintenance.
+ * @param preferences.monitorIds - Optional array of monitor IDs to subscribe to.
+ * @returns A promise that resolves to a SubscriptionResult indicating the success or failure of the update.
  */
 export async function updateSubscriptionPreferences(
   manageToken: string,
@@ -272,7 +303,11 @@ export async function updateSubscriptionPreferences(
 }
 
 /**
- * Unsubscribe completely
+ * Unsubscribe completely from a status page.
+ *
+ * This function retrieves a subscriber using the provided manageToken. If the subscriber exists, it deletes the subscriber, which also cascades to any associated tokens and monitor subscriptions. If the subscriber is not found, it returns a not found message. In case of an error during the process, it logs the error and returns a failure message.
+ *
+ * @param manageToken - The unique token associated with the subscriber to be unsubscribed.
  */
 export async function unsubscribe(manageToken: string): Promise<SubscriptionResult> {
   try {
@@ -305,7 +340,15 @@ export async function unsubscribe(manageToken: string): Promise<SubscriptionResu
 }
 
 /**
- * Get all verified subscribers for a status page (for sending notifications)
+ * Get all verified subscribers for a status page (for sending notifications).
+ *
+ * This function retrieves subscribers who are verified for a given status page.
+ * If a monitorId is provided, it further filters the subscribers to include only
+ * those who are subscribed to the specified monitor. The function uses Prisma to
+ * query the database and returns the relevant subscriber details.
+ *
+ * @param statusPageId - The ID of the status page for which to fetch subscribers.
+ * @param monitorId - An optional ID of the monitor to filter subscribers by.
  */
 export async function getVerifiedSubscribers(
   statusPageId: string,
