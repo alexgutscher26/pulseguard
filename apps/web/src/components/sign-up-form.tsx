@@ -65,7 +65,10 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
           <form.Field name="name">
             {(field) => (
               <div className="space-y-2">
-                <Label htmlFor={field.name} className="text-xs uppercase tracking-widest text-primary/70 font-mono">
+                <Label
+                  htmlFor={field.name}
+                  className="text-xs uppercase tracking-widest text-primary/70 font-mono"
+                >
                   Operator Identity
                 </Label>
                 <Input
@@ -91,8 +94,11 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
           <form.Field name="email">
             {(field) => (
               <div className="space-y-2">
-                <Label htmlFor={field.name} className="text-xs uppercase tracking-widest text-primary/70 font-mono">
-                   Email Command
+                <Label
+                  htmlFor={field.name}
+                  className="text-xs uppercase tracking-widest text-primary/70 font-mono"
+                >
+                  Email Command
                 </Label>
                 <Input
                   id={field.name}
@@ -118,8 +124,11 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
           <form.Field name="password">
             {(field) => (
               <div className="space-y-2">
-                <Label htmlFor={field.name} className="text-xs uppercase tracking-widest text-primary/70 font-mono">
-                   Access Key
+                <Label
+                  htmlFor={field.name}
+                  className="text-xs uppercase tracking-widest text-primary/70 font-mono"
+                >
+                  Access Key
                 </Label>
                 <Input
                   id={field.name}

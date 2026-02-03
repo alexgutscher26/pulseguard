@@ -20,7 +20,20 @@ from design_system import generate_design_system, persist_design_system
 
 
 def format_output(result):
-    """Format results for Claude consumption (token-optimized)"""
+    """Format results for Claude consumption.
+    
+    This function processes the given result dictionary to generate a  formatted
+    output string. It checks for errors and constructs the  output based on the
+    presence of a stack or search results. The  output includes relevant details
+    such as the stack guidelines,  domain, query, source file, and the count of
+    results. Each result  is enumerated and formatted, with long values truncated
+    for  readability.
+    
+    Args:
+        result (dict): A dictionary containing the results to format,
+            which may include keys like 'error', 'stack',
+            'domain', 'query', 'file', 'count', and 'results'.
+    """
     if "error" in result:
         return f"Error: {result['error']}"
 

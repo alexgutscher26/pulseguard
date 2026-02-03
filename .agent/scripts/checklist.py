@@ -38,20 +38,25 @@ class Colors:
     BOLD = '\033[1m'
 
 def print_header(text: str):
+    """Prints a formatted header with the given text."""
     print(f"\n{Colors.BOLD}{Colors.CYAN}{'='*60}{Colors.ENDC}")
     print(f"{Colors.BOLD}{Colors.CYAN}{text.center(60)}{Colors.ENDC}")
     print(f"{Colors.BOLD}{Colors.CYAN}{'='*60}{Colors.ENDC}\n")
 
 def print_step(text: str):
+    """Prints a formatted step message with color."""
     print(f"{Colors.BOLD}{Colors.BLUE}🔄 {text}{Colors.ENDC}")
 
 def print_success(text: str):
+    """Prints a success message in green color."""
     print(f"{Colors.GREEN}✅ {text}{Colors.ENDC}")
 
 def print_warning(text: str):
+    """Print a warning message in yellow."""
     print(f"{Colors.YELLOW}⚠️  {text}{Colors.ENDC}")
 
 def print_error(text: str):
+    """Prints an error message in red color."""
     print(f"{Colors.RED}❌ {text}{Colors.ENDC}")
 
 # Define priority-ordered checks
@@ -70,7 +75,7 @@ PERFORMANCE_CHECKS = [
 ]
 
 def check_script_exists(script_path: Path) -> bool:
-    """Check if script file exists"""
+    """Check if the script file exists."""
     return script_path.exists() and script_path.is_file()
 
 def run_script(name: str, script_path: Path, project_path: str, url: Optional[str] = None) -> dict:

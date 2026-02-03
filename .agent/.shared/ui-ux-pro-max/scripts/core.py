@@ -111,12 +111,22 @@ class BM25:
         self.N = 0
 
     def tokenize(self, text):
-        """Lowercase, split, remove punctuation, filter short words"""
+        """Tokenize and clean the input text."""
         text = re.sub(r'[^\w\s]', ' ', str(text).lower())
         return [w for w in text.split() if len(w) > 2]
 
     def fit(self, documents):
-        """Build BM25 index from documents"""
+        """Build BM25 index from documents.
+        
+        This method processes a list of documents to build a BM25 index.  It tokenizes
+        each document, calculates the number of documents (N),  and computes the
+        average document length (avgdl). The method also  updates document frequencies
+        for each unique word and calculates  the inverse document frequency (idf) for
+        all words in the corpus.
+        
+        Args:
+            documents: A list of documents to be indexed.
+        """
         self.corpus = [self.tokenize(doc) for doc in documents]
         self.N = len(self.corpus)
         if self.N == 0:
@@ -161,13 +171,29 @@ class BM25:
 
 # ============ SEARCH FUNCTIONS ============
 def _load_csv(filepath):
-    """Load CSV and return list of dicts"""
+    """Load a CSV file and return a list of dictionaries."""
     with open(filepath, 'r', encoding='utf-8') as f:
         return list(csv.DictReader(f))
 
 
 def _search_csv(filepath, search_cols, output_cols, query, max_results):
-    """Core search function using BM25"""
+    """Core search function using BM25.
+    
+    This function performs a search on a CSV file specified by the  `filepath`,
+    utilizing the BM25 algorithm to rank results based  on the provided `query`. It
+    first loads the CSV data and constructs  documents from the specified
+    `search_cols`. After fitting the BM25  model to these documents, it retrieves
+    and ranks the results,  returning the top entries that have a score greater
+    than zero,  limited by `max_results`. The output consists of the specified
+    `output_cols` for each result.
+    
+    Args:
+        filepath: The path to the CSV file to be searched.
+        search_cols: The columns in the CSV to search for the query.
+        output_cols: The columns to include in the output results.
+        query: The search query to be used for ranking.
+        max_results: The maximum number of results to return.
+    """
     if not filepath.exists():
         return []
 
@@ -215,7 +241,7 @@ def detect_domain(query):
 
 
 def search(query, domain=None, max_results=MAX_RESULTS):
-    """Main search function with auto-domain detection"""
+    """Main search function with auto-domain detection."""
     if domain is None:
         domain = detect_domain(query)
 
@@ -237,7 +263,7 @@ def search(query, domain=None, max_results=MAX_RESULTS):
 
 
 def search_stack(query, stack, max_results=MAX_RESULTS):
-    """Search stack-specific guidelines"""
+    """Search for results in a specified stack based on a query."""
     if stack not in STACK_CONFIG:
         return {"error": f"Unknown stack: {stack}. Available: {', '.join(AVAILABLE_STACKS)}"}
 

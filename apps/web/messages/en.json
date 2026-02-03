@@ -1,0 +1,41 @@
+{
+  "status": {
+    "operational": "All Systems Operational",
+    "major_outage": "Major Outage",
+    "partial_outage": "Partial Outage",
+    "degraded_performance": "Degraded Performance",
+    "maintenance": "Under Maintenance",
+    "issue_detected": "System Issues Detected",
+    "system_integrity_100": "System Integrity 100%",
+    "critical_failures": "Critical Failures Detected",
+    "monitor_operational": "Operational",
+    "monitor_outage": "Outage"
+  },
+  "headings": {
+    "status": "Status",
+    "events": "Events",
+    "monitors": "Monitors",
+    "past_incidents": "Past Incidents",
+    "current_status": "Current Status",
+    "subscribe": "Subscribe to Updates",
+    "uptime": "Uptime",
+    "system_modules": "System Modules",
+    "real_time_status": "Real-time Status"
+  },
+  "actions": {
+    "subscribe": "Subscribe",
+    "get_updates": "Get Updates",
+    "view_incident": "View Incident"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "back_to_home": "Back to Home",
+    "powered_by": "Powered by PulseGuard",
+    "no_monitors": "No active monitors configured.",
+    "system_status": "System Status",
+    "checks_ago": "60 Checks Ago",
+    "now": "Now",
+    "down": "Down"
+  }
+}

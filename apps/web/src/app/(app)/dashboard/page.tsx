@@ -4,6 +4,13 @@ import { redirect } from "next/navigation";
 
 import Dashboard from "./dashboard";
 
+/**
+ * Renders the Dashboard page after validating the user session.
+ *
+ * This function retrieves the user session using the auth.api.getSession method,
+ * passing the necessary headers. If the session does not contain a user, it redirects
+ * the user to the login page. If the session is valid, it returns the Dashboard component.
+ */
 export default async function DashboardPage() {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -13,5 +20,7 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  return <Dashboard />;
+  const [monitors, stats] = await Promise.all([getMonitors(), getDashboardStats()]);
+
+  return <Dashboard monitors={monitors} stats={stats} />;
 }

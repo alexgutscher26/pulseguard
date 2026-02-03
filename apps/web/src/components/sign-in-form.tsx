@@ -20,17 +20,29 @@ export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () 
       password: "",
     },
     onSubmit: async ({ value }) => {
+      console.log("🔐 Starting sign-in...");
+
       await authClient.signIn.email(
         {
           email: value.email,
           password: value.password,
         },
         {
-          onSuccess: () => {
-            router.push("/dashboard");
+          onSuccess: async (ctx) => {
+            console.log("✅ Sign-in successful!", ctx);
             toast.success("Sign in successful");
+
+            // Use window.location.href instead of router.push to ensure
+            // the session cookie is properly set before navigation
+            // Small delay to ensure session is fully established
+            console.log("⏳ Waiting 100ms before redirect...");
+            await new Promise((resolve) => setTimeout(resolve, 100));
+
+            console.log("🔄 Redirecting to dashboard...");
+            window.location.href = "/dashboard";
           },
           onError: (error) => {
+            console.error("❌ Sign-in error:", error);
             toast.error(error.error.message || error.error.statusText);
           },
         },
@@ -62,7 +74,10 @@ export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () 
           <form.Field name="email">
             {(field) => (
               <div className="space-y-2">
-                <Label htmlFor={field.name} className="text-xs uppercase tracking-widest text-primary/70 font-mono">
+                <Label
+                  htmlFor={field.name}
+                  className="text-xs uppercase tracking-widest text-primary/70 font-mono"
+                >
                   Email Command
                 </Label>
                 <Input
@@ -89,7 +104,10 @@ export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () 
           <form.Field name="password">
             {(field) => (
               <div className="space-y-2">
-                <Label htmlFor={field.name} className="text-xs uppercase tracking-widest text-primary/70 font-mono">
+                <Label
+                  htmlFor={field.name}
+                  className="text-xs uppercase tracking-widest text-primary/70 font-mono"
+                >
                   Access Key
                 </Label>
                 <Input

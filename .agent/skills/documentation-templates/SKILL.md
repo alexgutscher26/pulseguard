@@ -14,15 +14,15 @@ allowed-tools: Read, Glob, Grep
 
 ### Essential Sections (Priority Order)
 
-| Section               | Purpose               |
-| --------------------- | --------------------- |
-| **Title + One-liner** | What is this?         |
-| **Quick Start**       | Running in <5 min     |
-| **Features**          | What can I do?        |
-| **Configuration**     | How to customize      |
-| **API Reference**     | Link to detailed docs |
-| **Contributing**      | How to help           |
-| **License**           | Legal                 |
+| Section | Purpose |
+|---------|---------|
+| **Title + One-liner** | What is this? |
+| **Quick Start** | Running in <5 min |
+| **Features** | What can I do? |
+| **Configuration** | How to customize |
+| **API Reference** | Link to detailed docs |
+| **Contributing** | How to help |
+| **License** | Legal |
 
 ### README Template
 
@@ -89,11 +89,11 @@ Get a user by ID.
 ```typescript
 /**
  * Brief description of what the function does.
- *
+ * 
  * @param paramName - Description of parameter
  * @returns Description of return value
  * @throws ErrorType - When this error occurs
- *
+ * 
  * @example
  * const result = functionName(input);
  */
@@ -101,12 +101,12 @@ Get a user by ID.
 
 ### When to Comment
 
-| ✅ Comment           | ❌ Don't Comment       |
-| -------------------- | ---------------------- |
-| Why (business logic) | What (obvious)         |
-| Complex algorithms   | Every line             |
-| Non-obvious behavior | Self-explanatory code  |
-| API contracts        | Implementation details |
+| ✅ Comment | ❌ Don't Comment |
+|-----------|-----------------|
+| Why (business logic) | What (obvious) |
+| Complex algorithms | Every line |
+| Non-obvious behavior | Self-explanatory code |
+| API contracts | Implementation details |
 
 ---
 
@@ -173,7 +173,6 @@ For AI crawlers and agents:
 ### MCP-Ready Documentation
 
 For RAG indexing:
-
 - Clear H1-H3 hierarchy
 - JSON/YAML examples for data structures
 - Mermaid diagrams for flows
@@ -183,12 +182,12 @@ For RAG indexing:
 
 ## 7. Structure Principles
 
-| Principle              | Why                    |
-| ---------------------- | ---------------------- |
-| **Scannable**          | Headers, lists, tables |
-| **Examples first**     | Show, don't just tell  |
-| **Progressive detail** | Simple → Complex       |
-| **Up to date**         | Outdated = misleading  |
+| Principle | Why |
+|-----------|-----|
+| **Scannable** | Headers, lists, tables |
+| **Examples first** | Show, don't just tell |
+| **Progressive detail** | Simple → Complex |
+| **Up to date** | Outdated = misleading |
 
 ---
 

@@ -1,0 +1,56 @@
+enum NotificationType {
+  EMAIL
+  DISCORD
+  SLACK
+  WEBHOOK
+  TELEGRAM
+  SMS
+}
+
+enum AlertTrigger {
+  STATUS_CHANGE
+  LATENCY
+  SSL_EXPIRY
+}
+
+enum ComparisonOperator {
+  GT
+  LT
+}
+
+model NotificationChannel {
+  id     String           @id @default(cuid())
+  name   String
+  type   NotificationType
+  config Json // Webhook URL, token, email address, phone number, etc.
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  alertRules AlertRule[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model AlertRule {
+  id        String  @id @default(cuid())
+  monitorId String
+  monitor   Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+
+  trigger      AlertTrigger
+  threshold    Int? // e.g. 2000ms for LATENCY, 7 days for SSL_EXPIRY
+  comparison   ComparisonOperator? // e.g. GT for latency > 2000, LT for cert < 7 days
+  targetStatus MonitorStatus? // e.g. DOWN for status changes
+
+  enabled Boolean @default(true)
+
+  channels NotificationChannel[] // Many-to-many relation for channels to notify
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([monitorId])
+}
