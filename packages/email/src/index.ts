@@ -162,3 +162,86 @@ export async function sendWeeklyDigest(
 }
 
 export * from "./styles/theme";
+export type { SubscriptionConfirmData } from "./templates/subscription-confirm";
+export type { StatusUpdateData } from "./templates/status-update";
+
+export async function sendSubscriptionConfirm(
+  to: string,
+  data: import("./templates/subscription-confirm").SubscriptionConfirmData,
+  apiKey?: string,
+): Promise<{ id: string } | { error: string }> {
+  try {
+    const resend = getResendClient(apiKey);
+    const { renderSubscriptionConfirm } = await import("./templates/subscription-confirm");
+
+    const html = await renderSubscriptionConfirm(data);
+
+    const result = await resend.emails.send({
+      from: "PulseGuard <updates@pulseguard.com>",
+      to,
+      subject: `Confirm subscription to ${data.pageTitle}`,
+      html,
+    });
+
+    if (result.data && "id" in result.data) {
+      return { id: result.data.id };
+    }
+    return { error: result.error?.message || "Failed to send email" };
+  } catch (error) {
+    console.error("Error sending subscription confirmation:", error);
+    return { error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}
+
+export async function sendStatusUpdate(
+  to: string,
+  data: import("./templates/status-update").StatusUpdateData,
+  apiKey?: string,
+): Promise<{ id: string } | { error: string }> {
+  try {
+    const resend = getResendClient(apiKey);
+    const { renderStatusUpdate } = await import("./templates/status-update");
+
+    let subjectPrefix = "";
+    switch (data.incidentStatus) {
+      case "INVESTIGATING":
+        subjectPrefix = "⚠️ [Investigating]";
+        break;
+      case "IDENTIFIED":
+        subjectPrefix = "🔍 [Identified]";
+        break;
+      case "MONITORING":
+        subjectPrefix = "👀 [Monitoring]";
+        break;
+      case "RESOLVED":
+        subjectPrefix = "✅ [Resolved]";
+        break;
+      case "SCHEDULED":
+        subjectPrefix = "📅 [Maintenance]";
+        break;
+      case "IN_PROGRESS":
+        subjectPrefix = "🔨 [In Progress]";
+        break;
+      case "COMPLETED":
+        subjectPrefix = "✨ [Completed]";
+        break;
+    }
+
+    const html = await renderStatusUpdate(data);
+
+    const result = await resend.emails.send({
+      from: "PulseGuard <status@pulseguard.com>",
+      to,
+      subject: `${subjectPrefix} ${data.incidentTitle} - ${data.pageTitle}`,
+      html,
+    });
+
+    if (result.data && "id" in result.data) {
+      return { id: result.data.id };
+    }
+    return { error: result.error?.message || "Failed to send email" };
+  } catch (error) {
+    console.error("Error sending status update:", error);
+    return { error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}

@@ -345,6 +345,35 @@ exports.Prisma.StatusPageViewScalarFieldEnum = {
   timestamp: 'timestamp'
 };
 
+exports.Prisma.StatusPageSubscriberScalarFieldEnum = {
+  id: 'id',
+  statusPageId: 'statusPageId',
+  email: 'email',
+  verified: 'verified',
+  manageToken: 'manageToken',
+  notifyIncidents: 'notifyIncidents',
+  notifyMaintenance: 'notifyMaintenance',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SubscriptionTokenScalarFieldEnum = {
+  id: 'id',
+  subscriberId: 'subscriberId',
+  token: 'token',
+  type: 'type',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.MonitorSubscriptionScalarFieldEnum = {
+  id: 'id',
+  subscriberId: 'subscriberId',
+  monitorId: 'monitorId',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -433,6 +462,11 @@ exports.MonitorType = exports.$Enums.MonitorType = {
   PORT: 'PORT'
 };
 
+exports.SubscriptionTokenType = exports.$Enums.SubscriptionTokenType = {
+  VERIFY: 'VERIFY',
+  MANAGE: 'MANAGE'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Session: 'Session',
@@ -451,7 +485,10 @@ exports.Prisma.ModelName = {
   StatusPageI18n: 'StatusPageI18n',
   StatusPage: 'StatusPage',
   StatusPageMonitor: 'StatusPageMonitor',
-  StatusPageView: 'StatusPageView'
+  StatusPageView: 'StatusPageView',
+  StatusPageSubscriber: 'StatusPageSubscriber',
+  SubscriptionToken: 'SubscriptionToken',
+  MonitorSubscription: 'MonitorSubscription'
 };
 
 /**

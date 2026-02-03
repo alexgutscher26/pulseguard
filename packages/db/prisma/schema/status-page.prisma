@@ -38,6 +38,7 @@ model StatusPage {
   monitors      StatusPageMonitor[]
   views         StatusPageView[]
   i18nSettings  StatusPageI18n[]
+  subscribers   StatusPageSubscriber[]
   
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -81,4 +82,79 @@ model StatusPageView {
 
   @@index([statusPageId])
   @@index([timestamp])
+}
+
+// ============================================
+// SUBSCRIPTION SYSTEM
+// ============================================
+
+enum SubscriptionTokenType {
+  VERIFY
+  MANAGE
+}
+
+model StatusPageSubscriber {
+  id            String   @id @default(cuid())
+  
+  statusPageId  String
+  statusPage    StatusPage @relation(fields: [statusPageId], references: [id], onDelete: Cascade)
+  
+  email         String
+  verified      Boolean  @default(false)
+  
+  // Manage token for unsubscribe/preferences (long-lived)
+  manageToken   String   @unique @default(cuid())
+  
+  // Subscription preferences
+  notifyIncidents    Boolean @default(true)
+  notifyMaintenance  Boolean @default(true)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  // Per-monitor subscriptions
+  monitorSubscriptions MonitorSubscription[]
+  
+  // Verification tokens
+  tokens        SubscriptionToken[]
+
+  @@unique([statusPageId, email])
+  @@index([statusPageId])
+  @@index([email])
+  @@index([manageToken])
+}
+
+model SubscriptionToken {
+  id            String   @id @default(cuid())
+  
+  subscriberId  String
+  subscriber    StatusPageSubscriber @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+  
+  token         String   @unique
+  type          SubscriptionTokenType
+  
+  expiresAt     DateTime
+  usedAt        DateTime?
+  
+  createdAt     DateTime @default(now())
+
+  @@index([token])
+  @@index([subscriberId])
+  @@index([expiresAt])
+}
+
+model MonitorSubscription {
+  id            String   @id @default(cuid())
+  
+  subscriberId  String
+  subscriber    StatusPageSubscriber @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+  
+  monitorId     String
+  monitor       Monitor  @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  
+  createdAt     DateTime @default(now())
+
+  @@unique([subscriberId, monitorId])
+  @@index([subscriberId])
+  @@index([monitorId])
 }

@@ -189,7 +189,7 @@ Public-facing transparency for users.
 - [x] **Incident History & Widgets**
   - Show active incidents, planned maintenance timelines, and historical uptime.
   - **Embeddable Status Widget**: JS snippet to show "All Systems Operational" on user's own website.
-- [ ] **Subscription System**
+- [x] **Subscription System**
   - 'Subscribe to Updates' button on Status Pages.
   - Support Email, RSS, and Atom feeds.
 

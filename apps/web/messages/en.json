@@ -37,5 +37,17 @@
     "checks_ago": "60 Checks Ago",
     "now": "Now",
     "down": "Down"
+  },
+  "subscribe": {
+    "title": "Subscribe to Updates",
+    "email_tab": "Email Notifications",
+    "feed_tab": "RSS / Atom Feeds",
+    "email_label": "Email Address",
+    "email_placeholder": "you@example.com",
+    "monitors_label": "Subscribe to Monitors",
+    "info_text": "You'll receive notifications for major incidents and scheduled maintenance only. We never share your email.",
+    "subscribing": "Subscribing...",
+    "button": "Subscribe",
+    "feed_info": "Subscribe to status updates using your favorite RSS reader. Choose from incidents-only or all events feeds."
   }
 }

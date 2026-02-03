@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { CheckCircle, AlertTriangle, Clock, Zap, WifiOff } from "lucide-react";
 import { StatusPageMonitorRow } from "./status-page-monitor-row";
 import { AnalyticsTracker } from "./analytics-tracker";
 import { useTranslations, useFormatter } from "next-intl";
 import { LanguageSwitcher } from "./language-switcher";
+import { SubscribeModal } from "./subscribe-modal";
 
 export function PublicView({ page }: { page: any }) {
   const tStatus = useTranslations("status");
@@ -20,6 +22,9 @@ export function PublicView({ page }: { page: any }) {
   });
 
   const allUp = visibleMonitors.every((m: any) => m.monitor.status === "UP");
+
+  // Subscribe modal state
+  const [isSubscribeModalOpen, setIsSubscribeModalOpen] = useState(false);
 
   // Dynamic Theme Colors
   const theme = (page.theme as any) || {
@@ -116,9 +121,22 @@ export function PublicView({ page }: { page: any }) {
           </div>
 
           {/* Actions */}
-          <button className="px-4 py-2 rounded-md border border-primary/20 hover:bg-primary/10 hover:border-primary/40 text-xs font-bold uppercase tracking-wider transition-all shadow-[0_4px_10px_-4px_rgba(0,0,0,0.5)] active:translate-y-0.5">
+          <button
+            onClick={() => setIsSubscribeModalOpen(true)}
+            className="px-4 py-2 rounded-md border border-primary/20 hover:bg-primary/10 hover:border-primary/40 text-xs font-bold uppercase tracking-wider transition-all shadow-[0_4px_10px_-4px_rgba(0,0,0,0.5)] active:translate-y-0.5"
+          >
             {tActions("get_updates")}
           </button>
+
+          {/* Subscribe Modal */}
+          <SubscribeModal
+            isOpen={isSubscribeModalOpen}
+            onClose={() => setIsSubscribeModalOpen(false)}
+            pageId={page.id}
+            pageSlug={page.slug}
+            pageTitle={page.title}
+            monitors={page.monitors}
+          />
         </div>
 
         {/* Global Status Banner */}

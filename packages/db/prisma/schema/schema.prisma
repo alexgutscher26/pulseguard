@@ -43,6 +43,7 @@ model Monitor {
   latencyAggregates  LatencyAggregate[]
   regionalBaselines  RegionalBaseline[]
   statusPages        StatusPageMonitor[]
+  monitorSubscriptions MonitorSubscription[]
 
 
   nextCheck DateTime?

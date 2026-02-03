@@ -1,5 +1,10 @@
 import { getPrisma } from "@pulseguard/db";
-import { sendMonitorAlert, type MonitorAlertData } from "@pulseguard/email";
+import {
+  sendMonitorAlert,
+  sendStatusUpdate,
+  type MonitorAlertData,
+  type StatusUpdateData,
+} from "@pulseguard/email";
 
 export interface Env {
   CHECK_QUEUE: Queue<any>;
@@ -86,13 +91,9 @@ export default {
             return false;
           });
 
-          if (matchingRules.length === 0) {
-            console.log(`[Notification] No matching alert rules for ${notification.monitorName}`);
-            msg.ack();
-            return;
-          }
+          const deliveryPromises: Promise<any>[] = [];
 
-          // Calculate downtime duration if status is UP
+          // Monitor Alert Data (Owner/Team)
           let downtimeDuration: string | undefined;
           if (notification.status === "UP") {
             const lastDownEvent = await prisma.monitorEvent.findFirst({
@@ -113,32 +114,6 @@ export default {
             }
           }
 
-          // Group channels by type
-          const emailChannels = new Set<string>();
-          const slackChannels = new Set<{ url: string; token?: string }>();
-          const discordChannels = new Set<{ url: string; token?: string }>();
-
-          // Add user's email as fallback
-          if (monitor.user.email) {
-            emailChannels.add(monitor.user.email);
-          }
-
-          matchingRules.forEach((rule: any) => {
-            rule.channels.forEach((channel: any) => {
-              const config = channel.config as any;
-
-              if (channel.type === "EMAIL" && config?.email) {
-                emailChannels.add(config.email);
-              } else if (channel.type === "SLACK" && config?.webhookUrl) {
-                slackChannels.add({ url: config.webhookUrl, token: config.accessToken });
-              } else if (channel.type === "DISCORD" && config?.webhookUrl) {
-                discordChannels.add({ url: config.webhookUrl });
-              }
-            });
-          });
-
-          const deliveryPromises: Promise<any>[] = [];
-
           const emailData: MonitorAlertData = {
             monitorId: notification.monitorId,
             monitorName: notification.monitorName,
@@ -152,22 +127,104 @@ export default {
             failedRegions: notification.failedRegions,
           };
 
-          // 1. Send Emails
-          Array.from(emailChannels).forEach((email) => {
-            deliveryPromises.push(sendMonitorAlert(email, emailData, env.RESEND_API_KEY));
-          });
+          // --- 1. OWNER ALERTS (Email, Slack, Discord) ---
+          if (matchingRules.length > 0) {
+            const emailChannels = new Set<string>();
+            const slackChannels = new Set<{ url: string; token?: string }>();
+            const discordChannels = new Set<{ url: string; token?: string }>();
 
-          // 2. Send Slack Alerts
-          Array.from(slackChannels).forEach((target) => {
-            deliveryPromises.push(
-              sendSlackAlert(target.url, emailData, notification.type, notification.incidentId),
-            );
-          });
+            if (monitor.user.email) {
+              emailChannels.add(monitor.user.email);
+            }
 
-          // 3. Send Discord Alerts
-          Array.from(discordChannels).forEach((target) => {
-            deliveryPromises.push(sendDiscordAlert(target.url, emailData, notification.type));
-          });
+            matchingRules.forEach((rule: any) => {
+              rule.channels.forEach((channel: any) => {
+                const config = channel.config as any;
+
+                if (channel.type === "EMAIL" && config?.email) {
+                  emailChannels.add(config.email);
+                } else if (channel.type === "SLACK" && config?.webhookUrl) {
+                  slackChannels.add({ url: config.webhookUrl, token: config.accessToken });
+                } else if (channel.type === "DISCORD" && config?.webhookUrl) {
+                  discordChannels.add({ url: config.webhookUrl });
+                }
+              });
+            });
+
+            Array.from(emailChannels).forEach((email) => {
+              deliveryPromises.push(sendMonitorAlert(email, emailData, env.RESEND_API_KEY));
+            });
+            Array.from(slackChannels).forEach((target) => {
+              deliveryPromises.push(
+                sendSlackAlert(target.url, emailData, notification.type, notification.incidentId),
+              );
+            });
+            Array.from(discordChannels).forEach((target) => {
+              deliveryPromises.push(sendDiscordAlert(target.url, emailData, notification.type));
+            });
+          } else {
+            console.log(`[Notification] No matching alert rules for ${notification.monitorName}`);
+          }
+
+          // --- 2. STATUS PAGE SUBSCRIBER ALERTS ---
+          // Only send if it's an incident-related event (not just high latency, unless we want to)
+          if (notification.type === "INCIDENT_CREATED" || notification.type === "INCIDENT_RESOLVED") {
+            const statusPages = await prisma.statusPage.findMany({
+              where: { monitors: { some: { monitorId: notification.monitorId } } },
+              include: {
+                subscribers: {
+                  where: { verified: true },
+                  include: { monitorSubscriptions: true },
+                },
+              },
+            });
+
+            for (const page of statusPages) {
+              const mappedStatus =
+                notification.type === "INCIDENT_CREATED" ? "INVESTIGATING" : "RESOLVED";
+              
+              const incidentTitle =
+                notification.reason ||
+                (notification.type === "INCIDENT_CREATED"
+                  ? `${notification.monitorName} is experiencing issues`
+                  : `${notification.monitorName} has recovered`);
+
+              // Filter subscribers
+              const subscribersToNotify = page.subscribers.filter((sub) => {
+                // Check preferences
+                if (notification.type === "INCIDENT_CREATED" && !sub.notifyIncidents) return false;
+                if (notification.type === "INCIDENT_RESOLVED" && !sub.notifyIncidents) return false;
+
+                // Check monitor subscription
+                const isSubscribedToMonitor = sub.monitorSubscriptions.some(
+                  (ms) => ms.monitorId === notification.monitorId
+                );
+                return isSubscribedToMonitor;
+              });
+
+              // Send emails
+              subscribersToNotify.forEach((sub) => {
+                const updateData: StatusUpdateData = {
+                  pageTitle: page.title,
+                  incidentTitle: incidentTitle,
+                  incidentStatus: mappedStatus,
+                  description:
+                    notification.type === "INCIDENT_CREATED"
+                      ? `We are investigating reports of issues with ${notification.monitorName}.`
+                      : `The issue with ${notification.monitorName} has been resolved.`,
+                  affectedMonitors: [notification.monitorName],
+                  manageUrl: `https://pulseguard.com/subscribe/manage/${sub.manageToken}`,
+                  pageUrl: `https://pulseguard.com/status-page/${page.slug}`,
+                };
+                
+                deliveryPromises.push(sendStatusUpdate(sub.email, updateData, env.RESEND_API_KEY));
+              });
+              
+              if (subscribersToNotify.length > 0) {
+                 console.log(`[Notification] Queueing updates for ${subscribersToNotify.length} subscribers of ${page.title}`);
+              }
+            }
+          }
 
           const results = await Promise.allSettled(deliveryPromises);
 
@@ -175,7 +232,7 @@ export default {
           const failed = results.filter((r) => r.status === "rejected").length;
 
           console.log(
-            `[Notification] Sent ${successful} alerts for ${notification.monitorName} (${failed} failed)`,
+            `[Notification] Processed ${successful} deliveries for ${notification.monitorName} (${failed} failed)`,
           );
 
           msg.ack();

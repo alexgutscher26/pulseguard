@@ -103,6 +103,21 @@ export type StatusPageMonitor = $Result.DefaultSelection<Prisma.$StatusPageMonit
  * 
  */
 export type StatusPageView = $Result.DefaultSelection<Prisma.$StatusPageViewPayload>
+/**
+ * Model StatusPageSubscriber
+ * 
+ */
+export type StatusPageSubscriber = $Result.DefaultSelection<Prisma.$StatusPageSubscriberPayload>
+/**
+ * Model SubscriptionToken
+ * 
+ */
+export type SubscriptionToken = $Result.DefaultSelection<Prisma.$SubscriptionTokenPayload>
+/**
+ * Model MonitorSubscription
+ * 
+ */
+export type MonitorSubscription = $Result.DefaultSelection<Prisma.$MonitorSubscriptionPayload>
 
 /**
  * Enums
@@ -193,6 +208,14 @@ export const MonitorStatus: {
 
 export type MonitorStatus = (typeof MonitorStatus)[keyof typeof MonitorStatus]
 
+
+export const SubscriptionTokenType: {
+  VERIFY: 'VERIFY',
+  MANAGE: 'MANAGE'
+};
+
+export type SubscriptionTokenType = (typeof SubscriptionTokenType)[keyof typeof SubscriptionTokenType]
+
 }
 
 export type IncidentStatus = $Enums.IncidentStatus
@@ -230,6 +253,10 @@ export const MonitorType: typeof $Enums.MonitorType
 export type MonitorStatus = $Enums.MonitorStatus
 
 export const MonitorStatus: typeof $Enums.MonitorStatus
+
+export type SubscriptionTokenType = $Enums.SubscriptionTokenType
+
+export const SubscriptionTokenType: typeof $Enums.SubscriptionTokenType
 
 /**
  * ##  Prisma Client ʲˢ
@@ -527,6 +554,36 @@ export class PrismaClient<
     * ```
     */
   get statusPageView(): Prisma.StatusPageViewDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.statusPageSubscriber`: Exposes CRUD operations for the **StatusPageSubscriber** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more StatusPageSubscribers
+    * const statusPageSubscribers = await prisma.statusPageSubscriber.findMany()
+    * ```
+    */
+  get statusPageSubscriber(): Prisma.StatusPageSubscriberDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.subscriptionToken`: Exposes CRUD operations for the **SubscriptionToken** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SubscriptionTokens
+    * const subscriptionTokens = await prisma.subscriptionToken.findMany()
+    * ```
+    */
+  get subscriptionToken(): Prisma.SubscriptionTokenDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.monitorSubscription`: Exposes CRUD operations for the **MonitorSubscription** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more MonitorSubscriptions
+    * const monitorSubscriptions = await prisma.monitorSubscription.findMany()
+    * ```
+    */
+  get monitorSubscription(): Prisma.MonitorSubscriptionDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -978,7 +1035,10 @@ export namespace Prisma {
     StatusPageI18n: 'StatusPageI18n',
     StatusPage: 'StatusPage',
     StatusPageMonitor: 'StatusPageMonitor',
-    StatusPageView: 'StatusPageView'
+    StatusPageView: 'StatusPageView',
+    StatusPageSubscriber: 'StatusPageSubscriber',
+    SubscriptionToken: 'SubscriptionToken',
+    MonitorSubscription: 'MonitorSubscription'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -994,7 +1054,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "account" | "verification" | "incident" | "incidentEvent" | "regionalIncident" | "latencyAggregate" | "regionalBaseline" | "notificationChannel" | "alertRule" | "monitor" | "monitorEvent" | "maintenanceWindow" | "statusPageI18n" | "statusPage" | "statusPageMonitor" | "statusPageView"
+      modelProps: "user" | "session" | "account" | "verification" | "incident" | "incidentEvent" | "regionalIncident" | "latencyAggregate" | "regionalBaseline" | "notificationChannel" | "alertRule" | "monitor" | "monitorEvent" | "maintenanceWindow" | "statusPageI18n" | "statusPage" | "statusPageMonitor" | "statusPageView" | "statusPageSubscriber" | "subscriptionToken" | "monitorSubscription"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2330,6 +2390,228 @@ export namespace Prisma {
           }
         }
       }
+      StatusPageSubscriber: {
+        payload: Prisma.$StatusPageSubscriberPayload<ExtArgs>
+        fields: Prisma.StatusPageSubscriberFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.StatusPageSubscriberFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageSubscriberPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.StatusPageSubscriberFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageSubscriberPayload>
+          }
+          findFirst: {
+            args: Prisma.StatusPageSubscriberFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageSubscriberPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.StatusPageSubscriberFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageSubscriberPayload>
+          }
+          findMany: {
+            args: Prisma.StatusPageSubscriberFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageSubscriberPayload>[]
+          }
+          create: {
+            args: Prisma.StatusPageSubscriberCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageSubscriberPayload>
+          }
+          createMany: {
+            args: Prisma.StatusPageSubscriberCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.StatusPageSubscriberCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageSubscriberPayload>[]
+          }
+          delete: {
+            args: Prisma.StatusPageSubscriberDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageSubscriberPayload>
+          }
+          update: {
+            args: Prisma.StatusPageSubscriberUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageSubscriberPayload>
+          }
+          deleteMany: {
+            args: Prisma.StatusPageSubscriberDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.StatusPageSubscriberUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.StatusPageSubscriberUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageSubscriberPayload>[]
+          }
+          upsert: {
+            args: Prisma.StatusPageSubscriberUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StatusPageSubscriberPayload>
+          }
+          aggregate: {
+            args: Prisma.StatusPageSubscriberAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateStatusPageSubscriber>
+          }
+          groupBy: {
+            args: Prisma.StatusPageSubscriberGroupByArgs<ExtArgs>
+            result: $Utils.Optional<StatusPageSubscriberGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.StatusPageSubscriberCountArgs<ExtArgs>
+            result: $Utils.Optional<StatusPageSubscriberCountAggregateOutputType> | number
+          }
+        }
+      }
+      SubscriptionToken: {
+        payload: Prisma.$SubscriptionTokenPayload<ExtArgs>
+        fields: Prisma.SubscriptionTokenFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SubscriptionTokenFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionTokenPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SubscriptionTokenFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionTokenPayload>
+          }
+          findFirst: {
+            args: Prisma.SubscriptionTokenFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionTokenPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SubscriptionTokenFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionTokenPayload>
+          }
+          findMany: {
+            args: Prisma.SubscriptionTokenFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionTokenPayload>[]
+          }
+          create: {
+            args: Prisma.SubscriptionTokenCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionTokenPayload>
+          }
+          createMany: {
+            args: Prisma.SubscriptionTokenCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SubscriptionTokenCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionTokenPayload>[]
+          }
+          delete: {
+            args: Prisma.SubscriptionTokenDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionTokenPayload>
+          }
+          update: {
+            args: Prisma.SubscriptionTokenUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionTokenPayload>
+          }
+          deleteMany: {
+            args: Prisma.SubscriptionTokenDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SubscriptionTokenUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SubscriptionTokenUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionTokenPayload>[]
+          }
+          upsert: {
+            args: Prisma.SubscriptionTokenUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionTokenPayload>
+          }
+          aggregate: {
+            args: Prisma.SubscriptionTokenAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSubscriptionToken>
+          }
+          groupBy: {
+            args: Prisma.SubscriptionTokenGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SubscriptionTokenGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SubscriptionTokenCountArgs<ExtArgs>
+            result: $Utils.Optional<SubscriptionTokenCountAggregateOutputType> | number
+          }
+        }
+      }
+      MonitorSubscription: {
+        payload: Prisma.$MonitorSubscriptionPayload<ExtArgs>
+        fields: Prisma.MonitorSubscriptionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MonitorSubscriptionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MonitorSubscriptionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MonitorSubscriptionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MonitorSubscriptionPayload>
+          }
+          findFirst: {
+            args: Prisma.MonitorSubscriptionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MonitorSubscriptionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MonitorSubscriptionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MonitorSubscriptionPayload>
+          }
+          findMany: {
+            args: Prisma.MonitorSubscriptionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MonitorSubscriptionPayload>[]
+          }
+          create: {
+            args: Prisma.MonitorSubscriptionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MonitorSubscriptionPayload>
+          }
+          createMany: {
+            args: Prisma.MonitorSubscriptionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MonitorSubscriptionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MonitorSubscriptionPayload>[]
+          }
+          delete: {
+            args: Prisma.MonitorSubscriptionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MonitorSubscriptionPayload>
+          }
+          update: {
+            args: Prisma.MonitorSubscriptionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MonitorSubscriptionPayload>
+          }
+          deleteMany: {
+            args: Prisma.MonitorSubscriptionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MonitorSubscriptionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MonitorSubscriptionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MonitorSubscriptionPayload>[]
+          }
+          upsert: {
+            args: Prisma.MonitorSubscriptionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MonitorSubscriptionPayload>
+          }
+          aggregate: {
+            args: Prisma.MonitorSubscriptionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMonitorSubscription>
+          }
+          groupBy: {
+            args: Prisma.MonitorSubscriptionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MonitorSubscriptionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MonitorSubscriptionCountArgs<ExtArgs>
+            result: $Utils.Optional<MonitorSubscriptionCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2456,6 +2738,9 @@ export namespace Prisma {
     statusPage?: StatusPageOmit
     statusPageMonitor?: StatusPageMonitorOmit
     statusPageView?: StatusPageViewOmit
+    statusPageSubscriber?: StatusPageSubscriberOmit
+    subscriptionToken?: SubscriptionTokenOmit
+    monitorSubscription?: MonitorSubscriptionOmit
   }
 
   /* Types for Logging */
@@ -2704,6 +2989,7 @@ export namespace Prisma {
     latencyAggregates: number
     regionalBaselines: number
     statusPages: number
+    monitorSubscriptions: number
   }
 
   export type MonitorCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2715,6 +3001,7 @@ export namespace Prisma {
     latencyAggregates?: boolean | MonitorCountOutputTypeCountLatencyAggregatesArgs
     regionalBaselines?: boolean | MonitorCountOutputTypeCountRegionalBaselinesArgs
     statusPages?: boolean | MonitorCountOutputTypeCountStatusPagesArgs
+    monitorSubscriptions?: boolean | MonitorCountOutputTypeCountMonitorSubscriptionsArgs
   }
 
   // Custom InputTypes
@@ -2784,6 +3071,13 @@ export namespace Prisma {
     where?: StatusPageMonitorWhereInput
   }
 
+  /**
+   * MonitorCountOutputType without action
+   */
+  export type MonitorCountOutputTypeCountMonitorSubscriptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MonitorSubscriptionWhereInput
+  }
+
 
   /**
    * Count Type StatusPageCountOutputType
@@ -2793,12 +3087,14 @@ export namespace Prisma {
     monitors: number
     views: number
     i18nSettings: number
+    subscribers: number
   }
 
   export type StatusPageCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     monitors?: boolean | StatusPageCountOutputTypeCountMonitorsArgs
     views?: boolean | StatusPageCountOutputTypeCountViewsArgs
     i18nSettings?: boolean | StatusPageCountOutputTypeCountI18nSettingsArgs
+    subscribers?: boolean | StatusPageCountOutputTypeCountSubscribersArgs
   }
 
   // Custom InputTypes
@@ -2831,6 +3127,53 @@ export namespace Prisma {
    */
   export type StatusPageCountOutputTypeCountI18nSettingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: StatusPageI18nWhereInput
+  }
+
+  /**
+   * StatusPageCountOutputType without action
+   */
+  export type StatusPageCountOutputTypeCountSubscribersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StatusPageSubscriberWhereInput
+  }
+
+
+  /**
+   * Count Type StatusPageSubscriberCountOutputType
+   */
+
+  export type StatusPageSubscriberCountOutputType = {
+    monitorSubscriptions: number
+    tokens: number
+  }
+
+  export type StatusPageSubscriberCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    monitorSubscriptions?: boolean | StatusPageSubscriberCountOutputTypeCountMonitorSubscriptionsArgs
+    tokens?: boolean | StatusPageSubscriberCountOutputTypeCountTokensArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * StatusPageSubscriberCountOutputType without action
+   */
+  export type StatusPageSubscriberCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageSubscriberCountOutputType
+     */
+    select?: StatusPageSubscriberCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * StatusPageSubscriberCountOutputType without action
+   */
+  export type StatusPageSubscriberCountOutputTypeCountMonitorSubscriptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MonitorSubscriptionWhereInput
+  }
+
+  /**
+   * StatusPageSubscriberCountOutputType without action
+   */
+  export type StatusPageSubscriberCountOutputTypeCountTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SubscriptionTokenWhereInput
   }
 
 
@@ -15637,6 +15980,7 @@ export namespace Prisma {
     latencyAggregates?: boolean | Monitor$latencyAggregatesArgs<ExtArgs>
     regionalBaselines?: boolean | Monitor$regionalBaselinesArgs<ExtArgs>
     statusPages?: boolean | Monitor$statusPagesArgs<ExtArgs>
+    monitorSubscriptions?: boolean | Monitor$monitorSubscriptionsArgs<ExtArgs>
     _count?: boolean | MonitorCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["monitor"]>
 
@@ -15704,6 +16048,7 @@ export namespace Prisma {
     latencyAggregates?: boolean | Monitor$latencyAggregatesArgs<ExtArgs>
     regionalBaselines?: boolean | Monitor$regionalBaselinesArgs<ExtArgs>
     statusPages?: boolean | Monitor$statusPagesArgs<ExtArgs>
+    monitorSubscriptions?: boolean | Monitor$monitorSubscriptionsArgs<ExtArgs>
     _count?: boolean | MonitorCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type MonitorIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -15725,6 +16070,7 @@ export namespace Prisma {
       latencyAggregates: Prisma.$LatencyAggregatePayload<ExtArgs>[]
       regionalBaselines: Prisma.$RegionalBaselinePayload<ExtArgs>[]
       statusPages: Prisma.$StatusPageMonitorPayload<ExtArgs>[]
+      monitorSubscriptions: Prisma.$MonitorSubscriptionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -16144,6 +16490,7 @@ export namespace Prisma {
     latencyAggregates<T extends Monitor$latencyAggregatesArgs<ExtArgs> = {}>(args?: Subset<T, Monitor$latencyAggregatesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LatencyAggregatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     regionalBaselines<T extends Monitor$regionalBaselinesArgs<ExtArgs> = {}>(args?: Subset<T, Monitor$regionalBaselinesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RegionalBaselinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     statusPages<T extends Monitor$statusPagesArgs<ExtArgs> = {}>(args?: Subset<T, Monitor$statusPagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPageMonitorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    monitorSubscriptions<T extends Monitor$monitorSubscriptionsArgs<ExtArgs> = {}>(args?: Subset<T, Monitor$monitorSubscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MonitorSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -16772,6 +17119,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: StatusPageMonitorScalarFieldEnum | StatusPageMonitorScalarFieldEnum[]
+  }
+
+  /**
+   * Monitor.monitorSubscriptions
+   */
+  export type Monitor$monitorSubscriptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MonitorSubscription
+     */
+    select?: MonitorSubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MonitorSubscription
+     */
+    omit?: MonitorSubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MonitorSubscriptionInclude<ExtArgs> | null
+    where?: MonitorSubscriptionWhereInput
+    orderBy?: MonitorSubscriptionOrderByWithRelationInput | MonitorSubscriptionOrderByWithRelationInput[]
+    cursor?: MonitorSubscriptionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MonitorSubscriptionScalarFieldEnum | MonitorSubscriptionScalarFieldEnum[]
   }
 
   /**
@@ -20421,6 +20792,7 @@ export namespace Prisma {
     monitors?: boolean | StatusPage$monitorsArgs<ExtArgs>
     views?: boolean | StatusPage$viewsArgs<ExtArgs>
     i18nSettings?: boolean | StatusPage$i18nSettingsArgs<ExtArgs>
+    subscribers?: boolean | StatusPage$subscribersArgs<ExtArgs>
     _count?: boolean | StatusPageCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["statusPage"]>
 
@@ -20516,6 +20888,7 @@ export namespace Prisma {
     monitors?: boolean | StatusPage$monitorsArgs<ExtArgs>
     views?: boolean | StatusPage$viewsArgs<ExtArgs>
     i18nSettings?: boolean | StatusPage$i18nSettingsArgs<ExtArgs>
+    subscribers?: boolean | StatusPage$subscribersArgs<ExtArgs>
     _count?: boolean | StatusPageCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type StatusPageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -20532,6 +20905,7 @@ export namespace Prisma {
       monitors: Prisma.$StatusPageMonitorPayload<ExtArgs>[]
       views: Prisma.$StatusPageViewPayload<ExtArgs>[]
       i18nSettings: Prisma.$StatusPageI18nPayload<ExtArgs>[]
+      subscribers: Prisma.$StatusPageSubscriberPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -20957,6 +21331,7 @@ export namespace Prisma {
     monitors<T extends StatusPage$monitorsArgs<ExtArgs> = {}>(args?: Subset<T, StatusPage$monitorsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPageMonitorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     views<T extends StatusPage$viewsArgs<ExtArgs> = {}>(args?: Subset<T, StatusPage$viewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPageViewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     i18nSettings<T extends StatusPage$i18nSettingsArgs<ExtArgs> = {}>(args?: Subset<T, StatusPage$i18nSettingsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPageI18nPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    subscribers<T extends StatusPage$subscribersArgs<ExtArgs> = {}>(args?: Subset<T, StatusPage$subscribersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPageSubscriberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -21476,6 +21851,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: StatusPageI18nScalarFieldEnum | StatusPageI18nScalarFieldEnum[]
+  }
+
+  /**
+   * StatusPage.subscribers
+   */
+  export type StatusPage$subscribersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageSubscriber
+     */
+    select?: StatusPageSubscriberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageSubscriber
+     */
+    omit?: StatusPageSubscriberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageSubscriberInclude<ExtArgs> | null
+    where?: StatusPageSubscriberWhereInput
+    orderBy?: StatusPageSubscriberOrderByWithRelationInput | StatusPageSubscriberOrderByWithRelationInput[]
+    cursor?: StatusPageSubscriberWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StatusPageSubscriberScalarFieldEnum | StatusPageSubscriberScalarFieldEnum[]
   }
 
   /**
@@ -23695,6 +24094,3311 @@ export namespace Prisma {
 
 
   /**
+   * Model StatusPageSubscriber
+   */
+
+  export type AggregateStatusPageSubscriber = {
+    _count: StatusPageSubscriberCountAggregateOutputType | null
+    _min: StatusPageSubscriberMinAggregateOutputType | null
+    _max: StatusPageSubscriberMaxAggregateOutputType | null
+  }
+
+  export type StatusPageSubscriberMinAggregateOutputType = {
+    id: string | null
+    statusPageId: string | null
+    email: string | null
+    verified: boolean | null
+    manageToken: string | null
+    notifyIncidents: boolean | null
+    notifyMaintenance: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StatusPageSubscriberMaxAggregateOutputType = {
+    id: string | null
+    statusPageId: string | null
+    email: string | null
+    verified: boolean | null
+    manageToken: string | null
+    notifyIncidents: boolean | null
+    notifyMaintenance: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StatusPageSubscriberCountAggregateOutputType = {
+    id: number
+    statusPageId: number
+    email: number
+    verified: number
+    manageToken: number
+    notifyIncidents: number
+    notifyMaintenance: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type StatusPageSubscriberMinAggregateInputType = {
+    id?: true
+    statusPageId?: true
+    email?: true
+    verified?: true
+    manageToken?: true
+    notifyIncidents?: true
+    notifyMaintenance?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StatusPageSubscriberMaxAggregateInputType = {
+    id?: true
+    statusPageId?: true
+    email?: true
+    verified?: true
+    manageToken?: true
+    notifyIncidents?: true
+    notifyMaintenance?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StatusPageSubscriberCountAggregateInputType = {
+    id?: true
+    statusPageId?: true
+    email?: true
+    verified?: true
+    manageToken?: true
+    notifyIncidents?: true
+    notifyMaintenance?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type StatusPageSubscriberAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StatusPageSubscriber to aggregate.
+     */
+    where?: StatusPageSubscriberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StatusPageSubscribers to fetch.
+     */
+    orderBy?: StatusPageSubscriberOrderByWithRelationInput | StatusPageSubscriberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: StatusPageSubscriberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StatusPageSubscribers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StatusPageSubscribers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned StatusPageSubscribers
+    **/
+    _count?: true | StatusPageSubscriberCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: StatusPageSubscriberMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: StatusPageSubscriberMaxAggregateInputType
+  }
+
+  export type GetStatusPageSubscriberAggregateType<T extends StatusPageSubscriberAggregateArgs> = {
+        [P in keyof T & keyof AggregateStatusPageSubscriber]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateStatusPageSubscriber[P]>
+      : GetScalarType<T[P], AggregateStatusPageSubscriber[P]>
+  }
+
+
+
+
+  export type StatusPageSubscriberGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StatusPageSubscriberWhereInput
+    orderBy?: StatusPageSubscriberOrderByWithAggregationInput | StatusPageSubscriberOrderByWithAggregationInput[]
+    by: StatusPageSubscriberScalarFieldEnum[] | StatusPageSubscriberScalarFieldEnum
+    having?: StatusPageSubscriberScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: StatusPageSubscriberCountAggregateInputType | true
+    _min?: StatusPageSubscriberMinAggregateInputType
+    _max?: StatusPageSubscriberMaxAggregateInputType
+  }
+
+  export type StatusPageSubscriberGroupByOutputType = {
+    id: string
+    statusPageId: string
+    email: string
+    verified: boolean
+    manageToken: string
+    notifyIncidents: boolean
+    notifyMaintenance: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: StatusPageSubscriberCountAggregateOutputType | null
+    _min: StatusPageSubscriberMinAggregateOutputType | null
+    _max: StatusPageSubscriberMaxAggregateOutputType | null
+  }
+
+  type GetStatusPageSubscriberGroupByPayload<T extends StatusPageSubscriberGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<StatusPageSubscriberGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof StatusPageSubscriberGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], StatusPageSubscriberGroupByOutputType[P]>
+            : GetScalarType<T[P], StatusPageSubscriberGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type StatusPageSubscriberSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    statusPageId?: boolean
+    email?: boolean
+    verified?: boolean
+    manageToken?: boolean
+    notifyIncidents?: boolean
+    notifyMaintenance?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    statusPage?: boolean | StatusPageDefaultArgs<ExtArgs>
+    monitorSubscriptions?: boolean | StatusPageSubscriber$monitorSubscriptionsArgs<ExtArgs>
+    tokens?: boolean | StatusPageSubscriber$tokensArgs<ExtArgs>
+    _count?: boolean | StatusPageSubscriberCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["statusPageSubscriber"]>
+
+  export type StatusPageSubscriberSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    statusPageId?: boolean
+    email?: boolean
+    verified?: boolean
+    manageToken?: boolean
+    notifyIncidents?: boolean
+    notifyMaintenance?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    statusPage?: boolean | StatusPageDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["statusPageSubscriber"]>
+
+  export type StatusPageSubscriberSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    statusPageId?: boolean
+    email?: boolean
+    verified?: boolean
+    manageToken?: boolean
+    notifyIncidents?: boolean
+    notifyMaintenance?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    statusPage?: boolean | StatusPageDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["statusPageSubscriber"]>
+
+  export type StatusPageSubscriberSelectScalar = {
+    id?: boolean
+    statusPageId?: boolean
+    email?: boolean
+    verified?: boolean
+    manageToken?: boolean
+    notifyIncidents?: boolean
+    notifyMaintenance?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type StatusPageSubscriberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "statusPageId" | "email" | "verified" | "manageToken" | "notifyIncidents" | "notifyMaintenance" | "createdAt" | "updatedAt", ExtArgs["result"]["statusPageSubscriber"]>
+  export type StatusPageSubscriberInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    statusPage?: boolean | StatusPageDefaultArgs<ExtArgs>
+    monitorSubscriptions?: boolean | StatusPageSubscriber$monitorSubscriptionsArgs<ExtArgs>
+    tokens?: boolean | StatusPageSubscriber$tokensArgs<ExtArgs>
+    _count?: boolean | StatusPageSubscriberCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type StatusPageSubscriberIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    statusPage?: boolean | StatusPageDefaultArgs<ExtArgs>
+  }
+  export type StatusPageSubscriberIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    statusPage?: boolean | StatusPageDefaultArgs<ExtArgs>
+  }
+
+  export type $StatusPageSubscriberPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "StatusPageSubscriber"
+    objects: {
+      statusPage: Prisma.$StatusPagePayload<ExtArgs>
+      monitorSubscriptions: Prisma.$MonitorSubscriptionPayload<ExtArgs>[]
+      tokens: Prisma.$SubscriptionTokenPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      statusPageId: string
+      email: string
+      verified: boolean
+      manageToken: string
+      notifyIncidents: boolean
+      notifyMaintenance: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["statusPageSubscriber"]>
+    composites: {}
+  }
+
+  type StatusPageSubscriberGetPayload<S extends boolean | null | undefined | StatusPageSubscriberDefaultArgs> = $Result.GetResult<Prisma.$StatusPageSubscriberPayload, S>
+
+  type StatusPageSubscriberCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<StatusPageSubscriberFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: StatusPageSubscriberCountAggregateInputType | true
+    }
+
+  export interface StatusPageSubscriberDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['StatusPageSubscriber'], meta: { name: 'StatusPageSubscriber' } }
+    /**
+     * Find zero or one StatusPageSubscriber that matches the filter.
+     * @param {StatusPageSubscriberFindUniqueArgs} args - Arguments to find a StatusPageSubscriber
+     * @example
+     * // Get one StatusPageSubscriber
+     * const statusPageSubscriber = await prisma.statusPageSubscriber.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StatusPageSubscriberFindUniqueArgs>(args: SelectSubset<T, StatusPageSubscriberFindUniqueArgs<ExtArgs>>): Prisma__StatusPageSubscriberClient<$Result.GetResult<Prisma.$StatusPageSubscriberPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one StatusPageSubscriber that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StatusPageSubscriberFindUniqueOrThrowArgs} args - Arguments to find a StatusPageSubscriber
+     * @example
+     * // Get one StatusPageSubscriber
+     * const statusPageSubscriber = await prisma.statusPageSubscriber.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StatusPageSubscriberFindUniqueOrThrowArgs>(args: SelectSubset<T, StatusPageSubscriberFindUniqueOrThrowArgs<ExtArgs>>): Prisma__StatusPageSubscriberClient<$Result.GetResult<Prisma.$StatusPageSubscriberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StatusPageSubscriber that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageSubscriberFindFirstArgs} args - Arguments to find a StatusPageSubscriber
+     * @example
+     * // Get one StatusPageSubscriber
+     * const statusPageSubscriber = await prisma.statusPageSubscriber.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StatusPageSubscriberFindFirstArgs>(args?: SelectSubset<T, StatusPageSubscriberFindFirstArgs<ExtArgs>>): Prisma__StatusPageSubscriberClient<$Result.GetResult<Prisma.$StatusPageSubscriberPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StatusPageSubscriber that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageSubscriberFindFirstOrThrowArgs} args - Arguments to find a StatusPageSubscriber
+     * @example
+     * // Get one StatusPageSubscriber
+     * const statusPageSubscriber = await prisma.statusPageSubscriber.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StatusPageSubscriberFindFirstOrThrowArgs>(args?: SelectSubset<T, StatusPageSubscriberFindFirstOrThrowArgs<ExtArgs>>): Prisma__StatusPageSubscriberClient<$Result.GetResult<Prisma.$StatusPageSubscriberPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more StatusPageSubscribers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageSubscriberFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all StatusPageSubscribers
+     * const statusPageSubscribers = await prisma.statusPageSubscriber.findMany()
+     * 
+     * // Get first 10 StatusPageSubscribers
+     * const statusPageSubscribers = await prisma.statusPageSubscriber.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const statusPageSubscriberWithIdOnly = await prisma.statusPageSubscriber.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends StatusPageSubscriberFindManyArgs>(args?: SelectSubset<T, StatusPageSubscriberFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPageSubscriberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a StatusPageSubscriber.
+     * @param {StatusPageSubscriberCreateArgs} args - Arguments to create a StatusPageSubscriber.
+     * @example
+     * // Create one StatusPageSubscriber
+     * const StatusPageSubscriber = await prisma.statusPageSubscriber.create({
+     *   data: {
+     *     // ... data to create a StatusPageSubscriber
+     *   }
+     * })
+     * 
+     */
+    create<T extends StatusPageSubscriberCreateArgs>(args: SelectSubset<T, StatusPageSubscriberCreateArgs<ExtArgs>>): Prisma__StatusPageSubscriberClient<$Result.GetResult<Prisma.$StatusPageSubscriberPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many StatusPageSubscribers.
+     * @param {StatusPageSubscriberCreateManyArgs} args - Arguments to create many StatusPageSubscribers.
+     * @example
+     * // Create many StatusPageSubscribers
+     * const statusPageSubscriber = await prisma.statusPageSubscriber.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends StatusPageSubscriberCreateManyArgs>(args?: SelectSubset<T, StatusPageSubscriberCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many StatusPageSubscribers and returns the data saved in the database.
+     * @param {StatusPageSubscriberCreateManyAndReturnArgs} args - Arguments to create many StatusPageSubscribers.
+     * @example
+     * // Create many StatusPageSubscribers
+     * const statusPageSubscriber = await prisma.statusPageSubscriber.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many StatusPageSubscribers and only return the `id`
+     * const statusPageSubscriberWithIdOnly = await prisma.statusPageSubscriber.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends StatusPageSubscriberCreateManyAndReturnArgs>(args?: SelectSubset<T, StatusPageSubscriberCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPageSubscriberPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a StatusPageSubscriber.
+     * @param {StatusPageSubscriberDeleteArgs} args - Arguments to delete one StatusPageSubscriber.
+     * @example
+     * // Delete one StatusPageSubscriber
+     * const StatusPageSubscriber = await prisma.statusPageSubscriber.delete({
+     *   where: {
+     *     // ... filter to delete one StatusPageSubscriber
+     *   }
+     * })
+     * 
+     */
+    delete<T extends StatusPageSubscriberDeleteArgs>(args: SelectSubset<T, StatusPageSubscriberDeleteArgs<ExtArgs>>): Prisma__StatusPageSubscriberClient<$Result.GetResult<Prisma.$StatusPageSubscriberPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one StatusPageSubscriber.
+     * @param {StatusPageSubscriberUpdateArgs} args - Arguments to update one StatusPageSubscriber.
+     * @example
+     * // Update one StatusPageSubscriber
+     * const statusPageSubscriber = await prisma.statusPageSubscriber.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends StatusPageSubscriberUpdateArgs>(args: SelectSubset<T, StatusPageSubscriberUpdateArgs<ExtArgs>>): Prisma__StatusPageSubscriberClient<$Result.GetResult<Prisma.$StatusPageSubscriberPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more StatusPageSubscribers.
+     * @param {StatusPageSubscriberDeleteManyArgs} args - Arguments to filter StatusPageSubscribers to delete.
+     * @example
+     * // Delete a few StatusPageSubscribers
+     * const { count } = await prisma.statusPageSubscriber.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends StatusPageSubscriberDeleteManyArgs>(args?: SelectSubset<T, StatusPageSubscriberDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StatusPageSubscribers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageSubscriberUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many StatusPageSubscribers
+     * const statusPageSubscriber = await prisma.statusPageSubscriber.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends StatusPageSubscriberUpdateManyArgs>(args: SelectSubset<T, StatusPageSubscriberUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StatusPageSubscribers and returns the data updated in the database.
+     * @param {StatusPageSubscriberUpdateManyAndReturnArgs} args - Arguments to update many StatusPageSubscribers.
+     * @example
+     * // Update many StatusPageSubscribers
+     * const statusPageSubscriber = await prisma.statusPageSubscriber.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more StatusPageSubscribers and only return the `id`
+     * const statusPageSubscriberWithIdOnly = await prisma.statusPageSubscriber.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends StatusPageSubscriberUpdateManyAndReturnArgs>(args: SelectSubset<T, StatusPageSubscriberUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPageSubscriberPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one StatusPageSubscriber.
+     * @param {StatusPageSubscriberUpsertArgs} args - Arguments to update or create a StatusPageSubscriber.
+     * @example
+     * // Update or create a StatusPageSubscriber
+     * const statusPageSubscriber = await prisma.statusPageSubscriber.upsert({
+     *   create: {
+     *     // ... data to create a StatusPageSubscriber
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the StatusPageSubscriber we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StatusPageSubscriberUpsertArgs>(args: SelectSubset<T, StatusPageSubscriberUpsertArgs<ExtArgs>>): Prisma__StatusPageSubscriberClient<$Result.GetResult<Prisma.$StatusPageSubscriberPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of StatusPageSubscribers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageSubscriberCountArgs} args - Arguments to filter StatusPageSubscribers to count.
+     * @example
+     * // Count the number of StatusPageSubscribers
+     * const count = await prisma.statusPageSubscriber.count({
+     *   where: {
+     *     // ... the filter for the StatusPageSubscribers we want to count
+     *   }
+     * })
+    **/
+    count<T extends StatusPageSubscriberCountArgs>(
+      args?: Subset<T, StatusPageSubscriberCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], StatusPageSubscriberCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a StatusPageSubscriber.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageSubscriberAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StatusPageSubscriberAggregateArgs>(args: Subset<T, StatusPageSubscriberAggregateArgs>): Prisma.PrismaPromise<GetStatusPageSubscriberAggregateType<T>>
+
+    /**
+     * Group by StatusPageSubscriber.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StatusPageSubscriberGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends StatusPageSubscriberGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: StatusPageSubscriberGroupByArgs['orderBy'] }
+        : { orderBy?: StatusPageSubscriberGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, StatusPageSubscriberGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStatusPageSubscriberGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the StatusPageSubscriber model
+   */
+  readonly fields: StatusPageSubscriberFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for StatusPageSubscriber.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__StatusPageSubscriberClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    statusPage<T extends StatusPageDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StatusPageDefaultArgs<ExtArgs>>): Prisma__StatusPageClient<$Result.GetResult<Prisma.$StatusPagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    monitorSubscriptions<T extends StatusPageSubscriber$monitorSubscriptionsArgs<ExtArgs> = {}>(args?: Subset<T, StatusPageSubscriber$monitorSubscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MonitorSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    tokens<T extends StatusPageSubscriber$tokensArgs<ExtArgs> = {}>(args?: Subset<T, StatusPageSubscriber$tokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SubscriptionTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the StatusPageSubscriber model
+   */
+  interface StatusPageSubscriberFieldRefs {
+    readonly id: FieldRef<"StatusPageSubscriber", 'String'>
+    readonly statusPageId: FieldRef<"StatusPageSubscriber", 'String'>
+    readonly email: FieldRef<"StatusPageSubscriber", 'String'>
+    readonly verified: FieldRef<"StatusPageSubscriber", 'Boolean'>
+    readonly manageToken: FieldRef<"StatusPageSubscriber", 'String'>
+    readonly notifyIncidents: FieldRef<"StatusPageSubscriber", 'Boolean'>
+    readonly notifyMaintenance: FieldRef<"StatusPageSubscriber", 'Boolean'>
+    readonly createdAt: FieldRef<"StatusPageSubscriber", 'DateTime'>
+    readonly updatedAt: FieldRef<"StatusPageSubscriber", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * StatusPageSubscriber findUnique
+   */
+  export type StatusPageSubscriberFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageSubscriber
+     */
+    select?: StatusPageSubscriberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageSubscriber
+     */
+    omit?: StatusPageSubscriberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageSubscriberInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPageSubscriber to fetch.
+     */
+    where: StatusPageSubscriberWhereUniqueInput
+  }
+
+  /**
+   * StatusPageSubscriber findUniqueOrThrow
+   */
+  export type StatusPageSubscriberFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageSubscriber
+     */
+    select?: StatusPageSubscriberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageSubscriber
+     */
+    omit?: StatusPageSubscriberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageSubscriberInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPageSubscriber to fetch.
+     */
+    where: StatusPageSubscriberWhereUniqueInput
+  }
+
+  /**
+   * StatusPageSubscriber findFirst
+   */
+  export type StatusPageSubscriberFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageSubscriber
+     */
+    select?: StatusPageSubscriberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageSubscriber
+     */
+    omit?: StatusPageSubscriberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageSubscriberInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPageSubscriber to fetch.
+     */
+    where?: StatusPageSubscriberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StatusPageSubscribers to fetch.
+     */
+    orderBy?: StatusPageSubscriberOrderByWithRelationInput | StatusPageSubscriberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StatusPageSubscribers.
+     */
+    cursor?: StatusPageSubscriberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StatusPageSubscribers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StatusPageSubscribers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StatusPageSubscribers.
+     */
+    distinct?: StatusPageSubscriberScalarFieldEnum | StatusPageSubscriberScalarFieldEnum[]
+  }
+
+  /**
+   * StatusPageSubscriber findFirstOrThrow
+   */
+  export type StatusPageSubscriberFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageSubscriber
+     */
+    select?: StatusPageSubscriberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageSubscriber
+     */
+    omit?: StatusPageSubscriberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageSubscriberInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPageSubscriber to fetch.
+     */
+    where?: StatusPageSubscriberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StatusPageSubscribers to fetch.
+     */
+    orderBy?: StatusPageSubscriberOrderByWithRelationInput | StatusPageSubscriberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StatusPageSubscribers.
+     */
+    cursor?: StatusPageSubscriberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StatusPageSubscribers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StatusPageSubscribers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StatusPageSubscribers.
+     */
+    distinct?: StatusPageSubscriberScalarFieldEnum | StatusPageSubscriberScalarFieldEnum[]
+  }
+
+  /**
+   * StatusPageSubscriber findMany
+   */
+  export type StatusPageSubscriberFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageSubscriber
+     */
+    select?: StatusPageSubscriberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageSubscriber
+     */
+    omit?: StatusPageSubscriberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageSubscriberInclude<ExtArgs> | null
+    /**
+     * Filter, which StatusPageSubscribers to fetch.
+     */
+    where?: StatusPageSubscriberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StatusPageSubscribers to fetch.
+     */
+    orderBy?: StatusPageSubscriberOrderByWithRelationInput | StatusPageSubscriberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing StatusPageSubscribers.
+     */
+    cursor?: StatusPageSubscriberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StatusPageSubscribers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StatusPageSubscribers.
+     */
+    skip?: number
+    distinct?: StatusPageSubscriberScalarFieldEnum | StatusPageSubscriberScalarFieldEnum[]
+  }
+
+  /**
+   * StatusPageSubscriber create
+   */
+  export type StatusPageSubscriberCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageSubscriber
+     */
+    select?: StatusPageSubscriberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageSubscriber
+     */
+    omit?: StatusPageSubscriberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageSubscriberInclude<ExtArgs> | null
+    /**
+     * The data needed to create a StatusPageSubscriber.
+     */
+    data: XOR<StatusPageSubscriberCreateInput, StatusPageSubscriberUncheckedCreateInput>
+  }
+
+  /**
+   * StatusPageSubscriber createMany
+   */
+  export type StatusPageSubscriberCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many StatusPageSubscribers.
+     */
+    data: StatusPageSubscriberCreateManyInput | StatusPageSubscriberCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StatusPageSubscriber createManyAndReturn
+   */
+  export type StatusPageSubscriberCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageSubscriber
+     */
+    select?: StatusPageSubscriberSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageSubscriber
+     */
+    omit?: StatusPageSubscriberOmit<ExtArgs> | null
+    /**
+     * The data used to create many StatusPageSubscribers.
+     */
+    data: StatusPageSubscriberCreateManyInput | StatusPageSubscriberCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageSubscriberIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StatusPageSubscriber update
+   */
+  export type StatusPageSubscriberUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageSubscriber
+     */
+    select?: StatusPageSubscriberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageSubscriber
+     */
+    omit?: StatusPageSubscriberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageSubscriberInclude<ExtArgs> | null
+    /**
+     * The data needed to update a StatusPageSubscriber.
+     */
+    data: XOR<StatusPageSubscriberUpdateInput, StatusPageSubscriberUncheckedUpdateInput>
+    /**
+     * Choose, which StatusPageSubscriber to update.
+     */
+    where: StatusPageSubscriberWhereUniqueInput
+  }
+
+  /**
+   * StatusPageSubscriber updateMany
+   */
+  export type StatusPageSubscriberUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update StatusPageSubscribers.
+     */
+    data: XOR<StatusPageSubscriberUpdateManyMutationInput, StatusPageSubscriberUncheckedUpdateManyInput>
+    /**
+     * Filter which StatusPageSubscribers to update
+     */
+    where?: StatusPageSubscriberWhereInput
+    /**
+     * Limit how many StatusPageSubscribers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StatusPageSubscriber updateManyAndReturn
+   */
+  export type StatusPageSubscriberUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageSubscriber
+     */
+    select?: StatusPageSubscriberSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageSubscriber
+     */
+    omit?: StatusPageSubscriberOmit<ExtArgs> | null
+    /**
+     * The data used to update StatusPageSubscribers.
+     */
+    data: XOR<StatusPageSubscriberUpdateManyMutationInput, StatusPageSubscriberUncheckedUpdateManyInput>
+    /**
+     * Filter which StatusPageSubscribers to update
+     */
+    where?: StatusPageSubscriberWhereInput
+    /**
+     * Limit how many StatusPageSubscribers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageSubscriberIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StatusPageSubscriber upsert
+   */
+  export type StatusPageSubscriberUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageSubscriber
+     */
+    select?: StatusPageSubscriberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageSubscriber
+     */
+    omit?: StatusPageSubscriberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageSubscriberInclude<ExtArgs> | null
+    /**
+     * The filter to search for the StatusPageSubscriber to update in case it exists.
+     */
+    where: StatusPageSubscriberWhereUniqueInput
+    /**
+     * In case the StatusPageSubscriber found by the `where` argument doesn't exist, create a new StatusPageSubscriber with this data.
+     */
+    create: XOR<StatusPageSubscriberCreateInput, StatusPageSubscriberUncheckedCreateInput>
+    /**
+     * In case the StatusPageSubscriber was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<StatusPageSubscriberUpdateInput, StatusPageSubscriberUncheckedUpdateInput>
+  }
+
+  /**
+   * StatusPageSubscriber delete
+   */
+  export type StatusPageSubscriberDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageSubscriber
+     */
+    select?: StatusPageSubscriberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageSubscriber
+     */
+    omit?: StatusPageSubscriberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageSubscriberInclude<ExtArgs> | null
+    /**
+     * Filter which StatusPageSubscriber to delete.
+     */
+    where: StatusPageSubscriberWhereUniqueInput
+  }
+
+  /**
+   * StatusPageSubscriber deleteMany
+   */
+  export type StatusPageSubscriberDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StatusPageSubscribers to delete
+     */
+    where?: StatusPageSubscriberWhereInput
+    /**
+     * Limit how many StatusPageSubscribers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * StatusPageSubscriber.monitorSubscriptions
+   */
+  export type StatusPageSubscriber$monitorSubscriptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MonitorSubscription
+     */
+    select?: MonitorSubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MonitorSubscription
+     */
+    omit?: MonitorSubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MonitorSubscriptionInclude<ExtArgs> | null
+    where?: MonitorSubscriptionWhereInput
+    orderBy?: MonitorSubscriptionOrderByWithRelationInput | MonitorSubscriptionOrderByWithRelationInput[]
+    cursor?: MonitorSubscriptionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MonitorSubscriptionScalarFieldEnum | MonitorSubscriptionScalarFieldEnum[]
+  }
+
+  /**
+   * StatusPageSubscriber.tokens
+   */
+  export type StatusPageSubscriber$tokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionToken
+     */
+    select?: SubscriptionTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionToken
+     */
+    omit?: SubscriptionTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionTokenInclude<ExtArgs> | null
+    where?: SubscriptionTokenWhereInput
+    orderBy?: SubscriptionTokenOrderByWithRelationInput | SubscriptionTokenOrderByWithRelationInput[]
+    cursor?: SubscriptionTokenWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SubscriptionTokenScalarFieldEnum | SubscriptionTokenScalarFieldEnum[]
+  }
+
+  /**
+   * StatusPageSubscriber without action
+   */
+  export type StatusPageSubscriberDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StatusPageSubscriber
+     */
+    select?: StatusPageSubscriberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StatusPageSubscriber
+     */
+    omit?: StatusPageSubscriberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusPageSubscriberInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SubscriptionToken
+   */
+
+  export type AggregateSubscriptionToken = {
+    _count: SubscriptionTokenCountAggregateOutputType | null
+    _min: SubscriptionTokenMinAggregateOutputType | null
+    _max: SubscriptionTokenMaxAggregateOutputType | null
+  }
+
+  export type SubscriptionTokenMinAggregateOutputType = {
+    id: string | null
+    subscriberId: string | null
+    token: string | null
+    type: $Enums.SubscriptionTokenType | null
+    expiresAt: Date | null
+    usedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type SubscriptionTokenMaxAggregateOutputType = {
+    id: string | null
+    subscriberId: string | null
+    token: string | null
+    type: $Enums.SubscriptionTokenType | null
+    expiresAt: Date | null
+    usedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type SubscriptionTokenCountAggregateOutputType = {
+    id: number
+    subscriberId: number
+    token: number
+    type: number
+    expiresAt: number
+    usedAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type SubscriptionTokenMinAggregateInputType = {
+    id?: true
+    subscriberId?: true
+    token?: true
+    type?: true
+    expiresAt?: true
+    usedAt?: true
+    createdAt?: true
+  }
+
+  export type SubscriptionTokenMaxAggregateInputType = {
+    id?: true
+    subscriberId?: true
+    token?: true
+    type?: true
+    expiresAt?: true
+    usedAt?: true
+    createdAt?: true
+  }
+
+  export type SubscriptionTokenCountAggregateInputType = {
+    id?: true
+    subscriberId?: true
+    token?: true
+    type?: true
+    expiresAt?: true
+    usedAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type SubscriptionTokenAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SubscriptionToken to aggregate.
+     */
+    where?: SubscriptionTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SubscriptionTokens to fetch.
+     */
+    orderBy?: SubscriptionTokenOrderByWithRelationInput | SubscriptionTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SubscriptionTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SubscriptionTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SubscriptionTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SubscriptionTokens
+    **/
+    _count?: true | SubscriptionTokenCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SubscriptionTokenMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SubscriptionTokenMaxAggregateInputType
+  }
+
+  export type GetSubscriptionTokenAggregateType<T extends SubscriptionTokenAggregateArgs> = {
+        [P in keyof T & keyof AggregateSubscriptionToken]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSubscriptionToken[P]>
+      : GetScalarType<T[P], AggregateSubscriptionToken[P]>
+  }
+
+
+
+
+  export type SubscriptionTokenGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SubscriptionTokenWhereInput
+    orderBy?: SubscriptionTokenOrderByWithAggregationInput | SubscriptionTokenOrderByWithAggregationInput[]
+    by: SubscriptionTokenScalarFieldEnum[] | SubscriptionTokenScalarFieldEnum
+    having?: SubscriptionTokenScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SubscriptionTokenCountAggregateInputType | true
+    _min?: SubscriptionTokenMinAggregateInputType
+    _max?: SubscriptionTokenMaxAggregateInputType
+  }
+
+  export type SubscriptionTokenGroupByOutputType = {
+    id: string
+    subscriberId: string
+    token: string
+    type: $Enums.SubscriptionTokenType
+    expiresAt: Date
+    usedAt: Date | null
+    createdAt: Date
+    _count: SubscriptionTokenCountAggregateOutputType | null
+    _min: SubscriptionTokenMinAggregateOutputType | null
+    _max: SubscriptionTokenMaxAggregateOutputType | null
+  }
+
+  type GetSubscriptionTokenGroupByPayload<T extends SubscriptionTokenGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SubscriptionTokenGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SubscriptionTokenGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SubscriptionTokenGroupByOutputType[P]>
+            : GetScalarType<T[P], SubscriptionTokenGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SubscriptionTokenSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    subscriberId?: boolean
+    token?: boolean
+    type?: boolean
+    expiresAt?: boolean
+    usedAt?: boolean
+    createdAt?: boolean
+    subscriber?: boolean | StatusPageSubscriberDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["subscriptionToken"]>
+
+  export type SubscriptionTokenSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    subscriberId?: boolean
+    token?: boolean
+    type?: boolean
+    expiresAt?: boolean
+    usedAt?: boolean
+    createdAt?: boolean
+    subscriber?: boolean | StatusPageSubscriberDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["subscriptionToken"]>
+
+  export type SubscriptionTokenSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    subscriberId?: boolean
+    token?: boolean
+    type?: boolean
+    expiresAt?: boolean
+    usedAt?: boolean
+    createdAt?: boolean
+    subscriber?: boolean | StatusPageSubscriberDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["subscriptionToken"]>
+
+  export type SubscriptionTokenSelectScalar = {
+    id?: boolean
+    subscriberId?: boolean
+    token?: boolean
+    type?: boolean
+    expiresAt?: boolean
+    usedAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type SubscriptionTokenOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "subscriberId" | "token" | "type" | "expiresAt" | "usedAt" | "createdAt", ExtArgs["result"]["subscriptionToken"]>
+  export type SubscriptionTokenInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    subscriber?: boolean | StatusPageSubscriberDefaultArgs<ExtArgs>
+  }
+  export type SubscriptionTokenIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    subscriber?: boolean | StatusPageSubscriberDefaultArgs<ExtArgs>
+  }
+  export type SubscriptionTokenIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    subscriber?: boolean | StatusPageSubscriberDefaultArgs<ExtArgs>
+  }
+
+  export type $SubscriptionTokenPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SubscriptionToken"
+    objects: {
+      subscriber: Prisma.$StatusPageSubscriberPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      subscriberId: string
+      token: string
+      type: $Enums.SubscriptionTokenType
+      expiresAt: Date
+      usedAt: Date | null
+      createdAt: Date
+    }, ExtArgs["result"]["subscriptionToken"]>
+    composites: {}
+  }
+
+  type SubscriptionTokenGetPayload<S extends boolean | null | undefined | SubscriptionTokenDefaultArgs> = $Result.GetResult<Prisma.$SubscriptionTokenPayload, S>
+
+  type SubscriptionTokenCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SubscriptionTokenFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SubscriptionTokenCountAggregateInputType | true
+    }
+
+  export interface SubscriptionTokenDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SubscriptionToken'], meta: { name: 'SubscriptionToken' } }
+    /**
+     * Find zero or one SubscriptionToken that matches the filter.
+     * @param {SubscriptionTokenFindUniqueArgs} args - Arguments to find a SubscriptionToken
+     * @example
+     * // Get one SubscriptionToken
+     * const subscriptionToken = await prisma.subscriptionToken.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SubscriptionTokenFindUniqueArgs>(args: SelectSubset<T, SubscriptionTokenFindUniqueArgs<ExtArgs>>): Prisma__SubscriptionTokenClient<$Result.GetResult<Prisma.$SubscriptionTokenPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SubscriptionToken that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SubscriptionTokenFindUniqueOrThrowArgs} args - Arguments to find a SubscriptionToken
+     * @example
+     * // Get one SubscriptionToken
+     * const subscriptionToken = await prisma.subscriptionToken.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SubscriptionTokenFindUniqueOrThrowArgs>(args: SelectSubset<T, SubscriptionTokenFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SubscriptionTokenClient<$Result.GetResult<Prisma.$SubscriptionTokenPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SubscriptionToken that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriptionTokenFindFirstArgs} args - Arguments to find a SubscriptionToken
+     * @example
+     * // Get one SubscriptionToken
+     * const subscriptionToken = await prisma.subscriptionToken.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SubscriptionTokenFindFirstArgs>(args?: SelectSubset<T, SubscriptionTokenFindFirstArgs<ExtArgs>>): Prisma__SubscriptionTokenClient<$Result.GetResult<Prisma.$SubscriptionTokenPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SubscriptionToken that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriptionTokenFindFirstOrThrowArgs} args - Arguments to find a SubscriptionToken
+     * @example
+     * // Get one SubscriptionToken
+     * const subscriptionToken = await prisma.subscriptionToken.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SubscriptionTokenFindFirstOrThrowArgs>(args?: SelectSubset<T, SubscriptionTokenFindFirstOrThrowArgs<ExtArgs>>): Prisma__SubscriptionTokenClient<$Result.GetResult<Prisma.$SubscriptionTokenPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SubscriptionTokens that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriptionTokenFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SubscriptionTokens
+     * const subscriptionTokens = await prisma.subscriptionToken.findMany()
+     * 
+     * // Get first 10 SubscriptionTokens
+     * const subscriptionTokens = await prisma.subscriptionToken.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const subscriptionTokenWithIdOnly = await prisma.subscriptionToken.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SubscriptionTokenFindManyArgs>(args?: SelectSubset<T, SubscriptionTokenFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SubscriptionTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SubscriptionToken.
+     * @param {SubscriptionTokenCreateArgs} args - Arguments to create a SubscriptionToken.
+     * @example
+     * // Create one SubscriptionToken
+     * const SubscriptionToken = await prisma.subscriptionToken.create({
+     *   data: {
+     *     // ... data to create a SubscriptionToken
+     *   }
+     * })
+     * 
+     */
+    create<T extends SubscriptionTokenCreateArgs>(args: SelectSubset<T, SubscriptionTokenCreateArgs<ExtArgs>>): Prisma__SubscriptionTokenClient<$Result.GetResult<Prisma.$SubscriptionTokenPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SubscriptionTokens.
+     * @param {SubscriptionTokenCreateManyArgs} args - Arguments to create many SubscriptionTokens.
+     * @example
+     * // Create many SubscriptionTokens
+     * const subscriptionToken = await prisma.subscriptionToken.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SubscriptionTokenCreateManyArgs>(args?: SelectSubset<T, SubscriptionTokenCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SubscriptionTokens and returns the data saved in the database.
+     * @param {SubscriptionTokenCreateManyAndReturnArgs} args - Arguments to create many SubscriptionTokens.
+     * @example
+     * // Create many SubscriptionTokens
+     * const subscriptionToken = await prisma.subscriptionToken.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SubscriptionTokens and only return the `id`
+     * const subscriptionTokenWithIdOnly = await prisma.subscriptionToken.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SubscriptionTokenCreateManyAndReturnArgs>(args?: SelectSubset<T, SubscriptionTokenCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SubscriptionTokenPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SubscriptionToken.
+     * @param {SubscriptionTokenDeleteArgs} args - Arguments to delete one SubscriptionToken.
+     * @example
+     * // Delete one SubscriptionToken
+     * const SubscriptionToken = await prisma.subscriptionToken.delete({
+     *   where: {
+     *     // ... filter to delete one SubscriptionToken
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SubscriptionTokenDeleteArgs>(args: SelectSubset<T, SubscriptionTokenDeleteArgs<ExtArgs>>): Prisma__SubscriptionTokenClient<$Result.GetResult<Prisma.$SubscriptionTokenPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SubscriptionToken.
+     * @param {SubscriptionTokenUpdateArgs} args - Arguments to update one SubscriptionToken.
+     * @example
+     * // Update one SubscriptionToken
+     * const subscriptionToken = await prisma.subscriptionToken.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SubscriptionTokenUpdateArgs>(args: SelectSubset<T, SubscriptionTokenUpdateArgs<ExtArgs>>): Prisma__SubscriptionTokenClient<$Result.GetResult<Prisma.$SubscriptionTokenPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SubscriptionTokens.
+     * @param {SubscriptionTokenDeleteManyArgs} args - Arguments to filter SubscriptionTokens to delete.
+     * @example
+     * // Delete a few SubscriptionTokens
+     * const { count } = await prisma.subscriptionToken.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SubscriptionTokenDeleteManyArgs>(args?: SelectSubset<T, SubscriptionTokenDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SubscriptionTokens.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriptionTokenUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SubscriptionTokens
+     * const subscriptionToken = await prisma.subscriptionToken.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SubscriptionTokenUpdateManyArgs>(args: SelectSubset<T, SubscriptionTokenUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SubscriptionTokens and returns the data updated in the database.
+     * @param {SubscriptionTokenUpdateManyAndReturnArgs} args - Arguments to update many SubscriptionTokens.
+     * @example
+     * // Update many SubscriptionTokens
+     * const subscriptionToken = await prisma.subscriptionToken.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SubscriptionTokens and only return the `id`
+     * const subscriptionTokenWithIdOnly = await prisma.subscriptionToken.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SubscriptionTokenUpdateManyAndReturnArgs>(args: SelectSubset<T, SubscriptionTokenUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SubscriptionTokenPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SubscriptionToken.
+     * @param {SubscriptionTokenUpsertArgs} args - Arguments to update or create a SubscriptionToken.
+     * @example
+     * // Update or create a SubscriptionToken
+     * const subscriptionToken = await prisma.subscriptionToken.upsert({
+     *   create: {
+     *     // ... data to create a SubscriptionToken
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SubscriptionToken we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SubscriptionTokenUpsertArgs>(args: SelectSubset<T, SubscriptionTokenUpsertArgs<ExtArgs>>): Prisma__SubscriptionTokenClient<$Result.GetResult<Prisma.$SubscriptionTokenPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SubscriptionTokens.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriptionTokenCountArgs} args - Arguments to filter SubscriptionTokens to count.
+     * @example
+     * // Count the number of SubscriptionTokens
+     * const count = await prisma.subscriptionToken.count({
+     *   where: {
+     *     // ... the filter for the SubscriptionTokens we want to count
+     *   }
+     * })
+    **/
+    count<T extends SubscriptionTokenCountArgs>(
+      args?: Subset<T, SubscriptionTokenCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SubscriptionTokenCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SubscriptionToken.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriptionTokenAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SubscriptionTokenAggregateArgs>(args: Subset<T, SubscriptionTokenAggregateArgs>): Prisma.PrismaPromise<GetSubscriptionTokenAggregateType<T>>
+
+    /**
+     * Group by SubscriptionToken.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriptionTokenGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SubscriptionTokenGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SubscriptionTokenGroupByArgs['orderBy'] }
+        : { orderBy?: SubscriptionTokenGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SubscriptionTokenGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSubscriptionTokenGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SubscriptionToken model
+   */
+  readonly fields: SubscriptionTokenFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SubscriptionToken.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SubscriptionTokenClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    subscriber<T extends StatusPageSubscriberDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StatusPageSubscriberDefaultArgs<ExtArgs>>): Prisma__StatusPageSubscriberClient<$Result.GetResult<Prisma.$StatusPageSubscriberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SubscriptionToken model
+   */
+  interface SubscriptionTokenFieldRefs {
+    readonly id: FieldRef<"SubscriptionToken", 'String'>
+    readonly subscriberId: FieldRef<"SubscriptionToken", 'String'>
+    readonly token: FieldRef<"SubscriptionToken", 'String'>
+    readonly type: FieldRef<"SubscriptionToken", 'SubscriptionTokenType'>
+    readonly expiresAt: FieldRef<"SubscriptionToken", 'DateTime'>
+    readonly usedAt: FieldRef<"SubscriptionToken", 'DateTime'>
+    readonly createdAt: FieldRef<"SubscriptionToken", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SubscriptionToken findUnique
+   */
+  export type SubscriptionTokenFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionToken
+     */
+    select?: SubscriptionTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionToken
+     */
+    omit?: SubscriptionTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which SubscriptionToken to fetch.
+     */
+    where: SubscriptionTokenWhereUniqueInput
+  }
+
+  /**
+   * SubscriptionToken findUniqueOrThrow
+   */
+  export type SubscriptionTokenFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionToken
+     */
+    select?: SubscriptionTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionToken
+     */
+    omit?: SubscriptionTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which SubscriptionToken to fetch.
+     */
+    where: SubscriptionTokenWhereUniqueInput
+  }
+
+  /**
+   * SubscriptionToken findFirst
+   */
+  export type SubscriptionTokenFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionToken
+     */
+    select?: SubscriptionTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionToken
+     */
+    omit?: SubscriptionTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which SubscriptionToken to fetch.
+     */
+    where?: SubscriptionTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SubscriptionTokens to fetch.
+     */
+    orderBy?: SubscriptionTokenOrderByWithRelationInput | SubscriptionTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SubscriptionTokens.
+     */
+    cursor?: SubscriptionTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SubscriptionTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SubscriptionTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SubscriptionTokens.
+     */
+    distinct?: SubscriptionTokenScalarFieldEnum | SubscriptionTokenScalarFieldEnum[]
+  }
+
+  /**
+   * SubscriptionToken findFirstOrThrow
+   */
+  export type SubscriptionTokenFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionToken
+     */
+    select?: SubscriptionTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionToken
+     */
+    omit?: SubscriptionTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which SubscriptionToken to fetch.
+     */
+    where?: SubscriptionTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SubscriptionTokens to fetch.
+     */
+    orderBy?: SubscriptionTokenOrderByWithRelationInput | SubscriptionTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SubscriptionTokens.
+     */
+    cursor?: SubscriptionTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SubscriptionTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SubscriptionTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SubscriptionTokens.
+     */
+    distinct?: SubscriptionTokenScalarFieldEnum | SubscriptionTokenScalarFieldEnum[]
+  }
+
+  /**
+   * SubscriptionToken findMany
+   */
+  export type SubscriptionTokenFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionToken
+     */
+    select?: SubscriptionTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionToken
+     */
+    omit?: SubscriptionTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which SubscriptionTokens to fetch.
+     */
+    where?: SubscriptionTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SubscriptionTokens to fetch.
+     */
+    orderBy?: SubscriptionTokenOrderByWithRelationInput | SubscriptionTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SubscriptionTokens.
+     */
+    cursor?: SubscriptionTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SubscriptionTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SubscriptionTokens.
+     */
+    skip?: number
+    distinct?: SubscriptionTokenScalarFieldEnum | SubscriptionTokenScalarFieldEnum[]
+  }
+
+  /**
+   * SubscriptionToken create
+   */
+  export type SubscriptionTokenCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionToken
+     */
+    select?: SubscriptionTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionToken
+     */
+    omit?: SubscriptionTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionTokenInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SubscriptionToken.
+     */
+    data: XOR<SubscriptionTokenCreateInput, SubscriptionTokenUncheckedCreateInput>
+  }
+
+  /**
+   * SubscriptionToken createMany
+   */
+  export type SubscriptionTokenCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SubscriptionTokens.
+     */
+    data: SubscriptionTokenCreateManyInput | SubscriptionTokenCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SubscriptionToken createManyAndReturn
+   */
+  export type SubscriptionTokenCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionToken
+     */
+    select?: SubscriptionTokenSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionToken
+     */
+    omit?: SubscriptionTokenOmit<ExtArgs> | null
+    /**
+     * The data used to create many SubscriptionTokens.
+     */
+    data: SubscriptionTokenCreateManyInput | SubscriptionTokenCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionTokenIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SubscriptionToken update
+   */
+  export type SubscriptionTokenUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionToken
+     */
+    select?: SubscriptionTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionToken
+     */
+    omit?: SubscriptionTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionTokenInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SubscriptionToken.
+     */
+    data: XOR<SubscriptionTokenUpdateInput, SubscriptionTokenUncheckedUpdateInput>
+    /**
+     * Choose, which SubscriptionToken to update.
+     */
+    where: SubscriptionTokenWhereUniqueInput
+  }
+
+  /**
+   * SubscriptionToken updateMany
+   */
+  export type SubscriptionTokenUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SubscriptionTokens.
+     */
+    data: XOR<SubscriptionTokenUpdateManyMutationInput, SubscriptionTokenUncheckedUpdateManyInput>
+    /**
+     * Filter which SubscriptionTokens to update
+     */
+    where?: SubscriptionTokenWhereInput
+    /**
+     * Limit how many SubscriptionTokens to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SubscriptionToken updateManyAndReturn
+   */
+  export type SubscriptionTokenUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionToken
+     */
+    select?: SubscriptionTokenSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionToken
+     */
+    omit?: SubscriptionTokenOmit<ExtArgs> | null
+    /**
+     * The data used to update SubscriptionTokens.
+     */
+    data: XOR<SubscriptionTokenUpdateManyMutationInput, SubscriptionTokenUncheckedUpdateManyInput>
+    /**
+     * Filter which SubscriptionTokens to update
+     */
+    where?: SubscriptionTokenWhereInput
+    /**
+     * Limit how many SubscriptionTokens to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionTokenIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SubscriptionToken upsert
+   */
+  export type SubscriptionTokenUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionToken
+     */
+    select?: SubscriptionTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionToken
+     */
+    omit?: SubscriptionTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionTokenInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SubscriptionToken to update in case it exists.
+     */
+    where: SubscriptionTokenWhereUniqueInput
+    /**
+     * In case the SubscriptionToken found by the `where` argument doesn't exist, create a new SubscriptionToken with this data.
+     */
+    create: XOR<SubscriptionTokenCreateInput, SubscriptionTokenUncheckedCreateInput>
+    /**
+     * In case the SubscriptionToken was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SubscriptionTokenUpdateInput, SubscriptionTokenUncheckedUpdateInput>
+  }
+
+  /**
+   * SubscriptionToken delete
+   */
+  export type SubscriptionTokenDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionToken
+     */
+    select?: SubscriptionTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionToken
+     */
+    omit?: SubscriptionTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionTokenInclude<ExtArgs> | null
+    /**
+     * Filter which SubscriptionToken to delete.
+     */
+    where: SubscriptionTokenWhereUniqueInput
+  }
+
+  /**
+   * SubscriptionToken deleteMany
+   */
+  export type SubscriptionTokenDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SubscriptionTokens to delete
+     */
+    where?: SubscriptionTokenWhereInput
+    /**
+     * Limit how many SubscriptionTokens to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SubscriptionToken without action
+   */
+  export type SubscriptionTokenDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionToken
+     */
+    select?: SubscriptionTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionToken
+     */
+    omit?: SubscriptionTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionTokenInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model MonitorSubscription
+   */
+
+  export type AggregateMonitorSubscription = {
+    _count: MonitorSubscriptionCountAggregateOutputType | null
+    _min: MonitorSubscriptionMinAggregateOutputType | null
+    _max: MonitorSubscriptionMaxAggregateOutputType | null
+  }
+
+  export type MonitorSubscriptionMinAggregateOutputType = {
+    id: string | null
+    subscriberId: string | null
+    monitorId: string | null
+    createdAt: Date | null
+  }
+
+  export type MonitorSubscriptionMaxAggregateOutputType = {
+    id: string | null
+    subscriberId: string | null
+    monitorId: string | null
+    createdAt: Date | null
+  }
+
+  export type MonitorSubscriptionCountAggregateOutputType = {
+    id: number
+    subscriberId: number
+    monitorId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type MonitorSubscriptionMinAggregateInputType = {
+    id?: true
+    subscriberId?: true
+    monitorId?: true
+    createdAt?: true
+  }
+
+  export type MonitorSubscriptionMaxAggregateInputType = {
+    id?: true
+    subscriberId?: true
+    monitorId?: true
+    createdAt?: true
+  }
+
+  export type MonitorSubscriptionCountAggregateInputType = {
+    id?: true
+    subscriberId?: true
+    monitorId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type MonitorSubscriptionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MonitorSubscription to aggregate.
+     */
+    where?: MonitorSubscriptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MonitorSubscriptions to fetch.
+     */
+    orderBy?: MonitorSubscriptionOrderByWithRelationInput | MonitorSubscriptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MonitorSubscriptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MonitorSubscriptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MonitorSubscriptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned MonitorSubscriptions
+    **/
+    _count?: true | MonitorSubscriptionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MonitorSubscriptionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MonitorSubscriptionMaxAggregateInputType
+  }
+
+  export type GetMonitorSubscriptionAggregateType<T extends MonitorSubscriptionAggregateArgs> = {
+        [P in keyof T & keyof AggregateMonitorSubscription]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMonitorSubscription[P]>
+      : GetScalarType<T[P], AggregateMonitorSubscription[P]>
+  }
+
+
+
+
+  export type MonitorSubscriptionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MonitorSubscriptionWhereInput
+    orderBy?: MonitorSubscriptionOrderByWithAggregationInput | MonitorSubscriptionOrderByWithAggregationInput[]
+    by: MonitorSubscriptionScalarFieldEnum[] | MonitorSubscriptionScalarFieldEnum
+    having?: MonitorSubscriptionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MonitorSubscriptionCountAggregateInputType | true
+    _min?: MonitorSubscriptionMinAggregateInputType
+    _max?: MonitorSubscriptionMaxAggregateInputType
+  }
+
+  export type MonitorSubscriptionGroupByOutputType = {
+    id: string
+    subscriberId: string
+    monitorId: string
+    createdAt: Date
+    _count: MonitorSubscriptionCountAggregateOutputType | null
+    _min: MonitorSubscriptionMinAggregateOutputType | null
+    _max: MonitorSubscriptionMaxAggregateOutputType | null
+  }
+
+  type GetMonitorSubscriptionGroupByPayload<T extends MonitorSubscriptionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MonitorSubscriptionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MonitorSubscriptionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MonitorSubscriptionGroupByOutputType[P]>
+            : GetScalarType<T[P], MonitorSubscriptionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MonitorSubscriptionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    subscriberId?: boolean
+    monitorId?: boolean
+    createdAt?: boolean
+    subscriber?: boolean | StatusPageSubscriberDefaultArgs<ExtArgs>
+    monitor?: boolean | MonitorDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["monitorSubscription"]>
+
+  export type MonitorSubscriptionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    subscriberId?: boolean
+    monitorId?: boolean
+    createdAt?: boolean
+    subscriber?: boolean | StatusPageSubscriberDefaultArgs<ExtArgs>
+    monitor?: boolean | MonitorDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["monitorSubscription"]>
+
+  export type MonitorSubscriptionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    subscriberId?: boolean
+    monitorId?: boolean
+    createdAt?: boolean
+    subscriber?: boolean | StatusPageSubscriberDefaultArgs<ExtArgs>
+    monitor?: boolean | MonitorDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["monitorSubscription"]>
+
+  export type MonitorSubscriptionSelectScalar = {
+    id?: boolean
+    subscriberId?: boolean
+    monitorId?: boolean
+    createdAt?: boolean
+  }
+
+  export type MonitorSubscriptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "subscriberId" | "monitorId" | "createdAt", ExtArgs["result"]["monitorSubscription"]>
+  export type MonitorSubscriptionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    subscriber?: boolean | StatusPageSubscriberDefaultArgs<ExtArgs>
+    monitor?: boolean | MonitorDefaultArgs<ExtArgs>
+  }
+  export type MonitorSubscriptionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    subscriber?: boolean | StatusPageSubscriberDefaultArgs<ExtArgs>
+    monitor?: boolean | MonitorDefaultArgs<ExtArgs>
+  }
+  export type MonitorSubscriptionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    subscriber?: boolean | StatusPageSubscriberDefaultArgs<ExtArgs>
+    monitor?: boolean | MonitorDefaultArgs<ExtArgs>
+  }
+
+  export type $MonitorSubscriptionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "MonitorSubscription"
+    objects: {
+      subscriber: Prisma.$StatusPageSubscriberPayload<ExtArgs>
+      monitor: Prisma.$MonitorPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      subscriberId: string
+      monitorId: string
+      createdAt: Date
+    }, ExtArgs["result"]["monitorSubscription"]>
+    composites: {}
+  }
+
+  type MonitorSubscriptionGetPayload<S extends boolean | null | undefined | MonitorSubscriptionDefaultArgs> = $Result.GetResult<Prisma.$MonitorSubscriptionPayload, S>
+
+  type MonitorSubscriptionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MonitorSubscriptionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MonitorSubscriptionCountAggregateInputType | true
+    }
+
+  export interface MonitorSubscriptionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MonitorSubscription'], meta: { name: 'MonitorSubscription' } }
+    /**
+     * Find zero or one MonitorSubscription that matches the filter.
+     * @param {MonitorSubscriptionFindUniqueArgs} args - Arguments to find a MonitorSubscription
+     * @example
+     * // Get one MonitorSubscription
+     * const monitorSubscription = await prisma.monitorSubscription.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MonitorSubscriptionFindUniqueArgs>(args: SelectSubset<T, MonitorSubscriptionFindUniqueArgs<ExtArgs>>): Prisma__MonitorSubscriptionClient<$Result.GetResult<Prisma.$MonitorSubscriptionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one MonitorSubscription that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MonitorSubscriptionFindUniqueOrThrowArgs} args - Arguments to find a MonitorSubscription
+     * @example
+     * // Get one MonitorSubscription
+     * const monitorSubscription = await prisma.monitorSubscription.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MonitorSubscriptionFindUniqueOrThrowArgs>(args: SelectSubset<T, MonitorSubscriptionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MonitorSubscriptionClient<$Result.GetResult<Prisma.$MonitorSubscriptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MonitorSubscription that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MonitorSubscriptionFindFirstArgs} args - Arguments to find a MonitorSubscription
+     * @example
+     * // Get one MonitorSubscription
+     * const monitorSubscription = await prisma.monitorSubscription.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MonitorSubscriptionFindFirstArgs>(args?: SelectSubset<T, MonitorSubscriptionFindFirstArgs<ExtArgs>>): Prisma__MonitorSubscriptionClient<$Result.GetResult<Prisma.$MonitorSubscriptionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MonitorSubscription that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MonitorSubscriptionFindFirstOrThrowArgs} args - Arguments to find a MonitorSubscription
+     * @example
+     * // Get one MonitorSubscription
+     * const monitorSubscription = await prisma.monitorSubscription.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MonitorSubscriptionFindFirstOrThrowArgs>(args?: SelectSubset<T, MonitorSubscriptionFindFirstOrThrowArgs<ExtArgs>>): Prisma__MonitorSubscriptionClient<$Result.GetResult<Prisma.$MonitorSubscriptionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more MonitorSubscriptions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MonitorSubscriptionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all MonitorSubscriptions
+     * const monitorSubscriptions = await prisma.monitorSubscription.findMany()
+     * 
+     * // Get first 10 MonitorSubscriptions
+     * const monitorSubscriptions = await prisma.monitorSubscription.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const monitorSubscriptionWithIdOnly = await prisma.monitorSubscription.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MonitorSubscriptionFindManyArgs>(args?: SelectSubset<T, MonitorSubscriptionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MonitorSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a MonitorSubscription.
+     * @param {MonitorSubscriptionCreateArgs} args - Arguments to create a MonitorSubscription.
+     * @example
+     * // Create one MonitorSubscription
+     * const MonitorSubscription = await prisma.monitorSubscription.create({
+     *   data: {
+     *     // ... data to create a MonitorSubscription
+     *   }
+     * })
+     * 
+     */
+    create<T extends MonitorSubscriptionCreateArgs>(args: SelectSubset<T, MonitorSubscriptionCreateArgs<ExtArgs>>): Prisma__MonitorSubscriptionClient<$Result.GetResult<Prisma.$MonitorSubscriptionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many MonitorSubscriptions.
+     * @param {MonitorSubscriptionCreateManyArgs} args - Arguments to create many MonitorSubscriptions.
+     * @example
+     * // Create many MonitorSubscriptions
+     * const monitorSubscription = await prisma.monitorSubscription.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MonitorSubscriptionCreateManyArgs>(args?: SelectSubset<T, MonitorSubscriptionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many MonitorSubscriptions and returns the data saved in the database.
+     * @param {MonitorSubscriptionCreateManyAndReturnArgs} args - Arguments to create many MonitorSubscriptions.
+     * @example
+     * // Create many MonitorSubscriptions
+     * const monitorSubscription = await prisma.monitorSubscription.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many MonitorSubscriptions and only return the `id`
+     * const monitorSubscriptionWithIdOnly = await prisma.monitorSubscription.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MonitorSubscriptionCreateManyAndReturnArgs>(args?: SelectSubset<T, MonitorSubscriptionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MonitorSubscriptionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a MonitorSubscription.
+     * @param {MonitorSubscriptionDeleteArgs} args - Arguments to delete one MonitorSubscription.
+     * @example
+     * // Delete one MonitorSubscription
+     * const MonitorSubscription = await prisma.monitorSubscription.delete({
+     *   where: {
+     *     // ... filter to delete one MonitorSubscription
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MonitorSubscriptionDeleteArgs>(args: SelectSubset<T, MonitorSubscriptionDeleteArgs<ExtArgs>>): Prisma__MonitorSubscriptionClient<$Result.GetResult<Prisma.$MonitorSubscriptionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one MonitorSubscription.
+     * @param {MonitorSubscriptionUpdateArgs} args - Arguments to update one MonitorSubscription.
+     * @example
+     * // Update one MonitorSubscription
+     * const monitorSubscription = await prisma.monitorSubscription.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MonitorSubscriptionUpdateArgs>(args: SelectSubset<T, MonitorSubscriptionUpdateArgs<ExtArgs>>): Prisma__MonitorSubscriptionClient<$Result.GetResult<Prisma.$MonitorSubscriptionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more MonitorSubscriptions.
+     * @param {MonitorSubscriptionDeleteManyArgs} args - Arguments to filter MonitorSubscriptions to delete.
+     * @example
+     * // Delete a few MonitorSubscriptions
+     * const { count } = await prisma.monitorSubscription.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MonitorSubscriptionDeleteManyArgs>(args?: SelectSubset<T, MonitorSubscriptionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MonitorSubscriptions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MonitorSubscriptionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many MonitorSubscriptions
+     * const monitorSubscription = await prisma.monitorSubscription.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MonitorSubscriptionUpdateManyArgs>(args: SelectSubset<T, MonitorSubscriptionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MonitorSubscriptions and returns the data updated in the database.
+     * @param {MonitorSubscriptionUpdateManyAndReturnArgs} args - Arguments to update many MonitorSubscriptions.
+     * @example
+     * // Update many MonitorSubscriptions
+     * const monitorSubscription = await prisma.monitorSubscription.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more MonitorSubscriptions and only return the `id`
+     * const monitorSubscriptionWithIdOnly = await prisma.monitorSubscription.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MonitorSubscriptionUpdateManyAndReturnArgs>(args: SelectSubset<T, MonitorSubscriptionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MonitorSubscriptionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one MonitorSubscription.
+     * @param {MonitorSubscriptionUpsertArgs} args - Arguments to update or create a MonitorSubscription.
+     * @example
+     * // Update or create a MonitorSubscription
+     * const monitorSubscription = await prisma.monitorSubscription.upsert({
+     *   create: {
+     *     // ... data to create a MonitorSubscription
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the MonitorSubscription we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MonitorSubscriptionUpsertArgs>(args: SelectSubset<T, MonitorSubscriptionUpsertArgs<ExtArgs>>): Prisma__MonitorSubscriptionClient<$Result.GetResult<Prisma.$MonitorSubscriptionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of MonitorSubscriptions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MonitorSubscriptionCountArgs} args - Arguments to filter MonitorSubscriptions to count.
+     * @example
+     * // Count the number of MonitorSubscriptions
+     * const count = await prisma.monitorSubscription.count({
+     *   where: {
+     *     // ... the filter for the MonitorSubscriptions we want to count
+     *   }
+     * })
+    **/
+    count<T extends MonitorSubscriptionCountArgs>(
+      args?: Subset<T, MonitorSubscriptionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MonitorSubscriptionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a MonitorSubscription.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MonitorSubscriptionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MonitorSubscriptionAggregateArgs>(args: Subset<T, MonitorSubscriptionAggregateArgs>): Prisma.PrismaPromise<GetMonitorSubscriptionAggregateType<T>>
+
+    /**
+     * Group by MonitorSubscription.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MonitorSubscriptionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MonitorSubscriptionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MonitorSubscriptionGroupByArgs['orderBy'] }
+        : { orderBy?: MonitorSubscriptionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MonitorSubscriptionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMonitorSubscriptionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the MonitorSubscription model
+   */
+  readonly fields: MonitorSubscriptionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for MonitorSubscription.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MonitorSubscriptionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    subscriber<T extends StatusPageSubscriberDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StatusPageSubscriberDefaultArgs<ExtArgs>>): Prisma__StatusPageSubscriberClient<$Result.GetResult<Prisma.$StatusPageSubscriberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    monitor<T extends MonitorDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MonitorDefaultArgs<ExtArgs>>): Prisma__MonitorClient<$Result.GetResult<Prisma.$MonitorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the MonitorSubscription model
+   */
+  interface MonitorSubscriptionFieldRefs {
+    readonly id: FieldRef<"MonitorSubscription", 'String'>
+    readonly subscriberId: FieldRef<"MonitorSubscription", 'String'>
+    readonly monitorId: FieldRef<"MonitorSubscription", 'String'>
+    readonly createdAt: FieldRef<"MonitorSubscription", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * MonitorSubscription findUnique
+   */
+  export type MonitorSubscriptionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MonitorSubscription
+     */
+    select?: MonitorSubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MonitorSubscription
+     */
+    omit?: MonitorSubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MonitorSubscriptionInclude<ExtArgs> | null
+    /**
+     * Filter, which MonitorSubscription to fetch.
+     */
+    where: MonitorSubscriptionWhereUniqueInput
+  }
+
+  /**
+   * MonitorSubscription findUniqueOrThrow
+   */
+  export type MonitorSubscriptionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MonitorSubscription
+     */
+    select?: MonitorSubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MonitorSubscription
+     */
+    omit?: MonitorSubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MonitorSubscriptionInclude<ExtArgs> | null
+    /**
+     * Filter, which MonitorSubscription to fetch.
+     */
+    where: MonitorSubscriptionWhereUniqueInput
+  }
+
+  /**
+   * MonitorSubscription findFirst
+   */
+  export type MonitorSubscriptionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MonitorSubscription
+     */
+    select?: MonitorSubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MonitorSubscription
+     */
+    omit?: MonitorSubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MonitorSubscriptionInclude<ExtArgs> | null
+    /**
+     * Filter, which MonitorSubscription to fetch.
+     */
+    where?: MonitorSubscriptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MonitorSubscriptions to fetch.
+     */
+    orderBy?: MonitorSubscriptionOrderByWithRelationInput | MonitorSubscriptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MonitorSubscriptions.
+     */
+    cursor?: MonitorSubscriptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MonitorSubscriptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MonitorSubscriptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MonitorSubscriptions.
+     */
+    distinct?: MonitorSubscriptionScalarFieldEnum | MonitorSubscriptionScalarFieldEnum[]
+  }
+
+  /**
+   * MonitorSubscription findFirstOrThrow
+   */
+  export type MonitorSubscriptionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MonitorSubscription
+     */
+    select?: MonitorSubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MonitorSubscription
+     */
+    omit?: MonitorSubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MonitorSubscriptionInclude<ExtArgs> | null
+    /**
+     * Filter, which MonitorSubscription to fetch.
+     */
+    where?: MonitorSubscriptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MonitorSubscriptions to fetch.
+     */
+    orderBy?: MonitorSubscriptionOrderByWithRelationInput | MonitorSubscriptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MonitorSubscriptions.
+     */
+    cursor?: MonitorSubscriptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MonitorSubscriptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MonitorSubscriptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MonitorSubscriptions.
+     */
+    distinct?: MonitorSubscriptionScalarFieldEnum | MonitorSubscriptionScalarFieldEnum[]
+  }
+
+  /**
+   * MonitorSubscription findMany
+   */
+  export type MonitorSubscriptionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MonitorSubscription
+     */
+    select?: MonitorSubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MonitorSubscription
+     */
+    omit?: MonitorSubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MonitorSubscriptionInclude<ExtArgs> | null
+    /**
+     * Filter, which MonitorSubscriptions to fetch.
+     */
+    where?: MonitorSubscriptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MonitorSubscriptions to fetch.
+     */
+    orderBy?: MonitorSubscriptionOrderByWithRelationInput | MonitorSubscriptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing MonitorSubscriptions.
+     */
+    cursor?: MonitorSubscriptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MonitorSubscriptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MonitorSubscriptions.
+     */
+    skip?: number
+    distinct?: MonitorSubscriptionScalarFieldEnum | MonitorSubscriptionScalarFieldEnum[]
+  }
+
+  /**
+   * MonitorSubscription create
+   */
+  export type MonitorSubscriptionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MonitorSubscription
+     */
+    select?: MonitorSubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MonitorSubscription
+     */
+    omit?: MonitorSubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MonitorSubscriptionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a MonitorSubscription.
+     */
+    data: XOR<MonitorSubscriptionCreateInput, MonitorSubscriptionUncheckedCreateInput>
+  }
+
+  /**
+   * MonitorSubscription createMany
+   */
+  export type MonitorSubscriptionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many MonitorSubscriptions.
+     */
+    data: MonitorSubscriptionCreateManyInput | MonitorSubscriptionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * MonitorSubscription createManyAndReturn
+   */
+  export type MonitorSubscriptionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MonitorSubscription
+     */
+    select?: MonitorSubscriptionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MonitorSubscription
+     */
+    omit?: MonitorSubscriptionOmit<ExtArgs> | null
+    /**
+     * The data used to create many MonitorSubscriptions.
+     */
+    data: MonitorSubscriptionCreateManyInput | MonitorSubscriptionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MonitorSubscriptionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * MonitorSubscription update
+   */
+  export type MonitorSubscriptionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MonitorSubscription
+     */
+    select?: MonitorSubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MonitorSubscription
+     */
+    omit?: MonitorSubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MonitorSubscriptionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a MonitorSubscription.
+     */
+    data: XOR<MonitorSubscriptionUpdateInput, MonitorSubscriptionUncheckedUpdateInput>
+    /**
+     * Choose, which MonitorSubscription to update.
+     */
+    where: MonitorSubscriptionWhereUniqueInput
+  }
+
+  /**
+   * MonitorSubscription updateMany
+   */
+  export type MonitorSubscriptionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update MonitorSubscriptions.
+     */
+    data: XOR<MonitorSubscriptionUpdateManyMutationInput, MonitorSubscriptionUncheckedUpdateManyInput>
+    /**
+     * Filter which MonitorSubscriptions to update
+     */
+    where?: MonitorSubscriptionWhereInput
+    /**
+     * Limit how many MonitorSubscriptions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MonitorSubscription updateManyAndReturn
+   */
+  export type MonitorSubscriptionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MonitorSubscription
+     */
+    select?: MonitorSubscriptionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MonitorSubscription
+     */
+    omit?: MonitorSubscriptionOmit<ExtArgs> | null
+    /**
+     * The data used to update MonitorSubscriptions.
+     */
+    data: XOR<MonitorSubscriptionUpdateManyMutationInput, MonitorSubscriptionUncheckedUpdateManyInput>
+    /**
+     * Filter which MonitorSubscriptions to update
+     */
+    where?: MonitorSubscriptionWhereInput
+    /**
+     * Limit how many MonitorSubscriptions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MonitorSubscriptionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * MonitorSubscription upsert
+   */
+  export type MonitorSubscriptionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MonitorSubscription
+     */
+    select?: MonitorSubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MonitorSubscription
+     */
+    omit?: MonitorSubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MonitorSubscriptionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the MonitorSubscription to update in case it exists.
+     */
+    where: MonitorSubscriptionWhereUniqueInput
+    /**
+     * In case the MonitorSubscription found by the `where` argument doesn't exist, create a new MonitorSubscription with this data.
+     */
+    create: XOR<MonitorSubscriptionCreateInput, MonitorSubscriptionUncheckedCreateInput>
+    /**
+     * In case the MonitorSubscription was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MonitorSubscriptionUpdateInput, MonitorSubscriptionUncheckedUpdateInput>
+  }
+
+  /**
+   * MonitorSubscription delete
+   */
+  export type MonitorSubscriptionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MonitorSubscription
+     */
+    select?: MonitorSubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MonitorSubscription
+     */
+    omit?: MonitorSubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MonitorSubscriptionInclude<ExtArgs> | null
+    /**
+     * Filter which MonitorSubscription to delete.
+     */
+    where: MonitorSubscriptionWhereUniqueInput
+  }
+
+  /**
+   * MonitorSubscription deleteMany
+   */
+  export type MonitorSubscriptionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MonitorSubscriptions to delete
+     */
+    where?: MonitorSubscriptionWhereInput
+    /**
+     * Limit how many MonitorSubscriptions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * MonitorSubscription without action
+   */
+  export type MonitorSubscriptionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MonitorSubscription
+     */
+    select?: MonitorSubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MonitorSubscription
+     */
+    omit?: MonitorSubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MonitorSubscriptionInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -23987,6 +27691,44 @@ export namespace Prisma {
   export type StatusPageViewScalarFieldEnum = (typeof StatusPageViewScalarFieldEnum)[keyof typeof StatusPageViewScalarFieldEnum]
 
 
+  export const StatusPageSubscriberScalarFieldEnum: {
+    id: 'id',
+    statusPageId: 'statusPageId',
+    email: 'email',
+    verified: 'verified',
+    manageToken: 'manageToken',
+    notifyIncidents: 'notifyIncidents',
+    notifyMaintenance: 'notifyMaintenance',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type StatusPageSubscriberScalarFieldEnum = (typeof StatusPageSubscriberScalarFieldEnum)[keyof typeof StatusPageSubscriberScalarFieldEnum]
+
+
+  export const SubscriptionTokenScalarFieldEnum: {
+    id: 'id',
+    subscriberId: 'subscriberId',
+    token: 'token',
+    type: 'type',
+    expiresAt: 'expiresAt',
+    usedAt: 'usedAt',
+    createdAt: 'createdAt'
+  };
+
+  export type SubscriptionTokenScalarFieldEnum = (typeof SubscriptionTokenScalarFieldEnum)[keyof typeof SubscriptionTokenScalarFieldEnum]
+
+
+  export const MonitorSubscriptionScalarFieldEnum: {
+    id: 'id',
+    subscriberId: 'subscriberId',
+    monitorId: 'monitorId',
+    createdAt: 'createdAt'
+  };
+
+  export type MonitorSubscriptionScalarFieldEnum = (typeof MonitorSubscriptionScalarFieldEnum)[keyof typeof MonitorSubscriptionScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -24240,6 +27982,20 @@ export namespace Prisma {
    * Reference to a field of type 'MonitorType[]'
    */
   export type ListEnumMonitorTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MonitorType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'SubscriptionTokenType'
+   */
+  export type EnumSubscriptionTokenTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SubscriptionTokenType'>
+    
+
+
+  /**
+   * Reference to a field of type 'SubscriptionTokenType[]'
+   */
+  export type ListEnumSubscriptionTokenTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SubscriptionTokenType[]'>
     
   /**
    * Deep Input Types
@@ -25120,6 +28876,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateListRelationFilter
     regionalBaselines?: RegionalBaselineListRelationFilter
     statusPages?: StatusPageMonitorListRelationFilter
+    monitorSubscriptions?: MonitorSubscriptionListRelationFilter
   }
 
   export type MonitorOrderByWithRelationInput = {
@@ -25146,6 +28903,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateOrderByRelationAggregateInput
     regionalBaselines?: RegionalBaselineOrderByRelationAggregateInput
     statusPages?: StatusPageMonitorOrderByRelationAggregateInput
+    monitorSubscriptions?: MonitorSubscriptionOrderByRelationAggregateInput
   }
 
   export type MonitorWhereUniqueInput = Prisma.AtLeast<{
@@ -25175,6 +28933,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateListRelationFilter
     regionalBaselines?: RegionalBaselineListRelationFilter
     statusPages?: StatusPageMonitorListRelationFilter
+    monitorSubscriptions?: MonitorSubscriptionListRelationFilter
   }, "id">
 
   export type MonitorOrderByWithAggregationInput = {
@@ -25450,6 +29209,7 @@ export namespace Prisma {
     monitors?: StatusPageMonitorListRelationFilter
     views?: StatusPageViewListRelationFilter
     i18nSettings?: StatusPageI18nListRelationFilter
+    subscribers?: StatusPageSubscriberListRelationFilter
   }
 
   export type StatusPageOrderByWithRelationInput = {
@@ -25482,6 +29242,7 @@ export namespace Prisma {
     monitors?: StatusPageMonitorOrderByRelationAggregateInput
     views?: StatusPageViewOrderByRelationAggregateInput
     i18nSettings?: StatusPageI18nOrderByRelationAggregateInput
+    subscribers?: StatusPageSubscriberOrderByRelationAggregateInput
   }
 
   export type StatusPageWhereUniqueInput = Prisma.AtLeast<{
@@ -25517,6 +29278,7 @@ export namespace Prisma {
     monitors?: StatusPageMonitorListRelationFilter
     views?: StatusPageViewListRelationFilter
     i18nSettings?: StatusPageI18nListRelationFilter
+    subscribers?: StatusPageSubscriberListRelationFilter
   }, "id" | "slug" | "customDomain">
 
   export type StatusPageOrderByWithAggregationInput = {
@@ -25712,6 +29474,207 @@ export namespace Prisma {
     userAgent?: StringNullableWithAggregatesFilter<"StatusPageView"> | string | null
     country?: StringNullableWithAggregatesFilter<"StatusPageView"> | string | null
     timestamp?: DateTimeWithAggregatesFilter<"StatusPageView"> | Date | string
+  }
+
+  export type StatusPageSubscriberWhereInput = {
+    AND?: StatusPageSubscriberWhereInput | StatusPageSubscriberWhereInput[]
+    OR?: StatusPageSubscriberWhereInput[]
+    NOT?: StatusPageSubscriberWhereInput | StatusPageSubscriberWhereInput[]
+    id?: StringFilter<"StatusPageSubscriber"> | string
+    statusPageId?: StringFilter<"StatusPageSubscriber"> | string
+    email?: StringFilter<"StatusPageSubscriber"> | string
+    verified?: BoolFilter<"StatusPageSubscriber"> | boolean
+    manageToken?: StringFilter<"StatusPageSubscriber"> | string
+    notifyIncidents?: BoolFilter<"StatusPageSubscriber"> | boolean
+    notifyMaintenance?: BoolFilter<"StatusPageSubscriber"> | boolean
+    createdAt?: DateTimeFilter<"StatusPageSubscriber"> | Date | string
+    updatedAt?: DateTimeFilter<"StatusPageSubscriber"> | Date | string
+    statusPage?: XOR<StatusPageScalarRelationFilter, StatusPageWhereInput>
+    monitorSubscriptions?: MonitorSubscriptionListRelationFilter
+    tokens?: SubscriptionTokenListRelationFilter
+  }
+
+  export type StatusPageSubscriberOrderByWithRelationInput = {
+    id?: SortOrder
+    statusPageId?: SortOrder
+    email?: SortOrder
+    verified?: SortOrder
+    manageToken?: SortOrder
+    notifyIncidents?: SortOrder
+    notifyMaintenance?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    statusPage?: StatusPageOrderByWithRelationInput
+    monitorSubscriptions?: MonitorSubscriptionOrderByRelationAggregateInput
+    tokens?: SubscriptionTokenOrderByRelationAggregateInput
+  }
+
+  export type StatusPageSubscriberWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    manageToken?: string
+    statusPageId_email?: StatusPageSubscriberStatusPageIdEmailCompoundUniqueInput
+    AND?: StatusPageSubscriberWhereInput | StatusPageSubscriberWhereInput[]
+    OR?: StatusPageSubscriberWhereInput[]
+    NOT?: StatusPageSubscriberWhereInput | StatusPageSubscriberWhereInput[]
+    statusPageId?: StringFilter<"StatusPageSubscriber"> | string
+    email?: StringFilter<"StatusPageSubscriber"> | string
+    verified?: BoolFilter<"StatusPageSubscriber"> | boolean
+    notifyIncidents?: BoolFilter<"StatusPageSubscriber"> | boolean
+    notifyMaintenance?: BoolFilter<"StatusPageSubscriber"> | boolean
+    createdAt?: DateTimeFilter<"StatusPageSubscriber"> | Date | string
+    updatedAt?: DateTimeFilter<"StatusPageSubscriber"> | Date | string
+    statusPage?: XOR<StatusPageScalarRelationFilter, StatusPageWhereInput>
+    monitorSubscriptions?: MonitorSubscriptionListRelationFilter
+    tokens?: SubscriptionTokenListRelationFilter
+  }, "id" | "manageToken" | "statusPageId_email">
+
+  export type StatusPageSubscriberOrderByWithAggregationInput = {
+    id?: SortOrder
+    statusPageId?: SortOrder
+    email?: SortOrder
+    verified?: SortOrder
+    manageToken?: SortOrder
+    notifyIncidents?: SortOrder
+    notifyMaintenance?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: StatusPageSubscriberCountOrderByAggregateInput
+    _max?: StatusPageSubscriberMaxOrderByAggregateInput
+    _min?: StatusPageSubscriberMinOrderByAggregateInput
+  }
+
+  export type StatusPageSubscriberScalarWhereWithAggregatesInput = {
+    AND?: StatusPageSubscriberScalarWhereWithAggregatesInput | StatusPageSubscriberScalarWhereWithAggregatesInput[]
+    OR?: StatusPageSubscriberScalarWhereWithAggregatesInput[]
+    NOT?: StatusPageSubscriberScalarWhereWithAggregatesInput | StatusPageSubscriberScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"StatusPageSubscriber"> | string
+    statusPageId?: StringWithAggregatesFilter<"StatusPageSubscriber"> | string
+    email?: StringWithAggregatesFilter<"StatusPageSubscriber"> | string
+    verified?: BoolWithAggregatesFilter<"StatusPageSubscriber"> | boolean
+    manageToken?: StringWithAggregatesFilter<"StatusPageSubscriber"> | string
+    notifyIncidents?: BoolWithAggregatesFilter<"StatusPageSubscriber"> | boolean
+    notifyMaintenance?: BoolWithAggregatesFilter<"StatusPageSubscriber"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"StatusPageSubscriber"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"StatusPageSubscriber"> | Date | string
+  }
+
+  export type SubscriptionTokenWhereInput = {
+    AND?: SubscriptionTokenWhereInput | SubscriptionTokenWhereInput[]
+    OR?: SubscriptionTokenWhereInput[]
+    NOT?: SubscriptionTokenWhereInput | SubscriptionTokenWhereInput[]
+    id?: StringFilter<"SubscriptionToken"> | string
+    subscriberId?: StringFilter<"SubscriptionToken"> | string
+    token?: StringFilter<"SubscriptionToken"> | string
+    type?: EnumSubscriptionTokenTypeFilter<"SubscriptionToken"> | $Enums.SubscriptionTokenType
+    expiresAt?: DateTimeFilter<"SubscriptionToken"> | Date | string
+    usedAt?: DateTimeNullableFilter<"SubscriptionToken"> | Date | string | null
+    createdAt?: DateTimeFilter<"SubscriptionToken"> | Date | string
+    subscriber?: XOR<StatusPageSubscriberScalarRelationFilter, StatusPageSubscriberWhereInput>
+  }
+
+  export type SubscriptionTokenOrderByWithRelationInput = {
+    id?: SortOrder
+    subscriberId?: SortOrder
+    token?: SortOrder
+    type?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    subscriber?: StatusPageSubscriberOrderByWithRelationInput
+  }
+
+  export type SubscriptionTokenWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    token?: string
+    AND?: SubscriptionTokenWhereInput | SubscriptionTokenWhereInput[]
+    OR?: SubscriptionTokenWhereInput[]
+    NOT?: SubscriptionTokenWhereInput | SubscriptionTokenWhereInput[]
+    subscriberId?: StringFilter<"SubscriptionToken"> | string
+    type?: EnumSubscriptionTokenTypeFilter<"SubscriptionToken"> | $Enums.SubscriptionTokenType
+    expiresAt?: DateTimeFilter<"SubscriptionToken"> | Date | string
+    usedAt?: DateTimeNullableFilter<"SubscriptionToken"> | Date | string | null
+    createdAt?: DateTimeFilter<"SubscriptionToken"> | Date | string
+    subscriber?: XOR<StatusPageSubscriberScalarRelationFilter, StatusPageSubscriberWhereInput>
+  }, "id" | "token">
+
+  export type SubscriptionTokenOrderByWithAggregationInput = {
+    id?: SortOrder
+    subscriberId?: SortOrder
+    token?: SortOrder
+    type?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: SubscriptionTokenCountOrderByAggregateInput
+    _max?: SubscriptionTokenMaxOrderByAggregateInput
+    _min?: SubscriptionTokenMinOrderByAggregateInput
+  }
+
+  export type SubscriptionTokenScalarWhereWithAggregatesInput = {
+    AND?: SubscriptionTokenScalarWhereWithAggregatesInput | SubscriptionTokenScalarWhereWithAggregatesInput[]
+    OR?: SubscriptionTokenScalarWhereWithAggregatesInput[]
+    NOT?: SubscriptionTokenScalarWhereWithAggregatesInput | SubscriptionTokenScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SubscriptionToken"> | string
+    subscriberId?: StringWithAggregatesFilter<"SubscriptionToken"> | string
+    token?: StringWithAggregatesFilter<"SubscriptionToken"> | string
+    type?: EnumSubscriptionTokenTypeWithAggregatesFilter<"SubscriptionToken"> | $Enums.SubscriptionTokenType
+    expiresAt?: DateTimeWithAggregatesFilter<"SubscriptionToken"> | Date | string
+    usedAt?: DateTimeNullableWithAggregatesFilter<"SubscriptionToken"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"SubscriptionToken"> | Date | string
+  }
+
+  export type MonitorSubscriptionWhereInput = {
+    AND?: MonitorSubscriptionWhereInput | MonitorSubscriptionWhereInput[]
+    OR?: MonitorSubscriptionWhereInput[]
+    NOT?: MonitorSubscriptionWhereInput | MonitorSubscriptionWhereInput[]
+    id?: StringFilter<"MonitorSubscription"> | string
+    subscriberId?: StringFilter<"MonitorSubscription"> | string
+    monitorId?: StringFilter<"MonitorSubscription"> | string
+    createdAt?: DateTimeFilter<"MonitorSubscription"> | Date | string
+    subscriber?: XOR<StatusPageSubscriberScalarRelationFilter, StatusPageSubscriberWhereInput>
+    monitor?: XOR<MonitorScalarRelationFilter, MonitorWhereInput>
+  }
+
+  export type MonitorSubscriptionOrderByWithRelationInput = {
+    id?: SortOrder
+    subscriberId?: SortOrder
+    monitorId?: SortOrder
+    createdAt?: SortOrder
+    subscriber?: StatusPageSubscriberOrderByWithRelationInput
+    monitor?: MonitorOrderByWithRelationInput
+  }
+
+  export type MonitorSubscriptionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    subscriberId_monitorId?: MonitorSubscriptionSubscriberIdMonitorIdCompoundUniqueInput
+    AND?: MonitorSubscriptionWhereInput | MonitorSubscriptionWhereInput[]
+    OR?: MonitorSubscriptionWhereInput[]
+    NOT?: MonitorSubscriptionWhereInput | MonitorSubscriptionWhereInput[]
+    subscriberId?: StringFilter<"MonitorSubscription"> | string
+    monitorId?: StringFilter<"MonitorSubscription"> | string
+    createdAt?: DateTimeFilter<"MonitorSubscription"> | Date | string
+    subscriber?: XOR<StatusPageSubscriberScalarRelationFilter, StatusPageSubscriberWhereInput>
+    monitor?: XOR<MonitorScalarRelationFilter, MonitorWhereInput>
+  }, "id" | "subscriberId_monitorId">
+
+  export type MonitorSubscriptionOrderByWithAggregationInput = {
+    id?: SortOrder
+    subscriberId?: SortOrder
+    monitorId?: SortOrder
+    createdAt?: SortOrder
+    _count?: MonitorSubscriptionCountOrderByAggregateInput
+    _max?: MonitorSubscriptionMaxOrderByAggregateInput
+    _min?: MonitorSubscriptionMinOrderByAggregateInput
+  }
+
+  export type MonitorSubscriptionScalarWhereWithAggregatesInput = {
+    AND?: MonitorSubscriptionScalarWhereWithAggregatesInput | MonitorSubscriptionScalarWhereWithAggregatesInput[]
+    OR?: MonitorSubscriptionScalarWhereWithAggregatesInput[]
+    NOT?: MonitorSubscriptionScalarWhereWithAggregatesInput | MonitorSubscriptionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"MonitorSubscription"> | string
+    subscriberId?: StringWithAggregatesFilter<"MonitorSubscription"> | string
+    monitorId?: StringWithAggregatesFilter<"MonitorSubscription"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"MonitorSubscription"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -26677,6 +30640,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
+    monitorSubscriptions?: MonitorSubscriptionCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateInput = {
@@ -26702,6 +30666,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUncheckedCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
+    monitorSubscriptions?: MonitorSubscriptionUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUpdateInput = {
@@ -26727,6 +30692,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
+    monitorSubscriptions?: MonitorSubscriptionUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateInput = {
@@ -26752,6 +30718,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUncheckedUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
+    monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorCreateManyInput = {
@@ -27040,6 +31007,7 @@ export namespace Prisma {
     monitors?: StatusPageMonitorCreateNestedManyWithoutStatusPageInput
     views?: StatusPageViewCreateNestedManyWithoutStatusPageInput
     i18nSettings?: StatusPageI18nCreateNestedManyWithoutStatusPageInput
+    subscribers?: StatusPageSubscriberCreateNestedManyWithoutStatusPageInput
   }
 
   export type StatusPageUncheckedCreateInput = {
@@ -27071,6 +31039,7 @@ export namespace Prisma {
     monitors?: StatusPageMonitorUncheckedCreateNestedManyWithoutStatusPageInput
     views?: StatusPageViewUncheckedCreateNestedManyWithoutStatusPageInput
     i18nSettings?: StatusPageI18nUncheckedCreateNestedManyWithoutStatusPageInput
+    subscribers?: StatusPageSubscriberUncheckedCreateNestedManyWithoutStatusPageInput
   }
 
   export type StatusPageUpdateInput = {
@@ -27102,6 +31071,7 @@ export namespace Prisma {
     monitors?: StatusPageMonitorUpdateManyWithoutStatusPageNestedInput
     views?: StatusPageViewUpdateManyWithoutStatusPageNestedInput
     i18nSettings?: StatusPageI18nUpdateManyWithoutStatusPageNestedInput
+    subscribers?: StatusPageSubscriberUpdateManyWithoutStatusPageNestedInput
   }
 
   export type StatusPageUncheckedUpdateInput = {
@@ -27133,6 +31103,7 @@ export namespace Prisma {
     monitors?: StatusPageMonitorUncheckedUpdateManyWithoutStatusPageNestedInput
     views?: StatusPageViewUncheckedUpdateManyWithoutStatusPageNestedInput
     i18nSettings?: StatusPageI18nUncheckedUpdateManyWithoutStatusPageNestedInput
+    subscribers?: StatusPageSubscriberUncheckedUpdateManyWithoutStatusPageNestedInput
   }
 
   export type StatusPageCreateManyInput = {
@@ -27346,6 +31317,213 @@ export namespace Prisma {
     userAgent?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusPageSubscriberCreateInput = {
+    id?: string
+    email: string
+    verified?: boolean
+    manageToken?: string
+    notifyIncidents?: boolean
+    notifyMaintenance?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    statusPage: StatusPageCreateNestedOneWithoutSubscribersInput
+    monitorSubscriptions?: MonitorSubscriptionCreateNestedManyWithoutSubscriberInput
+    tokens?: SubscriptionTokenCreateNestedManyWithoutSubscriberInput
+  }
+
+  export type StatusPageSubscriberUncheckedCreateInput = {
+    id?: string
+    statusPageId: string
+    email: string
+    verified?: boolean
+    manageToken?: string
+    notifyIncidents?: boolean
+    notifyMaintenance?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    monitorSubscriptions?: MonitorSubscriptionUncheckedCreateNestedManyWithoutSubscriberInput
+    tokens?: SubscriptionTokenUncheckedCreateNestedManyWithoutSubscriberInput
+  }
+
+  export type StatusPageSubscriberUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    verified?: BoolFieldUpdateOperationsInput | boolean
+    manageToken?: StringFieldUpdateOperationsInput | string
+    notifyIncidents?: BoolFieldUpdateOperationsInput | boolean
+    notifyMaintenance?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    statusPage?: StatusPageUpdateOneRequiredWithoutSubscribersNestedInput
+    monitorSubscriptions?: MonitorSubscriptionUpdateManyWithoutSubscriberNestedInput
+    tokens?: SubscriptionTokenUpdateManyWithoutSubscriberNestedInput
+  }
+
+  export type StatusPageSubscriberUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    statusPageId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    verified?: BoolFieldUpdateOperationsInput | boolean
+    manageToken?: StringFieldUpdateOperationsInput | string
+    notifyIncidents?: BoolFieldUpdateOperationsInput | boolean
+    notifyMaintenance?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutSubscriberNestedInput
+    tokens?: SubscriptionTokenUncheckedUpdateManyWithoutSubscriberNestedInput
+  }
+
+  export type StatusPageSubscriberCreateManyInput = {
+    id?: string
+    statusPageId: string
+    email: string
+    verified?: boolean
+    manageToken?: string
+    notifyIncidents?: boolean
+    notifyMaintenance?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StatusPageSubscriberUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    verified?: BoolFieldUpdateOperationsInput | boolean
+    manageToken?: StringFieldUpdateOperationsInput | string
+    notifyIncidents?: BoolFieldUpdateOperationsInput | boolean
+    notifyMaintenance?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusPageSubscriberUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    statusPageId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    verified?: BoolFieldUpdateOperationsInput | boolean
+    manageToken?: StringFieldUpdateOperationsInput | string
+    notifyIncidents?: BoolFieldUpdateOperationsInput | boolean
+    notifyMaintenance?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SubscriptionTokenCreateInput = {
+    id?: string
+    token: string
+    type: $Enums.SubscriptionTokenType
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    createdAt?: Date | string
+    subscriber: StatusPageSubscriberCreateNestedOneWithoutTokensInput
+  }
+
+  export type SubscriptionTokenUncheckedCreateInput = {
+    id?: string
+    subscriberId: string
+    token: string
+    type: $Enums.SubscriptionTokenType
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type SubscriptionTokenUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    type?: EnumSubscriptionTokenTypeFieldUpdateOperationsInput | $Enums.SubscriptionTokenType
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscriber?: StatusPageSubscriberUpdateOneRequiredWithoutTokensNestedInput
+  }
+
+  export type SubscriptionTokenUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subscriberId?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    type?: EnumSubscriptionTokenTypeFieldUpdateOperationsInput | $Enums.SubscriptionTokenType
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SubscriptionTokenCreateManyInput = {
+    id?: string
+    subscriberId: string
+    token: string
+    type: $Enums.SubscriptionTokenType
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type SubscriptionTokenUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    type?: EnumSubscriptionTokenTypeFieldUpdateOperationsInput | $Enums.SubscriptionTokenType
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SubscriptionTokenUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subscriberId?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    type?: EnumSubscriptionTokenTypeFieldUpdateOperationsInput | $Enums.SubscriptionTokenType
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MonitorSubscriptionCreateInput = {
+    id?: string
+    createdAt?: Date | string
+    subscriber: StatusPageSubscriberCreateNestedOneWithoutMonitorSubscriptionsInput
+    monitor: MonitorCreateNestedOneWithoutMonitorSubscriptionsInput
+  }
+
+  export type MonitorSubscriptionUncheckedCreateInput = {
+    id?: string
+    subscriberId: string
+    monitorId: string
+    createdAt?: Date | string
+  }
+
+  export type MonitorSubscriptionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscriber?: StatusPageSubscriberUpdateOneRequiredWithoutMonitorSubscriptionsNestedInput
+    monitor?: MonitorUpdateOneRequiredWithoutMonitorSubscriptionsNestedInput
+  }
+
+  export type MonitorSubscriptionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subscriberId?: StringFieldUpdateOperationsInput | string
+    monitorId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MonitorSubscriptionCreateManyInput = {
+    id?: string
+    subscriberId: string
+    monitorId: string
+    createdAt?: Date | string
+  }
+
+  export type MonitorSubscriptionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MonitorSubscriptionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subscriberId?: StringFieldUpdateOperationsInput | string
+    monitorId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -28360,6 +32538,12 @@ export namespace Prisma {
     none?: StatusPageMonitorWhereInput
   }
 
+  export type MonitorSubscriptionListRelationFilter = {
+    every?: MonitorSubscriptionWhereInput
+    some?: MonitorSubscriptionWhereInput
+    none?: MonitorSubscriptionWhereInput
+  }
+
   export type MonitorEventOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -28385,6 +32569,10 @@ export namespace Prisma {
   }
 
   export type StatusPageMonitorOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type MonitorSubscriptionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -28638,11 +32826,21 @@ export namespace Prisma {
     none?: StatusPageI18nWhereInput
   }
 
+  export type StatusPageSubscriberListRelationFilter = {
+    every?: StatusPageSubscriberWhereInput
+    some?: StatusPageSubscriberWhereInput
+    none?: StatusPageSubscriberWhereInput
+  }
+
   export type StatusPageViewOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type StatusPageI18nOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type StatusPageSubscriberOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -28798,6 +32996,135 @@ export namespace Prisma {
     userAgent?: SortOrder
     country?: SortOrder
     timestamp?: SortOrder
+  }
+
+  export type SubscriptionTokenListRelationFilter = {
+    every?: SubscriptionTokenWhereInput
+    some?: SubscriptionTokenWhereInput
+    none?: SubscriptionTokenWhereInput
+  }
+
+  export type SubscriptionTokenOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type StatusPageSubscriberStatusPageIdEmailCompoundUniqueInput = {
+    statusPageId: string
+    email: string
+  }
+
+  export type StatusPageSubscriberCountOrderByAggregateInput = {
+    id?: SortOrder
+    statusPageId?: SortOrder
+    email?: SortOrder
+    verified?: SortOrder
+    manageToken?: SortOrder
+    notifyIncidents?: SortOrder
+    notifyMaintenance?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StatusPageSubscriberMaxOrderByAggregateInput = {
+    id?: SortOrder
+    statusPageId?: SortOrder
+    email?: SortOrder
+    verified?: SortOrder
+    manageToken?: SortOrder
+    notifyIncidents?: SortOrder
+    notifyMaintenance?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StatusPageSubscriberMinOrderByAggregateInput = {
+    id?: SortOrder
+    statusPageId?: SortOrder
+    email?: SortOrder
+    verified?: SortOrder
+    manageToken?: SortOrder
+    notifyIncidents?: SortOrder
+    notifyMaintenance?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumSubscriptionTokenTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.SubscriptionTokenType | EnumSubscriptionTokenTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.SubscriptionTokenType[] | ListEnumSubscriptionTokenTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SubscriptionTokenType[] | ListEnumSubscriptionTokenTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumSubscriptionTokenTypeFilter<$PrismaModel> | $Enums.SubscriptionTokenType
+  }
+
+  export type StatusPageSubscriberScalarRelationFilter = {
+    is?: StatusPageSubscriberWhereInput
+    isNot?: StatusPageSubscriberWhereInput
+  }
+
+  export type SubscriptionTokenCountOrderByAggregateInput = {
+    id?: SortOrder
+    subscriberId?: SortOrder
+    token?: SortOrder
+    type?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SubscriptionTokenMaxOrderByAggregateInput = {
+    id?: SortOrder
+    subscriberId?: SortOrder
+    token?: SortOrder
+    type?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SubscriptionTokenMinOrderByAggregateInput = {
+    id?: SortOrder
+    subscriberId?: SortOrder
+    token?: SortOrder
+    type?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EnumSubscriptionTokenTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SubscriptionTokenType | EnumSubscriptionTokenTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.SubscriptionTokenType[] | ListEnumSubscriptionTokenTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SubscriptionTokenType[] | ListEnumSubscriptionTokenTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumSubscriptionTokenTypeWithAggregatesFilter<$PrismaModel> | $Enums.SubscriptionTokenType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSubscriptionTokenTypeFilter<$PrismaModel>
+    _max?: NestedEnumSubscriptionTokenTypeFilter<$PrismaModel>
+  }
+
+  export type MonitorSubscriptionSubscriberIdMonitorIdCompoundUniqueInput = {
+    subscriberId: string
+    monitorId: string
+  }
+
+  export type MonitorSubscriptionCountOrderByAggregateInput = {
+    id?: SortOrder
+    subscriberId?: SortOrder
+    monitorId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type MonitorSubscriptionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    subscriberId?: SortOrder
+    monitorId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type MonitorSubscriptionMinOrderByAggregateInput = {
+    id?: SortOrder
+    subscriberId?: SortOrder
+    monitorId?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type SessionCreateNestedManyWithoutUserInput = {
@@ -29400,6 +33727,13 @@ export namespace Prisma {
     connect?: StatusPageMonitorWhereUniqueInput | StatusPageMonitorWhereUniqueInput[]
   }
 
+  export type MonitorSubscriptionCreateNestedManyWithoutMonitorInput = {
+    create?: XOR<MonitorSubscriptionCreateWithoutMonitorInput, MonitorSubscriptionUncheckedCreateWithoutMonitorInput> | MonitorSubscriptionCreateWithoutMonitorInput[] | MonitorSubscriptionUncheckedCreateWithoutMonitorInput[]
+    connectOrCreate?: MonitorSubscriptionCreateOrConnectWithoutMonitorInput | MonitorSubscriptionCreateOrConnectWithoutMonitorInput[]
+    createMany?: MonitorSubscriptionCreateManyMonitorInputEnvelope
+    connect?: MonitorSubscriptionWhereUniqueInput | MonitorSubscriptionWhereUniqueInput[]
+  }
+
   export type MonitorEventUncheckedCreateNestedManyWithoutMonitorInput = {
     create?: XOR<MonitorEventCreateWithoutMonitorInput, MonitorEventUncheckedCreateWithoutMonitorInput> | MonitorEventCreateWithoutMonitorInput[] | MonitorEventUncheckedCreateWithoutMonitorInput[]
     connectOrCreate?: MonitorEventCreateOrConnectWithoutMonitorInput | MonitorEventCreateOrConnectWithoutMonitorInput[]
@@ -29454,6 +33788,13 @@ export namespace Prisma {
     connectOrCreate?: StatusPageMonitorCreateOrConnectWithoutMonitorInput | StatusPageMonitorCreateOrConnectWithoutMonitorInput[]
     createMany?: StatusPageMonitorCreateManyMonitorInputEnvelope
     connect?: StatusPageMonitorWhereUniqueInput | StatusPageMonitorWhereUniqueInput[]
+  }
+
+  export type MonitorSubscriptionUncheckedCreateNestedManyWithoutMonitorInput = {
+    create?: XOR<MonitorSubscriptionCreateWithoutMonitorInput, MonitorSubscriptionUncheckedCreateWithoutMonitorInput> | MonitorSubscriptionCreateWithoutMonitorInput[] | MonitorSubscriptionUncheckedCreateWithoutMonitorInput[]
+    connectOrCreate?: MonitorSubscriptionCreateOrConnectWithoutMonitorInput | MonitorSubscriptionCreateOrConnectWithoutMonitorInput[]
+    createMany?: MonitorSubscriptionCreateManyMonitorInputEnvelope
+    connect?: MonitorSubscriptionWhereUniqueInput | MonitorSubscriptionWhereUniqueInput[]
   }
 
   export type EnumMonitorTypeFieldUpdateOperationsInput = {
@@ -29584,6 +33925,20 @@ export namespace Prisma {
     deleteMany?: StatusPageMonitorScalarWhereInput | StatusPageMonitorScalarWhereInput[]
   }
 
+  export type MonitorSubscriptionUpdateManyWithoutMonitorNestedInput = {
+    create?: XOR<MonitorSubscriptionCreateWithoutMonitorInput, MonitorSubscriptionUncheckedCreateWithoutMonitorInput> | MonitorSubscriptionCreateWithoutMonitorInput[] | MonitorSubscriptionUncheckedCreateWithoutMonitorInput[]
+    connectOrCreate?: MonitorSubscriptionCreateOrConnectWithoutMonitorInput | MonitorSubscriptionCreateOrConnectWithoutMonitorInput[]
+    upsert?: MonitorSubscriptionUpsertWithWhereUniqueWithoutMonitorInput | MonitorSubscriptionUpsertWithWhereUniqueWithoutMonitorInput[]
+    createMany?: MonitorSubscriptionCreateManyMonitorInputEnvelope
+    set?: MonitorSubscriptionWhereUniqueInput | MonitorSubscriptionWhereUniqueInput[]
+    disconnect?: MonitorSubscriptionWhereUniqueInput | MonitorSubscriptionWhereUniqueInput[]
+    delete?: MonitorSubscriptionWhereUniqueInput | MonitorSubscriptionWhereUniqueInput[]
+    connect?: MonitorSubscriptionWhereUniqueInput | MonitorSubscriptionWhereUniqueInput[]
+    update?: MonitorSubscriptionUpdateWithWhereUniqueWithoutMonitorInput | MonitorSubscriptionUpdateWithWhereUniqueWithoutMonitorInput[]
+    updateMany?: MonitorSubscriptionUpdateManyWithWhereWithoutMonitorInput | MonitorSubscriptionUpdateManyWithWhereWithoutMonitorInput[]
+    deleteMany?: MonitorSubscriptionScalarWhereInput | MonitorSubscriptionScalarWhereInput[]
+  }
+
   export type MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput = {
     create?: XOR<MonitorEventCreateWithoutMonitorInput, MonitorEventUncheckedCreateWithoutMonitorInput> | MonitorEventCreateWithoutMonitorInput[] | MonitorEventUncheckedCreateWithoutMonitorInput[]
     connectOrCreate?: MonitorEventCreateOrConnectWithoutMonitorInput | MonitorEventCreateOrConnectWithoutMonitorInput[]
@@ -29696,6 +34051,20 @@ export namespace Prisma {
     deleteMany?: StatusPageMonitorScalarWhereInput | StatusPageMonitorScalarWhereInput[]
   }
 
+  export type MonitorSubscriptionUncheckedUpdateManyWithoutMonitorNestedInput = {
+    create?: XOR<MonitorSubscriptionCreateWithoutMonitorInput, MonitorSubscriptionUncheckedCreateWithoutMonitorInput> | MonitorSubscriptionCreateWithoutMonitorInput[] | MonitorSubscriptionUncheckedCreateWithoutMonitorInput[]
+    connectOrCreate?: MonitorSubscriptionCreateOrConnectWithoutMonitorInput | MonitorSubscriptionCreateOrConnectWithoutMonitorInput[]
+    upsert?: MonitorSubscriptionUpsertWithWhereUniqueWithoutMonitorInput | MonitorSubscriptionUpsertWithWhereUniqueWithoutMonitorInput[]
+    createMany?: MonitorSubscriptionCreateManyMonitorInputEnvelope
+    set?: MonitorSubscriptionWhereUniqueInput | MonitorSubscriptionWhereUniqueInput[]
+    disconnect?: MonitorSubscriptionWhereUniqueInput | MonitorSubscriptionWhereUniqueInput[]
+    delete?: MonitorSubscriptionWhereUniqueInput | MonitorSubscriptionWhereUniqueInput[]
+    connect?: MonitorSubscriptionWhereUniqueInput | MonitorSubscriptionWhereUniqueInput[]
+    update?: MonitorSubscriptionUpdateWithWhereUniqueWithoutMonitorInput | MonitorSubscriptionUpdateWithWhereUniqueWithoutMonitorInput[]
+    updateMany?: MonitorSubscriptionUpdateManyWithWhereWithoutMonitorInput | MonitorSubscriptionUpdateManyWithWhereWithoutMonitorInput[]
+    deleteMany?: MonitorSubscriptionScalarWhereInput | MonitorSubscriptionScalarWhereInput[]
+  }
+
   export type MonitorCreateNestedOneWithoutEventsInput = {
     create?: XOR<MonitorCreateWithoutEventsInput, MonitorUncheckedCreateWithoutEventsInput>
     connectOrCreate?: MonitorCreateOrConnectWithoutEventsInput
@@ -29765,6 +34134,13 @@ export namespace Prisma {
     connect?: StatusPageI18nWhereUniqueInput | StatusPageI18nWhereUniqueInput[]
   }
 
+  export type StatusPageSubscriberCreateNestedManyWithoutStatusPageInput = {
+    create?: XOR<StatusPageSubscriberCreateWithoutStatusPageInput, StatusPageSubscriberUncheckedCreateWithoutStatusPageInput> | StatusPageSubscriberCreateWithoutStatusPageInput[] | StatusPageSubscriberUncheckedCreateWithoutStatusPageInput[]
+    connectOrCreate?: StatusPageSubscriberCreateOrConnectWithoutStatusPageInput | StatusPageSubscriberCreateOrConnectWithoutStatusPageInput[]
+    createMany?: StatusPageSubscriberCreateManyStatusPageInputEnvelope
+    connect?: StatusPageSubscriberWhereUniqueInput | StatusPageSubscriberWhereUniqueInput[]
+  }
+
   export type StatusPageMonitorUncheckedCreateNestedManyWithoutStatusPageInput = {
     create?: XOR<StatusPageMonitorCreateWithoutStatusPageInput, StatusPageMonitorUncheckedCreateWithoutStatusPageInput> | StatusPageMonitorCreateWithoutStatusPageInput[] | StatusPageMonitorUncheckedCreateWithoutStatusPageInput[]
     connectOrCreate?: StatusPageMonitorCreateOrConnectWithoutStatusPageInput | StatusPageMonitorCreateOrConnectWithoutStatusPageInput[]
@@ -29784,6 +34160,13 @@ export namespace Prisma {
     connectOrCreate?: StatusPageI18nCreateOrConnectWithoutStatusPageInput | StatusPageI18nCreateOrConnectWithoutStatusPageInput[]
     createMany?: StatusPageI18nCreateManyStatusPageInputEnvelope
     connect?: StatusPageI18nWhereUniqueInput | StatusPageI18nWhereUniqueInput[]
+  }
+
+  export type StatusPageSubscriberUncheckedCreateNestedManyWithoutStatusPageInput = {
+    create?: XOR<StatusPageSubscriberCreateWithoutStatusPageInput, StatusPageSubscriberUncheckedCreateWithoutStatusPageInput> | StatusPageSubscriberCreateWithoutStatusPageInput[] | StatusPageSubscriberUncheckedCreateWithoutStatusPageInput[]
+    connectOrCreate?: StatusPageSubscriberCreateOrConnectWithoutStatusPageInput | StatusPageSubscriberCreateOrConnectWithoutStatusPageInput[]
+    createMany?: StatusPageSubscriberCreateManyStatusPageInputEnvelope
+    connect?: StatusPageSubscriberWhereUniqueInput | StatusPageSubscriberWhereUniqueInput[]
   }
 
   export type UserUpdateOneRequiredWithoutStatusPagesNestedInput = {
@@ -29836,6 +34219,20 @@ export namespace Prisma {
     deleteMany?: StatusPageI18nScalarWhereInput | StatusPageI18nScalarWhereInput[]
   }
 
+  export type StatusPageSubscriberUpdateManyWithoutStatusPageNestedInput = {
+    create?: XOR<StatusPageSubscriberCreateWithoutStatusPageInput, StatusPageSubscriberUncheckedCreateWithoutStatusPageInput> | StatusPageSubscriberCreateWithoutStatusPageInput[] | StatusPageSubscriberUncheckedCreateWithoutStatusPageInput[]
+    connectOrCreate?: StatusPageSubscriberCreateOrConnectWithoutStatusPageInput | StatusPageSubscriberCreateOrConnectWithoutStatusPageInput[]
+    upsert?: StatusPageSubscriberUpsertWithWhereUniqueWithoutStatusPageInput | StatusPageSubscriberUpsertWithWhereUniqueWithoutStatusPageInput[]
+    createMany?: StatusPageSubscriberCreateManyStatusPageInputEnvelope
+    set?: StatusPageSubscriberWhereUniqueInput | StatusPageSubscriberWhereUniqueInput[]
+    disconnect?: StatusPageSubscriberWhereUniqueInput | StatusPageSubscriberWhereUniqueInput[]
+    delete?: StatusPageSubscriberWhereUniqueInput | StatusPageSubscriberWhereUniqueInput[]
+    connect?: StatusPageSubscriberWhereUniqueInput | StatusPageSubscriberWhereUniqueInput[]
+    update?: StatusPageSubscriberUpdateWithWhereUniqueWithoutStatusPageInput | StatusPageSubscriberUpdateWithWhereUniqueWithoutStatusPageInput[]
+    updateMany?: StatusPageSubscriberUpdateManyWithWhereWithoutStatusPageInput | StatusPageSubscriberUpdateManyWithWhereWithoutStatusPageInput[]
+    deleteMany?: StatusPageSubscriberScalarWhereInput | StatusPageSubscriberScalarWhereInput[]
+  }
+
   export type StatusPageMonitorUncheckedUpdateManyWithoutStatusPageNestedInput = {
     create?: XOR<StatusPageMonitorCreateWithoutStatusPageInput, StatusPageMonitorUncheckedCreateWithoutStatusPageInput> | StatusPageMonitorCreateWithoutStatusPageInput[] | StatusPageMonitorUncheckedCreateWithoutStatusPageInput[]
     connectOrCreate?: StatusPageMonitorCreateOrConnectWithoutStatusPageInput | StatusPageMonitorCreateOrConnectWithoutStatusPageInput[]
@@ -29878,6 +34275,20 @@ export namespace Prisma {
     deleteMany?: StatusPageI18nScalarWhereInput | StatusPageI18nScalarWhereInput[]
   }
 
+  export type StatusPageSubscriberUncheckedUpdateManyWithoutStatusPageNestedInput = {
+    create?: XOR<StatusPageSubscriberCreateWithoutStatusPageInput, StatusPageSubscriberUncheckedCreateWithoutStatusPageInput> | StatusPageSubscriberCreateWithoutStatusPageInput[] | StatusPageSubscriberUncheckedCreateWithoutStatusPageInput[]
+    connectOrCreate?: StatusPageSubscriberCreateOrConnectWithoutStatusPageInput | StatusPageSubscriberCreateOrConnectWithoutStatusPageInput[]
+    upsert?: StatusPageSubscriberUpsertWithWhereUniqueWithoutStatusPageInput | StatusPageSubscriberUpsertWithWhereUniqueWithoutStatusPageInput[]
+    createMany?: StatusPageSubscriberCreateManyStatusPageInputEnvelope
+    set?: StatusPageSubscriberWhereUniqueInput | StatusPageSubscriberWhereUniqueInput[]
+    disconnect?: StatusPageSubscriberWhereUniqueInput | StatusPageSubscriberWhereUniqueInput[]
+    delete?: StatusPageSubscriberWhereUniqueInput | StatusPageSubscriberWhereUniqueInput[]
+    connect?: StatusPageSubscriberWhereUniqueInput | StatusPageSubscriberWhereUniqueInput[]
+    update?: StatusPageSubscriberUpdateWithWhereUniqueWithoutStatusPageInput | StatusPageSubscriberUpdateWithWhereUniqueWithoutStatusPageInput[]
+    updateMany?: StatusPageSubscriberUpdateManyWithWhereWithoutStatusPageInput | StatusPageSubscriberUpdateManyWithWhereWithoutStatusPageInput[]
+    deleteMany?: StatusPageSubscriberScalarWhereInput | StatusPageSubscriberScalarWhereInput[]
+  }
+
   export type StatusPageCreateNestedOneWithoutMonitorsInput = {
     create?: XOR<StatusPageCreateWithoutMonitorsInput, StatusPageUncheckedCreateWithoutMonitorsInput>
     connectOrCreate?: StatusPageCreateOrConnectWithoutMonitorsInput
@@ -29918,6 +34329,150 @@ export namespace Prisma {
     upsert?: StatusPageUpsertWithoutViewsInput
     connect?: StatusPageWhereUniqueInput
     update?: XOR<XOR<StatusPageUpdateToOneWithWhereWithoutViewsInput, StatusPageUpdateWithoutViewsInput>, StatusPageUncheckedUpdateWithoutViewsInput>
+  }
+
+  export type StatusPageCreateNestedOneWithoutSubscribersInput = {
+    create?: XOR<StatusPageCreateWithoutSubscribersInput, StatusPageUncheckedCreateWithoutSubscribersInput>
+    connectOrCreate?: StatusPageCreateOrConnectWithoutSubscribersInput
+    connect?: StatusPageWhereUniqueInput
+  }
+
+  export type MonitorSubscriptionCreateNestedManyWithoutSubscriberInput = {
+    create?: XOR<MonitorSubscriptionCreateWithoutSubscriberInput, MonitorSubscriptionUncheckedCreateWithoutSubscriberInput> | MonitorSubscriptionCreateWithoutSubscriberInput[] | MonitorSubscriptionUncheckedCreateWithoutSubscriberInput[]
+    connectOrCreate?: MonitorSubscriptionCreateOrConnectWithoutSubscriberInput | MonitorSubscriptionCreateOrConnectWithoutSubscriberInput[]
+    createMany?: MonitorSubscriptionCreateManySubscriberInputEnvelope
+    connect?: MonitorSubscriptionWhereUniqueInput | MonitorSubscriptionWhereUniqueInput[]
+  }
+
+  export type SubscriptionTokenCreateNestedManyWithoutSubscriberInput = {
+    create?: XOR<SubscriptionTokenCreateWithoutSubscriberInput, SubscriptionTokenUncheckedCreateWithoutSubscriberInput> | SubscriptionTokenCreateWithoutSubscriberInput[] | SubscriptionTokenUncheckedCreateWithoutSubscriberInput[]
+    connectOrCreate?: SubscriptionTokenCreateOrConnectWithoutSubscriberInput | SubscriptionTokenCreateOrConnectWithoutSubscriberInput[]
+    createMany?: SubscriptionTokenCreateManySubscriberInputEnvelope
+    connect?: SubscriptionTokenWhereUniqueInput | SubscriptionTokenWhereUniqueInput[]
+  }
+
+  export type MonitorSubscriptionUncheckedCreateNestedManyWithoutSubscriberInput = {
+    create?: XOR<MonitorSubscriptionCreateWithoutSubscriberInput, MonitorSubscriptionUncheckedCreateWithoutSubscriberInput> | MonitorSubscriptionCreateWithoutSubscriberInput[] | MonitorSubscriptionUncheckedCreateWithoutSubscriberInput[]
+    connectOrCreate?: MonitorSubscriptionCreateOrConnectWithoutSubscriberInput | MonitorSubscriptionCreateOrConnectWithoutSubscriberInput[]
+    createMany?: MonitorSubscriptionCreateManySubscriberInputEnvelope
+    connect?: MonitorSubscriptionWhereUniqueInput | MonitorSubscriptionWhereUniqueInput[]
+  }
+
+  export type SubscriptionTokenUncheckedCreateNestedManyWithoutSubscriberInput = {
+    create?: XOR<SubscriptionTokenCreateWithoutSubscriberInput, SubscriptionTokenUncheckedCreateWithoutSubscriberInput> | SubscriptionTokenCreateWithoutSubscriberInput[] | SubscriptionTokenUncheckedCreateWithoutSubscriberInput[]
+    connectOrCreate?: SubscriptionTokenCreateOrConnectWithoutSubscriberInput | SubscriptionTokenCreateOrConnectWithoutSubscriberInput[]
+    createMany?: SubscriptionTokenCreateManySubscriberInputEnvelope
+    connect?: SubscriptionTokenWhereUniqueInput | SubscriptionTokenWhereUniqueInput[]
+  }
+
+  export type StatusPageUpdateOneRequiredWithoutSubscribersNestedInput = {
+    create?: XOR<StatusPageCreateWithoutSubscribersInput, StatusPageUncheckedCreateWithoutSubscribersInput>
+    connectOrCreate?: StatusPageCreateOrConnectWithoutSubscribersInput
+    upsert?: StatusPageUpsertWithoutSubscribersInput
+    connect?: StatusPageWhereUniqueInput
+    update?: XOR<XOR<StatusPageUpdateToOneWithWhereWithoutSubscribersInput, StatusPageUpdateWithoutSubscribersInput>, StatusPageUncheckedUpdateWithoutSubscribersInput>
+  }
+
+  export type MonitorSubscriptionUpdateManyWithoutSubscriberNestedInput = {
+    create?: XOR<MonitorSubscriptionCreateWithoutSubscriberInput, MonitorSubscriptionUncheckedCreateWithoutSubscriberInput> | MonitorSubscriptionCreateWithoutSubscriberInput[] | MonitorSubscriptionUncheckedCreateWithoutSubscriberInput[]
+    connectOrCreate?: MonitorSubscriptionCreateOrConnectWithoutSubscriberInput | MonitorSubscriptionCreateOrConnectWithoutSubscriberInput[]
+    upsert?: MonitorSubscriptionUpsertWithWhereUniqueWithoutSubscriberInput | MonitorSubscriptionUpsertWithWhereUniqueWithoutSubscriberInput[]
+    createMany?: MonitorSubscriptionCreateManySubscriberInputEnvelope
+    set?: MonitorSubscriptionWhereUniqueInput | MonitorSubscriptionWhereUniqueInput[]
+    disconnect?: MonitorSubscriptionWhereUniqueInput | MonitorSubscriptionWhereUniqueInput[]
+    delete?: MonitorSubscriptionWhereUniqueInput | MonitorSubscriptionWhereUniqueInput[]
+    connect?: MonitorSubscriptionWhereUniqueInput | MonitorSubscriptionWhereUniqueInput[]
+    update?: MonitorSubscriptionUpdateWithWhereUniqueWithoutSubscriberInput | MonitorSubscriptionUpdateWithWhereUniqueWithoutSubscriberInput[]
+    updateMany?: MonitorSubscriptionUpdateManyWithWhereWithoutSubscriberInput | MonitorSubscriptionUpdateManyWithWhereWithoutSubscriberInput[]
+    deleteMany?: MonitorSubscriptionScalarWhereInput | MonitorSubscriptionScalarWhereInput[]
+  }
+
+  export type SubscriptionTokenUpdateManyWithoutSubscriberNestedInput = {
+    create?: XOR<SubscriptionTokenCreateWithoutSubscriberInput, SubscriptionTokenUncheckedCreateWithoutSubscriberInput> | SubscriptionTokenCreateWithoutSubscriberInput[] | SubscriptionTokenUncheckedCreateWithoutSubscriberInput[]
+    connectOrCreate?: SubscriptionTokenCreateOrConnectWithoutSubscriberInput | SubscriptionTokenCreateOrConnectWithoutSubscriberInput[]
+    upsert?: SubscriptionTokenUpsertWithWhereUniqueWithoutSubscriberInput | SubscriptionTokenUpsertWithWhereUniqueWithoutSubscriberInput[]
+    createMany?: SubscriptionTokenCreateManySubscriberInputEnvelope
+    set?: SubscriptionTokenWhereUniqueInput | SubscriptionTokenWhereUniqueInput[]
+    disconnect?: SubscriptionTokenWhereUniqueInput | SubscriptionTokenWhereUniqueInput[]
+    delete?: SubscriptionTokenWhereUniqueInput | SubscriptionTokenWhereUniqueInput[]
+    connect?: SubscriptionTokenWhereUniqueInput | SubscriptionTokenWhereUniqueInput[]
+    update?: SubscriptionTokenUpdateWithWhereUniqueWithoutSubscriberInput | SubscriptionTokenUpdateWithWhereUniqueWithoutSubscriberInput[]
+    updateMany?: SubscriptionTokenUpdateManyWithWhereWithoutSubscriberInput | SubscriptionTokenUpdateManyWithWhereWithoutSubscriberInput[]
+    deleteMany?: SubscriptionTokenScalarWhereInput | SubscriptionTokenScalarWhereInput[]
+  }
+
+  export type MonitorSubscriptionUncheckedUpdateManyWithoutSubscriberNestedInput = {
+    create?: XOR<MonitorSubscriptionCreateWithoutSubscriberInput, MonitorSubscriptionUncheckedCreateWithoutSubscriberInput> | MonitorSubscriptionCreateWithoutSubscriberInput[] | MonitorSubscriptionUncheckedCreateWithoutSubscriberInput[]
+    connectOrCreate?: MonitorSubscriptionCreateOrConnectWithoutSubscriberInput | MonitorSubscriptionCreateOrConnectWithoutSubscriberInput[]
+    upsert?: MonitorSubscriptionUpsertWithWhereUniqueWithoutSubscriberInput | MonitorSubscriptionUpsertWithWhereUniqueWithoutSubscriberInput[]
+    createMany?: MonitorSubscriptionCreateManySubscriberInputEnvelope
+    set?: MonitorSubscriptionWhereUniqueInput | MonitorSubscriptionWhereUniqueInput[]
+    disconnect?: MonitorSubscriptionWhereUniqueInput | MonitorSubscriptionWhereUniqueInput[]
+    delete?: MonitorSubscriptionWhereUniqueInput | MonitorSubscriptionWhereUniqueInput[]
+    connect?: MonitorSubscriptionWhereUniqueInput | MonitorSubscriptionWhereUniqueInput[]
+    update?: MonitorSubscriptionUpdateWithWhereUniqueWithoutSubscriberInput | MonitorSubscriptionUpdateWithWhereUniqueWithoutSubscriberInput[]
+    updateMany?: MonitorSubscriptionUpdateManyWithWhereWithoutSubscriberInput | MonitorSubscriptionUpdateManyWithWhereWithoutSubscriberInput[]
+    deleteMany?: MonitorSubscriptionScalarWhereInput | MonitorSubscriptionScalarWhereInput[]
+  }
+
+  export type SubscriptionTokenUncheckedUpdateManyWithoutSubscriberNestedInput = {
+    create?: XOR<SubscriptionTokenCreateWithoutSubscriberInput, SubscriptionTokenUncheckedCreateWithoutSubscriberInput> | SubscriptionTokenCreateWithoutSubscriberInput[] | SubscriptionTokenUncheckedCreateWithoutSubscriberInput[]
+    connectOrCreate?: SubscriptionTokenCreateOrConnectWithoutSubscriberInput | SubscriptionTokenCreateOrConnectWithoutSubscriberInput[]
+    upsert?: SubscriptionTokenUpsertWithWhereUniqueWithoutSubscriberInput | SubscriptionTokenUpsertWithWhereUniqueWithoutSubscriberInput[]
+    createMany?: SubscriptionTokenCreateManySubscriberInputEnvelope
+    set?: SubscriptionTokenWhereUniqueInput | SubscriptionTokenWhereUniqueInput[]
+    disconnect?: SubscriptionTokenWhereUniqueInput | SubscriptionTokenWhereUniqueInput[]
+    delete?: SubscriptionTokenWhereUniqueInput | SubscriptionTokenWhereUniqueInput[]
+    connect?: SubscriptionTokenWhereUniqueInput | SubscriptionTokenWhereUniqueInput[]
+    update?: SubscriptionTokenUpdateWithWhereUniqueWithoutSubscriberInput | SubscriptionTokenUpdateWithWhereUniqueWithoutSubscriberInput[]
+    updateMany?: SubscriptionTokenUpdateManyWithWhereWithoutSubscriberInput | SubscriptionTokenUpdateManyWithWhereWithoutSubscriberInput[]
+    deleteMany?: SubscriptionTokenScalarWhereInput | SubscriptionTokenScalarWhereInput[]
+  }
+
+  export type StatusPageSubscriberCreateNestedOneWithoutTokensInput = {
+    create?: XOR<StatusPageSubscriberCreateWithoutTokensInput, StatusPageSubscriberUncheckedCreateWithoutTokensInput>
+    connectOrCreate?: StatusPageSubscriberCreateOrConnectWithoutTokensInput
+    connect?: StatusPageSubscriberWhereUniqueInput
+  }
+
+  export type EnumSubscriptionTokenTypeFieldUpdateOperationsInput = {
+    set?: $Enums.SubscriptionTokenType
+  }
+
+  export type StatusPageSubscriberUpdateOneRequiredWithoutTokensNestedInput = {
+    create?: XOR<StatusPageSubscriberCreateWithoutTokensInput, StatusPageSubscriberUncheckedCreateWithoutTokensInput>
+    connectOrCreate?: StatusPageSubscriberCreateOrConnectWithoutTokensInput
+    upsert?: StatusPageSubscriberUpsertWithoutTokensInput
+    connect?: StatusPageSubscriberWhereUniqueInput
+    update?: XOR<XOR<StatusPageSubscriberUpdateToOneWithWhereWithoutTokensInput, StatusPageSubscriberUpdateWithoutTokensInput>, StatusPageSubscriberUncheckedUpdateWithoutTokensInput>
+  }
+
+  export type StatusPageSubscriberCreateNestedOneWithoutMonitorSubscriptionsInput = {
+    create?: XOR<StatusPageSubscriberCreateWithoutMonitorSubscriptionsInput, StatusPageSubscriberUncheckedCreateWithoutMonitorSubscriptionsInput>
+    connectOrCreate?: StatusPageSubscriberCreateOrConnectWithoutMonitorSubscriptionsInput
+    connect?: StatusPageSubscriberWhereUniqueInput
+  }
+
+  export type MonitorCreateNestedOneWithoutMonitorSubscriptionsInput = {
+    create?: XOR<MonitorCreateWithoutMonitorSubscriptionsInput, MonitorUncheckedCreateWithoutMonitorSubscriptionsInput>
+    connectOrCreate?: MonitorCreateOrConnectWithoutMonitorSubscriptionsInput
+    connect?: MonitorWhereUniqueInput
+  }
+
+  export type StatusPageSubscriberUpdateOneRequiredWithoutMonitorSubscriptionsNestedInput = {
+    create?: XOR<StatusPageSubscriberCreateWithoutMonitorSubscriptionsInput, StatusPageSubscriberUncheckedCreateWithoutMonitorSubscriptionsInput>
+    connectOrCreate?: StatusPageSubscriberCreateOrConnectWithoutMonitorSubscriptionsInput
+    upsert?: StatusPageSubscriberUpsertWithoutMonitorSubscriptionsInput
+    connect?: StatusPageSubscriberWhereUniqueInput
+    update?: XOR<XOR<StatusPageSubscriberUpdateToOneWithWhereWithoutMonitorSubscriptionsInput, StatusPageSubscriberUpdateWithoutMonitorSubscriptionsInput>, StatusPageSubscriberUncheckedUpdateWithoutMonitorSubscriptionsInput>
+  }
+
+  export type MonitorUpdateOneRequiredWithoutMonitorSubscriptionsNestedInput = {
+    create?: XOR<MonitorCreateWithoutMonitorSubscriptionsInput, MonitorUncheckedCreateWithoutMonitorSubscriptionsInput>
+    connectOrCreate?: MonitorCreateOrConnectWithoutMonitorSubscriptionsInput
+    upsert?: MonitorUpsertWithoutMonitorSubscriptionsInput
+    connect?: MonitorWhereUniqueInput
+    update?: XOR<XOR<MonitorUpdateToOneWithWhereWithoutMonitorSubscriptionsInput, MonitorUpdateWithoutMonitorSubscriptionsInput>, MonitorUncheckedUpdateWithoutMonitorSubscriptionsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -30369,6 +34924,23 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type NestedEnumSubscriptionTokenTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.SubscriptionTokenType | EnumSubscriptionTokenTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.SubscriptionTokenType[] | ListEnumSubscriptionTokenTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SubscriptionTokenType[] | ListEnumSubscriptionTokenTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumSubscriptionTokenTypeFilter<$PrismaModel> | $Enums.SubscriptionTokenType
+  }
+
+  export type NestedEnumSubscriptionTokenTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SubscriptionTokenType | EnumSubscriptionTokenTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.SubscriptionTokenType[] | ListEnumSubscriptionTokenTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SubscriptionTokenType[] | ListEnumSubscriptionTokenTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumSubscriptionTokenTypeWithAggregatesFilter<$PrismaModel> | $Enums.SubscriptionTokenType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSubscriptionTokenTypeFilter<$PrismaModel>
+    _max?: NestedEnumSubscriptionTokenTypeFilter<$PrismaModel>
+  }
+
   export type SessionCreateWithoutUserInput = {
     id: string
     expiresAt: Date | string
@@ -30461,6 +35033,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
+    monitorSubscriptions?: MonitorSubscriptionCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutUserInput = {
@@ -30485,6 +35058,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUncheckedCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
+    monitorSubscriptions?: MonitorSubscriptionUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutUserInput = {
@@ -30555,6 +35129,7 @@ export namespace Prisma {
     monitors?: StatusPageMonitorCreateNestedManyWithoutStatusPageInput
     views?: StatusPageViewCreateNestedManyWithoutStatusPageInput
     i18nSettings?: StatusPageI18nCreateNestedManyWithoutStatusPageInput
+    subscribers?: StatusPageSubscriberCreateNestedManyWithoutStatusPageInput
   }
 
   export type StatusPageUncheckedCreateWithoutUserInput = {
@@ -30585,6 +35160,7 @@ export namespace Prisma {
     monitors?: StatusPageMonitorUncheckedCreateNestedManyWithoutStatusPageInput
     views?: StatusPageViewUncheckedCreateNestedManyWithoutStatusPageInput
     i18nSettings?: StatusPageI18nUncheckedCreateNestedManyWithoutStatusPageInput
+    subscribers?: StatusPageSubscriberUncheckedCreateNestedManyWithoutStatusPageInput
   }
 
   export type StatusPageCreateOrConnectWithoutUserInput = {
@@ -30964,6 +35540,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
+    monitorSubscriptions?: MonitorSubscriptionCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutIncidentsInput = {
@@ -30988,6 +35565,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUncheckedCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
+    monitorSubscriptions?: MonitorSubscriptionUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutIncidentsInput = {
@@ -31052,6 +35630,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
+    monitorSubscriptions?: MonitorSubscriptionUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutIncidentsInput = {
@@ -31076,6 +35655,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUncheckedUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
+    monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type IncidentEventUpsertWithWhereUniqueWithoutIncidentInput = {
@@ -31195,6 +35775,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
+    monitorSubscriptions?: MonitorSubscriptionCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutRegionalIncidentsInput = {
@@ -31219,6 +35800,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUncheckedCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
+    monitorSubscriptions?: MonitorSubscriptionUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutRegionalIncidentsInput = {
@@ -31259,6 +35841,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
+    monitorSubscriptions?: MonitorSubscriptionUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutRegionalIncidentsInput = {
@@ -31283,6 +35866,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUncheckedUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
+    monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorCreateWithoutLatencyAggregatesInput = {
@@ -31307,6 +35891,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
+    monitorSubscriptions?: MonitorSubscriptionCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutLatencyAggregatesInput = {
@@ -31331,6 +35916,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUncheckedCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
+    monitorSubscriptions?: MonitorSubscriptionUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutLatencyAggregatesInput = {
@@ -31371,6 +35957,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
+    monitorSubscriptions?: MonitorSubscriptionUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutLatencyAggregatesInput = {
@@ -31395,6 +35982,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUncheckedUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
+    monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorCreateWithoutRegionalBaselinesInput = {
@@ -31419,6 +36007,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentCreateNestedManyWithoutMonitorInput
     latencyAggregates?: LatencyAggregateCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
+    monitorSubscriptions?: MonitorSubscriptionCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutRegionalBaselinesInput = {
@@ -31443,6 +36032,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUncheckedCreateNestedManyWithoutMonitorInput
     latencyAggregates?: LatencyAggregateUncheckedCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
+    monitorSubscriptions?: MonitorSubscriptionUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutRegionalBaselinesInput = {
@@ -31483,6 +36073,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUpdateManyWithoutMonitorNestedInput
     latencyAggregates?: LatencyAggregateUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
+    monitorSubscriptions?: MonitorSubscriptionUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutRegionalBaselinesInput = {
@@ -31507,6 +36098,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUncheckedUpdateManyWithoutMonitorNestedInput
     latencyAggregates?: LatencyAggregateUncheckedUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
+    monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type UserCreateWithoutNotificationChannelsInput = {
@@ -31675,6 +36267,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
+    monitorSubscriptions?: MonitorSubscriptionCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutAlertRulesInput = {
@@ -31699,6 +36292,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUncheckedCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
+    monitorSubscriptions?: MonitorSubscriptionUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutAlertRulesInput = {
@@ -31764,6 +36358,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
+    monitorSubscriptions?: MonitorSubscriptionUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutAlertRulesInput = {
@@ -31788,6 +36383,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUncheckedUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
+    monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type NotificationChannelUpsertWithWhereUniqueWithoutAlertRulesInput = {
@@ -32101,6 +36697,28 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type MonitorSubscriptionCreateWithoutMonitorInput = {
+    id?: string
+    createdAt?: Date | string
+    subscriber: StatusPageSubscriberCreateNestedOneWithoutMonitorSubscriptionsInput
+  }
+
+  export type MonitorSubscriptionUncheckedCreateWithoutMonitorInput = {
+    id?: string
+    subscriberId: string
+    createdAt?: Date | string
+  }
+
+  export type MonitorSubscriptionCreateOrConnectWithoutMonitorInput = {
+    where: MonitorSubscriptionWhereUniqueInput
+    create: XOR<MonitorSubscriptionCreateWithoutMonitorInput, MonitorSubscriptionUncheckedCreateWithoutMonitorInput>
+  }
+
+  export type MonitorSubscriptionCreateManyMonitorInputEnvelope = {
+    data: MonitorSubscriptionCreateManyMonitorInput | MonitorSubscriptionCreateManyMonitorInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutMonitorsInput = {
     update: XOR<UserUpdateWithoutMonitorsInput, UserUncheckedUpdateWithoutMonitorsInput>
     create: XOR<UserCreateWithoutMonitorsInput, UserUncheckedCreateWithoutMonitorsInput>
@@ -32377,6 +36995,32 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"StatusPageMonitor"> | Date | string
   }
 
+  export type MonitorSubscriptionUpsertWithWhereUniqueWithoutMonitorInput = {
+    where: MonitorSubscriptionWhereUniqueInput
+    update: XOR<MonitorSubscriptionUpdateWithoutMonitorInput, MonitorSubscriptionUncheckedUpdateWithoutMonitorInput>
+    create: XOR<MonitorSubscriptionCreateWithoutMonitorInput, MonitorSubscriptionUncheckedCreateWithoutMonitorInput>
+  }
+
+  export type MonitorSubscriptionUpdateWithWhereUniqueWithoutMonitorInput = {
+    where: MonitorSubscriptionWhereUniqueInput
+    data: XOR<MonitorSubscriptionUpdateWithoutMonitorInput, MonitorSubscriptionUncheckedUpdateWithoutMonitorInput>
+  }
+
+  export type MonitorSubscriptionUpdateManyWithWhereWithoutMonitorInput = {
+    where: MonitorSubscriptionScalarWhereInput
+    data: XOR<MonitorSubscriptionUpdateManyMutationInput, MonitorSubscriptionUncheckedUpdateManyWithoutMonitorInput>
+  }
+
+  export type MonitorSubscriptionScalarWhereInput = {
+    AND?: MonitorSubscriptionScalarWhereInput | MonitorSubscriptionScalarWhereInput[]
+    OR?: MonitorSubscriptionScalarWhereInput[]
+    NOT?: MonitorSubscriptionScalarWhereInput | MonitorSubscriptionScalarWhereInput[]
+    id?: StringFilter<"MonitorSubscription"> | string
+    subscriberId?: StringFilter<"MonitorSubscription"> | string
+    monitorId?: StringFilter<"MonitorSubscription"> | string
+    createdAt?: DateTimeFilter<"MonitorSubscription"> | Date | string
+  }
+
   export type MonitorCreateWithoutEventsInput = {
     id?: string
     name: string
@@ -32399,6 +37043,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
+    monitorSubscriptions?: MonitorSubscriptionCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutEventsInput = {
@@ -32423,6 +37068,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUncheckedCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
+    monitorSubscriptions?: MonitorSubscriptionUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutEventsInput = {
@@ -32463,6 +37109,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
+    monitorSubscriptions?: MonitorSubscriptionUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutEventsInput = {
@@ -32487,6 +37134,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUncheckedUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
+    monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorCreateWithoutMaintenanceWindowsInput = {
@@ -32511,6 +37159,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
+    monitorSubscriptions?: MonitorSubscriptionCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutMaintenanceWindowsInput = {
@@ -32535,6 +37184,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUncheckedCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
+    monitorSubscriptions?: MonitorSubscriptionUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutMaintenanceWindowsInput = {
@@ -32575,6 +37225,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
+    monitorSubscriptions?: MonitorSubscriptionUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutMaintenanceWindowsInput = {
@@ -32599,6 +37250,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUncheckedUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
+    monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type StatusPageCreateWithoutI18nSettingsInput = {
@@ -32629,6 +37281,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutStatusPagesInput
     monitors?: StatusPageMonitorCreateNestedManyWithoutStatusPageInput
     views?: StatusPageViewCreateNestedManyWithoutStatusPageInput
+    subscribers?: StatusPageSubscriberCreateNestedManyWithoutStatusPageInput
   }
 
   export type StatusPageUncheckedCreateWithoutI18nSettingsInput = {
@@ -32659,6 +37312,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     monitors?: StatusPageMonitorUncheckedCreateNestedManyWithoutStatusPageInput
     views?: StatusPageViewUncheckedCreateNestedManyWithoutStatusPageInput
+    subscribers?: StatusPageSubscriberUncheckedCreateNestedManyWithoutStatusPageInput
   }
 
   export type StatusPageCreateOrConnectWithoutI18nSettingsInput = {
@@ -32705,6 +37359,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutStatusPagesNestedInput
     monitors?: StatusPageMonitorUpdateManyWithoutStatusPageNestedInput
     views?: StatusPageViewUpdateManyWithoutStatusPageNestedInput
+    subscribers?: StatusPageSubscriberUpdateManyWithoutStatusPageNestedInput
   }
 
   export type StatusPageUncheckedUpdateWithoutI18nSettingsInput = {
@@ -32735,6 +37390,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     monitors?: StatusPageMonitorUncheckedUpdateManyWithoutStatusPageNestedInput
     views?: StatusPageViewUncheckedUpdateManyWithoutStatusPageNestedInput
+    subscribers?: StatusPageSubscriberUncheckedUpdateManyWithoutStatusPageNestedInput
   }
 
   export type UserCreateWithoutStatusPagesInput = {
@@ -32858,6 +37514,42 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type StatusPageSubscriberCreateWithoutStatusPageInput = {
+    id?: string
+    email: string
+    verified?: boolean
+    manageToken?: string
+    notifyIncidents?: boolean
+    notifyMaintenance?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    monitorSubscriptions?: MonitorSubscriptionCreateNestedManyWithoutSubscriberInput
+    tokens?: SubscriptionTokenCreateNestedManyWithoutSubscriberInput
+  }
+
+  export type StatusPageSubscriberUncheckedCreateWithoutStatusPageInput = {
+    id?: string
+    email: string
+    verified?: boolean
+    manageToken?: string
+    notifyIncidents?: boolean
+    notifyMaintenance?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    monitorSubscriptions?: MonitorSubscriptionUncheckedCreateNestedManyWithoutSubscriberInput
+    tokens?: SubscriptionTokenUncheckedCreateNestedManyWithoutSubscriberInput
+  }
+
+  export type StatusPageSubscriberCreateOrConnectWithoutStatusPageInput = {
+    where: StatusPageSubscriberWhereUniqueInput
+    create: XOR<StatusPageSubscriberCreateWithoutStatusPageInput, StatusPageSubscriberUncheckedCreateWithoutStatusPageInput>
+  }
+
+  export type StatusPageSubscriberCreateManyStatusPageInputEnvelope = {
+    data: StatusPageSubscriberCreateManyStatusPageInput | StatusPageSubscriberCreateManyStatusPageInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutStatusPagesInput = {
     update: XOR<UserUpdateWithoutStatusPagesInput, UserUncheckedUpdateWithoutStatusPagesInput>
     create: XOR<UserCreateWithoutStatusPagesInput, UserUncheckedCreateWithoutStatusPagesInput>
@@ -32976,6 +37668,37 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"StatusPageI18n"> | Date | string
   }
 
+  export type StatusPageSubscriberUpsertWithWhereUniqueWithoutStatusPageInput = {
+    where: StatusPageSubscriberWhereUniqueInput
+    update: XOR<StatusPageSubscriberUpdateWithoutStatusPageInput, StatusPageSubscriberUncheckedUpdateWithoutStatusPageInput>
+    create: XOR<StatusPageSubscriberCreateWithoutStatusPageInput, StatusPageSubscriberUncheckedCreateWithoutStatusPageInput>
+  }
+
+  export type StatusPageSubscriberUpdateWithWhereUniqueWithoutStatusPageInput = {
+    where: StatusPageSubscriberWhereUniqueInput
+    data: XOR<StatusPageSubscriberUpdateWithoutStatusPageInput, StatusPageSubscriberUncheckedUpdateWithoutStatusPageInput>
+  }
+
+  export type StatusPageSubscriberUpdateManyWithWhereWithoutStatusPageInput = {
+    where: StatusPageSubscriberScalarWhereInput
+    data: XOR<StatusPageSubscriberUpdateManyMutationInput, StatusPageSubscriberUncheckedUpdateManyWithoutStatusPageInput>
+  }
+
+  export type StatusPageSubscriberScalarWhereInput = {
+    AND?: StatusPageSubscriberScalarWhereInput | StatusPageSubscriberScalarWhereInput[]
+    OR?: StatusPageSubscriberScalarWhereInput[]
+    NOT?: StatusPageSubscriberScalarWhereInput | StatusPageSubscriberScalarWhereInput[]
+    id?: StringFilter<"StatusPageSubscriber"> | string
+    statusPageId?: StringFilter<"StatusPageSubscriber"> | string
+    email?: StringFilter<"StatusPageSubscriber"> | string
+    verified?: BoolFilter<"StatusPageSubscriber"> | boolean
+    manageToken?: StringFilter<"StatusPageSubscriber"> | string
+    notifyIncidents?: BoolFilter<"StatusPageSubscriber"> | boolean
+    notifyMaintenance?: BoolFilter<"StatusPageSubscriber"> | boolean
+    createdAt?: DateTimeFilter<"StatusPageSubscriber"> | Date | string
+    updatedAt?: DateTimeFilter<"StatusPageSubscriber"> | Date | string
+  }
+
   export type StatusPageCreateWithoutMonitorsInput = {
     id?: string
     slug: string
@@ -33004,6 +37727,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutStatusPagesInput
     views?: StatusPageViewCreateNestedManyWithoutStatusPageInput
     i18nSettings?: StatusPageI18nCreateNestedManyWithoutStatusPageInput
+    subscribers?: StatusPageSubscriberCreateNestedManyWithoutStatusPageInput
   }
 
   export type StatusPageUncheckedCreateWithoutMonitorsInput = {
@@ -33034,6 +37758,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     views?: StatusPageViewUncheckedCreateNestedManyWithoutStatusPageInput
     i18nSettings?: StatusPageI18nUncheckedCreateNestedManyWithoutStatusPageInput
+    subscribers?: StatusPageSubscriberUncheckedCreateNestedManyWithoutStatusPageInput
   }
 
   export type StatusPageCreateOrConnectWithoutMonitorsInput = {
@@ -33063,6 +37788,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentCreateNestedManyWithoutMonitorInput
     latencyAggregates?: LatencyAggregateCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
+    monitorSubscriptions?: MonitorSubscriptionCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutStatusPagesInput = {
@@ -33087,6 +37813,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUncheckedCreateNestedManyWithoutMonitorInput
     latencyAggregates?: LatencyAggregateUncheckedCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
+    monitorSubscriptions?: MonitorSubscriptionUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutStatusPagesInput = {
@@ -33133,6 +37860,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutStatusPagesNestedInput
     views?: StatusPageViewUpdateManyWithoutStatusPageNestedInput
     i18nSettings?: StatusPageI18nUpdateManyWithoutStatusPageNestedInput
+    subscribers?: StatusPageSubscriberUpdateManyWithoutStatusPageNestedInput
   }
 
   export type StatusPageUncheckedUpdateWithoutMonitorsInput = {
@@ -33163,6 +37891,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     views?: StatusPageViewUncheckedUpdateManyWithoutStatusPageNestedInput
     i18nSettings?: StatusPageI18nUncheckedUpdateManyWithoutStatusPageNestedInput
+    subscribers?: StatusPageSubscriberUncheckedUpdateManyWithoutStatusPageNestedInput
   }
 
   export type MonitorUpsertWithoutStatusPagesInput = {
@@ -33198,6 +37927,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUpdateManyWithoutMonitorNestedInput
     latencyAggregates?: LatencyAggregateUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
+    monitorSubscriptions?: MonitorSubscriptionUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutStatusPagesInput = {
@@ -33222,6 +37952,7 @@ export namespace Prisma {
     regionalIncidents?: RegionalIncidentUncheckedUpdateManyWithoutMonitorNestedInput
     latencyAggregates?: LatencyAggregateUncheckedUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
+    monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type StatusPageCreateWithoutViewsInput = {
@@ -33252,6 +37983,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutStatusPagesInput
     monitors?: StatusPageMonitorCreateNestedManyWithoutStatusPageInput
     i18nSettings?: StatusPageI18nCreateNestedManyWithoutStatusPageInput
+    subscribers?: StatusPageSubscriberCreateNestedManyWithoutStatusPageInput
   }
 
   export type StatusPageUncheckedCreateWithoutViewsInput = {
@@ -33282,6 +38014,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     monitors?: StatusPageMonitorUncheckedCreateNestedManyWithoutStatusPageInput
     i18nSettings?: StatusPageI18nUncheckedCreateNestedManyWithoutStatusPageInput
+    subscribers?: StatusPageSubscriberUncheckedCreateNestedManyWithoutStatusPageInput
   }
 
   export type StatusPageCreateOrConnectWithoutViewsInput = {
@@ -33328,6 +38061,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutStatusPagesNestedInput
     monitors?: StatusPageMonitorUpdateManyWithoutStatusPageNestedInput
     i18nSettings?: StatusPageI18nUpdateManyWithoutStatusPageNestedInput
+    subscribers?: StatusPageSubscriberUpdateManyWithoutStatusPageNestedInput
   }
 
   export type StatusPageUncheckedUpdateWithoutViewsInput = {
@@ -33358,6 +38092,494 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     monitors?: StatusPageMonitorUncheckedUpdateManyWithoutStatusPageNestedInput
     i18nSettings?: StatusPageI18nUncheckedUpdateManyWithoutStatusPageNestedInput
+    subscribers?: StatusPageSubscriberUncheckedUpdateManyWithoutStatusPageNestedInput
+  }
+
+  export type StatusPageCreateWithoutSubscribersInput = {
+    id?: string
+    slug: string
+    customDomain?: string | null
+    title: string
+    description?: string | null
+    favicon?: string | null
+    logo?: string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: string | null
+    isPrivate?: boolean
+    ipWhitelist?: string | null
+    seoIndex?: boolean
+    showUptime?: boolean
+    showResponseTime?: boolean
+    showPaused?: boolean
+    customCss?: string | null
+    widgetEnabled?: boolean
+    widgetAllowedDomains?: string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutStatusPagesInput
+    monitors?: StatusPageMonitorCreateNestedManyWithoutStatusPageInput
+    views?: StatusPageViewCreateNestedManyWithoutStatusPageInput
+    i18nSettings?: StatusPageI18nCreateNestedManyWithoutStatusPageInput
+  }
+
+  export type StatusPageUncheckedCreateWithoutSubscribersInput = {
+    id?: string
+    slug: string
+    customDomain?: string | null
+    title: string
+    description?: string | null
+    favicon?: string | null
+    logo?: string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: string | null
+    isPrivate?: boolean
+    ipWhitelist?: string | null
+    seoIndex?: boolean
+    showUptime?: boolean
+    showResponseTime?: boolean
+    showPaused?: boolean
+    customCss?: string | null
+    widgetEnabled?: boolean
+    widgetAllowedDomains?: string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: number
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    monitors?: StatusPageMonitorUncheckedCreateNestedManyWithoutStatusPageInput
+    views?: StatusPageViewUncheckedCreateNestedManyWithoutStatusPageInput
+    i18nSettings?: StatusPageI18nUncheckedCreateNestedManyWithoutStatusPageInput
+  }
+
+  export type StatusPageCreateOrConnectWithoutSubscribersInput = {
+    where: StatusPageWhereUniqueInput
+    create: XOR<StatusPageCreateWithoutSubscribersInput, StatusPageUncheckedCreateWithoutSubscribersInput>
+  }
+
+  export type MonitorSubscriptionCreateWithoutSubscriberInput = {
+    id?: string
+    createdAt?: Date | string
+    monitor: MonitorCreateNestedOneWithoutMonitorSubscriptionsInput
+  }
+
+  export type MonitorSubscriptionUncheckedCreateWithoutSubscriberInput = {
+    id?: string
+    monitorId: string
+    createdAt?: Date | string
+  }
+
+  export type MonitorSubscriptionCreateOrConnectWithoutSubscriberInput = {
+    where: MonitorSubscriptionWhereUniqueInput
+    create: XOR<MonitorSubscriptionCreateWithoutSubscriberInput, MonitorSubscriptionUncheckedCreateWithoutSubscriberInput>
+  }
+
+  export type MonitorSubscriptionCreateManySubscriberInputEnvelope = {
+    data: MonitorSubscriptionCreateManySubscriberInput | MonitorSubscriptionCreateManySubscriberInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SubscriptionTokenCreateWithoutSubscriberInput = {
+    id?: string
+    token: string
+    type: $Enums.SubscriptionTokenType
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type SubscriptionTokenUncheckedCreateWithoutSubscriberInput = {
+    id?: string
+    token: string
+    type: $Enums.SubscriptionTokenType
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type SubscriptionTokenCreateOrConnectWithoutSubscriberInput = {
+    where: SubscriptionTokenWhereUniqueInput
+    create: XOR<SubscriptionTokenCreateWithoutSubscriberInput, SubscriptionTokenUncheckedCreateWithoutSubscriberInput>
+  }
+
+  export type SubscriptionTokenCreateManySubscriberInputEnvelope = {
+    data: SubscriptionTokenCreateManySubscriberInput | SubscriptionTokenCreateManySubscriberInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StatusPageUpsertWithoutSubscribersInput = {
+    update: XOR<StatusPageUpdateWithoutSubscribersInput, StatusPageUncheckedUpdateWithoutSubscribersInput>
+    create: XOR<StatusPageCreateWithoutSubscribersInput, StatusPageUncheckedCreateWithoutSubscribersInput>
+    where?: StatusPageWhereInput
+  }
+
+  export type StatusPageUpdateToOneWithWhereWithoutSubscribersInput = {
+    where?: StatusPageWhereInput
+    data: XOR<StatusPageUpdateWithoutSubscribersInput, StatusPageUncheckedUpdateWithoutSubscribersInput>
+  }
+
+  export type StatusPageUpdateWithoutSubscribersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    customDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    favicon?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrivate?: BoolFieldUpdateOperationsInput | boolean
+    ipWhitelist?: NullableStringFieldUpdateOperationsInput | string | null
+    seoIndex?: BoolFieldUpdateOperationsInput | boolean
+    showUptime?: BoolFieldUpdateOperationsInput | boolean
+    showResponseTime?: BoolFieldUpdateOperationsInput | boolean
+    showPaused?: BoolFieldUpdateOperationsInput | boolean
+    customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetEnabled?: BoolFieldUpdateOperationsInput | boolean
+    widgetAllowedDomains?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutStatusPagesNestedInput
+    monitors?: StatusPageMonitorUpdateManyWithoutStatusPageNestedInput
+    views?: StatusPageViewUpdateManyWithoutStatusPageNestedInput
+    i18nSettings?: StatusPageI18nUpdateManyWithoutStatusPageNestedInput
+  }
+
+  export type StatusPageUncheckedUpdateWithoutSubscribersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    customDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    favicon?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    theme?: NullableJsonNullValueInput | InputJsonValue
+    layout?: NullableJsonNullValueInput | InputJsonValue
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrivate?: BoolFieldUpdateOperationsInput | boolean
+    ipWhitelist?: NullableStringFieldUpdateOperationsInput | string | null
+    seoIndex?: BoolFieldUpdateOperationsInput | boolean
+    showUptime?: BoolFieldUpdateOperationsInput | boolean
+    showResponseTime?: BoolFieldUpdateOperationsInput | boolean
+    showPaused?: BoolFieldUpdateOperationsInput | boolean
+    customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetEnabled?: BoolFieldUpdateOperationsInput | boolean
+    widgetAllowedDomains?: NullableStringFieldUpdateOperationsInput | string | null
+    widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
+    widgetTheme?: NullableJsonNullValueInput | InputJsonValue
+    historyDays?: IntFieldUpdateOperationsInput | number
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    monitors?: StatusPageMonitorUncheckedUpdateManyWithoutStatusPageNestedInput
+    views?: StatusPageViewUncheckedUpdateManyWithoutStatusPageNestedInput
+    i18nSettings?: StatusPageI18nUncheckedUpdateManyWithoutStatusPageNestedInput
+  }
+
+  export type MonitorSubscriptionUpsertWithWhereUniqueWithoutSubscriberInput = {
+    where: MonitorSubscriptionWhereUniqueInput
+    update: XOR<MonitorSubscriptionUpdateWithoutSubscriberInput, MonitorSubscriptionUncheckedUpdateWithoutSubscriberInput>
+    create: XOR<MonitorSubscriptionCreateWithoutSubscriberInput, MonitorSubscriptionUncheckedCreateWithoutSubscriberInput>
+  }
+
+  export type MonitorSubscriptionUpdateWithWhereUniqueWithoutSubscriberInput = {
+    where: MonitorSubscriptionWhereUniqueInput
+    data: XOR<MonitorSubscriptionUpdateWithoutSubscriberInput, MonitorSubscriptionUncheckedUpdateWithoutSubscriberInput>
+  }
+
+  export type MonitorSubscriptionUpdateManyWithWhereWithoutSubscriberInput = {
+    where: MonitorSubscriptionScalarWhereInput
+    data: XOR<MonitorSubscriptionUpdateManyMutationInput, MonitorSubscriptionUncheckedUpdateManyWithoutSubscriberInput>
+  }
+
+  export type SubscriptionTokenUpsertWithWhereUniqueWithoutSubscriberInput = {
+    where: SubscriptionTokenWhereUniqueInput
+    update: XOR<SubscriptionTokenUpdateWithoutSubscriberInput, SubscriptionTokenUncheckedUpdateWithoutSubscriberInput>
+    create: XOR<SubscriptionTokenCreateWithoutSubscriberInput, SubscriptionTokenUncheckedCreateWithoutSubscriberInput>
+  }
+
+  export type SubscriptionTokenUpdateWithWhereUniqueWithoutSubscriberInput = {
+    where: SubscriptionTokenWhereUniqueInput
+    data: XOR<SubscriptionTokenUpdateWithoutSubscriberInput, SubscriptionTokenUncheckedUpdateWithoutSubscriberInput>
+  }
+
+  export type SubscriptionTokenUpdateManyWithWhereWithoutSubscriberInput = {
+    where: SubscriptionTokenScalarWhereInput
+    data: XOR<SubscriptionTokenUpdateManyMutationInput, SubscriptionTokenUncheckedUpdateManyWithoutSubscriberInput>
+  }
+
+  export type SubscriptionTokenScalarWhereInput = {
+    AND?: SubscriptionTokenScalarWhereInput | SubscriptionTokenScalarWhereInput[]
+    OR?: SubscriptionTokenScalarWhereInput[]
+    NOT?: SubscriptionTokenScalarWhereInput | SubscriptionTokenScalarWhereInput[]
+    id?: StringFilter<"SubscriptionToken"> | string
+    subscriberId?: StringFilter<"SubscriptionToken"> | string
+    token?: StringFilter<"SubscriptionToken"> | string
+    type?: EnumSubscriptionTokenTypeFilter<"SubscriptionToken"> | $Enums.SubscriptionTokenType
+    expiresAt?: DateTimeFilter<"SubscriptionToken"> | Date | string
+    usedAt?: DateTimeNullableFilter<"SubscriptionToken"> | Date | string | null
+    createdAt?: DateTimeFilter<"SubscriptionToken"> | Date | string
+  }
+
+  export type StatusPageSubscriberCreateWithoutTokensInput = {
+    id?: string
+    email: string
+    verified?: boolean
+    manageToken?: string
+    notifyIncidents?: boolean
+    notifyMaintenance?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    statusPage: StatusPageCreateNestedOneWithoutSubscribersInput
+    monitorSubscriptions?: MonitorSubscriptionCreateNestedManyWithoutSubscriberInput
+  }
+
+  export type StatusPageSubscriberUncheckedCreateWithoutTokensInput = {
+    id?: string
+    statusPageId: string
+    email: string
+    verified?: boolean
+    manageToken?: string
+    notifyIncidents?: boolean
+    notifyMaintenance?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    monitorSubscriptions?: MonitorSubscriptionUncheckedCreateNestedManyWithoutSubscriberInput
+  }
+
+  export type StatusPageSubscriberCreateOrConnectWithoutTokensInput = {
+    where: StatusPageSubscriberWhereUniqueInput
+    create: XOR<StatusPageSubscriberCreateWithoutTokensInput, StatusPageSubscriberUncheckedCreateWithoutTokensInput>
+  }
+
+  export type StatusPageSubscriberUpsertWithoutTokensInput = {
+    update: XOR<StatusPageSubscriberUpdateWithoutTokensInput, StatusPageSubscriberUncheckedUpdateWithoutTokensInput>
+    create: XOR<StatusPageSubscriberCreateWithoutTokensInput, StatusPageSubscriberUncheckedCreateWithoutTokensInput>
+    where?: StatusPageSubscriberWhereInput
+  }
+
+  export type StatusPageSubscriberUpdateToOneWithWhereWithoutTokensInput = {
+    where?: StatusPageSubscriberWhereInput
+    data: XOR<StatusPageSubscriberUpdateWithoutTokensInput, StatusPageSubscriberUncheckedUpdateWithoutTokensInput>
+  }
+
+  export type StatusPageSubscriberUpdateWithoutTokensInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    verified?: BoolFieldUpdateOperationsInput | boolean
+    manageToken?: StringFieldUpdateOperationsInput | string
+    notifyIncidents?: BoolFieldUpdateOperationsInput | boolean
+    notifyMaintenance?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    statusPage?: StatusPageUpdateOneRequiredWithoutSubscribersNestedInput
+    monitorSubscriptions?: MonitorSubscriptionUpdateManyWithoutSubscriberNestedInput
+  }
+
+  export type StatusPageSubscriberUncheckedUpdateWithoutTokensInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    statusPageId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    verified?: BoolFieldUpdateOperationsInput | boolean
+    manageToken?: StringFieldUpdateOperationsInput | string
+    notifyIncidents?: BoolFieldUpdateOperationsInput | boolean
+    notifyMaintenance?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutSubscriberNestedInput
+  }
+
+  export type StatusPageSubscriberCreateWithoutMonitorSubscriptionsInput = {
+    id?: string
+    email: string
+    verified?: boolean
+    manageToken?: string
+    notifyIncidents?: boolean
+    notifyMaintenance?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    statusPage: StatusPageCreateNestedOneWithoutSubscribersInput
+    tokens?: SubscriptionTokenCreateNestedManyWithoutSubscriberInput
+  }
+
+  export type StatusPageSubscriberUncheckedCreateWithoutMonitorSubscriptionsInput = {
+    id?: string
+    statusPageId: string
+    email: string
+    verified?: boolean
+    manageToken?: string
+    notifyIncidents?: boolean
+    notifyMaintenance?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tokens?: SubscriptionTokenUncheckedCreateNestedManyWithoutSubscriberInput
+  }
+
+  export type StatusPageSubscriberCreateOrConnectWithoutMonitorSubscriptionsInput = {
+    where: StatusPageSubscriberWhereUniqueInput
+    create: XOR<StatusPageSubscriberCreateWithoutMonitorSubscriptionsInput, StatusPageSubscriberUncheckedCreateWithoutMonitorSubscriptionsInput>
+  }
+
+  export type MonitorCreateWithoutMonitorSubscriptionsInput = {
+    id?: string
+    name: string
+    url: string
+    type?: $Enums.MonitorType
+    interval?: number
+    timeout?: number
+    status?: $Enums.MonitorStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    nextCheck?: Date | string | null
+    lastCheck?: Date | string | null
+    checkRegions?: string | null
+    alertThreshold?: number
+    user: UserCreateNestedOneWithoutMonitorsInput
+    events?: MonitorEventCreateNestedManyWithoutMonitorInput
+    maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
+    alertRules?: AlertRuleCreateNestedManyWithoutMonitorInput
+    incidents?: IncidentCreateNestedManyWithoutMonitorInput
+    regionalIncidents?: RegionalIncidentCreateNestedManyWithoutMonitorInput
+    latencyAggregates?: LatencyAggregateCreateNestedManyWithoutMonitorInput
+    regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
+    statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
+  }
+
+  export type MonitorUncheckedCreateWithoutMonitorSubscriptionsInput = {
+    id?: string
+    name: string
+    url: string
+    type?: $Enums.MonitorType
+    interval?: number
+    timeout?: number
+    status?: $Enums.MonitorStatus
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    nextCheck?: Date | string | null
+    lastCheck?: Date | string | null
+    checkRegions?: string | null
+    alertThreshold?: number
+    events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
+    maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
+    alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
+    incidents?: IncidentUncheckedCreateNestedManyWithoutMonitorInput
+    regionalIncidents?: RegionalIncidentUncheckedCreateNestedManyWithoutMonitorInput
+    latencyAggregates?: LatencyAggregateUncheckedCreateNestedManyWithoutMonitorInput
+    regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
+    statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
+  }
+
+  export type MonitorCreateOrConnectWithoutMonitorSubscriptionsInput = {
+    where: MonitorWhereUniqueInput
+    create: XOR<MonitorCreateWithoutMonitorSubscriptionsInput, MonitorUncheckedCreateWithoutMonitorSubscriptionsInput>
+  }
+
+  export type StatusPageSubscriberUpsertWithoutMonitorSubscriptionsInput = {
+    update: XOR<StatusPageSubscriberUpdateWithoutMonitorSubscriptionsInput, StatusPageSubscriberUncheckedUpdateWithoutMonitorSubscriptionsInput>
+    create: XOR<StatusPageSubscriberCreateWithoutMonitorSubscriptionsInput, StatusPageSubscriberUncheckedCreateWithoutMonitorSubscriptionsInput>
+    where?: StatusPageSubscriberWhereInput
+  }
+
+  export type StatusPageSubscriberUpdateToOneWithWhereWithoutMonitorSubscriptionsInput = {
+    where?: StatusPageSubscriberWhereInput
+    data: XOR<StatusPageSubscriberUpdateWithoutMonitorSubscriptionsInput, StatusPageSubscriberUncheckedUpdateWithoutMonitorSubscriptionsInput>
+  }
+
+  export type StatusPageSubscriberUpdateWithoutMonitorSubscriptionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    verified?: BoolFieldUpdateOperationsInput | boolean
+    manageToken?: StringFieldUpdateOperationsInput | string
+    notifyIncidents?: BoolFieldUpdateOperationsInput | boolean
+    notifyMaintenance?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    statusPage?: StatusPageUpdateOneRequiredWithoutSubscribersNestedInput
+    tokens?: SubscriptionTokenUpdateManyWithoutSubscriberNestedInput
+  }
+
+  export type StatusPageSubscriberUncheckedUpdateWithoutMonitorSubscriptionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    statusPageId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    verified?: BoolFieldUpdateOperationsInput | boolean
+    manageToken?: StringFieldUpdateOperationsInput | string
+    notifyIncidents?: BoolFieldUpdateOperationsInput | boolean
+    notifyMaintenance?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tokens?: SubscriptionTokenUncheckedUpdateManyWithoutSubscriberNestedInput
+  }
+
+  export type MonitorUpsertWithoutMonitorSubscriptionsInput = {
+    update: XOR<MonitorUpdateWithoutMonitorSubscriptionsInput, MonitorUncheckedUpdateWithoutMonitorSubscriptionsInput>
+    create: XOR<MonitorCreateWithoutMonitorSubscriptionsInput, MonitorUncheckedCreateWithoutMonitorSubscriptionsInput>
+    where?: MonitorWhereInput
+  }
+
+  export type MonitorUpdateToOneWithWhereWithoutMonitorSubscriptionsInput = {
+    where?: MonitorWhereInput
+    data: XOR<MonitorUpdateWithoutMonitorSubscriptionsInput, MonitorUncheckedUpdateWithoutMonitorSubscriptionsInput>
+  }
+
+  export type MonitorUpdateWithoutMonitorSubscriptionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    type?: EnumMonitorTypeFieldUpdateOperationsInput | $Enums.MonitorType
+    interval?: IntFieldUpdateOperationsInput | number
+    timeout?: IntFieldUpdateOperationsInput | number
+    status?: EnumMonitorStatusFieldUpdateOperationsInput | $Enums.MonitorStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nextCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
+    alertThreshold?: IntFieldUpdateOperationsInput | number
+    user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
+    events?: MonitorEventUpdateManyWithoutMonitorNestedInput
+    maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
+    alertRules?: AlertRuleUpdateManyWithoutMonitorNestedInput
+    incidents?: IncidentUpdateManyWithoutMonitorNestedInput
+    regionalIncidents?: RegionalIncidentUpdateManyWithoutMonitorNestedInput
+    latencyAggregates?: LatencyAggregateUpdateManyWithoutMonitorNestedInput
+    regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
+    statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
+  }
+
+  export type MonitorUncheckedUpdateWithoutMonitorSubscriptionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    type?: EnumMonitorTypeFieldUpdateOperationsInput | $Enums.MonitorType
+    interval?: IntFieldUpdateOperationsInput | number
+    timeout?: IntFieldUpdateOperationsInput | number
+    status?: EnumMonitorStatusFieldUpdateOperationsInput | $Enums.MonitorStatus
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nextCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
+    alertThreshold?: IntFieldUpdateOperationsInput | number
+    events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
+    maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
+    alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
+    incidents?: IncidentUncheckedUpdateManyWithoutMonitorNestedInput
+    regionalIncidents?: RegionalIncidentUncheckedUpdateManyWithoutMonitorNestedInput
+    latencyAggregates?: LatencyAggregateUncheckedUpdateManyWithoutMonitorNestedInput
+    regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
+    statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type SessionCreateManyUserInput = {
@@ -33534,6 +38756,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
+    monitorSubscriptions?: MonitorSubscriptionUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutUserInput = {
@@ -33558,6 +38781,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUncheckedUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
+    monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateManyWithoutUserInput = {
@@ -33633,6 +38857,7 @@ export namespace Prisma {
     monitors?: StatusPageMonitorUpdateManyWithoutStatusPageNestedInput
     views?: StatusPageViewUpdateManyWithoutStatusPageNestedInput
     i18nSettings?: StatusPageI18nUpdateManyWithoutStatusPageNestedInput
+    subscribers?: StatusPageSubscriberUpdateManyWithoutStatusPageNestedInput
   }
 
   export type StatusPageUncheckedUpdateWithoutUserInput = {
@@ -33663,6 +38888,7 @@ export namespace Prisma {
     monitors?: StatusPageMonitorUncheckedUpdateManyWithoutStatusPageNestedInput
     views?: StatusPageViewUncheckedUpdateManyWithoutStatusPageNestedInput
     i18nSettings?: StatusPageI18nUncheckedUpdateManyWithoutStatusPageNestedInput
+    subscribers?: StatusPageSubscriberUncheckedUpdateManyWithoutStatusPageNestedInput
   }
 
   export type StatusPageUncheckedUpdateManyWithoutUserInput = {
@@ -33869,6 +39095,12 @@ export namespace Prisma {
     displayName?: string | null
     displayGroup?: string | null
     sortOrder?: number
+    createdAt?: Date | string
+  }
+
+  export type MonitorSubscriptionCreateManyMonitorInput = {
+    id?: string
+    subscriberId: string
     createdAt?: Date | string
   }
 
@@ -34134,6 +39366,24 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type MonitorSubscriptionUpdateWithoutMonitorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscriber?: StatusPageSubscriberUpdateOneRequiredWithoutMonitorSubscriptionsNestedInput
+  }
+
+  export type MonitorSubscriptionUncheckedUpdateWithoutMonitorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subscriberId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MonitorSubscriptionUncheckedUpdateManyWithoutMonitorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subscriberId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StatusPageMonitorCreateManyStatusPageInput = {
     id?: string
     monitorId: string
@@ -34156,6 +39406,17 @@ export namespace Prisma {
     locale: string
     enabled?: boolean
     overrides?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StatusPageSubscriberCreateManyStatusPageInput = {
+    id?: string
+    email: string
+    verified?: boolean
+    manageToken?: string
+    notifyIncidents?: boolean
+    notifyMaintenance?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -34236,6 +39497,103 @@ export namespace Prisma {
     overrides?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusPageSubscriberUpdateWithoutStatusPageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    verified?: BoolFieldUpdateOperationsInput | boolean
+    manageToken?: StringFieldUpdateOperationsInput | string
+    notifyIncidents?: BoolFieldUpdateOperationsInput | boolean
+    notifyMaintenance?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    monitorSubscriptions?: MonitorSubscriptionUpdateManyWithoutSubscriberNestedInput
+    tokens?: SubscriptionTokenUpdateManyWithoutSubscriberNestedInput
+  }
+
+  export type StatusPageSubscriberUncheckedUpdateWithoutStatusPageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    verified?: BoolFieldUpdateOperationsInput | boolean
+    manageToken?: StringFieldUpdateOperationsInput | string
+    notifyIncidents?: BoolFieldUpdateOperationsInput | boolean
+    notifyMaintenance?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutSubscriberNestedInput
+    tokens?: SubscriptionTokenUncheckedUpdateManyWithoutSubscriberNestedInput
+  }
+
+  export type StatusPageSubscriberUncheckedUpdateManyWithoutStatusPageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    verified?: BoolFieldUpdateOperationsInput | boolean
+    manageToken?: StringFieldUpdateOperationsInput | string
+    notifyIncidents?: BoolFieldUpdateOperationsInput | boolean
+    notifyMaintenance?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MonitorSubscriptionCreateManySubscriberInput = {
+    id?: string
+    monitorId: string
+    createdAt?: Date | string
+  }
+
+  export type SubscriptionTokenCreateManySubscriberInput = {
+    id?: string
+    token: string
+    type: $Enums.SubscriptionTokenType
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type MonitorSubscriptionUpdateWithoutSubscriberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    monitor?: MonitorUpdateOneRequiredWithoutMonitorSubscriptionsNestedInput
+  }
+
+  export type MonitorSubscriptionUncheckedUpdateWithoutSubscriberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monitorId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MonitorSubscriptionUncheckedUpdateManyWithoutSubscriberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monitorId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SubscriptionTokenUpdateWithoutSubscriberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    type?: EnumSubscriptionTokenTypeFieldUpdateOperationsInput | $Enums.SubscriptionTokenType
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SubscriptionTokenUncheckedUpdateWithoutSubscriberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    type?: EnumSubscriptionTokenTypeFieldUpdateOperationsInput | $Enums.SubscriptionTokenType
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SubscriptionTokenUncheckedUpdateManyWithoutSubscriberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    type?: EnumSubscriptionTokenTypeFieldUpdateOperationsInput | $Enums.SubscriptionTokenType
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 
