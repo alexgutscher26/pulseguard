@@ -2,10 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@pulseguard/db";
 
 /**
- * GET /api/widget/embed.js?slug=xxx
- * 
- * Returns a JavaScript snippet that fetches status and renders a badge.
- * This is the embeddable widget script.
+ * Handles the GET request to generate an embeddable widget script for a status page.
+ *
+ * This function retrieves the slug from the request, validates it, and fetches the corresponding status page configuration from the database.
+ * It constructs a JavaScript snippet that includes theme settings and status messages, which is returned as a response.
+ * The script is designed to be embedded in a webpage to display the status of a service.
+ *
+ * @param request - The NextRequest object containing the request details.
+ * @returns A NextResponse containing the embeddable JavaScript snippet for the widget.
+ * @throws NextResponse If the slug is missing, or if the status page is not found or widget is not enabled.
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
