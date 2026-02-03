@@ -4,6 +4,16 @@ import { generateAtomFeed, AtomEntry } from "@/lib/feeds/atom-generator";
 
 export const dynamic = "force-dynamic";
 
+/**
+ * Fetch and generate an Atom feed for a status page with incidents and recent events.
+ *
+ * The function retrieves the status page based on the provided slug, including monitors, incidents from the last 30 days, and status change events from the last 7 days. It constructs an Atom feed with the collected entries, sorts them by date, and limits the output to the most recent 100 entries. If the status page is not found, it returns a 404 response. In case of an error during processing, it logs the error and returns a 500 response.
+ *
+ * @param request - The NextRequest object representing the incoming request.
+ * @param params - An object containing a Promise that resolves to an object with the slug of the status page.
+ * @returns A NextResponse containing the generated Atom feed or an error response.
+ * @throws Error If an error occurs during the fetching or processing of the status page data.
+ */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
