@@ -22,14 +22,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { usePathname, useRouter } from "next/navigation";
-import { useMobile } from "@/hooks/use-mobile";
-
-interface DashboardHeaderProps {
-  onMenuClick?: () => void;
-}
-
-export function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
+/**
+ * Renders the dashboard header component.
+ *
+ * The DashboardHeader component displays a sticky header with session information, a search input,
+ * and options for adding monitors and managing user accounts. It utilizes the authClient to retrieve
+ * the current session and conditionally displays user details, including their profile image and access level.
+ */
+export function DashboardHeader() {
   const { data: session } = authClient.useSession();
   const pathname = usePathname();
   const router = useRouter();
