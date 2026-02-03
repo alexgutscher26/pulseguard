@@ -1,143 +1,35 @@
 "use client";
 
-import { MessageSquare, Mail, Terminal, Trash2, Plus, Loader2 } from "lucide-react";
-import { useState, useTransition } from "react";
-import {
-  createNotificationChannel,
-  deleteNotificationChannel,
-  sendTestNotification,
-} from "@/actions/notifications";
-import { toast } from "sonner";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-  DialogDescription,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { MessageSquare, Mail, Terminal, Settings } from "lucide-react";
 
-interface Channel {
-  id: string;
-  name: string;
-  type: string;
-  config: any;
-  createdAt: Date;
-}
+const channels = [
+  {
+    name: "Slack",
+    detail: "#ops-alerts",
+    icon: MessageSquare,
+    color: "text-[#E01E5A]", // Slack colorish, but maybe override for style
+    status: "Active",
+  },
+  {
+    name: "Discord",
+    detail: "Uptime Webhook",
+    icon: MessageSquare, // Or use a specific discord icon if available, generic for now
+    color: "text-[#5865F2]",
+    status: "Active",
+  },
+  {
+    name: "Email",
+    detail: "admin@pulseguard.io",
+    icon: Mail,
+    color: "text-primary",
+    status: "Active",
+  },
+];
 
-export function NotificationChannels({
-  channels,
-  slackClientId,
-  discordClientId,
-}: {
-  channels: Channel[];
-  slackClientId?: string;
-  discordClientId?: string;
-}) {
-  const [isPending, startTransition] = useTransition();
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedType, setSelectedType] = useState("EMAIL");
-
-  async function handleDelete(id: string) {
-    toast("Delete this notification channel?", {
-      description: "This action cannot be undone.",
-      action: {
-        label: "Delete",
-        onClick: () => {
-          startTransition(async () => {
-            const res = await deleteNotificationChannel(id);
-            if (res.success) {
-              toast.success("Channel deleted");
-            } else {
-              toast.error(res.error);
-            }
-          });
-        },
-      },
-      cancel: {
-        label: "Cancel",
-        onClick: () => {},
-      },
-    });
-  }
-
-  async function handleTest(id: string) {
-    toast.promise(
-      async () => {
-        const res = await sendTestNotification(id);
-        if (!res.success) throw new Error(res.error);
-        return res;
-      },
-      {
-        loading: "Dispatching test signal...",
-        success: "Test signal sent successfully",
-        error: (err) => `Signal failed: ${err.message}`,
-      },
-    );
-  }
-
-  async function handleSubmit(formData: FormData) {
-    const config: Record<string, string> = {};
-    const value = formData.get("value") as string;
-
-    // Type checking handled in render/state
-    if (selectedType === "EMAIL") config.email = value;
-    else if (selectedType === "SMS") config.phoneNumber = value;
-    else config.url = value;
-
-    formData.set("config", JSON.stringify(config));
-
-    startTransition(async () => {
-      const res = await createNotificationChannel(null, formData);
-      if (res.success) {
-        toast.success("Channel created");
-        setIsOpen(false);
-      } else {
-        toast.error(res.error);
-      }
-    });
-  }
-
-  const getIcon = (type: string) => {
-    switch (type) {
-      case "EMAIL":
-        return Mail;
-      case "SLACK":
-        return MessageSquare;
-      case "DISCORD":
-        return MessageSquare;
-      case "SMS":
-        return MessageSquare;
-      default:
-        return Terminal;
-    }
-  };
-
-  const getDetail = (channel: Channel) => {
-    const config = channel.config as any;
-    if (config?.email) return config.email;
-    if (config?.url) return config.url;
-    if (config?.phoneNumber) return config.phoneNumber;
-    return "Configured";
-  };
-
-  const getColor = (type: string) => {
-    switch (type) {
-      case "SLACK":
-        return "text-[#E01E5A]";
-      case "DISCORD":
-        return "text-[#5865F2]";
-      case "EMAIL":
-        return "text-primary";
-      default:
-        return "text-foreground";
-    }
-  };
-
+/**
+ * Renders the Notification Channels component.
+ */
+export function NotificationChannels() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
