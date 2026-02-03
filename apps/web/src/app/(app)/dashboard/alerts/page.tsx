@@ -14,7 +14,10 @@ import { getMonitors } from "@/actions/monitors";
 /**
  * Renders the Alerts page component.
  *
- * This function retrieves the user session using the auth.api.getSession method. If no user session is found, it redirects the user to the login page. Upon successful retrieval of the session, it returns a JSX element containing NotificationChannels and AlertHistory components.
+ * This function retrieves the user session using the auth.api.getSession method. If no user session is found, it redirects the user to the login page. It then fetches notification channels, alert rules, monitors, and alert history based on the current page and page size. Finally, it returns a JSX element containing NotificationChannels, AlertRules, and AlertHistory components.
+ *
+ * @param {Object} params - The parameters for the function.
+ * @param {Promise<{ page?: string }>} params.searchParams - A promise that resolves to an object containing the page number.
  */
 export default async function AlertsPage({
   searchParams,
