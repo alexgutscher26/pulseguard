@@ -25,9 +25,7 @@ import {
 /**
  * Renders the dashboard header component.
  *
- * The DashboardHeader component displays a sticky header with session information, a search input,
- * and options for adding monitors and managing user accounts. It utilizes the authClient to retrieve
- * the current session and conditionally displays user details, including their profile image and access level.
+ * The DashboardHeader function utilizes the authClient to retrieve the current session data. It constructs a header with a sticky position that includes a scanline effect, a title, a search input, an "Add Monitor" button, and user information. The user profile image is displayed if available, otherwise a default image is used. The layout is responsive and adapts to different screen sizes.
  */
 export function DashboardHeader() {
   const { data: session } = authClient.useSession();

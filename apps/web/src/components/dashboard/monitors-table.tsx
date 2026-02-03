@@ -26,6 +26,17 @@ interface MonitorWithEvents {
 type SortOption = "name" | "status" | "uptime";
 type FilterStatus = "UP" | "DOWN" | "PAUSED" | "MAINTENANCE";
 
+/**
+ * Renders a visual representation of uptime status as a bar.
+ *
+ * The function determines the color and opacity of the bar based on the provided status.
+ * It uses specific color classes for different status values: green for normal, red for failure,
+ * and grey for unknown. Additionally, it handles a special case for a status of 0.5 to render
+ * a bar with reduced opacity.
+ *
+ * @param {Object} param0 - The parameters object.
+ * @param {number} param0.status - The uptime status value that influences the bar's appearance.
+ */
 function UptimeBar({ status }: { status: number }) {
   let colorClass = "bg-[#0bda5e]"; // Green
   if (status === 0) colorClass = "bg-[#fa6238]"; // Red
@@ -40,68 +51,14 @@ function UptimeBar({ status }: { status: number }) {
 }
 
 /**
- * Renders a table displaying the status and details of monitors.
+ * Renders a table displaying the status of monitors.
  *
- * This function manages the state for sorting and filtering monitors based on their status. It calculates uptime, retrieves the history of events, and displays the last response time. The monitors are filtered and sorted according to user selections, and the UI is updated accordingly. The function also handles the rendering of dropdown menus for filtering and sorting options.
- *
- * @param {Object} param0 - The parameters object.
- * @param {MonitorWithEvents[]} param0.monitors - An array of monitors with their associated events.
- * @returns {JSX.Element} The rendered MonitorsTable component.
+ * The MonitorsTable function creates a structured layout that includes a header with filter and sort buttons,
+ * a table with monitor details such as site name, status, uptime, and response time,
+ * and a footer for pagination. It utilizes the monitors data to dynamically populate the table rows
+ * and displays the status of each monitor with appropriate styling based on their state.
  */
-export function MonitorsTable({ monitors: initialMonitors }: { monitors: MonitorWithEvents[] }) {
-  const [sort, setSort] = useState<SortOption>("name");
-  const [filterStatuses, setFilterStatuses] = useState<FilterStatus[]>([]);
-
-  // Calculate uptime (simple mock calculation for now or derived from events)
-  const getUptime = (events: any[]) => {
-    if (!events || events.length === 0) return 0;
-    const up = events.filter((e) => e.status === "UP").length;
-    return Math.round((up / events.length) * 100);
-  };
-
-  const getHistory = (events: any[]) => {
-    // Events are typically DESC (newest first)
-    if (!events) return Array(10).fill(-1);
-
-    // We want the last 10 events, in chronological order (oldest -> newest) for the bar
-    // So we take the first 10 (newest), and reverse them so the newest is on the right.
-    const history: number[] = events
-      .slice(0, 10)
-      .map((e) => {
-        if (e.status === "MAINTENANCE") return 2;
-        return e.status === "UP" ? 1 : 0;
-      })
-      .reverse();
-
-    // Pad with -1 (grey) on the LEFT if we don't have enough data
-    while (history.length < 10) history.unshift(-1);
-    return history;
-  };
-
-  const getLastResponse = (events: any[]) => {
-    if (!events || !events.length) return "—";
-    return events[0].latency + "ms";
-  };
-
-  // Filter & Sort Logic
-  const filteredMonitors = initialMonitors.filter((m) => {
-    if (filterStatuses.length === 0) return true;
-    return filterStatuses.includes(m.status as FilterStatus);
-  });
-
-  const sortedMonitors = [...filteredMonitors].sort((a, b) => {
-    if (sort === "name") return a.name.localeCompare(b.name);
-    if (sort === "status") return a.status.localeCompare(b.status);
-    if (sort === "uptime") return getUptime(b.events) - getUptime(a.events);
-    return 0;
-  });
-
-  const toggleFilter = (status: FilterStatus) => {
-    setFilterStatuses((prev) =>
-      prev.includes(status) ? prev.filter((s) => s !== status) : [...prev, status],
-    );
-  };
-
+export function MonitorsTable() {
   return (
     <div>
       {/* SectionHeader */}
