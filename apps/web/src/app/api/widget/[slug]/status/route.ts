@@ -3,7 +3,15 @@ import prisma from "@pulseguard/db";
 import { getOverallStatus, getStatusMessage, type BadgeTextConfig } from "@/lib/uptime-calculator";
 
 /**
- * Validate if the origin is allowed based on the configured domains
+ * Validate if the origin is allowed based on the configured domains.
+ *
+ * The function checks if the origin is null (indicating a same-origin request) or if the allowedDomains is set to "*", allowing all origins.
+ * If allowedDomains is not configured, it blocks cross-origin requests. It then splits the allowed domains, checks the origin against each domain,
+ * and supports wildcard matching for subdomains. If the origin cannot be parsed as a URL, it returns false.
+ *
+ * @param origin - The origin of the request, which can be a string or null.
+ * @param allowedDomains - A comma-separated string of allowed domains or null.
+ * @returns True if the origin is allowed, false otherwise.
  */
 function validateOrigin(origin: string | null, allowedDomains: string | null): boolean {
   // If no origin header (same-origin request), allow
@@ -36,12 +44,14 @@ function validateOrigin(origin: string | null, allowedDomains: string | null): b
 }
 
 /**
- * GET /api/widget/[slug]/status
- * 
- * Public endpoint that returns the current status of a status page
- * for embedding in external websites.
- * 
- * Respects CORS based on widgetAllowedDomains configuration.
+ * Handles the GET request for the status of a status page.
+ *
+ * This function retrieves the status page based on the provided slug, checks if the widget is enabled, validates the origin for CORS, and constructs a response containing the overall status and individual monitor statuses. It also sets appropriate CORS headers based on the request origin.
+ *
+ * @param request - The NextRequest object representing the incoming request.
+ * @param params - An object containing a Promise that resolves to an object with the slug of the status page.
+ * @returns A JSON response containing the status information of the status page and monitors.
+ * @throws Error If the status page is not found, the widget is not enabled, or the origin is not allowed.
  */
 export async function GET(
   request: NextRequest,
@@ -145,7 +155,15 @@ export async function GET(
 }
 
 /**
- * OPTIONS handler for CORS preflight
+ * OPTIONS handler for CORS preflight.
+ *
+ * This function processes CORS preflight requests by checking the status page associated with the provided slug.
+ * It retrieves the allowed domains and validates the origin of the request. If the status page is not found or
+ * the widget is disabled, a 404 response is returned. If the origin is not allowed, a 403 response is sent.
+ * Otherwise, it sets the appropriate CORS headers and returns a 204 response.
+ *
+ * @param request - The incoming NextRequest object.
+ * @param params - An object containing a Promise that resolves to an object with a slug property.
  */
 export async function OPTIONS(
   request: NextRequest,
