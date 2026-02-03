@@ -341,7 +341,11 @@ const widgetConfigSchema = z.object({
 });
 
 /**
- * Validate domain format (simple check)
+ * Validate the format of domain strings.
+ *
+ * This function checks if the provided domains are in a valid format. It handles cases where the input is null or undefined, returning true in those scenarios. If the input is a wildcard "*", it also returns true. The function splits the input string into individual domains, trims whitespace, and uses a regular expression to validate each domain's format, ensuring they conform to standard domain naming conventions.
+ *
+ * @param {string | null | undefined} domains - A comma-separated string of domains to validate, or null/undefined.
  */
 function validateDomainFormat(domains: string | null | undefined): boolean {
   if (!domains) return true;
@@ -354,7 +358,16 @@ function validateDomainFormat(domains: string | null | undefined): boolean {
 }
 
 /**
- * Update widget configuration for a status page
+ * Update widget configuration for a status page.
+ *
+ * This function retrieves the current user session and validates the provided configuration against the widgetConfigSchema.
+ * It checks for valid domain formats and updates the status page in the database if the page exists.
+ * Additionally, it triggers revalidation of the relevant paths after the update.
+ * If any step fails, it returns an error message indicating the issue.
+ *
+ * @param pageId - The ID of the status page to update.
+ * @param config - The configuration object for the widget, validated against the widgetConfigSchema.
+ * @returns An object indicating the success of the operation and any error messages.
  */
 export async function updateWidgetConfig(
   pageId: string,
@@ -404,7 +417,13 @@ export async function updateWidgetConfig(
 }
 
 /**
- * Update history days setting for a status page
+ * Update history days setting for a status page.
+ *
+ * This function first retrieves the user session to ensure the request is authorized. It then validates the provided historyDays against allowed values (30, 60, or 90). If valid, it attempts to find the corresponding status page and updates its historyDays. If any step fails, appropriate error messages are returned.
+ *
+ * @param pageId - The ID of the status page to update.
+ * @param historyDays - The number of days to set for the history, must be 30, 60, or 90.
+ * @returns An object indicating success or failure, along with an error message if applicable.
  */
 export async function updateHistoryDays(pageId: string, historyDays: number) {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -438,7 +457,16 @@ export async function updateHistoryDays(pageId: string, historyDays: number) {
 }
 
 /**
- * Get incidents for status page monitors within a time range
+ * Get incidents for status page monitors within a time range.
+ *
+ * This function retrieves incidents associated with a specific status page identified by pageId,
+ * filtering them based on a specified number of days. It first checks for a valid user session,
+ * then calculates the start date based on the provided days. If the status page exists, it gathers
+ * the monitor IDs and fetches the incidents that started after the calculated start date,
+ * including relevant monitor and event details.
+ *
+ * @param {string} pageId - The ID of the status page to retrieve incidents for.
+ * @param {number} [days=90] - The number of days to look back for incidents.
  */
 export async function getStatusPageIncidents(pageId: string, days: number = 90) {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -479,7 +507,15 @@ export async function getStatusPageIncidents(pageId: string, days: number = 90) 
 }
 
 /**
- * Get maintenance windows for status page monitors
+ * Get maintenance windows for status page monitors.
+ *
+ * This function retrieves maintenance windows for a specific status page identified by pageId.
+ * It first checks the user's session to ensure they are authenticated. If the session is valid,
+ * it fetches the status page and its associated monitors. The function then queries the maintenance
+ * windows that are either upcoming, currently active, or have recently completed within the last 7 days,
+ * and returns them ordered by their start time.
+ *
+ * @param {string} pageId - The ID of the status page for which to retrieve maintenance windows.
  */
 export async function getStatusPageMaintenance(pageId: string) {
   const session = await auth.api.getSession({ headers: await headers() });
