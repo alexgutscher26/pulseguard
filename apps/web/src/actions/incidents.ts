@@ -121,6 +121,14 @@ export async function updateIncidentStatus(
   }
 }
 
+/**
+ * Create a new incident associated with a specific monitor.
+ *
+ * This function first retrieves the user's session to ensure authorization. It then verifies the ownership of the monitor by checking if it belongs to the user. If the monitor is found, it creates a new incident with the provided details and logs an event. Finally, it revalidates the relevant paths for updates. If any step fails, appropriate error messages are returned.
+ *
+ * @param data - An object containing the incident details including monitorId, title, description, severity, and status.
+ * @returns An object indicating the success of the operation and the incidentId if successful, or an error message if not.
+ */
 export async function createIncident(data: {
   monitorId: string;
   title: string;
