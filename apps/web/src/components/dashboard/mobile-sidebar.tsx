@@ -30,15 +30,23 @@ interface MobileSidebarProps {
 }
 
 /**
- * Mobile sidebar drawer component
- * - Full-height drawer with navigation
- * - Close button (X) in top-right
- * - Maintains cyberpunk aesthetic
+ * Renders a mobile sidebar drawer component.
+ *
+ * The MobileSidebar component displays a full-height drawer with navigation links and a close button.
+ * It utilizes the usePathname hook to determine the current path and the useHaptic hook to provide haptic feedback on interactions.
+ * The handleClose function triggers a haptic response and invokes the onClose callback when the sidebar is closed.
+ *
+ * @param {MobileSidebarProps} props - The properties for the MobileSidebar component.
+ * @param {boolean} props.isOpen - Indicates whether the sidebar is open.
+ * @param {function} props.onClose - Callback function to be called when the sidebar is closed.
  */
 export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   const pathname = usePathname();
   const { trigger } = useHaptic();
 
+  /**
+   * Handles the close event by triggering "light" and calling onClose.
+   */
   const handleClose = () => {
     trigger("light");
     onClose();
