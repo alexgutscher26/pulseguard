@@ -110,7 +110,15 @@ export function LatencyTimeSeries({
 }
 
 /**
- * Custom Tooltip Component
+ * Renders a custom tooltip component displaying performance metrics.
+ *
+ * The CustomTooltip function checks if the tooltip should be active and if there is valid payload data.
+ * If conditions are met, it extracts the relevant data and formats it for display, including average response times and success rates.
+ * The tooltip is styled with a background, borders, and spacing for a visually appealing presentation.
+ *
+ * @param {Object} props - The properties for the tooltip.
+ * @param {boolean} props.active - Indicates if the tooltip is active.
+ * @param {Array} props.payload - The data payload containing performance metrics.
  */
 function CustomTooltip({ active, payload }: any) {
   if (!active || !payload || payload.length === 0) return null;
