@@ -12,6 +12,20 @@ interface HeatmapGridProps {
   onRegionClick?: (region: string) => void;
 }
 
+/**
+ * Renders a heatmap grid based on the provided data and metric type.
+ *
+ * The HeatmapGrid component processes the input data to extract unique timestamps,
+ * limiting the display to the last 24 points for better readability. It utilizes
+ * the useHeatmapScale hook to determine colors for each data point based on the
+ * selected metric type. The component also handles region clicks to trigger
+ * corresponding actions.
+ *
+ * @param {HeatmapGridProps} props - The properties for the HeatmapGrid component.
+ * @param {Array} props.data - The data containing regions and their respective points.
+ * @param {string} props.metricType - The type of metric to display (absolute or relative).
+ * @param {function} [props.onRegionClick] - Optional callback for handling region clicks.
+ */
 export function HeatmapGrid({
   data,
   metricType,
