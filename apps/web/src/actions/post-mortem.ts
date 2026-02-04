@@ -8,6 +8,14 @@ import { generateText } from "ai";
 import { openai } from "@ai-sdk/openai";
 import { env } from "@pulseguard/env/server";
 
+/**
+ * Retrieve the post-mortem report for a specific incident.
+ *
+ * This function first obtains the user session to verify ownership of the incident. It then checks if the incident exists for the given incidentId and if it is associated with the current user. If both checks pass, it retrieves the corresponding post-mortem report from the database. In case of any errors during the process, it logs the error and returns null.
+ *
+ * @param incidentId - The ID of the incident for which to retrieve the post-mortem report.
+ * @returns The post-mortem report associated with the incident, or null if not found or if the user is not authorized.
+ */
 export async function getPostMortem(incidentId: string) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -92,6 +100,15 @@ export async function upsertPostMortem(
   }
 }
 
+/**
+ * Generate a post-mortem summary for a specific incident.
+ *
+ * This function retrieves the incident details and associated events based on the provided incidentId, verifies user ownership, and checks for the OpenAI API key. It constructs a prompt for generating a narrative summary using the OpenAI API and returns the summary or an error message if any step fails.
+ *
+ * @param incidentId - The unique identifier of the incident for which the summary is to be generated.
+ * @returns An object containing the success status and either the generated summary or an error message.
+ * @throws Error If there is a failure in generating the summary.
+ */
 export async function generatePostMortemSummary(incidentId: string) {
   const session = await auth.api.getSession({
     headers: await headers(),
