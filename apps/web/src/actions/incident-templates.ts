@@ -15,6 +15,15 @@ export type IncidentTemplateData = {
   status: $Enums.IncidentStatus;
 };
 
+/**
+ * Retrieve incident templates created by the authenticated user.
+ *
+ * The function first obtains the user session using the auth.api.getSession method. If the session does not contain a user, it returns an empty array.
+ * If the session is valid, it fetches the incident templates from the database using prisma.incidentTemplate.findMany, filtering by the user's ID and ordering by creation date in descending order.
+ * In case of an error during the fetch operation, it logs the error and returns an empty array.
+ *
+ * @returns An array of incident templates created by the authenticated user or an empty array if no templates are found or an error occurs.
+ */
 export async function getIncidentTemplates() {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -38,6 +47,14 @@ export async function getIncidentTemplates() {
   }
 }
 
+/**
+ * Create an incident template in the database.
+ *
+ * This function first retrieves the user session to ensure the request is authorized. If the session is valid, it attempts to create a new incident template using the provided data. Upon successful creation, it revalidates specific paths to ensure the latest data is reflected in the application. If any error occurs during the creation process, it logs the error and returns a failure response.
+ *
+ * @param data - The data for the incident template to be created.
+ * @returns An object indicating the success status and any error message if applicable.
+ */
 export async function createIncidentTemplate(data: IncidentTemplateData) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -98,6 +115,14 @@ export async function updateIncidentTemplate(id: string, data: IncidentTemplateD
   }
 }
 
+/**
+ * Deletes an incident template based on the provided ID.
+ *
+ * The function first retrieves the user session to ensure the user is authorized. It then checks if the incident template exists and is owned by the user. If found, it deletes the template and revalidates the path for the dashboard. In case of any errors during the process, it logs the error and returns a failure response.
+ *
+ * @param id - The ID of the incident template to be deleted.
+ * @returns An object indicating the success status and any associated error message.
+ */
 export async function deleteIncidentTemplate(id: string) {
   const session = await auth.api.getSession({
     headers: await headers(),
