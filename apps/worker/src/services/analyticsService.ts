@@ -15,6 +15,16 @@ export interface MonthlyStats {
   endDate: Date;
 }
 
+/**
+ * Retrieves monthly statistics for incidents and monitor events.
+ *
+ * This function calculates the date range for the previous month based on the provided monthOffset,
+ * fetches incidents from the database, and aggregates statistics such as total incidents, global uptime,
+ * and average response time. It also formats critical events, returning the top 5 incidents by duration or recency.
+ *
+ * @param {any} prisma - The Prisma client instance used for database operations.
+ * @param {number} [monthOffset=1] - The number of months to offset from the current month for the statistics.
+ */
 export async function getMonthlyStats(prisma: any, monthOffset = 1): Promise<MonthlyStats> {
   // 1. Calculate Date Range (Previous Month)
   const now = new Date();
