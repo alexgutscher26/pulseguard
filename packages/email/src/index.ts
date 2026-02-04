@@ -1,4 +1,7 @@
 import { Resend } from "resend";
+import { renderToStream } from "@react-pdf/renderer";
+import React from "react";
+import { MonthlyReportDocument } from "./templates/MonthlyReport";
 
 let resendClient: Resend | null = null;
 
@@ -245,3 +248,49 @@ export async function sendStatusUpdate(
     return { error: error instanceof Error ? error.message : "Unknown error" };
   }
 }
+
+export { MonthlyReportDocument } from "./templates/MonthlyReport";
+
+
+export async function renderMonthlyReportToBuffer(stats: any): Promise<Buffer> {
+  const stream = await renderToStream(React.createElement(MonthlyReportDocument, { stats }) as any);
+  const chunks: Uint8Array[] = [];
+  // @ts-ignore - ReadableStream iteration
+  for await (const chunk of stream) {
+    chunks.push(chunk as Uint8Array);
+  }
+  return Buffer.concat(chunks);
+}
+
+export async function sendMonthlyReport(
+  to: string,
+  pdfBuffer: Buffer,
+  monthName: string,
+  apiKey?: string,
+): Promise<{ id: string } | { error: string }> {
+  try {
+    const resend = getResendClient(apiKey);
+
+    const result = await resend.emails.send({
+      from: "PulseGuard <reports@pulseguard.com>",
+      to,
+      subject: `📊 Monthly Performance Report - ${monthName}`,
+      html: `<p>Please find attached your monthly performance report for <strong>${monthName}</strong>.</p>`,
+      attachments: [
+        {
+          filename: `PulseGuard-Report-${monthName}.pdf`,
+          content: pdfBuffer,
+        },
+      ],
+    });
+
+    if (result.data && "id" in result.data) {
+      return { id: result.data.id };
+    }
+    return { error: result.error?.message || "Failed to send email" };
+  } catch (error) {
+    console.error("Error sending monthly report:", error);
+    return { error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}
+

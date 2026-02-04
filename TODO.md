@@ -253,11 +253,11 @@ Turn logs into insights.
 
 ### 📈 Reporting
 
-- [ ] **SLA Reports**
+- [x] **SLA Reports**
   - Calculate exact uptime (99.95%, 99.99%) per week/month.
-- [ ] **Monthly PDF Report**
+- [x] **Monthly PDF Report**
   - Auto-generate and email a PDF summary for managers.
-- [ ] **Export Data**
+- [x] **Export Data**
   - CSV / JSON export of raw logs for audit compliance.
 
 ---

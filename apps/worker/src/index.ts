@@ -670,9 +670,19 @@ export default {
   },
 
   // 1. Cron: Find pending checks and run them (Free Tier Batch Mode)
-  async scheduled(_event: ScheduledEvent, env: Env, _ctx: ExecutionContext) {
-    console.log("Cron triggered: checking for due monitors...");
+  async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
+    console.log(`Cron triggered: ${event.cron}`);
     const prisma = getPrisma(env.DATABASE_URL);
+
+    // Monthly PDF Report Trigger
+    if (event.cron === "0 9 1 * *") {
+      console.log("Starting Monthly Report Job...");
+      ctx.waitUntil(
+        import("./services/reportGenerator")
+          .then((m) => m.generateAndSendMonthlyReports(prisma, env))
+          .catch((err) => console.error("Monthly Report Job Failed:", err))
+      );
+    }
 
     // FREE TIER CONFIG: Process 5 monitors per cron tick (1 min)
     // Decreased to 5 to avoid CPU limits (exceededCpu error).
