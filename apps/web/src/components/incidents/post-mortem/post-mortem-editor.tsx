@@ -34,6 +34,15 @@ interface PostMortemEditorProps {
   initialData?: PostMortemData | null;
 }
 
+/**
+ * Component for editing post-mortem reports.
+ *
+ * This component manages the state of the post-mortem data, including summary, root cause, impact scope, detection method, and action items. It provides functionality to save the report, generate a summary using AI, and export the report as a Markdown file. The component handles loading states for saving and generating actions, and displays appropriate success or error messages based on the outcomes of these operations.
+ *
+ * @param incidentId - The unique identifier for the incident.
+ * @param incidentTitle - The title of the incident.
+ * @param initialData - The initial data for the post-mortem report.
+ */
 export function PostMortemEditor({
   incidentId,
   incidentTitle,
@@ -52,6 +61,9 @@ export function PostMortemEditor({
   const [isSaving, setIsSaving] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
 
+  /**
+   * Updates the form data for a specified field with a new value.
+   */
   const handleInputChange = (field: keyof PostMortemData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
@@ -89,6 +101,13 @@ export function PostMortemEditor({
     }
   };
 
+  /**
+   * Generates and downloads a Markdown report for a post-mortem incident.
+   *
+   * This function constructs a Markdown string using the incident title, date, status, and various details from the formData object.
+   * It then creates a Blob from the Markdown string, generates a downloadable link, and triggers the download of the report.
+   * Finally, it cleans up the created URL and displays a success message using the toast notification.
+   */
   const handleExportMarkdown = () => {
     const markdown = `
 # Post-Mortem: ${incidentTitle}
