@@ -10,6 +10,9 @@ import {
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 
+/**
+ * Renders the landing header component with navigation and session management.
+ */
 export default function LandingHeader() {
   const session = authClient.useSession();
 
