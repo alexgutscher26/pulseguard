@@ -12,12 +12,13 @@ import { IncidentHistory } from "@/components/monitors/details/incident-history"
 import { LatencyHeatmap } from "@/components/monitors/latency";
 import { ResponseTimeChart } from "@/components/charts/response-time-chart";
 import { SlaReportView } from "@/components/monitors/details/sla-report-view";
-import { ChevronLeft, Play, Loader2, Settings } from "lucide-react";
+import { ChevronLeft, Play, Loader2, Settings, Download } from "lucide-react";
 import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { MonitorExportModal } from "@/components/monitors/details/export-modal";
 
 export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
   const { data: monitor } = useQuery({
@@ -146,6 +147,20 @@ export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
               </span>
             </div>
           )}
+
+          <MonitorExportModal
+            monitorId={initialMonitor.id}
+            trigger={
+              <Button
+                variant="outline"
+                size="sm"
+                className="min-h-[44px] md:h-8 px-4 border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 hover:text-primary font-mono text-[10px] uppercase tracking-wider"
+              >
+                <Download className="size-3 mr-2" />
+                Export
+              </Button>
+            }
+          />
 
           <Button
             variant="outline"

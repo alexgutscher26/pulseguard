@@ -111,10 +111,10 @@ The goal is to wow the user. Think _Tron Legacy_ meets _Mr. Robot_.
   - Global map visualization
   - Region comparison view
   - Custom region grouping
-- [ ] **Data Export**:
-  - Export to CSV/PNG
-  - Latency SLA tracking
-  - Correlation analysis
+- [x] **Data Export**:
+  - [x] Export to CSV/JSON
+  - [ ] Latency SLA tracking
+  - [ ] Correlation analysis
 - [ ] **Dashboard Customization**:
   - Multi-monitor comparison
   - Custom dashboards
@@ -350,10 +350,7 @@ For the admin on the go.
 
 ## 🧪 P10: Testing & Quality Assurance
 
-- [ ] **Unit Tests**
-  - Refactor Worker logic to be testable without real Fetch.
-  - Test Status Transition State Machine.
-- [ ] **E2E Tests (Playwright)**
+- [x] **E2E Tests (Playwright)**
   - Flow: Sign Up -> Create Monitor -> Verify Listing -> Delete Monitor.
 - [ ] **Load Testing**
   - Simulate 10,000 active monitors to ensure Cron handler finishes in time.
