@@ -28,7 +28,11 @@ import {
 /**
  * Renders the dashboard header component.
  *
- * The DashboardHeader function utilizes the authClient to retrieve the current session data. It constructs a header with a sticky position that includes a scanline effect, a title, a search input, an "Add Monitor" button, and user information. The user profile image is displayed if available, otherwise a default image is used. The layout is responsive and adapts to different screen sizes.
+ * The DashboardHeader function utilizes the authClient to retrieve the current session data and constructs a responsive header that includes a sticky position, a scanline effect, a title based on the current pathname, a search input, an "Add Monitor" button, and user information. It adapts to mobile and desktop views, providing a user-friendly interface for navigation and account management.
+ *
+ * @param {Object} [params] - The parameters for the component.
+ * @param {function} [params.onMenuClick] - Optional callback function to handle menu click events.
+ * @returns {JSX.Element} The rendered header component.
  */
 export function DashboardHeader({
   onMenuClick,
