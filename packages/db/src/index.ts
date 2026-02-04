@@ -1,6 +1,6 @@
 import { neonConfig } from "@neondatabase/serverless";
 import { PrismaNeon } from "@prisma/adapter-neon";
-import { PrismaClient } from "./generated/client";
+import { PrismaClient } from "./generated/client/index.js";
 
 neonConfig.poolQueryViaFetch = true;
 
@@ -65,4 +65,4 @@ const prismaProxy = new Proxy({} as PrismaClient, {
 });
 
 export default prismaProxy;
-export * from "./generated/client";
+export * from "./generated/client/index.js";
