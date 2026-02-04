@@ -125,6 +125,9 @@ interface MonthlyReportProps {
   };
 }
 
+/**
+ * Renders a monthly performance report document with key metrics and critical incidents.
+ */
 export const MonthlyReportDocument: React.FC<MonthlyReportProps> = ({
   stats,
 }) => (
