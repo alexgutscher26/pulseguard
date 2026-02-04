@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { Drawer } from "@/components/ui/drawer";
 import { Overlay } from "@/components/ui/overlay";
+import { useHaptic } from "@/hooks/use-haptic";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -36,11 +37,17 @@ interface MobileSidebarProps {
  */
 export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   const pathname = usePathname();
+  const { trigger } = useHaptic();
+
+  const handleClose = () => {
+    trigger("light");
+    onClose();
+  };
 
   return (
     <>
-      <Overlay isOpen={isOpen} onClose={onClose} />
-      <Drawer isOpen={isOpen} onClose={onClose} side="left">
+      <Overlay isOpen={isOpen} onClose={handleClose} />
+      <Drawer isOpen={isOpen} onClose={handleClose} side="left">
         <div className="h-full flex flex-col justify-between p-4 relative overflow-hidden">
           {/* Subtle Grid Background */}
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#111_1px,transparent_1px),linear-gradient(to_bottom,#111_1px,transparent_1px)] bg-size-[2rem_2rem] opacity-20 pointer-events-none"></div>
@@ -69,8 +76,8 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
 
               {/* Close Button - Touch Friendly */}
               <button
-                onClick={onClose}
-                className="flex items-center justify-center size-11 border border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors"
+                onClick={handleClose}
+                className="flex items-center justify-center size-12 border border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors active:scale-95"
                 aria-label="Close navigation"
               >
                 <X className="size-5 text-primary" />
@@ -85,9 +92,12 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                   <Link
                     key={item.name}
                     href={item.href as any}
-                    onClick={onClose}
+                    onClick={() => {
+                      trigger("medium");
+                      onClose();
+                    }}
                     className={cn(
-                      "flex items-center gap-3 px-3 py-2 transition-all duration-200 font-mono group border border-transparent",
+                      "flex items-center gap-3 px-3 py-3 transition-all duration-200 font-mono group border border-transparent active:scale-[0.98]",
                       isActive
                         ? "bg-primary/10 text-primary border-primary/20"
                         : "text-muted-foreground hover:text-primary hover:bg-primary/5 hover:border-primary/10",
@@ -95,13 +105,13 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                   >
                     <item.icon
                       className={cn(
-                        "size-4",
+                        "size-5",
                         isActive
                           ? "text-primary"
                           : "text-muted-foreground group-hover:text-primary",
                       )}
                     />
-                    <p className="text-xs font-bold uppercase tracking-wider">
+                    <p className="text-sm font-bold uppercase tracking-wider">
                       {item.name}
                     </p>
                     {isActive && (
@@ -118,7 +128,10 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
             <p className="text-[10px] text-primary/80 font-mono uppercase">
               System Capacity Low
             </p>
-            <button className="w-full bg-primary text-black text-xs font-mono font-bold uppercase tracking-widest hover:bg-primary/90 transition-all border border-primary relative overflow-hidden group py-2">
+            <button
+              onClick={() => trigger("success")}
+              className="w-full bg-primary text-black text-xs font-mono font-bold uppercase tracking-widest hover:bg-primary/90 transition-all border border-primary relative overflow-hidden group py-3 active:scale-[0.98]"
+            >
               <span className="relative z-10">Upgrade Plan</span>
               <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
             </button>

@@ -14,6 +14,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ModeToggle } from "@/components/mode-toggle";
 import { useMobile } from "@/hooks/use-mobile";
+import { useHaptic } from "@/hooks/use-haptic";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,6 +37,7 @@ export function DashboardHeader({
   const pathname = usePathname();
   const router = useRouter();
   const isMobile = useMobile();
+  const { trigger } = useHaptic();
 
   const getTitle = () => {
     if (pathname.includes("/dashboard/monitors"))
@@ -70,27 +72,30 @@ export function DashboardHeader({
         <div className="absolute top-0 left-0 h-full w-1/3 bg-primary/50 blur-[2px] animate-scan-fast"></div>
       </div>
 
-      <div className="flex items-center gap-2 md:gap-4 relative z-20">
+      <div className="flex items-center gap-2 md:gap-4 relative z-20 min-w-0 flex-1 md:flex-none">
         {/* Hamburger Menu - Mobile Only */}
         {isMobile && onMenuClick && (
           <button
-            onClick={onMenuClick}
-            className="flex items-center justify-center size-11 border border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors shrink-0"
+            onClick={() => {
+              trigger("light");
+              onMenuClick();
+            }}
+            className="flex items-center justify-center size-11 border border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors shrink-0 active:scale-95"
             aria-label="Open navigation menu"
           >
             <Menu className="size-5 text-primary" />
           </button>
         )}
 
-        <div className="p-1.5 bg-primary/10 border border-primary/20 rounded-sm shrink-0">
+        <div className="hidden xs:block p-1.5 bg-primary/10 border border-primary/20 rounded-sm shrink-0">
           <Terminal className="size-4 text-primary" />
         </div>
-        <h2 className="text-sm md:text-lg font-bold tracking-tighter uppercase font-mono text-primary/90 text-glow-sm truncate">
+        <h2 className="text-sm md:text-lg font-bold tracking-tighter uppercase font-mono text-primary/90 text-glow-sm truncate min-w-0 pr-2">
           {getTitle()}
         </h2>
       </div>
 
-      <div className="flex items-center gap-2 md:gap-6 relative z-20">
+      <div className="flex items-center gap-2 md:gap-6 relative z-20 shrink-0">
         {/* Search - Desktop Only */}
         <button
           onClick={() => {
