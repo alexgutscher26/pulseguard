@@ -44,6 +44,7 @@ model Monitor {
   regionalBaselines  RegionalBaseline[]
   statusPages        StatusPageMonitor[]
   monitorSubscriptions MonitorSubscription[]
+  dailySummaries     DailyMonitorSummary[]
 
 
   nextCheck DateTime?

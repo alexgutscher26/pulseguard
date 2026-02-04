@@ -243,7 +243,7 @@ Turn logs into insights.
 
 ### 🗄️ Database Optimization
 
-- [ ] **Data Aggregation Jobs**
+- [x] **Data Aggregation Jobs**
   - **Problem**: `MonitorEvent` grows by 1440 rows/day per monitor.
   - **Solution**: Cron job to compact raw events > 7 days old into `DailySummary`.
 - [ ] **Retention Policy**

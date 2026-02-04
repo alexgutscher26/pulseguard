@@ -1,4 +1,4 @@
-import { getPrisma } from "@pulseguard/db";
+import { getPrisma, MonitorStatus } from "@pulseguard/db";
 
 interface Env {
   DATABASE_URL: string;
@@ -150,7 +150,8 @@ async function downsample5mTo1h(prisma: any): Promise<void> {
 }
 
 /**
- * Cleanup old 1-minute data (older than 7 days)
+ * Cleanup old 1-minute data (older than 7 days) and 5-minute data (older than 30 days)
+ * NOTE: This is for LatencyAggregate, not MonitorEvent.
  */
 async function cleanupOldData(prisma: any): Promise<void> {
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
@@ -185,6 +186,117 @@ async function cleanupOldData(prisma: any): Promise<void> {
 }
 
 /**
+ * Summarize raw MonitorEvents into DailyMonitorSummary for data older than 7 days.
+ */
+async function summarizeDailyEvents(prisma: any): Promise<void> {
+  const now = new Date();
+  const utcNow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  
+  // Target: The specific calendar day that ended 7 days ago.
+  // Example: Today is Day 8. 7 days ago (end of retention) was Day 1.
+  // We summarize Day 0 (8 days ago) to be safe and ensuring it's fully complete.
+  const startOfDay = new Date(utcNow.getTime() - 8 * 24 * 60 * 60 * 1000);
+  const endOfDay = new Date(utcNow.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+  console.log(`[Summarize] Processing day: ${startOfDay.toISOString().split('T')[0]}`);
+
+  // Fetch all monitors
+  const monitors = await prisma.monitor.findMany({ select: { id: true } });
+
+  for (const monitor of monitors) {
+    // Check if summary already exists
+    const existing = await prisma.dailyMonitorSummary.findUnique({
+        where: {
+            monitorId_date: {
+                monitorId: monitor.id,
+                date: startOfDay
+            }
+        }
+    });
+
+    if (existing) continue;
+
+    // 1. Get total checks
+    const totalChecks = await prisma.monitorEvent.count({
+        where: {
+            monitorId: monitor.id,
+            timestamp: { gte: startOfDay, lt: endOfDay }
+        }
+    });
+
+    if (totalChecks === 0) continue;
+
+    // 2. Get status counts
+    const statusCounts = await prisma.monitorEvent.groupBy({
+        by: ['status'],
+        where: {
+            monitorId: monitor.id,
+            timestamp: { gte: startOfDay, lt: endOfDay }
+        },
+        _count: true
+    });
+
+    let checksUp = 0;
+    let checksDown = 0;
+    
+    for (const s of statusCounts) {
+        if (s.status === 'UP') checksUp += s._count;
+        if (s.status === 'DOWN') checksDown += s._count; 
+    }
+
+    // 3. Avg Latency
+    const latencyAgg = await prisma.monitorEvent.aggregate({
+        where: {
+            monitorId: monitor.id,
+            timestamp: { gte: startOfDay, lt: endOfDay }
+        },
+        _avg: { latency: true }
+    });
+
+    const avgLatency = Math.round(latencyAgg._avg.latency || 0);
+
+    const totalValid = checksUp + checksDown;
+    const uptimePct = totalValid > 0 ? (checksUp / totalValid) * 100 : 0;
+    
+    const minutesInDay = 24 * 60;
+    const downDuration = Math.round((checksDown / totalChecks) * minutesInDay);
+
+    await prisma.dailyMonitorSummary.create({
+        data: {
+            monitorId: monitor.id,
+            date: startOfDay,
+            uptimePct,
+            avgLatency,
+            checksTotal: totalChecks,
+            checksUp,
+            checksDown,
+            downDuration
+        }
+    });
+  }
+  console.log(`[Summarize] Completed summary for ${monitors.length} monitors.`);
+}
+
+/**
+ * Cleanup raw MonitorEvent rows older than 7 days.
+ */
+async function cleanupRawMonitorEvents(prisma: any): Promise<void> {
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    
+    // We assume summarization ran for '8 days ago'.
+    // So '7 days ago' and older is safe to delete.
+    const result = await prisma.monitorEvent.deleteMany({
+        where: {
+            timestamp: { lt: sevenDaysAgo }
+        }
+    });
+
+    if (result.count > 0) {
+        console.log(`[Cleanup] Deleted ${result.count} raw monitor events > 7 days old`);
+    }
+}
+
+/**
  * Scheduled handler
  */
 export default {
@@ -204,9 +316,19 @@ export default {
         console.log("[Downsampling] Running 5m → 1h downsampling");
         await downsample5mTo1h(prisma);
         
-        console.log("[Downsampling] Running cleanup");
+        console.log("[Downsampling] Running aggregate cleanup");
         await cleanupOldData(prisma);
       }
+
+      // Daily: Summary + Raw Event Cleanup
+      if (cron === "0 0 * * *") {
+        console.log("[Aggregator] Running Daily Summary");
+        await summarizeDailyEvents(prisma);
+
+        console.log("[Aggregator] Running Raw Event Cleanup");
+        await cleanupRawMonitorEvents(prisma);
+      }
+
     } catch (error) {
       console.error("[Downsampling] Error:", error);
     }

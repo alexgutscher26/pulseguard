@@ -7,7 +7,7 @@
     "NODE_ENV": "production"
   },
   "triggers": {
-    "crons": ["* * * * *"]
+    "crons": ["* * * * *", "*/5 * * * *", "0 * * * *", "0 0 * * *"]
   },
   "durable_objects": {
     "bindings": [
