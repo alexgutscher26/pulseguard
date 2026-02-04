@@ -12,11 +12,15 @@ interface DrawerProps {
 }
 
 /**
- * Reusable drawer component with:
- * - Slide-in animation from left/right
- * - Focus trap when open
- * - ESC key to close
- * - Accessible keyboard navigation
+ * Reusable drawer component with slide-in animation and focus management.
+ *
+ * This component handles opening and closing animations from the left or right side, manages focus trapping for accessibility, and allows closing via the ESC key. It also supports drag gestures to close the drawer based on swipe thresholds and velocity. The drawer's visibility is controlled by the isOpen prop, and it renders children elements within the animated container.
+ *
+ * @param isOpen - A boolean indicating whether the drawer is currently open.
+ * @param onClose - A function to call when the drawer should be closed.
+ * @param children - The content to be displayed inside the drawer.
+ * @param side - The side from which the drawer slides in, defaults to "left".
+ * @returns A JSX element representing the drawer component.
  */
 export function Drawer({
   isOpen,
