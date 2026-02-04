@@ -64,7 +64,7 @@ export function RegionalDetailModal({
 
   return (
     <Dialog open={!!region} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto border-primary/20 bg-background/95 backdrop-blur-xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
             <span className="text-2xl">{getRegionFlag(region)}</span>
@@ -75,7 +75,10 @@ export function RegionalDetailModal({
               </div>
             </div>
             {hasIncident && (
-              <Badge variant="destructive" className="gap-1">
+              <Badge
+                variant="outline"
+                className="gap-1 border-destructive/50 text-destructive animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.2)]"
+              >
                 <AlertCircle className="h-3 w-3" />
                 Active Incident
               </Badge>
@@ -129,29 +132,29 @@ export function RegionalDetailModal({
 
             {/* Success Rate & Baseline */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div className="p-4 rounded-lg border bg-card">
-                <div className="flex items-center gap-2 mb-2">
+              <div className="p-4 rounded-lg border border-primary/10 bg-card/50 backdrop-blur-sm">
+                <div className="flex items-center gap-2 mb-2 uppercase tracking-wider text-xs text-muted-foreground">
                   <CheckCircle className="h-4 w-4 text-green-500" />
-                  <span className="text-sm font-medium">Success Rate</span>
+                  <span className="font-medium">Success Rate</span>
                 </div>
-                <div className="text-2xl font-bold">
+                <div className="text-2xl font-bold font-mono tracking-tight">
                   {((currentData?.successRate || 0) * 100).toFixed(1)}%
                 </div>
-                <div className="text-xs text-muted-foreground mt-1">
+                <div className="text-xs text-muted-foreground mt-1 font-mono">
                   {currentData?.sampleCount || 0} samples
                 </div>
               </div>
 
               {detailedData.baseline && (
-                <div className="p-4 rounded-lg border bg-card">
-                  <div className="text-sm font-medium mb-2">
+                <div className="p-4 rounded-lg border border-primary/10 bg-card/50 backdrop-blur-sm">
+                  <div className="text-xs font-medium mb-2 uppercase tracking-wider text-muted-foreground">
                     30-Day Baseline
                   </div>
-                  <div className="text-2xl font-bold">
+                  <div className="text-2xl font-bold font-mono tracking-tight">
                     {Math.round(detailedData.baseline)}ms
                   </div>
                   {currentData?.relative && (
-                    <div className="text-xs text-muted-foreground mt-1">
+                    <div className="text-xs text-muted-foreground mt-1 font-mono">
                       Current: {currentData.relative.vsBaseline.toFixed(2)}x
                       baseline
                     </div>
@@ -168,15 +171,21 @@ export function RegionalDetailModal({
 
             {/* Incident Information */}
             {hasIncident && (
-              <div className="p-4 rounded-lg border border-destructive bg-destructive/10">
-                <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
+              <div className="p-4 rounded-lg border border-destructive/50 bg-destructive/5 relative overflow-hidden">
+                {/* Scanline effect for alert */}
+                <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.1)_50%)] bg-[length:100%_4px] pointer-events-none opacity-20" />
+
+                <h3 className="text-sm font-semibold mb-2 flex items-center gap-2 text-destructive">
                   <AlertCircle className="h-4 w-4" />
                   Active Incident
                 </h3>
-                <div className="space-y-1 text-sm">
+                <div className="space-y-1 text-sm relative z-10">
                   <div>
                     <span className="text-muted-foreground">Status:</span>{" "}
-                    <Badge variant="outline">
+                    <Badge
+                      variant="outline"
+                      className="border-destructive/30 text-destructive"
+                    >
                       {detailedData.currentIncident?.status}
                     </Badge>
                   </div>
@@ -213,12 +222,12 @@ function MetricCard({
   icon?: React.ReactNode;
 }) {
   return (
-    <div className="p-3 rounded-lg border bg-card">
-      <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+    <div className="p-3 rounded-lg border border-primary/10 bg-card/50 backdrop-blur-sm hover:border-primary/30 transition-colors">
+      <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1 uppercase tracking-wider">
         {icon}
         {label}
       </div>
-      <div className="text-lg font-bold">{value}</div>
+      <div className="text-lg font-bold font-mono tracking-tight">{value}</div>
     </div>
   );
 }

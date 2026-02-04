@@ -118,30 +118,40 @@ function CustomTooltip({ active, payload }: any) {
   const data = payload[0].payload;
 
   return (
-    <div className="bg-popover border rounded-lg shadow-lg p-3 text-sm">
-      <div className="font-semibold mb-2">
+    <div className="bg-popover/80 backdrop-blur-md border border-primary/20 rounded-lg shadow-xl p-3 text-sm">
+      <div className="font-semibold mb-2 border-b border-primary/10 pb-2">
         {format(new Date(data.timestamp), "MMM d, HH:mm")}
       </div>
       <div className="space-y-1">
         <div className="flex items-center justify-between gap-4">
-          <span className="text-muted-foreground">Average:</span>
-          <span className="font-medium">{data.avg}ms</span>
+          <span className="text-muted-foreground text-xs uppercase tracking-wider">
+            Average:
+          </span>
+          <span className="font-medium font-mono">{data.avg}ms</span>
         </div>
         <div className="flex items-center justify-between gap-4">
-          <span className="text-muted-foreground">P50:</span>
-          <span className="font-medium">{data.p50}ms</span>
+          <span className="text-muted-foreground text-xs uppercase tracking-wider">
+            P50:
+          </span>
+          <span className="font-medium font-mono">{data.p50}ms</span>
         </div>
         <div className="flex items-center justify-between gap-4">
-          <span className="text-muted-foreground">P95:</span>
-          <span className="font-medium">{data.p95}ms</span>
+          <span className="text-muted-foreground text-xs uppercase tracking-wider">
+            P95:
+          </span>
+          <span className="font-medium font-mono">{data.p95}ms</span>
         </div>
         <div className="flex items-center justify-between gap-4">
-          <span className="text-muted-foreground">P99:</span>
-          <span className="font-medium">{data.p99}ms</span>
+          <span className="text-muted-foreground text-xs uppercase tracking-wider">
+            P99:
+          </span>
+          <span className="font-medium font-mono">{data.p99}ms</span>
         </div>
-        <div className="flex items-center justify-between gap-4 pt-1 border-t">
-          <span className="text-muted-foreground">Success:</span>
-          <span className="font-medium">
+        <div className="flex items-center justify-between gap-4 pt-2 mt-1 border-t border-primary/10">
+          <span className="text-muted-foreground text-xs uppercase tracking-wider">
+            Success:
+          </span>
+          <span className="font-medium font-mono text-green-500">
             {(data.successRate * 100).toFixed(1)}%
           </span>
         </div>

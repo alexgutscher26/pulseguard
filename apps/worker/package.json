@@ -5,6 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "wrangler dev --test-scheduled",
+    "cron:local": "node scripts/local-cron.js",
     "deploy": "wrangler deploy"
   },
   "dependencies": {

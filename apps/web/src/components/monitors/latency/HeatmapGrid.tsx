@@ -62,7 +62,8 @@ export function HeatmapGrid({
           return (
             <div
               key={region.region}
-              className="flex items-center border-b hover:bg-muted/30 transition-colors"
+              className="flex items-center border-b hover:bg-muted/30 transition-colors cursor-pointer group"
+              onClick={() => onRegionClick?.(region.region)}
             >
               {/* Region name */}
               <button
