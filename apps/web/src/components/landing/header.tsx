@@ -1,7 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { Activity } from "lucide-react";
+import {
+  Activity,
+  ChevronDown,
+  Globe,
+  ShieldCheck,
+  Terminal,
+} from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 
 export default function LandingHeader() {
@@ -35,16 +41,76 @@ export default function LandingHeader() {
         </div>
 
         <nav className="hidden md:flex items-center gap-8">
-          {["Features", "Protocol", "Pricing", "Docs"].map((item) => (
+          {/* Main Links */}
+          {[
+            { name: "Features", href: "/#features" },
+            { name: "Protocol", href: "/#protocol" },
+            { name: "Pricing", href: "/#pricing" },
+          ].map((item) => (
             <Link
-              key={item}
-              href={`#${item.toLowerCase()}`}
+              key={item.name}
+              href={item.href}
               className="text-sm font-mono text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest relative group"
             >
-              {item}
+              {item.name}
               <span className="absolute -bottom-1 left-0 w-0 h-px bg-primary group-hover:w-full transition-all duration-300"></span>
             </Link>
           ))}
+
+          {/* Free Tools Dropdown */}
+          <div className="relative group/dropdown">
+            <button className="flex items-center gap-1 text-sm font-mono text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest relative group cursor-pointer focus:outline-none">
+              Free Tools
+              <ChevronDown className="h-3 w-3 transition-transform group-hover/dropdown:rotate-180" />
+              <span className="absolute -bottom-1 left-0 w-0 h-px bg-primary group-hover:w-full transition-all duration-300"></span>
+            </button>
+
+            <div className="absolute top-full -left-4 pt-4 w-56 opacity-0 translate-y-2 pointer-events-none group-hover/dropdown:opacity-100 group-hover/dropdown:translate-y-0 group-hover/dropdown:pointer-events-auto transition-all duration-200 ease-out">
+              <div className="bg-background/95 backdrop-blur-md border border-border p-2 rounded-lg shadow-xl grid gap-1 relative overflow-hidden">
+                {/* Decorative border gradient */}
+                <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-primary/50 to-transparent" />
+
+                {[
+                  {
+                    name: "Global Latency",
+                    href: "/tools/global-latency",
+                    icon: <Globe className="h-3 w-3" />,
+                  },
+                  {
+                    name: "SSL Checker",
+                    href: "/tools/ssl-checker",
+                    icon: <ShieldCheck className="h-3 w-3" />,
+                  },
+                  {
+                    name: "Port Checker",
+                    href: "/tools/port-checker",
+                    icon: <Terminal className="h-3 w-3" />,
+                  },
+                ].map((tool) => (
+                  <Link
+                    key={tool.name}
+                    href={tool.href}
+                    className="flex items-center gap-3 p-2 rounded hover:bg-muted/50 transition-colors group/item"
+                  >
+                    <div className="p-1.5 rounded-md bg-primary/10 text-primary group-hover/item:bg-primary group-hover/item:text-black transition-colors">
+                      {tool.icon}
+                    </div>
+                    <span className="text-xs font-mono font-bold uppercase tracking-wider">
+                      {tool.name}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <Link
+            href="#docs"
+            className="text-sm font-mono text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest relative group"
+          >
+            Docs
+            <span className="absolute -bottom-1 left-0 w-0 h-px bg-primary group-hover:w-full transition-all duration-300"></span>
+          </Link>
         </nav>
 
         <div className="flex items-center gap-4">

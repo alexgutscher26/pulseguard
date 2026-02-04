@@ -574,6 +574,98 @@ export default {
       return stub.fetch(doUrl.toString(), request);
     }
 
+
+    // API Route: /api/ssl-check
+    if (url.pathname === "/api/ssl-check" && request.method === "POST") {
+       try {
+         const body: any = await request.json();
+         const { url: targetUrl } = body;
+         
+         if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
+
+         const { checkSSL } = await import("./services/ssl-check");
+         const results = await checkSSL(targetUrl);
+
+         return new Response(JSON.stringify(results), {
+           headers: { 
+             "Content-Type": "application/json",
+             "Access-Control-Allow-Origin": "*",
+             "Access-Control-Allow-Methods": "POST, OPTIONS",
+             "Access-Control-Allow-Headers": "Content-Type"
+           } 
+         });
+       } catch (err: any) {
+         return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" }});
+       }
+    }
+    
+
+    // API Route: /api/port-check
+    if (url.pathname === "/api/port-check" && request.method === "POST") {
+       try {
+         const body: any = await request.json();
+         const { host, port } = body;
+         
+         if (!host || !port) return new Response("Missing host or port", { status: 400 });
+
+         const { checkPort } = await import("./services/port-check");
+         const result = await checkPort(host, parseInt(port));
+
+         // Add helper: Current IP (for 'My IP' button)
+         // Note: We don't return the IP in the check result, but the frontend might request it separately.
+         // For now, minimal return.
+         
+         return new Response(JSON.stringify(result), {
+           headers: { 
+             "Content-Type": "application/json",
+             "Access-Control-Allow-Origin": "*",
+             "Access-Control-Allow-Methods": "POST, OPTIONS",
+             "Access-Control-Allow-Headers": "Content-Type"
+           } 
+         });
+       } catch (err: any) {
+         return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" }});
+       }
+    }
+
+    // API Route: /api/global-latency
+    if (url.pathname === "/api/global-latency" && request.method === "POST") {
+       try {
+         const body: any = await request.json();
+         const { url: targetUrl } = body;
+         
+         if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
+
+         // Add protocol if missing
+         const finalUrl = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
+
+         const { checkGlobalLatency } = await import("./services/global-latency");
+         const results = await checkGlobalLatency(finalUrl);
+
+         return new Response(JSON.stringify(results), {
+           headers: { 
+             "Content-Type": "application/json",
+             "Access-Control-Allow-Origin": "*", // Allow CORS for web app
+             "Access-Control-Allow-Methods": "POST, OPTIONS",
+             "Access-Control-Allow-Headers": "Content-Type"
+           } 
+         });
+       } catch (err: any) {
+         return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" }});
+       }
+    }
+
+    // CORS Preflight
+    if (request.method === "OPTIONS") {
+       return new Response(null, {
+         headers: {
+           "Access-Control-Allow-Origin": "*",
+           "Access-Control-Allow-Methods": "POST, OPTIONS",
+           "Access-Control-Allow-Headers": "Content-Type"
+         }
+       });
+    }
+
     return new Response("PulseGuard Worker is Running", { status: 200 });
   },
 
@@ -650,6 +742,9 @@ export default {
       return;
     }
 
+
+
+
     // Default: 'monitor-checks' queue
     const prisma = getPrisma(env.DATABASE_URL);
     const monitors = batch.messages.map((msg) => msg.body);
@@ -677,3 +772,4 @@ export default {
     }
   },
 };
+

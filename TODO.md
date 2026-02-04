@@ -495,13 +495,13 @@ High-value, free utilities to drive SEO traffic and capture developer leads.
 
 ### 🚀 PulseGuard Exclusive Tools
 
-- [ ] **Global Latency Checker**
+- [x] **Global Latency Checker**
   - "Ping my site from 10 cities instantly."
   - Showcase PulseGuard's multi-region capability.
-- [ ] **SSL/TLS Health Check**
+- [x] **SSL/TLS Health Check**
   - Visualize certificate chain and expiry.
   - Check for legacy protocols (TLS 1.0/1.1).
-- [ ] **Port Forwarding Tester**
+- [x] **Port Forwarding Tester**
   - Simple check: "Is port 25565 open?" (Gamers/Home labbers).
 - [ ] **Regex Tester for Monitoring**
   - Sandbox for testing "Keyword Monitor" regular expressions against real HTML.
