@@ -53,9 +53,14 @@ export const getPrisma = (databaseUrl?: string) => {
 
 // Proxy to allow default import to work like a PrismaClient instance
 const prismaProxy = new Proxy({} as PrismaClient, {
-  get(_, prop, receiver) {
+  get(_target, prop) {
     const client = getPrisma();
-    return Reflect.get(client, prop, receiver);
+    // @ts-ignore
+    const value = client[prop];
+    if (typeof value === "function") {
+      return value.bind(client);
+    }
+    return value;
   },
 });
 

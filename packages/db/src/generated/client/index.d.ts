@@ -128,6 +128,11 @@ export type SubscriptionToken = $Result.DefaultSelection<Prisma.$SubscriptionTok
  * 
  */
 export type MonitorSubscription = $Result.DefaultSelection<Prisma.$MonitorSubscriptionPayload>
+/**
+ * Model DailyMonitorSummary
+ * 
+ */
+export type DailyMonitorSummary = $Result.DefaultSelection<Prisma.$DailyMonitorSummaryPayload>
 
 /**
  * Enums
@@ -627,6 +632,16 @@ export class PrismaClient<
     * ```
     */
   get monitorSubscription(): Prisma.MonitorSubscriptionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.dailyMonitorSummary`: Exposes CRUD operations for the **DailyMonitorSummary** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DailyMonitorSummaries
+    * const dailyMonitorSummaries = await prisma.dailyMonitorSummary.findMany()
+    * ```
+    */
+  get dailyMonitorSummary(): Prisma.DailyMonitorSummaryDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1083,7 +1098,8 @@ export namespace Prisma {
     StatusPageView: 'StatusPageView',
     StatusPageSubscriber: 'StatusPageSubscriber',
     SubscriptionToken: 'SubscriptionToken',
-    MonitorSubscription: 'MonitorSubscription'
+    MonitorSubscription: 'MonitorSubscription',
+    DailyMonitorSummary: 'DailyMonitorSummary'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1099,7 +1115,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "account" | "verification" | "incident" | "incidentEvent" | "regionalIncident" | "incidentTemplate" | "postMortem" | "latencyAggregate" | "regionalBaseline" | "notificationChannel" | "alertRule" | "monitor" | "monitorEvent" | "maintenanceWindow" | "statusPageI18n" | "statusPage" | "statusPageMonitor" | "statusPageView" | "statusPageSubscriber" | "subscriptionToken" | "monitorSubscription"
+      modelProps: "user" | "session" | "account" | "verification" | "incident" | "incidentEvent" | "regionalIncident" | "incidentTemplate" | "postMortem" | "latencyAggregate" | "regionalBaseline" | "notificationChannel" | "alertRule" | "monitor" | "monitorEvent" | "maintenanceWindow" | "statusPageI18n" | "statusPage" | "statusPageMonitor" | "statusPageView" | "statusPageSubscriber" | "subscriptionToken" | "monitorSubscription" | "dailyMonitorSummary"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2805,6 +2821,80 @@ export namespace Prisma {
           }
         }
       }
+      DailyMonitorSummary: {
+        payload: Prisma.$DailyMonitorSummaryPayload<ExtArgs>
+        fields: Prisma.DailyMonitorSummaryFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DailyMonitorSummaryFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DailyMonitorSummaryPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DailyMonitorSummaryFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DailyMonitorSummaryPayload>
+          }
+          findFirst: {
+            args: Prisma.DailyMonitorSummaryFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DailyMonitorSummaryPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DailyMonitorSummaryFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DailyMonitorSummaryPayload>
+          }
+          findMany: {
+            args: Prisma.DailyMonitorSummaryFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DailyMonitorSummaryPayload>[]
+          }
+          create: {
+            args: Prisma.DailyMonitorSummaryCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DailyMonitorSummaryPayload>
+          }
+          createMany: {
+            args: Prisma.DailyMonitorSummaryCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DailyMonitorSummaryCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DailyMonitorSummaryPayload>[]
+          }
+          delete: {
+            args: Prisma.DailyMonitorSummaryDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DailyMonitorSummaryPayload>
+          }
+          update: {
+            args: Prisma.DailyMonitorSummaryUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DailyMonitorSummaryPayload>
+          }
+          deleteMany: {
+            args: Prisma.DailyMonitorSummaryDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DailyMonitorSummaryUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DailyMonitorSummaryUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DailyMonitorSummaryPayload>[]
+          }
+          upsert: {
+            args: Prisma.DailyMonitorSummaryUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DailyMonitorSummaryPayload>
+          }
+          aggregate: {
+            args: Prisma.DailyMonitorSummaryAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDailyMonitorSummary>
+          }
+          groupBy: {
+            args: Prisma.DailyMonitorSummaryGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DailyMonitorSummaryGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DailyMonitorSummaryCountArgs<ExtArgs>
+            result: $Utils.Optional<DailyMonitorSummaryCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2936,6 +3026,7 @@ export namespace Prisma {
     statusPageSubscriber?: StatusPageSubscriberOmit
     subscriptionToken?: SubscriptionTokenOmit
     monitorSubscription?: MonitorSubscriptionOmit
+    dailyMonitorSummary?: DailyMonitorSummaryOmit
   }
 
   /* Types for Logging */
@@ -3194,6 +3285,7 @@ export namespace Prisma {
     regionalBaselines: number
     statusPages: number
     monitorSubscriptions: number
+    dailySummaries: number
   }
 
   export type MonitorCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3206,6 +3298,7 @@ export namespace Prisma {
     regionalBaselines?: boolean | MonitorCountOutputTypeCountRegionalBaselinesArgs
     statusPages?: boolean | MonitorCountOutputTypeCountStatusPagesArgs
     monitorSubscriptions?: boolean | MonitorCountOutputTypeCountMonitorSubscriptionsArgs
+    dailySummaries?: boolean | MonitorCountOutputTypeCountDailySummariesArgs
   }
 
   // Custom InputTypes
@@ -3280,6 +3373,13 @@ export namespace Prisma {
    */
   export type MonitorCountOutputTypeCountMonitorSubscriptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: MonitorSubscriptionWhereInput
+  }
+
+  /**
+   * MonitorCountOutputType without action
+   */
+  export type MonitorCountOutputTypeCountDailySummariesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DailyMonitorSummaryWhereInput
   }
 
 
@@ -18469,6 +18569,7 @@ export namespace Prisma {
     regionalBaselines?: boolean | Monitor$regionalBaselinesArgs<ExtArgs>
     statusPages?: boolean | Monitor$statusPagesArgs<ExtArgs>
     monitorSubscriptions?: boolean | Monitor$monitorSubscriptionsArgs<ExtArgs>
+    dailySummaries?: boolean | Monitor$dailySummariesArgs<ExtArgs>
     _count?: boolean | MonitorCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["monitor"]>
 
@@ -18537,6 +18638,7 @@ export namespace Prisma {
     regionalBaselines?: boolean | Monitor$regionalBaselinesArgs<ExtArgs>
     statusPages?: boolean | Monitor$statusPagesArgs<ExtArgs>
     monitorSubscriptions?: boolean | Monitor$monitorSubscriptionsArgs<ExtArgs>
+    dailySummaries?: boolean | Monitor$dailySummariesArgs<ExtArgs>
     _count?: boolean | MonitorCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type MonitorIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -18559,6 +18661,7 @@ export namespace Prisma {
       regionalBaselines: Prisma.$RegionalBaselinePayload<ExtArgs>[]
       statusPages: Prisma.$StatusPageMonitorPayload<ExtArgs>[]
       monitorSubscriptions: Prisma.$MonitorSubscriptionPayload<ExtArgs>[]
+      dailySummaries: Prisma.$DailyMonitorSummaryPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -18979,6 +19082,7 @@ export namespace Prisma {
     regionalBaselines<T extends Monitor$regionalBaselinesArgs<ExtArgs> = {}>(args?: Subset<T, Monitor$regionalBaselinesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RegionalBaselinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     statusPages<T extends Monitor$statusPagesArgs<ExtArgs> = {}>(args?: Subset<T, Monitor$statusPagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPageMonitorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     monitorSubscriptions<T extends Monitor$monitorSubscriptionsArgs<ExtArgs> = {}>(args?: Subset<T, Monitor$monitorSubscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MonitorSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    dailySummaries<T extends Monitor$dailySummariesArgs<ExtArgs> = {}>(args?: Subset<T, Monitor$dailySummariesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DailyMonitorSummaryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -19631,6 +19735,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: MonitorSubscriptionScalarFieldEnum | MonitorSubscriptionScalarFieldEnum[]
+  }
+
+  /**
+   * Monitor.dailySummaries
+   */
+  export type Monitor$dailySummariesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyMonitorSummary
+     */
+    select?: DailyMonitorSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyMonitorSummary
+     */
+    omit?: DailyMonitorSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyMonitorSummaryInclude<ExtArgs> | null
+    where?: DailyMonitorSummaryWhereInput
+    orderBy?: DailyMonitorSummaryOrderByWithRelationInput | DailyMonitorSummaryOrderByWithRelationInput[]
+    cursor?: DailyMonitorSummaryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DailyMonitorSummaryScalarFieldEnum | DailyMonitorSummaryScalarFieldEnum[]
   }
 
   /**
@@ -29887,6 +30015,1183 @@ export namespace Prisma {
 
 
   /**
+   * Model DailyMonitorSummary
+   */
+
+  export type AggregateDailyMonitorSummary = {
+    _count: DailyMonitorSummaryCountAggregateOutputType | null
+    _avg: DailyMonitorSummaryAvgAggregateOutputType | null
+    _sum: DailyMonitorSummarySumAggregateOutputType | null
+    _min: DailyMonitorSummaryMinAggregateOutputType | null
+    _max: DailyMonitorSummaryMaxAggregateOutputType | null
+  }
+
+  export type DailyMonitorSummaryAvgAggregateOutputType = {
+    uptimePct: number | null
+    avgLatency: number | null
+    checksTotal: number | null
+    checksUp: number | null
+    checksDown: number | null
+    downDuration: number | null
+  }
+
+  export type DailyMonitorSummarySumAggregateOutputType = {
+    uptimePct: number | null
+    avgLatency: number | null
+    checksTotal: number | null
+    checksUp: number | null
+    checksDown: number | null
+    downDuration: number | null
+  }
+
+  export type DailyMonitorSummaryMinAggregateOutputType = {
+    id: string | null
+    monitorId: string | null
+    date: Date | null
+    uptimePct: number | null
+    avgLatency: number | null
+    checksTotal: number | null
+    checksUp: number | null
+    checksDown: number | null
+    downDuration: number | null
+    createdAt: Date | null
+  }
+
+  export type DailyMonitorSummaryMaxAggregateOutputType = {
+    id: string | null
+    monitorId: string | null
+    date: Date | null
+    uptimePct: number | null
+    avgLatency: number | null
+    checksTotal: number | null
+    checksUp: number | null
+    checksDown: number | null
+    downDuration: number | null
+    createdAt: Date | null
+  }
+
+  export type DailyMonitorSummaryCountAggregateOutputType = {
+    id: number
+    monitorId: number
+    date: number
+    uptimePct: number
+    avgLatency: number
+    checksTotal: number
+    checksUp: number
+    checksDown: number
+    downDuration: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type DailyMonitorSummaryAvgAggregateInputType = {
+    uptimePct?: true
+    avgLatency?: true
+    checksTotal?: true
+    checksUp?: true
+    checksDown?: true
+    downDuration?: true
+  }
+
+  export type DailyMonitorSummarySumAggregateInputType = {
+    uptimePct?: true
+    avgLatency?: true
+    checksTotal?: true
+    checksUp?: true
+    checksDown?: true
+    downDuration?: true
+  }
+
+  export type DailyMonitorSummaryMinAggregateInputType = {
+    id?: true
+    monitorId?: true
+    date?: true
+    uptimePct?: true
+    avgLatency?: true
+    checksTotal?: true
+    checksUp?: true
+    checksDown?: true
+    downDuration?: true
+    createdAt?: true
+  }
+
+  export type DailyMonitorSummaryMaxAggregateInputType = {
+    id?: true
+    monitorId?: true
+    date?: true
+    uptimePct?: true
+    avgLatency?: true
+    checksTotal?: true
+    checksUp?: true
+    checksDown?: true
+    downDuration?: true
+    createdAt?: true
+  }
+
+  export type DailyMonitorSummaryCountAggregateInputType = {
+    id?: true
+    monitorId?: true
+    date?: true
+    uptimePct?: true
+    avgLatency?: true
+    checksTotal?: true
+    checksUp?: true
+    checksDown?: true
+    downDuration?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type DailyMonitorSummaryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DailyMonitorSummary to aggregate.
+     */
+    where?: DailyMonitorSummaryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DailyMonitorSummaries to fetch.
+     */
+    orderBy?: DailyMonitorSummaryOrderByWithRelationInput | DailyMonitorSummaryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DailyMonitorSummaryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DailyMonitorSummaries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DailyMonitorSummaries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DailyMonitorSummaries
+    **/
+    _count?: true | DailyMonitorSummaryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: DailyMonitorSummaryAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DailyMonitorSummarySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DailyMonitorSummaryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DailyMonitorSummaryMaxAggregateInputType
+  }
+
+  export type GetDailyMonitorSummaryAggregateType<T extends DailyMonitorSummaryAggregateArgs> = {
+        [P in keyof T & keyof AggregateDailyMonitorSummary]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDailyMonitorSummary[P]>
+      : GetScalarType<T[P], AggregateDailyMonitorSummary[P]>
+  }
+
+
+
+
+  export type DailyMonitorSummaryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DailyMonitorSummaryWhereInput
+    orderBy?: DailyMonitorSummaryOrderByWithAggregationInput | DailyMonitorSummaryOrderByWithAggregationInput[]
+    by: DailyMonitorSummaryScalarFieldEnum[] | DailyMonitorSummaryScalarFieldEnum
+    having?: DailyMonitorSummaryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DailyMonitorSummaryCountAggregateInputType | true
+    _avg?: DailyMonitorSummaryAvgAggregateInputType
+    _sum?: DailyMonitorSummarySumAggregateInputType
+    _min?: DailyMonitorSummaryMinAggregateInputType
+    _max?: DailyMonitorSummaryMaxAggregateInputType
+  }
+
+  export type DailyMonitorSummaryGroupByOutputType = {
+    id: string
+    monitorId: string
+    date: Date
+    uptimePct: number
+    avgLatency: number
+    checksTotal: number
+    checksUp: number
+    checksDown: number
+    downDuration: number
+    createdAt: Date
+    _count: DailyMonitorSummaryCountAggregateOutputType | null
+    _avg: DailyMonitorSummaryAvgAggregateOutputType | null
+    _sum: DailyMonitorSummarySumAggregateOutputType | null
+    _min: DailyMonitorSummaryMinAggregateOutputType | null
+    _max: DailyMonitorSummaryMaxAggregateOutputType | null
+  }
+
+  type GetDailyMonitorSummaryGroupByPayload<T extends DailyMonitorSummaryGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DailyMonitorSummaryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DailyMonitorSummaryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DailyMonitorSummaryGroupByOutputType[P]>
+            : GetScalarType<T[P], DailyMonitorSummaryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DailyMonitorSummarySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    monitorId?: boolean
+    date?: boolean
+    uptimePct?: boolean
+    avgLatency?: boolean
+    checksTotal?: boolean
+    checksUp?: boolean
+    checksDown?: boolean
+    downDuration?: boolean
+    createdAt?: boolean
+    monitor?: boolean | MonitorDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["dailyMonitorSummary"]>
+
+  export type DailyMonitorSummarySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    monitorId?: boolean
+    date?: boolean
+    uptimePct?: boolean
+    avgLatency?: boolean
+    checksTotal?: boolean
+    checksUp?: boolean
+    checksDown?: boolean
+    downDuration?: boolean
+    createdAt?: boolean
+    monitor?: boolean | MonitorDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["dailyMonitorSummary"]>
+
+  export type DailyMonitorSummarySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    monitorId?: boolean
+    date?: boolean
+    uptimePct?: boolean
+    avgLatency?: boolean
+    checksTotal?: boolean
+    checksUp?: boolean
+    checksDown?: boolean
+    downDuration?: boolean
+    createdAt?: boolean
+    monitor?: boolean | MonitorDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["dailyMonitorSummary"]>
+
+  export type DailyMonitorSummarySelectScalar = {
+    id?: boolean
+    monitorId?: boolean
+    date?: boolean
+    uptimePct?: boolean
+    avgLatency?: boolean
+    checksTotal?: boolean
+    checksUp?: boolean
+    checksDown?: boolean
+    downDuration?: boolean
+    createdAt?: boolean
+  }
+
+  export type DailyMonitorSummaryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "monitorId" | "date" | "uptimePct" | "avgLatency" | "checksTotal" | "checksUp" | "checksDown" | "downDuration" | "createdAt", ExtArgs["result"]["dailyMonitorSummary"]>
+  export type DailyMonitorSummaryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    monitor?: boolean | MonitorDefaultArgs<ExtArgs>
+  }
+  export type DailyMonitorSummaryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    monitor?: boolean | MonitorDefaultArgs<ExtArgs>
+  }
+  export type DailyMonitorSummaryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    monitor?: boolean | MonitorDefaultArgs<ExtArgs>
+  }
+
+  export type $DailyMonitorSummaryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DailyMonitorSummary"
+    objects: {
+      monitor: Prisma.$MonitorPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      monitorId: string
+      date: Date
+      uptimePct: number
+      avgLatency: number
+      checksTotal: number
+      checksUp: number
+      checksDown: number
+      downDuration: number
+      createdAt: Date
+    }, ExtArgs["result"]["dailyMonitorSummary"]>
+    composites: {}
+  }
+
+  type DailyMonitorSummaryGetPayload<S extends boolean | null | undefined | DailyMonitorSummaryDefaultArgs> = $Result.GetResult<Prisma.$DailyMonitorSummaryPayload, S>
+
+  type DailyMonitorSummaryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DailyMonitorSummaryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DailyMonitorSummaryCountAggregateInputType | true
+    }
+
+  export interface DailyMonitorSummaryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DailyMonitorSummary'], meta: { name: 'DailyMonitorSummary' } }
+    /**
+     * Find zero or one DailyMonitorSummary that matches the filter.
+     * @param {DailyMonitorSummaryFindUniqueArgs} args - Arguments to find a DailyMonitorSummary
+     * @example
+     * // Get one DailyMonitorSummary
+     * const dailyMonitorSummary = await prisma.dailyMonitorSummary.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DailyMonitorSummaryFindUniqueArgs>(args: SelectSubset<T, DailyMonitorSummaryFindUniqueArgs<ExtArgs>>): Prisma__DailyMonitorSummaryClient<$Result.GetResult<Prisma.$DailyMonitorSummaryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one DailyMonitorSummary that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DailyMonitorSummaryFindUniqueOrThrowArgs} args - Arguments to find a DailyMonitorSummary
+     * @example
+     * // Get one DailyMonitorSummary
+     * const dailyMonitorSummary = await prisma.dailyMonitorSummary.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DailyMonitorSummaryFindUniqueOrThrowArgs>(args: SelectSubset<T, DailyMonitorSummaryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DailyMonitorSummaryClient<$Result.GetResult<Prisma.$DailyMonitorSummaryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DailyMonitorSummary that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DailyMonitorSummaryFindFirstArgs} args - Arguments to find a DailyMonitorSummary
+     * @example
+     * // Get one DailyMonitorSummary
+     * const dailyMonitorSummary = await prisma.dailyMonitorSummary.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DailyMonitorSummaryFindFirstArgs>(args?: SelectSubset<T, DailyMonitorSummaryFindFirstArgs<ExtArgs>>): Prisma__DailyMonitorSummaryClient<$Result.GetResult<Prisma.$DailyMonitorSummaryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DailyMonitorSummary that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DailyMonitorSummaryFindFirstOrThrowArgs} args - Arguments to find a DailyMonitorSummary
+     * @example
+     * // Get one DailyMonitorSummary
+     * const dailyMonitorSummary = await prisma.dailyMonitorSummary.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DailyMonitorSummaryFindFirstOrThrowArgs>(args?: SelectSubset<T, DailyMonitorSummaryFindFirstOrThrowArgs<ExtArgs>>): Prisma__DailyMonitorSummaryClient<$Result.GetResult<Prisma.$DailyMonitorSummaryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more DailyMonitorSummaries that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DailyMonitorSummaryFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DailyMonitorSummaries
+     * const dailyMonitorSummaries = await prisma.dailyMonitorSummary.findMany()
+     * 
+     * // Get first 10 DailyMonitorSummaries
+     * const dailyMonitorSummaries = await prisma.dailyMonitorSummary.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const dailyMonitorSummaryWithIdOnly = await prisma.dailyMonitorSummary.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DailyMonitorSummaryFindManyArgs>(args?: SelectSubset<T, DailyMonitorSummaryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DailyMonitorSummaryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a DailyMonitorSummary.
+     * @param {DailyMonitorSummaryCreateArgs} args - Arguments to create a DailyMonitorSummary.
+     * @example
+     * // Create one DailyMonitorSummary
+     * const DailyMonitorSummary = await prisma.dailyMonitorSummary.create({
+     *   data: {
+     *     // ... data to create a DailyMonitorSummary
+     *   }
+     * })
+     * 
+     */
+    create<T extends DailyMonitorSummaryCreateArgs>(args: SelectSubset<T, DailyMonitorSummaryCreateArgs<ExtArgs>>): Prisma__DailyMonitorSummaryClient<$Result.GetResult<Prisma.$DailyMonitorSummaryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many DailyMonitorSummaries.
+     * @param {DailyMonitorSummaryCreateManyArgs} args - Arguments to create many DailyMonitorSummaries.
+     * @example
+     * // Create many DailyMonitorSummaries
+     * const dailyMonitorSummary = await prisma.dailyMonitorSummary.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DailyMonitorSummaryCreateManyArgs>(args?: SelectSubset<T, DailyMonitorSummaryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DailyMonitorSummaries and returns the data saved in the database.
+     * @param {DailyMonitorSummaryCreateManyAndReturnArgs} args - Arguments to create many DailyMonitorSummaries.
+     * @example
+     * // Create many DailyMonitorSummaries
+     * const dailyMonitorSummary = await prisma.dailyMonitorSummary.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DailyMonitorSummaries and only return the `id`
+     * const dailyMonitorSummaryWithIdOnly = await prisma.dailyMonitorSummary.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DailyMonitorSummaryCreateManyAndReturnArgs>(args?: SelectSubset<T, DailyMonitorSummaryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DailyMonitorSummaryPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a DailyMonitorSummary.
+     * @param {DailyMonitorSummaryDeleteArgs} args - Arguments to delete one DailyMonitorSummary.
+     * @example
+     * // Delete one DailyMonitorSummary
+     * const DailyMonitorSummary = await prisma.dailyMonitorSummary.delete({
+     *   where: {
+     *     // ... filter to delete one DailyMonitorSummary
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DailyMonitorSummaryDeleteArgs>(args: SelectSubset<T, DailyMonitorSummaryDeleteArgs<ExtArgs>>): Prisma__DailyMonitorSummaryClient<$Result.GetResult<Prisma.$DailyMonitorSummaryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one DailyMonitorSummary.
+     * @param {DailyMonitorSummaryUpdateArgs} args - Arguments to update one DailyMonitorSummary.
+     * @example
+     * // Update one DailyMonitorSummary
+     * const dailyMonitorSummary = await prisma.dailyMonitorSummary.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DailyMonitorSummaryUpdateArgs>(args: SelectSubset<T, DailyMonitorSummaryUpdateArgs<ExtArgs>>): Prisma__DailyMonitorSummaryClient<$Result.GetResult<Prisma.$DailyMonitorSummaryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more DailyMonitorSummaries.
+     * @param {DailyMonitorSummaryDeleteManyArgs} args - Arguments to filter DailyMonitorSummaries to delete.
+     * @example
+     * // Delete a few DailyMonitorSummaries
+     * const { count } = await prisma.dailyMonitorSummary.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DailyMonitorSummaryDeleteManyArgs>(args?: SelectSubset<T, DailyMonitorSummaryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DailyMonitorSummaries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DailyMonitorSummaryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DailyMonitorSummaries
+     * const dailyMonitorSummary = await prisma.dailyMonitorSummary.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DailyMonitorSummaryUpdateManyArgs>(args: SelectSubset<T, DailyMonitorSummaryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DailyMonitorSummaries and returns the data updated in the database.
+     * @param {DailyMonitorSummaryUpdateManyAndReturnArgs} args - Arguments to update many DailyMonitorSummaries.
+     * @example
+     * // Update many DailyMonitorSummaries
+     * const dailyMonitorSummary = await prisma.dailyMonitorSummary.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more DailyMonitorSummaries and only return the `id`
+     * const dailyMonitorSummaryWithIdOnly = await prisma.dailyMonitorSummary.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DailyMonitorSummaryUpdateManyAndReturnArgs>(args: SelectSubset<T, DailyMonitorSummaryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DailyMonitorSummaryPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one DailyMonitorSummary.
+     * @param {DailyMonitorSummaryUpsertArgs} args - Arguments to update or create a DailyMonitorSummary.
+     * @example
+     * // Update or create a DailyMonitorSummary
+     * const dailyMonitorSummary = await prisma.dailyMonitorSummary.upsert({
+     *   create: {
+     *     // ... data to create a DailyMonitorSummary
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DailyMonitorSummary we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DailyMonitorSummaryUpsertArgs>(args: SelectSubset<T, DailyMonitorSummaryUpsertArgs<ExtArgs>>): Prisma__DailyMonitorSummaryClient<$Result.GetResult<Prisma.$DailyMonitorSummaryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of DailyMonitorSummaries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DailyMonitorSummaryCountArgs} args - Arguments to filter DailyMonitorSummaries to count.
+     * @example
+     * // Count the number of DailyMonitorSummaries
+     * const count = await prisma.dailyMonitorSummary.count({
+     *   where: {
+     *     // ... the filter for the DailyMonitorSummaries we want to count
+     *   }
+     * })
+    **/
+    count<T extends DailyMonitorSummaryCountArgs>(
+      args?: Subset<T, DailyMonitorSummaryCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DailyMonitorSummaryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DailyMonitorSummary.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DailyMonitorSummaryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DailyMonitorSummaryAggregateArgs>(args: Subset<T, DailyMonitorSummaryAggregateArgs>): Prisma.PrismaPromise<GetDailyMonitorSummaryAggregateType<T>>
+
+    /**
+     * Group by DailyMonitorSummary.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DailyMonitorSummaryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DailyMonitorSummaryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DailyMonitorSummaryGroupByArgs['orderBy'] }
+        : { orderBy?: DailyMonitorSummaryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DailyMonitorSummaryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDailyMonitorSummaryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DailyMonitorSummary model
+   */
+  readonly fields: DailyMonitorSummaryFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DailyMonitorSummary.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DailyMonitorSummaryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    monitor<T extends MonitorDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MonitorDefaultArgs<ExtArgs>>): Prisma__MonitorClient<$Result.GetResult<Prisma.$MonitorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DailyMonitorSummary model
+   */
+  interface DailyMonitorSummaryFieldRefs {
+    readonly id: FieldRef<"DailyMonitorSummary", 'String'>
+    readonly monitorId: FieldRef<"DailyMonitorSummary", 'String'>
+    readonly date: FieldRef<"DailyMonitorSummary", 'DateTime'>
+    readonly uptimePct: FieldRef<"DailyMonitorSummary", 'Float'>
+    readonly avgLatency: FieldRef<"DailyMonitorSummary", 'Int'>
+    readonly checksTotal: FieldRef<"DailyMonitorSummary", 'Int'>
+    readonly checksUp: FieldRef<"DailyMonitorSummary", 'Int'>
+    readonly checksDown: FieldRef<"DailyMonitorSummary", 'Int'>
+    readonly downDuration: FieldRef<"DailyMonitorSummary", 'Int'>
+    readonly createdAt: FieldRef<"DailyMonitorSummary", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DailyMonitorSummary findUnique
+   */
+  export type DailyMonitorSummaryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyMonitorSummary
+     */
+    select?: DailyMonitorSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyMonitorSummary
+     */
+    omit?: DailyMonitorSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyMonitorSummaryInclude<ExtArgs> | null
+    /**
+     * Filter, which DailyMonitorSummary to fetch.
+     */
+    where: DailyMonitorSummaryWhereUniqueInput
+  }
+
+  /**
+   * DailyMonitorSummary findUniqueOrThrow
+   */
+  export type DailyMonitorSummaryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyMonitorSummary
+     */
+    select?: DailyMonitorSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyMonitorSummary
+     */
+    omit?: DailyMonitorSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyMonitorSummaryInclude<ExtArgs> | null
+    /**
+     * Filter, which DailyMonitorSummary to fetch.
+     */
+    where: DailyMonitorSummaryWhereUniqueInput
+  }
+
+  /**
+   * DailyMonitorSummary findFirst
+   */
+  export type DailyMonitorSummaryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyMonitorSummary
+     */
+    select?: DailyMonitorSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyMonitorSummary
+     */
+    omit?: DailyMonitorSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyMonitorSummaryInclude<ExtArgs> | null
+    /**
+     * Filter, which DailyMonitorSummary to fetch.
+     */
+    where?: DailyMonitorSummaryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DailyMonitorSummaries to fetch.
+     */
+    orderBy?: DailyMonitorSummaryOrderByWithRelationInput | DailyMonitorSummaryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DailyMonitorSummaries.
+     */
+    cursor?: DailyMonitorSummaryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DailyMonitorSummaries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DailyMonitorSummaries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DailyMonitorSummaries.
+     */
+    distinct?: DailyMonitorSummaryScalarFieldEnum | DailyMonitorSummaryScalarFieldEnum[]
+  }
+
+  /**
+   * DailyMonitorSummary findFirstOrThrow
+   */
+  export type DailyMonitorSummaryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyMonitorSummary
+     */
+    select?: DailyMonitorSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyMonitorSummary
+     */
+    omit?: DailyMonitorSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyMonitorSummaryInclude<ExtArgs> | null
+    /**
+     * Filter, which DailyMonitorSummary to fetch.
+     */
+    where?: DailyMonitorSummaryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DailyMonitorSummaries to fetch.
+     */
+    orderBy?: DailyMonitorSummaryOrderByWithRelationInput | DailyMonitorSummaryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DailyMonitorSummaries.
+     */
+    cursor?: DailyMonitorSummaryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DailyMonitorSummaries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DailyMonitorSummaries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DailyMonitorSummaries.
+     */
+    distinct?: DailyMonitorSummaryScalarFieldEnum | DailyMonitorSummaryScalarFieldEnum[]
+  }
+
+  /**
+   * DailyMonitorSummary findMany
+   */
+  export type DailyMonitorSummaryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyMonitorSummary
+     */
+    select?: DailyMonitorSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyMonitorSummary
+     */
+    omit?: DailyMonitorSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyMonitorSummaryInclude<ExtArgs> | null
+    /**
+     * Filter, which DailyMonitorSummaries to fetch.
+     */
+    where?: DailyMonitorSummaryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DailyMonitorSummaries to fetch.
+     */
+    orderBy?: DailyMonitorSummaryOrderByWithRelationInput | DailyMonitorSummaryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DailyMonitorSummaries.
+     */
+    cursor?: DailyMonitorSummaryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DailyMonitorSummaries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DailyMonitorSummaries.
+     */
+    skip?: number
+    distinct?: DailyMonitorSummaryScalarFieldEnum | DailyMonitorSummaryScalarFieldEnum[]
+  }
+
+  /**
+   * DailyMonitorSummary create
+   */
+  export type DailyMonitorSummaryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyMonitorSummary
+     */
+    select?: DailyMonitorSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyMonitorSummary
+     */
+    omit?: DailyMonitorSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyMonitorSummaryInclude<ExtArgs> | null
+    /**
+     * The data needed to create a DailyMonitorSummary.
+     */
+    data: XOR<DailyMonitorSummaryCreateInput, DailyMonitorSummaryUncheckedCreateInput>
+  }
+
+  /**
+   * DailyMonitorSummary createMany
+   */
+  export type DailyMonitorSummaryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DailyMonitorSummaries.
+     */
+    data: DailyMonitorSummaryCreateManyInput | DailyMonitorSummaryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DailyMonitorSummary createManyAndReturn
+   */
+  export type DailyMonitorSummaryCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyMonitorSummary
+     */
+    select?: DailyMonitorSummarySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyMonitorSummary
+     */
+    omit?: DailyMonitorSummaryOmit<ExtArgs> | null
+    /**
+     * The data used to create many DailyMonitorSummaries.
+     */
+    data: DailyMonitorSummaryCreateManyInput | DailyMonitorSummaryCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyMonitorSummaryIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DailyMonitorSummary update
+   */
+  export type DailyMonitorSummaryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyMonitorSummary
+     */
+    select?: DailyMonitorSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyMonitorSummary
+     */
+    omit?: DailyMonitorSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyMonitorSummaryInclude<ExtArgs> | null
+    /**
+     * The data needed to update a DailyMonitorSummary.
+     */
+    data: XOR<DailyMonitorSummaryUpdateInput, DailyMonitorSummaryUncheckedUpdateInput>
+    /**
+     * Choose, which DailyMonitorSummary to update.
+     */
+    where: DailyMonitorSummaryWhereUniqueInput
+  }
+
+  /**
+   * DailyMonitorSummary updateMany
+   */
+  export type DailyMonitorSummaryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DailyMonitorSummaries.
+     */
+    data: XOR<DailyMonitorSummaryUpdateManyMutationInput, DailyMonitorSummaryUncheckedUpdateManyInput>
+    /**
+     * Filter which DailyMonitorSummaries to update
+     */
+    where?: DailyMonitorSummaryWhereInput
+    /**
+     * Limit how many DailyMonitorSummaries to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DailyMonitorSummary updateManyAndReturn
+   */
+  export type DailyMonitorSummaryUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyMonitorSummary
+     */
+    select?: DailyMonitorSummarySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyMonitorSummary
+     */
+    omit?: DailyMonitorSummaryOmit<ExtArgs> | null
+    /**
+     * The data used to update DailyMonitorSummaries.
+     */
+    data: XOR<DailyMonitorSummaryUpdateManyMutationInput, DailyMonitorSummaryUncheckedUpdateManyInput>
+    /**
+     * Filter which DailyMonitorSummaries to update
+     */
+    where?: DailyMonitorSummaryWhereInput
+    /**
+     * Limit how many DailyMonitorSummaries to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyMonitorSummaryIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DailyMonitorSummary upsert
+   */
+  export type DailyMonitorSummaryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyMonitorSummary
+     */
+    select?: DailyMonitorSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyMonitorSummary
+     */
+    omit?: DailyMonitorSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyMonitorSummaryInclude<ExtArgs> | null
+    /**
+     * The filter to search for the DailyMonitorSummary to update in case it exists.
+     */
+    where: DailyMonitorSummaryWhereUniqueInput
+    /**
+     * In case the DailyMonitorSummary found by the `where` argument doesn't exist, create a new DailyMonitorSummary with this data.
+     */
+    create: XOR<DailyMonitorSummaryCreateInput, DailyMonitorSummaryUncheckedCreateInput>
+    /**
+     * In case the DailyMonitorSummary was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DailyMonitorSummaryUpdateInput, DailyMonitorSummaryUncheckedUpdateInput>
+  }
+
+  /**
+   * DailyMonitorSummary delete
+   */
+  export type DailyMonitorSummaryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyMonitorSummary
+     */
+    select?: DailyMonitorSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyMonitorSummary
+     */
+    omit?: DailyMonitorSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyMonitorSummaryInclude<ExtArgs> | null
+    /**
+     * Filter which DailyMonitorSummary to delete.
+     */
+    where: DailyMonitorSummaryWhereUniqueInput
+  }
+
+  /**
+   * DailyMonitorSummary deleteMany
+   */
+  export type DailyMonitorSummaryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DailyMonitorSummaries to delete
+     */
+    where?: DailyMonitorSummaryWhereInput
+    /**
+     * Limit how many DailyMonitorSummaries to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * DailyMonitorSummary without action
+   */
+  export type DailyMonitorSummaryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DailyMonitorSummary
+     */
+    select?: DailyMonitorSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DailyMonitorSummary
+     */
+    omit?: DailyMonitorSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DailyMonitorSummaryInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -30246,6 +31551,22 @@ export namespace Prisma {
   };
 
   export type MonitorSubscriptionScalarFieldEnum = (typeof MonitorSubscriptionScalarFieldEnum)[keyof typeof MonitorSubscriptionScalarFieldEnum]
+
+
+  export const DailyMonitorSummaryScalarFieldEnum: {
+    id: 'id',
+    monitorId: 'monitorId',
+    date: 'date',
+    uptimePct: 'uptimePct',
+    avgLatency: 'avgLatency',
+    checksTotal: 'checksTotal',
+    checksUp: 'checksUp',
+    checksDown: 'checksDown',
+    downDuration: 'downDuration',
+    createdAt: 'createdAt'
+  };
+
+  export type DailyMonitorSummaryScalarFieldEnum = (typeof DailyMonitorSummaryScalarFieldEnum)[keyof typeof DailyMonitorSummaryScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -31571,6 +32892,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineListRelationFilter
     statusPages?: StatusPageMonitorListRelationFilter
     monitorSubscriptions?: MonitorSubscriptionListRelationFilter
+    dailySummaries?: DailyMonitorSummaryListRelationFilter
   }
 
   export type MonitorOrderByWithRelationInput = {
@@ -31598,6 +32920,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineOrderByRelationAggregateInput
     statusPages?: StatusPageMonitorOrderByRelationAggregateInput
     monitorSubscriptions?: MonitorSubscriptionOrderByRelationAggregateInput
+    dailySummaries?: DailyMonitorSummaryOrderByRelationAggregateInput
   }
 
   export type MonitorWhereUniqueInput = Prisma.AtLeast<{
@@ -31628,6 +32951,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineListRelationFilter
     statusPages?: StatusPageMonitorListRelationFilter
     monitorSubscriptions?: MonitorSubscriptionListRelationFilter
+    dailySummaries?: DailyMonitorSummaryListRelationFilter
   }, "id">
 
   export type MonitorOrderByWithAggregationInput = {
@@ -32369,6 +33693,89 @@ export namespace Prisma {
     subscriberId?: StringWithAggregatesFilter<"MonitorSubscription"> | string
     monitorId?: StringWithAggregatesFilter<"MonitorSubscription"> | string
     createdAt?: DateTimeWithAggregatesFilter<"MonitorSubscription"> | Date | string
+  }
+
+  export type DailyMonitorSummaryWhereInput = {
+    AND?: DailyMonitorSummaryWhereInput | DailyMonitorSummaryWhereInput[]
+    OR?: DailyMonitorSummaryWhereInput[]
+    NOT?: DailyMonitorSummaryWhereInput | DailyMonitorSummaryWhereInput[]
+    id?: StringFilter<"DailyMonitorSummary"> | string
+    monitorId?: StringFilter<"DailyMonitorSummary"> | string
+    date?: DateTimeFilter<"DailyMonitorSummary"> | Date | string
+    uptimePct?: FloatFilter<"DailyMonitorSummary"> | number
+    avgLatency?: IntFilter<"DailyMonitorSummary"> | number
+    checksTotal?: IntFilter<"DailyMonitorSummary"> | number
+    checksUp?: IntFilter<"DailyMonitorSummary"> | number
+    checksDown?: IntFilter<"DailyMonitorSummary"> | number
+    downDuration?: IntFilter<"DailyMonitorSummary"> | number
+    createdAt?: DateTimeFilter<"DailyMonitorSummary"> | Date | string
+    monitor?: XOR<MonitorScalarRelationFilter, MonitorWhereInput>
+  }
+
+  export type DailyMonitorSummaryOrderByWithRelationInput = {
+    id?: SortOrder
+    monitorId?: SortOrder
+    date?: SortOrder
+    uptimePct?: SortOrder
+    avgLatency?: SortOrder
+    checksTotal?: SortOrder
+    checksUp?: SortOrder
+    checksDown?: SortOrder
+    downDuration?: SortOrder
+    createdAt?: SortOrder
+    monitor?: MonitorOrderByWithRelationInput
+  }
+
+  export type DailyMonitorSummaryWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    monitorId_date?: DailyMonitorSummaryMonitorIdDateCompoundUniqueInput
+    AND?: DailyMonitorSummaryWhereInput | DailyMonitorSummaryWhereInput[]
+    OR?: DailyMonitorSummaryWhereInput[]
+    NOT?: DailyMonitorSummaryWhereInput | DailyMonitorSummaryWhereInput[]
+    monitorId?: StringFilter<"DailyMonitorSummary"> | string
+    date?: DateTimeFilter<"DailyMonitorSummary"> | Date | string
+    uptimePct?: FloatFilter<"DailyMonitorSummary"> | number
+    avgLatency?: IntFilter<"DailyMonitorSummary"> | number
+    checksTotal?: IntFilter<"DailyMonitorSummary"> | number
+    checksUp?: IntFilter<"DailyMonitorSummary"> | number
+    checksDown?: IntFilter<"DailyMonitorSummary"> | number
+    downDuration?: IntFilter<"DailyMonitorSummary"> | number
+    createdAt?: DateTimeFilter<"DailyMonitorSummary"> | Date | string
+    monitor?: XOR<MonitorScalarRelationFilter, MonitorWhereInput>
+  }, "id" | "monitorId_date">
+
+  export type DailyMonitorSummaryOrderByWithAggregationInput = {
+    id?: SortOrder
+    monitorId?: SortOrder
+    date?: SortOrder
+    uptimePct?: SortOrder
+    avgLatency?: SortOrder
+    checksTotal?: SortOrder
+    checksUp?: SortOrder
+    checksDown?: SortOrder
+    downDuration?: SortOrder
+    createdAt?: SortOrder
+    _count?: DailyMonitorSummaryCountOrderByAggregateInput
+    _avg?: DailyMonitorSummaryAvgOrderByAggregateInput
+    _max?: DailyMonitorSummaryMaxOrderByAggregateInput
+    _min?: DailyMonitorSummaryMinOrderByAggregateInput
+    _sum?: DailyMonitorSummarySumOrderByAggregateInput
+  }
+
+  export type DailyMonitorSummaryScalarWhereWithAggregatesInput = {
+    AND?: DailyMonitorSummaryScalarWhereWithAggregatesInput | DailyMonitorSummaryScalarWhereWithAggregatesInput[]
+    OR?: DailyMonitorSummaryScalarWhereWithAggregatesInput[]
+    NOT?: DailyMonitorSummaryScalarWhereWithAggregatesInput | DailyMonitorSummaryScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"DailyMonitorSummary"> | string
+    monitorId?: StringWithAggregatesFilter<"DailyMonitorSummary"> | string
+    date?: DateTimeWithAggregatesFilter<"DailyMonitorSummary"> | Date | string
+    uptimePct?: FloatWithAggregatesFilter<"DailyMonitorSummary"> | number
+    avgLatency?: IntWithAggregatesFilter<"DailyMonitorSummary"> | number
+    checksTotal?: IntWithAggregatesFilter<"DailyMonitorSummary"> | number
+    checksUp?: IntWithAggregatesFilter<"DailyMonitorSummary"> | number
+    checksDown?: IntWithAggregatesFilter<"DailyMonitorSummary"> | number
+    downDuration?: IntWithAggregatesFilter<"DailyMonitorSummary"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"DailyMonitorSummary"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -33516,6 +34923,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
     monitorSubscriptions?: MonitorSubscriptionCreateNestedManyWithoutMonitorInput
+    dailySummaries?: DailyMonitorSummaryCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateInput = {
@@ -33542,6 +34950,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
     monitorSubscriptions?: MonitorSubscriptionUncheckedCreateNestedManyWithoutMonitorInput
+    dailySummaries?: DailyMonitorSummaryUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUpdateInput = {
@@ -33568,6 +34977,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
     monitorSubscriptions?: MonitorSubscriptionUpdateManyWithoutMonitorNestedInput
+    dailySummaries?: DailyMonitorSummaryUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateInput = {
@@ -33594,6 +35004,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
     monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutMonitorNestedInput
+    dailySummaries?: DailyMonitorSummaryUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorCreateManyInput = {
@@ -34398,6 +35809,96 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     subscriberId?: StringFieldUpdateOperationsInput | string
     monitorId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DailyMonitorSummaryCreateInput = {
+    id?: string
+    date: Date | string
+    uptimePct: number
+    avgLatency: number
+    checksTotal: number
+    checksUp: number
+    checksDown: number
+    downDuration: number
+    createdAt?: Date | string
+    monitor: MonitorCreateNestedOneWithoutDailySummariesInput
+  }
+
+  export type DailyMonitorSummaryUncheckedCreateInput = {
+    id?: string
+    monitorId: string
+    date: Date | string
+    uptimePct: number
+    avgLatency: number
+    checksTotal: number
+    checksUp: number
+    checksDown: number
+    downDuration: number
+    createdAt?: Date | string
+  }
+
+  export type DailyMonitorSummaryUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    uptimePct?: FloatFieldUpdateOperationsInput | number
+    avgLatency?: IntFieldUpdateOperationsInput | number
+    checksTotal?: IntFieldUpdateOperationsInput | number
+    checksUp?: IntFieldUpdateOperationsInput | number
+    checksDown?: IntFieldUpdateOperationsInput | number
+    downDuration?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    monitor?: MonitorUpdateOneRequiredWithoutDailySummariesNestedInput
+  }
+
+  export type DailyMonitorSummaryUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monitorId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    uptimePct?: FloatFieldUpdateOperationsInput | number
+    avgLatency?: IntFieldUpdateOperationsInput | number
+    checksTotal?: IntFieldUpdateOperationsInput | number
+    checksUp?: IntFieldUpdateOperationsInput | number
+    checksDown?: IntFieldUpdateOperationsInput | number
+    downDuration?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DailyMonitorSummaryCreateManyInput = {
+    id?: string
+    monitorId: string
+    date: Date | string
+    uptimePct: number
+    avgLatency: number
+    checksTotal: number
+    checksUp: number
+    checksDown: number
+    downDuration: number
+    createdAt?: Date | string
+  }
+
+  export type DailyMonitorSummaryUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    uptimePct?: FloatFieldUpdateOperationsInput | number
+    avgLatency?: IntFieldUpdateOperationsInput | number
+    checksTotal?: IntFieldUpdateOperationsInput | number
+    checksUp?: IntFieldUpdateOperationsInput | number
+    checksDown?: IntFieldUpdateOperationsInput | number
+    downDuration?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DailyMonitorSummaryUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monitorId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    uptimePct?: FloatFieldUpdateOperationsInput | number
+    avgLatency?: IntFieldUpdateOperationsInput | number
+    checksTotal?: IntFieldUpdateOperationsInput | number
+    checksUp?: IntFieldUpdateOperationsInput | number
+    checksDown?: IntFieldUpdateOperationsInput | number
+    downDuration?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -35526,6 +37027,12 @@ export namespace Prisma {
     none?: MonitorSubscriptionWhereInput
   }
 
+  export type DailyMonitorSummaryListRelationFilter = {
+    every?: DailyMonitorSummaryWhereInput
+    some?: DailyMonitorSummaryWhereInput
+    none?: DailyMonitorSummaryWhereInput
+  }
+
   export type MonitorEventOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -35555,6 +37062,10 @@ export namespace Prisma {
   }
 
   export type MonitorSubscriptionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type DailyMonitorSummaryOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -36107,6 +37618,68 @@ export namespace Prisma {
     subscriberId?: SortOrder
     monitorId?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type DailyMonitorSummaryMonitorIdDateCompoundUniqueInput = {
+    monitorId: string
+    date: Date | string
+  }
+
+  export type DailyMonitorSummaryCountOrderByAggregateInput = {
+    id?: SortOrder
+    monitorId?: SortOrder
+    date?: SortOrder
+    uptimePct?: SortOrder
+    avgLatency?: SortOrder
+    checksTotal?: SortOrder
+    checksUp?: SortOrder
+    checksDown?: SortOrder
+    downDuration?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type DailyMonitorSummaryAvgOrderByAggregateInput = {
+    uptimePct?: SortOrder
+    avgLatency?: SortOrder
+    checksTotal?: SortOrder
+    checksUp?: SortOrder
+    checksDown?: SortOrder
+    downDuration?: SortOrder
+  }
+
+  export type DailyMonitorSummaryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    monitorId?: SortOrder
+    date?: SortOrder
+    uptimePct?: SortOrder
+    avgLatency?: SortOrder
+    checksTotal?: SortOrder
+    checksUp?: SortOrder
+    checksDown?: SortOrder
+    downDuration?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type DailyMonitorSummaryMinOrderByAggregateInput = {
+    id?: SortOrder
+    monitorId?: SortOrder
+    date?: SortOrder
+    uptimePct?: SortOrder
+    avgLatency?: SortOrder
+    checksTotal?: SortOrder
+    checksUp?: SortOrder
+    checksDown?: SortOrder
+    downDuration?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type DailyMonitorSummarySumOrderByAggregateInput = {
+    uptimePct?: SortOrder
+    avgLatency?: SortOrder
+    checksTotal?: SortOrder
+    checksUp?: SortOrder
+    checksDown?: SortOrder
+    downDuration?: SortOrder
   }
 
   export type SessionCreateNestedManyWithoutUserInput = {
@@ -36822,6 +38395,13 @@ export namespace Prisma {
     connect?: MonitorSubscriptionWhereUniqueInput | MonitorSubscriptionWhereUniqueInput[]
   }
 
+  export type DailyMonitorSummaryCreateNestedManyWithoutMonitorInput = {
+    create?: XOR<DailyMonitorSummaryCreateWithoutMonitorInput, DailyMonitorSummaryUncheckedCreateWithoutMonitorInput> | DailyMonitorSummaryCreateWithoutMonitorInput[] | DailyMonitorSummaryUncheckedCreateWithoutMonitorInput[]
+    connectOrCreate?: DailyMonitorSummaryCreateOrConnectWithoutMonitorInput | DailyMonitorSummaryCreateOrConnectWithoutMonitorInput[]
+    createMany?: DailyMonitorSummaryCreateManyMonitorInputEnvelope
+    connect?: DailyMonitorSummaryWhereUniqueInput | DailyMonitorSummaryWhereUniqueInput[]
+  }
+
   export type MonitorEventUncheckedCreateNestedManyWithoutMonitorInput = {
     create?: XOR<MonitorEventCreateWithoutMonitorInput, MonitorEventUncheckedCreateWithoutMonitorInput> | MonitorEventCreateWithoutMonitorInput[] | MonitorEventUncheckedCreateWithoutMonitorInput[]
     connectOrCreate?: MonitorEventCreateOrConnectWithoutMonitorInput | MonitorEventCreateOrConnectWithoutMonitorInput[]
@@ -36883,6 +38463,13 @@ export namespace Prisma {
     connectOrCreate?: MonitorSubscriptionCreateOrConnectWithoutMonitorInput | MonitorSubscriptionCreateOrConnectWithoutMonitorInput[]
     createMany?: MonitorSubscriptionCreateManyMonitorInputEnvelope
     connect?: MonitorSubscriptionWhereUniqueInput | MonitorSubscriptionWhereUniqueInput[]
+  }
+
+  export type DailyMonitorSummaryUncheckedCreateNestedManyWithoutMonitorInput = {
+    create?: XOR<DailyMonitorSummaryCreateWithoutMonitorInput, DailyMonitorSummaryUncheckedCreateWithoutMonitorInput> | DailyMonitorSummaryCreateWithoutMonitorInput[] | DailyMonitorSummaryUncheckedCreateWithoutMonitorInput[]
+    connectOrCreate?: DailyMonitorSummaryCreateOrConnectWithoutMonitorInput | DailyMonitorSummaryCreateOrConnectWithoutMonitorInput[]
+    createMany?: DailyMonitorSummaryCreateManyMonitorInputEnvelope
+    connect?: DailyMonitorSummaryWhereUniqueInput | DailyMonitorSummaryWhereUniqueInput[]
   }
 
   export type EnumMonitorTypeFieldUpdateOperationsInput = {
@@ -37027,6 +38614,20 @@ export namespace Prisma {
     deleteMany?: MonitorSubscriptionScalarWhereInput | MonitorSubscriptionScalarWhereInput[]
   }
 
+  export type DailyMonitorSummaryUpdateManyWithoutMonitorNestedInput = {
+    create?: XOR<DailyMonitorSummaryCreateWithoutMonitorInput, DailyMonitorSummaryUncheckedCreateWithoutMonitorInput> | DailyMonitorSummaryCreateWithoutMonitorInput[] | DailyMonitorSummaryUncheckedCreateWithoutMonitorInput[]
+    connectOrCreate?: DailyMonitorSummaryCreateOrConnectWithoutMonitorInput | DailyMonitorSummaryCreateOrConnectWithoutMonitorInput[]
+    upsert?: DailyMonitorSummaryUpsertWithWhereUniqueWithoutMonitorInput | DailyMonitorSummaryUpsertWithWhereUniqueWithoutMonitorInput[]
+    createMany?: DailyMonitorSummaryCreateManyMonitorInputEnvelope
+    set?: DailyMonitorSummaryWhereUniqueInput | DailyMonitorSummaryWhereUniqueInput[]
+    disconnect?: DailyMonitorSummaryWhereUniqueInput | DailyMonitorSummaryWhereUniqueInput[]
+    delete?: DailyMonitorSummaryWhereUniqueInput | DailyMonitorSummaryWhereUniqueInput[]
+    connect?: DailyMonitorSummaryWhereUniqueInput | DailyMonitorSummaryWhereUniqueInput[]
+    update?: DailyMonitorSummaryUpdateWithWhereUniqueWithoutMonitorInput | DailyMonitorSummaryUpdateWithWhereUniqueWithoutMonitorInput[]
+    updateMany?: DailyMonitorSummaryUpdateManyWithWhereWithoutMonitorInput | DailyMonitorSummaryUpdateManyWithWhereWithoutMonitorInput[]
+    deleteMany?: DailyMonitorSummaryScalarWhereInput | DailyMonitorSummaryScalarWhereInput[]
+  }
+
   export type MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput = {
     create?: XOR<MonitorEventCreateWithoutMonitorInput, MonitorEventUncheckedCreateWithoutMonitorInput> | MonitorEventCreateWithoutMonitorInput[] | MonitorEventUncheckedCreateWithoutMonitorInput[]
     connectOrCreate?: MonitorEventCreateOrConnectWithoutMonitorInput | MonitorEventCreateOrConnectWithoutMonitorInput[]
@@ -37151,6 +38752,20 @@ export namespace Prisma {
     update?: MonitorSubscriptionUpdateWithWhereUniqueWithoutMonitorInput | MonitorSubscriptionUpdateWithWhereUniqueWithoutMonitorInput[]
     updateMany?: MonitorSubscriptionUpdateManyWithWhereWithoutMonitorInput | MonitorSubscriptionUpdateManyWithWhereWithoutMonitorInput[]
     deleteMany?: MonitorSubscriptionScalarWhereInput | MonitorSubscriptionScalarWhereInput[]
+  }
+
+  export type DailyMonitorSummaryUncheckedUpdateManyWithoutMonitorNestedInput = {
+    create?: XOR<DailyMonitorSummaryCreateWithoutMonitorInput, DailyMonitorSummaryUncheckedCreateWithoutMonitorInput> | DailyMonitorSummaryCreateWithoutMonitorInput[] | DailyMonitorSummaryUncheckedCreateWithoutMonitorInput[]
+    connectOrCreate?: DailyMonitorSummaryCreateOrConnectWithoutMonitorInput | DailyMonitorSummaryCreateOrConnectWithoutMonitorInput[]
+    upsert?: DailyMonitorSummaryUpsertWithWhereUniqueWithoutMonitorInput | DailyMonitorSummaryUpsertWithWhereUniqueWithoutMonitorInput[]
+    createMany?: DailyMonitorSummaryCreateManyMonitorInputEnvelope
+    set?: DailyMonitorSummaryWhereUniqueInput | DailyMonitorSummaryWhereUniqueInput[]
+    disconnect?: DailyMonitorSummaryWhereUniqueInput | DailyMonitorSummaryWhereUniqueInput[]
+    delete?: DailyMonitorSummaryWhereUniqueInput | DailyMonitorSummaryWhereUniqueInput[]
+    connect?: DailyMonitorSummaryWhereUniqueInput | DailyMonitorSummaryWhereUniqueInput[]
+    update?: DailyMonitorSummaryUpdateWithWhereUniqueWithoutMonitorInput | DailyMonitorSummaryUpdateWithWhereUniqueWithoutMonitorInput[]
+    updateMany?: DailyMonitorSummaryUpdateManyWithWhereWithoutMonitorInput | DailyMonitorSummaryUpdateManyWithWhereWithoutMonitorInput[]
+    deleteMany?: DailyMonitorSummaryScalarWhereInput | DailyMonitorSummaryScalarWhereInput[]
   }
 
   export type MonitorCreateNestedOneWithoutEventsInput = {
@@ -37561,6 +39176,20 @@ export namespace Prisma {
     upsert?: MonitorUpsertWithoutMonitorSubscriptionsInput
     connect?: MonitorWhereUniqueInput
     update?: XOR<XOR<MonitorUpdateToOneWithWhereWithoutMonitorSubscriptionsInput, MonitorUpdateWithoutMonitorSubscriptionsInput>, MonitorUncheckedUpdateWithoutMonitorSubscriptionsInput>
+  }
+
+  export type MonitorCreateNestedOneWithoutDailySummariesInput = {
+    create?: XOR<MonitorCreateWithoutDailySummariesInput, MonitorUncheckedCreateWithoutDailySummariesInput>
+    connectOrCreate?: MonitorCreateOrConnectWithoutDailySummariesInput
+    connect?: MonitorWhereUniqueInput
+  }
+
+  export type MonitorUpdateOneRequiredWithoutDailySummariesNestedInput = {
+    create?: XOR<MonitorCreateWithoutDailySummariesInput, MonitorUncheckedCreateWithoutDailySummariesInput>
+    connectOrCreate?: MonitorCreateOrConnectWithoutDailySummariesInput
+    upsert?: MonitorUpsertWithoutDailySummariesInput
+    connect?: MonitorWhereUniqueInput
+    update?: XOR<XOR<MonitorUpdateToOneWithWhereWithoutDailySummariesInput, MonitorUpdateWithoutDailySummariesInput>, MonitorUncheckedUpdateWithoutDailySummariesInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -38139,6 +39768,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
     monitorSubscriptions?: MonitorSubscriptionCreateNestedManyWithoutMonitorInput
+    dailySummaries?: DailyMonitorSummaryCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutUserInput = {
@@ -38164,6 +39794,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
     monitorSubscriptions?: MonitorSubscriptionUncheckedCreateNestedManyWithoutMonitorInput
+    dailySummaries?: DailyMonitorSummaryUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutUserInput = {
@@ -38717,6 +40348,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
     monitorSubscriptions?: MonitorSubscriptionCreateNestedManyWithoutMonitorInput
+    dailySummaries?: DailyMonitorSummaryCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutIncidentsInput = {
@@ -38742,6 +40374,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
     monitorSubscriptions?: MonitorSubscriptionUncheckedCreateNestedManyWithoutMonitorInput
+    dailySummaries?: DailyMonitorSummaryUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutIncidentsInput = {
@@ -38836,6 +40469,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
     monitorSubscriptions?: MonitorSubscriptionUpdateManyWithoutMonitorNestedInput
+    dailySummaries?: DailyMonitorSummaryUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutIncidentsInput = {
@@ -38861,6 +40495,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
     monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutMonitorNestedInput
+    dailySummaries?: DailyMonitorSummaryUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type IncidentEventUpsertWithWhereUniqueWithoutIncidentInput = {
@@ -39020,6 +40655,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
     monitorSubscriptions?: MonitorSubscriptionCreateNestedManyWithoutMonitorInput
+    dailySummaries?: DailyMonitorSummaryCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutRegionalIncidentsInput = {
@@ -39045,6 +40681,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
     monitorSubscriptions?: MonitorSubscriptionUncheckedCreateNestedManyWithoutMonitorInput
+    dailySummaries?: DailyMonitorSummaryUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutRegionalIncidentsInput = {
@@ -39086,6 +40723,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
     monitorSubscriptions?: MonitorSubscriptionUpdateManyWithoutMonitorNestedInput
+    dailySummaries?: DailyMonitorSummaryUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutRegionalIncidentsInput = {
@@ -39111,6 +40749,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
     monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutMonitorNestedInput
+    dailySummaries?: DailyMonitorSummaryUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type UserCreateWithoutIncidentTemplatesInput = {
@@ -39296,6 +40935,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
     monitorSubscriptions?: MonitorSubscriptionCreateNestedManyWithoutMonitorInput
+    dailySummaries?: DailyMonitorSummaryCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutLatencyAggregatesInput = {
@@ -39321,6 +40961,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
     monitorSubscriptions?: MonitorSubscriptionUncheckedCreateNestedManyWithoutMonitorInput
+    dailySummaries?: DailyMonitorSummaryUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutLatencyAggregatesInput = {
@@ -39362,6 +41003,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
     monitorSubscriptions?: MonitorSubscriptionUpdateManyWithoutMonitorNestedInput
+    dailySummaries?: DailyMonitorSummaryUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutLatencyAggregatesInput = {
@@ -39387,6 +41029,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
     monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutMonitorNestedInput
+    dailySummaries?: DailyMonitorSummaryUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorCreateWithoutRegionalBaselinesInput = {
@@ -39412,6 +41055,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
     monitorSubscriptions?: MonitorSubscriptionCreateNestedManyWithoutMonitorInput
+    dailySummaries?: DailyMonitorSummaryCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutRegionalBaselinesInput = {
@@ -39437,6 +41081,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUncheckedCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
     monitorSubscriptions?: MonitorSubscriptionUncheckedCreateNestedManyWithoutMonitorInput
+    dailySummaries?: DailyMonitorSummaryUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutRegionalBaselinesInput = {
@@ -39478,6 +41123,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
     monitorSubscriptions?: MonitorSubscriptionUpdateManyWithoutMonitorNestedInput
+    dailySummaries?: DailyMonitorSummaryUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutRegionalBaselinesInput = {
@@ -39503,6 +41149,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUncheckedUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
     monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutMonitorNestedInput
+    dailySummaries?: DailyMonitorSummaryUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type UserCreateWithoutNotificationChannelsInput = {
@@ -39676,6 +41323,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
     monitorSubscriptions?: MonitorSubscriptionCreateNestedManyWithoutMonitorInput
+    dailySummaries?: DailyMonitorSummaryCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutAlertRulesInput = {
@@ -39701,6 +41349,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
     monitorSubscriptions?: MonitorSubscriptionUncheckedCreateNestedManyWithoutMonitorInput
+    dailySummaries?: DailyMonitorSummaryUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutAlertRulesInput = {
@@ -39767,6 +41416,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
     monitorSubscriptions?: MonitorSubscriptionUpdateManyWithoutMonitorNestedInput
+    dailySummaries?: DailyMonitorSummaryUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutAlertRulesInput = {
@@ -39792,6 +41442,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
     monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutMonitorNestedInput
+    dailySummaries?: DailyMonitorSummaryUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type NotificationChannelUpsertWithWhereUniqueWithoutAlertRulesInput = {
@@ -40131,6 +41782,40 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type DailyMonitorSummaryCreateWithoutMonitorInput = {
+    id?: string
+    date: Date | string
+    uptimePct: number
+    avgLatency: number
+    checksTotal: number
+    checksUp: number
+    checksDown: number
+    downDuration: number
+    createdAt?: Date | string
+  }
+
+  export type DailyMonitorSummaryUncheckedCreateWithoutMonitorInput = {
+    id?: string
+    date: Date | string
+    uptimePct: number
+    avgLatency: number
+    checksTotal: number
+    checksUp: number
+    checksDown: number
+    downDuration: number
+    createdAt?: Date | string
+  }
+
+  export type DailyMonitorSummaryCreateOrConnectWithoutMonitorInput = {
+    where: DailyMonitorSummaryWhereUniqueInput
+    create: XOR<DailyMonitorSummaryCreateWithoutMonitorInput, DailyMonitorSummaryUncheckedCreateWithoutMonitorInput>
+  }
+
+  export type DailyMonitorSummaryCreateManyMonitorInputEnvelope = {
+    data: DailyMonitorSummaryCreateManyMonitorInput | DailyMonitorSummaryCreateManyMonitorInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutMonitorsInput = {
     update: XOR<UserUpdateWithoutMonitorsInput, UserUncheckedUpdateWithoutMonitorsInput>
     create: XOR<UserCreateWithoutMonitorsInput, UserUncheckedCreateWithoutMonitorsInput>
@@ -40435,6 +42120,38 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"MonitorSubscription"> | Date | string
   }
 
+  export type DailyMonitorSummaryUpsertWithWhereUniqueWithoutMonitorInput = {
+    where: DailyMonitorSummaryWhereUniqueInput
+    update: XOR<DailyMonitorSummaryUpdateWithoutMonitorInput, DailyMonitorSummaryUncheckedUpdateWithoutMonitorInput>
+    create: XOR<DailyMonitorSummaryCreateWithoutMonitorInput, DailyMonitorSummaryUncheckedCreateWithoutMonitorInput>
+  }
+
+  export type DailyMonitorSummaryUpdateWithWhereUniqueWithoutMonitorInput = {
+    where: DailyMonitorSummaryWhereUniqueInput
+    data: XOR<DailyMonitorSummaryUpdateWithoutMonitorInput, DailyMonitorSummaryUncheckedUpdateWithoutMonitorInput>
+  }
+
+  export type DailyMonitorSummaryUpdateManyWithWhereWithoutMonitorInput = {
+    where: DailyMonitorSummaryScalarWhereInput
+    data: XOR<DailyMonitorSummaryUpdateManyMutationInput, DailyMonitorSummaryUncheckedUpdateManyWithoutMonitorInput>
+  }
+
+  export type DailyMonitorSummaryScalarWhereInput = {
+    AND?: DailyMonitorSummaryScalarWhereInput | DailyMonitorSummaryScalarWhereInput[]
+    OR?: DailyMonitorSummaryScalarWhereInput[]
+    NOT?: DailyMonitorSummaryScalarWhereInput | DailyMonitorSummaryScalarWhereInput[]
+    id?: StringFilter<"DailyMonitorSummary"> | string
+    monitorId?: StringFilter<"DailyMonitorSummary"> | string
+    date?: DateTimeFilter<"DailyMonitorSummary"> | Date | string
+    uptimePct?: FloatFilter<"DailyMonitorSummary"> | number
+    avgLatency?: IntFilter<"DailyMonitorSummary"> | number
+    checksTotal?: IntFilter<"DailyMonitorSummary"> | number
+    checksUp?: IntFilter<"DailyMonitorSummary"> | number
+    checksDown?: IntFilter<"DailyMonitorSummary"> | number
+    downDuration?: IntFilter<"DailyMonitorSummary"> | number
+    createdAt?: DateTimeFilter<"DailyMonitorSummary"> | Date | string
+  }
+
   export type MonitorCreateWithoutEventsInput = {
     id?: string
     name: string
@@ -40458,6 +42175,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
     monitorSubscriptions?: MonitorSubscriptionCreateNestedManyWithoutMonitorInput
+    dailySummaries?: DailyMonitorSummaryCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutEventsInput = {
@@ -40483,6 +42201,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
     monitorSubscriptions?: MonitorSubscriptionUncheckedCreateNestedManyWithoutMonitorInput
+    dailySummaries?: DailyMonitorSummaryUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutEventsInput = {
@@ -40524,6 +42243,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
     monitorSubscriptions?: MonitorSubscriptionUpdateManyWithoutMonitorNestedInput
+    dailySummaries?: DailyMonitorSummaryUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutEventsInput = {
@@ -40549,6 +42269,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
     monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutMonitorNestedInput
+    dailySummaries?: DailyMonitorSummaryUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorCreateWithoutMaintenanceWindowsInput = {
@@ -40574,6 +42295,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
     monitorSubscriptions?: MonitorSubscriptionCreateNestedManyWithoutMonitorInput
+    dailySummaries?: DailyMonitorSummaryCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutMaintenanceWindowsInput = {
@@ -40599,6 +42321,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
     monitorSubscriptions?: MonitorSubscriptionUncheckedCreateNestedManyWithoutMonitorInput
+    dailySummaries?: DailyMonitorSummaryUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutMaintenanceWindowsInput = {
@@ -40640,6 +42363,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
     monitorSubscriptions?: MonitorSubscriptionUpdateManyWithoutMonitorNestedInput
+    dailySummaries?: DailyMonitorSummaryUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutMaintenanceWindowsInput = {
@@ -40665,6 +42389,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
     monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutMonitorNestedInput
+    dailySummaries?: DailyMonitorSummaryUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type StatusPageCreateWithoutI18nSettingsInput = {
@@ -41207,6 +42932,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
     monitorSubscriptions?: MonitorSubscriptionCreateNestedManyWithoutMonitorInput
+    dailySummaries?: DailyMonitorSummaryCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutStatusPagesInput = {
@@ -41232,6 +42958,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUncheckedCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
     monitorSubscriptions?: MonitorSubscriptionUncheckedCreateNestedManyWithoutMonitorInput
+    dailySummaries?: DailyMonitorSummaryUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutStatusPagesInput = {
@@ -41346,6 +43073,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
     monitorSubscriptions?: MonitorSubscriptionUpdateManyWithoutMonitorNestedInput
+    dailySummaries?: DailyMonitorSummaryUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutStatusPagesInput = {
@@ -41371,6 +43099,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUncheckedUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
     monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutMonitorNestedInput
+    dailySummaries?: DailyMonitorSummaryUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type StatusPageCreateWithoutViewsInput = {
@@ -41870,6 +43599,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
+    dailySummaries?: DailyMonitorSummaryCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorUncheckedCreateWithoutMonitorSubscriptionsInput = {
@@ -41895,6 +43625,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUncheckedCreateNestedManyWithoutMonitorInput
     regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
     statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
+    dailySummaries?: DailyMonitorSummaryUncheckedCreateNestedManyWithoutMonitorInput
   }
 
   export type MonitorCreateOrConnectWithoutMonitorSubscriptionsInput = {
@@ -41973,6 +43704,7 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
+    dailySummaries?: DailyMonitorSummaryUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutMonitorSubscriptionsInput = {
@@ -41998,6 +43730,127 @@ export namespace Prisma {
     latencyAggregates?: LatencyAggregateUncheckedUpdateManyWithoutMonitorNestedInput
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
+    dailySummaries?: DailyMonitorSummaryUncheckedUpdateManyWithoutMonitorNestedInput
+  }
+
+  export type MonitorCreateWithoutDailySummariesInput = {
+    id?: string
+    name: string
+    url: string
+    type?: $Enums.MonitorType
+    interval?: number
+    timeout?: number
+    status?: $Enums.MonitorStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    nextCheck?: Date | string | null
+    lastCheck?: Date | string | null
+    checkRegions?: string | null
+    alertThreshold?: number
+    user: UserCreateNestedOneWithoutMonitorsInput
+    events?: MonitorEventCreateNestedManyWithoutMonitorInput
+    maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
+    alertRules?: AlertRuleCreateNestedManyWithoutMonitorInput
+    incidents?: IncidentCreateNestedManyWithoutMonitorInput
+    regionalIncidents?: RegionalIncidentCreateNestedManyWithoutMonitorInput
+    latencyAggregates?: LatencyAggregateCreateNestedManyWithoutMonitorInput
+    regionalBaselines?: RegionalBaselineCreateNestedManyWithoutMonitorInput
+    statusPages?: StatusPageMonitorCreateNestedManyWithoutMonitorInput
+    monitorSubscriptions?: MonitorSubscriptionCreateNestedManyWithoutMonitorInput
+  }
+
+  export type MonitorUncheckedCreateWithoutDailySummariesInput = {
+    id?: string
+    name: string
+    url: string
+    type?: $Enums.MonitorType
+    interval?: number
+    timeout?: number
+    status?: $Enums.MonitorStatus
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    nextCheck?: Date | string | null
+    lastCheck?: Date | string | null
+    checkRegions?: string | null
+    alertThreshold?: number
+    events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
+    maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
+    alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
+    incidents?: IncidentUncheckedCreateNestedManyWithoutMonitorInput
+    regionalIncidents?: RegionalIncidentUncheckedCreateNestedManyWithoutMonitorInput
+    latencyAggregates?: LatencyAggregateUncheckedCreateNestedManyWithoutMonitorInput
+    regionalBaselines?: RegionalBaselineUncheckedCreateNestedManyWithoutMonitorInput
+    statusPages?: StatusPageMonitorUncheckedCreateNestedManyWithoutMonitorInput
+    monitorSubscriptions?: MonitorSubscriptionUncheckedCreateNestedManyWithoutMonitorInput
+  }
+
+  export type MonitorCreateOrConnectWithoutDailySummariesInput = {
+    where: MonitorWhereUniqueInput
+    create: XOR<MonitorCreateWithoutDailySummariesInput, MonitorUncheckedCreateWithoutDailySummariesInput>
+  }
+
+  export type MonitorUpsertWithoutDailySummariesInput = {
+    update: XOR<MonitorUpdateWithoutDailySummariesInput, MonitorUncheckedUpdateWithoutDailySummariesInput>
+    create: XOR<MonitorCreateWithoutDailySummariesInput, MonitorUncheckedCreateWithoutDailySummariesInput>
+    where?: MonitorWhereInput
+  }
+
+  export type MonitorUpdateToOneWithWhereWithoutDailySummariesInput = {
+    where?: MonitorWhereInput
+    data: XOR<MonitorUpdateWithoutDailySummariesInput, MonitorUncheckedUpdateWithoutDailySummariesInput>
+  }
+
+  export type MonitorUpdateWithoutDailySummariesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    type?: EnumMonitorTypeFieldUpdateOperationsInput | $Enums.MonitorType
+    interval?: IntFieldUpdateOperationsInput | number
+    timeout?: IntFieldUpdateOperationsInput | number
+    status?: EnumMonitorStatusFieldUpdateOperationsInput | $Enums.MonitorStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nextCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
+    alertThreshold?: IntFieldUpdateOperationsInput | number
+    user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
+    events?: MonitorEventUpdateManyWithoutMonitorNestedInput
+    maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
+    alertRules?: AlertRuleUpdateManyWithoutMonitorNestedInput
+    incidents?: IncidentUpdateManyWithoutMonitorNestedInput
+    regionalIncidents?: RegionalIncidentUpdateManyWithoutMonitorNestedInput
+    latencyAggregates?: LatencyAggregateUpdateManyWithoutMonitorNestedInput
+    regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
+    statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
+    monitorSubscriptions?: MonitorSubscriptionUpdateManyWithoutMonitorNestedInput
+  }
+
+  export type MonitorUncheckedUpdateWithoutDailySummariesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    type?: EnumMonitorTypeFieldUpdateOperationsInput | $Enums.MonitorType
+    interval?: IntFieldUpdateOperationsInput | number
+    timeout?: IntFieldUpdateOperationsInput | number
+    status?: EnumMonitorStatusFieldUpdateOperationsInput | $Enums.MonitorStatus
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    nextCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
+    alertThreshold?: IntFieldUpdateOperationsInput | number
+    events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
+    maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
+    alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
+    incidents?: IncidentUncheckedUpdateManyWithoutMonitorNestedInput
+    regionalIncidents?: RegionalIncidentUncheckedUpdateManyWithoutMonitorNestedInput
+    latencyAggregates?: LatencyAggregateUncheckedUpdateManyWithoutMonitorNestedInput
+    regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
+    statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
+    monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type SessionCreateManyUserInput = {
@@ -42186,6 +44039,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUpdateManyWithoutMonitorNestedInput
     monitorSubscriptions?: MonitorSubscriptionUpdateManyWithoutMonitorNestedInput
+    dailySummaries?: DailyMonitorSummaryUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateWithoutUserInput = {
@@ -42211,6 +44065,7 @@ export namespace Prisma {
     regionalBaselines?: RegionalBaselineUncheckedUpdateManyWithoutMonitorNestedInput
     statusPages?: StatusPageMonitorUncheckedUpdateManyWithoutMonitorNestedInput
     monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutMonitorNestedInput
+    dailySummaries?: DailyMonitorSummaryUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
   export type MonitorUncheckedUpdateManyWithoutUserInput = {
@@ -42566,6 +44421,18 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type DailyMonitorSummaryCreateManyMonitorInput = {
+    id?: string
+    date: Date | string
+    uptimePct: number
+    avgLatency: number
+    checksTotal: number
+    checksUp: number
+    checksDown: number
+    downDuration: number
+    createdAt?: Date | string
+  }
+
   export type MonitorEventUpdateWithoutMonitorInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumMonitorStatusFieldUpdateOperationsInput | $Enums.MonitorStatus
@@ -42845,6 +44712,42 @@ export namespace Prisma {
   export type MonitorSubscriptionUncheckedUpdateManyWithoutMonitorInput = {
     id?: StringFieldUpdateOperationsInput | string
     subscriberId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DailyMonitorSummaryUpdateWithoutMonitorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    uptimePct?: FloatFieldUpdateOperationsInput | number
+    avgLatency?: IntFieldUpdateOperationsInput | number
+    checksTotal?: IntFieldUpdateOperationsInput | number
+    checksUp?: IntFieldUpdateOperationsInput | number
+    checksDown?: IntFieldUpdateOperationsInput | number
+    downDuration?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DailyMonitorSummaryUncheckedUpdateWithoutMonitorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    uptimePct?: FloatFieldUpdateOperationsInput | number
+    avgLatency?: IntFieldUpdateOperationsInput | number
+    checksTotal?: IntFieldUpdateOperationsInput | number
+    checksUp?: IntFieldUpdateOperationsInput | number
+    checksDown?: IntFieldUpdateOperationsInput | number
+    downDuration?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DailyMonitorSummaryUncheckedUpdateManyWithoutMonitorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    uptimePct?: FloatFieldUpdateOperationsInput | number
+    avgLatency?: IntFieldUpdateOperationsInput | number
+    checksTotal?: IntFieldUpdateOperationsInput | number
+    checksUp?: IntFieldUpdateOperationsInput | number
+    checksDown?: IntFieldUpdateOperationsInput | number
+    downDuration?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

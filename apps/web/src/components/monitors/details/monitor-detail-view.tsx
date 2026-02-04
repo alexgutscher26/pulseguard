@@ -11,9 +11,11 @@ import { MonitorCharts } from "@/components/monitors/details/charts";
 import { IncidentHistory } from "@/components/monitors/details/incident-history";
 import { LatencyHeatmap } from "@/components/monitors/latency";
 import { ResponseTimeChart } from "@/components/charts/response-time-chart";
-import { ChevronLeft, Play, Loader2 } from "lucide-react";
+import { SlaReportView } from "@/components/monitors/details/sla-report-view";
+import { ChevronLeft, Play, Loader2, Settings } from "lucide-react";
 import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -163,24 +165,77 @@ export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
       </div>
 
       <MonitorDetailHeader monitor={monitor} />
-      <MonitorStatsGrid monitor={monitor} />
 
-      {/* 24h Response Time Chart */}
-      <ResponseTimeChart
-        data={latencyHistory || []}
-        isLoading={isLoadingLatency}
-      />
-
-      <MonitorCharts monitor={monitor} />
-
-      {/* Latency Heatmap - Only show if regional monitoring is enabled */}
-      {monitor.checkRegions && (
-        <div className="mt-6">
-          <LatencyHeatmap monitorId={monitor.id} />
+      <Tabs defaultValue="overview" className="w-full">
+        <div className="flex items-center justify-between gap-4 overflow-x-auto pb-2 md:pb-0">
+          <TabsList className="bg-zinc-950/50 border border-zinc-900">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="reports">SLA & Reports</TabsTrigger>
+            <TabsTrigger value="incidents">Incidents</TabsTrigger>
+            <TabsTrigger value="settings">Settings</TabsTrigger>
+          </TabsList>
         </div>
-      )}
 
-      <IncidentHistory monitor={monitor} />
+        <TabsContent
+          value="overview"
+          className="space-y-6 mt-6 animate-in fade-in slide-in-from-bottom-2 duration-300"
+        >
+          <MonitorStatsGrid monitor={monitor} />
+
+          <ResponseTimeChart
+            data={latencyHistory || []}
+            isLoading={isLoadingLatency}
+          />
+
+          <MonitorCharts monitor={monitor} />
+
+          {monitor.checkRegions && (
+            <div className="mt-6">
+              <LatencyHeatmap monitorId={monitor.id} />
+            </div>
+          )}
+
+          <div className="mt-8">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium">Recent Activity</h3>
+            </div>
+            <IncidentHistory monitor={monitor} />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="reports" className="mt-6">
+          <SlaReportView monitorId={monitor.id} />
+        </TabsContent>
+
+        <TabsContent
+          value="incidents"
+          className="mt-6 animate-in fade-in slide-in-from-bottom-2 duration-300"
+        >
+          <IncidentHistory monitor={monitor} />
+        </TabsContent>
+
+        <TabsContent
+          value="settings"
+          className="mt-6 animate-in fade-in slide-in-from-bottom-2 duration-300"
+        >
+          <div className="flex flex-col items-center justify-center p-12 border border-zinc-800 rounded-lg bg-zinc-950/30 border-dashed">
+            <Settings className="size-12 text-zinc-700 mb-4" />
+            <h3 className="text-lg font-medium text-foreground mb-2">
+              Monitor Settings
+            </h3>
+            <p className="text-muted-foreground mb-6 text-center max-w-sm">
+              Configure monitor frequency, timeouts, alert thresholds, and
+              notifications in the dedicated settings page.
+            </p>
+            <Link
+              href={`/dashboard/monitors/${monitor.id}/settings`}
+              className={buttonVariants({ variant: "outline" })}
+            >
+              Go to Settings
+            </Link>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

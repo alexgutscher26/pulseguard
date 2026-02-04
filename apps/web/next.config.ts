@@ -1,10 +1,10 @@
 import "@pulseguard/env/web";
 import type { NextConfig } from "next";
 
-import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+// import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 
 const nextConfig: NextConfig = {
-  typedRoutes: true,
+  typedRoutes: true, 
   reactCompiler: true,
   typescript: {
     ignoreBuildErrors: true,
@@ -17,6 +17,6 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin();
 
-initOpenNextCloudflareForDev();
+// initOpenNextCloudflareForDev();
 
 export default withNextIntl(nextConfig);

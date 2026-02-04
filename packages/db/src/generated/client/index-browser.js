@@ -399,6 +399,19 @@ exports.Prisma.MonitorSubscriptionScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.DailyMonitorSummaryScalarFieldEnum = {
+  id: 'id',
+  monitorId: 'monitorId',
+  date: 'date',
+  uptimePct: 'uptimePct',
+  avgLatency: 'avgLatency',
+  checksTotal: 'checksTotal',
+  checksUp: 'checksUp',
+  checksDown: 'checksDown',
+  downDuration: 'downDuration',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -521,7 +534,8 @@ exports.Prisma.ModelName = {
   StatusPageView: 'StatusPageView',
   StatusPageSubscriber: 'StatusPageSubscriber',
   SubscriptionToken: 'SubscriptionToken',
-  MonitorSubscription: 'MonitorSubscription'
+  MonitorSubscription: 'MonitorSubscription',
+  DailyMonitorSummary: 'DailyMonitorSummary'
 };
 
 /**
