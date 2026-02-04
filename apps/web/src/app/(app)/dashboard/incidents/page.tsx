@@ -14,6 +14,9 @@ export const metadata = {
   description: "Manage system incidents",
 };
 
+/**
+ * Renders the incidents page with incident data, templates, monitors, and user preferences.
+ */
 export default async function IncidentsPage() {
   const [incidents, templates, monitors, preferences] = await Promise.all([
     getIncidents(),
