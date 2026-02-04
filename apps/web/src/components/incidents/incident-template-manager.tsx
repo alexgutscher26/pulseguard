@@ -62,6 +62,16 @@ interface TemplateManagerProps {
   templates: (IncidentTemplateData & { id: string })[];
 }
 
+/**
+ * Manages incident templates, allowing users to create, edit, and delete templates.
+ *
+ * This component utilizes state management to handle the visibility of the template dialog,
+ * the current template being edited, and the submission status. It integrates with a form
+ * using Zod for validation, and provides functions to handle template creation, updating,
+ * and deletion, along with user feedback through toast notifications.
+ *
+ * @param {TemplateManagerProps} props - The properties for the template manager, including the templates.
+ */
 export function IncidentTemplateManager({ templates }: TemplateManagerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<
@@ -80,6 +90,16 @@ export function IncidentTemplateManager({ templates }: TemplateManagerProps) {
     },
   });
 
+  /**
+   * Handles the submission of the form, either creating or updating an incident template.
+   *
+   * The function checks if an existing template is being edited. If so, it calls `updateIncidentTemplate`
+   * with the template's ID and the form values; otherwise, it calls `createIncidentTemplate`.
+   * Upon successful submission, it displays a success message, resets the form, and closes the modal.
+   * If the submission fails, it shows an error message.
+   *
+   * @param values - The form values inferred from the `formSchema`.
+   */
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(async () => {
       let result;
@@ -102,6 +122,9 @@ export function IncidentTemplateManager({ templates }: TemplateManagerProps) {
     });
   };
 
+  /**
+   * Handles the deletion of an incident template by its ID.
+   */
   const handleDelete = (id: string) => {
     startTransition(async () => {
       const result = await deleteIncidentTemplate(id);
@@ -113,12 +136,18 @@ export function IncidentTemplateManager({ templates }: TemplateManagerProps) {
     });
   };
 
+  /**
+   * Handles the editing of an incident template by setting the template, resetting the form, and opening the editor.
+   */
   const handleEdit = (template: IncidentTemplateData & { id: string }) => {
     setEditingTemplate(template);
     form.reset(template);
     setIsOpen(true);
   };
 
+  /**
+   * Handles the change of the open state and resets the form if closed.
+   */
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (!open) {
