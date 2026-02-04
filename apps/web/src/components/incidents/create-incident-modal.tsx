@@ -52,6 +52,17 @@ interface CreateIncidentModalProps {
   templates: (IncidentTemplateData & { id: string })[];
 }
 
+/**
+ * Renders a modal for creating a new incident report.
+ *
+ * This component manages the state of the modal, handles form submission, and allows users to select a monitor and optionally load a template.
+ * Upon submission, it invokes the createIncident function to report the incident and provides feedback through toast notifications.
+ * The form is validated using Zod and includes fields for title, description, severity, and status.
+ *
+ * @param {Object} props - The properties for the modal.
+ * @param {Array} props.monitors - The list of monitors to select from.
+ * @param {Array} props.templates - The list of templates for auto-filling the form.
+ */
 export function CreateIncidentModal({
   monitors,
   templates,
@@ -70,6 +81,9 @@ export function CreateIncidentModal({
     },
   });
 
+  /**
+   * Handles form submission to create an incident.
+   */
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     startTransition(async () => {
       const result = await createIncident({
@@ -90,6 +104,9 @@ export function CreateIncidentModal({
     });
   };
 
+  /**
+   * Updates form values based on the selected template.
+   */
   const handleTemplateChange = (templateId: string) => {
     const template = templates.find((t) => t.id === templateId);
     if (template) {
