@@ -52,6 +52,13 @@ interface LatencyResult {
   coordinates: [number, number];
 }
 
+/**
+ * Component for checking and displaying latency information for a given URL.
+ *
+ * This component manages the state for the URL input, loading status, results, and unlock status. It checks local storage for an unlock token and handles the latency check by validating the URL, making an API call to fetch latency data, and updating the results accordingly. It also provides functionality to unlock full report access via email submission.
+ *
+ * @returns {JSX.Element} The rendered component.
+ */
 export function LatencyChecker() {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
@@ -67,6 +74,16 @@ export function LatencyChecker() {
     if (token) setUnlocked(true);
   }, []);
 
+  /**
+   * Handles the check for global latency based on the provided URL.
+   *
+   * The function prevents the default form submission, validates the URL format, and initiates a fetch request to retrieve latency data.
+   * If the fetch is successful, it updates the results state and may auto-open a gate if certain conditions are met.
+   * Errors during the fetch process are caught and logged, while loading state is managed throughout the operation.
+   *
+   * @param e - The React form event triggered by the submission.
+   * @returns void
+   */
   const handleCheck = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!url) return;
