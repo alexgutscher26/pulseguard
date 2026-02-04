@@ -10,6 +10,16 @@ import {
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+/**
+ * Renders a status bar with a background color based on the provided status.
+ *
+ * The function determines the appropriate background class for the bar based on the status value.
+ * It uses specific classes for different statuses: red for 0, amber for 2, and a placeholder for 3 indicating no data.
+ * The bar is styled with a fixed width and height, and the title attribute is set to "No Data" when the status is 3.
+ *
+ * @param {Object} param0 - The parameters object.
+ * @param {number} param0.status - The status code that determines the background color of the bar.
+ */
 function UptimeBar({ status }: { status: number }) {
   let bgClass = "bg-primary/80";
   if (status === 0) bgClass = "bg-red-500/80";
@@ -24,6 +34,15 @@ function UptimeBar({ status }: { status: number }) {
   );
 }
 
+/**
+ * Renders a paginated list of monitors with their statuses and details.
+ *
+ * The function calculates the total number of pages based on the number of monitors and the items per page. It slices the monitors array to display only the current page's monitors. Each monitor's uptime is calculated based on its event history, and the component provides navigation for pagination. The UI displays the status, monitor information, history, and response time for each monitor.
+ *
+ * @param {Object} param0 - The parameters object.
+ * @param {any[]} param0.monitors - An array of monitor objects to be displayed.
+ * @returns {JSX.Element} The rendered component displaying the list of monitors.
+ */
 export function MonitorList({ monitors }: { monitors: any[] }) {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
