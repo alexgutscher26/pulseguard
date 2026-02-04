@@ -20,6 +20,15 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { MonitorExportModal } from "@/components/monitors/details/export-modal";
 
+/**
+ * Monitors the detail view of a specific monitor and manages its state.
+ *
+ * This function fetches the monitor data and its latency history using the useQuery hook. It also listens for live events and updates the query cache accordingly. If the monitor data is stale, it triggers a check automatically. The component renders various UI elements, including buttons for running checks and exporting data, and displays detailed information about the monitor's status and history.
+ *
+ * @param {Object} param0 - The parameters for the function.
+ * @param {any} param0.initialMonitor - The initial monitor object containing monitor details.
+ * @returns {JSX.Element | null} The rendered component or null if the monitor data is not available.
+ */
 export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
   const { data: monitor } = useQuery({
     queryKey: ["monitor", initialMonitor.id],
