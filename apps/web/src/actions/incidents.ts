@@ -120,3 +120,52 @@ export async function updateIncidentStatus(
     return { success: false, error: "Failed to update status" };
   }
 }
+
+export async function createIncident(data: {
+  monitorId: string;
+  title: string;
+  description: string;
+  severity: "HIGH" | "MEDIUM" | "LOW";
+  status: "INVESTIGATING" | "IDENTIFIED" | "MONITORING" | "RESOLVED";
+}) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) return { success: false, error: "Unauthorized" };
+
+  try {
+    // Verify monitor ownership
+    const monitor = await prisma.monitor.findFirst({
+      where: {
+        id: data.monitorId,
+        userId: session.user.id,
+      },
+    });
+
+    if (!monitor) return { success: false, error: "Monitor not found" };
+
+    const incident = await prisma.incident.create({
+      data: {
+        monitorId: data.monitorId,
+        title: data.title,
+        description: data.description,
+        severity: data.severity as any,
+        status: data.status as any,
+        events: {
+          create: {
+            type: "STATE_CHANGE", // Use string literal or enum if imported
+            message: `Incident manually reported: ${data.title}`,
+          },
+        },
+      },
+    });
+
+    revalidatePath("/dashboard/incidents");
+    revalidatePath(`/dashboard/monitors/${data.monitorId}`);
+    return { success: true, incidentId: incident.id };
+  } catch (error) {
+    console.error("Failed to create incident", error);
+    return { success: false, error: "Failed to create incident" };
+  }
+}

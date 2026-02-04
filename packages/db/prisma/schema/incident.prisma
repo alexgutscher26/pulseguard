@@ -69,3 +69,20 @@ model RegionalIncident {
   @@index([region])
   @@index([status])
 }
+
+model IncidentTemplate {
+  id          String         @id @default(cuid())
+  name        String
+  title       String
+  description String
+  severity    Severity       @default(HIGH)
+  status      IncidentStatus @default(INVESTIGATING)
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  createdBy   User           @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById String
+
+  @@index([createdById])
+}

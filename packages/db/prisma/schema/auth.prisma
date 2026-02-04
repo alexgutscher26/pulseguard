@@ -14,6 +14,7 @@ model User {
   monitors             Monitor[]
   notificationChannels NotificationChannel[]
   statusPages          StatusPage[]
+  incidentTemplates    IncidentTemplate[]
 
 
   @@unique([email])

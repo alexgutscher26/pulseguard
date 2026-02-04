@@ -195,7 +195,7 @@ Public-facing transparency for users.
 
 ### 📝 Incident Response
 
-- [ ] **Incident Templates**
+- [x] **Incident Templates**
   - Pre-written updates for common issues ("Investigating Connectivity Issues", "Scheduled Maintenance").
 - [ ] **Post-Mortems**
   - Generate a Markdown report after incident resolution.

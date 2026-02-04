@@ -203,6 +203,18 @@ exports.Prisma.RegionalIncidentScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.IncidentTemplateScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  title: 'title',
+  description: 'description',
+  severity: 'severity',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdById: 'createdById'
+};
+
 exports.Prisma.LatencyAggregateScalarFieldEnum = {
   id: 'id',
   monitorId: 'monitorId',
@@ -475,6 +487,7 @@ exports.Prisma.ModelName = {
   Incident: 'Incident',
   IncidentEvent: 'IncidentEvent',
   RegionalIncident: 'RegionalIncident',
+  IncidentTemplate: 'IncidentTemplate',
   LatencyAggregate: 'LatencyAggregate',
   RegionalBaseline: 'RegionalBaseline',
   NotificationChannel: 'NotificationChannel',

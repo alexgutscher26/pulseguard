@@ -49,6 +49,11 @@ export type IncidentEvent = $Result.DefaultSelection<Prisma.$IncidentEventPayloa
  */
 export type RegionalIncident = $Result.DefaultSelection<Prisma.$RegionalIncidentPayload>
 /**
+ * Model IncidentTemplate
+ * 
+ */
+export type IncidentTemplate = $Result.DefaultSelection<Prisma.$IncidentTemplatePayload>
+/**
  * Model LatencyAggregate
  * 
  */
@@ -444,6 +449,16 @@ export class PrismaClient<
     * ```
     */
   get regionalIncident(): Prisma.RegionalIncidentDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.incidentTemplate`: Exposes CRUD operations for the **IncidentTemplate** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more IncidentTemplates
+    * const incidentTemplates = await prisma.incidentTemplate.findMany()
+    * ```
+    */
+  get incidentTemplate(): Prisma.IncidentTemplateDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.latencyAggregate`: Exposes CRUD operations for the **LatencyAggregate** model.
@@ -1025,6 +1040,7 @@ export namespace Prisma {
     Incident: 'Incident',
     IncidentEvent: 'IncidentEvent',
     RegionalIncident: 'RegionalIncident',
+    IncidentTemplate: 'IncidentTemplate',
     LatencyAggregate: 'LatencyAggregate',
     RegionalBaseline: 'RegionalBaseline',
     NotificationChannel: 'NotificationChannel',
@@ -1054,7 +1070,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "account" | "verification" | "incident" | "incidentEvent" | "regionalIncident" | "latencyAggregate" | "regionalBaseline" | "notificationChannel" | "alertRule" | "monitor" | "monitorEvent" | "maintenanceWindow" | "statusPageI18n" | "statusPage" | "statusPageMonitor" | "statusPageView" | "statusPageSubscriber" | "subscriptionToken" | "monitorSubscription"
+      modelProps: "user" | "session" | "account" | "verification" | "incident" | "incidentEvent" | "regionalIncident" | "incidentTemplate" | "latencyAggregate" | "regionalBaseline" | "notificationChannel" | "alertRule" | "monitor" | "monitorEvent" | "maintenanceWindow" | "statusPageI18n" | "statusPage" | "statusPageMonitor" | "statusPageView" | "statusPageSubscriber" | "subscriptionToken" | "monitorSubscription"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1573,6 +1589,80 @@ export namespace Prisma {
           count: {
             args: Prisma.RegionalIncidentCountArgs<ExtArgs>
             result: $Utils.Optional<RegionalIncidentCountAggregateOutputType> | number
+          }
+        }
+      }
+      IncidentTemplate: {
+        payload: Prisma.$IncidentTemplatePayload<ExtArgs>
+        fields: Prisma.IncidentTemplateFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.IncidentTemplateFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentTemplatePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.IncidentTemplateFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentTemplatePayload>
+          }
+          findFirst: {
+            args: Prisma.IncidentTemplateFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentTemplatePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.IncidentTemplateFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentTemplatePayload>
+          }
+          findMany: {
+            args: Prisma.IncidentTemplateFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentTemplatePayload>[]
+          }
+          create: {
+            args: Prisma.IncidentTemplateCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentTemplatePayload>
+          }
+          createMany: {
+            args: Prisma.IncidentTemplateCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.IncidentTemplateCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentTemplatePayload>[]
+          }
+          delete: {
+            args: Prisma.IncidentTemplateDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentTemplatePayload>
+          }
+          update: {
+            args: Prisma.IncidentTemplateUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentTemplatePayload>
+          }
+          deleteMany: {
+            args: Prisma.IncidentTemplateDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.IncidentTemplateUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.IncidentTemplateUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentTemplatePayload>[]
+          }
+          upsert: {
+            args: Prisma.IncidentTemplateUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IncidentTemplatePayload>
+          }
+          aggregate: {
+            args: Prisma.IncidentTemplateAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateIncidentTemplate>
+          }
+          groupBy: {
+            args: Prisma.IncidentTemplateGroupByArgs<ExtArgs>
+            result: $Utils.Optional<IncidentTemplateGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.IncidentTemplateCountArgs<ExtArgs>
+            result: $Utils.Optional<IncidentTemplateCountAggregateOutputType> | number
           }
         }
       }
@@ -2727,6 +2817,7 @@ export namespace Prisma {
     incident?: IncidentOmit
     incidentEvent?: IncidentEventOmit
     regionalIncident?: RegionalIncidentOmit
+    incidentTemplate?: IncidentTemplateOmit
     latencyAggregate?: LatencyAggregateOmit
     regionalBaseline?: RegionalBaselineOmit
     notificationChannel?: NotificationChannelOmit
@@ -2826,6 +2917,7 @@ export namespace Prisma {
     monitors: number
     notificationChannels: number
     statusPages: number
+    incidentTemplates: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2834,6 +2926,7 @@ export namespace Prisma {
     monitors?: boolean | UserCountOutputTypeCountMonitorsArgs
     notificationChannels?: boolean | UserCountOutputTypeCountNotificationChannelsArgs
     statusPages?: boolean | UserCountOutputTypeCountStatusPagesArgs
+    incidentTemplates?: boolean | UserCountOutputTypeCountIncidentTemplatesArgs
   }
 
   // Custom InputTypes
@@ -2880,6 +2973,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountStatusPagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: StatusPageWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountIncidentTemplatesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: IncidentTemplateWhereInput
   }
 
 
@@ -3390,6 +3490,7 @@ export namespace Prisma {
     monitors?: boolean | User$monitorsArgs<ExtArgs>
     notificationChannels?: boolean | User$notificationChannelsArgs<ExtArgs>
     statusPages?: boolean | User$statusPagesArgs<ExtArgs>
+    incidentTemplates?: boolean | User$incidentTemplatesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3439,6 +3540,7 @@ export namespace Prisma {
     monitors?: boolean | User$monitorsArgs<ExtArgs>
     notificationChannels?: boolean | User$notificationChannelsArgs<ExtArgs>
     statusPages?: boolean | User$statusPagesArgs<ExtArgs>
+    incidentTemplates?: boolean | User$incidentTemplatesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3452,6 +3554,7 @@ export namespace Prisma {
       monitors: Prisma.$MonitorPayload<ExtArgs>[]
       notificationChannels: Prisma.$NotificationChannelPayload<ExtArgs>[]
       statusPages: Prisma.$StatusPagePayload<ExtArgs>[]
+      incidentTemplates: Prisma.$IncidentTemplatePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3863,6 +3966,7 @@ export namespace Prisma {
     monitors<T extends User$monitorsArgs<ExtArgs> = {}>(args?: Subset<T, User$monitorsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MonitorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     notificationChannels<T extends User$notificationChannelsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationChannelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationChannelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     statusPages<T extends User$statusPagesArgs<ExtArgs> = {}>(args?: Subset<T, User$statusPagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StatusPagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    incidentTemplates<T extends User$incidentTemplatesArgs<ExtArgs> = {}>(args?: Subset<T, User$incidentTemplatesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IncidentTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4407,6 +4511,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: StatusPageScalarFieldEnum | StatusPageScalarFieldEnum[]
+  }
+
+  /**
+   * User.incidentTemplates
+   */
+  export type User$incidentTemplatesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentTemplate
+     */
+    select?: IncidentTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentTemplate
+     */
+    omit?: IncidentTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentTemplateInclude<ExtArgs> | null
+    where?: IncidentTemplateWhereInput
+    orderBy?: IncidentTemplateOrderByWithRelationInput | IncidentTemplateOrderByWithRelationInput[]
+    cursor?: IncidentTemplateWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: IncidentTemplateScalarFieldEnum | IncidentTemplateScalarFieldEnum[]
   }
 
   /**
@@ -11064,6 +11192,1116 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: RegionalIncidentInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model IncidentTemplate
+   */
+
+  export type AggregateIncidentTemplate = {
+    _count: IncidentTemplateCountAggregateOutputType | null
+    _min: IncidentTemplateMinAggregateOutputType | null
+    _max: IncidentTemplateMaxAggregateOutputType | null
+  }
+
+  export type IncidentTemplateMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    title: string | null
+    description: string | null
+    severity: $Enums.Severity | null
+    status: $Enums.IncidentStatus | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    createdById: string | null
+  }
+
+  export type IncidentTemplateMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    title: string | null
+    description: string | null
+    severity: $Enums.Severity | null
+    status: $Enums.IncidentStatus | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    createdById: string | null
+  }
+
+  export type IncidentTemplateCountAggregateOutputType = {
+    id: number
+    name: number
+    title: number
+    description: number
+    severity: number
+    status: number
+    createdAt: number
+    updatedAt: number
+    createdById: number
+    _all: number
+  }
+
+
+  export type IncidentTemplateMinAggregateInputType = {
+    id?: true
+    name?: true
+    title?: true
+    description?: true
+    severity?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    createdById?: true
+  }
+
+  export type IncidentTemplateMaxAggregateInputType = {
+    id?: true
+    name?: true
+    title?: true
+    description?: true
+    severity?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    createdById?: true
+  }
+
+  export type IncidentTemplateCountAggregateInputType = {
+    id?: true
+    name?: true
+    title?: true
+    description?: true
+    severity?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    createdById?: true
+    _all?: true
+  }
+
+  export type IncidentTemplateAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which IncidentTemplate to aggregate.
+     */
+    where?: IncidentTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of IncidentTemplates to fetch.
+     */
+    orderBy?: IncidentTemplateOrderByWithRelationInput | IncidentTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: IncidentTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` IncidentTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` IncidentTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned IncidentTemplates
+    **/
+    _count?: true | IncidentTemplateCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: IncidentTemplateMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: IncidentTemplateMaxAggregateInputType
+  }
+
+  export type GetIncidentTemplateAggregateType<T extends IncidentTemplateAggregateArgs> = {
+        [P in keyof T & keyof AggregateIncidentTemplate]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateIncidentTemplate[P]>
+      : GetScalarType<T[P], AggregateIncidentTemplate[P]>
+  }
+
+
+
+
+  export type IncidentTemplateGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: IncidentTemplateWhereInput
+    orderBy?: IncidentTemplateOrderByWithAggregationInput | IncidentTemplateOrderByWithAggregationInput[]
+    by: IncidentTemplateScalarFieldEnum[] | IncidentTemplateScalarFieldEnum
+    having?: IncidentTemplateScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: IncidentTemplateCountAggregateInputType | true
+    _min?: IncidentTemplateMinAggregateInputType
+    _max?: IncidentTemplateMaxAggregateInputType
+  }
+
+  export type IncidentTemplateGroupByOutputType = {
+    id: string
+    name: string
+    title: string
+    description: string
+    severity: $Enums.Severity
+    status: $Enums.IncidentStatus
+    createdAt: Date
+    updatedAt: Date
+    createdById: string
+    _count: IncidentTemplateCountAggregateOutputType | null
+    _min: IncidentTemplateMinAggregateOutputType | null
+    _max: IncidentTemplateMaxAggregateOutputType | null
+  }
+
+  type GetIncidentTemplateGroupByPayload<T extends IncidentTemplateGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<IncidentTemplateGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof IncidentTemplateGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], IncidentTemplateGroupByOutputType[P]>
+            : GetScalarType<T[P], IncidentTemplateGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type IncidentTemplateSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    title?: boolean
+    description?: boolean
+    severity?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdById?: boolean
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["incidentTemplate"]>
+
+  export type IncidentTemplateSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    title?: boolean
+    description?: boolean
+    severity?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdById?: boolean
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["incidentTemplate"]>
+
+  export type IncidentTemplateSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    title?: boolean
+    description?: boolean
+    severity?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdById?: boolean
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["incidentTemplate"]>
+
+  export type IncidentTemplateSelectScalar = {
+    id?: boolean
+    name?: boolean
+    title?: boolean
+    description?: boolean
+    severity?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdById?: boolean
+  }
+
+  export type IncidentTemplateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "title" | "description" | "severity" | "status" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["incidentTemplate"]>
+  export type IncidentTemplateInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type IncidentTemplateIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type IncidentTemplateIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $IncidentTemplatePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "IncidentTemplate"
+    objects: {
+      createdBy: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      title: string
+      description: string
+      severity: $Enums.Severity
+      status: $Enums.IncidentStatus
+      createdAt: Date
+      updatedAt: Date
+      createdById: string
+    }, ExtArgs["result"]["incidentTemplate"]>
+    composites: {}
+  }
+
+  type IncidentTemplateGetPayload<S extends boolean | null | undefined | IncidentTemplateDefaultArgs> = $Result.GetResult<Prisma.$IncidentTemplatePayload, S>
+
+  type IncidentTemplateCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<IncidentTemplateFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: IncidentTemplateCountAggregateInputType | true
+    }
+
+  export interface IncidentTemplateDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['IncidentTemplate'], meta: { name: 'IncidentTemplate' } }
+    /**
+     * Find zero or one IncidentTemplate that matches the filter.
+     * @param {IncidentTemplateFindUniqueArgs} args - Arguments to find a IncidentTemplate
+     * @example
+     * // Get one IncidentTemplate
+     * const incidentTemplate = await prisma.incidentTemplate.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends IncidentTemplateFindUniqueArgs>(args: SelectSubset<T, IncidentTemplateFindUniqueArgs<ExtArgs>>): Prisma__IncidentTemplateClient<$Result.GetResult<Prisma.$IncidentTemplatePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one IncidentTemplate that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {IncidentTemplateFindUniqueOrThrowArgs} args - Arguments to find a IncidentTemplate
+     * @example
+     * // Get one IncidentTemplate
+     * const incidentTemplate = await prisma.incidentTemplate.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends IncidentTemplateFindUniqueOrThrowArgs>(args: SelectSubset<T, IncidentTemplateFindUniqueOrThrowArgs<ExtArgs>>): Prisma__IncidentTemplateClient<$Result.GetResult<Prisma.$IncidentTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first IncidentTemplate that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IncidentTemplateFindFirstArgs} args - Arguments to find a IncidentTemplate
+     * @example
+     * // Get one IncidentTemplate
+     * const incidentTemplate = await prisma.incidentTemplate.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends IncidentTemplateFindFirstArgs>(args?: SelectSubset<T, IncidentTemplateFindFirstArgs<ExtArgs>>): Prisma__IncidentTemplateClient<$Result.GetResult<Prisma.$IncidentTemplatePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first IncidentTemplate that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IncidentTemplateFindFirstOrThrowArgs} args - Arguments to find a IncidentTemplate
+     * @example
+     * // Get one IncidentTemplate
+     * const incidentTemplate = await prisma.incidentTemplate.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends IncidentTemplateFindFirstOrThrowArgs>(args?: SelectSubset<T, IncidentTemplateFindFirstOrThrowArgs<ExtArgs>>): Prisma__IncidentTemplateClient<$Result.GetResult<Prisma.$IncidentTemplatePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more IncidentTemplates that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IncidentTemplateFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all IncidentTemplates
+     * const incidentTemplates = await prisma.incidentTemplate.findMany()
+     * 
+     * // Get first 10 IncidentTemplates
+     * const incidentTemplates = await prisma.incidentTemplate.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const incidentTemplateWithIdOnly = await prisma.incidentTemplate.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends IncidentTemplateFindManyArgs>(args?: SelectSubset<T, IncidentTemplateFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IncidentTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a IncidentTemplate.
+     * @param {IncidentTemplateCreateArgs} args - Arguments to create a IncidentTemplate.
+     * @example
+     * // Create one IncidentTemplate
+     * const IncidentTemplate = await prisma.incidentTemplate.create({
+     *   data: {
+     *     // ... data to create a IncidentTemplate
+     *   }
+     * })
+     * 
+     */
+    create<T extends IncidentTemplateCreateArgs>(args: SelectSubset<T, IncidentTemplateCreateArgs<ExtArgs>>): Prisma__IncidentTemplateClient<$Result.GetResult<Prisma.$IncidentTemplatePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many IncidentTemplates.
+     * @param {IncidentTemplateCreateManyArgs} args - Arguments to create many IncidentTemplates.
+     * @example
+     * // Create many IncidentTemplates
+     * const incidentTemplate = await prisma.incidentTemplate.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends IncidentTemplateCreateManyArgs>(args?: SelectSubset<T, IncidentTemplateCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many IncidentTemplates and returns the data saved in the database.
+     * @param {IncidentTemplateCreateManyAndReturnArgs} args - Arguments to create many IncidentTemplates.
+     * @example
+     * // Create many IncidentTemplates
+     * const incidentTemplate = await prisma.incidentTemplate.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many IncidentTemplates and only return the `id`
+     * const incidentTemplateWithIdOnly = await prisma.incidentTemplate.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends IncidentTemplateCreateManyAndReturnArgs>(args?: SelectSubset<T, IncidentTemplateCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IncidentTemplatePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a IncidentTemplate.
+     * @param {IncidentTemplateDeleteArgs} args - Arguments to delete one IncidentTemplate.
+     * @example
+     * // Delete one IncidentTemplate
+     * const IncidentTemplate = await prisma.incidentTemplate.delete({
+     *   where: {
+     *     // ... filter to delete one IncidentTemplate
+     *   }
+     * })
+     * 
+     */
+    delete<T extends IncidentTemplateDeleteArgs>(args: SelectSubset<T, IncidentTemplateDeleteArgs<ExtArgs>>): Prisma__IncidentTemplateClient<$Result.GetResult<Prisma.$IncidentTemplatePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one IncidentTemplate.
+     * @param {IncidentTemplateUpdateArgs} args - Arguments to update one IncidentTemplate.
+     * @example
+     * // Update one IncidentTemplate
+     * const incidentTemplate = await prisma.incidentTemplate.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends IncidentTemplateUpdateArgs>(args: SelectSubset<T, IncidentTemplateUpdateArgs<ExtArgs>>): Prisma__IncidentTemplateClient<$Result.GetResult<Prisma.$IncidentTemplatePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more IncidentTemplates.
+     * @param {IncidentTemplateDeleteManyArgs} args - Arguments to filter IncidentTemplates to delete.
+     * @example
+     * // Delete a few IncidentTemplates
+     * const { count } = await prisma.incidentTemplate.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends IncidentTemplateDeleteManyArgs>(args?: SelectSubset<T, IncidentTemplateDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more IncidentTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IncidentTemplateUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many IncidentTemplates
+     * const incidentTemplate = await prisma.incidentTemplate.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends IncidentTemplateUpdateManyArgs>(args: SelectSubset<T, IncidentTemplateUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more IncidentTemplates and returns the data updated in the database.
+     * @param {IncidentTemplateUpdateManyAndReturnArgs} args - Arguments to update many IncidentTemplates.
+     * @example
+     * // Update many IncidentTemplates
+     * const incidentTemplate = await prisma.incidentTemplate.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more IncidentTemplates and only return the `id`
+     * const incidentTemplateWithIdOnly = await prisma.incidentTemplate.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends IncidentTemplateUpdateManyAndReturnArgs>(args: SelectSubset<T, IncidentTemplateUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IncidentTemplatePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one IncidentTemplate.
+     * @param {IncidentTemplateUpsertArgs} args - Arguments to update or create a IncidentTemplate.
+     * @example
+     * // Update or create a IncidentTemplate
+     * const incidentTemplate = await prisma.incidentTemplate.upsert({
+     *   create: {
+     *     // ... data to create a IncidentTemplate
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the IncidentTemplate we want to update
+     *   }
+     * })
+     */
+    upsert<T extends IncidentTemplateUpsertArgs>(args: SelectSubset<T, IncidentTemplateUpsertArgs<ExtArgs>>): Prisma__IncidentTemplateClient<$Result.GetResult<Prisma.$IncidentTemplatePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of IncidentTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IncidentTemplateCountArgs} args - Arguments to filter IncidentTemplates to count.
+     * @example
+     * // Count the number of IncidentTemplates
+     * const count = await prisma.incidentTemplate.count({
+     *   where: {
+     *     // ... the filter for the IncidentTemplates we want to count
+     *   }
+     * })
+    **/
+    count<T extends IncidentTemplateCountArgs>(
+      args?: Subset<T, IncidentTemplateCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], IncidentTemplateCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a IncidentTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IncidentTemplateAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends IncidentTemplateAggregateArgs>(args: Subset<T, IncidentTemplateAggregateArgs>): Prisma.PrismaPromise<GetIncidentTemplateAggregateType<T>>
+
+    /**
+     * Group by IncidentTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IncidentTemplateGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends IncidentTemplateGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: IncidentTemplateGroupByArgs['orderBy'] }
+        : { orderBy?: IncidentTemplateGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, IncidentTemplateGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetIncidentTemplateGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the IncidentTemplate model
+   */
+  readonly fields: IncidentTemplateFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for IncidentTemplate.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__IncidentTemplateClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the IncidentTemplate model
+   */
+  interface IncidentTemplateFieldRefs {
+    readonly id: FieldRef<"IncidentTemplate", 'String'>
+    readonly name: FieldRef<"IncidentTemplate", 'String'>
+    readonly title: FieldRef<"IncidentTemplate", 'String'>
+    readonly description: FieldRef<"IncidentTemplate", 'String'>
+    readonly severity: FieldRef<"IncidentTemplate", 'Severity'>
+    readonly status: FieldRef<"IncidentTemplate", 'IncidentStatus'>
+    readonly createdAt: FieldRef<"IncidentTemplate", 'DateTime'>
+    readonly updatedAt: FieldRef<"IncidentTemplate", 'DateTime'>
+    readonly createdById: FieldRef<"IncidentTemplate", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * IncidentTemplate findUnique
+   */
+  export type IncidentTemplateFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentTemplate
+     */
+    select?: IncidentTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentTemplate
+     */
+    omit?: IncidentTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which IncidentTemplate to fetch.
+     */
+    where: IncidentTemplateWhereUniqueInput
+  }
+
+  /**
+   * IncidentTemplate findUniqueOrThrow
+   */
+  export type IncidentTemplateFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentTemplate
+     */
+    select?: IncidentTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentTemplate
+     */
+    omit?: IncidentTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which IncidentTemplate to fetch.
+     */
+    where: IncidentTemplateWhereUniqueInput
+  }
+
+  /**
+   * IncidentTemplate findFirst
+   */
+  export type IncidentTemplateFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentTemplate
+     */
+    select?: IncidentTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentTemplate
+     */
+    omit?: IncidentTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which IncidentTemplate to fetch.
+     */
+    where?: IncidentTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of IncidentTemplates to fetch.
+     */
+    orderBy?: IncidentTemplateOrderByWithRelationInput | IncidentTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for IncidentTemplates.
+     */
+    cursor?: IncidentTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` IncidentTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` IncidentTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of IncidentTemplates.
+     */
+    distinct?: IncidentTemplateScalarFieldEnum | IncidentTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * IncidentTemplate findFirstOrThrow
+   */
+  export type IncidentTemplateFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentTemplate
+     */
+    select?: IncidentTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentTemplate
+     */
+    omit?: IncidentTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which IncidentTemplate to fetch.
+     */
+    where?: IncidentTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of IncidentTemplates to fetch.
+     */
+    orderBy?: IncidentTemplateOrderByWithRelationInput | IncidentTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for IncidentTemplates.
+     */
+    cursor?: IncidentTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` IncidentTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` IncidentTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of IncidentTemplates.
+     */
+    distinct?: IncidentTemplateScalarFieldEnum | IncidentTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * IncidentTemplate findMany
+   */
+  export type IncidentTemplateFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentTemplate
+     */
+    select?: IncidentTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentTemplate
+     */
+    omit?: IncidentTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which IncidentTemplates to fetch.
+     */
+    where?: IncidentTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of IncidentTemplates to fetch.
+     */
+    orderBy?: IncidentTemplateOrderByWithRelationInput | IncidentTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing IncidentTemplates.
+     */
+    cursor?: IncidentTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` IncidentTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` IncidentTemplates.
+     */
+    skip?: number
+    distinct?: IncidentTemplateScalarFieldEnum | IncidentTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * IncidentTemplate create
+   */
+  export type IncidentTemplateCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentTemplate
+     */
+    select?: IncidentTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentTemplate
+     */
+    omit?: IncidentTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentTemplateInclude<ExtArgs> | null
+    /**
+     * The data needed to create a IncidentTemplate.
+     */
+    data: XOR<IncidentTemplateCreateInput, IncidentTemplateUncheckedCreateInput>
+  }
+
+  /**
+   * IncidentTemplate createMany
+   */
+  export type IncidentTemplateCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many IncidentTemplates.
+     */
+    data: IncidentTemplateCreateManyInput | IncidentTemplateCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * IncidentTemplate createManyAndReturn
+   */
+  export type IncidentTemplateCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentTemplate
+     */
+    select?: IncidentTemplateSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentTemplate
+     */
+    omit?: IncidentTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to create many IncidentTemplates.
+     */
+    data: IncidentTemplateCreateManyInput | IncidentTemplateCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentTemplateIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * IncidentTemplate update
+   */
+  export type IncidentTemplateUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentTemplate
+     */
+    select?: IncidentTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentTemplate
+     */
+    omit?: IncidentTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentTemplateInclude<ExtArgs> | null
+    /**
+     * The data needed to update a IncidentTemplate.
+     */
+    data: XOR<IncidentTemplateUpdateInput, IncidentTemplateUncheckedUpdateInput>
+    /**
+     * Choose, which IncidentTemplate to update.
+     */
+    where: IncidentTemplateWhereUniqueInput
+  }
+
+  /**
+   * IncidentTemplate updateMany
+   */
+  export type IncidentTemplateUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update IncidentTemplates.
+     */
+    data: XOR<IncidentTemplateUpdateManyMutationInput, IncidentTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which IncidentTemplates to update
+     */
+    where?: IncidentTemplateWhereInput
+    /**
+     * Limit how many IncidentTemplates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * IncidentTemplate updateManyAndReturn
+   */
+  export type IncidentTemplateUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentTemplate
+     */
+    select?: IncidentTemplateSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentTemplate
+     */
+    omit?: IncidentTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to update IncidentTemplates.
+     */
+    data: XOR<IncidentTemplateUpdateManyMutationInput, IncidentTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which IncidentTemplates to update
+     */
+    where?: IncidentTemplateWhereInput
+    /**
+     * Limit how many IncidentTemplates to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentTemplateIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * IncidentTemplate upsert
+   */
+  export type IncidentTemplateUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentTemplate
+     */
+    select?: IncidentTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentTemplate
+     */
+    omit?: IncidentTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentTemplateInclude<ExtArgs> | null
+    /**
+     * The filter to search for the IncidentTemplate to update in case it exists.
+     */
+    where: IncidentTemplateWhereUniqueInput
+    /**
+     * In case the IncidentTemplate found by the `where` argument doesn't exist, create a new IncidentTemplate with this data.
+     */
+    create: XOR<IncidentTemplateCreateInput, IncidentTemplateUncheckedCreateInput>
+    /**
+     * In case the IncidentTemplate was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<IncidentTemplateUpdateInput, IncidentTemplateUncheckedUpdateInput>
+  }
+
+  /**
+   * IncidentTemplate delete
+   */
+  export type IncidentTemplateDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentTemplate
+     */
+    select?: IncidentTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentTemplate
+     */
+    omit?: IncidentTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentTemplateInclude<ExtArgs> | null
+    /**
+     * Filter which IncidentTemplate to delete.
+     */
+    where: IncidentTemplateWhereUniqueInput
+  }
+
+  /**
+   * IncidentTemplate deleteMany
+   */
+  export type IncidentTemplateDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which IncidentTemplates to delete
+     */
+    where?: IncidentTemplateWhereInput
+    /**
+     * Limit how many IncidentTemplates to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * IncidentTemplate without action
+   */
+  export type IncidentTemplateDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IncidentTemplate
+     */
+    select?: IncidentTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IncidentTemplate
+     */
+    omit?: IncidentTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IncidentTemplateInclude<ExtArgs> | null
   }
 
 
@@ -27516,6 +28754,21 @@ export namespace Prisma {
   export type RegionalIncidentScalarFieldEnum = (typeof RegionalIncidentScalarFieldEnum)[keyof typeof RegionalIncidentScalarFieldEnum]
 
 
+  export const IncidentTemplateScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    title: 'title',
+    description: 'description',
+    severity: 'severity',
+    status: 'status',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    createdById: 'createdById'
+  };
+
+  export type IncidentTemplateScalarFieldEnum = (typeof IncidentTemplateScalarFieldEnum)[keyof typeof IncidentTemplateScalarFieldEnum]
+
+
   export const LatencyAggregateScalarFieldEnum: {
     id: 'id',
     monitorId: 'monitorId',
@@ -28021,6 +29274,7 @@ export namespace Prisma {
     monitors?: MonitorListRelationFilter
     notificationChannels?: NotificationChannelListRelationFilter
     statusPages?: StatusPageListRelationFilter
+    incidentTemplates?: IncidentTemplateListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -28039,6 +29293,7 @@ export namespace Prisma {
     monitors?: MonitorOrderByRelationAggregateInput
     notificationChannels?: NotificationChannelOrderByRelationAggregateInput
     statusPages?: StatusPageOrderByRelationAggregateInput
+    incidentTemplates?: IncidentTemplateOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -28060,6 +29315,7 @@ export namespace Prisma {
     monitors?: MonitorListRelationFilter
     notificationChannels?: NotificationChannelListRelationFilter
     statusPages?: StatusPageListRelationFilter
+    incidentTemplates?: IncidentTemplateListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -28534,6 +29790,81 @@ export namespace Prisma {
     latencyThreshold?: FloatNullableWithAggregatesFilter<"RegionalIncident"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"RegionalIncident"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"RegionalIncident"> | Date | string
+  }
+
+  export type IncidentTemplateWhereInput = {
+    AND?: IncidentTemplateWhereInput | IncidentTemplateWhereInput[]
+    OR?: IncidentTemplateWhereInput[]
+    NOT?: IncidentTemplateWhereInput | IncidentTemplateWhereInput[]
+    id?: StringFilter<"IncidentTemplate"> | string
+    name?: StringFilter<"IncidentTemplate"> | string
+    title?: StringFilter<"IncidentTemplate"> | string
+    description?: StringFilter<"IncidentTemplate"> | string
+    severity?: EnumSeverityFilter<"IncidentTemplate"> | $Enums.Severity
+    status?: EnumIncidentStatusFilter<"IncidentTemplate"> | $Enums.IncidentStatus
+    createdAt?: DateTimeFilter<"IncidentTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"IncidentTemplate"> | Date | string
+    createdById?: StringFilter<"IncidentTemplate"> | string
+    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type IncidentTemplateOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    severity?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    createdById?: SortOrder
+    createdBy?: UserOrderByWithRelationInput
+  }
+
+  export type IncidentTemplateWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: IncidentTemplateWhereInput | IncidentTemplateWhereInput[]
+    OR?: IncidentTemplateWhereInput[]
+    NOT?: IncidentTemplateWhereInput | IncidentTemplateWhereInput[]
+    name?: StringFilter<"IncidentTemplate"> | string
+    title?: StringFilter<"IncidentTemplate"> | string
+    description?: StringFilter<"IncidentTemplate"> | string
+    severity?: EnumSeverityFilter<"IncidentTemplate"> | $Enums.Severity
+    status?: EnumIncidentStatusFilter<"IncidentTemplate"> | $Enums.IncidentStatus
+    createdAt?: DateTimeFilter<"IncidentTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"IncidentTemplate"> | Date | string
+    createdById?: StringFilter<"IncidentTemplate"> | string
+    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type IncidentTemplateOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    severity?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    createdById?: SortOrder
+    _count?: IncidentTemplateCountOrderByAggregateInput
+    _max?: IncidentTemplateMaxOrderByAggregateInput
+    _min?: IncidentTemplateMinOrderByAggregateInput
+  }
+
+  export type IncidentTemplateScalarWhereWithAggregatesInput = {
+    AND?: IncidentTemplateScalarWhereWithAggregatesInput | IncidentTemplateScalarWhereWithAggregatesInput[]
+    OR?: IncidentTemplateScalarWhereWithAggregatesInput[]
+    NOT?: IncidentTemplateScalarWhereWithAggregatesInput | IncidentTemplateScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"IncidentTemplate"> | string
+    name?: StringWithAggregatesFilter<"IncidentTemplate"> | string
+    title?: StringWithAggregatesFilter<"IncidentTemplate"> | string
+    description?: StringWithAggregatesFilter<"IncidentTemplate"> | string
+    severity?: EnumSeverityWithAggregatesFilter<"IncidentTemplate"> | $Enums.Severity
+    status?: EnumIncidentStatusWithAggregatesFilter<"IncidentTemplate"> | $Enums.IncidentStatus
+    createdAt?: DateTimeWithAggregatesFilter<"IncidentTemplate"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"IncidentTemplate"> | Date | string
+    createdById?: StringWithAggregatesFilter<"IncidentTemplate"> | string
   }
 
   export type LatencyAggregateWhereInput = {
@@ -29693,6 +31024,7 @@ export namespace Prisma {
     monitors?: MonitorCreateNestedManyWithoutUserInput
     notificationChannels?: NotificationChannelCreateNestedManyWithoutUserInput
     statusPages?: StatusPageCreateNestedManyWithoutUserInput
+    incidentTemplates?: IncidentTemplateCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -29711,6 +31043,7 @@ export namespace Prisma {
     monitors?: MonitorUncheckedCreateNestedManyWithoutUserInput
     notificationChannels?: NotificationChannelUncheckedCreateNestedManyWithoutUserInput
     statusPages?: StatusPageUncheckedCreateNestedManyWithoutUserInput
+    incidentTemplates?: IncidentTemplateUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUpdateInput = {
@@ -29729,6 +31062,7 @@ export namespace Prisma {
     monitors?: MonitorUpdateManyWithoutUserNestedInput
     notificationChannels?: NotificationChannelUpdateManyWithoutUserNestedInput
     statusPages?: StatusPageUpdateManyWithoutUserNestedInput
+    incidentTemplates?: IncidentTemplateUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -29747,6 +31081,7 @@ export namespace Prisma {
     monitors?: MonitorUncheckedUpdateManyWithoutUserNestedInput
     notificationChannels?: NotificationChannelUncheckedUpdateManyWithoutUserNestedInput
     statusPages?: StatusPageUncheckedUpdateManyWithoutUserNestedInput
+    incidentTemplates?: IncidentTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -30275,6 +31610,89 @@ export namespace Prisma {
     latencyThreshold?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type IncidentTemplateCreateInput = {
+    id?: string
+    name: string
+    title: string
+    description: string
+    severity?: $Enums.Severity
+    status?: $Enums.IncidentStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdBy: UserCreateNestedOneWithoutIncidentTemplatesInput
+  }
+
+  export type IncidentTemplateUncheckedCreateInput = {
+    id?: string
+    name: string
+    title: string
+    description: string
+    severity?: $Enums.Severity
+    status?: $Enums.IncidentStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdById: string
+  }
+
+  export type IncidentTemplateUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    severity?: EnumSeverityFieldUpdateOperationsInput | $Enums.Severity
+    status?: EnumIncidentStatusFieldUpdateOperationsInput | $Enums.IncidentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdBy?: UserUpdateOneRequiredWithoutIncidentTemplatesNestedInput
+  }
+
+  export type IncidentTemplateUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    severity?: EnumSeverityFieldUpdateOperationsInput | $Enums.Severity
+    status?: EnumIncidentStatusFieldUpdateOperationsInput | $Enums.IncidentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type IncidentTemplateCreateManyInput = {
+    id?: string
+    name: string
+    title: string
+    description: string
+    severity?: $Enums.Severity
+    status?: $Enums.IncidentStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdById: string
+  }
+
+  export type IncidentTemplateUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    severity?: EnumSeverityFieldUpdateOperationsInput | $Enums.Severity
+    status?: EnumIncidentStatusFieldUpdateOperationsInput | $Enums.IncidentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type IncidentTemplateUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    severity?: EnumSeverityFieldUpdateOperationsInput | $Enums.Severity
+    status?: EnumIncidentStatusFieldUpdateOperationsInput | $Enums.IncidentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: StringFieldUpdateOperationsInput | string
   }
 
   export type LatencyAggregateCreateInput = {
@@ -31602,6 +33020,12 @@ export namespace Prisma {
     none?: StatusPageWhereInput
   }
 
+  export type IncidentTemplateListRelationFilter = {
+    every?: IncidentTemplateWhereInput
+    some?: IncidentTemplateWhereInput
+    none?: IncidentTemplateWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -31624,6 +33048,10 @@ export namespace Prisma {
   }
 
   export type StatusPageOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type IncidentTemplateOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -32070,6 +33498,42 @@ export namespace Prisma {
     _sum?: NestedFloatNullableFilter<$PrismaModel>
     _min?: NestedFloatNullableFilter<$PrismaModel>
     _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type IncidentTemplateCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    severity?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    createdById?: SortOrder
+  }
+
+  export type IncidentTemplateMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    severity?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    createdById?: SortOrder
+  }
+
+  export type IncidentTemplateMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    severity?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    createdById?: SortOrder
   }
 
   export type EnumLatencyGranularityFilter<$PrismaModel = never> = {
@@ -33162,6 +34626,13 @@ export namespace Prisma {
     connect?: StatusPageWhereUniqueInput | StatusPageWhereUniqueInput[]
   }
 
+  export type IncidentTemplateCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<IncidentTemplateCreateWithoutCreatedByInput, IncidentTemplateUncheckedCreateWithoutCreatedByInput> | IncidentTemplateCreateWithoutCreatedByInput[] | IncidentTemplateUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: IncidentTemplateCreateOrConnectWithoutCreatedByInput | IncidentTemplateCreateOrConnectWithoutCreatedByInput[]
+    createMany?: IncidentTemplateCreateManyCreatedByInputEnvelope
+    connect?: IncidentTemplateWhereUniqueInput | IncidentTemplateWhereUniqueInput[]
+  }
+
   export type SessionUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -33195,6 +34666,13 @@ export namespace Prisma {
     connectOrCreate?: StatusPageCreateOrConnectWithoutUserInput | StatusPageCreateOrConnectWithoutUserInput[]
     createMany?: StatusPageCreateManyUserInputEnvelope
     connect?: StatusPageWhereUniqueInput | StatusPageWhereUniqueInput[]
+  }
+
+  export type IncidentTemplateUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<IncidentTemplateCreateWithoutCreatedByInput, IncidentTemplateUncheckedCreateWithoutCreatedByInput> | IncidentTemplateCreateWithoutCreatedByInput[] | IncidentTemplateUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: IncidentTemplateCreateOrConnectWithoutCreatedByInput | IncidentTemplateCreateOrConnectWithoutCreatedByInput[]
+    createMany?: IncidentTemplateCreateManyCreatedByInputEnvelope
+    connect?: IncidentTemplateWhereUniqueInput | IncidentTemplateWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -33283,6 +34761,20 @@ export namespace Prisma {
     deleteMany?: StatusPageScalarWhereInput | StatusPageScalarWhereInput[]
   }
 
+  export type IncidentTemplateUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<IncidentTemplateCreateWithoutCreatedByInput, IncidentTemplateUncheckedCreateWithoutCreatedByInput> | IncidentTemplateCreateWithoutCreatedByInput[] | IncidentTemplateUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: IncidentTemplateCreateOrConnectWithoutCreatedByInput | IncidentTemplateCreateOrConnectWithoutCreatedByInput[]
+    upsert?: IncidentTemplateUpsertWithWhereUniqueWithoutCreatedByInput | IncidentTemplateUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: IncidentTemplateCreateManyCreatedByInputEnvelope
+    set?: IncidentTemplateWhereUniqueInput | IncidentTemplateWhereUniqueInput[]
+    disconnect?: IncidentTemplateWhereUniqueInput | IncidentTemplateWhereUniqueInput[]
+    delete?: IncidentTemplateWhereUniqueInput | IncidentTemplateWhereUniqueInput[]
+    connect?: IncidentTemplateWhereUniqueInput | IncidentTemplateWhereUniqueInput[]
+    update?: IncidentTemplateUpdateWithWhereUniqueWithoutCreatedByInput | IncidentTemplateUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: IncidentTemplateUpdateManyWithWhereWithoutCreatedByInput | IncidentTemplateUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: IncidentTemplateScalarWhereInput | IncidentTemplateScalarWhereInput[]
+  }
+
   export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -33351,6 +34843,20 @@ export namespace Prisma {
     update?: StatusPageUpdateWithWhereUniqueWithoutUserInput | StatusPageUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: StatusPageUpdateManyWithWhereWithoutUserInput | StatusPageUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: StatusPageScalarWhereInput | StatusPageScalarWhereInput[]
+  }
+
+  export type IncidentTemplateUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<IncidentTemplateCreateWithoutCreatedByInput, IncidentTemplateUncheckedCreateWithoutCreatedByInput> | IncidentTemplateCreateWithoutCreatedByInput[] | IncidentTemplateUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: IncidentTemplateCreateOrConnectWithoutCreatedByInput | IncidentTemplateCreateOrConnectWithoutCreatedByInput[]
+    upsert?: IncidentTemplateUpsertWithWhereUniqueWithoutCreatedByInput | IncidentTemplateUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: IncidentTemplateCreateManyCreatedByInputEnvelope
+    set?: IncidentTemplateWhereUniqueInput | IncidentTemplateWhereUniqueInput[]
+    disconnect?: IncidentTemplateWhereUniqueInput | IncidentTemplateWhereUniqueInput[]
+    delete?: IncidentTemplateWhereUniqueInput | IncidentTemplateWhereUniqueInput[]
+    connect?: IncidentTemplateWhereUniqueInput | IncidentTemplateWhereUniqueInput[]
+    update?: IncidentTemplateUpdateWithWhereUniqueWithoutCreatedByInput | IncidentTemplateUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: IncidentTemplateUpdateManyWithWhereWithoutCreatedByInput | IncidentTemplateUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: IncidentTemplateScalarWhereInput | IncidentTemplateScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutSessionsInput = {
@@ -33487,6 +34993,20 @@ export namespace Prisma {
     upsert?: MonitorUpsertWithoutRegionalIncidentsInput
     connect?: MonitorWhereUniqueInput
     update?: XOR<XOR<MonitorUpdateToOneWithWhereWithoutRegionalIncidentsInput, MonitorUpdateWithoutRegionalIncidentsInput>, MonitorUncheckedUpdateWithoutRegionalIncidentsInput>
+  }
+
+  export type UserCreateNestedOneWithoutIncidentTemplatesInput = {
+    create?: XOR<UserCreateWithoutIncidentTemplatesInput, UserUncheckedCreateWithoutIncidentTemplatesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutIncidentTemplatesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutIncidentTemplatesNestedInput = {
+    create?: XOR<UserCreateWithoutIncidentTemplatesInput, UserUncheckedCreateWithoutIncidentTemplatesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutIncidentTemplatesInput
+    upsert?: UserUpsertWithoutIncidentTemplatesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutIncidentTemplatesInput, UserUpdateWithoutIncidentTemplatesInput>, UserUncheckedUpdateWithoutIncidentTemplatesInput>
   }
 
   export type MonitorCreateNestedOneWithoutLatencyAggregatesInput = {
@@ -35173,6 +36693,38 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type IncidentTemplateCreateWithoutCreatedByInput = {
+    id?: string
+    name: string
+    title: string
+    description: string
+    severity?: $Enums.Severity
+    status?: $Enums.IncidentStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type IncidentTemplateUncheckedCreateWithoutCreatedByInput = {
+    id?: string
+    name: string
+    title: string
+    description: string
+    severity?: $Enums.Severity
+    status?: $Enums.IncidentStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type IncidentTemplateCreateOrConnectWithoutCreatedByInput = {
+    where: IncidentTemplateWhereUniqueInput
+    create: XOR<IncidentTemplateCreateWithoutCreatedByInput, IncidentTemplateUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type IncidentTemplateCreateManyCreatedByInputEnvelope = {
+    data: IncidentTemplateCreateManyCreatedByInput | IncidentTemplateCreateManyCreatedByInput[]
+    skipDuplicates?: boolean
+  }
+
   export type SessionUpsertWithWhereUniqueWithoutUserInput = {
     where: SessionWhereUniqueInput
     update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
@@ -35350,6 +36902,37 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"StatusPage"> | Date | string
   }
 
+  export type IncidentTemplateUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: IncidentTemplateWhereUniqueInput
+    update: XOR<IncidentTemplateUpdateWithoutCreatedByInput, IncidentTemplateUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<IncidentTemplateCreateWithoutCreatedByInput, IncidentTemplateUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type IncidentTemplateUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: IncidentTemplateWhereUniqueInput
+    data: XOR<IncidentTemplateUpdateWithoutCreatedByInput, IncidentTemplateUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type IncidentTemplateUpdateManyWithWhereWithoutCreatedByInput = {
+    where: IncidentTemplateScalarWhereInput
+    data: XOR<IncidentTemplateUpdateManyMutationInput, IncidentTemplateUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
+  export type IncidentTemplateScalarWhereInput = {
+    AND?: IncidentTemplateScalarWhereInput | IncidentTemplateScalarWhereInput[]
+    OR?: IncidentTemplateScalarWhereInput[]
+    NOT?: IncidentTemplateScalarWhereInput | IncidentTemplateScalarWhereInput[]
+    id?: StringFilter<"IncidentTemplate"> | string
+    name?: StringFilter<"IncidentTemplate"> | string
+    title?: StringFilter<"IncidentTemplate"> | string
+    description?: StringFilter<"IncidentTemplate"> | string
+    severity?: EnumSeverityFilter<"IncidentTemplate"> | $Enums.Severity
+    status?: EnumIncidentStatusFilter<"IncidentTemplate"> | $Enums.IncidentStatus
+    createdAt?: DateTimeFilter<"IncidentTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"IncidentTemplate"> | Date | string
+    createdById?: StringFilter<"IncidentTemplate"> | string
+  }
+
   export type UserCreateWithoutSessionsInput = {
     id: string
     name: string
@@ -35365,6 +36948,7 @@ export namespace Prisma {
     monitors?: MonitorCreateNestedManyWithoutUserInput
     notificationChannels?: NotificationChannelCreateNestedManyWithoutUserInput
     statusPages?: StatusPageCreateNestedManyWithoutUserInput
+    incidentTemplates?: IncidentTemplateCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -35382,6 +36966,7 @@ export namespace Prisma {
     monitors?: MonitorUncheckedCreateNestedManyWithoutUserInput
     notificationChannels?: NotificationChannelUncheckedCreateNestedManyWithoutUserInput
     statusPages?: StatusPageUncheckedCreateNestedManyWithoutUserInput
+    incidentTemplates?: IncidentTemplateUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -35415,6 +37000,7 @@ export namespace Prisma {
     monitors?: MonitorUpdateManyWithoutUserNestedInput
     notificationChannels?: NotificationChannelUpdateManyWithoutUserNestedInput
     statusPages?: StatusPageUpdateManyWithoutUserNestedInput
+    incidentTemplates?: IncidentTemplateUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -35432,6 +37018,7 @@ export namespace Prisma {
     monitors?: MonitorUncheckedUpdateManyWithoutUserNestedInput
     notificationChannels?: NotificationChannelUncheckedUpdateManyWithoutUserNestedInput
     statusPages?: StatusPageUncheckedUpdateManyWithoutUserNestedInput
+    incidentTemplates?: IncidentTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -35449,6 +37036,7 @@ export namespace Prisma {
     monitors?: MonitorCreateNestedManyWithoutUserInput
     notificationChannels?: NotificationChannelCreateNestedManyWithoutUserInput
     statusPages?: StatusPageCreateNestedManyWithoutUserInput
+    incidentTemplates?: IncidentTemplateCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -35466,6 +37054,7 @@ export namespace Prisma {
     monitors?: MonitorUncheckedCreateNestedManyWithoutUserInput
     notificationChannels?: NotificationChannelUncheckedCreateNestedManyWithoutUserInput
     statusPages?: StatusPageUncheckedCreateNestedManyWithoutUserInput
+    incidentTemplates?: IncidentTemplateUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -35499,6 +37088,7 @@ export namespace Prisma {
     monitors?: MonitorUpdateManyWithoutUserNestedInput
     notificationChannels?: NotificationChannelUpdateManyWithoutUserNestedInput
     statusPages?: StatusPageUpdateManyWithoutUserNestedInput
+    incidentTemplates?: IncidentTemplateUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -35516,6 +37106,7 @@ export namespace Prisma {
     monitors?: MonitorUncheckedUpdateManyWithoutUserNestedInput
     notificationChannels?: NotificationChannelUncheckedUpdateManyWithoutUserNestedInput
     statusPages?: StatusPageUncheckedUpdateManyWithoutUserNestedInput
+    incidentTemplates?: IncidentTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type MonitorCreateWithoutIncidentsInput = {
@@ -35869,6 +37460,94 @@ export namespace Prisma {
     monitorSubscriptions?: MonitorSubscriptionUncheckedUpdateManyWithoutMonitorNestedInput
   }
 
+  export type UserCreateWithoutIncidentTemplatesInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    timezone?: string | null
+    dateFormat?: string | null
+    timeFormat?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    monitors?: MonitorCreateNestedManyWithoutUserInput
+    notificationChannels?: NotificationChannelCreateNestedManyWithoutUserInput
+    statusPages?: StatusPageCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutIncidentTemplatesInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    timezone?: string | null
+    dateFormat?: string | null
+    timeFormat?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    monitors?: MonitorUncheckedCreateNestedManyWithoutUserInput
+    notificationChannels?: NotificationChannelUncheckedCreateNestedManyWithoutUserInput
+    statusPages?: StatusPageUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutIncidentTemplatesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutIncidentTemplatesInput, UserUncheckedCreateWithoutIncidentTemplatesInput>
+  }
+
+  export type UserUpsertWithoutIncidentTemplatesInput = {
+    update: XOR<UserUpdateWithoutIncidentTemplatesInput, UserUncheckedUpdateWithoutIncidentTemplatesInput>
+    create: XOR<UserCreateWithoutIncidentTemplatesInput, UserUncheckedCreateWithoutIncidentTemplatesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutIncidentTemplatesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutIncidentTemplatesInput, UserUncheckedUpdateWithoutIncidentTemplatesInput>
+  }
+
+  export type UserUpdateWithoutIncidentTemplatesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    dateFormat?: NullableStringFieldUpdateOperationsInput | string | null
+    timeFormat?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    monitors?: MonitorUpdateManyWithoutUserNestedInput
+    notificationChannels?: NotificationChannelUpdateManyWithoutUserNestedInput
+    statusPages?: StatusPageUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutIncidentTemplatesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    dateFormat?: NullableStringFieldUpdateOperationsInput | string | null
+    timeFormat?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    monitors?: MonitorUncheckedUpdateManyWithoutUserNestedInput
+    notificationChannels?: NotificationChannelUncheckedUpdateManyWithoutUserNestedInput
+    statusPages?: StatusPageUncheckedUpdateManyWithoutUserNestedInput
+  }
+
   export type MonitorCreateWithoutLatencyAggregatesInput = {
     id?: string
     name: string
@@ -36116,6 +37795,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     monitors?: MonitorCreateNestedManyWithoutUserInput
     statusPages?: StatusPageCreateNestedManyWithoutUserInput
+    incidentTemplates?: IncidentTemplateCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutNotificationChannelsInput = {
@@ -36133,6 +37813,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     monitors?: MonitorUncheckedCreateNestedManyWithoutUserInput
     statusPages?: StatusPageUncheckedCreateNestedManyWithoutUserInput
+    incidentTemplates?: IncidentTemplateUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutNotificationChannelsInput = {
@@ -36195,6 +37876,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     monitors?: MonitorUpdateManyWithoutUserNestedInput
     statusPages?: StatusPageUpdateManyWithoutUserNestedInput
+    incidentTemplates?: IncidentTemplateUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationChannelsInput = {
@@ -36212,6 +37894,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     monitors?: MonitorUncheckedUpdateManyWithoutUserNestedInput
     statusPages?: StatusPageUncheckedUpdateManyWithoutUserNestedInput
+    incidentTemplates?: IncidentTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type AlertRuleUpsertWithWhereUniqueWithoutChannelsInput = {
@@ -36417,6 +38100,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     notificationChannels?: NotificationChannelCreateNestedManyWithoutUserInput
     statusPages?: StatusPageCreateNestedManyWithoutUserInput
+    incidentTemplates?: IncidentTemplateCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutMonitorsInput = {
@@ -36434,6 +38118,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     notificationChannels?: NotificationChannelUncheckedCreateNestedManyWithoutUserInput
     statusPages?: StatusPageUncheckedCreateNestedManyWithoutUserInput
+    incidentTemplates?: IncidentTemplateUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutMonitorsInput = {
@@ -36745,6 +38430,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     notificationChannels?: NotificationChannelUpdateManyWithoutUserNestedInput
     statusPages?: StatusPageUpdateManyWithoutUserNestedInput
+    incidentTemplates?: IncidentTemplateUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMonitorsInput = {
@@ -36762,6 +38448,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     notificationChannels?: NotificationChannelUncheckedUpdateManyWithoutUserNestedInput
     statusPages?: StatusPageUncheckedUpdateManyWithoutUserNestedInput
+    incidentTemplates?: IncidentTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type MonitorEventUpsertWithWhereUniqueWithoutMonitorInput = {
@@ -37408,6 +39095,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     monitors?: MonitorCreateNestedManyWithoutUserInput
     notificationChannels?: NotificationChannelCreateNestedManyWithoutUserInput
+    incidentTemplates?: IncidentTemplateCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutStatusPagesInput = {
@@ -37425,6 +39113,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     monitors?: MonitorUncheckedCreateNestedManyWithoutUserInput
     notificationChannels?: NotificationChannelUncheckedCreateNestedManyWithoutUserInput
+    incidentTemplates?: IncidentTemplateUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutStatusPagesInput = {
@@ -37576,6 +39265,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     monitors?: MonitorUpdateManyWithoutUserNestedInput
     notificationChannels?: NotificationChannelUpdateManyWithoutUserNestedInput
+    incidentTemplates?: IncidentTemplateUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutStatusPagesInput = {
@@ -37593,6 +39283,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     monitors?: MonitorUncheckedUpdateManyWithoutUserNestedInput
     notificationChannels?: NotificationChannelUncheckedUpdateManyWithoutUserNestedInput
+    incidentTemplates?: IncidentTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type StatusPageMonitorUpsertWithWhereUniqueWithoutStatusPageInput = {
@@ -38659,6 +40350,17 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type IncidentTemplateCreateManyCreatedByInput = {
+    id?: string
+    name: string
+    title: string
+    description: string
+    severity?: $Enums.Severity
+    status?: $Enums.IncidentStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type SessionUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38914,6 +40616,39 @@ export namespace Prisma {
     widgetBadgeText?: NullableJsonNullValueInput | InputJsonValue
     widgetTheme?: NullableJsonNullValueInput | InputJsonValue
     historyDays?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type IncidentTemplateUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    severity?: EnumSeverityFieldUpdateOperationsInput | $Enums.Severity
+    status?: EnumIncidentStatusFieldUpdateOperationsInput | $Enums.IncidentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type IncidentTemplateUncheckedUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    severity?: EnumSeverityFieldUpdateOperationsInput | $Enums.Severity
+    status?: EnumIncidentStatusFieldUpdateOperationsInput | $Enums.IncidentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type IncidentTemplateUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    severity?: EnumSeverityFieldUpdateOperationsInput | $Enums.Severity
+    status?: EnumIncidentStatusFieldUpdateOperationsInput | $Enums.IncidentStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

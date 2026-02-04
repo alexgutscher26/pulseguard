@@ -115,13 +115,53 @@ export function PortChecker() {
     }
   };
 
-  const runBatchScan = () => {
+  const runBatchScan = async () => {
     if (!unlocked) {
       setGateOpen(true);
       return;
     }
-    toast.info("Batch scan started... (Coming Soon in full version)");
-    // For MVP, we just unlock the button visual
+
+    if (!host) {
+      toast.error("Please enter a target host first");
+      return;
+    }
+
+    setLoading(true);
+    addLog("=== INITIATING BATCH DIAGNOSTIC ===");
+    addLog(`TARGET: ${host}`);
+
+    const BATCH_PORTS = [
+      80, 443, 22, 21, 25, 53, 3306, 5432, 8080, 25565, 32400,
+    ];
+
+    let openCount = 0;
+
+    for (const p of BATCH_PORTS) {
+      try {
+        addLog(`[Scanning] Port ${p}...`);
+        await new Promise((r) => setTimeout(r, 200));
+
+        const res = await fetch(`${WORKER_URL}/api/port-check`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ host, port: p }),
+        });
+
+        const data = (await res.json()) as PortResult;
+        if (data.isOpen) {
+          addLog(`[!] OPEN: Port ${p} is accessible.`);
+          openCount++;
+        } else {
+          addLog(`[-] CLOSED: Port ${p} (${data.status})`);
+        }
+      } catch (e) {
+        addLog(`[ERROR] Failed to scan ${p}`);
+      }
+    }
+
+    addLog("=== DIAGNOSTIC COMPLETE ===");
+    addLog(`SUMMARY: ${openCount} open ports found.`);
+    setLoading(false);
   };
 
   const handleUnlock = async () => {
