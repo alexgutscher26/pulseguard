@@ -24,6 +24,18 @@ export type SlaReport = {
   dailyBreakdown: DailySlaData[];
 };
 
+/**
+ * Generate a Service Level Agreement (SLA) report for a specified monitor over a given time range.
+ *
+ * The function calculates the SLA metrics by fetching historical data from the DailyMonitorSummary and
+ * aggregating the results. It checks if today's data is available; if not, it computes live statistics
+ * based on monitor events. Finally, it merges historical and current data, sorts it, and aggregates
+ * the overall uptime and downtime metrics before returning the report.
+ *
+ * @param monitorId - The unique identifier of the monitor for which the SLA report is generated.
+ * @param range - The time range for the report, either "7d" for the last 7 days or "30d" for the last 30 days.
+ * @returns A Promise that resolves to an object containing the SLA report, including aggregate metrics and daily breakdown.
+ */
 export async function getSlaReport(
   monitorId: string,
   range: "7d" | "30d" = "7d",
