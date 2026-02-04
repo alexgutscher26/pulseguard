@@ -19,6 +19,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
+/**
+ * Monitors the detail view of a specific monitor and manages its state.
+ *
+ * This function fetches the monitor data and its latency history using the useQuery hook. It also listens for live events and updates the query cache accordingly. If the monitor data is stale, it triggers a check automatically. The component renders various tabs for overview, reports, incidents, and settings, and provides a button to manually run a check on the monitor.
+ *
+ * @param {Object} param0 - The parameters for the function.
+ * @param {any} param0.initialMonitor - The initial monitor object containing monitor details.
+ * @returns {JSX.Element | null} The rendered component or null if the monitor data is not available.
+ */
 export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
   const { data: monitor } = useQuery({
     queryKey: ["monitor", initialMonitor.id],
