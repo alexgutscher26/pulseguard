@@ -3,6 +3,19 @@ import { auth } from "@pulseguard/auth";
 import prisma from "@pulseguard/db";
 import { headers } from "next/headers";
 
+/**
+ * Handles the GET request to export monitor event data based on specified parameters.
+ *
+ * This function performs several key operations: it checks user authentication, verifies monitor ownership,
+ * parses query parameters for date range and format, fetches monitor event data from the database,
+ * and generates a response in either JSON or CSV format. The function also includes error handling for
+ * unauthorized access and missing monitors.
+ *
+ * @param req - The NextRequest object representing the incoming request.
+ * @param context - An object containing parameters, specifically a Promise that resolves to an object with an id.
+ * @returns A NextResponse object containing the exported data in the requested format.
+ * @throws Error If an unexpected error occurs during processing.
+ */
 export async function GET(
   req: NextRequest,
   context: { params: Promise<{ id: string }> }
