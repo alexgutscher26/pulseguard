@@ -9,6 +9,7 @@
     "dev:bare": "next dev --port 3001"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^3.0.25",
     "@base-ui/react": "^1.0.0",
     "@hookform/resolvers": "^5.2.2",
     "@opennextjs/cloudflare": "^1.14.6",
@@ -32,6 +33,7 @@
     "@trpc/server": "catalog:",
     "@trpc/tanstack-react-query": "catalog:",
     "@uploadthing/react": "^7.3.3",
+    "ai": "^6.0.69",
     "babel-plugin-react-compiler": "^1.0.0",
     "better-auth": "catalog:",
     "class-variance-authority": "^0.7.1",

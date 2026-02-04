@@ -197,7 +197,7 @@ Public-facing transparency for users.
 
 - [x] **Incident Templates**
   - Pre-written updates for common issues ("Investigating Connectivity Issues", "Scheduled Maintenance").
-- [ ] **Post-Mortems**
+- [x] **Post-Mortems**
   - Generate a Markdown report after incident resolution.
 
 ---

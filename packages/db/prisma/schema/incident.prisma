@@ -31,7 +31,8 @@ model Incident {
   
   // Relations
   events          IncidentEvent[]
-  
+  postMortem      PostMortem?
+
   // Audits
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
@@ -84,5 +85,31 @@ model IncidentTemplate {
   createdBy   User           @relation(fields: [createdById], references: [id], onDelete: Cascade)
   createdById String
 
+
   @@index([createdById])
+}
+
+enum PostMortemStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model PostMortem {
+  id              String           @id @default(cuid())
+  incidentId      String           @unique
+  incident        Incident         @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+
+  summary         String
+  rootCause       String
+  impactScope     String
+  detectionMethod String
+  actionItems     String
+
+  status          PostMortemStatus @default(DRAFT)
+
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([incidentId])
 }

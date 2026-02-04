@@ -54,6 +54,11 @@ export type RegionalIncident = $Result.DefaultSelection<Prisma.$RegionalIncident
  */
 export type IncidentTemplate = $Result.DefaultSelection<Prisma.$IncidentTemplatePayload>
 /**
+ * Model PostMortem
+ * 
+ */
+export type PostMortem = $Result.DefaultSelection<Prisma.$PostMortemPayload>
+/**
  * Model LatencyAggregate
  * 
  */
@@ -157,6 +162,15 @@ export const IncidentEventType: {
 export type IncidentEventType = (typeof IncidentEventType)[keyof typeof IncidentEventType]
 
 
+export const PostMortemStatus: {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  ARCHIVED: 'ARCHIVED'
+};
+
+export type PostMortemStatus = (typeof PostMortemStatus)[keyof typeof PostMortemStatus]
+
+
 export const LatencyGranularity: {
   ONE_MINUTE: 'ONE_MINUTE',
   FIVE_MINUTE: 'FIVE_MINUTE',
@@ -234,6 +248,10 @@ export const Severity: typeof $Enums.Severity
 export type IncidentEventType = $Enums.IncidentEventType
 
 export const IncidentEventType: typeof $Enums.IncidentEventType
+
+export type PostMortemStatus = $Enums.PostMortemStatus
+
+export const PostMortemStatus: typeof $Enums.PostMortemStatus
 
 export type LatencyGranularity = $Enums.LatencyGranularity
 
@@ -459,6 +477,16 @@ export class PrismaClient<
     * ```
     */
   get incidentTemplate(): Prisma.IncidentTemplateDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.postMortem`: Exposes CRUD operations for the **PostMortem** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PostMortems
+    * const postMortems = await prisma.postMortem.findMany()
+    * ```
+    */
+  get postMortem(): Prisma.PostMortemDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.latencyAggregate`: Exposes CRUD operations for the **LatencyAggregate** model.
@@ -1041,6 +1069,7 @@ export namespace Prisma {
     IncidentEvent: 'IncidentEvent',
     RegionalIncident: 'RegionalIncident',
     IncidentTemplate: 'IncidentTemplate',
+    PostMortem: 'PostMortem',
     LatencyAggregate: 'LatencyAggregate',
     RegionalBaseline: 'RegionalBaseline',
     NotificationChannel: 'NotificationChannel',
@@ -1070,7 +1099,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "account" | "verification" | "incident" | "incidentEvent" | "regionalIncident" | "incidentTemplate" | "latencyAggregate" | "regionalBaseline" | "notificationChannel" | "alertRule" | "monitor" | "monitorEvent" | "maintenanceWindow" | "statusPageI18n" | "statusPage" | "statusPageMonitor" | "statusPageView" | "statusPageSubscriber" | "subscriptionToken" | "monitorSubscription"
+      modelProps: "user" | "session" | "account" | "verification" | "incident" | "incidentEvent" | "regionalIncident" | "incidentTemplate" | "postMortem" | "latencyAggregate" | "regionalBaseline" | "notificationChannel" | "alertRule" | "monitor" | "monitorEvent" | "maintenanceWindow" | "statusPageI18n" | "statusPage" | "statusPageMonitor" | "statusPageView" | "statusPageSubscriber" | "subscriptionToken" | "monitorSubscription"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1663,6 +1692,80 @@ export namespace Prisma {
           count: {
             args: Prisma.IncidentTemplateCountArgs<ExtArgs>
             result: $Utils.Optional<IncidentTemplateCountAggregateOutputType> | number
+          }
+        }
+      }
+      PostMortem: {
+        payload: Prisma.$PostMortemPayload<ExtArgs>
+        fields: Prisma.PostMortemFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PostMortemFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostMortemPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PostMortemFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostMortemPayload>
+          }
+          findFirst: {
+            args: Prisma.PostMortemFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostMortemPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PostMortemFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostMortemPayload>
+          }
+          findMany: {
+            args: Prisma.PostMortemFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostMortemPayload>[]
+          }
+          create: {
+            args: Prisma.PostMortemCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostMortemPayload>
+          }
+          createMany: {
+            args: Prisma.PostMortemCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PostMortemCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostMortemPayload>[]
+          }
+          delete: {
+            args: Prisma.PostMortemDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostMortemPayload>
+          }
+          update: {
+            args: Prisma.PostMortemUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostMortemPayload>
+          }
+          deleteMany: {
+            args: Prisma.PostMortemDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PostMortemUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PostMortemUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostMortemPayload>[]
+          }
+          upsert: {
+            args: Prisma.PostMortemUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostMortemPayload>
+          }
+          aggregate: {
+            args: Prisma.PostMortemAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePostMortem>
+          }
+          groupBy: {
+            args: Prisma.PostMortemGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PostMortemGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PostMortemCountArgs<ExtArgs>
+            result: $Utils.Optional<PostMortemCountAggregateOutputType> | number
           }
         }
       }
@@ -2818,6 +2921,7 @@ export namespace Prisma {
     incidentEvent?: IncidentEventOmit
     regionalIncident?: RegionalIncidentOmit
     incidentTemplate?: IncidentTemplateOmit
+    postMortem?: PostMortemOmit
     latencyAggregate?: LatencyAggregateOmit
     regionalBaseline?: RegionalBaselineOmit
     notificationChannel?: NotificationChannelOmit
@@ -8029,6 +8133,7 @@ export namespace Prisma {
     updatedAt?: boolean
     monitor?: boolean | MonitorDefaultArgs<ExtArgs>
     events?: boolean | Incident$eventsArgs<ExtArgs>
+    postMortem?: boolean | Incident$postMortemArgs<ExtArgs>
     _count?: boolean | IncidentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["incident"]>
 
@@ -8077,6 +8182,7 @@ export namespace Prisma {
   export type IncidentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     monitor?: boolean | MonitorDefaultArgs<ExtArgs>
     events?: boolean | Incident$eventsArgs<ExtArgs>
+    postMortem?: boolean | Incident$postMortemArgs<ExtArgs>
     _count?: boolean | IncidentCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type IncidentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8091,6 +8197,7 @@ export namespace Prisma {
     objects: {
       monitor: Prisma.$MonitorPayload<ExtArgs>
       events: Prisma.$IncidentEventPayload<ExtArgs>[]
+      postMortem: Prisma.$PostMortemPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -8499,6 +8606,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     monitor<T extends MonitorDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MonitorDefaultArgs<ExtArgs>>): Prisma__MonitorClient<$Result.GetResult<Prisma.$MonitorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     events<T extends Incident$eventsArgs<ExtArgs> = {}>(args?: Subset<T, Incident$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IncidentEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    postMortem<T extends Incident$postMortemArgs<ExtArgs> = {}>(args?: Subset<T, Incident$postMortemArgs<ExtArgs>>): Prisma__PostMortemClient<$Result.GetResult<Prisma.$PostMortemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8955,6 +9063,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: IncidentEventScalarFieldEnum | IncidentEventScalarFieldEnum[]
+  }
+
+  /**
+   * Incident.postMortem
+   */
+  export type Incident$postMortemArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMortem
+     */
+    select?: PostMortemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMortem
+     */
+    omit?: PostMortemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMortemInclude<ExtArgs> | null
+    where?: PostMortemWhereInput
   }
 
   /**
@@ -12302,6 +12429,1129 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: IncidentTemplateInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PostMortem
+   */
+
+  export type AggregatePostMortem = {
+    _count: PostMortemCountAggregateOutputType | null
+    _min: PostMortemMinAggregateOutputType | null
+    _max: PostMortemMaxAggregateOutputType | null
+  }
+
+  export type PostMortemMinAggregateOutputType = {
+    id: string | null
+    incidentId: string | null
+    summary: string | null
+    rootCause: string | null
+    impactScope: string | null
+    detectionMethod: string | null
+    actionItems: string | null
+    status: $Enums.PostMortemStatus | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PostMortemMaxAggregateOutputType = {
+    id: string | null
+    incidentId: string | null
+    summary: string | null
+    rootCause: string | null
+    impactScope: string | null
+    detectionMethod: string | null
+    actionItems: string | null
+    status: $Enums.PostMortemStatus | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PostMortemCountAggregateOutputType = {
+    id: number
+    incidentId: number
+    summary: number
+    rootCause: number
+    impactScope: number
+    detectionMethod: number
+    actionItems: number
+    status: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PostMortemMinAggregateInputType = {
+    id?: true
+    incidentId?: true
+    summary?: true
+    rootCause?: true
+    impactScope?: true
+    detectionMethod?: true
+    actionItems?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PostMortemMaxAggregateInputType = {
+    id?: true
+    incidentId?: true
+    summary?: true
+    rootCause?: true
+    impactScope?: true
+    detectionMethod?: true
+    actionItems?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PostMortemCountAggregateInputType = {
+    id?: true
+    incidentId?: true
+    summary?: true
+    rootCause?: true
+    impactScope?: true
+    detectionMethod?: true
+    actionItems?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PostMortemAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PostMortem to aggregate.
+     */
+    where?: PostMortemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PostMortems to fetch.
+     */
+    orderBy?: PostMortemOrderByWithRelationInput | PostMortemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PostMortemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PostMortems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PostMortems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PostMortems
+    **/
+    _count?: true | PostMortemCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PostMortemMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PostMortemMaxAggregateInputType
+  }
+
+  export type GetPostMortemAggregateType<T extends PostMortemAggregateArgs> = {
+        [P in keyof T & keyof AggregatePostMortem]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePostMortem[P]>
+      : GetScalarType<T[P], AggregatePostMortem[P]>
+  }
+
+
+
+
+  export type PostMortemGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PostMortemWhereInput
+    orderBy?: PostMortemOrderByWithAggregationInput | PostMortemOrderByWithAggregationInput[]
+    by: PostMortemScalarFieldEnum[] | PostMortemScalarFieldEnum
+    having?: PostMortemScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PostMortemCountAggregateInputType | true
+    _min?: PostMortemMinAggregateInputType
+    _max?: PostMortemMaxAggregateInputType
+  }
+
+  export type PostMortemGroupByOutputType = {
+    id: string
+    incidentId: string
+    summary: string
+    rootCause: string
+    impactScope: string
+    detectionMethod: string
+    actionItems: string
+    status: $Enums.PostMortemStatus
+    createdAt: Date
+    updatedAt: Date
+    _count: PostMortemCountAggregateOutputType | null
+    _min: PostMortemMinAggregateOutputType | null
+    _max: PostMortemMaxAggregateOutputType | null
+  }
+
+  type GetPostMortemGroupByPayload<T extends PostMortemGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PostMortemGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PostMortemGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PostMortemGroupByOutputType[P]>
+            : GetScalarType<T[P], PostMortemGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PostMortemSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    incidentId?: boolean
+    summary?: boolean
+    rootCause?: boolean
+    impactScope?: boolean
+    detectionMethod?: boolean
+    actionItems?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    incident?: boolean | IncidentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["postMortem"]>
+
+  export type PostMortemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    incidentId?: boolean
+    summary?: boolean
+    rootCause?: boolean
+    impactScope?: boolean
+    detectionMethod?: boolean
+    actionItems?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    incident?: boolean | IncidentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["postMortem"]>
+
+  export type PostMortemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    incidentId?: boolean
+    summary?: boolean
+    rootCause?: boolean
+    impactScope?: boolean
+    detectionMethod?: boolean
+    actionItems?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    incident?: boolean | IncidentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["postMortem"]>
+
+  export type PostMortemSelectScalar = {
+    id?: boolean
+    incidentId?: boolean
+    summary?: boolean
+    rootCause?: boolean
+    impactScope?: boolean
+    detectionMethod?: boolean
+    actionItems?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PostMortemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "incidentId" | "summary" | "rootCause" | "impactScope" | "detectionMethod" | "actionItems" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["postMortem"]>
+  export type PostMortemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    incident?: boolean | IncidentDefaultArgs<ExtArgs>
+  }
+  export type PostMortemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    incident?: boolean | IncidentDefaultArgs<ExtArgs>
+  }
+  export type PostMortemIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    incident?: boolean | IncidentDefaultArgs<ExtArgs>
+  }
+
+  export type $PostMortemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PostMortem"
+    objects: {
+      incident: Prisma.$IncidentPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      incidentId: string
+      summary: string
+      rootCause: string
+      impactScope: string
+      detectionMethod: string
+      actionItems: string
+      status: $Enums.PostMortemStatus
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["postMortem"]>
+    composites: {}
+  }
+
+  type PostMortemGetPayload<S extends boolean | null | undefined | PostMortemDefaultArgs> = $Result.GetResult<Prisma.$PostMortemPayload, S>
+
+  type PostMortemCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PostMortemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PostMortemCountAggregateInputType | true
+    }
+
+  export interface PostMortemDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PostMortem'], meta: { name: 'PostMortem' } }
+    /**
+     * Find zero or one PostMortem that matches the filter.
+     * @param {PostMortemFindUniqueArgs} args - Arguments to find a PostMortem
+     * @example
+     * // Get one PostMortem
+     * const postMortem = await prisma.postMortem.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PostMortemFindUniqueArgs>(args: SelectSubset<T, PostMortemFindUniqueArgs<ExtArgs>>): Prisma__PostMortemClient<$Result.GetResult<Prisma.$PostMortemPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PostMortem that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PostMortemFindUniqueOrThrowArgs} args - Arguments to find a PostMortem
+     * @example
+     * // Get one PostMortem
+     * const postMortem = await prisma.postMortem.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PostMortemFindUniqueOrThrowArgs>(args: SelectSubset<T, PostMortemFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PostMortemClient<$Result.GetResult<Prisma.$PostMortemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PostMortem that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostMortemFindFirstArgs} args - Arguments to find a PostMortem
+     * @example
+     * // Get one PostMortem
+     * const postMortem = await prisma.postMortem.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PostMortemFindFirstArgs>(args?: SelectSubset<T, PostMortemFindFirstArgs<ExtArgs>>): Prisma__PostMortemClient<$Result.GetResult<Prisma.$PostMortemPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PostMortem that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostMortemFindFirstOrThrowArgs} args - Arguments to find a PostMortem
+     * @example
+     * // Get one PostMortem
+     * const postMortem = await prisma.postMortem.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PostMortemFindFirstOrThrowArgs>(args?: SelectSubset<T, PostMortemFindFirstOrThrowArgs<ExtArgs>>): Prisma__PostMortemClient<$Result.GetResult<Prisma.$PostMortemPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PostMortems that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostMortemFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PostMortems
+     * const postMortems = await prisma.postMortem.findMany()
+     * 
+     * // Get first 10 PostMortems
+     * const postMortems = await prisma.postMortem.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const postMortemWithIdOnly = await prisma.postMortem.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PostMortemFindManyArgs>(args?: SelectSubset<T, PostMortemFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostMortemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PostMortem.
+     * @param {PostMortemCreateArgs} args - Arguments to create a PostMortem.
+     * @example
+     * // Create one PostMortem
+     * const PostMortem = await prisma.postMortem.create({
+     *   data: {
+     *     // ... data to create a PostMortem
+     *   }
+     * })
+     * 
+     */
+    create<T extends PostMortemCreateArgs>(args: SelectSubset<T, PostMortemCreateArgs<ExtArgs>>): Prisma__PostMortemClient<$Result.GetResult<Prisma.$PostMortemPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PostMortems.
+     * @param {PostMortemCreateManyArgs} args - Arguments to create many PostMortems.
+     * @example
+     * // Create many PostMortems
+     * const postMortem = await prisma.postMortem.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PostMortemCreateManyArgs>(args?: SelectSubset<T, PostMortemCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PostMortems and returns the data saved in the database.
+     * @param {PostMortemCreateManyAndReturnArgs} args - Arguments to create many PostMortems.
+     * @example
+     * // Create many PostMortems
+     * const postMortem = await prisma.postMortem.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PostMortems and only return the `id`
+     * const postMortemWithIdOnly = await prisma.postMortem.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PostMortemCreateManyAndReturnArgs>(args?: SelectSubset<T, PostMortemCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostMortemPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PostMortem.
+     * @param {PostMortemDeleteArgs} args - Arguments to delete one PostMortem.
+     * @example
+     * // Delete one PostMortem
+     * const PostMortem = await prisma.postMortem.delete({
+     *   where: {
+     *     // ... filter to delete one PostMortem
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PostMortemDeleteArgs>(args: SelectSubset<T, PostMortemDeleteArgs<ExtArgs>>): Prisma__PostMortemClient<$Result.GetResult<Prisma.$PostMortemPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PostMortem.
+     * @param {PostMortemUpdateArgs} args - Arguments to update one PostMortem.
+     * @example
+     * // Update one PostMortem
+     * const postMortem = await prisma.postMortem.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PostMortemUpdateArgs>(args: SelectSubset<T, PostMortemUpdateArgs<ExtArgs>>): Prisma__PostMortemClient<$Result.GetResult<Prisma.$PostMortemPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PostMortems.
+     * @param {PostMortemDeleteManyArgs} args - Arguments to filter PostMortems to delete.
+     * @example
+     * // Delete a few PostMortems
+     * const { count } = await prisma.postMortem.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PostMortemDeleteManyArgs>(args?: SelectSubset<T, PostMortemDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PostMortems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostMortemUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PostMortems
+     * const postMortem = await prisma.postMortem.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PostMortemUpdateManyArgs>(args: SelectSubset<T, PostMortemUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PostMortems and returns the data updated in the database.
+     * @param {PostMortemUpdateManyAndReturnArgs} args - Arguments to update many PostMortems.
+     * @example
+     * // Update many PostMortems
+     * const postMortem = await prisma.postMortem.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PostMortems and only return the `id`
+     * const postMortemWithIdOnly = await prisma.postMortem.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PostMortemUpdateManyAndReturnArgs>(args: SelectSubset<T, PostMortemUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostMortemPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PostMortem.
+     * @param {PostMortemUpsertArgs} args - Arguments to update or create a PostMortem.
+     * @example
+     * // Update or create a PostMortem
+     * const postMortem = await prisma.postMortem.upsert({
+     *   create: {
+     *     // ... data to create a PostMortem
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PostMortem we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PostMortemUpsertArgs>(args: SelectSubset<T, PostMortemUpsertArgs<ExtArgs>>): Prisma__PostMortemClient<$Result.GetResult<Prisma.$PostMortemPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PostMortems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostMortemCountArgs} args - Arguments to filter PostMortems to count.
+     * @example
+     * // Count the number of PostMortems
+     * const count = await prisma.postMortem.count({
+     *   where: {
+     *     // ... the filter for the PostMortems we want to count
+     *   }
+     * })
+    **/
+    count<T extends PostMortemCountArgs>(
+      args?: Subset<T, PostMortemCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PostMortemCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PostMortem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostMortemAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PostMortemAggregateArgs>(args: Subset<T, PostMortemAggregateArgs>): Prisma.PrismaPromise<GetPostMortemAggregateType<T>>
+
+    /**
+     * Group by PostMortem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostMortemGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PostMortemGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PostMortemGroupByArgs['orderBy'] }
+        : { orderBy?: PostMortemGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PostMortemGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPostMortemGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PostMortem model
+   */
+  readonly fields: PostMortemFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PostMortem.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PostMortemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    incident<T extends IncidentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, IncidentDefaultArgs<ExtArgs>>): Prisma__IncidentClient<$Result.GetResult<Prisma.$IncidentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PostMortem model
+   */
+  interface PostMortemFieldRefs {
+    readonly id: FieldRef<"PostMortem", 'String'>
+    readonly incidentId: FieldRef<"PostMortem", 'String'>
+    readonly summary: FieldRef<"PostMortem", 'String'>
+    readonly rootCause: FieldRef<"PostMortem", 'String'>
+    readonly impactScope: FieldRef<"PostMortem", 'String'>
+    readonly detectionMethod: FieldRef<"PostMortem", 'String'>
+    readonly actionItems: FieldRef<"PostMortem", 'String'>
+    readonly status: FieldRef<"PostMortem", 'PostMortemStatus'>
+    readonly createdAt: FieldRef<"PostMortem", 'DateTime'>
+    readonly updatedAt: FieldRef<"PostMortem", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PostMortem findUnique
+   */
+  export type PostMortemFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMortem
+     */
+    select?: PostMortemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMortem
+     */
+    omit?: PostMortemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMortemInclude<ExtArgs> | null
+    /**
+     * Filter, which PostMortem to fetch.
+     */
+    where: PostMortemWhereUniqueInput
+  }
+
+  /**
+   * PostMortem findUniqueOrThrow
+   */
+  export type PostMortemFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMortem
+     */
+    select?: PostMortemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMortem
+     */
+    omit?: PostMortemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMortemInclude<ExtArgs> | null
+    /**
+     * Filter, which PostMortem to fetch.
+     */
+    where: PostMortemWhereUniqueInput
+  }
+
+  /**
+   * PostMortem findFirst
+   */
+  export type PostMortemFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMortem
+     */
+    select?: PostMortemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMortem
+     */
+    omit?: PostMortemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMortemInclude<ExtArgs> | null
+    /**
+     * Filter, which PostMortem to fetch.
+     */
+    where?: PostMortemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PostMortems to fetch.
+     */
+    orderBy?: PostMortemOrderByWithRelationInput | PostMortemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PostMortems.
+     */
+    cursor?: PostMortemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PostMortems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PostMortems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PostMortems.
+     */
+    distinct?: PostMortemScalarFieldEnum | PostMortemScalarFieldEnum[]
+  }
+
+  /**
+   * PostMortem findFirstOrThrow
+   */
+  export type PostMortemFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMortem
+     */
+    select?: PostMortemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMortem
+     */
+    omit?: PostMortemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMortemInclude<ExtArgs> | null
+    /**
+     * Filter, which PostMortem to fetch.
+     */
+    where?: PostMortemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PostMortems to fetch.
+     */
+    orderBy?: PostMortemOrderByWithRelationInput | PostMortemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PostMortems.
+     */
+    cursor?: PostMortemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PostMortems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PostMortems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PostMortems.
+     */
+    distinct?: PostMortemScalarFieldEnum | PostMortemScalarFieldEnum[]
+  }
+
+  /**
+   * PostMortem findMany
+   */
+  export type PostMortemFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMortem
+     */
+    select?: PostMortemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMortem
+     */
+    omit?: PostMortemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMortemInclude<ExtArgs> | null
+    /**
+     * Filter, which PostMortems to fetch.
+     */
+    where?: PostMortemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PostMortems to fetch.
+     */
+    orderBy?: PostMortemOrderByWithRelationInput | PostMortemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PostMortems.
+     */
+    cursor?: PostMortemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PostMortems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PostMortems.
+     */
+    skip?: number
+    distinct?: PostMortemScalarFieldEnum | PostMortemScalarFieldEnum[]
+  }
+
+  /**
+   * PostMortem create
+   */
+  export type PostMortemCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMortem
+     */
+    select?: PostMortemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMortem
+     */
+    omit?: PostMortemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMortemInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PostMortem.
+     */
+    data: XOR<PostMortemCreateInput, PostMortemUncheckedCreateInput>
+  }
+
+  /**
+   * PostMortem createMany
+   */
+  export type PostMortemCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PostMortems.
+     */
+    data: PostMortemCreateManyInput | PostMortemCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PostMortem createManyAndReturn
+   */
+  export type PostMortemCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMortem
+     */
+    select?: PostMortemSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMortem
+     */
+    omit?: PostMortemOmit<ExtArgs> | null
+    /**
+     * The data used to create many PostMortems.
+     */
+    data: PostMortemCreateManyInput | PostMortemCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMortemIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PostMortem update
+   */
+  export type PostMortemUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMortem
+     */
+    select?: PostMortemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMortem
+     */
+    omit?: PostMortemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMortemInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PostMortem.
+     */
+    data: XOR<PostMortemUpdateInput, PostMortemUncheckedUpdateInput>
+    /**
+     * Choose, which PostMortem to update.
+     */
+    where: PostMortemWhereUniqueInput
+  }
+
+  /**
+   * PostMortem updateMany
+   */
+  export type PostMortemUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PostMortems.
+     */
+    data: XOR<PostMortemUpdateManyMutationInput, PostMortemUncheckedUpdateManyInput>
+    /**
+     * Filter which PostMortems to update
+     */
+    where?: PostMortemWhereInput
+    /**
+     * Limit how many PostMortems to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PostMortem updateManyAndReturn
+   */
+  export type PostMortemUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMortem
+     */
+    select?: PostMortemSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMortem
+     */
+    omit?: PostMortemOmit<ExtArgs> | null
+    /**
+     * The data used to update PostMortems.
+     */
+    data: XOR<PostMortemUpdateManyMutationInput, PostMortemUncheckedUpdateManyInput>
+    /**
+     * Filter which PostMortems to update
+     */
+    where?: PostMortemWhereInput
+    /**
+     * Limit how many PostMortems to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMortemIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PostMortem upsert
+   */
+  export type PostMortemUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMortem
+     */
+    select?: PostMortemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMortem
+     */
+    omit?: PostMortemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMortemInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PostMortem to update in case it exists.
+     */
+    where: PostMortemWhereUniqueInput
+    /**
+     * In case the PostMortem found by the `where` argument doesn't exist, create a new PostMortem with this data.
+     */
+    create: XOR<PostMortemCreateInput, PostMortemUncheckedCreateInput>
+    /**
+     * In case the PostMortem was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PostMortemUpdateInput, PostMortemUncheckedUpdateInput>
+  }
+
+  /**
+   * PostMortem delete
+   */
+  export type PostMortemDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMortem
+     */
+    select?: PostMortemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMortem
+     */
+    omit?: PostMortemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMortemInclude<ExtArgs> | null
+    /**
+     * Filter which PostMortem to delete.
+     */
+    where: PostMortemWhereUniqueInput
+  }
+
+  /**
+   * PostMortem deleteMany
+   */
+  export type PostMortemDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PostMortems to delete
+     */
+    where?: PostMortemWhereInput
+    /**
+     * Limit how many PostMortems to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PostMortem without action
+   */
+  export type PostMortemDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMortem
+     */
+    select?: PostMortemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMortem
+     */
+    omit?: PostMortemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMortemInclude<ExtArgs> | null
   }
 
 
@@ -28769,6 +30019,22 @@ export namespace Prisma {
   export type IncidentTemplateScalarFieldEnum = (typeof IncidentTemplateScalarFieldEnum)[keyof typeof IncidentTemplateScalarFieldEnum]
 
 
+  export const PostMortemScalarFieldEnum: {
+    id: 'id',
+    incidentId: 'incidentId',
+    summary: 'summary',
+    rootCause: 'rootCause',
+    impactScope: 'impactScope',
+    detectionMethod: 'detectionMethod',
+    actionItems: 'actionItems',
+    status: 'status',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PostMortemScalarFieldEnum = (typeof PostMortemScalarFieldEnum)[keyof typeof PostMortemScalarFieldEnum]
+
+
   export const LatencyAggregateScalarFieldEnum: {
     id: 'id',
     monitorId: 'monitorId',
@@ -29123,6 +30389,20 @@ export namespace Prisma {
    * Reference to a field of type 'Float[]'
    */
   export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'PostMortemStatus'
+   */
+  export type EnumPostMortemStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PostMortemStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'PostMortemStatus[]'
+   */
+  export type ListEnumPostMortemStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PostMortemStatus[]'>
     
 
 
@@ -29588,6 +30868,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Incident"> | Date | string
     monitor?: XOR<MonitorScalarRelationFilter, MonitorWhereInput>
     events?: IncidentEventListRelationFilter
+    postMortem?: XOR<PostMortemNullableScalarRelationFilter, PostMortemWhereInput> | null
   }
 
   export type IncidentOrderByWithRelationInput = {
@@ -29603,6 +30884,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     monitor?: MonitorOrderByWithRelationInput
     events?: IncidentEventOrderByRelationAggregateInput
+    postMortem?: PostMortemOrderByWithRelationInput
   }
 
   export type IncidentWhereUniqueInput = Prisma.AtLeast<{
@@ -29621,6 +30903,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Incident"> | Date | string
     monitor?: XOR<MonitorScalarRelationFilter, MonitorWhereInput>
     events?: IncidentEventListRelationFilter
+    postMortem?: XOR<PostMortemNullableScalarRelationFilter, PostMortemWhereInput> | null
   }, "id">
 
   export type IncidentOrderByWithAggregationInput = {
@@ -29865,6 +31148,86 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"IncidentTemplate"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"IncidentTemplate"> | Date | string
     createdById?: StringWithAggregatesFilter<"IncidentTemplate"> | string
+  }
+
+  export type PostMortemWhereInput = {
+    AND?: PostMortemWhereInput | PostMortemWhereInput[]
+    OR?: PostMortemWhereInput[]
+    NOT?: PostMortemWhereInput | PostMortemWhereInput[]
+    id?: StringFilter<"PostMortem"> | string
+    incidentId?: StringFilter<"PostMortem"> | string
+    summary?: StringFilter<"PostMortem"> | string
+    rootCause?: StringFilter<"PostMortem"> | string
+    impactScope?: StringFilter<"PostMortem"> | string
+    detectionMethod?: StringFilter<"PostMortem"> | string
+    actionItems?: StringFilter<"PostMortem"> | string
+    status?: EnumPostMortemStatusFilter<"PostMortem"> | $Enums.PostMortemStatus
+    createdAt?: DateTimeFilter<"PostMortem"> | Date | string
+    updatedAt?: DateTimeFilter<"PostMortem"> | Date | string
+    incident?: XOR<IncidentScalarRelationFilter, IncidentWhereInput>
+  }
+
+  export type PostMortemOrderByWithRelationInput = {
+    id?: SortOrder
+    incidentId?: SortOrder
+    summary?: SortOrder
+    rootCause?: SortOrder
+    impactScope?: SortOrder
+    detectionMethod?: SortOrder
+    actionItems?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    incident?: IncidentOrderByWithRelationInput
+  }
+
+  export type PostMortemWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    incidentId?: string
+    AND?: PostMortemWhereInput | PostMortemWhereInput[]
+    OR?: PostMortemWhereInput[]
+    NOT?: PostMortemWhereInput | PostMortemWhereInput[]
+    summary?: StringFilter<"PostMortem"> | string
+    rootCause?: StringFilter<"PostMortem"> | string
+    impactScope?: StringFilter<"PostMortem"> | string
+    detectionMethod?: StringFilter<"PostMortem"> | string
+    actionItems?: StringFilter<"PostMortem"> | string
+    status?: EnumPostMortemStatusFilter<"PostMortem"> | $Enums.PostMortemStatus
+    createdAt?: DateTimeFilter<"PostMortem"> | Date | string
+    updatedAt?: DateTimeFilter<"PostMortem"> | Date | string
+    incident?: XOR<IncidentScalarRelationFilter, IncidentWhereInput>
+  }, "id" | "incidentId">
+
+  export type PostMortemOrderByWithAggregationInput = {
+    id?: SortOrder
+    incidentId?: SortOrder
+    summary?: SortOrder
+    rootCause?: SortOrder
+    impactScope?: SortOrder
+    detectionMethod?: SortOrder
+    actionItems?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: PostMortemCountOrderByAggregateInput
+    _max?: PostMortemMaxOrderByAggregateInput
+    _min?: PostMortemMinOrderByAggregateInput
+  }
+
+  export type PostMortemScalarWhereWithAggregatesInput = {
+    AND?: PostMortemScalarWhereWithAggregatesInput | PostMortemScalarWhereWithAggregatesInput[]
+    OR?: PostMortemScalarWhereWithAggregatesInput[]
+    NOT?: PostMortemScalarWhereWithAggregatesInput | PostMortemScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PostMortem"> | string
+    incidentId?: StringWithAggregatesFilter<"PostMortem"> | string
+    summary?: StringWithAggregatesFilter<"PostMortem"> | string
+    rootCause?: StringWithAggregatesFilter<"PostMortem"> | string
+    impactScope?: StringWithAggregatesFilter<"PostMortem"> | string
+    detectionMethod?: StringWithAggregatesFilter<"PostMortem"> | string
+    actionItems?: StringWithAggregatesFilter<"PostMortem"> | string
+    status?: EnumPostMortemStatusWithAggregatesFilter<"PostMortem"> | $Enums.PostMortemStatus
+    createdAt?: DateTimeWithAggregatesFilter<"PostMortem"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"PostMortem"> | Date | string
   }
 
   export type LatencyAggregateWhereInput = {
@@ -31385,6 +32748,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     monitor: MonitorCreateNestedOneWithoutIncidentsInput
     events?: IncidentEventCreateNestedManyWithoutIncidentInput
+    postMortem?: PostMortemCreateNestedOneWithoutIncidentInput
   }
 
   export type IncidentUncheckedCreateInput = {
@@ -31399,6 +32763,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: IncidentEventUncheckedCreateNestedManyWithoutIncidentInput
+    postMortem?: PostMortemUncheckedCreateNestedOneWithoutIncidentInput
   }
 
   export type IncidentUpdateInput = {
@@ -31413,6 +32778,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     monitor?: MonitorUpdateOneRequiredWithoutIncidentsNestedInput
     events?: IncidentEventUpdateManyWithoutIncidentNestedInput
+    postMortem?: PostMortemUpdateOneWithoutIncidentNestedInput
   }
 
   export type IncidentUncheckedUpdateInput = {
@@ -31427,6 +32793,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: IncidentEventUncheckedUpdateManyWithoutIncidentNestedInput
+    postMortem?: PostMortemUncheckedUpdateOneWithoutIncidentNestedInput
   }
 
   export type IncidentCreateManyInput = {
@@ -31693,6 +33060,96 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type PostMortemCreateInput = {
+    id?: string
+    summary: string
+    rootCause: string
+    impactScope: string
+    detectionMethod: string
+    actionItems: string
+    status?: $Enums.PostMortemStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    incident: IncidentCreateNestedOneWithoutPostMortemInput
+  }
+
+  export type PostMortemUncheckedCreateInput = {
+    id?: string
+    incidentId: string
+    summary: string
+    rootCause: string
+    impactScope: string
+    detectionMethod: string
+    actionItems: string
+    status?: $Enums.PostMortemStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PostMortemUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    rootCause?: StringFieldUpdateOperationsInput | string
+    impactScope?: StringFieldUpdateOperationsInput | string
+    detectionMethod?: StringFieldUpdateOperationsInput | string
+    actionItems?: StringFieldUpdateOperationsInput | string
+    status?: EnumPostMortemStatusFieldUpdateOperationsInput | $Enums.PostMortemStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    incident?: IncidentUpdateOneRequiredWithoutPostMortemNestedInput
+  }
+
+  export type PostMortemUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    incidentId?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    rootCause?: StringFieldUpdateOperationsInput | string
+    impactScope?: StringFieldUpdateOperationsInput | string
+    detectionMethod?: StringFieldUpdateOperationsInput | string
+    actionItems?: StringFieldUpdateOperationsInput | string
+    status?: EnumPostMortemStatusFieldUpdateOperationsInput | $Enums.PostMortemStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PostMortemCreateManyInput = {
+    id?: string
+    incidentId: string
+    summary: string
+    rootCause: string
+    impactScope: string
+    detectionMethod: string
+    actionItems: string
+    status?: $Enums.PostMortemStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PostMortemUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    rootCause?: StringFieldUpdateOperationsInput | string
+    impactScope?: StringFieldUpdateOperationsInput | string
+    detectionMethod?: StringFieldUpdateOperationsInput | string
+    actionItems?: StringFieldUpdateOperationsInput | string
+    status?: EnumPostMortemStatusFieldUpdateOperationsInput | $Enums.PostMortemStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PostMortemUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    incidentId?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    rootCause?: StringFieldUpdateOperationsInput | string
+    impactScope?: StringFieldUpdateOperationsInput | string
+    detectionMethod?: StringFieldUpdateOperationsInput | string
+    actionItems?: StringFieldUpdateOperationsInput | string
+    status?: EnumPostMortemStatusFieldUpdateOperationsInput | $Enums.PostMortemStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type LatencyAggregateCreateInput = {
@@ -33315,6 +34772,11 @@ export namespace Prisma {
     none?: IncidentEventWhereInput
   }
 
+  export type PostMortemNullableScalarRelationFilter = {
+    is?: PostMortemWhereInput | null
+    isNot?: PostMortemWhereInput | null
+  }
+
   export type IncidentEventOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -33534,6 +34996,62 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     createdById?: SortOrder
+  }
+
+  export type EnumPostMortemStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.PostMortemStatus | EnumPostMortemStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PostMortemStatus[] | ListEnumPostMortemStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PostMortemStatus[] | ListEnumPostMortemStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPostMortemStatusFilter<$PrismaModel> | $Enums.PostMortemStatus
+  }
+
+  export type PostMortemCountOrderByAggregateInput = {
+    id?: SortOrder
+    incidentId?: SortOrder
+    summary?: SortOrder
+    rootCause?: SortOrder
+    impactScope?: SortOrder
+    detectionMethod?: SortOrder
+    actionItems?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PostMortemMaxOrderByAggregateInput = {
+    id?: SortOrder
+    incidentId?: SortOrder
+    summary?: SortOrder
+    rootCause?: SortOrder
+    impactScope?: SortOrder
+    detectionMethod?: SortOrder
+    actionItems?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PostMortemMinOrderByAggregateInput = {
+    id?: SortOrder
+    incidentId?: SortOrder
+    summary?: SortOrder
+    rootCause?: SortOrder
+    impactScope?: SortOrder
+    detectionMethod?: SortOrder
+    actionItems?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumPostMortemStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PostMortemStatus | EnumPostMortemStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PostMortemStatus[] | ListEnumPostMortemStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PostMortemStatus[] | ListEnumPostMortemStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPostMortemStatusWithAggregatesFilter<$PrismaModel> | $Enums.PostMortemStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPostMortemStatusFilter<$PrismaModel>
+    _max?: NestedEnumPostMortemStatusFilter<$PrismaModel>
   }
 
   export type EnumLatencyGranularityFilter<$PrismaModel = never> = {
@@ -34904,11 +36422,23 @@ export namespace Prisma {
     connect?: IncidentEventWhereUniqueInput | IncidentEventWhereUniqueInput[]
   }
 
+  export type PostMortemCreateNestedOneWithoutIncidentInput = {
+    create?: XOR<PostMortemCreateWithoutIncidentInput, PostMortemUncheckedCreateWithoutIncidentInput>
+    connectOrCreate?: PostMortemCreateOrConnectWithoutIncidentInput
+    connect?: PostMortemWhereUniqueInput
+  }
+
   export type IncidentEventUncheckedCreateNestedManyWithoutIncidentInput = {
     create?: XOR<IncidentEventCreateWithoutIncidentInput, IncidentEventUncheckedCreateWithoutIncidentInput> | IncidentEventCreateWithoutIncidentInput[] | IncidentEventUncheckedCreateWithoutIncidentInput[]
     connectOrCreate?: IncidentEventCreateOrConnectWithoutIncidentInput | IncidentEventCreateOrConnectWithoutIncidentInput[]
     createMany?: IncidentEventCreateManyIncidentInputEnvelope
     connect?: IncidentEventWhereUniqueInput | IncidentEventWhereUniqueInput[]
+  }
+
+  export type PostMortemUncheckedCreateNestedOneWithoutIncidentInput = {
+    create?: XOR<PostMortemCreateWithoutIncidentInput, PostMortemUncheckedCreateWithoutIncidentInput>
+    connectOrCreate?: PostMortemCreateOrConnectWithoutIncidentInput
+    connect?: PostMortemWhereUniqueInput
   }
 
   export type EnumIncidentStatusFieldUpdateOperationsInput = {
@@ -34941,6 +36471,16 @@ export namespace Prisma {
     deleteMany?: IncidentEventScalarWhereInput | IncidentEventScalarWhereInput[]
   }
 
+  export type PostMortemUpdateOneWithoutIncidentNestedInput = {
+    create?: XOR<PostMortemCreateWithoutIncidentInput, PostMortemUncheckedCreateWithoutIncidentInput>
+    connectOrCreate?: PostMortemCreateOrConnectWithoutIncidentInput
+    upsert?: PostMortemUpsertWithoutIncidentInput
+    disconnect?: PostMortemWhereInput | boolean
+    delete?: PostMortemWhereInput | boolean
+    connect?: PostMortemWhereUniqueInput
+    update?: XOR<XOR<PostMortemUpdateToOneWithWhereWithoutIncidentInput, PostMortemUpdateWithoutIncidentInput>, PostMortemUncheckedUpdateWithoutIncidentInput>
+  }
+
   export type IncidentEventUncheckedUpdateManyWithoutIncidentNestedInput = {
     create?: XOR<IncidentEventCreateWithoutIncidentInput, IncidentEventUncheckedCreateWithoutIncidentInput> | IncidentEventCreateWithoutIncidentInput[] | IncidentEventUncheckedCreateWithoutIncidentInput[]
     connectOrCreate?: IncidentEventCreateOrConnectWithoutIncidentInput | IncidentEventCreateOrConnectWithoutIncidentInput[]
@@ -34953,6 +36493,16 @@ export namespace Prisma {
     update?: IncidentEventUpdateWithWhereUniqueWithoutIncidentInput | IncidentEventUpdateWithWhereUniqueWithoutIncidentInput[]
     updateMany?: IncidentEventUpdateManyWithWhereWithoutIncidentInput | IncidentEventUpdateManyWithWhereWithoutIncidentInput[]
     deleteMany?: IncidentEventScalarWhereInput | IncidentEventScalarWhereInput[]
+  }
+
+  export type PostMortemUncheckedUpdateOneWithoutIncidentNestedInput = {
+    create?: XOR<PostMortemCreateWithoutIncidentInput, PostMortemUncheckedCreateWithoutIncidentInput>
+    connectOrCreate?: PostMortemCreateOrConnectWithoutIncidentInput
+    upsert?: PostMortemUpsertWithoutIncidentInput
+    disconnect?: PostMortemWhereInput | boolean
+    delete?: PostMortemWhereInput | boolean
+    connect?: PostMortemWhereUniqueInput
+    update?: XOR<XOR<PostMortemUpdateToOneWithWhereWithoutIncidentInput, PostMortemUpdateWithoutIncidentInput>, PostMortemUncheckedUpdateWithoutIncidentInput>
   }
 
   export type IncidentCreateNestedOneWithoutEventsInput = {
@@ -35007,6 +36557,24 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutIncidentTemplatesInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutIncidentTemplatesInput, UserUpdateWithoutIncidentTemplatesInput>, UserUncheckedUpdateWithoutIncidentTemplatesInput>
+  }
+
+  export type IncidentCreateNestedOneWithoutPostMortemInput = {
+    create?: XOR<IncidentCreateWithoutPostMortemInput, IncidentUncheckedCreateWithoutPostMortemInput>
+    connectOrCreate?: IncidentCreateOrConnectWithoutPostMortemInput
+    connect?: IncidentWhereUniqueInput
+  }
+
+  export type EnumPostMortemStatusFieldUpdateOperationsInput = {
+    set?: $Enums.PostMortemStatus
+  }
+
+  export type IncidentUpdateOneRequiredWithoutPostMortemNestedInput = {
+    create?: XOR<IncidentCreateWithoutPostMortemInput, IncidentUncheckedCreateWithoutPostMortemInput>
+    connectOrCreate?: IncidentCreateOrConnectWithoutPostMortemInput
+    upsert?: IncidentUpsertWithoutPostMortemInput
+    connect?: IncidentWhereUniqueInput
+    update?: XOR<XOR<IncidentUpdateToOneWithWhereWithoutPostMortemInput, IncidentUpdateWithoutPostMortemInput>, IncidentUncheckedUpdateWithoutPostMortemInput>
   }
 
   export type MonitorCreateNestedOneWithoutLatencyAggregatesInput = {
@@ -36220,6 +37788,23 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
+  export type NestedEnumPostMortemStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.PostMortemStatus | EnumPostMortemStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PostMortemStatus[] | ListEnumPostMortemStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PostMortemStatus[] | ListEnumPostMortemStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPostMortemStatusFilter<$PrismaModel> | $Enums.PostMortemStatus
+  }
+
+  export type NestedEnumPostMortemStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PostMortemStatus | EnumPostMortemStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PostMortemStatus[] | ListEnumPostMortemStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PostMortemStatus[] | ListEnumPostMortemStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPostMortemStatusWithAggregatesFilter<$PrismaModel> | $Enums.PostMortemStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPostMortemStatusFilter<$PrismaModel>
+    _max?: NestedEnumPostMortemStatusFilter<$PrismaModel>
+  }
+
   export type NestedEnumLatencyGranularityFilter<$PrismaModel = never> = {
     equals?: $Enums.LatencyGranularity | EnumLatencyGranularityFieldRefInput<$PrismaModel>
     in?: $Enums.LatencyGranularity[] | ListEnumLatencyGranularityFieldRefInput<$PrismaModel>
@@ -37188,6 +38773,35 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type PostMortemCreateWithoutIncidentInput = {
+    id?: string
+    summary: string
+    rootCause: string
+    impactScope: string
+    detectionMethod: string
+    actionItems: string
+    status?: $Enums.PostMortemStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PostMortemUncheckedCreateWithoutIncidentInput = {
+    id?: string
+    summary: string
+    rootCause: string
+    impactScope: string
+    detectionMethod: string
+    actionItems: string
+    status?: $Enums.PostMortemStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PostMortemCreateOrConnectWithoutIncidentInput = {
+    where: PostMortemWhereUniqueInput
+    create: XOR<PostMortemCreateWithoutIncidentInput, PostMortemUncheckedCreateWithoutIncidentInput>
+  }
+
   export type MonitorUpsertWithoutIncidentsInput = {
     update: XOR<MonitorUpdateWithoutIncidentsInput, MonitorUncheckedUpdateWithoutIncidentsInput>
     create: XOR<MonitorCreateWithoutIncidentsInput, MonitorUncheckedCreateWithoutIncidentsInput>
@@ -37276,6 +38890,41 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"IncidentEvent"> | Date | string
   }
 
+  export type PostMortemUpsertWithoutIncidentInput = {
+    update: XOR<PostMortemUpdateWithoutIncidentInput, PostMortemUncheckedUpdateWithoutIncidentInput>
+    create: XOR<PostMortemCreateWithoutIncidentInput, PostMortemUncheckedCreateWithoutIncidentInput>
+    where?: PostMortemWhereInput
+  }
+
+  export type PostMortemUpdateToOneWithWhereWithoutIncidentInput = {
+    where?: PostMortemWhereInput
+    data: XOR<PostMortemUpdateWithoutIncidentInput, PostMortemUncheckedUpdateWithoutIncidentInput>
+  }
+
+  export type PostMortemUpdateWithoutIncidentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    rootCause?: StringFieldUpdateOperationsInput | string
+    impactScope?: StringFieldUpdateOperationsInput | string
+    detectionMethod?: StringFieldUpdateOperationsInput | string
+    actionItems?: StringFieldUpdateOperationsInput | string
+    status?: EnumPostMortemStatusFieldUpdateOperationsInput | $Enums.PostMortemStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PostMortemUncheckedUpdateWithoutIncidentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    rootCause?: StringFieldUpdateOperationsInput | string
+    impactScope?: StringFieldUpdateOperationsInput | string
+    detectionMethod?: StringFieldUpdateOperationsInput | string
+    actionItems?: StringFieldUpdateOperationsInput | string
+    status?: EnumPostMortemStatusFieldUpdateOperationsInput | $Enums.PostMortemStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type IncidentCreateWithoutEventsInput = {
     id?: string
     status?: $Enums.IncidentStatus
@@ -37287,6 +38936,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     monitor: MonitorCreateNestedOneWithoutIncidentsInput
+    postMortem?: PostMortemCreateNestedOneWithoutIncidentInput
   }
 
   export type IncidentUncheckedCreateWithoutEventsInput = {
@@ -37300,6 +38950,7 @@ export namespace Prisma {
     resolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    postMortem?: PostMortemUncheckedCreateNestedOneWithoutIncidentInput
   }
 
   export type IncidentCreateOrConnectWithoutEventsInput = {
@@ -37329,6 +38980,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     monitor?: MonitorUpdateOneRequiredWithoutIncidentsNestedInput
+    postMortem?: PostMortemUpdateOneWithoutIncidentNestedInput
   }
 
   export type IncidentUncheckedUpdateWithoutEventsInput = {
@@ -37342,6 +38994,7 @@ export namespace Prisma {
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    postMortem?: PostMortemUncheckedUpdateOneWithoutIncidentNestedInput
   }
 
   export type MonitorCreateWithoutRegionalIncidentsInput = {
@@ -37546,6 +39199,78 @@ export namespace Prisma {
     monitors?: MonitorUncheckedUpdateManyWithoutUserNestedInput
     notificationChannels?: NotificationChannelUncheckedUpdateManyWithoutUserNestedInput
     statusPages?: StatusPageUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type IncidentCreateWithoutPostMortemInput = {
+    id?: string
+    status?: $Enums.IncidentStatus
+    severity?: $Enums.Severity
+    title: string
+    description?: string | null
+    startedAt?: Date | string
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    monitor: MonitorCreateNestedOneWithoutIncidentsInput
+    events?: IncidentEventCreateNestedManyWithoutIncidentInput
+  }
+
+  export type IncidentUncheckedCreateWithoutPostMortemInput = {
+    id?: string
+    monitorId: string
+    status?: $Enums.IncidentStatus
+    severity?: $Enums.Severity
+    title: string
+    description?: string | null
+    startedAt?: Date | string
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    events?: IncidentEventUncheckedCreateNestedManyWithoutIncidentInput
+  }
+
+  export type IncidentCreateOrConnectWithoutPostMortemInput = {
+    where: IncidentWhereUniqueInput
+    create: XOR<IncidentCreateWithoutPostMortemInput, IncidentUncheckedCreateWithoutPostMortemInput>
+  }
+
+  export type IncidentUpsertWithoutPostMortemInput = {
+    update: XOR<IncidentUpdateWithoutPostMortemInput, IncidentUncheckedUpdateWithoutPostMortemInput>
+    create: XOR<IncidentCreateWithoutPostMortemInput, IncidentUncheckedCreateWithoutPostMortemInput>
+    where?: IncidentWhereInput
+  }
+
+  export type IncidentUpdateToOneWithWhereWithoutPostMortemInput = {
+    where?: IncidentWhereInput
+    data: XOR<IncidentUpdateWithoutPostMortemInput, IncidentUncheckedUpdateWithoutPostMortemInput>
+  }
+
+  export type IncidentUpdateWithoutPostMortemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumIncidentStatusFieldUpdateOperationsInput | $Enums.IncidentStatus
+    severity?: EnumSeverityFieldUpdateOperationsInput | $Enums.Severity
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    monitor?: MonitorUpdateOneRequiredWithoutIncidentsNestedInput
+    events?: IncidentEventUpdateManyWithoutIncidentNestedInput
+  }
+
+  export type IncidentUncheckedUpdateWithoutPostMortemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monitorId?: StringFieldUpdateOperationsInput | string
+    status?: EnumIncidentStatusFieldUpdateOperationsInput | $Enums.IncidentStatus
+    severity?: EnumSeverityFieldUpdateOperationsInput | $Enums.Severity
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    events?: IncidentEventUncheckedUpdateManyWithoutIncidentNestedInput
   }
 
   export type MonitorCreateWithoutLatencyAggregatesInput = {
@@ -38227,6 +39952,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: IncidentEventCreateNestedManyWithoutIncidentInput
+    postMortem?: PostMortemCreateNestedOneWithoutIncidentInput
   }
 
   export type IncidentUncheckedCreateWithoutMonitorInput = {
@@ -38240,6 +39966,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: IncidentEventUncheckedCreateNestedManyWithoutIncidentInput
+    postMortem?: PostMortemUncheckedCreateNestedOneWithoutIncidentInput
   }
 
   export type IncidentCreateOrConnectWithoutMonitorInput = {
@@ -40939,6 +42666,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: IncidentEventUpdateManyWithoutIncidentNestedInput
+    postMortem?: PostMortemUpdateOneWithoutIncidentNestedInput
   }
 
   export type IncidentUncheckedUpdateWithoutMonitorInput = {
@@ -40952,6 +42680,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: IncidentEventUncheckedUpdateManyWithoutIncidentNestedInput
+    postMortem?: PostMortemUncheckedUpdateOneWithoutIncidentNestedInput
   }
 
   export type IncidentUncheckedUpdateManyWithoutMonitorInput = {

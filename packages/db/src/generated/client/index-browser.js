@@ -215,6 +215,19 @@ exports.Prisma.IncidentTemplateScalarFieldEnum = {
   createdById: 'createdById'
 };
 
+exports.Prisma.PostMortemScalarFieldEnum = {
+  id: 'id',
+  incidentId: 'incidentId',
+  summary: 'summary',
+  rootCause: 'rootCause',
+  impactScope: 'impactScope',
+  detectionMethod: 'detectionMethod',
+  actionItems: 'actionItems',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.LatencyAggregateScalarFieldEnum = {
   id: 'id',
   monitorId: 'monitorId',
@@ -435,6 +448,12 @@ exports.IncidentEventType = exports.$Enums.IncidentEventType = {
   AUTO_RESOLVE: 'AUTO_RESOLVE'
 };
 
+exports.PostMortemStatus = exports.$Enums.PostMortemStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  ARCHIVED: 'ARCHIVED'
+};
+
 exports.LatencyGranularity = exports.$Enums.LatencyGranularity = {
   ONE_MINUTE: 'ONE_MINUTE',
   FIVE_MINUTE: 'FIVE_MINUTE',
@@ -488,6 +507,7 @@ exports.Prisma.ModelName = {
   IncidentEvent: 'IncidentEvent',
   RegionalIncident: 'RegionalIncident',
   IncidentTemplate: 'IncidentTemplate',
+  PostMortem: 'PostMortem',
   LatencyAggregate: 'LatencyAggregate',
   RegionalBaseline: 'RegionalBaseline',
   NotificationChannel: 'NotificationChannel',
