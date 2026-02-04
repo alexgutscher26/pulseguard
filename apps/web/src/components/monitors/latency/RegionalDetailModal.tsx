@@ -20,6 +20,16 @@ interface RegionalDetailModalProps {
   regionData?: RegionData;
 }
 
+/**
+ * Displays a modal with detailed regional performance metrics and incident information.
+ *
+ * The component fetches and displays detailed data for a specified region, including metrics such as average latency, success rate, and a 24-hour trend chart. It handles loading states and displays incident information if applicable. The data is fetched from an API based on the provided monitorId and region, and updates when these values change.
+ *
+ * @param monitorId - The ID of the monitor for which to fetch regional data.
+ * @param region - The region for which to display detailed performance metrics.
+ * @param onClose - Callback function to handle closing the modal.
+ * @param regionData - Optional pre-fetched data for the region.
+ */
 export function RegionalDetailModal({
   monitorId,
   region,
@@ -210,7 +220,7 @@ export function RegionalDetailModal({
 }
 
 /**
- * Metric Card Component
+ * Renders a Metric Card component displaying a label, value, and optional icon.
  */
 function MetricCard({
   label,
