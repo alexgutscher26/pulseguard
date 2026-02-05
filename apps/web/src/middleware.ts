@@ -6,7 +6,7 @@ import { routing } from "./i18n/routing";
 const intlMiddleware = createMiddleware(routing);
 
 // Revert to default runtime (Edge compatible) to strictly avoid Node.js/OpenNext conflicts
-// export const runtime = "nodejs";
+export const runtime = "nodejs";
 
 export const config = {
   matcher: ["/((?!api/|_next/|_static/|_vercel|[\\w-]+\\.\\w+).*)"],
