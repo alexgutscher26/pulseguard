@@ -12,7 +12,6 @@
     "@ai-sdk/openai": "^3.0.25",
     "@base-ui/react": "^1.0.0",
     "@hookform/resolvers": "^5.2.2",
-    "@opennextjs/cloudflare": "^1.14.6",
     "@prisma/client": "catalog:",
     "@pulseguard/api": "workspace:*",
     "@pulseguard/auth": "workspace:*",

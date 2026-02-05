@@ -352,7 +352,7 @@ For the admin on the go.
 
 - [x] **E2E Tests (Playwright)**
   - Flow: Sign Up -> Create Monitor -> Verify Listing -> Delete Monitor.
-- [x] **Load Testing**
+- [ ] **Load Testing**
   - Simulate 10,000 active monitors to ensure Cron handler finishes in time.
 
 ---
