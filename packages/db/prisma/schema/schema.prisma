@@ -1,12 +1,12 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters", "prismaSchemaFolder"]
-  engineType      = "wasm"
-  output          = "../../src/generated/client"
+  provider = "prisma-client-js"
+  previewFeatures = ["prismaSchemaFolder"]
+  output   = "../../src/generated/client"
 }
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 enum MonitorType {
