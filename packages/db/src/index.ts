@@ -1,13 +1,10 @@
-import { neonConfig } from "@neondatabase/serverless";
-import { PrismaNeon } from "@prisma/adapter-neon";
+import { Pool } from "pg";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "./generated/client/index.js";
 
-neonConfig.poolQueryViaFetch = true;
-
 export const createPrisma = (databaseUrl: string) => {
-  const adapter = new PrismaNeon({
-    connectionString: databaseUrl,
-  });
+  const pool = new Pool({ connectionString: databaseUrl });
+  const adapter = new PrismaPg(pool);
   return new PrismaClient({ adapter });
 };
 
