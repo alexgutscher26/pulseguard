@@ -3,7 +3,23 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "./generated/client/index.js";
 
 export const createPrisma = (databaseUrl: string) => {
-  const pool = new Pool({ connectionString: databaseUrl });
+  // Ensure SSL is used for Supabase connections if not explicitly disabled
+  const isSupabase = databaseUrl.includes("supabase.co") || databaseUrl.includes("supabase.com");
+  const hasSslParam = databaseUrl.includes("sslmode=");
+
+  let connectionString = databaseUrl;
+  if (isSupabase && !hasSslParam) {
+    const separator = connectionString.includes("?") ? "&" : "?";
+    connectionString += `${separator}sslmode=require`;
+  }
+
+  const pool = new Pool({
+    connectionString,
+    max: 10, // Default to 10 connections
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 10000, // Fail fast if unreachable
+  });
+
   const adapter = new PrismaPg(pool);
   return new PrismaClient({ adapter });
 };
