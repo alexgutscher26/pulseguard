@@ -20,6 +20,10 @@ export const createPrisma = (databaseUrl: string) => {
     connectionTimeoutMillis: 10000, // Fail fast if unreachable
   });
 
+  pool.on("error", (err) => {
+    console.error("❌ PostgreSQL Pool Error:", err);
+  });
+
   const adapter = new PrismaPg(pool);
   return new PrismaClient({ adapter });
 };
