@@ -4,6 +4,9 @@ import { PrismaClient } from "./generated/client/index.js";
 
 neonConfig.poolQueryViaFetch = true;
 
+/**
+ * Creates a Prisma client with the specified database URL.
+ */
 export const createPrisma = (databaseUrl: string) => {
   console.log("🔍 Creating Prisma client with URL:", databaseUrl.replace(/:[^:@]+@/, ":****@"));
   const adapter = new PrismaNeon({
