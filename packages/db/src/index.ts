@@ -8,9 +8,21 @@ export const createPrisma = (databaseUrl: string) => {
   const hasSslParam = databaseUrl.includes("sslmode=");
 
   let connectionString = databaseUrl;
-  if (isSupabase && !hasSslParam) {
-    const separator = connectionString.includes("?") ? "&" : "?";
-    connectionString += `${separator}sslmode=require`;
+
+  // Supabase Workaround:
+  // The standard 'pg' driver uses prepared statements by default.
+  // Supabase's Transaction Pooler (port 6543) does not support named prepared statements, leading to "prepared statement 's0' already exists" errors.
+  // We automatically switch to the Session Pooler (port 5432) if detected, which supports prepared statements.
+  if (isSupabase) {
+    if (connectionString.includes(":6543")) {
+      console.warn("⚠️ Detected Supabase Transaction Pooler (port 6543). Switching to Session Pooler (port 5432) to support prepared statements.");
+      connectionString = connectionString.replace(":6543", ":5432");
+    }
+
+    if (!hasSslParam) {
+      const separator = connectionString.includes("?") ? "&" : "?";
+      connectionString += `${separator}sslmode=require`;
+    }
   }
 
   const pool = new Pool({
@@ -18,8 +30,6 @@ export const createPrisma = (databaseUrl: string) => {
     max: 10, // Default to 10 connections
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 10000, // Fail fast if unreachable
-    // @ts-ignore - Disable prepared statement caching for Supabase transaction poolers
-    statement_cache_size: 0,
   });
 
   pool.on("error", (err) => {
