@@ -13,7 +13,7 @@ console.log("🔧 Initializing BetterAuth with config:", {
 });
 
 // Use getPrisma() to get a real Prisma instance instead of the proxy
-const prisma = getPrisma();
+const prisma = getPrisma(env.DATABASE_URL);
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
