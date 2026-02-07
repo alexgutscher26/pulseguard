@@ -43,6 +43,16 @@ function getIcon(type: string) {
   }
 }
 
+/**
+ * Retrieves the color code associated with a given type.
+ *
+ * The function uses a switch statement to determine the color code based on the input `type`.
+ * It returns specific color codes for "SLACK", "DISCORD", and "EMAIL", while providing a default
+ * color code for any other input. This allows for easy customization of text colors based on the
+ * specified type.
+ *
+ * @param type - The type for which the color code is to be retrieved.
+ */
 function getColor(type: string) {
   switch (type) {
     case "SLACK":
@@ -56,6 +66,15 @@ function getColor(type: string) {
   }
 }
 
+/**
+ * Retrieve the detail associated with a given notification channel.
+ *
+ * The function checks the type of the channel and returns the appropriate detail based on the channel's configuration.
+ * It prioritizes specific properties from the configuration object and falls back to default values if necessary.
+ *
+ * @param channel - The notification channel from which to retrieve the detail.
+ * @returns The detail string corresponding to the channel type.
+ */
 function getDetail(channel: NotificationChannel) {
   const config = channel.config as Record<string, any>;
 
@@ -84,6 +103,13 @@ interface NotificationChannelsProps {
 
 /**
  * Renders the Notification Channels component.
+ *
+ * This component manages the display and configuration of notification channels, allowing users to add, test, and delete channels. It utilizes state management for open/close transitions and handles asynchronous operations for creating, testing, and deleting channels. The component also integrates with Slack and Discord for channel configuration through OAuth.
+ *
+ * @param channels - An array of notification channel objects to be displayed.
+ * @param slackClientId - The client ID for Slack integration.
+ * @param discordClientId - The client ID for Discord integration.
+ * @returns JSX.Element representing the Notification Channels component.
  */
 export function NotificationChannels({
   channels,
@@ -93,6 +119,9 @@ export function NotificationChannels({
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
+  /**
+   * Handles the submission of form data to create a notification channel.
+   */
   const handleSubmit = async (formData: FormData) => {
     startTransition(async () => {
       const result = await createNotificationChannel(null, formData);
@@ -105,6 +134,9 @@ export function NotificationChannels({
     });
   };
 
+  /**
+   * Sends a test notification to the specified channel and displays the result.
+   */
   const handleTest = async (channelId: string) => {
     startTransition(async () => {
       const result = await sendTestNotification(channelId);
@@ -116,6 +148,15 @@ export function NotificationChannels({
     });
   };
 
+  /**
+   * Handles the deletion of a notification channel after user confirmation.
+   *
+   * This function prompts the user for confirmation before proceeding to delete the specified channel.
+   * If confirmed, it calls the deleteNotificationChannel function and handles the result, displaying
+   * a success or error message using the toast notifications based on the outcome of the deletion.
+   *
+   * @param channelId - The ID of the channel to be deleted.
+   */
   const handleDelete = async (channelId: string) => {
     if (!confirm("Are you sure you want to delete this channel?")) {
       return;
