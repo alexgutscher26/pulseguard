@@ -13,6 +13,12 @@ export const createPrisma = (databaseUrl: string) => {
     connectionString += `${separator}sslmode=require`;
   }
 
+  // Automatically add pgbouncer=true for Supabase transaction poolers to avoid prepared statement conflicts
+  if (isSupabase && !connectionString.includes("pgbouncer=true")) {
+     const separator = connectionString.includes("?") ? "&" : "?";
+     connectionString += `${separator}pgbouncer=true`;
+  }
+
   const pool = new Pool({
     connectionString,
     max: 10, // Default to 10 connections
