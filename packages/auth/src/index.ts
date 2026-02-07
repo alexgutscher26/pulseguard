@@ -13,7 +13,9 @@ console.log("🔧 Initializing BetterAuth with config:", {
 });
 
 // Use getPrisma() to get a real Prisma instance instead of the proxy
-const prisma = getPrisma();
+// Note: We need to ensure we're getting the instance with the correct database URL from the environment
+// The server environment variables are already loaded via @pulseguard/env/server
+const prisma = getPrisma(env.DATABASE_URL);
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
