@@ -10,7 +10,7 @@ export class MonitorChannel extends DurableObject {
   constructor(state: DurableObjectState, env: Env) {
     super(state, env);
     // Recover existing websockets if the DO was Hibernated (Serverless mode)
-    // and we want to persist connections. 
+    // and we want to persist connections.
     // For now, we'll just track active ones in memory.
     this.ctx.getWebSockets().forEach((ws) => {
       this.sessions.add(ws);
@@ -27,9 +27,9 @@ export class MonitorChannel extends DurableObject {
       }
 
       // TODO: Authenticate the user here using the cookie or token from request headers.
-      // For Phase 1 validation, we might skip deep auth check inside DO 
+      // For Phase 1 validation, we might skip deep auth check inside DO
       // if it's already done by the Worker wrapper, but ideally DO checks too.
-      
+
       const pair = new WebSocketPair();
       const [client, server] = Object.values(pair);
 
@@ -72,7 +72,7 @@ export class MonitorChannel extends DurableObject {
     // However, the standard way with `ctx.acceptWebSocket` is to rely on `webSocketMessage` / `webSocketClose` handlers
     // on the class itself if we want to use the hibernation API, OR standard event listeners if not hibernating.
     // For simplicity in this Phase 1, we will use standard event listeners on the socket instance.
-    
+
     ws.addEventListener("close", () => {
       this.sessions.delete(ws);
     });

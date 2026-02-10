@@ -47,7 +47,7 @@ export function generateRssFeed(config: FeedConfig): string {
       <guid isPermaLink="false">${escapeXml(item.id)}</guid>
       <pubDate>${formatRfc822Date(item.pubDate)}</pubDate>
       ${item.category ? `<category>${escapeXml(item.category)}</category>` : ""}
-    </item>`
+    </item>`,
     )
     .join("\n");
 

@@ -4,13 +4,7 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ShieldCheck,
   ShieldAlert,
@@ -36,8 +30,7 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
-const WORKER_URL =
-  process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";
+const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";
 
 interface SSLResult {
   domain: string;
@@ -203,9 +196,7 @@ export function SSLChecker() {
                     <div
                       className={cn(
                         "text-xs mt-1",
-                        result.daysRemaining < 30
-                          ? "text-red-500"
-                          : "text-green-500",
+                        result.daysRemaining < 30 ? "text-red-500" : "text-green-500",
                       )}
                     >
                       {result.daysRemaining} days remaining
@@ -215,9 +206,7 @@ export function SSLChecker() {
                     <div className="text-sm text-muted-foreground flex items-center gap-2 mb-1">
                       <Server className="h-4 w-4" /> Issuer
                     </div>
-                    <div className="text-lg font-bold truncate">
-                      {result.issuer}
-                    </div>
+                    <div className="text-lg font-bold truncate">{result.issuer}</div>
                     <div className="text-xs text-green-500 mt-1 flex items-center gap-1">
                       <CheckCircle2 className="h-3 w-3" /> Trusted
                     </div>
@@ -234,9 +223,7 @@ export function SSLChecker() {
                 <FileKey className="text-primary h-5 w-5" />
                 Certificate Chain & Protocols
               </CardTitle>
-              <CardDescription>
-                Detailed technical analysis of the handshake.
-              </CardDescription>
+              <CardDescription>Detailed technical analysis of the handshake.</CardDescription>
             </CardHeader>
             <CardContent>
               <div
@@ -295,12 +282,9 @@ export function SSLChecker() {
                 <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-background/50 backdrop-blur-[2px]">
                   <div className="p-6 text-center max-w-sm">
                     <Lock className="h-10 w-10 text-primary mx-auto mb-4" />
-                    <h3 className="text-xl font-bold mb-2">
-                      Unlock Detailed Analysis
-                    </h3>
+                    <h3 className="text-xl font-bold mb-2">Unlock Detailed Analysis</h3>
                     <p className="text-muted-foreground mb-6">
-                      Get specialized protocol details, cipher suites, and the
-                      full trust chain.
+                      Get specialized protocol details, cipher suites, and the full trust chain.
                     </p>
                     <Button size="lg" onClick={() => setGateOpen(true)}>
                       Unlock Report <ArrowRight className="ml-2 h-4 w-4" />
@@ -319,8 +303,7 @@ export function SSLChecker() {
           <DialogHeader>
             <DialogTitle>Access Advanced Security Data</DialogTitle>
             <DialogDescription>
-              Enter your email to view the full protocol stack and certificate
-              chain analysis.
+              Enter your email to view the full protocol stack and certificate chain analysis.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
@@ -341,9 +324,7 @@ export function SSLChecker() {
               disabled={isEmailSubmitting}
               className="w-full"
             >
-              {isEmailSubmitting && (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              )}
+              {isEmailSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Reveal Sensitive Data
             </Button>
           </DialogFooter>

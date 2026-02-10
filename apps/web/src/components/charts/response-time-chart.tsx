@@ -30,11 +30,7 @@ interface ResponseTimeChartProps {
   className?: string;
 }
 
-export function ResponseTimeChart({
-  data,
-  isLoading,
-  className,
-}: ResponseTimeChartProps) {
+export function ResponseTimeChart({ data, isLoading, className }: ResponseTimeChartProps) {
   // Get user preferences for timezone
   const { data: preferences } = useUserPreferences();
   const timeZone = preferences?.timezone || "UTC";
@@ -103,19 +99,14 @@ export function ResponseTimeChart({
           className,
         )}
       >
-        <p className="text-muted-foreground">
-          No traffic data available for this period.
-        </p>
+        <p className="text-muted-foreground">No traffic data available for this period.</p>
       </Card>
     );
   }
 
   return (
     <Card
-      className={cn(
-        "overflow-hidden border-zinc-800 bg-zinc-950/50 backdrop-blur-sm",
-        className,
-      )}
+      className={cn("overflow-hidden border-zinc-800 bg-zinc-950/50 backdrop-blur-sm", className)}
     >
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg font-medium text-zinc-100">
@@ -126,39 +117,17 @@ export function ResponseTimeChart({
       <CardContent className="pl-0">
         <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart
-              data={data}
-              margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-            >
+            <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
               <defs>
-                <linearGradient
-                  id="latencyGradient"
-                  x1="0"
-                  y1="0"
-                  x2="0"
-                  y2="1"
-                >
+                <linearGradient id="latencyGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor={chartColor} stopOpacity={0.5} />
                   <stop offset="95%" stopColor={chartColor} stopOpacity={0.1} />
                 </linearGradient>
                 <filter id="neon-glow" height="200%">
-                  <feGaussianBlur
-                    in="SourceAlpha"
-                    stdDeviation="4"
-                    result="blur"
-                  />
+                  <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur" />
                   <feOffset in="blur" dx="0" dy="0" result="offsetBlur" />
-                  <feFlood
-                    floodColor={chartColor}
-                    floodOpacity="0.6"
-                    result="glowColor"
-                  />
-                  <feComposite
-                    in="glowColor"
-                    in2="offsetBlur"
-                    operator="in"
-                    result="glow"
-                  />
+                  <feFlood floodColor={chartColor} floodOpacity="0.6" result="glowColor" />
+                  <feComposite in="glowColor" in2="offsetBlur" operator="in" result="glow" />
                   <feMerge>
                     <feMergeNode in="glow" />
                     <feMergeNode in="SourceGraphic" />

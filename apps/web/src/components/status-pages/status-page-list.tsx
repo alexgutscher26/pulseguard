@@ -5,10 +5,9 @@ import Link from "next/link";
 import { Plus, Globe, ExternalLink, Settings } from "lucide-react";
 import { CreateStatusPageModal } from "./create-status-page-modal";
 
-
 export function StatusPageList({ initialPages }: { initialPages: any[] }) {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-// TODO: Implement this 
+  // TODO: Implement this
   // Helper to determine link - locally we rewrite, so localhost:3000/status-page/slug works for now if we add rewrite rule,
   // or subdomain.localhost:3000 if using that strategy.
   // For now let's assume path based for simple view.
@@ -54,12 +53,8 @@ export function StatusPageList({ initialPages }: { initialPages: any[] }) {
                   <Globe className="size-5 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-foreground font-mono">
-                    {page.title}
-                  </h3>
-                  <p className="text-xs text-muted-foreground font-mono">
-                    /{page.slug}
-                  </p>
+                  <h3 className="font-bold text-foreground font-mono">{page.title}</h3>
+                  <p className="text-xs text-muted-foreground font-mono">/{page.slug}</p>
                 </div>
               </div>
               {page.requiresAuth && (
@@ -71,9 +66,7 @@ export function StatusPageList({ initialPages }: { initialPages: any[] }) {
 
             <div className="flex items-center gap-4 text-xs font-mono text-muted-foreground relative z-10">
               <div className="flex items-center gap-1">
-                <span className="text-foreground font-bold">
-                  {page._count?.monitors || 0}
-                </span>{" "}
+                <span className="text-foreground font-bold">{page._count?.monitors || 0}</span>{" "}
                 Monitors
               </div>
               {/* Future: <div className="flex items-center gap-1">
@@ -107,12 +100,9 @@ export function StatusPageList({ initialPages }: { initialPages: any[] }) {
             <div className="p-4 bg-primary/10 rounded-full mb-4">
               <Globe className="size-8 text-primary" />
             </div>
-            <h3 className="text-lg font-bold text-foreground font-mono">
-              No Status Pages Yet
-            </h3>
+            <h3 className="text-lg font-bold text-foreground font-mono">No Status Pages Yet</h3>
             <p className="text-sm text-muted-foreground max-w-sm mt-2 font-mono mb-6">
-              Create a public status page to communicate system reliability to
-              your users.
+              Create a public status page to communicate system reliability to your users.
             </p>
             <button
               onClick={() => setIsCreateOpen(true)}
@@ -124,10 +114,7 @@ export function StatusPageList({ initialPages }: { initialPages: any[] }) {
         )}
       </div>
 
-      <CreateStatusPageModal
-        isOpen={isCreateOpen}
-        onClose={() => setIsCreateOpen(false)}
-      />
+      <CreateStatusPageModal isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} />
     </div>
   );
 }

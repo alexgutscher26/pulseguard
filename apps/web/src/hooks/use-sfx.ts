@@ -21,19 +21,32 @@ export function useSfx() {
   const [playError] = useSound(SOUND_PATHS.error, { volume: 0.6 });
   const [playGlitch] = useSound(SOUND_PATHS.glitch, { volume: 0.3 });
 
-  const play = useCallback((type: SoundType) => {
-    // Check mute preference inside the callback to get latest value without re-rendering loop
-    const isMuted = typeof window !== 'undefined' && localStorage.getItem('sfx-muted') === 'true';
-    if (isMuted) return;
+  const play = useCallback(
+    (type: SoundType) => {
+      // Check mute preference inside the callback to get latest value without re-rendering loop
+      const isMuted = typeof window !== "undefined" && localStorage.getItem("sfx-muted") === "true";
+      if (isMuted) return;
 
-    switch (type) {
-      case "click": playClick(); break;
-      case "hover": playHover(); break;
-      case "success": playSuccess(); break;
-      case "error": playError(); break;
-      case "glitch": playGlitch(); break;
-    }
-  }, [playClick, playHover, playSuccess, playError, playGlitch]);
+      switch (type) {
+        case "click":
+          playClick();
+          break;
+        case "hover":
+          playHover();
+          break;
+        case "success":
+          playSuccess();
+          break;
+        case "error":
+          playError();
+          break;
+        case "glitch":
+          playGlitch();
+          break;
+      }
+    },
+    [playClick, playHover, playSuccess, playError, playGlitch],
+  );
 
   return { play };
 }

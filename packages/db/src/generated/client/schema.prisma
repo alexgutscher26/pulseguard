@@ -289,8 +289,7 @@ model AlertRule {
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters", "prismaSchemaFolder"]
-  engineType      = "wasm"
+  previewFeatures = ["prismaSchemaFolder"]
   output          = "../../src/generated/client"
 }
 
@@ -355,7 +354,7 @@ model MonitorEvent {
 
   monitor Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
 
-  @@index([monitorId])
+  @@index([monitorId, timestamp])
   @@index([timestamp])
   @@index([region])
 }

@@ -6,7 +6,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum MonitorType {
@@ -67,7 +66,7 @@ model MonitorEvent {
 
   monitor Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
 
-  @@index([monitorId])
+  @@index([monitorId, timestamp])
   @@index([timestamp])
   @@index([region])
 }

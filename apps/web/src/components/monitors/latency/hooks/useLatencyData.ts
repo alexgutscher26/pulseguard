@@ -52,10 +52,7 @@ interface UseLatencyDataReturn {
 /**
  * Hook to fetch latency heatmap data with real-time SSE updates
  */
-export function useLatencyData(
-  monitorId: string,
-  timeRange: string = "24h"
-): UseLatencyDataReturn {
+export function useLatencyData(monitorId: string, timeRange: string = "24h"): UseLatencyDataReturn {
   const [data, setData] = useState<LatencyHeatmapData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -65,9 +62,7 @@ export function useLatencyData(
       setIsLoading(true);
       setError(null);
 
-      const res = await fetch(
-        `/api/monitors/${monitorId}/latency-heatmap?timeRange=${timeRange}`
-      );
+      const res = await fetch(`/api/monitors/${monitorId}/latency-heatmap?timeRange=${timeRange}`);
 
       if (!res.ok) {
         throw new Error(`Failed to fetch heatmap data: ${res.statusText}`);
@@ -92,9 +87,7 @@ export function useLatencyData(
       if (!isSubscribed) return;
 
       try {
-        eventSource = new EventSource(
-          `/api/monitors/${monitorId}/latency-stream`
-        );
+        eventSource = new EventSource(`/api/monitors/${monitorId}/latency-stream`);
 
         eventSource.onopen = () => {
           console.log("[SSE] Connection established");
@@ -175,7 +168,7 @@ function mergeLatencyUpdate(
     };
     sampleCount: number;
     successRate: number;
-  }
+  },
 ): LatencyHeatmapData {
   const regionIndex = prev.regions.findIndex((r) => r.region === update.region);
 

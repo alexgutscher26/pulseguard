@@ -26,8 +26,7 @@ export function StatusPageI18n({ page }: { page: any }) {
   const [loading, setLoading] = useState<string | null>(null);
   const [editingLocale, setEditingLocale] = useState<string | null>(null);
 
-  const getSetting = (code: string) =>
-    page.i18nSettings?.find((s: any) => s.locale === code);
+  const getSetting = (code: string) => page.i18nSettings?.find((s: any) => s.locale === code);
 
   const toggleLocale = async (code: string, currentEnabled: boolean) => {
     setLoading(code);
@@ -37,9 +36,7 @@ export function StatusPageI18n({ page }: { page: any }) {
         enabled: !currentEnabled,
         overrides: setting?.overrides || {},
       });
-      toast.success(
-        `Language ${code.toUpperCase()} ${!currentEnabled ? "enabled" : "disabled"}`,
-      );
+      toast.success(`Language ${code.toUpperCase()} ${!currentEnabled ? "enabled" : "disabled"}`);
       router.refresh();
     } catch (e) {
       toast.error("Failed to update language");
@@ -68,9 +65,7 @@ export function StatusPageI18n({ page }: { page: any }) {
                 <span className="font-mono text-sm font-bold uppercase w-8 text-primary/80">
                   {locale.code}
                 </span>
-                <span className="text-sm text-muted-foreground">
-                  {locale.label}
-                </span>
+                <span className="text-sm text-muted-foreground">{locale.label}</span>
               </div>
               <div className="flex items-center gap-3">
                 {/* Edit Overrides Button */}

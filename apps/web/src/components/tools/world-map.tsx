@@ -33,7 +33,7 @@ export function WorldMap({ points, className }: WorldMapProps) {
         className,
       )}
     >
-      {/* Abstract World Utils via Background Image or CSS if available, 
+      {/* Abstract World Utils via Background Image or CSS if available,
           but for now we use a tech-grid background */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[4%_8%]" />
 
@@ -46,10 +46,7 @@ export function WorldMap({ points, className }: WorldMapProps) {
 
       {/* Map Points */}
       {points.map((point) => {
-        const { x, y } = getPosition(
-          point.coordinates[0],
-          point.coordinates[1],
-        );
+        const { x, y } = getPosition(point.coordinates[0], point.coordinates[1]);
 
         // Color coding
         let colorClass = "bg-primary";
@@ -81,17 +78,13 @@ export function WorldMap({ points, className }: WorldMapProps) {
             />
 
             {/* Core Dot */}
-            <div
-              className={`relative w-2 h-2 rounded-full ${colorClass} ${shadowClass}`}
-            />
+            <div className={`relative w-2 h-2 rounded-full ${colorClass} ${shadowClass}`} />
 
             {/* Tooltip Label */}
             <div className="absolute top-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-black/80 text-xs px-2 py-1 rounded border border-white/10 whitespace-nowrap z-10 pointer-events-none">
               <span className="font-bold">{point.city}</span>
               {point.latency && (
-                <span className="ml-1 text-muted-foreground">
-                  ({point.latency}ms)
-                </span>
+                <span className="ml-1 text-muted-foreground">({point.latency}ms)</span>
               )}
             </div>
           </div>

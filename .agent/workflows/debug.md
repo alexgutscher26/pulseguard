@@ -42,7 +42,7 @@ When `/debug` is triggered:
 
 ## Output Format
 
-```markdown
+````markdown
 ## 🔍 Debug: [Issue]
 
 ### 1. Symptom
@@ -76,10 +76,12 @@ When `/debug` is triggered:
 
 // After
 [fixed code]
-```
+````
 
 ### 7. Prevention
+
 🛡️ [How to prevent this in the future]
+
 ```
 
 ---
@@ -87,10 +89,12 @@ When `/debug` is triggered:
 ## Examples
 
 ```
+
 /debug login not working
 /debug API returns 500
 /debug form doesn't submit
 /debug data not saving
+
 ```
 
 ---
@@ -101,3 +105,4 @@ When `/debug` is triggered:
 - **Test hypotheses** - don't guess randomly
 - **Explain why** - not just what to fix
 - **Prevent recurrence** - add tests, validation
+```

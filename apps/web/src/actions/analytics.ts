@@ -11,17 +11,17 @@ import { hashVisitor } from "@/lib/analytics";
 export async function recordStatusPageView(pageId: string) {
   try {
     const headerStore = await headers();
-    
+
     // Extract IP
     const forwardedFor = headerStore.get("x-forwarded-for");
     const ip = forwardedFor ? forwardedFor.split(",")[0].trim() : "127.0.0.1";
-    
+
     // Extract UA
     const userAgent = headerStore.get("user-agent") || "";
-    
+
     // Generate Hash
     const visitorHash = hashVisitor(ip, userAgent);
-    
+
     // Determine Country (Vercel specific header, fallback null)
     const country = headerStore.get("x-vercel-ip-country");
 
@@ -48,73 +48,72 @@ export async function recordStatusPageView(pageId: string) {
  * Fetch analytics data for the dashboard
  */
 export async function getStatusPageAnalytics(pageId: string, days: number = 30) {
-    // Basic verification of ownership should happen in the parent component or here if we pass session.
-    // Assuming caller checks permissions for now as this is detailed data.
-    
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
+  // Basic verification of ownership should happen in the parent component or here if we pass session.
+  // Assuming caller checks permissions for now as this is detailed data.
 
-    try {
-        const views = await prisma.statusPageView.findMany({
-            where: {
-                statusPageId: pageId,
-                timestamp: {
-                    gte: startDate
-                }
-            },
-            orderBy: {
-                timestamp: 'asc'
-            },
-            select: {
-                timestamp: true,
-                visitorHash: true
-            }
-        });
+  const startDate = new Date();
+  startDate.setDate(startDate.getDate() - days);
 
-        // Process data for Chart (Group by Day)
-        const groupedMap = new Map<string, { date: string, views: number, uniques: Set<string> }>();
+  try {
+    const views = await prisma.statusPageView.findMany({
+      where: {
+        statusPageId: pageId,
+        timestamp: {
+          gte: startDate,
+        },
+      },
+      orderBy: {
+        timestamp: "asc",
+      },
+      select: {
+        timestamp: true,
+        visitorHash: true,
+      },
+    });
 
-        // Fill empty days? Ideally yes, but let's start with raw data.
-        // Actually, charts look better with 0s.
-        
-        // Initialize map
-        for (let i = 0; i < days; i++) {
-             const d = new Date();
-             d.setDate(d.getDate() - i);
-             const key = d.toISOString().split('T')[0];
-             groupedMap.set(key, { date: key, views: 0, uniques: new Set<string>() });
-        }
+    // Process data for Chart (Group by Day)
+    const groupedMap = new Map<string, { date: string; views: number; uniques: Set<string> }>();
 
-        views.forEach((v: { timestamp: Date, visitorHash: string }) => {
-            const key = v.timestamp.toISOString().split('T')[0];
-            if (groupedMap.has(key)) {
-                const entry = groupedMap.get(key)!;
-                entry.views++;
-                entry.uniques.add(v.visitorHash);
-            }
-        });
+    // Fill empty days? Ideally yes, but let's start with raw data.
+    // Actually, charts look better with 0s.
 
-        // Sort by date key (ascending)
-        const chartData = Array.from(groupedMap.entries())
-            .sort((a, b) => a[0].localeCompare(b[0]))
-            .map(([_, val]) => ({
-                date: val.date,
-                views: val.views,
-                uniqueVisitors: val.uniques.size
-            }));
-            
-        // Calculate Totals
-        const totalViews = views.length;
-        const distinctVisitors = new Set(views.map(v => v.visitorHash)).size;
-
-        return {
-            chartData,
-            totalViews,
-            uniqueVisitors: distinctVisitors
-        };
-
-    } catch (e) {
-        console.error("Analytics fetch failed:", e);
-        return { chartData: [], totalViews: 0, uniqueVisitors: 0 };
+    // Initialize map
+    for (let i = 0; i < days; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const key = d.toISOString().split("T")[0];
+      groupedMap.set(key, { date: key, views: 0, uniques: new Set<string>() });
     }
+
+    views.forEach((v: { timestamp: Date; visitorHash: string }) => {
+      const key = v.timestamp.toISOString().split("T")[0];
+      if (groupedMap.has(key)) {
+        const entry = groupedMap.get(key)!;
+        entry.views++;
+        entry.uniques.add(v.visitorHash);
+      }
+    });
+
+    // Sort by date key (ascending)
+    const chartData = Array.from(groupedMap.entries())
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([_, val]) => ({
+        date: val.date,
+        views: val.views,
+        uniqueVisitors: val.uniques.size,
+      }));
+
+    // Calculate Totals
+    const totalViews = views.length;
+    const distinctVisitors = new Set(views.map((v) => v.visitorHash)).size;
+
+    return {
+      chartData,
+      totalViews,
+      uniqueVisitors: distinctVisitors,
+    };
+  } catch (e) {
+    console.error("Analytics fetch failed:", e);
+    return { chartData: [], totalViews: 0, uniqueVisitors: 0 };
+  }
 }

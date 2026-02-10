@@ -6,13 +6,7 @@ import { Lock, Loader2, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-export function PasswordProtection({
-  pageId,
-  title,
-}: {
-  pageId: string;
-  title: string;
-}) {
+export function PasswordProtection({ pageId, title }: { pageId: string; title: string }) {
   const router = useRouter();
 
   // Wrapper for the server action to handle success/refresh
@@ -49,12 +43,8 @@ export function PasswordProtection({
           <div className="inline-flex items-center justify-center size-16 rounded-full bg-green-500/10 border border-green-500/20 text-green-500 mb-4 shadow-[0_0_30px_-5px_rgba(34,197,94,0.3)]">
             <Lock className="size-8" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">
-            {title} is Private
-          </h1>
-          <p className="text-white/40 text-sm uppercase tracking-widest">
-            Restricted Access Area
-          </p>
+          <h1 className="text-2xl font-bold tracking-tight">{title} is Private</h1>
+          <p className="text-white/40 text-sm uppercase tracking-widest">Restricted Access Area</p>
         </div>
 
         <form action={formAction} className="space-y-4">

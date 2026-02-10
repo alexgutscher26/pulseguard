@@ -11,10 +11,7 @@ interface CommandPaletteStore {
   // Confirmation state for destructive actions
   pendingAction: (() => Promise<void>) | null;
   confirmationMessage: string | null;
-  setPendingAction: (
-    action: (() => Promise<void>) | null,
-    message?: string,
-  ) => void;
+  setPendingAction: (action: (() => Promise<void>) | null, message?: string) => void;
   executePendingAction: () => Promise<void>;
   cancelPendingAction: () => void;
 }
@@ -22,17 +19,13 @@ interface CommandPaletteStore {
 export const useCommandPalette = create<CommandPaletteStore>((set, get) => ({
   isOpen: false,
   open: () => set({ isOpen: true }),
-  close: () =>
-    set({ isOpen: false, pendingAction: null, confirmationMessage: null }),
+  close: () => set({ isOpen: false, pendingAction: null, confirmationMessage: null }),
   toggle: () => set((state) => ({ isOpen: !state.isOpen })),
 
   pendingAction: null,
   confirmationMessage: null,
 
-  setPendingAction: (
-    action,
-    message = "Are you sure you want to perform this action?",
-  ) => {
+  setPendingAction: (action, message = "Are you sure you want to perform this action?") => {
     set({ pendingAction: action, confirmationMessage: message });
   },
 

@@ -4,7 +4,7 @@ import { renderMonthlyReportToBuffer, sendMonthlyReport } from "@pulseguard/emai
 
 export async function generateAndSendMonthlyReports(
   prisma: PrismaClient,
-  env: { RESEND_API_KEY: string }
+  env: { RESEND_API_KEY: string },
 ) {
   console.log("[ReportGenerator] Starting monthly report generation...");
 
@@ -12,22 +12,22 @@ export async function generateAndSendMonthlyReports(
   // For now, let's grab all users with role 'ADMIN' or 'OWNER'
   // Assuming User model has 'role'. If not, we might need to adjust.
   // Previous conversations implied a User model. Let's assume 'role' exists.
-  
+
   // NOTE: If role doesn't exist, we default to hardcoded email or find first user.
   let recipients: { email: string }[] = [];
   try {
     recipients = await prisma.user.findMany({
       where: {
-        emailVerified: true
+        emailVerified: true,
       },
-      select: { email: true }
+      select: { email: true },
     });
   } catch (e) {
     console.warn("[ReportGenerator] Could not fetch verified users. Fetching recent users...", e);
     // Fallback: Fetch all users
     recipients = await prisma.user.findMany({
-       take: 5,
-       select: { email: true }
+      take: 5,
+      select: { email: true },
     });
   }
 
@@ -41,7 +41,7 @@ export async function generateAndSendMonthlyReports(
   // 2. Generate Data (Once for all, assuming global report)
   // If multi-tenant, we'd loop per team.
   const stats = await getMonthlyStats(prisma, 1); // 1 = last month
-  
+
   // 3. Generate PDF
   console.log("[ReportGenerator] Rendering PDF...");
   let pdfBuffer: Buffer;
@@ -53,13 +53,13 @@ export async function generateAndSendMonthlyReports(
   }
 
   // 4. Send Emails
-  const monthName = stats.startDate.toLocaleString('default', { month: 'long', year: 'numeric' });
-  
+  const monthName = stats.startDate.toLocaleString("default", { month: "long", year: "numeric" });
+
   for (const user of recipients) {
     console.log(`[ReportGenerator] Sending to ${user.email}...`);
     await sendMonthlyReport(user.email, pdfBuffer, monthName, env.RESEND_API_KEY);
     // Simple rate limit prevention
-    await new Promise(r => setTimeout(r, 200)); 
+    await new Promise((r) => setTimeout(r, 200));
   }
 
   console.log("[ReportGenerator] Done.");

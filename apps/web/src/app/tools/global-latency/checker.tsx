@@ -12,23 +12,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Loader2,
-  Lock,
-  Globe,
-  Zap,
-  ArrowRight,
-  XCircle,
-  CheckCircle,
-} from "lucide-react";
+import { Loader2, Lock, Globe, Zap, ArrowRight, XCircle, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -41,8 +27,7 @@ import {
 import { Label } from "@/components/ui/label";
 
 // Configuration
-const WORKER_URL =
-  process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";
+const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";
 
 interface LatencyResult {
   region: string;
@@ -174,9 +159,7 @@ export function LatencyChecker() {
               <Globe className="h-5 w-5 text-primary" />
               Global Performance Report
             </CardTitle>
-            <CardDescription>
-              Latency measurements from our global edge network.
-            </CardDescription>
+            <CardDescription>Latency measurements from our global edge network.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="relative rounded-md border">
@@ -192,9 +175,7 @@ export function LatencyChecker() {
                 <TableBody>
                   {results.slice(0, unlocked ? undefined : 3).map((res) => (
                     <TableRow key={res.region}>
-                      <TableCell className="font-medium">
-                        {res.region.toUpperCase()}
-                      </TableCell>
+                      <TableCell className="font-medium">{res.region.toUpperCase()}</TableCell>
                       <TableCell>{res.city}</TableCell>
                       <TableCell>
                         {res.status === "UP" ? (
@@ -249,12 +230,10 @@ export function LatencyChecker() {
                 <div className="absolute inset-x-0 bottom-0 h-48 bg-linear-to-t from-background via-background/90 to-transparent flex flex-col items-center justify-end pb-8 gap-4">
                   <div className="flex flex-col items-center gap-2 text-center p-4">
                     <Lock className="h-8 w-8 text-primary mb-2" />
-                    <h3 className="font-bold text-lg">
-                      Unlock Full Global Report
-                    </h3>
+                    <h3 className="font-bold text-lg">Unlock Full Global Report</h3>
                     <p className="text-muted-foreground text-sm max-w-xs">
-                      Get detailed latency data from all 10 regions instantly.
-                      No credit card required.
+                      Get detailed latency data from all 10 regions instantly. No credit card
+                      required.
                     </p>
                     <Button onClick={() => setGateOpen(true)} className="mt-2">
                       Unlock Results <ArrowRight className="ml-2 h-4 w-4" />
@@ -273,8 +252,7 @@ export function LatencyChecker() {
           <DialogHeader>
             <DialogTitle>Evaluate Global Performance</DialogTitle>
             <DialogDescription>
-              Enter your email to view the detailed latency breakdown for all
-              regions.
+              Enter your email to view the detailed latency breakdown for all regions.
             </DialogDescription>
           </DialogHeader>
           <div className="flex items-center space-x-2">
@@ -297,9 +275,7 @@ export function LatencyChecker() {
               disabled={isEmailSubmitting}
               className="w-full"
             >
-              {isEmailSubmitting ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : null}
+              {isEmailSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               Access Full Report
             </Button>
           </DialogFooter>

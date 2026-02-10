@@ -12,10 +12,7 @@ interface LatencyStreamParams {
  * GET /api/monitors/[id]/latency-stream
  * Server-Sent Events endpoint for real-time latency updates
  */
-export async function GET(
-  request: NextRequest,
-  props: LatencyStreamParams
-) {
+export async function GET(request: NextRequest, props: LatencyStreamParams) {
   try {
     // Auth check
     const session = await auth.api.getSession({
@@ -50,9 +47,7 @@ export async function GET(
       start(controller) {
         // Send initial connection message
         controller.enqueue(
-          encoder.encode(
-            `data: ${JSON.stringify({ type: "connected", monitorId })}\n\n`
-          )
+          encoder.encode(`data: ${JSON.stringify({ type: "connected", monitorId })}\n\n`),
         );
 
         // Heartbeat every 30 seconds to keep connection alive
@@ -60,8 +55,8 @@ export async function GET(
           try {
             controller.enqueue(
               encoder.encode(
-                `data: ${JSON.stringify({ type: "heartbeat", timestamp: Date.now() })}\n\n`
-              )
+                `data: ${JSON.stringify({ type: "heartbeat", timestamp: Date.now() })}\n\n`,
+              ),
             );
           } catch (error) {
             console.error("[SSE] Heartbeat error:", error);
@@ -105,8 +100,8 @@ export async function GET(
                       },
                       sampleCount: agg.sampleCount,
                       successRate: agg.successRate,
-                    })}\n\n`
-                  )
+                    })}\n\n`,
+                  ),
                 );
               }
             }

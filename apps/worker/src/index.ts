@@ -51,7 +51,7 @@ async function performCheck(
 
       // CRITICAL: Always read the body to prevent Cloudflare Worker deadlock
       // We don't need the content for UP checks, but we must consume the stream
-      await response.text(); 
+      await response.text();
 
       if (!response.ok) {
         errorReason = `HTTP_${response.status}`;
@@ -137,7 +137,7 @@ async function recordLatencyToAggregator(
   monitorId: string,
   region: string,
   latency: number,
-  success: boolean
+  success: boolean,
 ): Promise<void> {
   if (!env?.LATENCY_AGGREGATOR) return;
 
@@ -147,17 +147,19 @@ async function recordLatencyToAggregator(
     const stub = env.LATENCY_AGGREGATOR.get(id);
 
     // Send latency data
-    await stub.fetch("https://latency-aggregator/record", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        monitorId,
-        region,
-        latency,
-        success,
-        timestamp: Date.now(),
-      }),
-    }).then(r => r.text()); // Consume body
+    await stub
+      .fetch("https://latency-aggregator/record", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          monitorId,
+          region,
+          latency,
+          success,
+          timestamp: Date.now(),
+        }),
+      })
+      .then((r) => r.text()); // Consume body
   } catch (error) {
     console.error(`[LatencyAggregator] Failed to record latency:`, error);
   }
@@ -167,7 +169,7 @@ async function recordLatencyToAggregator(
 async function broadcastLiveEvent(
   env: Env | undefined,
   monitorId: string,
-  event: any
+  event: any,
 ): Promise<void> {
   if (!env?.MONITOR_CHANNEL) return;
 
@@ -178,30 +180,35 @@ async function broadcastLiveEvent(
 
     // Send broadcast
     // We don't await this to avoid blocking the check loop (fire and forget)
-    stub.fetch("https://monitor-channel/broadcast", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(event),
-    }).then(r => r.text()).catch(err => console.error(`[MonitorChannel] Broadcast failed:`, err));
-
+    stub
+      .fetch("https://monitor-channel/broadcast", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(event),
+      })
+      .then((r) => r.text())
+      .catch((err) => console.error(`[MonitorChannel] Broadcast failed:`, err));
   } catch (error) {
     console.error(`[MonitorChannel] Failed to setup broadcast:`, error);
   }
 }
 
-
 // Helper: Reusable processing logic with Time-Based Limit
-export async function processBatch(monitors: any[], prisma: any, env?: Env): Promise<{ processed: string[]; remaining: any[] }> {
+export async function processBatch(
+  monitors: any[],
+  prisma: any,
+  env?: Env,
+): Promise<{ processed: string[]; remaining: any[] }> {
   console.log(`Processing batch of ${monitors.length} monitors...`);
-  
+
   // Dynamic import since we just created it
   const { IncidentService } = await import("./lib/incident-service");
   const incidentService = new IncidentService(prisma);
-  // REMOVED: Wall-time limit check. 
-  // Reason: performance.now() measures wall time (including IO), not CPU time. 
+  // REMOVED: Wall-time limit check.
+  // Reason: performance.now() measures wall time (including IO), not CPU time.
   // Cloudflare Free Plan has 10ms CPU limit but allows longer wall time for IO.
   // Using wall time to limit execution caused premature stops and dropped checks because Queues are not available.
-  
+
   const processedIds: string[] = [];
   const remainingMonitors: any[] = [];
 
@@ -261,7 +268,7 @@ export async function processBatch(monitors: any[], prisma: any, env?: Env): Pro
                 monitor.id,
                 regionalResult.region,
                 regionalResult.latency,
-                regionalResult.status === "UP"
+                regionalResult.status === "UP",
               );
 
               // Manage Regional Incidents
@@ -326,22 +333,24 @@ export async function processBatch(monitors: any[], prisma: any, env?: Env): Pro
 
       // Circuit Breaker Calculation
       let nextCheckTime = new Date(Date.now() + (monitor.interval || 60) * 1000);
-      
+
       if (currentStatus === "DOWN") {
         try {
-           const activeIncident = await incidentService.findActiveIncident(monitor.id);
-           if (activeIncident) {
-             const downtimeDuration = Date.now() - activeIncident.createdAt.getTime();
-             const ONE_HOUR = 60 * 60 * 1000;
-             
-             if (downtimeDuration > ONE_HOUR) {
-               console.log(`[CircuitBreaker] Monitor ${monitor.id} down for >1h. Applying 10m backoff.`);
-               const BACKOFF_INTERVAL = 10 * 60 * 1000; // 600s
-               nextCheckTime = new Date(Date.now() + BACKOFF_INTERVAL);
-             }
-           }
+          const activeIncident = await incidentService.findActiveIncident(monitor.id);
+          if (activeIncident) {
+            const downtimeDuration = Date.now() - activeIncident.createdAt.getTime();
+            const ONE_HOUR = 60 * 60 * 1000;
+
+            if (downtimeDuration > ONE_HOUR) {
+              console.log(
+                `[CircuitBreaker] Monitor ${monitor.id} down for >1h. Applying 10m backoff.`,
+              );
+              const BACKOFF_INTERVAL = 10 * 60 * 1000; // 600s
+              nextCheckTime = new Date(Date.now() + BACKOFF_INTERVAL);
+            }
+          }
         } catch (cbError) {
-           console.error(`[CircuitBreaker] Error checking incident duration:`, cbError);
+          console.error(`[CircuitBreaker] Error checking incident duration:`, cbError);
         }
       }
 
@@ -544,7 +553,7 @@ export async function processBatch(monitors: any[], prisma: any, env?: Env): Pro
       console.error(`Failed to process monitor ${monitor.id}:`, err);
       // We count it as processed (failed) to avoid infinite retry loops for bad data
       // Unless it's a timeout error, which might be retryable
-      processedIds.push(monitor.id); 
+      processedIds.push(monitor.id);
     }
   }
 
@@ -569,101 +578,108 @@ export default {
 
       // We rewrite the URL to /websocket so the DO knows it's a client connection
       const doUrl = new URL("https://monitor-channel/websocket");
-      
+
       // Pass the original request (headers, upgrade, etc) but with new URL
       return stub.fetch(doUrl.toString(), request);
     }
 
-
     // API Route: /api/ssl-check
     if (url.pathname === "/api/ssl-check" && request.method === "POST") {
-       try {
-         const body: any = await request.json();
-         const { url: targetUrl } = body;
-         
-         if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
+      try {
+        const body: any = await request.json();
+        const { url: targetUrl } = body;
 
-         const { checkSSL } = await import("./services/ssl-check");
-         const results = await checkSSL(targetUrl);
+        if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
 
-         return new Response(JSON.stringify(results), {
-           headers: { 
-             "Content-Type": "application/json",
-             "Access-Control-Allow-Origin": "*",
-             "Access-Control-Allow-Methods": "POST, OPTIONS",
-             "Access-Control-Allow-Headers": "Content-Type"
-           } 
-         });
-       } catch (err: any) {
-         return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" }});
-       }
+        const { checkSSL } = await import("./services/ssl-check");
+        const results = await checkSSL(targetUrl);
+
+        return new Response(JSON.stringify(results), {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+          },
+        });
+      } catch (err: any) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
     }
-    
 
     // API Route: /api/port-check
     if (url.pathname === "/api/port-check" && request.method === "POST") {
-       try {
-         const body: any = await request.json();
-         const { host, port } = body;
-         
-         if (!host || !port) return new Response("Missing host or port", { status: 400 });
+      try {
+        const body: any = await request.json();
+        const { host, port } = body;
 
-         const { checkPort } = await import("./services/port-check");
-         const result = await checkPort(host, parseInt(port));
+        if (!host || !port) return new Response("Missing host or port", { status: 400 });
 
-         // Add helper: Current IP (for 'My IP' button)
-         // Note: We don't return the IP in the check result, but the frontend might request it separately.
-         // For now, minimal return.
-         
-         return new Response(JSON.stringify(result), {
-           headers: { 
-             "Content-Type": "application/json",
-             "Access-Control-Allow-Origin": "*",
-             "Access-Control-Allow-Methods": "POST, OPTIONS",
-             "Access-Control-Allow-Headers": "Content-Type"
-           } 
-         });
-       } catch (err: any) {
-         return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" }});
-       }
+        const { checkPort } = await import("./services/port-check");
+        const result = await checkPort(host, parseInt(port));
+
+        // Add helper: Current IP (for 'My IP' button)
+        // Note: We don't return the IP in the check result, but the frontend might request it separately.
+        // For now, minimal return.
+
+        return new Response(JSON.stringify(result), {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+          },
+        });
+      } catch (err: any) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
     }
 
     // API Route: /api/global-latency
     if (url.pathname === "/api/global-latency" && request.method === "POST") {
-       try {
-         const body: any = await request.json();
-         const { url: targetUrl } = body;
-         
-         if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
+      try {
+        const body: any = await request.json();
+        const { url: targetUrl } = body;
 
-         // Add protocol if missing
-         const finalUrl = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
+        if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
 
-         const { checkGlobalLatency } = await import("./services/global-latency");
-         const results = await checkGlobalLatency(finalUrl);
+        // Add protocol if missing
+        const finalUrl = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
 
-         return new Response(JSON.stringify(results), {
-           headers: { 
-             "Content-Type": "application/json",
-             "Access-Control-Allow-Origin": "*", // Allow CORS for web app
-             "Access-Control-Allow-Methods": "POST, OPTIONS",
-             "Access-Control-Allow-Headers": "Content-Type"
-           } 
-         });
-       } catch (err: any) {
-         return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" }});
-       }
+        const { checkGlobalLatency } = await import("./services/global-latency");
+        const results = await checkGlobalLatency(finalUrl);
+
+        return new Response(JSON.stringify(results), {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*", // Allow CORS for web app
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+          },
+        });
+      } catch (err: any) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
     }
 
     // CORS Preflight
     if (request.method === "OPTIONS") {
-       return new Response(null, {
-         headers: {
-           "Access-Control-Allow-Origin": "*",
-           "Access-Control-Allow-Methods": "POST, OPTIONS",
-           "Access-Control-Allow-Headers": "Content-Type"
-         }
-       });
+      return new Response(null, {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "POST, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type",
+        },
+      });
     }
 
     return new Response("PulseGuard Worker is Running", { status: 200 });
@@ -680,7 +696,7 @@ export default {
       ctx.waitUntil(
         import("./services/reportGenerator")
           .then((m) => m.generateAndSendMonthlyReports(prisma, env))
-          .catch((err) => console.error("Monthly Report Job Failed:", err))
+          .catch((err) => console.error("Monthly Report Job Failed:", err)),
       );
     }
 
@@ -728,12 +744,16 @@ export default {
       // Offload remaining to Queue if any
       if (remaining.length > 0) {
         if (env.CHECK_QUEUE) {
-          console.warn(`[SmartBatch] Offloading ${remaining.length} monitors to Queue due to CPU limits.`);
+          console.warn(
+            `[SmartBatch] Offloading ${remaining.length} monitors to Queue due to CPU limits.`,
+          );
           // Send remaining monitors as individual messages or small batches
           const messages = remaining.map((m) => ({ body: m }));
-          await env.CHECK_QUEUE.sendBatch(messages); 
+          await env.CHECK_QUEUE.sendBatch(messages);
         } else {
-          console.error("[SmartBatch] Critical: CPU limit reached but NO CHECK_QUEUE defined. Checks dropped.");
+          console.error(
+            "[SmartBatch] Critical: CPU limit reached but NO CHECK_QUEUE defined. Checks dropped.",
+          );
         }
       }
 
@@ -752,9 +772,6 @@ export default {
       return;
     }
 
-
-
-
     // Default: 'monitor-checks' queue
     const prisma = getPrisma(env.DATABASE_URL);
     const monitors = batch.messages.map((msg) => msg.body);
@@ -763,10 +780,12 @@ export default {
 
     // Ack processed messages, Retry remaining
     if (remaining.length > 0) {
-      console.warn(`[SmartBatch] Queue processing hit limit. Retrying ${remaining.length} messages.`);
-      
+      console.warn(
+        `[SmartBatch] Queue processing hit limit. Retrying ${remaining.length} messages.`,
+      );
+
       // Get IDs of remaining monitors for lookup
-      const remainingIds = new Set(remaining.map(m => m.id));
+      const remainingIds = new Set(remaining.map((m) => m.id));
 
       // Retry specific messages
       for (const msg of batch.messages) {
@@ -782,4 +801,3 @@ export default {
     }
   },
 };
-

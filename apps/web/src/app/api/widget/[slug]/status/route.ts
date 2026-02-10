@@ -8,19 +8,19 @@ import { getOverallStatus, getStatusMessage, type BadgeTextConfig } from "@/lib/
 function validateOrigin(origin: string | null, allowedDomains: string | null): boolean {
   // If no origin header (same-origin request), allow
   if (!origin) return true;
-  
+
   // If widget is configured as open to all
   if (allowedDomains === "*") return true;
-  
+
   // If no domains configured, block cross-origin
   if (!allowedDomains) return false;
-  
+
   const allowed = allowedDomains.split(",").map((d) => d.trim().toLowerCase());
-  
+
   try {
     const originUrl = new URL(origin);
     const originHost = originUrl.hostname.toLowerCase();
-    
+
     return allowed.some((domain) => {
       if (domain.startsWith("*.")) {
         // Wildcard domain match (*.example.com matches sub.example.com)
@@ -37,16 +37,13 @@ function validateOrigin(origin: string | null, allowedDomains: string | null): b
 
 /**
  * GET /api/widget/[slug]/status
- * 
+ *
  * Public endpoint that returns the current status of a status page
  * for embedding in external websites.
- * 
+ *
  * Respects CORS based on widgetAllowedDomains configuration.
  */
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const origin = request.headers.get("origin");
 
@@ -70,27 +67,21 @@ export async function GET(
 
   // Page not found or widget not enabled
   if (!statusPage) {
-    return NextResponse.json(
-      { error: "Status page not found" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Status page not found" }, { status: 404 });
   }
 
   if (!statusPage.widgetEnabled) {
     return NextResponse.json(
       { error: "Widget is not enabled for this status page" },
-      { status: 403 }
+      { status: 403 },
     );
   }
 
   // Validate origin for CORS
   const isAllowed = validateOrigin(origin, statusPage.widgetAllowedDomains);
-  
+
   if (!isAllowed) {
-    return NextResponse.json(
-      { error: "Origin not allowed" },
-      { status: 403 }
-    );
+    return NextResponse.json({ error: "Origin not allowed" }, { status: 403 });
   }
 
   // Build monitor status list
@@ -101,9 +92,7 @@ export async function GET(
   }));
 
   // Determine overall status
-  const overallStatus = getOverallStatus(
-    monitors.map((m) => ({ status: m.status }))
-  );
+  const overallStatus = getOverallStatus(monitors.map((m) => ({ status: m.status })));
 
   // Get status message from config or defaults
   const badgeText = statusPage.widgetBadgeText as BadgeTextConfig | null;
@@ -115,7 +104,8 @@ export async function GET(
     message,
     monitors: monitors.map((m) => ({
       name: m.name,
-      status: m.status === "UP" ? "operational" : m.status === "DOWN" ? "down" : m.status.toLowerCase(),
+      status:
+        m.status === "UP" ? "operational" : m.status === "DOWN" ? "down" : m.status.toLowerCase(),
       group: m.group,
     })),
     lastUpdated: new Date().toISOString(),
@@ -149,7 +139,7 @@ export async function GET(
  */
 export async function OPTIONS(
   request: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params;
   const origin = request.headers.get("origin");

@@ -2,14 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { getStatusPageAnalytics } from "@/actions/analytics";
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-} from "recharts";
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis } from "recharts";
 import { Loader2 } from "lucide-react";
 
 export function TrafficChart({ pageId }: { pageId: string }) {

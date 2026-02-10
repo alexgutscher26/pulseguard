@@ -55,10 +55,7 @@ export function StatusPageMonitorRow({
             <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors flex items-center gap-2">
               {item.displayName || monitor.name}
               {isConnected && (
-                <span
-                  className="relative flex h-2 w-2 ml-1"
-                  title="Live Socket Connected"
-                >
+                <span className="relative flex h-2 w-2 ml-1" title="Live Socket Connected">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                 </span>
@@ -71,9 +68,7 @@ export function StatusPageMonitorRow({
                   : "bg-red-500/10 text-red-500 border-red-500/20"
               }`}
             >
-              {currentStatus === "UP"
-                ? tStatus("monitor_operational")
-                : tStatus("monitor_outage")}
+              {currentStatus === "UP" ? tStatus("monitor_operational") : tStatus("monitor_outage")}
             </div>
           </div>
           <div className="text-right flex items-center gap-4">
@@ -84,13 +79,9 @@ export function StatusPageMonitorRow({
             )}
             {showUptime &&
               (currentStatus === "UP" ? (
-                <span className="text-primary text-sm font-bold">
-                  {uptime}%
-                </span>
+                <span className="text-primary text-sm font-bold">{uptime}%</span>
               ) : (
-                <span className="text-red-500 text-sm font-bold">
-                  {tCommon("down")}
-                </span>
+                <span className="text-red-500 text-sm font-bold">{tCommon("down")}</span>
               ))}
           </div>
         </div>
@@ -116,9 +107,7 @@ export function StatusPageMonitorRow({
                 key={i}
                 className={`flex-1 h-full rounded-full transition-all hover:opacity-80 ${bgClass}`}
                 title={
-                  evt
-                    ? `${new Date(evt.timestamp).toLocaleString()} - ${evt.status}`
-                    : "No Data"
+                  evt ? `${new Date(evt.timestamp).toLocaleString()} - ${evt.status}` : "No Data"
                 }
               />
             );

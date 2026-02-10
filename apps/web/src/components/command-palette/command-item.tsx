@@ -15,13 +15,7 @@ interface CommandItemProps {
   };
 }
 
-export function CommandItem({
-  icon: Icon,
-  label,
-  shortcut,
-  onSelect,
-  badge,
-}: CommandItemProps) {
+export function CommandItem({ icon: Icon, label, shortcut, onSelect, badge }: CommandItemProps) {
   return (
     <Command.Item
       onSelect={onSelect}

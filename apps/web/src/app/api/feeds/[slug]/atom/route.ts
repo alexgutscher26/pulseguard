@@ -4,10 +4,7 @@ import { generateAtomFeed } from "@/lib/feeds/atom-generator";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   try {
     const { slug } = await params;
 
@@ -45,7 +42,7 @@ export async function GET(
         m.monitor.incidents.map((incident) => ({
           ...incident,
           monitorName: m.displayName || m.monitor.name,
-        }))
+        })),
       )
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
       .slice(0, 50);

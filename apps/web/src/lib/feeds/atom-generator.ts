@@ -65,7 +65,7 @@ export function generateAtomFeed(config: AtomFeedConfig): string {
     </author>`
         : ""
     }
-  </entry>`
+  </entry>`,
     )
     .join("\n");
 

@@ -9,14 +9,11 @@ export default function NotFound() {
       </div>
       <div className="space-y-2">
         <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-          <GlitchText
-            text="SYSTEM FAILURE // PAGE NOT FOUND"
-            className="text-primary"
-          />
+          <GlitchText text="SYSTEM FAILURE // PAGE NOT FOUND" className="text-primary" />
         </h1>
         <p className="text-muted-foreground max-w-md mx-auto font-mono text-sm leading-relaxed">
-          The requested resource has been disconnected from the neural network.
-          Please recalibrate your coordinates.
+          The requested resource has been disconnected from the neural network. Please recalibrate
+          your coordinates.
         </p>
       </div>
       <Link

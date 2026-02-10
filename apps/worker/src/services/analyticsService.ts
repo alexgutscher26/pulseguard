@@ -33,7 +33,7 @@ export async function getMonthlyStats(prisma: any, monthOffset = 1): Promise<Mon
       monitor: true,
     },
     orderBy: {
-      createdAt: 'desc',
+      createdAt: "desc",
     },
   });
 
@@ -42,28 +42,28 @@ export async function getMonthlyStats(prisma: any, monthOffset = 1): Promise<Mon
 
   // 4. Calculate Global Uptime
   // Strategy: Average of all Monitor Daily Summaries for the month
-  // Note: This relies on the DailySummary table being populated. 
+  // Note: This relies on the DailySummary table being populated.
   // If not, we fall back to raw event calculation (expensive).
   // Assuming DailySummary exists or we approximate from MonitorEvents.
-  
+
   // Option A: Raw Events (Heavy for Worker, but accurate)
   // Option B: Monitor current uptime (Not historical)
   // Option C: DailySummary (Recommended)
-  
+
   // Let's us DailySummary if available, else raw events count.
   // Checking schema... Assuming DailySummary exists as per previous conversations.
-  
+
   // Just in case, let's use a simplified "Total Checks vs Total Failures" from MonitorEvent
   // This is heavy, but for a monthly report running once, it might filter okay if indexed.
-  
+
   const totalChecks = await prisma.monitorEvent.count({
     where: {
       timestamp: {
         gte: startDate,
         lte: endDate,
       },
-      status: { not: "MAINTENANCE" }
-    }
+      status: { not: "MAINTENANCE" },
+    },
   });
 
   const totalFailures = await prisma.monitorEvent.count({
@@ -73,12 +73,10 @@ export async function getMonthlyStats(prisma: any, monthOffset = 1): Promise<Mon
         lte: endDate,
       },
       status: "DOWN",
-    }
+    },
   });
 
-  const globalUptime = totalChecks > 0 
-    ? ((totalChecks - totalFailures) / totalChecks) * 100 
-    : 100;
+  const globalUptime = totalChecks > 0 ? ((totalChecks - totalFailures) / totalChecks) * 100 : 100;
 
   // 5. Average Response Time
   const avgLatencyResult = await prisma.monitorEvent.aggregate({

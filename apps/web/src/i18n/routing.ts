@@ -7,7 +7,7 @@ export const routing = defineRouting({
 
   // Used when no locale matches
   defaultLocale: "en",
-  
+
   // Disable automatic locale prefix for the default locale to keep URLs clean check docs if needed
   // But for now, we'll keep it standard: /en, /es, etc. or just detect.
   // We want shared routing.
@@ -15,5 +15,4 @@ export const routing = defineRouting({
 
 // Lightweight wrappers around Next.js' navigation APIs
 // that will consider the routing configuration
-export const { Link, redirect, usePathname, useRouter, getPathname } =
-  createNavigation(routing);
+export const { Link, redirect, usePathname, useRouter, getPathname } = createNavigation(routing);
