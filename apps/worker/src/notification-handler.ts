@@ -34,6 +34,56 @@ export default {
 
     console.log(`[Notification] Processing ${batch.messages.length} notification(s)...`);
 
+    // --- OPTIMIZATION START: Pre-fetch Status Pages for Incident Events ---
+    // Identify all monitor IDs involved in incident events
+    const incidentMonitorIds = new Set<string>();
+    batch.messages.forEach((msg) => {
+      const { type, monitorId } = msg.body;
+      if (type === "INCIDENT_CREATED" || type === "INCIDENT_RESOLVED") {
+        incidentMonitorIds.add(monitorId);
+      }
+    });
+
+    // Bulk fetch status pages (and subscribers) linked to these monitors
+    const statusPageMap = new Map<string, any[]>();
+
+    if (incidentMonitorIds.size > 0) {
+      try {
+        const statusPages = await prisma.statusPage.findMany({
+          where: {
+            monitors: {
+              some: {
+                monitorId: { in: Array.from(incidentMonitorIds) },
+              },
+            },
+          },
+          include: {
+            monitors: {
+              select: { monitorId: true },
+            },
+            subscribers: {
+              where: { verified: true },
+              include: { monitorSubscriptions: true },
+            },
+          },
+        });
+
+        // Map status pages to each monitor they contain
+        for (const page of statusPages) {
+          for (const spMonitor of page.monitors) {
+            if (incidentMonitorIds.has(spMonitor.monitorId)) {
+              const list = statusPageMap.get(spMonitor.monitorId) || [];
+              list.push(page);
+              statusPageMap.set(spMonitor.monitorId, list);
+            }
+          }
+        }
+      } catch (err) {
+        console.error("[Notification] Failed to pre-fetch status pages:", err);
+      }
+    }
+    // --- OPTIMIZATION END ---
+
     await Promise.all(
       batch.messages.map(async (msg) => {
         const notification = msg.body;
@@ -168,21 +218,17 @@ export default {
 
           // --- 2. STATUS PAGE SUBSCRIBER ALERTS ---
           // Only send if it's an incident-related event (not just high latency, unless we want to)
-          if (notification.type === "INCIDENT_CREATED" || notification.type === "INCIDENT_RESOLVED") {
-            const statusPages = await prisma.statusPage.findMany({
-              where: { monitors: { some: { monitorId: notification.monitorId } } },
-              include: {
-                subscribers: {
-                  where: { verified: true },
-                  include: { monitorSubscriptions: true },
-                },
-              },
-            });
+          if (
+            notification.type === "INCIDENT_CREATED" ||
+            notification.type === "INCIDENT_RESOLVED"
+          ) {
+            // Use pre-fetched status pages from the map
+            const statusPages = statusPageMap.get(notification.monitorId) || [];
 
             for (const page of statusPages) {
               const mappedStatus =
                 notification.type === "INCIDENT_CREATED" ? "INVESTIGATING" : "RESOLVED";
-              
+
               const incidentTitle =
                 notification.reason ||
                 (notification.type === "INCIDENT_CREATED"
@@ -197,7 +243,7 @@ export default {
 
                 // Check monitor subscription
                 const isSubscribedToMonitor = sub.monitorSubscriptions.some(
-                  (ms) => ms.monitorId === notification.monitorId
+                  (ms) => ms.monitorId === notification.monitorId,
                 );
                 return isSubscribedToMonitor;
               });
@@ -216,12 +262,14 @@ export default {
                   manageUrl: `https://pulseguard.com/subscribe/manage/${sub.manageToken}`,
                   pageUrl: `https://pulseguard.com/status-page/${page.slug}`,
                 };
-                
+
                 deliveryPromises.push(sendStatusUpdate(sub.email, updateData, env.RESEND_API_KEY));
               });
-              
+
               if (subscribersToNotify.length > 0) {
-                 console.log(`[Notification] Queueing updates for ${subscribersToNotify.length} subscribers of ${page.title}`);
+                console.log(
+                  `[Notification] Queueing updates for ${subscribersToNotify.length} subscribers of ${page.title}`,
+                );
               }
             }
           }
@@ -313,7 +361,7 @@ async function sendDiscordAlert(url: string, data: MonitorAlertData, type?: stri
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  
+
   // Consume body
   // Consume body
   await res.text();
