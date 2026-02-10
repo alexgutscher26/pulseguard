@@ -1,6 +1,7 @@
 import { CheckCircle, AlertTriangle, Download, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { getVisiblePages } from "@/lib/pagination";
 
 export function IncidentHistory({ monitor }: { monitor: any }) {
   const events = monitor.events || [];
@@ -140,20 +141,29 @@ export function IncidentHistory({ monitor }: { monitor: any }) {
               <ChevronLeft className="size-4" />
             </button>
             <div className="flex gap-1">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  onClick={() => goToPage(page)}
-                  className={cn(
-                    "w-8 h-8 flex items-center justify-center text-[10px] font-mono font-bold transition-all border",
-                    currentPage === page
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "border-primary/10 text-primary/40 hover:text-primary hover:border-primary/40 hover:bg-primary/5",
-                  )}
-                >
-                  {page}
-                </button>
-              ))}
+              {getVisiblePages(currentPage, totalPages).map((page, i) =>
+                typeof page === "number" ? (
+                  <button
+                    key={page}
+                    onClick={() => goToPage(page)}
+                    className={cn(
+                      "w-8 h-8 flex items-center justify-center text-[10px] font-mono font-bold transition-all border",
+                      currentPage === page
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "border-primary/10 text-primary/40 hover:text-primary hover:border-primary/40 hover:bg-primary/5",
+                    )}
+                  >
+                    {page}
+                  </button>
+                ) : (
+                  <span
+                    key={`ellipsis-${i}`}
+                    className="w-8 h-8 flex items-center justify-center text-[10px] font-mono font-bold text-primary/40"
+                  >
+                    ...
+                  </span>
+                ),
+              )}
             </div>
             <button
               onClick={() => goToPage(currentPage + 1)}
