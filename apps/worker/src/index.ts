@@ -12,6 +12,7 @@ export interface Env {
 }
 
 import { connect } from "cloudflare:sockets";
+import { verifySession, verifyMonitorAccess } from "./lib/auth";
 
 // Helper: Perform a single check without DB side effects
 /**
@@ -561,7 +562,16 @@ export default {
       const monitorId = url.pathname.split("/")[3];
       if (!monitorId) return new Response("Missing Monitor ID", { status: 400 });
 
-      // TODO: Add Auth Check here (verify session cookie)
+      // Auth Check
+      const session = await verifySession(request, env);
+      if (!session) {
+        return new Response("Unauthorized", { status: 401 });
+      }
+
+      const hasAccess = await verifyMonitorAccess(session.userId, monitorId, env);
+      if (!hasAccess) {
+        return new Response("Forbidden", { status: 403 });
+      }
 
       // Forward to Durable Object
       const id = env.MONITOR_CHANNEL.idFromName(monitorId);
