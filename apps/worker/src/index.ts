@@ -111,18 +111,7 @@ async function performCheck(
 }
 
 // Helper: Check for flapping (Rate Limiting)
-async function shouldSendAlert(monitorId: string, prisma: any): Promise<boolean> {
-  const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-
-  // Count status changes in the last 5 minutes
-  const recentEvents = await prisma.monitorEvent.count({
-    where: {
-      monitorId: monitorId,
-      timestamp: { gt: fiveMinutesAgo },
-      status: { not: "MAINTENANCE" },
-    },
-  });
-
+function shouldSendAlert(monitorId: string, recentEvents: number): boolean {
   // If > 3 events in 5 mins (e.g. DOWN -> UP -> DOWN -> ...), suppress
   if (recentEvents > 3) {
     console.warn(`[RateLimit] Flapping detected for ${monitorId}. Suppressing alert.`);
@@ -204,6 +193,34 @@ export async function processBatch(monitors: any[], prisma: any, env?: Env): Pro
   
   const processedIds: string[] = [];
   const remainingMonitors: any[] = [];
+
+  // OPTIMIZATION: Pre-fetch recent events count to detect flapping without N+1 queries
+  const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+  const monitorIds = monitors.map((m) => m.id);
+  const flappingCounts = new Map<string, number>();
+
+  try {
+    // Count events per monitor in the last 5 minutes
+    const eventCounts = await prisma.monitorEvent.groupBy({
+      by: ["monitorId"],
+      where: {
+        monitorId: { in: monitorIds },
+        timestamp: { gt: fiveMinutesAgo },
+        status: { not: "MAINTENANCE" },
+      },
+      _count: {
+        _all: true,
+      },
+    });
+
+    // @ts-ignore - Handle potential typing mismatch
+    eventCounts.forEach((e: any) => {
+      flappingCounts.set(e.monitorId, e._count._all);
+    });
+  } catch (err) {
+    console.error("[Performance] Failed to pre-fetch flapping counts:", err);
+    // Fallback: Map remains empty, checks will default to 0 (no suppression)
+  }
 
   for (let i = 0; i < monitors.length; i++) {
     const monitor = monitors[i];
@@ -379,63 +396,68 @@ export async function processBatch(monitors: any[], prisma: any, env?: Env): Pro
       // --- INCIDENT MANAGEMENT ---
       if (currentStatus === "DOWN" && !maintenanceActive) {
         const activeIncident = await incidentService.findActiveIncident(monitor.id);
-        const alertable = await shouldSendAlert(monitor.id, prisma);
 
-        if (!activeIncident && alertable) {
-          // CREATE NEW INCIDENT
-          const incident = await incidentService.createIncident(
-            monitor.id,
-            `Monitor is DOWN: ${monitor.name}`,
-            errorReason ? `Reason: ${errorReason}` : "No error details provided.",
-          );
+        if (!activeIncident) {
+          const recentEvents = flappingCounts.get(monitor.id) || 0;
+          const alertable = shouldSendAlert(monitor.id, recentEvents);
 
-          // Notify (CREATED)
-          const notificationPayload = {
-            type: "INCIDENT_CREATED" as const,
-            monitorId: monitor.id,
-            monitorName: monitor.name,
-            url: monitor.url,
-            status: "DOWN" as const,
-            incidentId: incident.id,
-            reason: errorReason,
-            timestamp: new Date().toISOString(),
-            failedRegions: failedRegions.length > 0 ? failedRegions : undefined,
-          };
-
-          if (env && env.NOTIFICATION_QUEUE) {
-            console.log(`[Notification] Queueing incident ALERT for ${monitor.name}`);
-            await env.NOTIFICATION_QUEUE.send(notificationPayload);
-          } else {
-            // FALLBACK: Direct notification for local dev (queues don't work in dev)
-            console.warn(
-              `[Notification] Queue not available - sending notification directly for ${monitor.name}`,
+          if (alertable) {
+            // CREATE NEW INCIDENT
+            const incident = await incidentService.createIncident(
+              monitor.id,
+              `Monitor is DOWN: ${monitor.name}`,
+              errorReason ? `Reason: ${errorReason}` : "No error details provided.",
             );
-            try {
-              const { default: notificationHandler } = await import("./notification-handler");
-              await notificationHandler.queue(
-                {
-                  queue: "notifications",
-                  messages: [
-                    {
-                      id: `local-${Date.now()}`,
-                      timestamp: new Date(),
-                      body: notificationPayload,
-                      ack: () => {},
-                      retry: () => {},
-                    },
-                  ],
-                  ackAll: () => {},
-                  retryAll: () => {},
-                } as any,
-                env as any,
-                {} as any,
+
+            // Notify (CREATED)
+            const notificationPayload = {
+              type: "INCIDENT_CREATED" as const,
+              monitorId: monitor.id,
+              monitorName: monitor.name,
+              url: monitor.url,
+              status: "DOWN" as const,
+              incidentId: incident.id,
+              reason: errorReason,
+              timestamp: new Date().toISOString(),
+              failedRegions: failedRegions.length > 0 ? failedRegions : undefined,
+            };
+
+            if (env && env.NOTIFICATION_QUEUE) {
+              console.log(`[Notification] Queueing incident ALERT for ${monitor.name}`);
+              await env.NOTIFICATION_QUEUE.send(notificationPayload);
+            } else {
+              // FALLBACK: Direct notification for local dev (queues don't work in dev)
+              console.warn(
+                `[Notification] Queue not available - sending notification directly for ${monitor.name}`,
               );
-            } catch (notifError) {
-              console.error(`[Notification] Failed to send direct notification:`, notifError);
+              try {
+                const { default: notificationHandler } = await import("./notification-handler");
+                await notificationHandler.queue(
+                  {
+                    queue: "notifications",
+                    messages: [
+                      {
+                        id: `local-${Date.now()}`,
+                        timestamp: new Date(),
+                        body: notificationPayload,
+                        ack: () => {},
+                        retry: () => {},
+                      },
+                    ],
+                    ackAll: () => {},
+                    retryAll: () => {},
+                  } as any,
+                  env as any,
+                  {} as any,
+                );
+              } catch (notifError) {
+                console.error(`[Notification] Failed to send direct notification:`, notifError);
+              }
             }
           }
-        } else if (activeIncident) {
+        } else {
           // Still DOWN
+          // Only log if we have an active incident (which is implied by the else here)
           await incidentService.logStillDown(activeIncident.id);
         }
       } else if (currentStatus === "UP" && !maintenanceActive) {
