@@ -34,28 +34,35 @@ export default {
 
     console.log(`[Notification] Processing ${batch.messages.length} notification(s)...`);
 
+    const monitorIds = Array.from(new Set(batch.messages.map((msg) => msg.body.monitorId)));
+
+    // Fetch all monitors in one query
+    const monitors = await prisma.monitor.findMany({
+      where: { id: { in: monitorIds } },
+      include: {
+        alertRules: {
+          where: { enabled: true },
+          include: {
+            channels: true, // Fetch all channels
+          },
+        },
+        user: {
+          select: {
+            email: true,
+          },
+        },
+      },
+    });
+
+    const monitorMap = new Map(monitors.map((m) => [m.id, m]));
+
     await Promise.all(
       batch.messages.map(async (msg) => {
         const notification = msg.body;
 
         try {
           // Fetch alert rules for this monitor
-          const monitor = await prisma.monitor.findUnique({
-            where: { id: notification.monitorId },
-            include: {
-              alertRules: {
-                where: { enabled: true },
-                include: {
-                  channels: true, // Fetch all channels
-                },
-              },
-              user: {
-                select: {
-                  email: true,
-                },
-              },
-            },
-          });
+          const monitor = monitorMap.get(notification.monitorId);
 
           if (!monitor) {
             console.error(`[Notification] Monitor ${notification.monitorId} not found`);
