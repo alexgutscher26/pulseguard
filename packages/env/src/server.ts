@@ -8,6 +8,7 @@ export const env = createEnv({
     BETTER_AUTH_SECRET: z.string().min(32),
     BETTER_AUTH_URL: z.url(),
     CORS_ORIGIN: z.url(),
+    ALLOWED_DEV_ORIGINS: z.string().optional().default("localhost:3000"),
     NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
     SLACK_SIGNING_SECRET: z.string().min(1).optional(),
     OPENAI_API_KEY: z.string().min(1).optional(),
