@@ -201,7 +201,11 @@ export async function processBatch(monitors: any[], prisma: any, env?: Env): Pro
   // Reason: performance.now() measures wall time (including IO), not CPU time. 
   // Cloudflare Free Plan has 10ms CPU limit but allows longer wall time for IO.
   // Using wall time to limit execution caused premature stops and dropped checks because Queues are not available.
-  
+
+  // Optimization: Fetch active incidents for all monitors in one query (N+1 fix)
+  const monitorIds = monitors.map((m) => m.id);
+  const activeIncidentsMap = await incidentService.findActiveIncidentsForMonitors(monitorIds);
+
   const processedIds: string[] = [];
   const remainingMonitors: any[] = [];
 
@@ -329,7 +333,7 @@ export async function processBatch(monitors: any[], prisma: any, env?: Env): Pro
       
       if (currentStatus === "DOWN") {
         try {
-           const activeIncident = await incidentService.findActiveIncident(monitor.id);
+           const activeIncident = activeIncidentsMap.get(monitor.id);
            if (activeIncident) {
              const downtimeDuration = Date.now() - activeIncident.createdAt.getTime();
              const ONE_HOUR = 60 * 60 * 1000;
@@ -378,7 +382,7 @@ export async function processBatch(monitors: any[], prisma: any, env?: Env): Pro
 
       // --- INCIDENT MANAGEMENT ---
       if (currentStatus === "DOWN" && !maintenanceActive) {
-        const activeIncident = await incidentService.findActiveIncident(monitor.id);
+        const activeIncident = activeIncidentsMap.get(monitor.id);
         const alertable = await shouldSendAlert(monitor.id, prisma);
 
         if (!activeIncident && alertable) {
@@ -439,7 +443,7 @@ export async function processBatch(monitors: any[], prisma: any, env?: Env): Pro
           await incidentService.logStillDown(activeIncident.id);
         }
       } else if (currentStatus === "UP" && !maintenanceActive) {
-        const activeIncident = await incidentService.findActiveIncident(monitor.id);
+        const activeIncident = activeIncidentsMap.get(monitor.id);
 
         if (activeIncident) {
           // RESOLVE INCIDENT

@@ -33,6 +33,24 @@ export class IncidentService {
     });
   }
 
+  async findActiveIncidentsForMonitors(monitorIds: string[]) {
+    const incidents = await this.prisma.incident.findMany({
+      where: {
+        monitorId: { in: monitorIds },
+        resolvedAt: null,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    const incidentMap = new Map<string, (typeof incidents)[0]>();
+    for (const incident of incidents) {
+      if (!incidentMap.has(incident.monitorId)) {
+        incidentMap.set(incident.monitorId, incident);
+      }
+    }
+    return incidentMap;
+  }
+
   async createIncident(monitorId: string, title: string, description: string) {
     // 1. Double check we don't already have one (concurrency safety)
     const existing = await this.findActiveIncident(monitorId);
