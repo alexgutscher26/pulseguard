@@ -168,6 +168,8 @@ export async function sendTestNotification(id: string) {
       if (!config?.webhookUrl)
         return { success: false, error: "Invalid Slack webhook configuration" };
 
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
       await fetch(config.webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -204,8 +206,8 @@ export async function sendTestNotification(id: string) {
               elements: [
                 {
                   type: "button",
-                  text: { type: "plain_text", text: "View Dashboard" }, // TODO: Add actual dashboard URL
-                  url: "https://introverted-history.outray.app/dashboard",
+                  text: { type: "plain_text", text: "View Dashboard" },
+                  url: `${baseUrl}/dashboard`,
                   style: "danger",
                 },
               ],
