@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  DashboardStats,
-  type DashboardStatsData,
-} from "@/components/dashboard/stats";
+import { DashboardStats, type DashboardStatsData } from "@/components/dashboard/stats";
 import { MonitorsTable } from "@/components/dashboard/monitors-table";
 import { useMonitors, useDashboardStats } from "@/hooks/use-monitors";
 

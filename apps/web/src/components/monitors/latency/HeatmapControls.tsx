@@ -47,13 +47,8 @@ export function HeatmapControls({
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 bg-card rounded-lg border">
       <div className="flex flex-col gap-2">
-        <label className="text-sm font-medium text-muted-foreground">
-          Time Range
-        </label>
-        <Tabs
-          value={timeRange}
-          onValueChange={(value) => onTimeRangeChange(value as TimeRange)}
-        >
+        <label className="text-sm font-medium text-muted-foreground">Time Range</label>
+        <Tabs value={timeRange} onValueChange={(value) => onTimeRangeChange(value as TimeRange)}>
           <TabsList>
             {(Object.keys(TIME_RANGE_LABELS) as TimeRange[]).map((range) => (
               <TabsTrigger key={range} value={range}>
@@ -65,9 +60,7 @@ export function HeatmapControls({
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-sm font-medium text-muted-foreground">
-          Metric Type
-        </label>
+        <label className="text-sm font-medium text-muted-foreground">Metric Type</label>
         <ToggleGroup
           type="single"
           value={metricType}

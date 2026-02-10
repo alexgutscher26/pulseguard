@@ -12,10 +12,7 @@ interface LatencyHeatmapParams {
  * GET /api/monitors/[id]/latency-heatmap
  * Fetches latency heatmap data for a specific monitor
  */
-export async function GET(
-  request: NextRequest,
-  props: LatencyHeatmapParams
-) {
+export async function GET(request: NextRequest, props: LatencyHeatmapParams) {
   try {
     // Auth check
     const session = await auth.api.getSession({
@@ -29,7 +26,7 @@ export async function GET(
     const params = await props.params;
     const { id: monitorId } = params;
     const { searchParams } = new URL(request.url);
-    
+
     // Query parameters
     const timeRange = searchParams.get("timeRange") || "24h";
     const metricType = searchParams.get("metricType") || "both";
@@ -151,22 +148,22 @@ export async function GET(
       },
     };
 
-    return NextResponse.json({
-      monitorId,
-      timeRange,
-      granularity: config.granularity,
-      regions,
-      colorScale,
-    }, {
-      headers: {
-        "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60",
+    return NextResponse.json(
+      {
+        monitorId,
+        timeRange,
+        granularity: config.granularity,
+        regions,
+        colorScale,
       },
-    });
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60",
+        },
+      },
+    );
   } catch (error) {
     console.error("[LatencyHeatmap] Error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

@@ -102,21 +102,21 @@
   --card-foreground: #e0e0e0;
   --popover: #0e0014;
   --popover-foreground: #e0e0e0;
-  
+
   /* Primary Neon Pink */
   --primary: #fa2a55;
   --primary-foreground: #000000;
-  
+
   /* Secondary Cyan */
   --secondary: #00f0ff;
   --secondary-foreground: #000000;
-  
+
   --muted: #1a0b1e;
   --muted-foreground: #9d5bb5;
-  
+
   --accent: #2d0036;
   --accent-foreground: #ff00ff;
-  
+
   --destructive: #ff003c;
   --border: #4a0052;
   --input: #2a0030;
@@ -140,20 +140,20 @@
   --card-foreground: #d4d4d4;
   --popover: #141414;
   --popover-foreground: #d4d4d4;
-  
+
   /* Primary Industrial Orange */
   --primary: #ff9900;
   --primary-foreground: #000000;
-  
+
   --secondary: #1f2937;
   --secondary-foreground: #ff9900;
-  
+
   --muted: #1c1917;
   --muted-foreground: #a8a29e;
-  
+
   --accent: #292524;
   --accent-foreground: #ff9900;
-  
+
   --destructive: #dc2626;
   --border: #44403c;
   --input: #292524;
@@ -229,20 +229,44 @@
   --animate-glitch-2: glitch-2 0.6s infinite linear alternate-reverse;
 
   @keyframes glitch-1 {
-    0% { clip-path: inset(20% 0 80% 0); }
-    20% { clip-path: inset(60% 0 10% 0); }
-    40% { clip-path: inset(40% 0 50% 0); }
-    60% { clip-path: inset(80% 0 5% 0); }
-    80% { clip-path: inset(10% 0 60% 0); }
-    100% { clip-path: inset(30% 0 30% 0); }
+    0% {
+      clip-path: inset(20% 0 80% 0);
+    }
+    20% {
+      clip-path: inset(60% 0 10% 0);
+    }
+    40% {
+      clip-path: inset(40% 0 50% 0);
+    }
+    60% {
+      clip-path: inset(80% 0 5% 0);
+    }
+    80% {
+      clip-path: inset(10% 0 60% 0);
+    }
+    100% {
+      clip-path: inset(30% 0 30% 0);
+    }
   }
   @keyframes glitch-2 {
-    0% { clip-path: inset(10% 0 60% 0); }
-    20% { clip-path: inset(30% 0 20% 0); }
-    40% { clip-path: inset(10% 0 80% 0); }
-    60% { clip-path: inset(70% 0 10% 0); }
-    80% { clip-path: inset(40% 0 30% 0); }
-    100% { clip-path: inset(50% 0 50% 0); }
+    0% {
+      clip-path: inset(10% 0 60% 0);
+    }
+    20% {
+      clip-path: inset(30% 0 20% 0);
+    }
+    40% {
+      clip-path: inset(10% 0 80% 0);
+    }
+    60% {
+      clip-path: inset(70% 0 10% 0);
+    }
+    80% {
+      clip-path: inset(40% 0 30% 0);
+    }
+    100% {
+      clip-path: inset(50% 0 50% 0);
+    }
   }
 }
 

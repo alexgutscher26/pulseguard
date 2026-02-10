@@ -6,9 +6,7 @@ interface VerifyPageProps {
   params: Promise<{ token: string }>;
 }
 
-export default async function VerifySubscriptionPage({
-  params,
-}: VerifyPageProps) {
+export default async function VerifySubscriptionPage({ params }: VerifyPageProps) {
   const { token } = await params;
 
   // Verify the subscription on page load
@@ -57,12 +55,10 @@ export default async function VerifySubscriptionPage({
                 <div className="flex items-start gap-3">
                   <AlertTriangle className="size-5 text-yellow-500 flex-shrink-0 mt-0.5" />
                   <div className="text-sm text-primary/70">
-                    <p className="font-medium text-primary mb-1">
-                      Save your management link!
-                    </p>
+                    <p className="font-medium text-primary mb-1">Save your management link!</p>
                     <p>
-                      Check your confirmation email for the link to manage or
-                      unsubscribe from this subscription.
+                      Check your confirmation email for the link to manage or unsubscribe from this
+                      subscription.
                     </p>
                   </div>
                 </div>
@@ -79,9 +75,7 @@ export default async function VerifySubscriptionPage({
         </div>
 
         {/* Footer */}
-        <p className="text-center text-primary/30 text-xs mt-6 font-mono">
-          Powered by PulseGuard
-        </p>
+        <p className="text-center text-primary/30 text-xs mt-6 font-mono">Powered by PulseGuard</p>
       </div>
     </div>
   );

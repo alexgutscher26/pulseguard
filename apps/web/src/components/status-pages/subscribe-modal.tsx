@@ -55,11 +55,7 @@ export function SubscribeModal({
     setIsLoading(true);
     setResult(null);
 
-    const response = await initiateSubscription(
-      pageId,
-      email,
-      selectedMonitorIds,
-    );
+    const response = await initiateSubscription(pageId, email, selectedMonitorIds);
     setResult(response);
     setIsLoading(false);
 
@@ -71,18 +67,13 @@ export function SubscribeModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal */}
       <div className="relative w-full max-w-lg mx-4 bg-[#0a0a0f] border border-primary/30 rounded-lg shadow-[0_0_50px_rgba(34,197,94,0.1)] overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-primary/20">
-          <h2 className="text-lg font-bold text-primary font-mono tracking-tight">
-            {t("title")}
-          </h2>
+          <h2 className="text-lg font-bold text-primary font-mono tracking-tight">{t("title")}</h2>
           <button
             onClick={onClose}
             className="p-1 rounded hover:bg-primary/10 text-primary/60 hover:text-primary transition-colors"

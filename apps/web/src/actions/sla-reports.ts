@@ -48,14 +48,10 @@ export async function getSlaReport(
   });
 
   // 2. Calculate "Today" (or partial day since last summary)
-  const todayUtc = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
-  );
+  const todayUtc = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
 
   // Check if we already have today in history
-  const hasToday = history.some(
-    (h) => h.date.getTime() === todayUtc.getTime(),
-  );
+  const hasToday = history.some((h) => h.date.getTime() === todayUtc.getTime());
 
   let todayStats: DailySlaData | null = null;
 
@@ -76,10 +72,10 @@ export async function getSlaReport(
       const validTotal = ups + downs;
 
       const uptimePct = validTotal > 0 ? (ups / validTotal) * 100 : 0;
-      
+
       // Estimate down duration: assumes ~1 minute per check for now
       // Ideally we'd fetch the monitor interval, but this is a decent approximation for events
-      const downDuration = downs; 
+      const downDuration = downs;
 
       todayStats = {
         date: todayUtc.toISOString(),
@@ -90,15 +86,15 @@ export async function getSlaReport(
         checksDown: downs,
       };
     } else {
-        // No data yet today
-           todayStats = {
-            date: todayUtc.toISOString(),
-            uptimePct: 100, // Optimistic default or 0? Usually 100 if no downtime.
-            downDuration: 0,
-            checksTotal: 0,
-            checksUp: 0,
-            checksDown: 0
-        };
+      // No data yet today
+      todayStats = {
+        date: todayUtc.toISOString(),
+        uptimePct: 100, // Optimistic default or 0? Usually 100 if no downtime.
+        downDuration: 0,
+        checksTotal: 0,
+        checksUp: 0,
+        checksDown: 0,
+      };
     }
   }
 
@@ -128,10 +124,7 @@ export async function getSlaReport(
   // Weighted Average Uptime
   // If we have 0 checks, we default to 100% (innocent until proven guilty) or 0%?
   // Usually "No Data" is handled by UI, but here we return 100 if no checksDown.
-  const overallUptime =
-    totalUp + totalDown > 0
-      ? (totalUp / (totalUp + totalDown)) * 100
-      : 100;
+  const overallUptime = totalUp + totalDown > 0 ? (totalUp / (totalUp + totalDown)) * 100 : 100;
 
   return {
     monitorId,

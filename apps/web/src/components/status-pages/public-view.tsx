@@ -93,9 +93,7 @@ export function PublicView({ page }: { page: any }) {
                 {page.title.charAt(0).toUpperCase()}
               </div>
             )}
-            <span className="font-bold tracking-tight hidden md:block">
-              {page.title}
-            </span>
+            <span className="font-bold tracking-tight hidden md:block">{page.title}</span>
           </div>
 
           {/* Nav Links */}
@@ -193,9 +191,7 @@ export function PublicView({ page }: { page: any }) {
                 className={`flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-4 ${allUp ? "text-primary/70" : "text-red-500/70"}`}
               >
                 <p className="text-sm font-mono uppercase tracking-[0.2em] font-bold">
-                  {allUp
-                    ? tStatus("system_integrity_100")
-                    : tStatus("critical_failures")}
+                  {allUp ? tStatus("system_integrity_100") : tStatus("critical_failures")}
                 </p>
 
                 <span className="hidden md:inline opacity-30">|</span>

@@ -12,24 +12,24 @@ allowed-tools: Read, Glob, Grep
 
 ## 1. Core Concepts
 
-| Term | Meaning |
-|------|---------|
-| **i18n** | Internationalization - making app translatable |
-| **L10n** | Localization - actual translations |
-| **Locale** | Language + Region (en-US, tr-TR) |
-| **RTL** | Right-to-left languages (Arabic, Hebrew) |
+| Term       | Meaning                                        |
+| ---------- | ---------------------------------------------- |
+| **i18n**   | Internationalization - making app translatable |
+| **L10n**   | Localization - actual translations             |
+| **Locale** | Language + Region (en-US, tr-TR)               |
+| **RTL**    | Right-to-left languages (Arabic, Hebrew)       |
 
 ---
 
 ## 2. When to Use i18n
 
-| Project Type | i18n Needed? |
-|--------------|--------------|
-| Public web app | ✅ Yes |
-| SaaS product | ✅ Yes |
-| Internal tool | ⚠️ Maybe |
+| Project Type      | i18n Needed?       |
+| ----------------- | ------------------ |
+| Public web app    | ✅ Yes             |
+| SaaS product      | ✅ Yes             |
+| Internal tool     | ⚠️ Maybe           |
 | Single-region app | ⚠️ Consider future |
-| Personal project | ❌ Optional |
+| Personal project  | ❌ Optional        |
 
 ---
 
@@ -108,13 +108,13 @@ locales/
 
 ## 6. Common Issues
 
-| Issue | Solution |
-|-------|----------|
+| Issue               | Solution                     |
+| ------------------- | ---------------------------- |
 | Missing translation | Fallback to default language |
-| Hardcoded strings | Use linter/checker script |
-| Date format | Use Intl.DateTimeFormat |
-| Number format | Use Intl.NumberFormat |
-| Pluralization | Use ICU message format |
+| Hardcoded strings   | Use linter/checker script    |
+| Date format         | Use Intl.DateTimeFormat      |
+| Number format       | Use Intl.NumberFormat        |
+| Pluralization       | Use ICU message format       |
 
 ---
 
@@ -149,6 +149,6 @@ Before shipping:
 
 ## Script
 
-| Script | Purpose | Command |
-|--------|---------|---------|
+| Script                    | Purpose                                         | Command                                         |
+| ------------------------- | ----------------------------------------------- | ----------------------------------------------- |
 | `scripts/i18n_checker.py` | Detect hardcoded strings & missing translations | `python scripts/i18n_checker.py <project_path>` |

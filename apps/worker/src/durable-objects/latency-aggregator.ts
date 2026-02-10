@@ -25,7 +25,7 @@ export class LatencyAggregator extends DurableObject {
 
   constructor(state: DurableObjectState, env: Env) {
     super(state, env);
-    
+
     // Start flush interval (every 60 seconds)
     setInterval(() => {
       this.flushAggregates().catch(console.error);
@@ -37,7 +37,7 @@ export class LatencyAggregator extends DurableObject {
    */
   async recordLatency(data: LatencyRecord): Promise<void> {
     const key = `${data.monitorId}:${data.region}`;
-    
+
     let buffer = this.buffers.get(key);
     if (!buffer) {
       buffer = new LatencyBuffer();
@@ -126,7 +126,7 @@ export class LatencyAggregator extends DurableObject {
     prisma: any,
     monitorId: string,
     region: string,
-    currentAvg: number
+    currentAvg: number,
   ): Promise<void> {
     try {
       const existing = await prisma.regionalBaseline.findUnique({
@@ -138,7 +138,7 @@ export class LatencyAggregator extends DurableObject {
       if (existing) {
         // Exponential moving average (alpha = 0.1 for ~30-day equivalent)
         const newBaseline = existing.baselineLatency * 0.9 + currentAvg * 0.1;
-        
+
         await prisma.regionalBaseline.update({
           where: { id: existing.id },
           data: { baselineLatency: newBaseline },
@@ -213,7 +213,7 @@ export class LatencyAggregator extends DurableObject {
         headers: {
           "Content-Type": "text/event-stream",
           "Cache-Control": "no-cache",
-          "Connection": "keep-alive",
+          Connection: "keep-alive",
         },
       });
     }

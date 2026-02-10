@@ -168,7 +168,10 @@ export default {
 
           // --- 2. STATUS PAGE SUBSCRIBER ALERTS ---
           // Only send if it's an incident-related event (not just high latency, unless we want to)
-          if (notification.type === "INCIDENT_CREATED" || notification.type === "INCIDENT_RESOLVED") {
+          if (
+            notification.type === "INCIDENT_CREATED" ||
+            notification.type === "INCIDENT_RESOLVED"
+          ) {
             const statusPages = await prisma.statusPage.findMany({
               where: { monitors: { some: { monitorId: notification.monitorId } } },
               include: {
@@ -182,7 +185,7 @@ export default {
             for (const page of statusPages) {
               const mappedStatus =
                 notification.type === "INCIDENT_CREATED" ? "INVESTIGATING" : "RESOLVED";
-              
+
               const incidentTitle =
                 notification.reason ||
                 (notification.type === "INCIDENT_CREATED"
@@ -197,7 +200,7 @@ export default {
 
                 // Check monitor subscription
                 const isSubscribedToMonitor = sub.monitorSubscriptions.some(
-                  (ms) => ms.monitorId === notification.monitorId
+                  (ms) => ms.monitorId === notification.monitorId,
                 );
                 return isSubscribedToMonitor;
               });
@@ -216,12 +219,14 @@ export default {
                   manageUrl: `https://pulseguard.com/subscribe/manage/${sub.manageToken}`,
                   pageUrl: `https://pulseguard.com/status-page/${page.slug}`,
                 };
-                
+
                 deliveryPromises.push(sendStatusUpdate(sub.email, updateData, env.RESEND_API_KEY));
               });
-              
+
               if (subscribersToNotify.length > 0) {
-                 console.log(`[Notification] Queueing updates for ${subscribersToNotify.length} subscribers of ${page.title}`);
+                console.log(
+                  `[Notification] Queueing updates for ${subscribersToNotify.length} subscribers of ${page.title}`,
+                );
               }
             }
           }
@@ -313,7 +318,7 @@ async function sendDiscordAlert(url: string, data: MonitorAlertData, type?: stri
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  
+
   // Consume body
   // Consume body
   await res.text();

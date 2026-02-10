@@ -3,7 +3,7 @@ import prisma from "@pulseguard/db";
 
 /**
  * GET /api/widget/embed.js?slug=xxx
- * 
+ *
  * Returns a JavaScript snippet that fetches status and renders a badge.
  * This is the embeddable widget script.
  */
@@ -36,22 +36,24 @@ export async function GET(request: NextRequest) {
   }
 
   // Parse theme with defaults
-  const theme = (statusPage.widgetTheme as {
-    bgColor?: string;
-    textColor?: string;
-    borderRadius?: string;
-  }) || {};
+  const theme =
+    (statusPage.widgetTheme as {
+      bgColor?: string;
+      textColor?: string;
+      borderRadius?: string;
+    }) || {};
 
   const bgColor = theme.bgColor || "#1a1a2e";
   const textColor = theme.textColor || "#00ff88";
   const borderRadius = theme.borderRadius || "8px";
 
   // Parse badge text with defaults
-  const badgeText = (statusPage.widgetBadgeText as {
-    operational?: string;
-    partial?: string;
-    major?: string;
-  }) || {};
+  const badgeText =
+    (statusPage.widgetBadgeText as {
+      operational?: string;
+      partial?: string;
+      major?: string;
+    }) || {};
 
   const operationalText = badgeText.operational || "All Systems Operational";
   const partialText = badgeText.partial || "Partial Outage";

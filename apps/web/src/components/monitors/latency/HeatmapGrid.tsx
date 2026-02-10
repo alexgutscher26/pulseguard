@@ -12,11 +12,7 @@ interface HeatmapGridProps {
   onRegionClick?: (region: string) => void;
 }
 
-export function HeatmapGrid({
-  data,
-  metricType,
-  onRegionClick,
-}: HeatmapGridProps) {
+export function HeatmapGrid({ data, metricType, onRegionClick }: HeatmapGridProps) {
   const { getColorForPoint } = useHeatmapScale(metricType);
 
   // Get unique timestamps across all regions
@@ -55,9 +51,7 @@ export function HeatmapGrid({
 
         {/* Rows */}
         {data.regions.map((region) => {
-          const dataMap = new Map(
-            region.data.map((point) => [point.timestamp, point]),
-          );
+          const dataMap = new Map(region.data.map((point) => [point.timestamp, point]));
 
           return (
             <div
@@ -79,12 +73,7 @@ export function HeatmapGrid({
                   const point = dataMap.get(timestamp);
 
                   if (!point) {
-                    return (
-                      <div
-                        key={timestamp}
-                        className="flex-1 min-w-[60px] p-2 bg-muted/20"
-                      />
-                    );
+                    return <div key={timestamp} className="flex-1 min-w-[60px] p-2 bg-muted/20" />;
                   }
 
                   const color = getColorForPoint(point);
@@ -98,8 +87,7 @@ export function HeatmapGrid({
                       key={timestamp}
                       className={cn(
                         "flex-1 min-w-[60px] p-2 text-xs text-center font-medium cursor-pointer transition-all hover:scale-105 hover:z-20 hover:shadow-lg",
-                        point.hasIncident &&
-                          "ring-2 ring-destructive animate-pulse",
+                        point.hasIncident && "ring-2 ring-destructive animate-pulse",
                       )}
                       style={{
                         backgroundColor: color,

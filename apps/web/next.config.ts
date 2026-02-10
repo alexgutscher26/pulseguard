@@ -2,7 +2,7 @@ import "@pulseguard/env/web";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  typedRoutes: true, 
+  typedRoutes: true,
   reactCompiler: true,
   typescript: {
     ignoreBuildErrors: true,

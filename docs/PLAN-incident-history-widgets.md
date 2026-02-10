@@ -152,6 +152,7 @@ model StatusPage {
 - **INPUT:** GET `/api/widget/[slug]/status`
 - **OUTPUT:** JSON response with current status + CORS headers
 - **VERIFY:**
+
   ```json
   {
     "status": "operational" | "partial" | "major",

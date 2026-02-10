@@ -1,4 +1,6 @@
 import { getPrisma } from "@pulseguard/db";
+import pLimit from "p-limit";
+
 export { LatencyAggregator } from "./durable-objects/latency-aggregator";
 export { MonitorChannel } from "./durable-objects/MonitorChannel";
 
@@ -51,7 +53,7 @@ async function performCheck(
 
       // CRITICAL: Always read the body to prevent Cloudflare Worker deadlock
       // We don't need the content for UP checks, but we must consume the stream
-      await response.text(); 
+      await response.text();
 
       if (!response.ok) {
         errorReason = `HTTP_${response.status}`;
@@ -137,7 +139,7 @@ async function recordLatencyToAggregator(
   monitorId: string,
   region: string,
   latency: number,
-  success: boolean
+  success: boolean,
 ): Promise<void> {
   if (!env?.LATENCY_AGGREGATOR) return;
 
@@ -147,17 +149,19 @@ async function recordLatencyToAggregator(
     const stub = env.LATENCY_AGGREGATOR.get(id);
 
     // Send latency data
-    await stub.fetch("https://latency-aggregator/record", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        monitorId,
-        region,
-        latency,
-        success,
-        timestamp: Date.now(),
-      }),
-    }).then(r => r.text()); // Consume body
+    await stub
+      .fetch("https://latency-aggregator/record", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          monitorId,
+          region,
+          latency,
+          success,
+          timestamp: Date.now(),
+        }),
+      })
+      .then((r) => r.text()); // Consume body
   } catch (error) {
     console.error(`[LatencyAggregator] Failed to record latency:`, error);
   }
@@ -167,7 +171,7 @@ async function recordLatencyToAggregator(
 async function broadcastLiveEvent(
   env: Env | undefined,
   monitorId: string,
-  event: any
+  event: any,
 ): Promise<void> {
   if (!env?.MONITOR_CHANNEL) return;
 
@@ -178,375 +182,388 @@ async function broadcastLiveEvent(
 
     // Send broadcast
     // We don't await this to avoid blocking the check loop (fire and forget)
-    stub.fetch("https://monitor-channel/broadcast", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(event),
-    }).then(r => r.text()).catch(err => console.error(`[MonitorChannel] Broadcast failed:`, err));
-
+    stub
+      .fetch("https://monitor-channel/broadcast", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(event),
+      })
+      .then((r) => r.text())
+      .catch((err) => console.error(`[MonitorChannel] Broadcast failed:`, err));
   } catch (error) {
     console.error(`[MonitorChannel] Failed to setup broadcast:`, error);
   }
 }
 
-
 // Helper: Reusable processing logic with Time-Based Limit
-export async function processBatch(monitors: any[], prisma: any, env?: Env): Promise<{ processed: string[]; remaining: any[] }> {
+export async function processBatch(
+  monitors: any[],
+  prisma: any,
+  env?: Env,
+): Promise<{ processed: string[]; remaining: any[] }> {
   console.log(`Processing batch of ${monitors.length} monitors...`);
-  
+
   // Dynamic import since we just created it
   const { IncidentService } = await import("./lib/incident-service");
   const incidentService = new IncidentService(prisma);
-  // REMOVED: Wall-time limit check. 
-  // Reason: performance.now() measures wall time (including IO), not CPU time. 
+  // REMOVED: Wall-time limit check.
+  // Reason: performance.now() measures wall time (including IO), not CPU time.
   // Cloudflare Free Plan has 10ms CPU limit but allows longer wall time for IO.
   // Using wall time to limit execution caused premature stops and dropped checks because Queues are not available.
-  
+
   const processedIds: string[] = [];
   const remainingMonitors: any[] = [];
+  const CONCURRENCY_LIMIT = 10;
+  const limit = pLimit(CONCURRENCY_LIMIT);
 
-  for (let i = 0; i < monitors.length; i++) {
-    const monitor = monitors[i];
+  await Promise.all(
+    monitors.map((monitor) =>
+      limit(async () => {
+        // --- PROCESSING LOGIC START ---
+        try {
+          // 0. Check for Active Maintenance Window
+          const activeWindow = monitor.maintenanceWindows?.[0];
+          let maintenanceActive = false;
 
-    // --- PROCESSING LOGIC START ---
-    try {
-      // 0. Check for Active Maintenance Window
-      const activeWindow = monitor.maintenanceWindows?.[0];
-      let maintenanceActive = false;
-
-      if (activeWindow) {
-        console.log(
-          `[Maintenance] Skipping check for ${monitor.name} (Window: ${activeWindow.startAt} - ${activeWindow.endAt})`,
-        );
-        maintenanceActive = true;
-      }
-
-      // 1. Initial Check
-      let result;
-      let failedRegions: string[] = [];
-
-      if (maintenanceActive) {
-        result = { status: "MAINTENANCE", latency: 0, errorReason: undefined };
-      } else {
-        // Check if regional monitoring is enabled
-        if (monitor.checkRegions) {
-          try {
-            const { performRegionalChecks, getAverageLatency } =
-              await import("./services/regional-monitor");
-
-            const regionalResults = await performRegionalChecks(monitor);
+          if (activeWindow) {
             console.log(
-              `[Regional] Checked ${monitor.name} from ${regionalResults.length} regions`,
+              `[Maintenance] Skipping check for ${monitor.name} (Window: ${activeWindow.startAt} - ${activeWindow.endAt})`,
             );
+            maintenanceActive = true;
+          }
 
-            // Capture failed regions
-            failedRegions = regionalResults.filter((r) => r.status === "DOWN").map((r) => r.region);
+          // 1. Initial Check
+          let result;
+          let failedRegions: string[] = [];
 
-            // Store each regional result AND manage regional incidents
-            for (const regionalResult of regionalResults) {
-              await prisma.monitorEvent.create({
-                data: {
-                  monitorId: monitor.id,
-                  status: regionalResult.status as any,
-                  latency: regionalResult.latency,
-                  errorReason: regionalResult.errorReason,
-                  region: regionalResult.region,
-                  timestamp: regionalResult.timestamp,
-                },
-              });
+          if (maintenanceActive) {
+            result = { status: "MAINTENANCE", latency: 0, errorReason: undefined };
+          } else {
+            // Check if regional monitoring is enabled
+            if (monitor.checkRegions) {
+              try {
+                const { performRegionalChecks, getAverageLatency } =
+                  await import("./services/regional-monitor");
 
-              // Record latency to aggregator
-              await recordLatencyToAggregator(
-                env,
-                monitor.id,
-                regionalResult.region,
-                regionalResult.latency,
-                regionalResult.status === "UP"
+                const regionalResults = await performRegionalChecks(monitor);
+                console.log(
+                  `[Regional] Checked ${monitor.name} from ${regionalResults.length} regions`,
+                );
+
+                // Capture failed regions
+                failedRegions = regionalResults
+                  .filter((r) => r.status === "DOWN")
+                  .map((r) => r.region);
+
+                // Store each regional result AND manage regional incidents
+                for (const regionalResult of regionalResults) {
+                  await prisma.monitorEvent.create({
+                    data: {
+                      monitorId: monitor.id,
+                      status: regionalResult.status as any,
+                      latency: regionalResult.latency,
+                      errorReason: regionalResult.errorReason,
+                      region: regionalResult.region,
+                      timestamp: regionalResult.timestamp,
+                    },
+                  });
+
+                  // Record latency to aggregator
+                  await recordLatencyToAggregator(
+                    env,
+                    monitor.id,
+                    regionalResult.region,
+                    regionalResult.latency,
+                    regionalResult.status === "UP",
+                  );
+
+                  // Manage Regional Incidents
+                  if (regionalResult.status === "DOWN") {
+                    await incidentService.createRegionalIncident(monitor.id, regionalResult.region);
+                  } else {
+                    const activeRegional = await incidentService.findActiveRegionalIncident(
+                      monitor.id,
+                      regionalResult.region,
+                    );
+                    if (activeRegional) {
+                      await incidentService.resolveRegionalIncident(activeRegional.id);
+                    }
+                  }
+                }
+
+                // Determine overall status based on threshold
+                const failedCount = failedRegions.length;
+                const threshold = monitor.alertThreshold || 1;
+                const overallStatus = failedCount >= threshold ? "DOWN" : "UP";
+                const avgLatency = getAverageLatency(regionalResults);
+
+                result = {
+                  status: overallStatus,
+                  latency: avgLatency,
+                  errorReason:
+                    overallStatus === "DOWN"
+                      ? regionalResults.find((r) => r.status === "DOWN")?.errorReason
+                      : failedCount > 0
+                        ? `${failedCount} regions failing (below threshold)`
+                        : undefined,
+                };
+              } catch (regionalError) {
+                console.error(
+                  `[Regional] Failed to perform regional checks for ${monitor.name}:`,
+                  regionalError,
+                );
+                // Fallback to single check
+                result = await performCheck(monitor);
+              }
+            } else {
+              // Standard single-region check
+              result = await performCheck(monitor);
+            }
+
+            // 2. Double Check Protocol (Retry on Failure) - only for non-regional checks
+            if (result.status === "DOWN" && monitor.status !== "DOWN" && !monitor.checkRegions) {
+              console.warn(
+                `[DoubleCheck] First check failed for ${monitor.name} (${monitor.url}). Retrying in 2s...`,
               );
 
-              // Manage Regional Incidents
-              if (regionalResult.status === "DOWN") {
-                await incidentService.createRegionalIncident(monitor.id, regionalResult.region);
+              // Wait 2000ms
+              await new Promise((resolve) => setTimeout(resolve, 2000));
+
+              // Retry
+              result = await performCheck(monitor);
+              console.log(`[DoubleCheck] Retry result for ${monitor.name}: ${result.status}`);
+            }
+          }
+
+          const { status: currentStatus, latency, errorReason } = result;
+
+          // Circuit Breaker Calculation
+          let nextCheckTime = new Date(Date.now() + (monitor.interval || 60) * 1000);
+
+          if (currentStatus === "DOWN") {
+            try {
+              const activeIncident = await incidentService.findActiveIncident(monitor.id);
+              if (activeIncident) {
+                const downtimeDuration = Date.now() - activeIncident.createdAt.getTime();
+                const ONE_HOUR = 60 * 60 * 1000;
+
+                if (downtimeDuration > ONE_HOUR) {
+                  console.log(
+                    `[CircuitBreaker] Monitor ${monitor.id} down for >1h. Applying 10m backoff.`,
+                  );
+                  const BACKOFF_INTERVAL = 10 * 60 * 1000; // 600s
+                  nextCheckTime = new Date(Date.now() + BACKOFF_INTERVAL);
+                }
+              }
+            } catch (cbError) {
+              console.error(`[CircuitBreaker] Error checking incident duration:`, cbError);
+            }
+          }
+
+          // Save result and update monitor
+          await prisma.$transaction([
+            prisma.monitorEvent.create({
+              data: {
+                monitorId: monitor.id,
+                status: currentStatus as any,
+                latency: latency,
+                errorReason: errorReason,
+                timestamp: new Date(),
+              },
+            }),
+            prisma.monitor.update({
+              where: { id: monitor.id },
+              data: {
+                status: currentStatus as any,
+                lastCheck: new Date(),
+                nextCheck: nextCheckTime,
+              },
+            }),
+          ]);
+
+          // BROADCAST LIVE EVENT
+          broadcastLiveEvent(env, monitor.id, {
+            type: "check_result",
+            monitorId: monitor.id,
+            status: currentStatus,
+            latency: latency,
+            region: "global", // Default for now, update if regional
+            timestamp: new Date().getTime(),
+          });
+
+          // --- INCIDENT MANAGEMENT ---
+          if (currentStatus === "DOWN" && !maintenanceActive) {
+            const activeIncident = await incidentService.findActiveIncident(monitor.id);
+            const alertable = await shouldSendAlert(monitor.id, prisma);
+
+            if (!activeIncident && alertable) {
+              // CREATE NEW INCIDENT
+              const incident = await incidentService.createIncident(
+                monitor.id,
+                `Monitor is DOWN: ${monitor.name}`,
+                errorReason ? `Reason: ${errorReason}` : "No error details provided.",
+              );
+
+              // Notify (CREATED)
+              const notificationPayload = {
+                type: "INCIDENT_CREATED" as const,
+                monitorId: monitor.id,
+                monitorName: monitor.name,
+                url: monitor.url,
+                status: "DOWN" as const,
+                incidentId: incident.id,
+                reason: errorReason,
+                timestamp: new Date().toISOString(),
+                failedRegions: failedRegions.length > 0 ? failedRegions : undefined,
+              };
+
+              if (env && env.NOTIFICATION_QUEUE) {
+                console.log(`[Notification] Queueing incident ALERT for ${monitor.name}`);
+                await env.NOTIFICATION_QUEUE.send(notificationPayload);
               } else {
-                const activeRegional = await incidentService.findActiveRegionalIncident(
-                  monitor.id,
-                  regionalResult.region,
+                // FALLBACK: Direct notification for local dev (queues don't work in dev)
+                console.warn(
+                  `[Notification] Queue not available - sending notification directly for ${monitor.name}`,
                 );
-                if (activeRegional) {
-                  await incidentService.resolveRegionalIncident(activeRegional.id);
+                try {
+                  const { default: notificationHandler } = await import("./notification-handler");
+                  await notificationHandler.queue(
+                    {
+                      queue: "notifications",
+                      messages: [
+                        {
+                          id: `local-${Date.now()}`,
+                          timestamp: new Date(),
+                          body: notificationPayload,
+                          ack: () => {},
+                          retry: () => {},
+                        },
+                      ],
+                      ackAll: () => {},
+                      retryAll: () => {},
+                    } as any,
+                    env as any,
+                    {} as any,
+                  );
+                } catch (notifError) {
+                  console.error(`[Notification] Failed to send direct notification:`, notifError);
+                }
+              }
+            } else if (activeIncident) {
+              // Still DOWN
+              await incidentService.logStillDown(activeIncident.id);
+            }
+          } else if (currentStatus === "UP" && !maintenanceActive) {
+            const activeIncident = await incidentService.findActiveIncident(monitor.id);
+
+            if (activeIncident) {
+              // RESOLVE INCIDENT
+              await incidentService.resolveIncident(activeIncident.id);
+
+              // Notify (RESOLVED)
+              const notificationPayload = {
+                type: "INCIDENT_RESOLVED" as const,
+                monitorId: monitor.id,
+                monitorName: monitor.name,
+                url: monitor.url,
+                status: "UP" as const,
+                incidentId: activeIncident.id,
+                timestamp: new Date().toISOString(),
+              };
+
+              if (env && env.NOTIFICATION_QUEUE) {
+                console.log(`[Notification] Queueing incident RESOLVED for ${monitor.name}`);
+                await env.NOTIFICATION_QUEUE.send(notificationPayload);
+              } else {
+                // FALLBACK: Direct notification for local dev
+                console.warn(
+                  `[Notification] Queue not available - sending notification directly for ${monitor.name}`,
+                );
+                try {
+                  const { default: notificationHandler } = await import("./notification-handler");
+                  await notificationHandler.queue(
+                    {
+                      queue: "notifications",
+                      messages: [
+                        {
+                          id: `local-${Date.now()}`,
+                          timestamp: new Date(),
+                          body: notificationPayload,
+                          ack: () => {},
+                          retry: () => {},
+                        },
+                      ],
+                      ackAll: () => {},
+                      retryAll: () => {},
+                    } as any,
+                    env as any,
+                    {} as any,
+                  );
+                } catch (notifError) {
+                  console.error(`[Notification] Failed to send direct notification:`, notifError);
+                }
+              }
+            } else if (latency > 1000) {
+              // High Latency Threshold (1000ms)
+              // HIGH LATENCY ALERT
+              const notificationPayload = {
+                type: "HIGH_LATENCY" as const,
+                monitorId: monitor.id,
+                monitorName: monitor.name,
+                url: monitor.url,
+                status: "UP" as const,
+                latency: latency,
+                timestamp: new Date().toISOString(),
+                reason: `High Latency: ${latency}ms`,
+              };
+
+              if (env && env.NOTIFICATION_QUEUE) {
+                console.log(
+                  `[Notification] Queueing HIGH LATENCY alert for ${monitor.name} (${latency}ms)`,
+                );
+                await env.NOTIFICATION_QUEUE.send(notificationPayload);
+              } else {
+                // FALLBACK: Direct notification for local dev
+                console.warn(
+                  `[Notification] Queue not available - sending notification directly for ${monitor.name}`,
+                );
+                try {
+                  const { default: notificationHandler } = await import("./notification-handler");
+                  await notificationHandler.queue(
+                    {
+                      queue: "notifications",
+                      messages: [
+                        {
+                          id: `local-${Date.now()}`,
+                          timestamp: new Date(),
+                          body: notificationPayload,
+                          ack: () => {},
+                          retry: () => {},
+                        },
+                      ],
+                      ackAll: () => {},
+                      retryAll: () => {},
+                    } as any,
+                    env as any,
+                    {} as any,
+                  );
+                } catch (notifError) {
+                  console.error(`[Notification] Failed to send direct notification:`, notifError);
                 }
               }
             }
-
-            // Determine overall status based on threshold
-            const failedCount = failedRegions.length;
-            const threshold = monitor.alertThreshold || 1;
-            const overallStatus = failedCount >= threshold ? "DOWN" : "UP";
-            const avgLatency = getAverageLatency(regionalResults);
-
-            result = {
-              status: overallStatus,
-              latency: avgLatency,
-              errorReason:
-                overallStatus === "DOWN"
-                  ? regionalResults.find((r) => r.status === "DOWN")?.errorReason
-                  : failedCount > 0
-                    ? `${failedCount} regions failing (below threshold)`
-                    : undefined,
-            };
-          } catch (regionalError) {
-            console.error(
-              `[Regional] Failed to perform regional checks for ${monitor.name}:`,
-              regionalError,
-            );
-            // Fallback to single check
-            result = await performCheck(monitor);
           }
-        } else {
-          // Standard single-region check
-          result = await performCheck(monitor);
+          processedIds.push(monitor.id);
+          console.log(`Checked ${monitor.url}: ${currentStatus} (${latency}ms)`);
+        } catch (err) {
+          console.error(`Failed to process monitor ${monitor.id}:`, err);
+          // We count it as processed (failed) to avoid infinite retry loops for bad data
+          // Unless it's a timeout error, which might be retryable
+          processedIds.push(monitor.id);
         }
-
-        // 2. Double Check Protocol (Retry on Failure) - only for non-regional checks
-        if (result.status === "DOWN" && monitor.status !== "DOWN" && !monitor.checkRegions) {
-          console.warn(
-            `[DoubleCheck] First check failed for ${monitor.name} (${monitor.url}). Retrying in 2s...`,
-          );
-
-          // Wait 2000ms
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-
-          // Retry
-          result = await performCheck(monitor);
-          console.log(`[DoubleCheck] Retry result for ${monitor.name}: ${result.status}`);
-        }
-      }
-
-      const { status: currentStatus, latency, errorReason } = result;
-
-      // Circuit Breaker Calculation
-      let nextCheckTime = new Date(Date.now() + (monitor.interval || 60) * 1000);
-      
-      if (currentStatus === "DOWN") {
-        try {
-           const activeIncident = await incidentService.findActiveIncident(monitor.id);
-           if (activeIncident) {
-             const downtimeDuration = Date.now() - activeIncident.createdAt.getTime();
-             const ONE_HOUR = 60 * 60 * 1000;
-             
-             if (downtimeDuration > ONE_HOUR) {
-               console.log(`[CircuitBreaker] Monitor ${monitor.id} down for >1h. Applying 10m backoff.`);
-               const BACKOFF_INTERVAL = 10 * 60 * 1000; // 600s
-               nextCheckTime = new Date(Date.now() + BACKOFF_INTERVAL);
-             }
-           }
-        } catch (cbError) {
-           console.error(`[CircuitBreaker] Error checking incident duration:`, cbError);
-        }
-      }
-
-      // Save result and update monitor
-      await prisma.$transaction([
-        prisma.monitorEvent.create({
-          data: {
-            monitorId: monitor.id,
-            status: currentStatus as any,
-            latency: latency,
-            errorReason: errorReason,
-            timestamp: new Date(),
-          },
-        }),
-        prisma.monitor.update({
-          where: { id: monitor.id },
-          data: {
-            status: currentStatus as any,
-            lastCheck: new Date(),
-            nextCheck: nextCheckTime,
-          },
-        }),
-      ]);
-
-      // BROADCAST LIVE EVENT
-      broadcastLiveEvent(env, monitor.id, {
-        type: "check_result",
-        monitorId: monitor.id,
-        status: currentStatus,
-        latency: latency,
-        region: "global", // Default for now, update if regional
-        timestamp: new Date().getTime(),
-      });
-
-      // --- INCIDENT MANAGEMENT ---
-      if (currentStatus === "DOWN" && !maintenanceActive) {
-        const activeIncident = await incidentService.findActiveIncident(monitor.id);
-        const alertable = await shouldSendAlert(monitor.id, prisma);
-
-        if (!activeIncident && alertable) {
-          // CREATE NEW INCIDENT
-          const incident = await incidentService.createIncident(
-            monitor.id,
-            `Monitor is DOWN: ${monitor.name}`,
-            errorReason ? `Reason: ${errorReason}` : "No error details provided.",
-          );
-
-          // Notify (CREATED)
-          const notificationPayload = {
-            type: "INCIDENT_CREATED" as const,
-            monitorId: monitor.id,
-            monitorName: monitor.name,
-            url: monitor.url,
-            status: "DOWN" as const,
-            incidentId: incident.id,
-            reason: errorReason,
-            timestamp: new Date().toISOString(),
-            failedRegions: failedRegions.length > 0 ? failedRegions : undefined,
-          };
-
-          if (env && env.NOTIFICATION_QUEUE) {
-            console.log(`[Notification] Queueing incident ALERT for ${monitor.name}`);
-            await env.NOTIFICATION_QUEUE.send(notificationPayload);
-          } else {
-            // FALLBACK: Direct notification for local dev (queues don't work in dev)
-            console.warn(
-              `[Notification] Queue not available - sending notification directly for ${monitor.name}`,
-            );
-            try {
-              const { default: notificationHandler } = await import("./notification-handler");
-              await notificationHandler.queue(
-                {
-                  queue: "notifications",
-                  messages: [
-                    {
-                      id: `local-${Date.now()}`,
-                      timestamp: new Date(),
-                      body: notificationPayload,
-                      ack: () => {},
-                      retry: () => {},
-                    },
-                  ],
-                  ackAll: () => {},
-                  retryAll: () => {},
-                } as any,
-                env as any,
-                {} as any,
-              );
-            } catch (notifError) {
-              console.error(`[Notification] Failed to send direct notification:`, notifError);
-            }
-          }
-        } else if (activeIncident) {
-          // Still DOWN
-          await incidentService.logStillDown(activeIncident.id);
-        }
-      } else if (currentStatus === "UP" && !maintenanceActive) {
-        const activeIncident = await incidentService.findActiveIncident(monitor.id);
-
-        if (activeIncident) {
-          // RESOLVE INCIDENT
-          await incidentService.resolveIncident(activeIncident.id);
-
-          // Notify (RESOLVED)
-          const notificationPayload = {
-            type: "INCIDENT_RESOLVED" as const,
-            monitorId: monitor.id,
-            monitorName: monitor.name,
-            url: monitor.url,
-            status: "UP" as const,
-            incidentId: activeIncident.id,
-            timestamp: new Date().toISOString(),
-          };
-
-          if (env && env.NOTIFICATION_QUEUE) {
-            console.log(`[Notification] Queueing incident RESOLVED for ${monitor.name}`);
-            await env.NOTIFICATION_QUEUE.send(notificationPayload);
-          } else {
-            // FALLBACK: Direct notification for local dev
-            console.warn(
-              `[Notification] Queue not available - sending notification directly for ${monitor.name}`,
-            );
-            try {
-              const { default: notificationHandler } = await import("./notification-handler");
-              await notificationHandler.queue(
-                {
-                  queue: "notifications",
-                  messages: [
-                    {
-                      id: `local-${Date.now()}`,
-                      timestamp: new Date(),
-                      body: notificationPayload,
-                      ack: () => {},
-                      retry: () => {},
-                    },
-                  ],
-                  ackAll: () => {},
-                  retryAll: () => {},
-                } as any,
-                env as any,
-                {} as any,
-              );
-            } catch (notifError) {
-              console.error(`[Notification] Failed to send direct notification:`, notifError);
-            }
-          }
-        } else if (latency > 1000) {
-          // High Latency Threshold (1000ms)
-          // HIGH LATENCY ALERT
-          const notificationPayload = {
-            type: "HIGH_LATENCY" as const,
-            monitorId: monitor.id,
-            monitorName: monitor.name,
-            url: monitor.url,
-            status: "UP" as const,
-            latency: latency,
-            timestamp: new Date().toISOString(),
-            reason: `High Latency: ${latency}ms`,
-          };
-
-          if (env && env.NOTIFICATION_QUEUE) {
-            console.log(
-              `[Notification] Queueing HIGH LATENCY alert for ${monitor.name} (${latency}ms)`,
-            );
-            await env.NOTIFICATION_QUEUE.send(notificationPayload);
-          } else {
-            // FALLBACK: Direct notification for local dev
-            console.warn(
-              `[Notification] Queue not available - sending notification directly for ${monitor.name}`,
-            );
-            try {
-              const { default: notificationHandler } = await import("./notification-handler");
-              await notificationHandler.queue(
-                {
-                  queue: "notifications",
-                  messages: [
-                    {
-                      id: `local-${Date.now()}`,
-                      timestamp: new Date(),
-                      body: notificationPayload,
-                      ack: () => {},
-                      retry: () => {},
-                    },
-                  ],
-                  ackAll: () => {},
-                  retryAll: () => {},
-                } as any,
-                env as any,
-                {} as any,
-              );
-            } catch (notifError) {
-              console.error(`[Notification] Failed to send direct notification:`, notifError);
-            }
-          }
-        }
-      }
-      processedIds.push(monitor.id);
-      console.log(`Checked ${monitor.url}: ${currentStatus} (${latency}ms)`);
-    } catch (err) {
-      console.error(`Failed to process monitor ${monitor.id}:`, err);
-      // We count it as processed (failed) to avoid infinite retry loops for bad data
-      // Unless it's a timeout error, which might be retryable
-      processedIds.push(monitor.id); 
-    }
-  }
+      }),
+    ),
+  );
 
   return { processed: processedIds, remaining: remainingMonitors };
 }
@@ -569,101 +586,108 @@ export default {
 
       // We rewrite the URL to /websocket so the DO knows it's a client connection
       const doUrl = new URL("https://monitor-channel/websocket");
-      
+
       // Pass the original request (headers, upgrade, etc) but with new URL
       return stub.fetch(doUrl.toString(), request);
     }
 
-
     // API Route: /api/ssl-check
     if (url.pathname === "/api/ssl-check" && request.method === "POST") {
-       try {
-         const body: any = await request.json();
-         const { url: targetUrl } = body;
-         
-         if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
+      try {
+        const body: any = await request.json();
+        const { url: targetUrl } = body;
 
-         const { checkSSL } = await import("./services/ssl-check");
-         const results = await checkSSL(targetUrl);
+        if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
 
-         return new Response(JSON.stringify(results), {
-           headers: { 
-             "Content-Type": "application/json",
-             "Access-Control-Allow-Origin": "*",
-             "Access-Control-Allow-Methods": "POST, OPTIONS",
-             "Access-Control-Allow-Headers": "Content-Type"
-           } 
-         });
-       } catch (err: any) {
-         return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" }});
-       }
+        const { checkSSL } = await import("./services/ssl-check");
+        const results = await checkSSL(targetUrl);
+
+        return new Response(JSON.stringify(results), {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+          },
+        });
+      } catch (err: any) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
     }
-    
 
     // API Route: /api/port-check
     if (url.pathname === "/api/port-check" && request.method === "POST") {
-       try {
-         const body: any = await request.json();
-         const { host, port } = body;
-         
-         if (!host || !port) return new Response("Missing host or port", { status: 400 });
+      try {
+        const body: any = await request.json();
+        const { host, port } = body;
 
-         const { checkPort } = await import("./services/port-check");
-         const result = await checkPort(host, parseInt(port));
+        if (!host || !port) return new Response("Missing host or port", { status: 400 });
 
-         // Add helper: Current IP (for 'My IP' button)
-         // Note: We don't return the IP in the check result, but the frontend might request it separately.
-         // For now, minimal return.
-         
-         return new Response(JSON.stringify(result), {
-           headers: { 
-             "Content-Type": "application/json",
-             "Access-Control-Allow-Origin": "*",
-             "Access-Control-Allow-Methods": "POST, OPTIONS",
-             "Access-Control-Allow-Headers": "Content-Type"
-           } 
-         });
-       } catch (err: any) {
-         return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" }});
-       }
+        const { checkPort } = await import("./services/port-check");
+        const result = await checkPort(host, parseInt(port));
+
+        // Add helper: Current IP (for 'My IP' button)
+        // Note: We don't return the IP in the check result, but the frontend might request it separately.
+        // For now, minimal return.
+
+        return new Response(JSON.stringify(result), {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+          },
+        });
+      } catch (err: any) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
     }
 
     // API Route: /api/global-latency
     if (url.pathname === "/api/global-latency" && request.method === "POST") {
-       try {
-         const body: any = await request.json();
-         const { url: targetUrl } = body;
-         
-         if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
+      try {
+        const body: any = await request.json();
+        const { url: targetUrl } = body;
 
-         // Add protocol if missing
-         const finalUrl = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
+        if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
 
-         const { checkGlobalLatency } = await import("./services/global-latency");
-         const results = await checkGlobalLatency(finalUrl);
+        // Add protocol if missing
+        const finalUrl = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
 
-         return new Response(JSON.stringify(results), {
-           headers: { 
-             "Content-Type": "application/json",
-             "Access-Control-Allow-Origin": "*", // Allow CORS for web app
-             "Access-Control-Allow-Methods": "POST, OPTIONS",
-             "Access-Control-Allow-Headers": "Content-Type"
-           } 
-         });
-       } catch (err: any) {
-         return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" }});
-       }
+        const { checkGlobalLatency } = await import("./services/global-latency");
+        const results = await checkGlobalLatency(finalUrl);
+
+        return new Response(JSON.stringify(results), {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*", // Allow CORS for web app
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+          },
+        });
+      } catch (err: any) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
     }
 
     // CORS Preflight
     if (request.method === "OPTIONS") {
-       return new Response(null, {
-         headers: {
-           "Access-Control-Allow-Origin": "*",
-           "Access-Control-Allow-Methods": "POST, OPTIONS",
-           "Access-Control-Allow-Headers": "Content-Type"
-         }
-       });
+      return new Response(null, {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "POST, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type",
+        },
+      });
     }
 
     return new Response("PulseGuard Worker is Running", { status: 200 });
@@ -680,7 +704,7 @@ export default {
       ctx.waitUntil(
         import("./services/reportGenerator")
           .then((m) => m.generateAndSendMonthlyReports(prisma, env))
-          .catch((err) => console.error("Monthly Report Job Failed:", err))
+          .catch((err) => console.error("Monthly Report Job Failed:", err)),
       );
     }
 
@@ -728,12 +752,16 @@ export default {
       // Offload remaining to Queue if any
       if (remaining.length > 0) {
         if (env.CHECK_QUEUE) {
-          console.warn(`[SmartBatch] Offloading ${remaining.length} monitors to Queue due to CPU limits.`);
+          console.warn(
+            `[SmartBatch] Offloading ${remaining.length} monitors to Queue due to CPU limits.`,
+          );
           // Send remaining monitors as individual messages or small batches
           const messages = remaining.map((m) => ({ body: m }));
-          await env.CHECK_QUEUE.sendBatch(messages); 
+          await env.CHECK_QUEUE.sendBatch(messages);
         } else {
-          console.error("[SmartBatch] Critical: CPU limit reached but NO CHECK_QUEUE defined. Checks dropped.");
+          console.error(
+            "[SmartBatch] Critical: CPU limit reached but NO CHECK_QUEUE defined. Checks dropped.",
+          );
         }
       }
 
@@ -752,9 +780,6 @@ export default {
       return;
     }
 
-
-
-
     // Default: 'monitor-checks' queue
     const prisma = getPrisma(env.DATABASE_URL);
     const monitors = batch.messages.map((msg) => msg.body);
@@ -763,10 +788,12 @@ export default {
 
     // Ack processed messages, Retry remaining
     if (remaining.length > 0) {
-      console.warn(`[SmartBatch] Queue processing hit limit. Retrying ${remaining.length} messages.`);
-      
+      console.warn(
+        `[SmartBatch] Queue processing hit limit. Retrying ${remaining.length} messages.`,
+      );
+
       // Get IDs of remaining monitors for lookup
-      const remainingIds = new Set(remaining.map(m => m.id));
+      const remainingIds = new Set(remaining.map((m) => m.id));
 
       // Retry specific messages
       for (const msg of batch.messages) {
@@ -782,4 +809,3 @@ export default {
     }
   },
 };
-

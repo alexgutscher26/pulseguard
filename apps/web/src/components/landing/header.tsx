@@ -1,13 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  Activity,
-  ChevronDown,
-  Globe,
-  ShieldCheck,
-  Terminal,
-} from "lucide-react";
+import { Activity, ChevronDown, Globe, ShieldCheck, Terminal } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 
 export default function LandingHeader() {

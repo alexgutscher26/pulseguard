@@ -20,15 +20,12 @@ export interface BadgeTextConfig {
 
 /**
  * Calculate uptime percentage for a monitor over a given time period
- * 
+ *
  * @param monitorId - The monitor ID to calculate uptime for
  * @param days - Number of days to look back (30, 60, or 90)
  * @returns Uptime percentage (0-100) with 2 decimal precision
  */
-export async function calculateUptime(
-  monitorId: string,
-  days: number = 90
-): Promise<number> {
+export async function calculateUptime(monitorId: string, days: number = 90): Promise<number> {
   const startDate = new Date();
   startDate.setDate(startDate.getDate() - days);
   startDate.setHours(0, 0, 0, 0);
@@ -80,22 +77,20 @@ export async function calculateUptime(
 /**
  * Calculate uptime for multiple monitors (e.g., all monitors on a status page)
  * Returns average uptime across all monitors
- * 
+ *
  * @param monitorIds - Array of monitor IDs
  * @param days - Number of days to look back
  * @returns Average uptime percentage across all monitors
  */
 export async function calculateAverageUptime(
   monitorIds: string[],
-  days: number = 90
+  days: number = 90,
 ): Promise<number> {
   if (monitorIds.length === 0) {
     return 100;
   }
 
-  const uptimes = await Promise.all(
-    monitorIds.map((id) => calculateUptime(id, days))
-  );
+  const uptimes = await Promise.all(monitorIds.map((id) => calculateUptime(id, days)));
 
   const average = uptimes.reduce((sum, val) => sum + val, 0) / uptimes.length;
   return Math.round(average * 100) / 100;
@@ -103,14 +98,14 @@ export async function calculateAverageUptime(
 
 /**
  * Get uptime trend compared to previous period
- * 
+ *
  * @param monitorId - Monitor ID
  * @param days - Current period days
  * @returns Object with current, previous uptimes and trend direction
  */
 export async function getUptimeTrend(
   monitorId: string,
-  days: number = 90
+  days: number = 90,
 ): Promise<{
   current: number;
   previous: number;
@@ -118,19 +113,19 @@ export async function getUptimeTrend(
   difference: number;
 }> {
   const current = await calculateUptime(monitorId, days);
-  
+
   // Calculate previous period (same length, immediately prior)
   const now = new Date();
   const currentStart = new Date();
   currentStart.setDate(currentStart.getDate() - days);
-  
+
   const previousStart = new Date(currentStart);
   previousStart.setDate(previousStart.getDate() - days);
 
   const previousEvents = await prisma.monitorEvent.findMany({
     where: {
       monitorId,
-      timestamp: { 
+      timestamp: {
         gte: previousStart,
         lt: currentStart,
       },
@@ -167,7 +162,7 @@ export async function getUptimeTrend(
   }
 
   const difference = Math.round((current - previous) * 100) / 100;
-  
+
   let trend: "up" | "down" | "stable";
   if (difference > 0.01) {
     trend = "up";
@@ -184,10 +179,10 @@ export async function getUptimeTrend(
  * Determine overall status based on monitor statuses
  */
 export function getOverallStatus(
-  monitors: Array<{ status: string }>
+  monitors: Array<{ status: string }>,
 ): "operational" | "partial" | "major" {
   const downCount = monitors.filter((m) => m.status === "DOWN").length;
-  
+
   if (downCount === 0) {
     return "operational";
   } else if (downCount < monitors.length) {
@@ -202,7 +197,7 @@ export function getOverallStatus(
  */
 export function getStatusMessage(
   status: "operational" | "partial" | "major",
-  customBadgeText?: BadgeTextConfig | null
+  customBadgeText?: BadgeTextConfig | null,
 ): string {
   const text = customBadgeText || DEFAULT_BADGE_TEXT;
   return text[status];

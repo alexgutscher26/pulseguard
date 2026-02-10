@@ -100,8 +100,7 @@ export function FeedLinks({ pageSlug, pageTitle }: FeedLinksProps) {
       ))}
 
       <p className="text-xs text-primary/30 text-center mt-4">
-        Add these URLs to your RSS reader app (like Feedly, Inoreader, or
-        NewsBlur)
+        Add these URLs to your RSS reader app (like Feedly, Inoreader, or NewsBlur)
       </p>
     </div>
   );

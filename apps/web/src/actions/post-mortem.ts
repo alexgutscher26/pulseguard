@@ -50,7 +50,7 @@ export async function upsertPostMortem(
     detectionMethod: string;
     actionItems: string;
     status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
-  }
+  },
 ) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -126,17 +126,15 @@ export async function generatePostMortemSummary(incidentId: string) {
     if (!incident) return { success: false, error: "Incident not found" };
 
     if (!env.OPENAI_API_KEY) {
-      return { 
-        success: false, 
-        error: "OpenAI API Key is not configured. Please add OPENAI_API_KEY to your settings or environment." 
+      return {
+        success: false,
+        error:
+          "OpenAI API Key is not configured. Please add OPENAI_API_KEY to your settings or environment.",
       };
     }
 
     const eventsText = incident.events
-      .map(
-        (e) =>
-          `[${e.createdAt.toISOString()}] ${e.type}: ${e.message}`
-      )
+      .map((e) => `[${e.createdAt.toISOString()}] ${e.type}: ${e.message}`)
       .join("\n");
 
     const prompt = `

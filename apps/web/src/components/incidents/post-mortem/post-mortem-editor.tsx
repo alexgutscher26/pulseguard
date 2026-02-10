@@ -13,10 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Wand2, Save, FileDown, Loader2 } from "lucide-react";
-import {
-  upsertPostMortem,
-  generatePostMortemSummary,
-} from "@/actions/post-mortem";
+import { upsertPostMortem, generatePostMortemSummary } from "@/actions/post-mortem";
 import { toast } from "sonner";
 
 interface PostMortemData {
@@ -131,16 +128,12 @@ ${formData.actionItems || "(No action items provided)"}
             <div>
               <CardTitle>Post-Mortem Report</CardTitle>
               <CardDescription>
-                Analyze the incident, document the root cause, and define action
-                items to prevent recurrence.
+                Analyze the incident, document the root cause, and define action items to prevent
+                recurrence.
               </CardDescription>
             </div>
             <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleExportMarkdown}
-              >
+              <Button variant="outline" size="sm" onClick={handleExportMarkdown}>
                 <FileDown className="mr-2 size-4" />
                 Export MD
               </Button>
@@ -202,9 +195,7 @@ ${formData.actionItems || "(No action items provided)"}
                 placeholder="Who was affected? How long?"
                 className="min-h-[100px]"
                 value={formData.impactScope}
-                onChange={(e) =>
-                  handleInputChange("impactScope", e.target.value)
-                }
+                onChange={(e) => handleInputChange("impactScope", e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -214,9 +205,7 @@ ${formData.actionItems || "(No action items provided)"}
                 placeholder="How was it detected? (Alert, Customer, etc.)"
                 className="min-h-[100px]"
                 value={formData.detectionMethod}
-                onChange={(e) =>
-                  handleInputChange("detectionMethod", e.target.value)
-                }
+                onChange={(e) => handleInputChange("detectionMethod", e.target.value)}
               />
             </div>
           </div>
@@ -234,8 +223,8 @@ ${formData.actionItems || "(No action items provided)"}
         </CardContent>
         <CardFooter className="border-t bg-muted/50 px-6 py-4">
           <p className="text-xs text-muted-foreground">
-            Status: <span className="font-semibold">{formData.status}</span> •
-            Last saved: {new Date().toLocaleTimeString()}
+            Status: <span className="font-semibold">{formData.status}</span> • Last saved:{" "}
+            {new Date().toLocaleTimeString()}
           </p>
         </CardFooter>
       </Card>

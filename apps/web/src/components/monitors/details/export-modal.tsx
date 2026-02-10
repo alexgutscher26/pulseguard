@@ -27,10 +27,7 @@ interface MonitorExportModalProps {
   trigger?: React.ReactNode;
 }
 
-export function MonitorExportModal({
-  monitorId,
-  trigger,
-}: MonitorExportModalProps) {
+export function MonitorExportModal({ monitorId, trigger }: MonitorExportModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [range, setRange] = useState("7d");
   const [format, setFormat] = useState("csv");
@@ -123,9 +120,7 @@ export function MonitorExportModal({
             <div className="grid grid-cols-2 gap-4">
               <div
                 className={`cursor-pointer rounded-md border-2 p-4 hover:bg-muted/50 transition-all flex flex-col items-center gap-2 ${
-                  format === "csv"
-                    ? "border-primary bg-primary/5"
-                    : "border-muted"
+                  format === "csv" ? "border-primary bg-primary/5" : "border-muted"
                 }`}
                 onClick={() => setFormat("csv")}
               >
@@ -141,9 +136,7 @@ export function MonitorExportModal({
 
               <div
                 className={`cursor-pointer rounded-md border-2 p-4 hover:bg-muted/50 transition-all flex flex-col items-center gap-2 ${
-                  format === "json"
-                    ? "border-primary bg-primary/5"
-                    : "border-muted"
+                  format === "json" ? "border-primary bg-primary/5" : "border-muted"
                 }`}
                 onClick={() => setFormat("json")}
               >

@@ -28,9 +28,9 @@ export function useLiveMonitor(monitorId: string) {
     } else if (wsBaseUrl.startsWith("https://")) {
       wsBaseUrl = wsBaseUrl.replace("https://", "wss://");
     } else if (!wsBaseUrl.includes("://")) {
-        // Fallback if just domain given
-        const protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
-        wsBaseUrl = `${protocol}${wsBaseUrl}`;
+      // Fallback if just domain given
+      const protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+      wsBaseUrl = `${protocol}${wsBaseUrl}`;
     }
 
     const url = `${wsBaseUrl}/ws/monitors/${monitorId}`;
@@ -61,11 +61,11 @@ export function useLiveMonitor(monitorId: string) {
         // Reconnect after 3s
         reconnectTimer = setTimeout(connect, 3000);
       };
-      
+
       ws.onerror = (err) => {
-          console.error("WebSocket Error:", err);
-          ws?.close();
-      }
+        console.error("WebSocket Error:", err);
+        ws?.close();
+      };
     };
 
     connect();

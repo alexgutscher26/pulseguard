@@ -82,11 +82,7 @@ export function useHeatmapScale(metricType: MetricType) {
 /**
  * Get interpolated color between green and red based on normalized value (0-1)
  */
-export function getInterpolatedColor(
-  value: number,
-  min: number,
-  max: number
-): string {
+export function getInterpolatedColor(value: number, min: number, max: number): string {
   // Normalize value to 0-1
   const normalized = Math.max(0, Math.min(1, (value - min) / (max - min)));
 

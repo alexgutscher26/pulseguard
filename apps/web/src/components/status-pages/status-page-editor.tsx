@@ -9,15 +9,7 @@ import {
   updateHistoryDays,
   getStatusPageUptimeData,
 } from "@/actions/status-pages";
-import {
-  Monitor,
-  Plus,
-  Trash2,
-  ArrowLeft,
-  ExternalLink,
-  History,
-  Code2,
-} from "lucide-react";
+import { Monitor, Plus, Trash2, ArrowLeft, ExternalLink, History, Code2 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -32,13 +24,7 @@ import { WidgetConfigurator } from "./widget-configurator";
 
 type TabType = "monitors" | "settings" | "analytics" | "history" | "widget";
 
-export function StatusPageEditor({
-  page,
-  allMonitors,
-}: {
-  page: any;
-  allMonitors: any[];
-}) {
+export function StatusPageEditor({ page, allMonitors }: { page: any; allMonitors: any[] }) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabType>("monitors");
   const [isPending, setIsPending] = useState(false);
@@ -92,12 +78,8 @@ export function StatusPageEditor({
     }
   };
 
-  const assignedMonitorIds = new Set(
-    page.monitors.map((m: any) => m.monitorId),
-  );
-  const availableMonitors = allMonitors.filter(
-    (m) => !assignedMonitorIds.has(m.id),
-  );
+  const assignedMonitorIds = new Set(page.monitors.map((m: any) => m.monitorId));
+  const availableMonitors = allMonitors.filter((m) => !assignedMonitorIds.has(m.id));
 
   const handleAdd = async (monitorId: string) => {
     setIsPending(true);
@@ -152,8 +134,7 @@ export function StatusPageEditor({
               target="_blank"
               className="flex items-center gap-2 text-sm text-primary hover:underline font-mono"
             >
-              pulseguard.com/status-page/{page.slug}{" "}
-              <ExternalLink className="size-3" />
+              pulseguard.com/status-page/{page.slug} <ExternalLink className="size-3" />
             </a>
           </div>
         </div>
@@ -211,8 +192,7 @@ export function StatusPageEditor({
                 ))}
                 {page.monitors.length === 0 && (
                   <p className="text-sm text-muted-foreground italic text-center py-4">
-                    No monitors added yet. Select monitors from the right to add
-                    them.
+                    No monitors added yet. Select monitors from the right to add them.
                   </p>
                 )}
               </div>
@@ -235,9 +215,7 @@ export function StatusPageEditor({
                       <div
                         className={`size-1.5 rounded-full shrink-0 ${m.status === "UP" ? "bg-green-500" : "bg-red-500"}`}
                       />
-                      <span className="text-xs font-mono truncate">
-                        {m.name}
-                      </span>
+                      <span className="text-xs font-mono truncate">{m.name}</span>
                     </div>
                     <button
                       onClick={() => handleAdd(m.id)}
@@ -249,9 +227,7 @@ export function StatusPageEditor({
                   </div>
                 ))}
                 {availableMonitors.length === 0 && (
-                  <p className="text-xs text-muted-foreground">
-                    All monitors added.
-                  </p>
+                  <p className="text-xs text-muted-foreground">All monitors added.</p>
                 )}
               </div>
             </div>

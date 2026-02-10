@@ -18,12 +18,7 @@ interface DrawerProps {
  * - ESC key to close
  * - Accessible keyboard navigation
  */
-export function Drawer({
-  isOpen,
-  onClose,
-  children,
-  side = "left",
-}: DrawerProps) {
+export function Drawer({ isOpen, onClose, children, side = "left" }: DrawerProps) {
   const drawerRef = useRef<HTMLDivElement>(null);
 
   // Handle ESC key to close
@@ -45,9 +40,7 @@ export function Drawer({
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
       );
       const firstElement = focusableElements[0] as HTMLElement;
-      const lastElement = focusableElements[
-        focusableElements.length - 1
-      ] as HTMLElement;
+      const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
 
       const handleTab = (e: KeyboardEvent) => {
         if (e.key !== "Tab") return;
@@ -93,9 +86,7 @@ export function Drawer({
           aria-modal="true"
           aria-label="Navigation drawer"
           drag="x"
-          dragConstraints={
-            side === "left" ? { left: 0, right: 0 } : { left: 0, right: 0 }
-          }
+          dragConstraints={side === "left" ? { left: 0, right: 0 } : { left: 0, right: 0 }}
           dragElastic={{
             left: side === "left" ? 0.5 : 0.05,
             right: side === "right" ? 0.5 : 0.05,
@@ -106,10 +97,7 @@ export function Drawer({
 
             // Close if swiped left (for left sidebar)
             if (side === "left") {
-              if (
-                offset.x < -swipeThreshold ||
-                velocity.x < -velocityThreshold
-              ) {
+              if (offset.x < -swipeThreshold || velocity.x < -velocityThreshold) {
                 onClose();
               }
             }

@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  MoreHorizontal,
-  Zap,
-  WifiOff,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { MoreHorizontal, Zap, WifiOff, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -91,9 +85,7 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
               currentMonitors.map((monitor) => {
                 // Calculate history for bars (last 20 events reversed for display left-to-right?)
                 // Assuming events are desc, so [0] is latest. We take the first 20.
-                const recentEvents = monitor.events
-                  ? monitor.events.slice(0, 20)
-                  : [];
+                const recentEvents = monitor.events ? monitor.events.slice(0, 20) : [];
 
                 // Map events to status codes
                 const rawHistory = [...recentEvents].reverse().map((e: any) => {
@@ -118,9 +110,7 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                 return (
                   <tr
                     key={monitor.id}
-                    onClick={() =>
-                      router.push(`/dashboard/monitors/${monitor.id}`)
-                    }
+                    onClick={() => router.push(`/dashboard/monitors/${monitor.id}`)}
                     className="group hover:bg-primary/5 transition-colors cursor-pointer font-mono border-l-2 border-transparent hover:border-primary/50"
                   >
                     <td className="p-4 w-32">
@@ -157,9 +147,7 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                         </div>
                       )}
                     </td>
-                    <td
-                      className={`p-4 ${monitor.status === "PAUSED" ? "opacity-75" : ""}`}
-                    >
+                    <td className={`p-4 ${monitor.status === "PAUSED" ? "opacity-75" : ""}`}>
                       <div className="flex flex-col">
                         <span
                           className={`font-bold text-foreground group-hover:text-primary transition-colors ${monitor.status === "DOWN" ? "group-hover:text-red-500" : monitor.status === "PAUSED" ? "group-hover:text-yellow-500" : ""}`}
@@ -171,9 +159,7 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                         </span>
                       </div>
                     </td>
-                    <td
-                      className={`p-4 ${monitor.status === "PAUSED" ? "opacity-50" : ""}`}
-                    >
+                    <td className={`p-4 ${monitor.status === "PAUSED" ? "opacity-50" : ""}`}>
                       <div className="flex items-center gap-3">
                         <div className="flex gap-px h-4 items-end">
                           {history.map((h: number, i: number) => (
@@ -187,9 +173,7 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                         </span>
                       </div>
                     </td>
-                    <td
-                      className={`p-4 ${monitor.status === "PAUSED" ? "opacity-50" : ""}`}
-                    >
+                    <td className={`p-4 ${monitor.status === "PAUSED" ? "opacity-50" : ""}`}>
                       {monitor.status !== "PAUSED" ? (
                         <div className="flex items-center gap-2 text-xs">
                           {monitor.status === "DOWN" ? (
@@ -199,18 +183,14 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                           )}
                           <span
                             className={
-                              monitor.status === "DOWN"
-                                ? "text-red-500"
-                                : "text-foreground"
+                              monitor.status === "DOWN" ? "text-red-500" : "text-foreground"
                             }
                           >
                             {latestLatency ? latestLatency + "ms" : "--"}
                           </span>
                         </div>
                       ) : (
-                        <span className="text-xs text-muted-foreground">
-                          --
-                        </span>
+                        <span className="text-xs text-muted-foreground">--</span>
                       )}
                     </td>
                     <td className="p-4 text-right">
@@ -228,8 +208,7 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
 
       <div className="p-4 border-t border-primary/20 flex items-center justify-between bg-primary/5">
         <span className="text-[10px] text-primary/60 uppercase tracking-widest font-mono">
-          Showing {startIndex + 1}-
-          {Math.min(startIndex + itemsPerPage, monitors.length)} of{" "}
+          Showing {startIndex + 1}-{Math.min(startIndex + itemsPerPage, monitors.length)} of{" "}
           {monitors.length} targets
         </span>
         <div className="flex gap-2">

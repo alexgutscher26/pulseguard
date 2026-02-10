@@ -26,9 +26,7 @@ export function StatsCards({ pageId }: { pageId: string }) {
     {
       // Simple metric: Views / Uniques
       title: "Views Per Visitor",
-      value: data?.uniqueVisitors
-        ? (data.totalViews / data.uniqueVisitors).toFixed(1)
-        : "0.0",
+      value: data?.uniqueVisitors ? (data.totalViews / data.uniqueVisitors).toFixed(1) : "0.0",
       icon: TrendingUp,
       color: "text-purple-500",
     },
@@ -41,18 +39,14 @@ export function StatsCards({ pageId }: { pageId: string }) {
           key={card.title}
           className="bg-white/5 border border-white/10 rounded-sm p-4 flex items-center gap-4"
         >
-          <div
-            className={`p-3 rounded-full bg-white/5 border border-white/5 ${card.color}`}
-          >
+          <div className={`p-3 rounded-full bg-white/5 border border-white/5 ${card.color}`}>
             <card.icon className="size-5" />
           </div>
           <div>
             <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">
               {card.title}
             </p>
-            <p className="text-2xl font-mono font-bold text-white">
-              {card.value}
-            </p>
+            <p className="text-2xl font-mono font-bold text-white">{card.value}</p>
           </div>
         </div>
       ))}
