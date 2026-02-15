@@ -411,7 +411,7 @@ async function sendSlackAlert(
               type: "plain_text",
               text: "View Dashboard",
             },
-            url: "https://introverted-history.outray.app/dashboard/monitors/" + data.monitorId,
+            url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/monitors/` + data.monitorId,
             style: isDown ? "danger" : "primary",
           },
           ...(incidentId && type === "INCIDENT_CREATED"

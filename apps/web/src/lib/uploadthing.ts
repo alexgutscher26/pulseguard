@@ -9,6 +9,5 @@ import type { OurFileRouter } from "@/app/api/uploadthing/core";
 export const UploadButton = generateUploadButton<OurFileRouter>();
 export const UploadDropzone = generateUploadDropzone<OurFileRouter>();
 export const { useUploadThing, uploadFiles } = generateReactHelpers<OurFileRouter>({
-  url: "https://introverted-history.outray.app/api/uploadthing",
-  // TODO: Change Later
+  url: `${process.env.NEXT_PUBLIC_APP_URL}/api/uploadthing`,
 });

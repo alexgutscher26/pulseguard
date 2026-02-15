@@ -6,6 +6,6 @@ export const { GET, POST } = createRouteHandler({
   router: ourFileRouter,
 
   config: {
-    callbackUrl: "https://introverted-history.outray.app/api/uploadthing", // TODO: Change Later
+    callbackUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/uploadthing`,
   },
 });

@@ -204,8 +204,8 @@ export async function sendTestNotification(id: string) {
               elements: [
                 {
                   type: "button",
-                  text: { type: "plain_text", text: "View Dashboard" }, // TODO: Add actual dashboard URL
-                  url: "https://introverted-history.outray.app/dashboard",
+                  text: { type: "plain_text", text: "View Dashboard" },
+                  url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`,
                   style: "danger",
                 },
               ],
