@@ -324,6 +324,20 @@ async function sendDiscordAlert(url: string, data: MonitorAlertData, type?: stri
 }
 
 // --- Slack Adapter ---
+/**
+ * Sends an alert to a Slack channel based on the monitor's status.
+ *
+ * The function constructs a message payload that varies depending on the monitor's status and the type of alert.
+ * It handles different alert types such as incident creation, resolution, and high latency, and includes relevant details
+ * such as target URL, status, downtime duration, and failed regions. Finally, it sends the payload to the specified Slack
+ * webhook URL and checks for a successful response.
+ *
+ * @param url - The Slack webhook URL to send the alert to.
+ * @param data - The data containing monitor alert information.
+ * @param type - Optional type of alert (e.g., "INCIDENT_CREATED", "INCIDENT_RESOLVED", "HIGH_LATENCY").
+ * @param incidentId - Optional identifier for the incident, used for acknowledgment and resolution buttons.
+ * @throws Error If the Slack webhook request fails.
+ */
 async function sendSlackAlert(
   url: string,
   data: MonitorAlertData,
