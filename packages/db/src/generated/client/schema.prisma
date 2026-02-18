@@ -289,9 +289,9 @@ model AlertRule {
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters", "prismaSchemaFolder"]
-  engineType      = "wasm"
+  previewFeatures = ["prismaSchemaFolder"]
   output          = "../../src/generated/client"
+  engineType      = "library"
 }
 
 datasource db {

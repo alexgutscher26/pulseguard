@@ -1,14 +1,24 @@
-import { neonConfig } from "@neondatabase/serverless";
-import { PrismaNeon } from "@prisma/adapter-neon";
 import { PrismaClient } from "./generated/client/index.js";
 
-neonConfig.poolQueryViaFetch = true;
+import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
 
-export const createPrisma = (databaseUrl: string) => {
-  console.log("🔍 Creating Prisma client with URL:", databaseUrl.replace(/:[^:@]+@/, ":****@"));
-  const adapter = new PrismaNeon({
-    connectionString: databaseUrl,
-  });
+export const createPrisma = (databaseUrl?: string) => {
+  const url = databaseUrl || process.env.DATABASE_URL;
+  console.log("🔍 Creating Prisma client with @prisma/adapter-pg");
+  
+  // Determine if SSL is needed but remove sslmode from URL to avoid conflict with explicit ssl config
+  const isSsl = url.includes("sslmode=require") || url.includes("sslmode=verify");
+  const cleanUrl = url.replace(/[?&]sslmode=[^&]+/, "");
+  
+  const poolConfig: any = { connectionString: cleanUrl };
+  if (isSsl) {
+    poolConfig.ssl = { rejectUnauthorized: false }; // Allow self-signed or pooled certs in dev
+  }
+
+  const pool = new Pool(poolConfig);
+  const adapter = new PrismaPg(pool);
+  
   return new PrismaClient({ adapter });
 };
 
