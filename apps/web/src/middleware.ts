@@ -29,19 +29,22 @@ export async function middleware(request: NextRequest) {
        // console.error("⚠️ Auth check failed in middleware:", error);
     }
 
-    if (!session?.user) {
-      // Optimistic Check for cookie
-      const cookieHeader = request.headers.get("cookie") || "";
-      const hasSessionCookie =
-        cookieHeader.includes("better-auth.session_token") || cookieHeader.includes("session_token");
+    // Optimistic Check for cookie
+    const cookieHeader = request.headers.get("cookie") || "";
+    const hasSessionCookie =
+      cookieHeader.includes("better-auth.session_token") || cookieHeader.includes("session_token");
 
-      if (hasSessionCookie) {
-        return NextResponse.next();
-      }
+    const isAuthenticated = session?.user || hasSessionCookie;
 
+    if (pathname.startsWith("/dashboard") && !isAuthenticated) {
       console.log("❌ No session, redirecting to /login");
       return NextResponse.redirect(new URL("/login", request.url));
     }
+
+    if (pathname.startsWith("/login") && isAuthenticated) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+
     return NextResponse.next();
   }
 
