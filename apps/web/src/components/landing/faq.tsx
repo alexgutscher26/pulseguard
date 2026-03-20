@@ -1,49 +1,53 @@
-import { Plus } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 export default function FAQ() {
   const faqs = [
     {
       q: "How fast are the checks performed?",
-      a: "Our Pro Protocol executes verification sequences every 60 seconds from 12 concurrent global zones using headless browser agents.",
+      a: "Our verification sequences execute every 60 seconds from over 12 concurrent global zones using headless agents to guarantee maximum accuracy.",
     },
     {
       q: "Can I cancel my subscription anytime?",
-      a: "Yes. The termination protocol is instant. No data lock-in. You retain access until the end of the billing cycle.",
+      a: "Yes. Cancel instantly with no data lock-in. You will retain access to your telemetry and dashboards until the end of your billing cycle.",
     },
     {
       q: "Do you handle SSL expiry events?",
-      a: "Affirmative. The SSL Module automatically scans for expiration dates, ciphers, and mistrust issues 30 days in advance.",
+      a: "Absolutely. The SSL Module automatically scans for expiration dates, ciphers, and mistrust issues, alerting you 30 days in advance.",
     },
     {
       q: "What happens on monitor limit breach?",
-      a: "System throws a soft warning at 90% capacity. Checking continues for existing nodes. You must upgrade tier to add new nodes.",
+      a: "Our system throws a soft warning at 90% capacity. Checking continues uninterrupted for existing nodes, but you must upgrade your tier to add new monitors.",
+    },
+    {
+      q: "Is my infrastructure data secure?",
+      a: "Yes, all telemetry data is stored securely. The PulseGuard agent runs on secure outbound-only endpoints and requires zero inbound port forwarding.",
     },
   ];
 
   return (
-    <section className="py-24 bg-muted/5" id="faq">
+    <section className="py-24 bg-background relative overflow-hidden" id="faq">
       <div className="max-w-3xl mx-auto px-6">
-        <div className="mb-12 border-l-2 border-primary pl-6">
-          <h2 className="text-foreground text-4xl font-black tracking-tighter uppercase font-mono">
-            Knowledge Base
+        <div className="text-center mb-16 flex flex-col items-center">
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4">
+            Frequently asked <span className="text-primary">questions</span>
           </h2>
-          <p className="text-muted-foreground font-mono mt-2">// QUERY: COMMON_ISSUES</p>
+          <p className="text-muted-foreground text-lg">
+            Everything you need to know about PulseGuard
+          </p>
         </div>
 
         <div className="flex flex-col gap-4">
           {faqs.map((item, i) => (
             <details
               key={i}
-              className="group border border-border bg-background open:border-primary/50 transition-colors"
+              className="group bg-[#0a0a0a] border border-white/5 rounded-2xl overflow-hidden transition-all hover:border-white/10"
             >
-              <summary className="flex items-center justify-between p-6 cursor-pointer font-mono font-bold text-foreground uppercase tracking-wide list-none selection:bg-primary/20 hover:bg-muted/30 transition-colors">
-                <span>
-                  KNB_{i + 1}: {item.q}
-                </span>
-                <Plus className="size-4 text-primary group-open:rotate-45 transition-transform" />
+              <summary className="flex items-center justify-between p-6 cursor-pointer font-medium text-foreground hover:bg-white/5 transition-colors list-none outline-none focus-visible:ring-1 focus-visible:ring-primary/50 [&::-webkit-details-marker]:hidden">
+                <span className="text-[15px] sm:text-base">{item.q}</span>
+                <ChevronDown className="size-4 text-muted-foreground group-open:rotate-180 transition-transform duration-300 shrink-0 ml-4" />
               </summary>
-              <div className="px-6 pb-6 text-muted-foreground font-mono text-sm leading-relaxed border-t border-border/50 pt-4">
-                &gt; {item.a}
+              <div className="px-6 pb-6 text-muted-foreground text-sm leading-relaxed pt-2">
+                {item.a}
               </div>
             </details>
           ))}

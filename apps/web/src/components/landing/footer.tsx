@@ -1,57 +1,91 @@
 import Link from "next/link";
+import { Zap, Twitter, Github } from "lucide-react";
 
 export default function LandingFooter() {
   return (
-    <footer className="py-12 border-t border-border bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="flex items-center gap-2">
-            <div className="text-primary opacity-70">
-              <svg
-                className="size-6"
-                fill="none"
-                viewBox="0 0 48 48"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  clipRule="evenodd"
-                  d="M24 4H42V17.3333V30.6667H24V44H6V30.6667V17.3333H24V44H24V4Z"
-                  fill="currentColor"
-                  fillRule="evenodd"
-                ></path>
-              </svg>
+    <footer className="py-16 md:py-24 border-t border-white/5 bg-background relative overflow-hidden">
+      <div className="max-w-6xl mx-auto px-6 md:px-12 flex flex-col gap-24">
+        {/* Main Grid Content */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-12 md:gap-8">
+          
+          {/* Col 1 - Brand */}
+          <div className="flex flex-col gap-4 md:col-span-2">
+            <div className="flex items-center gap-2">
+              <Zap className="size-5 text-primary" fill="currentColor" strokeWidth={1} />
+              <span className="text-foreground font-bold tracking-tight text-xl">PulseGuard</span>
             </div>
-            <span className="text-muted-foreground font-bold">
-              PulseGuard © {new Date().getFullYear()}
-            </span>
+            <p className="text-muted-foreground text-[15px] font-medium max-w-xs leading-relaxed">
+              Global infrastructure surveillance made simple.
+            </p>
           </div>
-          <div className="flex gap-8">
-            <Link
-              className="text-muted-foreground hover:text-foreground transition-colors text-sm"
-              href="#"
-            >
-              Twitter
+
+          {/* Col 2 - Product */}
+          <div className="flex flex-col gap-5">
+            <span className="text-muted-foreground/50 text-[11px] font-bold uppercase tracking-widest">
+              PRODUCT
+            </span>
+            <div className="flex flex-col gap-3">
+              <Link href="#features" className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit">
+                Features
+              </Link>
+              <Link href="#pricing" className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit">
+                Pricing
+              </Link>
+              <Link href="#" className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit">
+                API Docs
+              </Link>
+            </div>
+          </div>
+
+          {/* Col 3 - Company */}
+          <div className="flex flex-col gap-5">
+            <span className="text-muted-foreground/50 text-[11px] font-bold uppercase tracking-widest">
+              COMPANY
+            </span>
+            <div className="flex flex-col gap-3">
+              <Link href="#" className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit">
+                About
+              </Link>
+              <Link href="#" className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit">
+                Blog
+              </Link>
+              <Link href="#" className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit">
+                Careers
+              </Link>
+            </div>
+          </div>
+
+          {/* Col 4 - Legal */}
+          <div className="flex flex-col gap-5">
+            <span className="text-muted-foreground/50 text-[11px] font-bold uppercase tracking-widest">
+              LEGAL
+            </span>
+            <div className="flex flex-col gap-3">
+              <Link href="#" className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit">
+                Privacy
+              </Link>
+              <Link href="#" className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit">
+                Terms
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer Bottom Sidebar */}
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-white/5">
+          <span className="text-muted-foreground text-xs font-medium">
+            © {new Date().getFullYear()} PulseGuard. All rights reserved.
+          </span>
+          <div className="flex items-center gap-5 text-muted-foreground">
+            <Link href="#" className="hover:text-foreground hover:scale-105 transition-all">
+              <Twitter className="size-[18px]" />
             </Link>
-            <Link
-              className="text-muted-foreground hover:text-foreground transition-colors text-sm"
-              href="#"
-            >
-              Status Page
-            </Link>
-            <Link
-              className="text-muted-foreground hover:text-foreground transition-colors text-sm"
-              href="#"
-            >
-              Privacy Policy
-            </Link>
-            <Link
-              className="text-muted-foreground hover:text-foreground transition-colors text-sm"
-              href="#"
-            >
-              Terms of Service
+            <Link href="#" className="hover:text-foreground hover:scale-105 transition-all">
+              <Github className="size-[18px]" />
             </Link>
           </div>
         </div>
+
       </div>
     </footer>
   );
