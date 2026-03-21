@@ -50,29 +50,25 @@ export function DashboardStats({ stats: data }: { stats: DashboardStatsData }) {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-2">
       {stats.map((stat) => (
         <div
           key={stat.name}
-          className="bg-black/40 border border-primary/20 p-6 hover:border-primary/50 transition-all duration-300 group relative overflow-hidden backdrop-blur-sm"
+          className="bg-[#0a0a0a] border border-white/5 rounded-2xl p-6 hover:border-white/10 transition-all duration-300"
         >
-          {/* Hover Corner accents */}
-          <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-primary/0 group-hover:border-primary transition-colors"></div>
-          <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-primary/0 group-hover:border-primary transition-colors"></div>
-
           <div className="flex items-center justify-between mb-4">
-            <p className="text-muted-foreground text-xs font-mono uppercase tracking-widest">
+            <p className="text-muted-foreground text-sm font-medium">
               {stat.name}
             </p>
-            <div className="p-2 bg-white/5 rounded-full">
+            <div className="p-2 bg-white/5 rounded-xl">
               <stat.icon className={`size-4 ${stat.iconColor}`} />
             </div>
           </div>
-          <p className="text-3xl font-bold text-foreground font-mono tracking-tighter">
+          <p className="text-3xl font-bold text-foreground tracking-tight">
             {stat.value}
           </p>
           <p
-            className={`text-[10px] font-mono uppercase mt-2 flex items-center gap-1 ${stat.changeColor}`}
+            className={`text-xs font-medium mt-2 flex items-center gap-1 ${stat.changeColor}`}
           >
             {stat.trend === "up" && <TrendingUp className="size-3" />}
             {stat.trend === "down" && <TrendingDown className="size-3" />}

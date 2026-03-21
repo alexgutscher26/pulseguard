@@ -67,22 +67,22 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
               <div className="space-y-2">
                 <Label
                   htmlFor={field.name}
-                  className="text-xs uppercase tracking-widest text-primary/70 font-mono"
+                  className="text-[13px] font-semibold text-foreground/80"
                 >
-                  Operator Identity
+                  Name
                 </Label>
                 <Input
                   id={field.name}
                   name={field.name}
-                  placeholder="ex: User_V1"
-                  className="bg-black/50 border-primary/30 text-primary placeholder:text-primary/30 focus-visible:ring-primary/50 font-mono h-12"
+                  placeholder="John Doe"
+                  className="bg-white/5 border-white/10 rounded-xl text-foreground placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary h-12 px-4 shadow-sm"
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
                 {field.state.meta.errors.map((error) => (
-                  <p key={error?.message} className="text-red-500 font-mono text-xs mt-1">
-                    {">"} {error?.message}
+                  <p key={error?.message} className="text-red-500 font-medium text-xs mt-1">
+                    {error?.message}
                   </p>
                 ))}
               </div>
@@ -91,28 +91,28 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
         </div>
 
         <div>
-          <form.Field name="email">
+           <form.Field name="email">
             {(field) => (
               <div className="space-y-2">
                 <Label
                   htmlFor={field.name}
-                  className="text-xs uppercase tracking-widest text-primary/70 font-mono"
+                  className="text-[13px] font-semibold text-foreground/80"
                 >
-                  Email Command
+                  Email
                 </Label>
                 <Input
                   id={field.name}
                   name={field.name}
                   type="email"
-                  placeholder="usr@pulseguard.io"
-                  className="bg-black/50 border-primary/30 text-primary placeholder:text-primary/30 focus-visible:ring-primary/50 font-mono h-12"
+                  placeholder="name@company.com"
+                  className="bg-white/5 border-white/10 rounded-xl text-foreground placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary h-12 px-4 shadow-sm"
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
                 {field.state.meta.errors.map((error) => (
-                  <p key={error?.message} className="text-red-500 font-mono text-xs mt-1">
-                    {">"} {error?.message}
+                  <p key={error?.message} className="text-red-500 font-medium text-xs mt-1">
+                    {error?.message}
                   </p>
                 ))}
               </div>
@@ -121,28 +121,28 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
         </div>
 
         <div>
-          <form.Field name="password">
+           <form.Field name="password">
             {(field) => (
               <div className="space-y-2">
                 <Label
                   htmlFor={field.name}
-                  className="text-xs uppercase tracking-widest text-primary/70 font-mono"
+                  className="text-[13px] font-semibold text-foreground/80"
                 >
-                  Access Key
+                  Password
                 </Label>
                 <Input
                   id={field.name}
                   name={field.name}
                   type="password"
                   placeholder="••••••••"
-                  className="bg-black/50 border-primary/30 text-primary placeholder:text-primary/30 focus-visible:ring-primary/50 font-mono h-12"
+                  className="bg-white/5 border-white/10 rounded-xl text-foreground placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary h-12 px-4 shadow-sm"
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
                 {field.state.meta.errors.map((error) => (
-                  <p key={error?.message} className="text-red-500 font-mono text-xs mt-1">
-                    {">"} {error?.message}
+                  <p key={error?.message} className="text-red-500 font-medium text-xs mt-1">
+                    {error?.message}
                   </p>
                 ))}
               </div>
@@ -154,23 +154,24 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
           {(state) => (
             <Button
               type="submit"
-              className="w-full bg-primary text-black font-mono font-bold uppercase tracking-widest hover:bg-primary/90 transition-all border border-primary h-12 mt-6"
+              className="w-full bg-primary text-black font-semibold rounded-full hover:bg-primary/90 transition-all border border-transparent h-12 mt-6 shadow-[0_0_15px_rgba(57,255,20,0.2)] hover:shadow-[0_0_20px_rgba(57,255,20,0.3)]"
               disabled={!state.canSubmit || state.isSubmitting}
             >
-              {state.isSubmitting ? "Processing..." : "Initiate Registration"}
+              {state.isSubmitting ? "Creating account..." : "Sign Up"}
             </Button>
           )}
         </form.Subscribe>
       </form>
 
-      <div className="text-center pt-2 border-t border-primary/10">
+      <div className="text-center pt-2">
+        <span className="text-sm text-muted-foreground font-medium">Already have an account? </span>
         <Button
-          variant="link"
-          onClick={onSwitchToSignIn}
-          className="text-muted-foreground hover:text-primary font-mono text-xs uppercase tracking-widest"
-        >
-          Existing Operator? Execute Login
-        </Button>
+           variant="link"
+           onClick={onSwitchToSignIn}
+           className="text-primary hover:text-primary/90 font-semibold text-sm h-auto p-0"
+         >
+           Log in
+         </Button>
       </div>
     </div>
   );

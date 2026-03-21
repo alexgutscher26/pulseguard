@@ -20,8 +20,6 @@ export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () 
       password: "",
     },
     onSubmit: async ({ value }) => {
-      console.log("🔐 Starting sign-in...");
-
       await authClient.signIn.email(
         {
           email: value.email,
@@ -29,20 +27,11 @@ export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () 
         },
         {
           onSuccess: async (ctx) => {
-            console.log("✅ Sign-in successful!", ctx);
             toast.success("Sign in successful");
-
-            // Use window.location.href instead of router.push to ensure
-            // the session cookie is properly set before navigation
-            // Small delay to ensure session is fully established
-            console.log("⏳ Waiting 100ms before redirect...");
             await new Promise((resolve) => setTimeout(resolve, 100));
-
-            console.log("🔄 Redirecting to dashboard...");
             window.location.href = "/dashboard";
           },
           onError: (error) => {
-            console.error("❌ Sign-in error:", error);
             toast.error(error.error.message || error.error.statusText);
           },
         },
@@ -76,23 +65,23 @@ export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () 
               <div className="space-y-2">
                 <Label
                   htmlFor={field.name}
-                  className="text-xs uppercase tracking-widest text-primary/70 font-mono"
+                  className="text-[13px] font-semibold text-foreground/80"
                 >
-                  Email Command
+                  Email
                 </Label>
                 <Input
                   id={field.name}
                   name={field.name}
                   type="email"
-                  placeholder="usr@pulseguard.io"
-                  className="bg-black/50 border-primary/30 text-primary placeholder:text-primary/30 focus-visible:ring-primary/50 font-mono h-12"
+                  placeholder="name@company.com"
+                  className="bg-white/5 border-white/10 rounded-xl text-foreground placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary h-12 px-4 shadow-sm"
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
                 {field.state.meta.errors.map((error) => (
-                  <p key={error?.message} className="text-red-500 font-mono text-xs mt-1">
-                    {">"} {error?.message}
+                  <p key={error?.message} className="text-red-500 font-medium text-xs mt-1">
+                    {error?.message}
                   </p>
                 ))}
               </div>
@@ -101,28 +90,31 @@ export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () 
         </div>
 
         <div>
-          <form.Field name="password">
+           <form.Field name="password">
             {(field) => (
               <div className="space-y-2">
-                <Label
-                  htmlFor={field.name}
-                  className="text-xs uppercase tracking-widest text-primary/70 font-mono"
-                >
-                  Access Key
-                </Label>
+                <div className="flex items-center justify-between">
+                  <Label
+                    htmlFor={field.name}
+                    className="text-[13px] font-semibold text-foreground/80"
+                  >
+                    Password
+                  </Label>
+                  <Button variant="link" className="text-xs h-auto p-0 font-medium text-muted-foreground hover:text-foreground">Forgot password?</Button>
+                </div>
                 <Input
                   id={field.name}
                   name={field.name}
                   type="password"
                   placeholder="••••••••"
-                  className="bg-black/50 border-primary/30 text-primary placeholder:text-primary/30 focus-visible:ring-primary/50 font-mono h-12"
+                  className="bg-white/5 border-white/10 rounded-xl text-foreground placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary h-12 px-4 shadow-sm"
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
                 {field.state.meta.errors.map((error) => (
-                  <p key={error?.message} className="text-red-500 font-mono text-xs mt-1">
-                    {">"} {error?.message}
+                  <p key={error?.message} className="text-red-500 font-medium text-xs mt-1">
+                    {error?.message}
                   </p>
                 ))}
               </div>
@@ -134,22 +126,23 @@ export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () 
           {(state) => (
             <Button
               type="submit"
-              className="w-full bg-primary text-black font-mono font-bold uppercase tracking-widest hover:bg-primary/90 transition-all border border-primary h-12 mt-6"
+              className="w-full bg-primary text-black font-semibold rounded-full hover:bg-primary/90 transition-all border border-transparent h-12 mt-6 shadow-[0_0_15px_rgba(57,255,20,0.2)] hover:shadow-[0_0_20px_rgba(57,255,20,0.3)]"
               disabled={!state.canSubmit || state.isSubmitting}
             >
-              {state.isSubmitting ? "Authenticating..." : "Execute Login"}
+              {state.isSubmitting ? "Signing in..." : "Log In"}
             </Button>
           )}
         </form.Subscribe>
       </form>
 
-      <div className="text-center pt-2 border-t border-primary/10">
+      <div className="text-center pt-2">
+        <span className="text-sm text-muted-foreground font-medium">Don't have an account? </span>
         <Button
           variant="link"
           onClick={onSwitchToSignUp}
-          className="text-muted-foreground hover:text-primary font-mono text-xs uppercase tracking-widest"
+          className="text-primary hover:text-primary/90 font-semibold text-sm h-auto p-0"
         >
-          Initialize New Protocol (Sign Up)
+          Sign up
         </Button>
       </div>
     </div>
