@@ -1,5 +1,4 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { auth } from "@pulseguard/auth";
 import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
 
@@ -18,30 +17,20 @@ export async function middleware(request: NextRequest) {
   const pathname = url.pathname;
 
   // 🛡️ Dashboard Authentication & Logic (exclude from i18n for now)
+  // NOTE: We intentionally avoid DB calls in middleware (auth.api.getSession) to prevent
+  // connection pool exhaustion under load. Cookie presence is sufficient for routing;
+  // actual session validation happens in each page/API route server-side.
   if (pathname.startsWith("/dashboard") || pathname.startsWith("/login")) {
-    // Auth Check
-    let session = null;
-    try {
-      session = await auth.api.getSession({
-        headers: request.headers,
-      });
-    } catch (error) {
-       // console.error("⚠️ Auth check failed in middleware:", error);
-    }
-
-    // Optimistic Check for cookie
     const cookieHeader = request.headers.get("cookie") || "";
     const hasSessionCookie =
-      cookieHeader.includes("better-auth.session_token") || cookieHeader.includes("session_token");
+      cookieHeader.includes("better-auth.session_token") ||
+      cookieHeader.includes("session_token");
 
-    const isAuthenticated = session?.user || hasSessionCookie;
-
-    if (pathname.startsWith("/dashboard") && !isAuthenticated) {
-      console.log("❌ No session, redirecting to /login");
+    if (pathname.startsWith("/dashboard") && !hasSessionCookie) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
-    if (pathname.startsWith("/login") && isAuthenticated) {
+    if (pathname.startsWith("/login") && hasSessionCookie) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 

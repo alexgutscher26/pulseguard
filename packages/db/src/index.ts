@@ -5,20 +5,28 @@ import { Pool } from "pg";
 
 export const createPrisma = (databaseUrl?: string) => {
   const url = databaseUrl || process.env.DATABASE_URL;
-  console.log("🔍 Creating Prisma client with @prisma/adapter-pg");
-  
+
   // Determine if SSL is needed but remove sslmode from URL to avoid conflict with explicit ssl config
   const isSsl = url.includes("sslmode=require") || url.includes("sslmode=verify");
   const cleanUrl = url.replace(/[?&]sslmode=[^&]+/, "");
-  
-  const poolConfig: any = { connectionString: cleanUrl };
+
+  const poolConfig: any = {
+    connectionString: cleanUrl,
+    // Keep pool size small — Neon's session-mode pooler caps total clients at `pool_size`.
+    // Each serverless function instance must use a tiny slice to avoid MaxClientsInSessionMode.
+    max: 5,
+    // Release idle connections quickly in a serverless environment
+    idleTimeoutMillis: 10_000,
+    connectionTimeoutMillis: 5_000,
+  };
+
   if (isSsl) {
-    poolConfig.ssl = { rejectUnauthorized: false }; // Allow self-signed or pooled certs in dev
+    poolConfig.ssl = { rejectUnauthorized: false };
   }
 
   const pool = new Pool(poolConfig);
   const adapter = new PrismaPg(pool);
-  
+
   return new PrismaClient({ adapter });
 };
 
