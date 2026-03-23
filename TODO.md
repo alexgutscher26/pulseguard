@@ -39,7 +39,7 @@ These items block general reliability or user trust.
 - [x] **Timeouts vs. Errors**
   - Differentiate between `Connection Refused` (Service down) vs `Timeout` (Network congestion).
   - Log specific error codes to `MonitorEvent.errorReason`.
-- [ ] **Multi-Vector Verification**
+- [x] **Multi-Vector Verification**
   - If Region A reports DOWN, attempt a ping from Region B before confirming DOWN state globally.
 - [ ] **Dynamic Thresholding**
   - Automatically adjust timeout limits based on historical average latency for a specific monitor.

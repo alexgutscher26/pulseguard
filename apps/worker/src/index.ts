@@ -307,18 +307,48 @@ export async function processBatch(monitors: any[], prisma: any, env?: Env): Pro
           result = await performCheck(monitor);
         }
 
-        // 2. Double Check Protocol (Retry on Failure) - only for non-regional checks
+        // 2. Multi-Vector Verification Protocol (Retry & Proxy on Failure)
         if (result.status === "DOWN" && monitor.status !== "DOWN" && !monitor.checkRegions) {
           console.warn(
-            `[DoubleCheck] First check failed for ${monitor.name} (${monitor.url}). Retrying in 2s...`,
+            `[MultiVector] First check failed for ${monitor.name} (${monitor.url}). Executing Multi-Vector Verification...`,
           );
 
-          // Wait 2000ms
-          await new Promise((resolve) => setTimeout(resolve, 2000));
+          // Wait 1000ms before retry
+          await new Promise((resolve) => setTimeout(resolve, 1000));
 
-          // Retry
-          result = await performCheck(monitor);
-          console.log(`[DoubleCheck] Retry result for ${monitor.name}: ${result.status}`);
+          // Base retry from current region
+          let retryResult = await performCheck(monitor);
+          
+          // If still DOWN locally and it's an HTTP check, try from an external proxy (Region B)
+          if (retryResult.status === "DOWN" && monitor.url.startsWith("http")) {
+            try {
+              console.log(`[MultiVector] Local check confirmed DOWN. Attempting proxy check from external network (Region B)...`);
+              const encodedUrl = encodeURIComponent(monitor.url);
+              // Proxying through allorigins acts as a distinct network perspective to prevent false positives
+              const proxyUrl = `https://api.allorigins.win/get?url=${encodedUrl}`;
+              
+              const proxyRes = await fetch(proxyUrl, {
+                method: "GET",
+                signal: AbortSignal.timeout(5000),
+              });
+              
+              if (proxyRes.ok) {
+                 const data: any = await proxyRes.json();
+                 // Check if the proxy successfully reached the target
+                 if (data.status && data.status.http_code >= 200 && data.status.http_code < 400) {
+                    console.log(`[MultiVector] External proxy reported UP! False positive averted for ${monitor.name}.`);
+                    retryResult.status = "UP";
+                    retryResult.errorReason = undefined;
+                    // We keep the initially higher latency to reflect the degraded state realistically
+                 }
+              }
+            } catch (err) {
+               console.warn(`[MultiVector] External proxy check failed, preserving DOWN state:`, err);
+            }
+          }
+
+          result = retryResult;
+          console.log(`[MultiVector] Final verification result for ${monitor.name}: ${result.status}`);
         }
       }
 
