@@ -3,12 +3,12 @@ model StatusPageI18n {
   statusPageId String
   statusPage   StatusPage @relation(fields: [statusPageId], references: [id], onDelete: Cascade)
 
-  locale       String     // e.g., "en", "es", "fr", "de"
-  enabled      Boolean    @default(true)
-  overrides    Json?      // Store key-value pairs for text overrides: { "status.operational": "All Good" }
+  locale    String // e.g., "en", "es", "fr", "de"
+  enabled   Boolean @default(true)
+  overrides Json? // Store key-value pairs for text overrides: { "status.operational": "All Good" }
 
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([statusPageId, locale])
   @@index([statusPageId])

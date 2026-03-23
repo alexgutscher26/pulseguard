@@ -1,15 +1,15 @@
 model DailyMonitorSummary {
-  id             String   @id @default(cuid())
-  monitorId      String
-  monitor        Monitor  @relation(fields: [monitorId], references: [id], onDelete: Cascade)
-  date           DateTime // Midnight UTC
-  uptimePct      Float    // 0-100
-  avgLatency     Int
-  checksTotal    Int
-  checksUp       Int
-  checksDown     Int
-  downDuration   Int      // Minutes (approx based on checksDown * interval)
-  createdAt      DateTime @default(now())
+  id           String   @id @default(cuid())
+  monitorId    String
+  monitor      Monitor  @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  date         DateTime // Midnight UTC
+  uptimePct    Float // 0-100
+  avgLatency   Int
+  checksTotal  Int
+  checksUp     Int
+  checksDown   Int
+  downDuration Int // Minutes (approx based on checksDown * interval)
+  createdAt    DateTime @default(now())
 
   @@unique([monitorId, date])
   @@index([date])

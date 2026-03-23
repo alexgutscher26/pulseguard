@@ -208,6 +208,41 @@ export async function processBatch(monitors: any[], prisma: any, env?: Env): Pro
   for (let i = 0; i < monitors.length; i++) {
     const monitor = monitors[i];
 
+    // --- DYNAMIC THRESHOLDING CALCULATION ---
+    let effectiveTimeout = monitor.timeout || 10;
+    if (monitor.dynamicThresholding) {
+      try {
+        const lastEvents = await prisma.monitorEvent.findMany({
+          where: { monitorId: monitor.id, status: "UP" },
+          orderBy: { timestamp: "desc" },
+          take: 50, // Get recent events to compute p95
+          select: { latency: true }
+        });
+        
+        if (lastEvents.length >= 10) {
+          // Sort ascending to find p95
+          const sorted = lastEvents.map((e: any) => e.latency).sort((a: number, b: number) => a - b);
+          const p95Index = Math.floor(sorted.length * 0.95);
+          const p95Latency = sorted[p95Index];
+          
+          // Calc dynamic (p95 + 30% buffer, convert ms to seconds)
+          let calcTimeout = (p95Latency * 1.3) / 1000;
+          
+          // Enforce bounds min 2, max 30
+          if (calcTimeout < 2) calcTimeout = 2;
+          if (calcTimeout > 30) calcTimeout = 30;
+          
+          effectiveTimeout = calcTimeout;
+          console.log(`[DynamicThreshold] ${monitor.name}: p95=${p95Latency}ms -> New Timeout=${effectiveTimeout.toFixed(2)}s`);
+        }
+      } catch (calcErr) {
+        console.error(`[DynamicThreshold] Failed to calculate for ${monitor.name}:`, calcErr);
+      }
+    }
+    
+    // Set the resolved timeout on the monitor object for the checks
+    monitor.timeout = effectiveTimeout;
+
     // --- PROCESSING LOGIC START ---
     try {
       // 0. Check for Active Maintenance Window
@@ -736,6 +771,7 @@ export default {
           name: true,
           checkRegions: true,
           alertThreshold: true,
+          dynamicThresholding: true,
           // @ts-ignore
           maintenanceWindows: {
             where: {

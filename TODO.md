@@ -41,7 +41,7 @@ These items block general reliability or user trust.
   - Log specific error codes to `MonitorEvent.errorReason`.
 - [x] **Multi-Vector Verification**
   - If Region A reports DOWN, attempt a ping from Region B before confirming DOWN state globally.
-- [ ] **Dynamic Thresholding**
+- [x] **Dynamic Thresholding**
   - Automatically adjust timeout limits based on historical average latency for a specific monitor.
 
 ### ⚡ Worker Reliability & Performance

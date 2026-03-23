@@ -33,6 +33,7 @@ interface MonitorFormProps {
     timeout: number;
     checkRegions?: string | null;
     alertThreshold?: number;
+    dynamicThresholding?: boolean;
   };
 }
 
@@ -317,6 +318,23 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                   </option>
                 </select>
                 <ChevronDown className="absolute top-3.5 right-3 size-3 text-primary/40 pointer-events-none group-focus-within/select:text-primary transition-colors" />
+              </div>
+              <div className="mt-2 flex items-center gap-3 border border-primary/20 bg-primary/5 p-3 rounded-sm">
+                <input
+                  type="checkbox"
+                  id="dynamicThresholding"
+                  name="dynamicThresholding"
+                  defaultChecked={monitor?.dynamicThresholding}
+                  className="accent-primary size-4 cursor-pointer"
+                />
+                <div className="flex flex-col">
+                  <label htmlFor="dynamicThresholding" className="text-[10px] font-bold text-foreground font-mono uppercase cursor-pointer">
+                    Dynamic Timeout
+                  </label>
+                  <p className="text-[9px] text-primary/60 font-mono mt-0.5 max-w-[150px]">
+                    Auto-scale timeout to p95 historical latency
+                  </p>
+                </div>
               </div>
             </div>
           </div>

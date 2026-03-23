@@ -41,6 +41,7 @@ const baseSchema = z.object({
   // Multi-region support
   checkRegions: z.string().optional(), // JSON stringified array of region codes
   alertThreshold: z.coerce.number().min(1).default(1),
+  dynamicThresholding: z.boolean().optional(),
 });
 
 const monitorSchema = baseSchema.superRefine((data, ctx) => {
@@ -156,6 +157,7 @@ export async function createMonitor(prevState: any, formData: FormData) {
       port: formData.get("port") ? Number(formData.get("port")) : undefined,
       checkRegions: (formData.get("checkRegions") as string) || undefined,
       alertThreshold: formData.get("alertThreshold") ? Number(formData.get("alertThreshold")) : 1,
+      dynamicThresholding: formData.get("dynamicThresholding") === "on",
     };
 
     console.log("Creating monitor with data:", rawData);
@@ -188,6 +190,7 @@ export async function createMonitor(prevState: any, formData: FormData) {
         userId: session.user.id,
         checkRegions: data.checkRegions,
         alertThreshold: data.alertThreshold,
+        dynamicThresholding: data.dynamicThresholding,
       },
     });
 
@@ -257,6 +260,7 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
     port: formData.get("port") ? Number(formData.get("port")) : undefined,
     checkRegions: (formData.get("checkRegions") as string) || undefined,
     alertThreshold: formData.get("alertThreshold") ? Number(formData.get("alertThreshold")) : 1,
+    dynamicThresholding: formData.get("dynamicThresholding") === "on",
   };
 
   console.log("Updating monitor with data:", rawData);
@@ -291,6 +295,7 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
         timeout: data.timeout,
         checkRegions: data.checkRegions,
         alertThreshold: data.alertThreshold,
+        dynamicThresholding: data.dynamicThresholding,
       },
     });
 

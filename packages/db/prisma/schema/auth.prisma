@@ -16,7 +16,6 @@ model User {
   statusPages          StatusPage[]
   incidentTemplates    IncidentTemplate[]
 
-
   @@unique([email])
   @@map("user")
 }

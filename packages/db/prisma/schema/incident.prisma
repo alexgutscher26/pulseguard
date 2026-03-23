@@ -19,52 +19,52 @@ enum IncidentEventType {
 }
 
 model Incident {
-  id              String           @id @default(cuid())
-  monitorId       String
-  monitor         Monitor          @relation(fields: [monitorId], references: [id], onDelete: Cascade)
-  status          IncidentStatus   @default(INVESTIGATING)
-  severity        Severity         @default(HIGH)
-  title           String
-  description     String?
-  startedAt       DateTime         @default(now())
-  resolvedAt      DateTime?
-  
+  id          String         @id @default(cuid())
+  monitorId   String
+  monitor     Monitor        @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  status      IncidentStatus @default(INVESTIGATING)
+  severity    Severity       @default(HIGH)
+  title       String
+  description String?
+  startedAt   DateTime       @default(now())
+  resolvedAt  DateTime?
+
   // Relations
-  events          IncidentEvent[]
-  postMortem      PostMortem?
+  events     IncidentEvent[]
+  postMortem PostMortem?
 
   // Audits
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([monitorId])
   @@index([status])
 }
 
 model IncidentEvent {
-  id              String           @id @default(cuid())
-  incidentId      String
-  incident        Incident         @relation(fields: [incidentId], references: [id], onDelete: Cascade)
-  type            IncidentEventType
-  message         String
-  createdAt       DateTime         @default(now())
+  id         String            @id @default(cuid())
+  incidentId String
+  incident   Incident          @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  type       IncidentEventType
+  message    String
+  createdAt  DateTime          @default(now())
 
   @@index([incidentId])
 }
 
 model RegionalIncident {
-  id              String           @id @default(cuid())
-  monitorId       String
-  monitor         Monitor          @relation(fields: [monitorId], references: [id], onDelete: Cascade)
-  region          String
-  status          IncidentStatus   @default(INVESTIGATING)
-  startedAt       DateTime         @default(now())
-  resolvedAt      DateTime?
-  avgLatency      Float?           // Average latency during incident (ms)
-  latencyThreshold Float?          // Threshold that was breached (ms)
-  
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  id               String         @id @default(cuid())
+  monitorId        String
+  monitor          Monitor        @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  region           String
+  status           IncidentStatus @default(INVESTIGATING)
+  startedAt        DateTime       @default(now())
+  resolvedAt       DateTime?
+  avgLatency       Float? // Average latency during incident (ms)
+  latencyThreshold Float? // Threshold that was breached (ms)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([monitorId])
   @@index([region])
@@ -79,12 +79,11 @@ model IncidentTemplate {
   severity    Severity       @default(HIGH)
   status      IncidentStatus @default(INVESTIGATING)
 
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  createdBy   User           @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdBy   User   @relation(fields: [createdById], references: [id], onDelete: Cascade)
   createdById String
-
 
   @@index([createdById])
 }
@@ -96,9 +95,9 @@ enum PostMortemStatus {
 }
 
 model PostMortem {
-  id              String           @id @default(cuid())
-  incidentId      String           @unique
-  incident        Incident         @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  id         String   @id @default(cuid())
+  incidentId String   @unique
+  incident   Incident @relation(fields: [incidentId], references: [id], onDelete: Cascade)
 
   summary         String
   rootCause       String
@@ -106,10 +105,10 @@ model PostMortem {
   detectionMethod String
   actionItems     String
 
-  status          PostMortemStatus @default(DRAFT)
+  status PostMortemStatus @default(DRAFT)
 
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([incidentId])
 }

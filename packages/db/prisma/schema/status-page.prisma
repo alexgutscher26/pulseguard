@@ -1,47 +1,47 @@
 model StatusPage {
-  id            String   @id @default(cuid())
-  slug          String   @unique
-  customDomain  String?  @unique
-  title         String
-  description   String?
-  favicon       String?  // URL
-  logo          String?  // URL
-  
+  id           String  @id @default(cuid())
+  slug         String  @unique
+  customDomain String? @unique
+  title        String
+  description  String?
+  favicon      String? // URL
+  logo         String? // URL
+
   // Design & Config
-  theme         Json?    // { colors: { primary: "#...", bg: "#..." }, mode: "dark" | "light" }
-  layout        Json?    // Ordered list of component definitions
-  
+  theme  Json? // { colors: { primary: "#...", bg: "#..." }, mode: "dark" | "light" }
+  layout Json? // Ordered list of component definitions
+
   // Access Control
-  password      String?  // Plaintext for simple, or Hashed. For now simplest implementation.
-  isPrivate     Boolean  @default(false)
-  ipWhitelist   String?  // Comma separated list of IPs
-  
+  password    String? // Plaintext for simple, or Hashed. For now simplest implementation.
+  isPrivate   Boolean @default(false)
+  ipWhitelist String? // Comma separated list of IPs
+
   // SEO & Visibility
-  seoIndex          Boolean @default(true)
-  showUptime        Boolean @default(true)
-  showResponseTime  Boolean @default(true)
-  showPaused        Boolean @default(false)
-  customCss         String?
-  
+  seoIndex         Boolean @default(true)
+  showUptime       Boolean @default(true)
+  showResponseTime Boolean @default(true)
+  showPaused       Boolean @default(false)
+  customCss        String?
+
   // Widget Configuration
-  widgetEnabled        Boolean  @default(false)
-  widgetAllowedDomains String?  // Comma-separated domains, "*" = any, null = same-origin only
-  widgetBadgeText      Json?    // { operational: "All Systems Operational", partial: "Partial Outage", major: "Major Outage" }
-  widgetTheme          Json?    // { bgColor: "#1a1a2e", textColor: "#00ff88", borderRadius: "8px" }
-  
+  widgetEnabled        Boolean @default(false)
+  widgetAllowedDomains String? // Comma-separated domains, "*" = any, null = same-origin only
+  widgetBadgeText      Json? // { operational: "All Systems Operational", partial: "Partial Outage", major: "Major Outage" }
+  widgetTheme          Json? // { bgColor: "#1a1a2e", textColor: "#00ff88", borderRadius: "8px" }
+
   // History Configuration
-  historyDays          Int      @default(90) // 30, 60, or 90 day lookback
-  
+  historyDays Int @default(90) // 30, 60, or 90 day lookback
+
   // Relations
-  userId        String
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  monitors      StatusPageMonitor[]
-  views         StatusPageView[]
-  i18nSettings  StatusPageI18n[]
-  subscribers   StatusPageSubscriber[]
-  
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  userId       String
+  user         User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  monitors     StatusPageMonitor[]
+  views        StatusPageView[]
+  i18nSettings StatusPageI18n[]
+  subscribers  StatusPageSubscriber[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([slug])
   @@index([customDomain])
@@ -49,19 +49,19 @@ model StatusPage {
 }
 
 model StatusPageMonitor {
-  id            String     @id @default(cuid())
-  
-  statusPageId  String
-  statusPage    StatusPage @relation(fields: [statusPageId], references: [id], onDelete: Cascade)
-  
-  monitorId     String
-  monitor       Monitor    @relation(fields: [monitorId], references: [id], onDelete: Cascade)
-  
-  displayName   String?    // Override monitor name contextually
-  displayGroup  String?    // "API", "Database", etc.
-  sortOrder     Int        @default(0)
-  
-  createdAt     DateTime   @default(now())
+  id String @id @default(cuid())
+
+  statusPageId String
+  statusPage   StatusPage @relation(fields: [statusPageId], references: [id], onDelete: Cascade)
+
+  monitorId String
+  monitor   Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+
+  displayName  String? // Override monitor name contextually
+  displayGroup String? // "API", "Database", etc.
+  sortOrder    Int     @default(0)
+
+  createdAt DateTime @default(now())
 
   @@unique([statusPageId, monitorId])
   @@index([statusPageId])
@@ -69,16 +69,16 @@ model StatusPageMonitor {
 }
 
 model StatusPageView {
-  id            String   @id @default(cuid())
-  
-  statusPageId  String
-  statusPage    StatusPage @relation(fields: [statusPageId], references: [id], onDelete: Cascade)
-  
-  visitorHash   String
-  userAgent     String?
-  country       String?
-  
-  timestamp     DateTime @default(now())
+  id String @id @default(cuid())
+
+  statusPageId String
+  statusPage   StatusPage @relation(fields: [statusPageId], references: [id], onDelete: Cascade)
+
+  visitorHash String
+  userAgent   String?
+  country     String?
+
+  timestamp DateTime @default(now())
 
   @@index([statusPageId])
   @@index([timestamp])
@@ -94,29 +94,29 @@ enum SubscriptionTokenType {
 }
 
 model StatusPageSubscriber {
-  id            String   @id @default(cuid())
-  
-  statusPageId  String
-  statusPage    StatusPage @relation(fields: [statusPageId], references: [id], onDelete: Cascade)
-  
-  email         String
-  verified      Boolean  @default(false)
-  
+  id String @id @default(cuid())
+
+  statusPageId String
+  statusPage   StatusPage @relation(fields: [statusPageId], references: [id], onDelete: Cascade)
+
+  email    String
+  verified Boolean @default(false)
+
   // Manage token for unsubscribe/preferences (long-lived)
-  manageToken   String   @unique @default(cuid())
-  
+  manageToken String @unique @default(cuid())
+
   // Subscription preferences
-  notifyIncidents    Boolean @default(true)
-  notifyMaintenance  Boolean @default(true)
-  
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
+  notifyIncidents   Boolean @default(true)
+  notifyMaintenance Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Per-monitor subscriptions
   monitorSubscriptions MonitorSubscription[]
-  
+
   // Verification tokens
-  tokens        SubscriptionToken[]
+  tokens SubscriptionToken[]
 
   @@unique([statusPageId, email])
   @@index([statusPageId])
@@ -125,18 +125,18 @@ model StatusPageSubscriber {
 }
 
 model SubscriptionToken {
-  id            String   @id @default(cuid())
-  
-  subscriberId  String
-  subscriber    StatusPageSubscriber @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
-  
-  token         String   @unique
-  type          SubscriptionTokenType
-  
-  expiresAt     DateTime
-  usedAt        DateTime?
-  
-  createdAt     DateTime @default(now())
+  id String @id @default(cuid())
+
+  subscriberId String
+  subscriber   StatusPageSubscriber @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+
+  token String                @unique
+  type  SubscriptionTokenType
+
+  expiresAt DateTime
+  usedAt    DateTime?
+
+  createdAt DateTime @default(now())
 
   @@index([token])
   @@index([subscriberId])
@@ -144,15 +144,15 @@ model SubscriptionToken {
 }
 
 model MonitorSubscription {
-  id            String   @id @default(cuid())
-  
-  subscriberId  String
-  subscriber    StatusPageSubscriber @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
-  
-  monitorId     String
-  monitor       Monitor  @relation(fields: [monitorId], references: [id], onDelete: Cascade)
-  
-  createdAt     DateTime @default(now())
+  id String @id @default(cuid())
+
+  subscriberId String
+  subscriber   StatusPageSubscriber @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+
+  monitorId String
+  monitor   Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
 
   @@unique([subscriberId, monitorId])
   @@index([subscriberId])

@@ -1,68 +1,75 @@
 # Security Policy
 
-At PulseGuard, we take the security of our **Cyberpunk Operational Intelligence Node** seriously. We minimize the attack surface, enforce zero-trust principles, and appreciate the community's help in disclosing security vulnerabilities responsibly.
+At **PulseGuard**, we treat the security of our **Operational Intelligence Node** as paramount. We adhere to enterprise-grade standards, minimize the attack surface, and enforce zero-trust architecture. We sincerely appreciate the global security community's efforts in participating in responsible disclosure.
 
-> **Philosophy**: "Assume breach. Trust nothing. Verify everything. Defense in depth."
+> **Philosophy**: *"Assume breach. Trust nothing. Verify everything. Defense in depth."*
 
-## Supported Versions
+---
 
-As a SaaS platform, we primarily support the latest deployed version.
+## 🛡️ Supported Versions
 
-| Component          | Version | Supported          | Notes                                     |
-| :----------------- | :------ | :----------------- | :---------------------------------------- |
-| **Cloud Platform** | Current | :white_check_mark: | The latest deployment on `pulseguard.com` |
-| **Native App**     | Latest  | :white_check_mark: | Latest release on App Store / Play Store  |
-| **Self-Hosted**    | < 1.0.0 | :x:                | Not currently supported                   |
+As a continuously deployed SaaS platform, we only actively protect and maintain the latest deployed versions.
 
-## Reporting a Vulnerability
+| Component          | Version | Supported          | Notes                                      |
+| :----------------- | :------ | :----------------- | :----------------------------------------- |
+| **Cloud Platform** | Current | :white_check_mark: | The latest deployment on `pulseguard.com`  |
+| **Edge Workers**   | Current | :white_check_mark: | The active regional monitoring ping assets |
+| **Self-Hosted**    | < 1.0.0 | :x:                | Local installations are not yet supported  |
 
-If you discover a security vulnerability within PulseGuard, please refrain from disclosing it publicly until we have addressed it.
+---
+
+## 🛑 Reporting a Vulnerability
+
+If you've identified a vulnerability within the PulseGuard infrastructure, we ask that you act in good faith and report it to us privately before making any public disclosure.
 
 ### 1. How to Report
 
-Please email us at **security@pulseguard.com**.
+Please encrypt your findings and email them to **security@pulseguard.com**.
 
 **Must Include:**
+* **Vulnerability Type**: (e.g., XSS, SQLi, IDOR, SSRF, RCE, Broken Auth)
+* **Affected Asset**: Full URL, API endpoint, or file path.
+* **Proof of Concept (PoC)**: Clear reproduction steps, video, or script.
+* **Impact**: Your estimated business or data compromise severity.
 
-- **Type**: (e.g., XSS, SQLi, IDOR, RCE)
-- **Asset**: Full URL, API endpoint, or file path
-- **PoC**: Proof of Concept or reproduction steps
-- **Impact**: Estimated business or data impact
+### 2. PGP Encryption (Recommended)
 
-### 2. Our Response Process
+To protect sensitive disclosures, please encrypt your payload using our public PGP key:
+```text
+Key Fingerprint: F01F B94B 7137 896D 7204  2757 702A FB2A EB67 BCF1
+[Download Public Key](apps/web/public/pgp-key.txt)
+```
 
-1.  **Acknowledge**: We will acknowledge your report within **48 hours**.
-2.  **Triaging**: We will validate the vulnerability and assign severity (Critical, High, Medium, Low) based on CVSS/OWASP.
-3.  **Remediation**:
-    - **Critical**: < 24 hours
-    - **High**: < 3 days
-    - **Medium**: < 7 days
-4.  **Disclosure**: Once fixed, we will credit you in our [CHANGELOG.md](./CHANGELOG.md) (unless you prefer anonymity).
+### 3. Response SLA
 
-## Scope
+We are committed to rapid response. You can expect:
+1. **Acknowledge**: Initial response within **48 hours**.
+2. **Triaging**: Validation and CVSS assigned within **5 days**.
+3. **Remediation**:
+    * **Critical**: < 24 hours
+    * **High**: < 3 days
+    * **Medium**: < 7 days
+    * **Low**: Processed during standard sprint cycles.
+4. **Resolution**: You will be notified when the issue is mitigated and patched.
 
-### ✅ In Scope (Vulnerability Rewards Eligible)
+---
 
-- PulseGuard Web Dashboard (`dashboard.pulseguard.com`)
-- PulseGuard API (`api.pulseguard.com`)
-- PulseGuard Worker / Monitor Engine
-- Authentication Logic (BetterAuth integration)
-- Data Leaks (PII exposure)
+## 🤝 Safe Harbor
 
-### ❌ Out of Scope
+When conducting vulnerability research in accordance with this policy, we consider your actions authorized. We will not pursue legal action against you or ask law enforcement to investigate you if you act in good faith and follow these guidelines:
+* Do not access, modify, or destroy user data that does not belong to you. (Use explicit test accounts for PoCs).
+* Do not degrade the performance of the system (e.g., no volumetric DDoS or destructive stress testing).
+* Do not execute social engineering or physical attacks against our personnel or data centers.
 
-- Social Engineering (Phishing)
-- Physical Security
-- Denial of Service (DDoS) - _Handled by Cloudflare_
-- Spam / Rate Limiting (unless it causes service degradation)
-- 3rd Party Integrations (e.g., Resend, Stripe) - _Report to them directly_
+---
 
-## Security Practices
+## 🧩 Security Practices & Supply Chain
 
-We adhere to the **OWASP Top 10 (2025)** and enforce:
+We strictly adhere to the **OWASP Top 10 (2025)** and deeply respect the supply chain.
 
-- **Zero Trust**: No implicit trust between services (Worker <-> API <-> DB).
-- **Least Privilege**: Scoped API keys and database roles.
-- **Audit Logs**: All critical actions are logged.
+* **Zero Trust & Edge Limits**: All health-check requests originate in isolated V8 isolates (Cloudflare Workers) preventing lateral network movement.
+* **Least Privilege Database**: Connection poolers enforce Row-Level Security (RLS) policies by default.
+* **MFA Enforced**: Multi-factor authentication is mandatory for all core repositories and production infrastructure access. 
+* **Dependency Auditing**: We heavily rely on automated `bun` lockfile scanning and dependency tracking to detect immediate zero-day vulnerabilities in upstream libraries (NPM/GitHub).
 
-For architectural details, please review [ARCHITECTURE.md](./ARCHITECTURE.md).
+*For systemic and architectural detail, consult [ARCHITECTURE.md](./ARCHITECTURE.md).*
