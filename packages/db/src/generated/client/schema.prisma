@@ -335,10 +335,11 @@ model Monitor {
   monitorSubscriptions MonitorSubscription[]
   dailySummaries       DailyMonitorSummary[]
 
-  nextCheck      DateTime?
-  lastCheck      DateTime?
-  checkRegions   String? // JSON array of region codes: ["us-east", "eu-west", "ap-south"]
-  alertThreshold Int       @default(1)
+  nextCheck           DateTime?
+  lastCheck           DateTime?
+  checkRegions        String? // JSON array of region codes: ["us-east", "eu-west", "ap-south"]
+  alertThreshold      Int       @default(1)
+  dynamicThresholding Boolean   @default(false)
 
   @@index([userId])
   @@index([nextCheck])

@@ -626,7 +626,52 @@ export default {
       const monitorId = url.pathname.split("/")[3];
       if (!monitorId) return new Response("Missing Monitor ID", { status: 400 });
 
-      // TODO: Add Auth Check here (verify session cookie)
+      // Perform Auth Check (verify session cookie or allow if on a public status page)
+      const cookieHeader = request.headers.get("Cookie");
+      let isAuthenticated = false;
+      const prisma = getPrisma(env.DATABASE_URL);
+
+      // Support token via query param as fallback for cross-origin WebSockets
+      let rawToken: string | null | undefined = url.searchParams.get("token");
+
+      if (!rawToken && cookieHeader) {
+        const secureMatch = cookieHeader.match(/__Secure-better-auth\.session_token=([^;]+)/);
+        const regularMatch = cookieHeader.match(/better-auth\.session_token=([^;]+)/);
+        rawToken = secureMatch?.[1] || regularMatch?.[1] || null;
+      }
+
+      if (rawToken) {
+        const token = decodeURIComponent(rawToken);
+        const session = await prisma.session.findUnique({
+          where: { token },
+          select: { userId: true, expiresAt: true }
+        });
+
+        if (session && session.expiresAt > new Date()) {
+          const monitor = await prisma.monitor.findUnique({
+            where: { id: monitorId },
+            select: { userId: true }
+          });
+
+          if (monitor && monitor.userId === session.userId) {
+            isAuthenticated = true;
+          }
+        }
+      }
+
+      if (!isAuthenticated) {
+        // Fallback: If no valid session, check if monitor is exposed on any public Status Page
+        const publicMonitor = await prisma.statusPageMonitor.findFirst({
+          where: {
+            monitorId: monitorId,
+            statusPage: { isPrivate: false }
+          }
+        });
+        
+        if (!publicMonitor) {
+          return new Response("Unauthorized", { status: 401 });
+        }
+      }
 
       // Forward to Durable Object
       const id = env.MONITOR_CHANNEL.idFromName(monitorId);

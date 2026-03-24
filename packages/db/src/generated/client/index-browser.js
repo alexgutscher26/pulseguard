@@ -290,7 +290,8 @@ exports.Prisma.MonitorScalarFieldEnum = {
   nextCheck: 'nextCheck',
   lastCheck: 'lastCheck',
   checkRegions: 'checkRegions',
-  alertThreshold: 'alertThreshold'
+  alertThreshold: 'alertThreshold',
+  dynamicThresholding: 'dynamicThresholding'
 };
 
 exports.Prisma.MonitorEventScalarFieldEnum = {

@@ -18320,6 +18320,7 @@ export namespace Prisma {
     lastCheck: Date | null
     checkRegions: string | null
     alertThreshold: number | null
+    dynamicThresholding: boolean | null
   }
 
   export type MonitorMaxAggregateOutputType = {
@@ -18337,6 +18338,7 @@ export namespace Prisma {
     lastCheck: Date | null
     checkRegions: string | null
     alertThreshold: number | null
+    dynamicThresholding: boolean | null
   }
 
   export type MonitorCountAggregateOutputType = {
@@ -18354,6 +18356,7 @@ export namespace Prisma {
     lastCheck: number
     checkRegions: number
     alertThreshold: number
+    dynamicThresholding: number
     _all: number
   }
 
@@ -18385,6 +18388,7 @@ export namespace Prisma {
     lastCheck?: true
     checkRegions?: true
     alertThreshold?: true
+    dynamicThresholding?: true
   }
 
   export type MonitorMaxAggregateInputType = {
@@ -18402,6 +18406,7 @@ export namespace Prisma {
     lastCheck?: true
     checkRegions?: true
     alertThreshold?: true
+    dynamicThresholding?: true
   }
 
   export type MonitorCountAggregateInputType = {
@@ -18419,6 +18424,7 @@ export namespace Prisma {
     lastCheck?: true
     checkRegions?: true
     alertThreshold?: true
+    dynamicThresholding?: true
     _all?: true
   }
 
@@ -18523,6 +18529,7 @@ export namespace Prisma {
     lastCheck: Date | null
     checkRegions: string | null
     alertThreshold: number
+    dynamicThresholding: boolean
     _count: MonitorCountAggregateOutputType | null
     _avg: MonitorAvgAggregateOutputType | null
     _sum: MonitorSumAggregateOutputType | null
@@ -18559,6 +18566,7 @@ export namespace Prisma {
     lastCheck?: boolean
     checkRegions?: boolean
     alertThreshold?: boolean
+    dynamicThresholding?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     events?: boolean | Monitor$eventsArgs<ExtArgs>
     maintenanceWindows?: boolean | Monitor$maintenanceWindowsArgs<ExtArgs>
@@ -18588,6 +18596,7 @@ export namespace Prisma {
     lastCheck?: boolean
     checkRegions?: boolean
     alertThreshold?: boolean
+    dynamicThresholding?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["monitor"]>
 
@@ -18606,6 +18615,7 @@ export namespace Prisma {
     lastCheck?: boolean
     checkRegions?: boolean
     alertThreshold?: boolean
+    dynamicThresholding?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["monitor"]>
 
@@ -18624,9 +18634,10 @@ export namespace Prisma {
     lastCheck?: boolean
     checkRegions?: boolean
     alertThreshold?: boolean
+    dynamicThresholding?: boolean
   }
 
-  export type MonitorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "url" | "type" | "interval" | "timeout" | "status" | "userId" | "createdAt" | "updatedAt" | "nextCheck" | "lastCheck" | "checkRegions" | "alertThreshold", ExtArgs["result"]["monitor"]>
+  export type MonitorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "url" | "type" | "interval" | "timeout" | "status" | "userId" | "createdAt" | "updatedAt" | "nextCheck" | "lastCheck" | "checkRegions" | "alertThreshold" | "dynamicThresholding", ExtArgs["result"]["monitor"]>
   export type MonitorInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     events?: boolean | Monitor$eventsArgs<ExtArgs>
@@ -18678,6 +18689,7 @@ export namespace Prisma {
       lastCheck: Date | null
       checkRegions: string | null
       alertThreshold: number
+      dynamicThresholding: boolean
     }, ExtArgs["result"]["monitor"]>
     composites: {}
   }
@@ -19126,6 +19138,7 @@ export namespace Prisma {
     readonly lastCheck: FieldRef<"Monitor", 'DateTime'>
     readonly checkRegions: FieldRef<"Monitor", 'String'>
     readonly alertThreshold: FieldRef<"Monitor", 'Int'>
+    readonly dynamicThresholding: FieldRef<"Monitor", 'Boolean'>
   }
     
 
@@ -31414,7 +31427,8 @@ export namespace Prisma {
     nextCheck: 'nextCheck',
     lastCheck: 'lastCheck',
     checkRegions: 'checkRegions',
-    alertThreshold: 'alertThreshold'
+    alertThreshold: 'alertThreshold',
+    dynamicThresholding: 'dynamicThresholding'
   };
 
   export type MonitorScalarFieldEnum = (typeof MonitorScalarFieldEnum)[keyof typeof MonitorScalarFieldEnum]
@@ -32882,6 +32896,7 @@ export namespace Prisma {
     lastCheck?: DateTimeNullableFilter<"Monitor"> | Date | string | null
     checkRegions?: StringNullableFilter<"Monitor"> | string | null
     alertThreshold?: IntFilter<"Monitor"> | number
+    dynamicThresholding?: BoolFilter<"Monitor"> | boolean
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     events?: MonitorEventListRelationFilter
     maintenanceWindows?: MaintenanceWindowListRelationFilter
@@ -32910,6 +32925,7 @@ export namespace Prisma {
     lastCheck?: SortOrderInput | SortOrder
     checkRegions?: SortOrderInput | SortOrder
     alertThreshold?: SortOrder
+    dynamicThresholding?: SortOrder
     user?: UserOrderByWithRelationInput
     events?: MonitorEventOrderByRelationAggregateInput
     maintenanceWindows?: MaintenanceWindowOrderByRelationAggregateInput
@@ -32941,6 +32957,7 @@ export namespace Prisma {
     lastCheck?: DateTimeNullableFilter<"Monitor"> | Date | string | null
     checkRegions?: StringNullableFilter<"Monitor"> | string | null
     alertThreshold?: IntFilter<"Monitor"> | number
+    dynamicThresholding?: BoolFilter<"Monitor"> | boolean
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     events?: MonitorEventListRelationFilter
     maintenanceWindows?: MaintenanceWindowListRelationFilter
@@ -32969,6 +32986,7 @@ export namespace Prisma {
     lastCheck?: SortOrderInput | SortOrder
     checkRegions?: SortOrderInput | SortOrder
     alertThreshold?: SortOrder
+    dynamicThresholding?: SortOrder
     _count?: MonitorCountOrderByAggregateInput
     _avg?: MonitorAvgOrderByAggregateInput
     _max?: MonitorMaxOrderByAggregateInput
@@ -32994,6 +33012,7 @@ export namespace Prisma {
     lastCheck?: DateTimeNullableWithAggregatesFilter<"Monitor"> | Date | string | null
     checkRegions?: StringNullableWithAggregatesFilter<"Monitor"> | string | null
     alertThreshold?: IntWithAggregatesFilter<"Monitor"> | number
+    dynamicThresholding?: BoolWithAggregatesFilter<"Monitor"> | boolean
   }
 
   export type MonitorEventWhereInput = {
@@ -34913,6 +34932,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
@@ -34941,6 +34961,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
@@ -34967,6 +34988,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
@@ -34995,6 +35017,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
@@ -35022,6 +35045,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
   }
 
   export type MonitorUpdateManyMutationInput = {
@@ -35038,6 +35062,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type MonitorUncheckedUpdateManyInput = {
@@ -35055,6 +35080,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type MonitorEventCreateInput = {
@@ -37084,6 +37110,7 @@ export namespace Prisma {
     lastCheck?: SortOrder
     checkRegions?: SortOrder
     alertThreshold?: SortOrder
+    dynamicThresholding?: SortOrder
   }
 
   export type MonitorAvgOrderByAggregateInput = {
@@ -37107,6 +37134,7 @@ export namespace Prisma {
     lastCheck?: SortOrder
     checkRegions?: SortOrder
     alertThreshold?: SortOrder
+    dynamicThresholding?: SortOrder
   }
 
   export type MonitorMinOrderByAggregateInput = {
@@ -37124,6 +37152,7 @@ export namespace Prisma {
     lastCheck?: SortOrder
     checkRegions?: SortOrder
     alertThreshold?: SortOrder
+    dynamicThresholding?: SortOrder
   }
 
   export type MonitorSumOrderByAggregateInput = {
@@ -39759,6 +39788,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleCreateNestedManyWithoutMonitorInput
@@ -39785,6 +39815,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
@@ -40040,6 +40071,7 @@ export namespace Prisma {
     lastCheck?: DateTimeNullableFilter<"Monitor"> | Date | string | null
     checkRegions?: StringNullableFilter<"Monitor"> | string | null
     alertThreshold?: IntFilter<"Monitor"> | number
+    dynamicThresholding?: BoolFilter<"Monitor"> | boolean
   }
 
   export type NotificationChannelUpsertWithWhereUniqueWithoutUserInput = {
@@ -40339,6 +40371,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
@@ -40366,6 +40399,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
@@ -40460,6 +40494,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
@@ -40487,6 +40522,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
@@ -40646,6 +40682,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
@@ -40673,6 +40710,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
@@ -40714,6 +40752,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
@@ -40741,6 +40780,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
@@ -40926,6 +40966,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
@@ -40953,6 +40994,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
@@ -40994,6 +41036,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
@@ -41021,6 +41064,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
@@ -41046,6 +41090,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
@@ -41073,6 +41118,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
@@ -41114,6 +41160,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
@@ -41141,6 +41188,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
@@ -41314,6 +41362,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
@@ -41341,6 +41390,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
     incidents?: IncidentUncheckedCreateNestedManyWithoutMonitorInput
@@ -41407,6 +41457,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
@@ -41434,6 +41485,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
     incidents?: IncidentUncheckedUpdateManyWithoutMonitorNestedInput
@@ -42166,6 +42218,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
     user: UserCreateNestedOneWithoutMonitorsInput
     maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleCreateNestedManyWithoutMonitorInput
@@ -42193,6 +42246,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
     incidents?: IncidentUncheckedCreateNestedManyWithoutMonitorInput
@@ -42234,6 +42288,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUpdateManyWithoutMonitorNestedInput
@@ -42261,6 +42316,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
     incidents?: IncidentUncheckedUpdateManyWithoutMonitorNestedInput
@@ -42286,6 +42342,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleCreateNestedManyWithoutMonitorInput
@@ -42313,6 +42370,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
     incidents?: IncidentUncheckedCreateNestedManyWithoutMonitorInput
@@ -42354,6 +42412,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUpdateManyWithoutMonitorNestedInput
@@ -42381,6 +42440,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
     incidents?: IncidentUncheckedUpdateManyWithoutMonitorNestedInput
@@ -42923,6 +42983,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
@@ -42950,6 +43011,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
@@ -43064,6 +43126,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
@@ -43091,6 +43154,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
@@ -43590,6 +43654,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
@@ -43617,6 +43682,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
@@ -43695,6 +43761,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
@@ -43722,6 +43789,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
@@ -43747,6 +43815,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
@@ -43774,6 +43843,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
@@ -43815,6 +43885,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
@@ -43842,6 +43913,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
@@ -43892,6 +43964,7 @@ export namespace Prisma {
     lastCheck?: Date | string | null
     checkRegions?: string | null
     alertThreshold?: number
+    dynamicThresholding?: boolean
   }
 
   export type NotificationChannelCreateManyUserInput = {
@@ -44030,6 +44103,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUpdateManyWithoutMonitorNestedInput
@@ -44056,6 +44130,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
@@ -44082,6 +44157,7 @@ export namespace Prisma {
     lastCheck?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     checkRegions?: NullableStringFieldUpdateOperationsInput | string | null
     alertThreshold?: IntFieldUpdateOperationsInput | number
+    dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type NotificationChannelUpdateWithoutUserInput = {

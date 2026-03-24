@@ -31,7 +31,7 @@ export const REGIONS = [
  * 
  * @param url Target URL
  */
-export async function checkGlobalLatency(url: string, userRegion?: string): Promise<LatencyResult[]> {
+export async function checkGlobalLatency(url: string): Promise<LatencyResult[]> {
   const start = Date.now();
   
   // 1. Base Real Check (from current worker location)

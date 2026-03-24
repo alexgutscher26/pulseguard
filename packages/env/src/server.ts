@@ -13,4 +13,5 @@ export const env = createEnv({
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
+  skipValidation: !!process.env.CI || process.env.npm_lifecycle_event === "build",
 });

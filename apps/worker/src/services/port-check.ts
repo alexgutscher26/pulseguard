@@ -37,7 +37,6 @@ export async function checkPort(host: string, port: number): Promise<PortResult>
 
   try {
     const socket = connect({ hostname: host, port });
-    const writer = socket.writable.getWriter();
     
     // We race the connection against a timeout
     const timeoutPromise = new Promise<void>((_, reject) => 

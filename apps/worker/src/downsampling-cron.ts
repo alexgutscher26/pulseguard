@@ -1,4 +1,4 @@
-import { getPrisma, MonitorStatus } from "@pulseguard/db";
+import { getPrisma} from "@pulseguard/db";
 
 interface Env {
   DATABASE_URL: string;
