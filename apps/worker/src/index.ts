@@ -456,14 +456,25 @@ export async function processBatch(
                 retryResult.status = "UP";
                 retryResult.errorReason = undefined;
                 // We keep the initially higher latency to reflect the degraded state realistically
-              } else if (proxyResult.error === "MESH_CONGESTION_FAILSAFE") {
-                console.warn(`[Mesh] Critical IOPS breach. Component 18-1-0 inhibited.`);
+              } else {
+                console.log(
+                  `[MultiVector] Component 18-1-0 also DOWN. Trying final vector Component 18-1-1...`,
+                );
+                const secondaryProxy = await mesh.component_18_1_1(monitor.url, 5000);
+                if (secondaryProxy.status === "UP") {
+                  console.log(
+                    `[MultiVector] Component 18-1-1 reported UP! False positive averted for ${monitor.name}.`,
+                  );
+                  retryResult.status = "UP";
+                  retryResult.errorReason = undefined;
+                } else {
+                  console.warn(
+                    `[MultiVector] ALL verification vectors (Local, Retry, 18-1-0, 18-1-1) confirmed DOWN for ${monitor.name}.`,
+                  );
+                }
               }
             } catch (err) {
-              console.warn(
-                `[MultiVector] Component 18-1-0 check failed, preserving DOWN state:`,
-                err,
-              );
+              console.warn(`[MultiVector] Mesh verification failed, preserving DOWN state:`, err);
             }
           }
 

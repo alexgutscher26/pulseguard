@@ -66,6 +66,42 @@ export class ProxyMesh {
     }
   }
 
+  /**
+   * Component 18-1-1: Secondary Proxy Fallback Handler
+   * Uses corsproxy.io as a distinct verification vector.
+   */
+  async component_18_1_1(url: string, timeoutMs: number = 5000): Promise<ProxyResponse> {
+    this.incrementIOPS();
+
+    if (ProxyMesh.iopsCount > ProxyMesh.MAX_IOPS) {
+      return { status: "DOWN", latency: 0, error: "MESH_CONGESTION_FAILSAFE", source: "18-1-1" };
+    }
+
+    const start = Date.now();
+    try {
+      const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+
+      const response = await fetch(proxyUrl, {
+        method: "GET",
+        signal: AbortSignal.timeout(timeoutMs),
+      });
+
+      const latency = Date.now() - start;
+      if (response.ok) {
+        return { status: "UP", latency, source: "18-1-1" };
+      }
+
+      return { status: "DOWN", latency, error: `HTTP_${response.status}`, source: "18-1-1" };
+    } catch (err: any) {
+      return {
+        status: "DOWN",
+        latency: Date.now() - start,
+        error: err.name === "TimeoutError" ? "MESH_TIMEOUT" : err.message,
+        source: "18-1-1",
+      };
+    }
+  }
+
   private incrementIOPS() {
     const now = Date.now();
     if (now - ProxyMesh.lastIopsReset > ProxyMesh.IOPS_WINDOW) {
