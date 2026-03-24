@@ -181,9 +181,9 @@ Public-facing transparency for users and internal collaboration for teams.
 
 - [x] **Incident Templates**
   - Pre-written updates for common issues ("Investigating", "Monitoring", "Resolved").
-- [ ] **Automated Runbook Linkage**
+- [x] **Automated Runbook Linkage**
   - Attach predefined Confluence or Markdown runbooks depending on which monitor failed, presenting immediate remediation steps to the responding dev.
-- [ ] **Post-Mortem Collaboration Board**
+- [x] **Post-Mortem Collaboration Board**
   - Rich text editor with timeline integration. Auto-populate timeline events from ping logs during the downtime window.
 
 ---

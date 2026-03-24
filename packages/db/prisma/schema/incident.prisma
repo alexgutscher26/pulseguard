@@ -103,6 +103,7 @@ model PostMortem {
   rootCause       String
   impactScope     String
   detectionMethod String
+  timeline        String   @default("")
   actionItems     String
 
   status PostMortemStatus @default(DRAFT)

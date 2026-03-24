@@ -173,6 +173,7 @@ model PostMortem {
   rootCause       String
   impactScope     String
   detectionMethod String
+  timeline        String @default("")
   actionItems     String
 
   status PostMortemStatus @default(DRAFT)
@@ -340,6 +341,7 @@ model Monitor {
   checkRegions        String? // JSON array of region codes: ["us-east", "eu-west", "ap-south"]
   alertThreshold      Int       @default(1)
   dynamicThresholding Boolean   @default(false)
+  runbookUrl          String?
 
   @@index([userId])
   @@index([nextCheck])

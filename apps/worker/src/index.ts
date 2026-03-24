@@ -550,6 +550,7 @@ export async function processBatch(monitors: any[], prisma: any, env: Env): Prom
             status: "DOWN" as const,
             incidentId: incident.id,
             reason: errorReason,
+            runbookUrl: monitor.runbookUrl,
             timestamp: new Date().toISOString(),
             failedRegions: failedRegions.length > 0 ? failedRegions : undefined,
           };
@@ -958,6 +959,7 @@ export default {
           checkRegions: true,
           alertThreshold: true,
           dynamicThresholding: true,
+          runbookUrl: true,
           // @ts-ignore
           maintenanceWindows: {
             where: {

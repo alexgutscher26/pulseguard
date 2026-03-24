@@ -222,6 +222,7 @@ exports.Prisma.PostMortemScalarFieldEnum = {
   rootCause: 'rootCause',
   impactScope: 'impactScope',
   detectionMethod: 'detectionMethod',
+  timeline: 'timeline',
   actionItems: 'actionItems',
   status: 'status',
   createdAt: 'createdAt',
@@ -291,7 +292,8 @@ exports.Prisma.MonitorScalarFieldEnum = {
   lastCheck: 'lastCheck',
   checkRegions: 'checkRegions',
   alertThreshold: 'alertThreshold',
-  dynamicThresholding: 'dynamicThresholding'
+  dynamicThresholding: 'dynamicThresholding',
+  runbookUrl: 'runbookUrl'
 };
 
 exports.Prisma.MonitorEventScalarFieldEnum = {

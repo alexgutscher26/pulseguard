@@ -48,6 +48,7 @@ export async function upsertPostMortem(
     rootCause: string;
     impactScope: string;
     detectionMethod: string;
+    timeline: string;
     actionItems: string;
     status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
   }
@@ -162,5 +163,51 @@ Please write a narrative summary (2-3 paragraphs) describing what happened, the 
   } catch (error) {
     console.error("Failed to generate summary", error);
     return { success: false, error: "Failed to generate summary" };
+  }
+}
+
+export async function getMonitorEventsDuringIncident(incidentId: string) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) return [];
+
+  try {
+    const incident = await prisma.incident.findFirst({
+      where: {
+        id: incidentId,
+        monitor: {
+          userId: session.user.id,
+        },
+      },
+      select: {
+        monitorId: true,
+        startedAt: true,
+        resolvedAt: true,
+      },
+    });
+
+    if (!incident) return [];
+
+    const end = incident.resolvedAt || new Date();
+
+    const logs = await prisma.monitorEvent.findMany({
+      where: {
+        monitorId: incident.monitorId,
+        timestamp: {
+          gte: incident.startedAt,
+          lte: end,
+        },
+      },
+      orderBy: {
+        timestamp: "asc",
+      },
+    });
+
+    return logs;
+  } catch (error) {
+    console.error("Failed to fetch monitor event logs", error);
+    return [];
   }
 }

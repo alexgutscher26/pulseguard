@@ -9,6 +9,7 @@ import {
   X,
   Loader2,
   ChevronDown,
+  Book,
 } from "lucide-react";
 import Link from "next/link";
 import { createMonitor, updateMonitor } from "@/actions/monitors";
@@ -34,6 +35,7 @@ interface MonitorFormProps {
     checkRegions?: string | null;
     alertThreshold?: number;
     dynamicThresholding?: boolean;
+    runbookUrl?: string | null;
   };
 }
 
@@ -85,6 +87,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
   const [selectedRegions, setSelectedRegions] =
     useState<string[]>(initialRegions);
   const [threshold, setThreshold] = useState(monitor?.alertThreshold || 1);
+  const [runbookUrl, setRunbookUrl] = useState(monitor?.runbookUrl || "");
 
   const action = monitor ? updateMonitor.bind(null, monitor.id) : createMonitor;
   const [state, formAction, isPending] = useActionState(action, initialState);
@@ -336,6 +339,28 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                   </p>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center justify-between">
+              <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
+                Remediation Runbook (Optional)
+              </label>
+              <div className="flex items-center gap-1.5 text-primary/40 group-hover:text-primary transition-colors cursor-help">
+                <p className="text-[9px] font-mono italic">Attach Confluence or Markdown link</p>
+              </div>
+            </div>
+            <div className="relative group/input">
+              <Book className="absolute top-3 left-3 size-4 text-primary/40 pointer-events-none group-focus-within/input:text-primary transition-colors" />
+              <input
+                name="runbookUrl"
+                value={runbookUrl}
+                onChange={(e) => setRunbookUrl(e.target.value)}
+                className="bg-secondary/20 border border-primary/20 focus:border-primary/60 text-foreground text-sm rounded-sm p-3 pl-10 font-mono placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full"
+                type="url"
+                placeholder="https://confluence.company.com/runbook/monitor-01"
+              />
             </div>
           </div>
 

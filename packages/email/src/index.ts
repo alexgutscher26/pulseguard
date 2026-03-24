@@ -26,6 +26,7 @@ export interface MonitorAlertData {
   reason?: string;
   downtimeDuration?: string;
   failedRegions?: string[];
+  runbookUrl?: string;
 }
 
 export interface WelcomeEmailData {

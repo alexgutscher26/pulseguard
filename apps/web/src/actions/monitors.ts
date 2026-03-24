@@ -42,6 +42,7 @@ const baseSchema = z.object({
   checkRegions: z.string().optional(), // JSON stringified array of region codes
   alertThreshold: z.coerce.number().min(1).default(1),
   dynamicThresholding: z.boolean().optional(),
+  runbookUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
 });
 
 const monitorSchema = baseSchema.superRefine((data, ctx) => {
@@ -158,6 +159,7 @@ export async function createMonitor(prevState: any, formData: FormData) {
       checkRegions: (formData.get("checkRegions") as string) || undefined,
       alertThreshold: formData.get("alertThreshold") ? Number(formData.get("alertThreshold")) : 1,
       dynamicThresholding: formData.get("dynamicThresholding") === "on",
+      runbookUrl: (formData.get("runbookUrl") as string) || undefined,
     };
 
     console.log("Creating monitor with data:", rawData);
@@ -191,6 +193,7 @@ export async function createMonitor(prevState: any, formData: FormData) {
         checkRegions: data.checkRegions,
         alertThreshold: data.alertThreshold,
         dynamicThresholding: data.dynamicThresholding,
+        runbookUrl: data.runbookUrl,
       },
     });
 
@@ -261,6 +264,7 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
     checkRegions: (formData.get("checkRegions") as string) || undefined,
     alertThreshold: formData.get("alertThreshold") ? Number(formData.get("alertThreshold")) : 1,
     dynamicThresholding: formData.get("dynamicThresholding") === "on",
+    runbookUrl: (formData.get("runbookUrl") as string) || undefined,
   };
 
   console.log("Updating monitor with data:", rawData);
@@ -296,6 +300,7 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
         checkRegions: data.checkRegions,
         alertThreshold: data.alertThreshold,
         dynamicThresholding: data.dynamicThresholding,
+        runbookUrl: data.runbookUrl,
       },
     });
 
@@ -682,6 +687,7 @@ async function dispatchNotifications(
     timestamp: new Date().toISOString(),
     reason: reason,
     failedRegions: failedRegions,
+    runbookUrl: monitor.runbookUrl,
     // downtimeDuration: ... calculation omitted for brevity in manual check
   };
 

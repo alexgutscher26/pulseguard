@@ -25,6 +25,7 @@ interface NotificationMessage {
   timestamp: string;
   reason?: string;
   failedRegions?: string[];
+  runbookUrl?: string;
 }
 
 export default {
@@ -54,6 +55,7 @@ export default {
                   email: true,
                 },
               },
+              runbookUrl: true,
             },
           });
 
@@ -125,6 +127,7 @@ export default {
             reason: notification.reason,
             downtimeDuration,
             failedRegions: notification.failedRegions,
+            runbookUrl: notification.runbookUrl || monitor?.runbookUrl,
           };
 
           // --- 1. OWNER ALERTS (Email, Slack, Discord) ---
@@ -299,6 +302,15 @@ async function sendDiscordAlert(url: string, data: MonitorAlertData, type?: stri
                 },
               ]
             : []),
+          ...(data.runbookUrl
+            ? [
+                {
+                  name: "Remediation Runbook",
+                  value: `[View Runbook](${data.runbookUrl})`,
+                  inline: false,
+                },
+              ]
+            : []),
         ],
         footer: {
           text: "PulseGuard Sentinel • Monitoring Infrastructure",
@@ -393,15 +405,26 @@ async function sendSlackAlert(
             },
           ]
         : []),
-      {
-        type: "context",
-        elements: [
-          {
-            type: "mrkdwn",
-            text: "⏱ Detected at " + new Date(data.timestamp).toLocaleTimeString(),
-          },
-        ],
-      },
+        {
+          type: "context",
+          elements: [
+            {
+              type: "mrkdwn",
+              text: "⏱ Detected at " + new Date(data.timestamp).toLocaleTimeString(),
+            },
+          ],
+        },
+        ...(data.runbookUrl
+          ? [
+              {
+                type: "section",
+                text: {
+                  type: "mrkdwn",
+                  text: "*Remediation Runbook:* <" + data.runbookUrl + "|View Runbook>",
+                },
+              },
+            ]
+          : []),
       {
         type: "actions",
         elements: [

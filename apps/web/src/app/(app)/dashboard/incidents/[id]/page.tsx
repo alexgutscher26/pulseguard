@@ -5,7 +5,7 @@ import { IncidentActions } from "@/components/incidents/incident-actions";
 import { IncidentTimeline } from "@/components/incidents/incident-timeline";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ExternalLink, Book } from "lucide-react";
 
 import { getUserPreferences } from "@/actions/user";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -88,6 +88,34 @@ export default async function IncidentDetailPage({
                   </span>
                 </div>
               </div>
+
+              {incident.monitor.runbookUrl && (
+                <div className="rounded-md border p-6 bg-primary/5 border-primary/20 backdrop-blur-sm relative group overflow-hidden">
+                  <div className="absolute top-0 right-0 w-16 h-16 border-t border-r border-primary/10 group-hover:border-primary/30 transition-colors"></div>
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 bg-primary/10 rounded-sm border border-primary/20">
+                      <Book className="size-6 text-primary" />
+                    </div>
+                    <div className="flex-1 space-y-2">
+                      <h3 className="font-bold text-foreground font-mono uppercase tracking-tight flex items-center gap-2">
+                        Immediate Remediation Runbook
+                      </h3>
+                      <p className="text-sm text-primary/60 font-mono">
+                        Follow the predefined steps to resolve this incident.
+                      </p>
+                      <a 
+                        href={incident.monitor.runbookUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-wider font-mono rounded-sm hover:bg-primary/90 transition-all group/btn"
+                      >
+                        <ExternalLink className="size-4" />
+                        Execute Remediation Steps
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className="rounded-md border p-6 bg-card">
                 <IncidentTimeline

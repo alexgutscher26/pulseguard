@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, ExternalLink } from "lucide-react";
 import { toggleMonitor } from "@/actions/monitors";
 import { toast } from "sonner";
 import { useTransition } from "react";
@@ -77,6 +77,17 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
             <p className="text-primary/60 text-xs font-mono">
               TARGET_ENDPOINT: <code className="text-foreground">{monitor.url}</code>
             </p>
+            {monitor.runbookUrl && (
+              <a 
+                href={monitor.runbookUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-2 inline-flex items-center gap-2 text-[10px] font-bold text-primary hover:text-primary/80 uppercase tracking-widest font-mono border border-primary/20 bg-primary/5 px-2 py-1 rounded-sm w-fit transition-colors group/runbook"
+              >
+                <ExternalLink className="size-3 transition-transform group-hover/runbook:-translate-y-0.5 group-hover/runbook:translate-x-0.5" />
+                Remediation Runbook
+              </a>
+            )}
           </div>
 
           <div className="flex items-center justify-end flex-1 pl-4 md:pl-0">
