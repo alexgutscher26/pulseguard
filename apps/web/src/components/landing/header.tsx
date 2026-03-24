@@ -8,6 +8,7 @@ import {
   ShieldCheck,
   Terminal,
   ArrowRight,
+  Code2,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { motion, AnimatePresence } from "framer-motion";
@@ -61,6 +62,16 @@ export default function LandingHeader() {
                         name: "Global Latency",
                         href: "/tools/global-latency",
                         icon: <Globe className="h-4 w-4" />,
+                      },
+                      {
+                        name: "Payload Pulse",
+                        href: "/tools/payload-regex",
+                        icon: <Code2 className="h-4 w-4" />,
+                      },
+                      {
+                        name: "HTTP Security",
+                        href: "/tools/http-headers",
+                        icon: <ShieldCheck className="h-4 w-4" />,
                       },
                       {
                         name: "SSL Checker",

@@ -808,7 +808,61 @@ export default {
     }
 
 
-    // API Route: /api/ssl-check
+    // API Route: /api/payload-audit
+    if (url.pathname === "/api/payload-audit" && request.method === "POST") {
+       try {
+         const body: any = await request.json();
+         const { url: targetUrl, pattern } = body;
+         
+         if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
+ 
+         const finalUrl = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
+ 
+         const { auditPayload } = await import("./services/payload-audit");
+         const results = await auditPayload(finalUrl, pattern);
+ 
+         return new Response(JSON.stringify(results), {
+           headers: { 
+             "Content-Type": "application/json",
+             "Access-Control-Allow-Origin": "*",
+             "Access-Control-Allow-Methods": "POST, OPTIONS",
+             "Access-Control-Allow-Headers": "Content-Type"
+           } 
+         });
+       } catch (err: any) {
+         return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" }});
+       }
+    }
+ 
+ 
+     // API Route: /api/security-headers
+    if (url.pathname === "/api/security-headers" && request.method === "POST") {
+       try {
+         const body: any = await request.json();
+         const { url: targetUrl } = body;
+         
+         if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
+ 
+         const finalUrl = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
+ 
+         const { checkSecurityHeaders } = await import("./services/security-headers");
+         const results = await checkSecurityHeaders(finalUrl);
+ 
+         return new Response(JSON.stringify(results), {
+           headers: { 
+             "Content-Type": "application/json",
+             "Access-Control-Allow-Origin": "*",
+             "Access-Control-Allow-Methods": "POST, OPTIONS",
+             "Access-Control-Allow-Headers": "Content-Type"
+           } 
+         });
+       } catch (err: any) {
+         return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" }});
+       }
+    }
+ 
+ 
+     // API Route: /api/ssl-check
     if (url.pathname === "/api/ssl-check" && request.method === "POST") {
        try {
          const body: any = await request.json();
