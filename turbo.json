@@ -5,13 +5,19 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**", ".next/**"]
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
     "lint": {
-      "dependsOn": ["^lint"]
+      "dependsOn": ["^lint"],
+      "outputs": []
+    },
+    "check": {
+      "cache": true,
+      "inputs": ["$TURBO_DEFAULT$"]
     },
     "check-types": {
-      "dependsOn": ["^check-types"]
+      "dependsOn": ["^check-types"],
+      "outputs": []
     },
     "dev": {
       "cache": false,
@@ -28,9 +34,12 @@
       "cache": false
     },
     "db:generate": {
-      "cache": false
+      "cache": true,
+      "inputs": ["prisma/schema/**", "prisma/schema.prisma", "package.json"],
+      "outputs": ["src/generated/**"]
     },
     "deploy": {
+      "dependsOn": ["build", "lint", "check-types"],
       "cache": false
     },
     "destroy": {

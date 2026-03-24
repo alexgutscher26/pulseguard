@@ -1,4 +1,5 @@
 import { getPrisma } from "@pulseguard/db";
+import type { ExecutionContext, MessageBatch } from "@cloudflare/workers-types";
 import {
   sendMonitorAlert,
   sendStatusUpdate,
@@ -55,7 +56,6 @@ export default {
                   email: true,
                 },
               },
-              runbookUrl: true,
             },
           });
 

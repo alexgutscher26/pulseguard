@@ -1,4 +1,5 @@
 import { getPrisma } from "@pulseguard/db";
+import type { ExecutionContext } from "@cloudflare/workers-types";
 export { LatencyAggregator } from "./durable-objects/latency-aggregator";
 export { MonitorChannel } from "./durable-objects/MonitorChannel";
 
@@ -96,11 +97,18 @@ async function performInternalRequest(
       });
       currentStatus = response.ok ? "UP" : "DOWN";
 
-      // CRITICAL: Always read the body to prevent Cloudflare Worker deadlock
-      // We don't need the content for UP checks, but we must consume the stream
-      await response.text(); 
+      const body = await response.text(); 
+      currentStatus = response.ok ? "UP" : "DOWN";
 
-      if (!response.ok) {
+      // 3. Deep Payload/Status Validation (WASM/Rust Optimized Bridge)
+      if (currentStatus === "UP" && monitor.expectation) {
+        const { validatePayload } = await import("./lib/payload-parser");
+        const validation = validatePayload(body, response.status, monitor.expectation);
+        if (!validation.success) {
+          currentStatus = "DOWN";
+          errorReason = validation.errorMessage || `HTTP_${response.status}`;
+        }
+      } else if (!response.ok) {
         errorReason = `HTTP_${response.status}`;
       }
     } else if (urlStr.startsWith("tcp://")) {

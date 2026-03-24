@@ -1,0 +1,11 @@
+{
+  "extends": "@pulseguard/config/tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["@cloudflare/workers-types"],
+    "lib": ["esnext"],
+    "module": "esnext",
+    "moduleResolution": "bundler"
+  },
+  "include": ["src/**/*.ts", "scripts/**/*.js"],
+  "exclude": ["node_modules"]
+}

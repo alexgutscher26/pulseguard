@@ -1,3 +1,17 @@
 {
-  "extends": "@pulseguard/config/tsconfig.base.json"
+  "extends": "@pulseguard/config/tsconfig.base.json",
+  "files": [],
+  "references": [
+    { "path": "apps/web" },
+    { "path": "apps/worker" },
+    { "path": "apps/native" },
+    { "path": "packages/api" },
+    { "path": "packages/auth" },
+    { "path": "packages/config" },
+    { "path": "packages/db" },
+    { "path": "packages/email" },
+    { "path": "packages/env" },
+    { "path": "packages/infra" },
+    { "path": "packages/shared" }
+  ]
 }

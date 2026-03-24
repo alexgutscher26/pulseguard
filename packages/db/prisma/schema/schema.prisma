@@ -52,6 +52,7 @@ model Monitor {
   alertThreshold       Int       @default(1)
   dynamicThresholding  Boolean   @default(false)
   runbookUrl           String?
+  expectation          String? // JSON structure for response validation
 
   @@index([userId])
   @@index([nextCheck])

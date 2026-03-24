@@ -350,9 +350,9 @@ For the on-call admin who is living their life.
 
 ## 🧹 P11: Refactoring & Code Quality
 
-- [ ] **Strict Monorepo Boundaries**
+- [x] **Strict Monorepo Boundaries**
   - Optimize Turborepo / NX configurations for faster incremental builds and stricter dependency boundaries between `app/` and `packages/`.
-- [ ] **WebAssembly (WASM) Parsers**
+- [x] **WebAssembly (WASM) Parsers**
   - Migrate heavy regex/payload parsing components inside the Worker to Rust-compiled WASM for significantly reduced CPU time.
 - [ ] **Shared Core Logic Packages**
   - Extract universal `@pulseguard/core` (fetch, ping algorithms) and `@pulseguard/types` out of web/worker limits for clean DRY architecture.
