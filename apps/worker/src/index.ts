@@ -9,6 +9,11 @@ export interface Env {
   RESEND_API_KEY: string;
   LATENCY_AGGREGATOR: DurableObjectNamespace;
   MONITOR_CHANNEL: DurableObjectNamespace;
+  UPSTASH_REDIS_REST_URL: string;
+  UPSTASH_REDIS_REST_TOKEN: string;
+  SHARD_ID?: number;
+  TOTAL_SHARDS?: number;
+  DNS_CACHE?: KVNamespace;
 }
 
 import { connect } from "cloudflare:sockets";
@@ -24,19 +29,60 @@ import { connect } from "cloudflare:sockets";
  */
 async function performCheck(
   monitor: any,
+  env?: Env,
 ): Promise<{ status: "UP" | "DOWN" | "MAINTENANCE"; latency: number; errorReason?: string }> {
   // If explicitly in maintenance (passed from caller), skip check
   if (monitor.status === "MAINTENANCE") {
     return { status: "MAINTENANCE", latency: 0 };
   }
 
+  const urlStr = monitor.url;
+  
+  // 1. Initial Standard Check
+  let result = await performInternalRequest(monitor, urlStr);
+
+  // 2. DNS Fallback Layer: If DNS failed but we have a cached IP
+  if (result.status === "DOWN" && result.errorReason === "DNS_ERROR" && env?.DNS_CACHE) {
+     try {
+       const urlObj = new URL(urlStr);
+       const hostname = urlObj.hostname;
+       
+       const cachedValue = await env.DNS_CACHE.get(`dns:${hostname}`);
+       if (cachedValue) {
+          const { ip } = JSON.parse(cachedValue) as { ip: string };
+          console.warn(`[DNSFallback] DNS failed for ${hostname}. Retrying via IP ${ip}...`);
+          
+          // Re-map the hostname to IP for the fetch
+          const ipUrl = urlStr.replace(hostname, ip);
+          const fallbackResult = await performInternalRequest(monitor, ipUrl, { Host: hostname });
+          
+          if (fallbackResult.status === "UP") {
+             console.log(`[DNSFallback] SUCCESS: ${hostname} reached via direct IP. False positive avoided.`);
+             return fallbackResult;
+          }
+       }
+     } catch (err) {
+        // Fallback-of-fallback failure
+     }
+  }
+
+  return result;
+}
+
+/**
+ * Reusable core fetch/connection logic
+ */
+async function performInternalRequest(
+  monitor: any,
+  urlStr: string,
+  extraHeaders?: Record<string, string>
+): Promise<{ status: "UP" | "DOWN" | "MAINTENANCE"; latency: number; errorReason?: string }> {
   const start = Date.now();
   let currentStatus: "UP" | "DOWN" | "MAINTENANCE" = "DOWN";
   let latency = 0;
   let errorReason: string | undefined = undefined;
 
   try {
-    const urlStr = monitor.url;
 
     if (urlStr.startsWith("http://") || urlStr.startsWith("https://")) {
       const response = await fetch(urlStr, {
@@ -44,6 +90,7 @@ async function performCheck(
         headers: {
           "User-Agent": "PulseGuard-Monitor/1.0",
           Accept: "*/*",
+          ...extraHeaders,
         },
         signal: AbortSignal.timeout((monitor.timeout || 10) * 1000),
       });
@@ -88,7 +135,7 @@ async function performCheck(
 
     latency = Date.now() - start;
   } catch (err: any) {
-    console.error(`Error checking ${monitor.url}:`, err);
+    console.error(`Error checking ${urlStr}:`, err);
     latency = 0;
     currentStatus = "DOWN";
 
@@ -100,7 +147,7 @@ async function performCheck(
       (err.message && err.message.includes("Connection refused"))
     ) {
       errorReason = "CONNECTION_REFUSED";
-    } else if (err.code === "ENOTFOUND" || (err.message && err.message.includes("getaddrinfo"))) {
+    } else if (err.code === "ENOTFOUND" || (err.message && err.message.includes("getaddrinfo")) || (err.message && err.message.includes("dns"))) {
       errorReason = "DNS_ERROR";
     } else {
       errorReason = "UNKNOWN_ERROR";
@@ -191,8 +238,16 @@ async function broadcastLiveEvent(
 
 
 // Helper: Reusable processing logic with Time-Based Limit
-export async function processBatch(monitors: any[], prisma: any, env?: Env): Promise<{ processed: string[]; remaining: any[] }> {
+export async function processBatch(monitors: any[], prisma: any, env: Env): Promise<{ processed: string[]; remaining: any[] }> {
   console.log(`Processing batch of ${monitors.length} monitors...`);
+  
+  const { FallbackQueue } = await import("./lib/fallback-queue");
+  const { DatabaseCircuitBreaker } = await import("./lib/circuit-breaker");
+
+  const fallbackQueue = new FallbackQueue(env.UPSTASH_REDIS_REST_URL, env.UPSTASH_REDIS_REST_TOKEN);
+  const circuitBreaker = new DatabaseCircuitBreaker(env.UPSTASH_REDIS_REST_URL, env.UPSTASH_REDIS_REST_TOKEN);
+
+  const circuitState = await circuitBreaker.getState();
   
   // Dynamic import since we just created it
   const { IncidentService } = await import("./lib/incident-service");
@@ -335,11 +390,11 @@ export async function processBatch(monitors: any[], prisma: any, env?: Env): Pro
               regionalError,
             );
             // Fallback to single check
-            result = await performCheck(monitor);
+            result = await performCheck(monitor, env);
           }
         } else {
           // Standard single-region check
-          result = await performCheck(monitor);
+          result = await performCheck(monitor, env);
         }
 
         // 2. Multi-Vector Verification Protocol (Retry & Proxy on Failure)
@@ -352,7 +407,7 @@ export async function processBatch(monitors: any[], prisma: any, env?: Env): Pro
           await new Promise((resolve) => setTimeout(resolve, 1000));
 
           // Base retry from current region
-          let retryResult = await performCheck(monitor);
+          let retryResult = await performCheck(monitor, env);
           
           // If still DOWN locally and it's an HTTP check, try from an external proxy (Region B)
           if (retryResult.status === "DOWN" && monitor.url.startsWith("http")) {
@@ -410,26 +465,58 @@ export async function processBatch(monitors: any[], prisma: any, env?: Env): Pro
         }
       }
 
-      // Save result and update monitor
-      await prisma.$transaction([
-        prisma.monitorEvent.create({
-          data: {
-            monitorId: monitor.id,
-            status: currentStatus as any,
-            latency: latency,
-            errorReason: errorReason,
-            timestamp: new Date(),
-          },
-        }),
-        prisma.monitor.update({
-          where: { id: monitor.id },
-          data: {
-            status: currentStatus as any,
-            lastCheck: new Date(),
-            nextCheck: nextCheckTime,
-          },
-        }),
-      ]);
+      // --- PERSISTENCE: Save result and update monitor ---
+      const persistUpdate = async () => {
+         try {
+            if (circuitState === "OPEN") {
+               throw new Error("CircuitBreaker: OPEN. Avoiding database writes.");
+            }
+
+            await prisma.$transaction([
+               prisma.monitorEvent.create({
+                 data: {
+                   monitorId: monitor.id,
+                   status: currentStatus as any,
+                   latency: latency,
+                   errorReason: errorReason,
+                   timestamp: new Date(),
+                 },
+               }),
+               prisma.monitor.update({
+                 where: { id: monitor.id },
+                 data: {
+                   status: currentStatus as any,
+                   lastCheck: new Date(),
+                   nextCheck: nextCheckTime,
+                 },
+               }),
+             ]);
+
+             // Successfully saved - if we were in HALF_OPEN, we can now mark as healthy
+             if (circuitState === "HALF_OPEN") {
+                await circuitBreaker.recordSuccess();
+             }
+         } catch (dbErr: any) {
+            console.error(`[Persistence] Primary DB failure for ${monitor.name}:`, dbErr.message);
+
+            // Record failure to circuit breaker (may trip)
+            await circuitBreaker.recordFailure(dbErr);
+
+            // Fallback to Redis for the Event (durability)
+            await fallbackQueue.push({
+               monitorId: monitor.id,
+               status: currentStatus,
+               latency: latency,
+               errorReason: errorReason,
+               timestamp: new Date().toISOString(),
+            });
+         }
+      };
+
+      // We usually want to await this to ensure sequential processing in the batch if needed
+      // but in a serverless env, we can fire-and-forget IF we wrap it in waitUntil, 
+      // however here we are in a loop so it's safer to await to avoid overwhelming the worker's open sockets.
+      await persistUpdate();
 
       // BROADCAST LIVE EVENT
       broadcastLiveEvent(env, monitor.id, {
@@ -603,6 +690,29 @@ export async function processBatch(monitors: any[], prisma: any, env?: Env): Pro
           }
         }
       }
+      // --- DNS CACHE CAPTURE: Store last known good IP ---
+      if (currentStatus === "UP" && env.DNS_CACHE) {
+         try {
+            const urlObj = new URL(monitor.url);
+            const hostname = urlObj.hostname;
+            
+            // We only resolve if it's not a raw IP already
+            if (!/^[0-9.]+$/.test(hostname)) {
+               // We don't await this to keep the check loop fast
+               const { resolveDNS } = await import("./lib/dns-resolver");
+               resolveDNS(hostname).then(ip => {
+                  if (ip && env.DNS_CACHE) {
+                     env.DNS_CACHE.put(`dns:${hostname}`, JSON.stringify({ ip, timestamp: Date.now() }), { 
+                        expirationTtl: 60 * 60 * 24 // 24 hours
+                     });
+                  }
+               }).catch(() => {});
+            }
+         } catch (dnsErr) {
+            // Silently ignore DNS capture failures
+         }
+      }
+
       processedIds.push(monitor.id);
       console.log(`Checked ${monitor.url}: ${currentStatus} (${latency}ms)`);
     } catch (err) {
@@ -794,19 +904,46 @@ export default {
       );
     }
 
+    // --- DATABASE SYNC: Restore data from Redis fallback if DB is healthy ---
+    const { DatabaseCircuitBreaker } = await import("./lib/circuit-breaker");
+    const circuitBreaker = new DatabaseCircuitBreaker(env.UPSTASH_REDIS_REST_URL, env.UPSTASH_REDIS_REST_TOKEN);
+    const circuitState = await circuitBreaker.getState();
+    
+    if (circuitState !== "OPEN") {
+       ctx.waitUntil(
+          import("./services/db-sync")
+             .then(m => m.syncFallbackToDatabase(prisma, env))
+             .catch(err => console.error("[Sync] Background task failed:", err))
+       );
+    }
+
     // FREE TIER CONFIG: Process 5 monitors per cron tick (1 min)
     // Decreased to 5 to avoid CPU limits (exceededCpu error).
     const BATCH_SIZE = 5;
 
+    const totalShards = Number(env.TOTAL_SHARDS || 1);
+    const shardId = Number(env.SHARD_ID || 0);
+
     try {
-      // Find active monitors that are due for a check
+      // Find active monitors that are due for a check, but only for THIS shard
+      // We use a raw query to fetch just the IDs that belong to the current shard's hash-space.
+      // Postgres: Use abs(hashtext(id)) % totalShards = shardId
+      const targetIds: { id: string }[] = await prisma.$queryRaw`
+        SELECT id FROM "Monitor"
+        WHERE ("status" IN ('UP', 'DOWN', 'MAINTENANCE'))
+        AND ("nextCheck" IS NULL OR "nextCheck" <= NOW())
+        AND (abs(hashtext(id)) % ${totalShards}) = ${shardId}
+        ORDER BY "nextCheck" ASC
+        LIMIT ${BATCH_SIZE}
+      `;
+
+      if (targetIds.length === 0) return;
+
+      const ids = targetIds.map(t => t.id);
+
+      // Fetch full monitor data for the batch
       const monitors = await prisma.monitor.findMany({
-        where: {
-          status: { in: ["UP", "DOWN", "MAINTENANCE"] as any },
-          OR: [{ nextCheck: null }, { nextCheck: { lte: new Date() } }],
-        },
-        orderBy: { nextCheck: "asc" }, // Prioritize oldest due
-        take: BATCH_SIZE,
+        where: { id: { in: ids } },
         select: {
           id: true,
           url: true,

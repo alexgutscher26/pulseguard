@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@pulseguard/db": "workspace:*",
-    "@pulseguard/email": "workspace:*"
+    "@pulseguard/email": "workspace:*",
+    "@upstash/redis": "^1.37.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "catalog:",

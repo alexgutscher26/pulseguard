@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { Search, Loader2 } from "lucide-react";
 
 // Import command groups
+import { HistoryCommands } from "./command-groups/history-commands";
 import { NavigationCommands } from "./command-groups/navigation-commands";
 import { MonitorCommands } from "./command-groups/monitor-commands";
 import { CreationCommands } from "./command-groups/creation-commands";
@@ -104,6 +105,9 @@ export function CommandPalette() {
               <Command.Empty className="py-12 text-center text-sm text-muted-foreground">
                 No results found.
               </Command.Empty>
+
+              {/* Recent Commands */}
+              <HistoryCommands />
 
               {/* Navigation Commands */}
               <NavigationCommands />

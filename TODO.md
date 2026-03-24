@@ -52,11 +52,11 @@ These items block general reliability or user trust.
   - Enhance batch processing to respect the 10ms CPU time on free workers (split batches dynamically).
 - [x] **Circuit Breaker**
   - If a monitor fails consistently for > 1 hour, reduce check frequency to save resources until it recovers.
-- [ ] **Connection Pooling Resiliency**
-  - Implement a fallback datastore (e.g., Redis layer) if the primary database (Neon/Supabase) connection pool is exhausted during a massive failover event.
-- [ ] **Worker Scaling & Sharding**
+- [x] **Connection Pooling Resiliency**
+  - Implement a fallback datastore (e.g., Redis layer) if the primary database (Supabase) connection pool is exhausted during a massive failover event.
+- [x] **Worker Scaling & Sharding**
   - Map monitors to specific worker shards by ID hash to evenly distribute load and prevent "thundering herd" problems when cron triggers thousands of checks simultaneously.
-- [ ] **DNS Fallback Strategy**
+- [x] **DNS Fallback Strategy**
   - Cache recent IP addresses for monitors in a KV store if primary DNS resolution fails, distinguishing between application downtime and actual DNS failure.
 
 ---
@@ -94,7 +94,7 @@ The goal is to wow the user. Think _Tron Legacy_ meets _Mr. Robot_.
   - `/` to search.
   - `c` to create monitor.
 - [ ] **Command Palette Enhancements**:
-  - Recent commands history & AI-powered command suggestions based on user context.
+  - [x] **History & Suggestions**: Recent commands history stored in LocalStorage.
   - Command aliases ("new monitor" → "Create HTTP Monitor").
   - Fuzzy search spanning across documentation, monitors, and incidents.
 

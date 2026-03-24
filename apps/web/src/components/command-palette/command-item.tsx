@@ -3,8 +3,10 @@
 import { Command } from "cmdk";
 import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
+import { useCommandPalette } from "./use-command-palette";
 
 interface CommandItemProps {
+  id?: string;
   icon?: LucideIcon;
   label: string;
   shortcut?: string;
@@ -16,15 +18,23 @@ interface CommandItemProps {
 }
 
 export function CommandItem({
+  id,
   icon: Icon,
   label,
   shortcut,
   onSelect,
   badge,
 }: CommandItemProps) {
+  const { addCommandToHistory } = useCommandPalette();
+
+  const handleSelect = () => {
+    addCommandToHistory(id || label, label);
+    onSelect();
+  };
+
   return (
     <Command.Item
-      onSelect={onSelect}
+      onSelect={handleSelect}
       className={cn(
         "flex items-center gap-3 px-4 py-3 cursor-pointer",
         "text-sm text-foreground",
