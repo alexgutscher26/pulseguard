@@ -33,7 +33,12 @@ export const createPrisma = (databaseUrl?: string) => {
   const pool = new Pool(poolConfig);
   const adapter = new PrismaPg(pool);
 
-  return new PrismaClient({ adapter });
+  const isDev = process.env.NODE_ENV === "development";
+
+  return new PrismaClient({
+    adapter,
+    log: isDev ? ["query", "error", "warn"] : ["error"],
+  });
 };
 
 // Global type for singleton storage
