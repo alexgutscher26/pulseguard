@@ -60,6 +60,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "catalog:",
+    "@opennextjs/cloudflare": "^0.3.6",
     "@pulseguard/config": "workspace:*",
     "@tailwindcss/postcss": "^4.1.10",
     "@tanstack/react-query-devtools": "^5.91.1",
