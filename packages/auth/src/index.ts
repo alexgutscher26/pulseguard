@@ -12,17 +12,20 @@ console.log("🔧 Initializing BetterAuth with config:", {
   appUrl: process.env.NEXT_PUBLIC_APP_URL,
 });
 
+const safeDbUrl = env.DATABASE_URL || "postgresql://dummy:dummy@localhost:5432/dummy";
+const safeAuthUrl = env.BETTER_AUTH_URL || "http://localhost:3000";
+
 // Use getPrisma() to get a real Prisma instance instead of the proxy
-const prisma = getPrisma(env.DATABASE_URL);
+const prisma = getPrisma(safeDbUrl);
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
-  secret: env.BETTER_AUTH_SECRET,
-  baseURL: env.BETTER_AUTH_URL,
+  secret: env.BETTER_AUTH_SECRET || "dummy-secret-for-build-123456789",
+  baseURL: safeAuthUrl,
   advanced: {
-    useSecureCookies: env.BETTER_AUTH_URL.startsWith("https"),
+    useSecureCookies: safeAuthUrl.startsWith("https"),
     crossSubDomainCookies: {
       enabled: true,
     },
