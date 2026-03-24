@@ -263,7 +263,7 @@ export function IncidentHistoryTab({
                   <div className="flex items-start gap-2">
                     <AlertTriangle
                       className={cn(
-                        "size-4 mt-0.5 flex-shrink-0",
+                        "size-4 mt-0.5 shrink-0",
                         getSeverityColor(incident.severity),
                       )}
                     />

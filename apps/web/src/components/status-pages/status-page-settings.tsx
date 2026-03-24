@@ -250,7 +250,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                   defaultValue={page.customCss || ""}
                   rows={3}
                   placeholder=".body { ... }"
-                  className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors font-mono text-xs"
+                  className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
                 />
               </div>
             </div>
@@ -331,7 +331,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
         </div>
       </div>
 
-      <div className="flex justify-end pt-4 border-t border-white/5 sticky bottom-0 bg-black/80 backdrop-blur-sm p-4 border-t border-primary/20">
+      <div className="flex justify-end pt-4 border-t border-white/5 sticky bottom-0 bg-black/80 backdrop-blur-sm p-4">
         <button
           type="submit"
           disabled={isPending}

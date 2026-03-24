@@ -10,7 +10,7 @@ export default function Hero() {
       <div className="max-w-4xl mx-auto px-6 md:px-12 relative z-20 w-full text-center flex flex-col items-center">
         
         {/* Header */}
-        <h1 className="text-5xl md:text-[5rem] font-bold tracking-tight leading-[1.0] mb-8">
+        <h1 className="text-5xl md:text-[5rem] font-bold tracking-tight leading-none mb-8">
           <span className="text-primary">System critical uptime</span>
           <br />
           <span className="text-foreground">with zero false positives</span>

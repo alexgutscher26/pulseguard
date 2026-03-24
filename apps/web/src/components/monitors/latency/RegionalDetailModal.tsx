@@ -173,7 +173,7 @@ export function RegionalDetailModal({
             {hasIncident && (
               <div className="p-4 rounded-lg border border-destructive/50 bg-destructive/5 relative overflow-hidden">
                 {/* Scanline effect for alert */}
-                <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.1)_50%)] bg-[length:100%_4px] pointer-events-none opacity-20" />
+                <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.1)_50%)] bg-size-[100%_4px] pointer-events-none opacity-20" />
 
                 <h3 className="text-sm font-semibold mb-2 flex items-center gap-2 text-destructive">
                   <AlertCircle className="h-4 w-4" />

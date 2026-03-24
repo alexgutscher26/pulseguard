@@ -40,7 +40,7 @@ export function PublicView({ page }: { page: any }) {
   return (
     <div
       style={customStyle}
-      className="min-h-screen bg-[var(--bg-page)] text-[var(--text-page)] font-mono selection:bg-[var(--primary-page)]/20 relative overflow-hidden transition-colors duration-500"
+      className="min-h-screen bg-(--bg-page) text-(--text-page) font-mono selection:bg-(--primary-page)/20 relative overflow-hidden transition-colors duration-500"
     >
       <AnalyticsTracker pageId={page.id} />
       <style

@@ -91,7 +91,7 @@ export default function LandingHeader() {
           {session.data ? (
             <Link
               href="/dashboard"
-              className="flex items-center justify-center h-10 px-5 bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-semibold rounded-full transition-colors hidden sm:flex"
+              className="flex items-center justify-center h-10 px-5 bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-semibold rounded-full transition-colors sm:flex"
             >
               Dashboard <ArrowRight className="ml-2 size-4" />
             </Link>

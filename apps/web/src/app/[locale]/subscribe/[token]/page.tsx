@@ -55,7 +55,7 @@ export default async function VerifySubscriptionPage({
             {result.success && (
               <div className="p-4 bg-primary/5 border border-primary/20 rounded-md">
                 <div className="flex items-start gap-3">
-                  <AlertTriangle className="size-5 text-yellow-500 flex-shrink-0 mt-0.5" />
+                  <AlertTriangle className="size-5 text-yellow-500 shrink-0 mt-0.5" />
                   <div className="text-sm text-primary/70">
                     <p className="font-medium text-primary mb-1">
                       Save your management link!

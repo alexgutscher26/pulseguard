@@ -203,7 +203,7 @@ export function MaintenanceTimeline({
                           </p>
                         )}
                       </div>
-                      <div className="text-right flex-shrink-0">
+                      <div className="text-right shrink-0">
                         <div className="text-xs font-mono text-blue-500 font-bold">
                           {getTimeUntil(window.startAt)}
                         </div>
