@@ -3,6 +3,8 @@
   "type": "module",
   "exports": {
     ".": {
+      "workerd": "./src/edge.ts",
+      "worker": "./src/edge.ts",
       "default": "./src/index.ts"
     }
   },

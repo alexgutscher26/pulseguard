@@ -26,6 +26,9 @@ interface MonitorFormProps {
     alertThreshold?: number;
     dynamicThresholding?: boolean;
     runbookUrl?: string | null;
+    method?: string;
+    headers?: string | null;
+    body?: string | null;
   };
 }
 
@@ -70,6 +73,29 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
   const [selectedRegions, setSelectedRegions] = useState<string[]>(initialRegions);
   const [threshold, setThreshold] = useState(monitor?.alertThreshold || 1);
   const [runbookUrl, setRunbookUrl] = useState(monitor?.runbookUrl || "");
+
+  // HTTP Customization State
+  const [method, setMethod] = useState(monitor?.method || "GET");
+  const [headersList, setHeadersList] = useState<{ key: string; value: string }[]>(() => {
+    if (monitor?.headers) {
+      try {
+        const parsed = JSON.parse(monitor.headers);
+        if (Array.isArray(parsed)) return parsed;
+      } catch (e) {
+        console.error("Failed to parse headers:", e);
+      }
+    }
+    return [{ key: "", value: "" }];
+  });
+  const [requestBody, setRequestBody] = useState(monitor?.body || "");
+
+  const addHeader = () => setHeadersList([...headersList, { key: "", value: "" }]);
+  const removeHeader = (index: number) => setHeadersList(headersList.filter((_, i) => i !== index));
+  const updateHeader = (index: number, field: "key" | "value", value: string) => {
+    const newList = [...headersList];
+    newList[index][field] = value;
+    setHeadersList(newList);
+  };
 
   const action = monitor ? updateMonitor.bind(null, monitor.id) : createMonitor;
   const [state, formAction, isPending] = useActionState(action, initialState);
@@ -209,6 +235,95 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
               )}
             </div>
           </div>
+
+          {/* HTTP Advanced Config */}
+          {monitorType === "HTTP" && (
+            <div className="flex flex-col gap-6 border-l-2 border-primary/20 pl-6 py-2">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
+                  HTTP Method
+                </label>
+                <div className="relative group/select">
+                  <select
+                    name="method"
+                    value={method}
+                    onChange={(e) => setMethod(e.target.value)}
+                    className="bg-secondary/20 border border-primary/20 focus:border-primary/60 text-foreground text-sm rounded-sm p-3 pr-10 font-mono focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full appearance-none cursor-pointer"
+                  >
+                    {["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"].map((m) => (
+                      <option key={m} value={m} className="bg-background text-foreground">
+                        {m}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute top-3.5 right-3 size-3 text-primary/40 pointer-events-none group-focus-within/select:text-primary transition-colors" />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
+                    Custom Headers
+                  </label>
+                  <button
+                    type="button"
+                    onClick={addHeader}
+                    className="text-[10px] font-bold text-primary hover:text-primary/80 uppercase font-mono transition-colors"
+                  >
+                    + Add Header
+                  </button>
+                </div>
+                <div className="flex flex-col gap-2">
+                  {headersList.map((header, index) => (
+                    <div key={index} className="flex gap-2">
+                      <input
+                        placeholder="Key"
+                        value={header.key}
+                        onChange={(e) => updateHeader(index, "key", e.target.value)}
+                        className="bg-secondary/20 border border-primary/20 focus:border-primary/60 text-foreground text-xs rounded-sm p-2 font-mono flex-1 focus:outline-none"
+                      />
+                      <input
+                        placeholder="Value"
+                        value={header.value}
+                        onChange={(e) => updateHeader(index, "value", e.target.value)}
+                        className="bg-secondary/20 border border-primary/20 focus:border-primary/60 text-foreground text-xs rounded-sm p-2 font-mono flex-1 focus:outline-none"
+                      />
+                      {headersList.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeHeader(index)}
+                          className="p-2 text-primary/40 hover:text-red-500 transition-colors"
+                        >
+                          <X className="size-4" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                {/* Hidden input to stringify headers for form submission */}
+                <input
+                  type="hidden"
+                  name="headers"
+                  value={JSON.stringify(headersList.filter((h) => h.key || h.value))}
+                />
+              </div>
+
+              {["POST", "PUT", "PATCH"].includes(method) && (
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
+                    Request Body
+                  </label>
+                  <textarea
+                    name="body"
+                    value={requestBody}
+                    onChange={(e) => setRequestBody(e.target.value)}
+                    className="bg-secondary/20 border border-primary/20 focus:border-primary/60 text-foreground text-sm rounded-sm p-3 font-mono placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full min-h-[100px] resize-y"
+                    placeholder='{"key": "value"}'
+                  />
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Region Selector */}
           <RegionSelector selectedRegions={selectedRegions} onChange={setSelectedRegions} />

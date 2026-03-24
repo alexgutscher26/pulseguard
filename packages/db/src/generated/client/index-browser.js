@@ -294,6 +294,9 @@ exports.Prisma.MonitorScalarFieldEnum = {
   alertThreshold: 'alertThreshold',
   dynamicThresholding: 'dynamicThresholding',
   runbookUrl: 'runbookUrl',
+  method: 'method',
+  headers: 'headers',
+  body: 'body',
   expectation: 'expectation'
 };
 

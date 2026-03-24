@@ -182,7 +182,7 @@ export async function getStatusPage(id: string) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) return null;
 
-  return prisma.statusPage.findUnique({
+  return prisma.statusPage.findFirst({
     where: { id, userId: session.user.id },
     include: {
       monitors: {
@@ -267,7 +267,7 @@ export async function addMonitorToPage(pageId: string, monitorId: string) {
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
   try {
-    const page = await prisma.statusPage.findUnique({
+    const page = await prisma.statusPage.findFirst({
       where: { id: pageId, userId: session.user.id },
     });
     if (!page) return { success: false, error: "Page not found" };
@@ -293,7 +293,7 @@ export async function removeMonitorFromPage(pageId: string, monitorId: string) {
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
   try {
-    const page = await prisma.statusPage.findUnique({
+    const page = await prisma.statusPage.findFirst({
       where: { id: pageId, userId: session.user.id },
     });
     if (!page) return { success: false, error: "Page not found" };
@@ -394,7 +394,7 @@ export async function updateWidgetConfig(
   }
 
   try {
-    const page = await prisma.statusPage.findUnique({
+    const page = await prisma.statusPage.findFirst({
       where: { id: pageId, userId: session.user.id },
     });
 
@@ -434,7 +434,7 @@ export async function updateHistoryDays(pageId: string, historyDays: number) {
   }
 
   try {
-    const page = await prisma.statusPage.findUnique({
+    const page = await prisma.statusPage.findFirst({
       where: { id: pageId, userId: session.user.id },
     });
 
@@ -503,7 +503,7 @@ export async function getStatusPageMaintenance(pageId: string) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) return [];
 
-  const page = await prisma.statusPage.findUnique({
+  const page = await prisma.statusPage.findFirst({
     where: { id: pageId, userId: session.user.id },
     include: {
       monitors: {
@@ -552,7 +552,7 @@ export async function getStatusPageUptimeData(pageId: string, days: number = 90)
     };
   }
 
-  const page = await prisma.statusPage.findUnique({
+  const page = await prisma.statusPage.findFirst({
     where: { id: pageId, userId: session.user.id },
     include: {
       monitors: {

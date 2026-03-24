@@ -1,4 +1,4 @@
-import { PrismaClient } from "./generated/client/index.js";
+import { PrismaClient } from "./generated/client/edge.js";
 
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
@@ -32,7 +32,7 @@ export const createPrisma = (databaseUrl?: string) => {
   const pool = new Pool(poolConfig);
   const adapter = new PrismaPg(pool);
 
-  const isDev = process.env.NODE_ENV === "development";
+  const isDev = (typeof process !== "undefined" && process.env.NODE_ENV === "development");
 
   return new PrismaClient({
     adapter,
@@ -110,4 +110,4 @@ const prismaProxy = new Proxy({} as PrismaClient, {
 });
 
 export default prismaProxy;
-export * from "./generated/client/index.js";
+export * from "./generated/client/edge.js";

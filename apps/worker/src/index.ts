@@ -90,13 +90,31 @@ async function performInternalRequest(
 
   try {
     if (urlStr.startsWith("http://") || urlStr.startsWith("https://")) {
+      const method = monitor.method || "GET";
+      const userHeaders: Record<string, string> = {};
+      
+      if (monitor.headers) {
+        try {
+          const parsed = JSON.parse(monitor.headers);
+          if (Array.isArray(parsed)) {
+            parsed.forEach((h: { key: string; value: string }) => {
+              if (h.key) userHeaders[h.key] = h.value;
+            });
+          }
+        } catch (e) {
+          console.error("Failed to parse monitor headers:", e);
+        }
+      }
+
       const response = await fetch(urlStr, {
-        method: "GET",
+        method,
         headers: {
           "User-Agent": "PulseGuard-Monitor/1.0",
           Accept: "*/*",
+          ...userHeaders,
           ...extraHeaders,
         },
+        body: ["POST", "PUT", "PATCH"].includes(method) ? monitor.body : undefined,
         signal: AbortSignal.timeout((monitor.timeout || 10) * 1000),
       });
       currentStatus = response.ok ? "UP" : "DOWN";
@@ -1184,6 +1202,9 @@ export default {
           alertThreshold: true,
           dynamicThresholding: true,
           runbookUrl: true,
+          method: true,
+          headers: true,
+          body: true,
           // @ts-ignore
           maintenanceWindows: {
             where: {

@@ -18335,6 +18335,9 @@ export namespace Prisma {
     alertThreshold: number | null
     dynamicThresholding: boolean | null
     runbookUrl: string | null
+    method: string | null
+    headers: string | null
+    body: string | null
     expectation: string | null
   }
 
@@ -18355,6 +18358,9 @@ export namespace Prisma {
     alertThreshold: number | null
     dynamicThresholding: boolean | null
     runbookUrl: string | null
+    method: string | null
+    headers: string | null
+    body: string | null
     expectation: string | null
   }
 
@@ -18375,6 +18381,9 @@ export namespace Prisma {
     alertThreshold: number
     dynamicThresholding: number
     runbookUrl: number
+    method: number
+    headers: number
+    body: number
     expectation: number
     _all: number
   }
@@ -18409,6 +18418,9 @@ export namespace Prisma {
     alertThreshold?: true
     dynamicThresholding?: true
     runbookUrl?: true
+    method?: true
+    headers?: true
+    body?: true
     expectation?: true
   }
 
@@ -18429,6 +18441,9 @@ export namespace Prisma {
     alertThreshold?: true
     dynamicThresholding?: true
     runbookUrl?: true
+    method?: true
+    headers?: true
+    body?: true
     expectation?: true
   }
 
@@ -18449,6 +18464,9 @@ export namespace Prisma {
     alertThreshold?: true
     dynamicThresholding?: true
     runbookUrl?: true
+    method?: true
+    headers?: true
+    body?: true
     expectation?: true
     _all?: true
   }
@@ -18556,6 +18574,9 @@ export namespace Prisma {
     alertThreshold: number
     dynamicThresholding: boolean
     runbookUrl: string | null
+    method: string
+    headers: string | null
+    body: string | null
     expectation: string | null
     _count: MonitorCountAggregateOutputType | null
     _avg: MonitorAvgAggregateOutputType | null
@@ -18595,6 +18616,9 @@ export namespace Prisma {
     alertThreshold?: boolean
     dynamicThresholding?: boolean
     runbookUrl?: boolean
+    method?: boolean
+    headers?: boolean
+    body?: boolean
     expectation?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     events?: boolean | Monitor$eventsArgs<ExtArgs>
@@ -18627,6 +18651,9 @@ export namespace Prisma {
     alertThreshold?: boolean
     dynamicThresholding?: boolean
     runbookUrl?: boolean
+    method?: boolean
+    headers?: boolean
+    body?: boolean
     expectation?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["monitor"]>
@@ -18648,6 +18675,9 @@ export namespace Prisma {
     alertThreshold?: boolean
     dynamicThresholding?: boolean
     runbookUrl?: boolean
+    method?: boolean
+    headers?: boolean
+    body?: boolean
     expectation?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["monitor"]>
@@ -18669,10 +18699,13 @@ export namespace Prisma {
     alertThreshold?: boolean
     dynamicThresholding?: boolean
     runbookUrl?: boolean
+    method?: boolean
+    headers?: boolean
+    body?: boolean
     expectation?: boolean
   }
 
-  export type MonitorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "url" | "type" | "interval" | "timeout" | "status" | "userId" | "createdAt" | "updatedAt" | "nextCheck" | "lastCheck" | "checkRegions" | "alertThreshold" | "dynamicThresholding" | "runbookUrl" | "expectation", ExtArgs["result"]["monitor"]>
+  export type MonitorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "url" | "type" | "interval" | "timeout" | "status" | "userId" | "createdAt" | "updatedAt" | "nextCheck" | "lastCheck" | "checkRegions" | "alertThreshold" | "dynamicThresholding" | "runbookUrl" | "method" | "headers" | "body" | "expectation", ExtArgs["result"]["monitor"]>
   export type MonitorInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     events?: boolean | Monitor$eventsArgs<ExtArgs>
@@ -18726,6 +18759,9 @@ export namespace Prisma {
       alertThreshold: number
       dynamicThresholding: boolean
       runbookUrl: string | null
+      method: string
+      headers: string | null
+      body: string | null
       expectation: string | null
     }, ExtArgs["result"]["monitor"]>
     composites: {}
@@ -19177,6 +19213,9 @@ export namespace Prisma {
     readonly alertThreshold: FieldRef<"Monitor", 'Int'>
     readonly dynamicThresholding: FieldRef<"Monitor", 'Boolean'>
     readonly runbookUrl: FieldRef<"Monitor", 'String'>
+    readonly method: FieldRef<"Monitor", 'String'>
+    readonly headers: FieldRef<"Monitor", 'String'>
+    readonly body: FieldRef<"Monitor", 'String'>
     readonly expectation: FieldRef<"Monitor", 'String'>
   }
     
@@ -31470,6 +31509,9 @@ export namespace Prisma {
     alertThreshold: 'alertThreshold',
     dynamicThresholding: 'dynamicThresholding',
     runbookUrl: 'runbookUrl',
+    method: 'method',
+    headers: 'headers',
+    body: 'body',
     expectation: 'expectation'
   };
 
@@ -32945,6 +32987,9 @@ export namespace Prisma {
     alertThreshold?: IntFilter<"Monitor"> | number
     dynamicThresholding?: BoolFilter<"Monitor"> | boolean
     runbookUrl?: StringNullableFilter<"Monitor"> | string | null
+    method?: StringFilter<"Monitor"> | string
+    headers?: StringNullableFilter<"Monitor"> | string | null
+    body?: StringNullableFilter<"Monitor"> | string | null
     expectation?: StringNullableFilter<"Monitor"> | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     events?: MonitorEventListRelationFilter
@@ -32976,6 +33021,9 @@ export namespace Prisma {
     alertThreshold?: SortOrder
     dynamicThresholding?: SortOrder
     runbookUrl?: SortOrderInput | SortOrder
+    method?: SortOrder
+    headers?: SortOrderInput | SortOrder
+    body?: SortOrderInput | SortOrder
     expectation?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
     events?: MonitorEventOrderByRelationAggregateInput
@@ -33010,6 +33058,9 @@ export namespace Prisma {
     alertThreshold?: IntFilter<"Monitor"> | number
     dynamicThresholding?: BoolFilter<"Monitor"> | boolean
     runbookUrl?: StringNullableFilter<"Monitor"> | string | null
+    method?: StringFilter<"Monitor"> | string
+    headers?: StringNullableFilter<"Monitor"> | string | null
+    body?: StringNullableFilter<"Monitor"> | string | null
     expectation?: StringNullableFilter<"Monitor"> | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     events?: MonitorEventListRelationFilter
@@ -33041,6 +33092,9 @@ export namespace Prisma {
     alertThreshold?: SortOrder
     dynamicThresholding?: SortOrder
     runbookUrl?: SortOrderInput | SortOrder
+    method?: SortOrder
+    headers?: SortOrderInput | SortOrder
+    body?: SortOrderInput | SortOrder
     expectation?: SortOrderInput | SortOrder
     _count?: MonitorCountOrderByAggregateInput
     _avg?: MonitorAvgOrderByAggregateInput
@@ -33069,6 +33123,9 @@ export namespace Prisma {
     alertThreshold?: IntWithAggregatesFilter<"Monitor"> | number
     dynamicThresholding?: BoolWithAggregatesFilter<"Monitor"> | boolean
     runbookUrl?: StringNullableWithAggregatesFilter<"Monitor"> | string | null
+    method?: StringWithAggregatesFilter<"Monitor"> | string
+    headers?: StringNullableWithAggregatesFilter<"Monitor"> | string | null
+    body?: StringNullableWithAggregatesFilter<"Monitor"> | string | null
     expectation?: StringNullableWithAggregatesFilter<"Monitor"> | string | null
   }
 
@@ -34998,6 +35055,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
@@ -35029,6 +35089,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
@@ -35058,6 +35121,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
@@ -35089,6 +35155,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
@@ -35119,6 +35188,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
   }
 
@@ -35138,6 +35210,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -35158,6 +35233,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -37193,6 +37271,9 @@ export namespace Prisma {
     alertThreshold?: SortOrder
     dynamicThresholding?: SortOrder
     runbookUrl?: SortOrder
+    method?: SortOrder
+    headers?: SortOrder
+    body?: SortOrder
     expectation?: SortOrder
   }
 
@@ -37219,6 +37300,9 @@ export namespace Prisma {
     alertThreshold?: SortOrder
     dynamicThresholding?: SortOrder
     runbookUrl?: SortOrder
+    method?: SortOrder
+    headers?: SortOrder
+    body?: SortOrder
     expectation?: SortOrder
   }
 
@@ -37239,6 +37323,9 @@ export namespace Prisma {
     alertThreshold?: SortOrder
     dynamicThresholding?: SortOrder
     runbookUrl?: SortOrder
+    method?: SortOrder
+    headers?: SortOrder
+    body?: SortOrder
     expectation?: SortOrder
   }
 
@@ -39877,6 +39964,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
@@ -39906,6 +39996,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
@@ -40164,6 +40257,9 @@ export namespace Prisma {
     alertThreshold?: IntFilter<"Monitor"> | number
     dynamicThresholding?: BoolFilter<"Monitor"> | boolean
     runbookUrl?: StringNullableFilter<"Monitor"> | string | null
+    method?: StringFilter<"Monitor"> | string
+    headers?: StringNullableFilter<"Monitor"> | string | null
+    body?: StringNullableFilter<"Monitor"> | string | null
     expectation?: StringNullableFilter<"Monitor"> | string | null
   }
 
@@ -40466,6 +40562,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
@@ -40496,6 +40595,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
@@ -40595,6 +40697,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
@@ -40625,6 +40730,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
@@ -40789,6 +40897,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
@@ -40819,6 +40930,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
@@ -40863,6 +40977,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
@@ -40893,6 +41010,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
@@ -41081,6 +41201,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
@@ -41111,6 +41234,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
@@ -41155,6 +41281,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
@@ -41185,6 +41314,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
@@ -41213,6 +41345,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
@@ -41243,6 +41378,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
@@ -41287,6 +41425,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
@@ -41317,6 +41458,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
@@ -41493,6 +41637,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
@@ -41523,6 +41670,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
@@ -41592,6 +41742,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
@@ -41622,6 +41775,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
@@ -42357,6 +42513,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
     user: UserCreateNestedOneWithoutMonitorsInput
     maintenanceWindows?: MaintenanceWindowCreateNestedManyWithoutMonitorInput
@@ -42387,6 +42546,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
@@ -42431,6 +42593,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
@@ -42461,6 +42626,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
@@ -42489,6 +42657,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
@@ -42519,6 +42690,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     alertRules?: AlertRuleUncheckedCreateNestedManyWithoutMonitorInput
@@ -42563,6 +42737,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
@@ -42593,6 +42770,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     alertRules?: AlertRuleUncheckedUpdateManyWithoutMonitorNestedInput
@@ -43138,6 +43318,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
@@ -43168,6 +43351,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
@@ -43285,6 +43471,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
@@ -43315,6 +43504,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
@@ -43817,6 +44009,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
@@ -43847,6 +44042,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
@@ -43928,6 +44126,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
@@ -43958,6 +44159,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
@@ -43986,6 +44190,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
     user: UserCreateNestedOneWithoutMonitorsInput
     events?: MonitorEventCreateNestedManyWithoutMonitorInput
@@ -44016,6 +44223,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
     events?: MonitorEventUncheckedCreateNestedManyWithoutMonitorInput
     maintenanceWindows?: MaintenanceWindowUncheckedCreateNestedManyWithoutMonitorInput
@@ -44060,6 +44270,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutMonitorsNestedInput
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
@@ -44090,6 +44303,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
@@ -44143,6 +44359,9 @@ export namespace Prisma {
     alertThreshold?: number
     dynamicThresholding?: boolean
     runbookUrl?: string | null
+    method?: string
+    headers?: string | null
+    body?: string | null
     expectation?: string | null
   }
 
@@ -44284,6 +44503,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MonitorEventUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUpdateManyWithoutMonitorNestedInput
@@ -44313,6 +44535,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
     events?: MonitorEventUncheckedUpdateManyWithoutMonitorNestedInput
     maintenanceWindows?: MaintenanceWindowUncheckedUpdateManyWithoutMonitorNestedInput
@@ -44342,6 +44567,9 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     dynamicThresholding?: BoolFieldUpdateOperationsInput | boolean
     runbookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    headers?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: NullableStringFieldUpdateOperationsInput | string | null
     expectation?: NullableStringFieldUpdateOperationsInput | string | null
   }
 

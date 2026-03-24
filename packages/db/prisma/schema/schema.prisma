@@ -52,6 +52,9 @@ model Monitor {
   alertThreshold       Int       @default(1)
   dynamicThresholding  Boolean   @default(false)
   runbookUrl           String?
+  method               String    @default("GET")
+  headers              String?   // JSON structure for custom headers
+  body                 String?   // Request body for POST/PUT/PATCH
   expectation          String? // JSON structure for response validation
 
   @@index([userId])

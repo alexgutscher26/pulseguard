@@ -18,6 +18,9 @@ export interface Monitor {
   url: string;
   timeout: number;
   checkRegions?: string | null;
+  method?: string;
+  headers?: string | null;
+  body?: string | null;
 }
 
 /**
@@ -25,22 +28,38 @@ export interface Monitor {
  * Uses Cloudflare's global network - the Worker will execute from the nearest edge location
  */
 async function checkFromRegion(
-  url: string,
+  monitor: Monitor,
   region: string,
-  timeout: number,
 ): Promise<RegionalCheckResult> {
   const start = Date.now();
+  const url = monitor.url;
+  const timeout = monitor.timeout;
 
   try {
-    // For Cloudflare Workers, we don't need proxies
-    // The Worker automatically executes from the nearest edge location
-    // We can use cf-specific headers to get region info
+    const method = monitor.method || "GET";
+    const userHeaders: Record<string, string> = {};
+
+    if (monitor.headers) {
+      try {
+        const parsed = JSON.parse(monitor.headers);
+        if (Array.isArray(parsed)) {
+          parsed.forEach((h: { key: string; value: string }) => {
+            if (h.key) userHeaders[h.key] = h.value;
+          });
+        }
+      } catch (e) {
+        console.error(`[Regional:${region}] Failed to parse headers:`, e);
+      }
+    }
+
     const response = await fetch(url, {
-      method: "GET",
+      method,
       headers: {
         "User-Agent": `PulseGuard-Monitor/1.0 (Region: ${region})`,
         Accept: "*/*",
+        ...userHeaders,
       },
+      body: ["POST", "PUT", "PATCH"].includes(method) ? monitor.body : undefined,
       signal: AbortSignal.timeout(timeout * 1000),
     });
 
@@ -87,12 +106,12 @@ export async function performRegionalChecks(monitor: Monitor): Promise<RegionalC
 
   // If no regions selected, perform single check (default behavior)
   if (regions.length === 0) {
-    const result = await checkFromRegion(monitor.url, "default", monitor.timeout);
+    const result = await checkFromRegion(monitor, "default");
     return [result];
   }
 
   // Perform checks from all selected regions in parallel
-  const checks = regions.map((region) => checkFromRegion(monitor.url, region, monitor.timeout));
+  const checks = regions.map((region) => checkFromRegion(monitor, region));
 
   return Promise.all(checks);
 }

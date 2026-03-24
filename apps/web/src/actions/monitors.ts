@@ -43,6 +43,9 @@ const baseSchema = z.object({
   alertThreshold: z.coerce.number().min(1).default(1),
   dynamicThresholding: z.boolean().optional(),
   runbookUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  method: z.string().optional().default("GET"),
+  headers: z.string().optional(),
+  body: z.string().optional(),
 });
 
 const monitorSchema = baseSchema.superRefine((data, ctx) => {
@@ -160,6 +163,9 @@ export async function createMonitor(prevState: any, formData: FormData) {
       alertThreshold: formData.get("alertThreshold") ? Number(formData.get("alertThreshold")) : 1,
       dynamicThresholding: formData.get("dynamicThresholding") === "on",
       runbookUrl: (formData.get("runbookUrl") as string) || undefined,
+      method: (formData.get("method") as string) || "GET",
+      headers: (formData.get("headers") as string) || undefined,
+      body: (formData.get("body") as string) || undefined,
     };
 
     console.log("Creating monitor with data:", rawData);
@@ -194,6 +200,9 @@ export async function createMonitor(prevState: any, formData: FormData) {
         alertThreshold: data.alertThreshold,
         dynamicThresholding: data.dynamicThresholding,
         runbookUrl: data.runbookUrl,
+        method: data.method,
+        headers: data.headers,
+        body: data.body,
       },
     });
 
@@ -265,6 +274,9 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
     alertThreshold: formData.get("alertThreshold") ? Number(formData.get("alertThreshold")) : 1,
     dynamicThresholding: formData.get("dynamicThresholding") === "on",
     runbookUrl: (formData.get("runbookUrl") as string) || undefined,
+    method: (formData.get("method") as string) || "GET",
+    headers: (formData.get("headers") as string) || undefined,
+    body: (formData.get("body") as string) || undefined,
   };
 
   console.log("Updating monitor with data:", rawData);
@@ -301,6 +313,9 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
         alertThreshold: data.alertThreshold,
         dynamicThresholding: data.dynamicThresholding,
         runbookUrl: data.runbookUrl,
+        method: data.method,
+        headers: data.headers,
+        body: data.body,
       },
     });
 
@@ -399,7 +414,7 @@ export async function checkMonitor(
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
   /* Updated to include maintenance check */
-  const monitor = await prisma.monitor.findUnique({
+  const monitor = await prisma.monitor.findFirst({
     where: { id, userId: session.user.id },
     include: {
       // @ts-ignore
