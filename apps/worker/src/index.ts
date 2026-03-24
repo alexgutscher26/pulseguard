@@ -808,7 +808,32 @@ export default {
     }
 
 
-    // API Route: /api/payload-audit
+    // API Route: /api/dns-audit
+    if (url.pathname === "/api/dns-audit" && request.method === "POST") {
+       try {
+         const body: any = await request.json();
+         const { domain: targetDomain } = body;
+         
+         if (!targetDomain) return new Response("Missing 'domain' body param", { status: 400 });
+ 
+         const { auditDNS } = await import("./services/dns-audit");
+         const results = await auditDNS(targetDomain);
+ 
+         return new Response(JSON.stringify(results), {
+           headers: { 
+             "Content-Type": "application/json",
+             "Access-Control-Allow-Origin": "*",
+             "Access-Control-Allow-Methods": "POST, OPTIONS",
+             "Access-Control-Allow-Headers": "Content-Type"
+           } 
+         });
+       } catch (err: any) {
+         return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" }});
+       }
+    }
+ 
+ 
+     // API Route: /api/payload-audit
     if (url.pathname === "/api/payload-audit" && request.method === "POST") {
        try {
          const body: any = await request.json();

@@ -448,9 +448,9 @@ Bolt on AI in highly focused, deterministic places without adding hallucination 
 
 High-value, free utilities to drive SEO traffic, built on PulseGuard's core tech.
 
-- [ ] **IP Subnet Calculator**
-- [ ] **MX & DNS Record Lookup Analyzer** (SPF/DKIM/DMARC health score)
-- [ ] **Cron Expression Generator & Debugger**
+- [x] **IP Subnet Calculator**
+- [x] **MX & DNS Record Lookup Analyzer** (SPF/DKIM/DMARC health score)
+- [x] **Cron Expression Generator & Debugger**
 - [x] **Regex Tester specifically for HTML payload monitoring**
 - [x] **HTTP Headers & Security Analyzer**
 - [x] **Visual Website Diff Tool**

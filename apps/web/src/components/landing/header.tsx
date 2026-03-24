@@ -9,6 +9,8 @@ import {
   Terminal,
   ArrowRight,
   Code2,
+  Clock,
+  Network,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { motion, AnimatePresence } from "framer-motion";
@@ -59,9 +61,24 @@ export default function LandingHeader() {
                     <div className="absolute inset-0 bg-primary/5 opacity-50 pointer-events-none" />
                     {[
                       {
+                        name: "IP Pulse",
+                        href: "/tools/ip-subnet",
+                        icon: <Network className="h-4 w-4" />,
+                      },
+                      {
                         name: "Global Latency",
                         href: "/tools/global-latency",
                         icon: <Globe className="h-4 w-4" />,
+                      },
+                      {
+                        name: "DNS Pulse",
+                        href: "/tools/dns-sentinel",
+                        icon: <Globe className="h-4 w-4" />,
+                      },
+                      {
+                        name: "Cron Pulse",
+                        href: "/tools/cron-sentinel",
+                        icon: <Clock className="h-4 w-4" />,
                       },
                       {
                         name: "Payload Pulse",
@@ -82,6 +99,11 @@ export default function LandingHeader() {
                         name: "Port Checker",
                         href: "/tools/port-checker",
                         icon: <Terminal className="h-4 w-4" />,
+                      },
+                      {
+                        name: "Visual Diff",
+                        href: "/tools/visual-diff",
+                        icon: <Activity className="h-4 w-4" />,
                       },
                     ].map((tool) => (
                       <Link
