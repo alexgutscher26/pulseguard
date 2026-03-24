@@ -4,7 +4,8 @@ import { PayloadTester } from "./tester";
 
 export const metadata: Metadata = {
   title: "Regex Payload Monitor & Tester | PulseGuard",
-  description: "Free regex tester for website monitoring. Verify HTML expectations, check for specific phrases, and validate payload integrity with our regex sentinel.",
+  description:
+    "Free regex tester for website monitoring. Verify HTML expectations, check for specific phrases, and validate payload integrity with our regex sentinel.",
   openGraph: {
     title: "Regex Payload Monitor & Tester",
     description: "Verify your website's content with PulseGuard's payload analysis sentinel.",
@@ -23,8 +24,8 @@ export default function PayloadTesterPage() {
               Payload Pulse Regex Sentinel
             </h1>
             <p className="text-muted-foreground text-lg md:text-xl max-w-3xl mx-auto font-mono">
-              [ANALYZING CONTENT STREAM... ]
-              Define and test "Expectation" sequences for HTML payload monitoring.
+              [ANALYZING CONTENT STREAM... ] Define and test "Expectation" sequences for HTML
+              payload monitoring.
             </p>
           </div>
 
@@ -32,28 +33,30 @@ export default function PayloadTesterPage() {
 
           <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-primary/10 pt-12">
             <div className="space-y-4 p-6 bg-primary/5 rounded-xl border border-primary/20">
-               <h3 className="text-primary font-mono font-bold uppercase tracking-widest text-xs flex items-center gap-2">
-                 Payload Extraction
-               </h3>
-               <p className="text-sm text-muted-foreground font-mono leading-relaxed">
-                 Seamlessly pulls raw HTML from any endpoint, bypassing common bot detection filters.
-               </p>
+              <h3 className="text-primary font-mono font-bold uppercase tracking-widest text-xs flex items-center gap-2">
+                Payload Extraction
+              </h3>
+              <p className="text-sm text-muted-foreground font-mono leading-relaxed">
+                Seamlessly pulls raw HTML from any endpoint, bypassing common bot detection filters.
+              </p>
             </div>
             <div className="space-y-4 p-6 bg-primary/5 rounded-xl border border-primary/20">
-               <h3 className="text-primary font-mono font-bold uppercase tracking-widest text-xs flex items-center gap-2">
-                 Regex Sequencing
-               </h3>
-               <p className="text-sm text-muted-foreground font-mono leading-relaxed">
-                 Test complex regular expressions to find titles, price tags, or error messages in code.
-               </p>
+              <h3 className="text-primary font-mono font-bold uppercase tracking-widest text-xs flex items-center gap-2">
+                Regex Sequencing
+              </h3>
+              <p className="text-sm text-muted-foreground font-mono leading-relaxed">
+                Test complex regular expressions to find titles, price tags, or error messages in
+                code.
+              </p>
             </div>
             <div className="space-y-4 p-6 bg-primary/5 rounded-xl border border-primary/20">
-               <h3 className="text-primary font-mono font-bold uppercase tracking-widest text-xs flex items-center gap-2">
-                 Incident Prevention
-               </h3>
-               <p className="text-sm text-muted-foreground font-mono leading-relaxed">
-                 Configure monitors to alert only when specific content is missing or found on the page.
-               </p>
+              <h3 className="text-primary font-mono font-bold uppercase tracking-widest text-xs flex items-center gap-2">
+                Incident Prevention
+              </h3>
+              <p className="text-sm text-muted-foreground font-mono leading-relaxed">
+                Configure monitors to alert only when specific content is missing or found on the
+                page.
+              </p>
             </div>
           </div>
         </div>

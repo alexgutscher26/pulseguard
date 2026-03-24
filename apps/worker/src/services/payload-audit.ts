@@ -1,4 +1,3 @@
-
 export async function auditPayload(targetUrl: string, pattern: string) {
   try {
     const response = await fetch(targetUrl, {
@@ -14,9 +13,12 @@ export async function auditPayload(targetUrl: string, pattern: string) {
     }
 
     const body = await response.text();
-    const truncatedBody = body.length > 200000 ? body.substring(0, 200000) + "\n\n...[TRUNCATED BY PULSEGUARD SENTINEL]..." : body;
+    const truncatedBody =
+      body.length > 200000
+        ? body.substring(0, 200000) + "\n\n...[TRUNCATED BY PULSEGUARD SENTINEL]..."
+        : body;
 
-    let matches: { index: number, length: number }[] = [];
+    let matches: { index: number; length: number }[] = [];
     let success = false;
     let errorMessage: string | undefined = undefined;
 
@@ -27,7 +29,7 @@ export async function auditPayload(targetUrl: string, pattern: string) {
         while ((match = regex.exec(truncatedBody)) !== null) {
           matches.push({
             index: match.index,
-            length: match[0].length
+            length: match[0].length,
           });
           // Avoid infinite loops for zero-width matches
           if (match.index === regex.lastIndex) regex.lastIndex++;
@@ -49,7 +51,7 @@ export async function auditPayload(targetUrl: string, pattern: string) {
       matchCount: matches.length,
       success,
       errorMessage,
-      headers: Object.fromEntries(response.headers.entries())
+      headers: Object.fromEntries(response.headers.entries()),
     };
   } catch (error: any) {
     throw new Error(`Failed to extract payload: ${error.message}`);

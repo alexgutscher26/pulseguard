@@ -2,10 +2,7 @@ import { CheckCircle2, Globe, Database, Shield, Server, Activity, Loader2 } from
 
 export default function Features() {
   return (
-    <section
-      className="py-24 bg-background relative overflow-hidden"
-      id="features"
-    >
+    <section className="py-24 bg-background relative overflow-hidden" id="features">
       <div className="max-w-6xl mx-auto px-6 md:px-12">
         {/* Header */}
         <div className="text-center mb-16 flex flex-col items-center">
@@ -19,7 +16,6 @@ export default function Features() {
 
         {/* Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
           {/* Card 1: Live Status Demo */}
           <div className="bg-[#0a0a0a] border border-white/5 rounded-2xl p-6 flex flex-col group hover:border-white/10 transition-colors">
             {/* Visual Area */}
@@ -33,7 +29,7 @@ export default function Features() {
               <div className="w-[60%] h-12 bg-white/5 rounded-xl mb-3 flex items-center px-4">
                 <div className="w-1/2 h-2 rounded-full bg-white/20"></div>
               </div>
-              
+
               <div className="w-[45%] h-12 bg-white/5 rounded-xl mb-3 flex items-center px-4">
                 <div className="w-[40%] h-2 rounded-full bg-white/20"></div>
               </div>
@@ -59,7 +55,6 @@ export default function Features() {
           <div className="bg-[#0a0a0a] border border-white/5 rounded-2xl p-6 flex flex-col group hover:border-white/10 transition-colors">
             {/* Visual Area */}
             <div className="h-[220px] w-full mb-6 relative flex flex-col items-center justify-center p-2">
-              
               {/* Stacked Cards */}
               <div className="relative w-full h-[120px] flex items-center justify-center mt-4">
                 {/* Left Card */}
@@ -68,7 +63,7 @@ export default function Features() {
                   <div className="w-2/3 h-1.5 bg-white/20 rounded-full"></div>
                   <CheckCircle2 className="size-4 text-primary absolute bottom-3 right-3" />
                 </div>
-                
+
                 {/* Center Card */}
                 <div className="absolute z-10 w-[120px] h-[85px] bg-[#1a1a1a] border border-white/20 rounded-xl flex flex-col p-3 shadow-2xl transform -translate-y-2 transition-transform group-hover:-translate-y-4">
                   <div className="w-full h-1.5 bg-white/20 rounded-full mb-2"></div>
@@ -100,7 +95,6 @@ export default function Features() {
                   <span className="text-[10px] font-mono text-muted-foreground">92%</span>
                 </div>
               </div>
-
             </div>
 
             <h3 className="text-lg font-bold text-foreground mb-2">Incident Resolution</h3>
@@ -113,17 +107,77 @@ export default function Features() {
           <div className="bg-[#0a0a0a] border border-white/5 rounded-2xl p-6 flex flex-col group hover:border-white/10 transition-colors">
             {/* Visual Area */}
             <div className="h-[220px] w-full mb-6 relative flex items-center justify-center">
-              
               {/* Dotted lines grid background */}
               <svg className="absolute inset-0 w-full h-full" viewBox="0 0 300 220">
-                <circle cx="150" cy="110" r="70" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="1" strokeDasharray="4 4"/>
-                <circle cx="150" cy="110" r="40" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="1" strokeDasharray="4 4"/>
+                <circle
+                  cx="150"
+                  cy="110"
+                  r="70"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.05)"
+                  strokeWidth="1"
+                  strokeDasharray="4 4"
+                />
+                <circle
+                  cx="150"
+                  cy="110"
+                  r="40"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.05)"
+                  strokeWidth="1"
+                  strokeDasharray="4 4"
+                />
                 {/* Lines radiating */}
-                <line x1="150" y1="110" x2="60" y2="40" stroke="rgba(57,255,20,0.3)" strokeWidth="1.5" strokeDasharray="4 4" className="group-hover:stroke-[rgba(57,255,20,0.6)] transition-all"/>
-                <line x1="150" y1="110" x2="240" y2="40" stroke="rgba(57,255,20,0.3)" strokeWidth="1.5" strokeDasharray="4 4" className="group-hover:stroke-[rgba(57,255,20,0.6)] transition-all"/>
-                <line x1="150" y1="110" x2="60" y2="180" stroke="rgba(57,255,20,0.3)" strokeWidth="1.5" strokeDasharray="4 4" className="group-hover:stroke-[rgba(57,255,20,0.6)] transition-all"/>
-                <line x1="150" y1="110" x2="240" y2="180" stroke="rgba(57,255,20,0.3)" strokeWidth="1.5" strokeDasharray="4 4" className="group-hover:stroke-[rgba(57,255,20,0.6)] transition-all"/>
-                <line x1="150" y1="110" x2="150" y2="30" stroke="rgba(57,255,20,0.3)" strokeWidth="1.5" strokeDasharray="4 4" className="group-hover:stroke-[rgba(57,255,20,0.6)] transition-all"/>
+                <line
+                  x1="150"
+                  y1="110"
+                  x2="60"
+                  y2="40"
+                  stroke="rgba(57,255,20,0.3)"
+                  strokeWidth="1.5"
+                  strokeDasharray="4 4"
+                  className="group-hover:stroke-[rgba(57,255,20,0.6)] transition-all"
+                />
+                <line
+                  x1="150"
+                  y1="110"
+                  x2="240"
+                  y2="40"
+                  stroke="rgba(57,255,20,0.3)"
+                  strokeWidth="1.5"
+                  strokeDasharray="4 4"
+                  className="group-hover:stroke-[rgba(57,255,20,0.6)] transition-all"
+                />
+                <line
+                  x1="150"
+                  y1="110"
+                  x2="60"
+                  y2="180"
+                  stroke="rgba(57,255,20,0.3)"
+                  strokeWidth="1.5"
+                  strokeDasharray="4 4"
+                  className="group-hover:stroke-[rgba(57,255,20,0.6)] transition-all"
+                />
+                <line
+                  x1="150"
+                  y1="110"
+                  x2="240"
+                  y2="180"
+                  stroke="rgba(57,255,20,0.3)"
+                  strokeWidth="1.5"
+                  strokeDasharray="4 4"
+                  className="group-hover:stroke-[rgba(57,255,20,0.6)] transition-all"
+                />
+                <line
+                  x1="150"
+                  y1="110"
+                  x2="150"
+                  y2="30"
+                  stroke="rgba(57,255,20,0.3)"
+                  strokeWidth="1.5"
+                  strokeDasharray="4 4"
+                  className="group-hover:stroke-[rgba(57,255,20,0.6)] transition-all"
+                />
               </svg>
 
               {/* Center Glowing Hub */}
@@ -147,7 +201,6 @@ export default function Features() {
               <div className="absolute top-[10px] left-[130px] size-10 bg-[#111] border border-white/10 rounded-full flex items-center justify-center text-muted-foreground group-hover:border-white/30 transition-colors">
                 <Activity className="size-4" />
               </div>
-
             </div>
 
             <h3 className="text-lg font-bold text-foreground mb-2">Multi-Region Support</h3>
@@ -155,7 +208,6 @@ export default function Features() {
               Seamless infrastructure surveillance across all zones
             </p>
           </div>
-
         </div>
       </div>
     </section>

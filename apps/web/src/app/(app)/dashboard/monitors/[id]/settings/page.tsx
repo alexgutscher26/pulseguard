@@ -23,7 +23,7 @@ export default async function MonitorSettingsPage({ params }: { params: Promise<
 
   const { id } = await params;
   console.log(`[Debug] Fetching monitor settings for ID: ${id}`);
-  
+
   const monitor = await getMonitor(id);
 
   if (!monitor) {

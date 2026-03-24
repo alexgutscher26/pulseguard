@@ -115,9 +115,7 @@ export function AlertHistory({
           <h3 className="text-lg font-bold text-foreground font-mono uppercase tracking-tight">
             System Log
           </h3>
-          <p className="text-xs text-primary/60 font-mono">
-            Recent monitor events
-          </p>
+          <p className="text-xs text-primary/60 font-mono">Recent monitor events</p>
         </div>
       </div>
 
@@ -162,10 +160,7 @@ export function AlertHistory({
                   const config = getTypeConfig(item);
                   const Icon = config.icon;
                   return (
-                    <tr
-                      key={item.id}
-                      className="hover:bg-primary/5 transition-colors group"
-                    >
+                    <tr key={item.id} className="hover:bg-primary/5 transition-colors group">
                       <td className="px-6 py-4">
                         <span className="text-sm font-bold text-foreground font-mono group-hover:text-primary transition-colors">
                           {item.monitor.name}
@@ -203,9 +198,7 @@ export function AlertHistory({
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-1 text-primary/50">
                           <Clock className="size-3" />
-                          <span className="text-xs font-mono">
-                            {formatTimeAgo(item.timestamp)}
-                          </span>
+                          <span className="text-xs font-mono">{formatTimeAgo(item.timestamp)}</span>
                         </div>
                       </td>
                     </tr>

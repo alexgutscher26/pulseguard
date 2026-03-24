@@ -5,20 +5,20 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { 
-  ShieldCheck, 
-  ShieldAlert, 
-  ShieldQuestion, 
-  Activity, 
-  Lock, 
-  AlertTriangle, 
-  ArrowRight, 
-  ChevronDown, 
+import {
+  ShieldCheck,
+  ShieldAlert,
+  ShieldQuestion,
+  Activity,
+  Lock,
+  AlertTriangle,
+  ArrowRight,
+  ChevronDown,
   Search,
   Zap,
   Loader2,
   FileSearch,
-  ShieldIcon
+  ShieldIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import { GlitchText } from "@/components/ui/effects/glitch-text";
@@ -73,7 +73,7 @@ export function HeaderAnalyzer() {
     // Simulate terminal steps
     for (let i = 0; i < scanSteps.length; i++) {
       setScanStep(i);
-      await new Promise(r => setTimeout(r, 600 + Math.random() * 800));
+      await new Promise((r) => setTimeout(r, 600 + Math.random() * 800));
     }
 
     try {
@@ -103,9 +103,13 @@ export function HeaderAnalyzer() {
             <div className="p-2 bg-primary/20 rounded-lg">
               <ShieldCheck className="w-5 h-5 text-primary" />
             </div>
-            <CardTitle className="font-mono uppercase tracking-tighter italic">Header Extraction Protocol</CardTitle>
+            <CardTitle className="font-mono uppercase tracking-tighter italic">
+              Header Extraction Protocol
+            </CardTitle>
           </div>
-          <CardDescription className="font-mono text-xs opacity-60 uppercase">Analyze HTTP response headers for security misconfigurations.</CardDescription>
+          <CardDescription className="font-mono text-xs opacity-60 uppercase">
+            Analyze HTTP response headers for security misconfigurations.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleAudit} className="flex flex-col md:flex-row gap-4">
@@ -118,8 +122,8 @@ export function HeaderAnalyzer() {
                 onChange={(e) => setUrl(e.target.value)}
               />
             </div>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               className="h-12 px-8 font-mono font-bold uppercase tracking-tighter"
               disabled={isScanning || !url}
             >
@@ -149,7 +153,7 @@ export function HeaderAnalyzer() {
             <div className="text-center">
               <GlitchText text={scanSteps[scanStep]} className="text-primary font-mono text-lg" />
               <div className="mt-4 w-64 h-1 bg-primary/10 rounded-full overflow-hidden">
-                <motion.div 
+                <motion.div
                   className="h-full bg-primary"
                   initial={{ width: 0 }}
                   animate={{ width: `${(scanStep + 1) * (100 / scanSteps.length)}%` }}
@@ -169,7 +173,10 @@ export function HeaderAnalyzer() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Card className="col-span-1 border-primary/20 bg-black/60 shadow-2xl relative overflow-hidden flex flex-col items-center justify-center py-10">
                 <div className="absolute top-4 left-4">
-                  <Badge variant="outline" className="text-[10px] font-mono uppercase tracking-widest text-primary/60 border-primary/20">
+                  <Badge
+                    variant="outline"
+                    className="text-[10px] font-mono uppercase tracking-widest text-primary/60 border-primary/20"
+                  >
                     Security Grade
                   </Badge>
                 </div>
@@ -178,31 +185,60 @@ export function HeaderAnalyzer() {
                 </div>
                 <div className="mt-4 flex flex-col items-center">
                   <div className="w-32 h-1 bg-primary/20 rounded-full mb-2 overflow-hidden">
-                    <motion.div 
+                    <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${auditData.score}%` }}
                       className="h-full bg-primary"
                     />
                   </div>
-                  <span className="text-[10px] font-mono text-primary/60 uppercase">Integrity Score: {auditData.score}%</span>
+                  <span className="text-[10px] font-mono text-primary/60 uppercase">
+                    Integrity Score: {auditData.score}%
+                  </span>
                 </div>
               </Card>
 
               <Card className="col-span-2 border-primary/20 bg-black/40 backdrop-blur-sm p-6 space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-mono text-sm uppercase tracking-widest text-primary/80">Audit Executive Summary</h3>
-                  <Badge className="bg-primary/20 text-primary border-primary/30 uppercase text-[10px] italic">{auditData.url}</Badge>
+                  <h3 className="font-mono text-sm uppercase tracking-widest text-primary/80">
+                    Audit Executive Summary
+                  </h3>
+                  <Badge className="bg-primary/20 text-primary border-primary/30 uppercase text-[10px] italic">
+                    {auditData.url}
+                  </Badge>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   {[
-                    { label: "Critical Gaps", value: auditData.results.filter(r => r.status === "CRITICAL").length, color: "text-red-500" },
-                    { label: "Foundational Checks", value: auditData.results.filter(r => r.status === "SECURE").length, color: "text-primary" },
-                    { label: "Minor Risks", value: auditData.results.filter(r => r.status === "WARNING").length, color: "text-yellow-500" },
-                    { label: "Data Points", value: Object.keys(auditData.rawHeaders).length, color: "text-blue-500" },
-                  ].map(stat => (
-                    <div key={stat.label} className="p-4 bg-primary/5 border border-primary/10 rounded-sm">
-                      <div className={cn("text-2xl font-mono font-bold", stat.color)}>{stat.value}</div>
-                      <div className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest">{stat.label}</div>
+                    {
+                      label: "Critical Gaps",
+                      value: auditData.results.filter((r) => r.status === "CRITICAL").length,
+                      color: "text-red-500",
+                    },
+                    {
+                      label: "Foundational Checks",
+                      value: auditData.results.filter((r) => r.status === "SECURE").length,
+                      color: "text-primary",
+                    },
+                    {
+                      label: "Minor Risks",
+                      value: auditData.results.filter((r) => r.status === "WARNING").length,
+                      color: "text-yellow-500",
+                    },
+                    {
+                      label: "Data Points",
+                      value: Object.keys(auditData.rawHeaders).length,
+                      color: "text-blue-500",
+                    },
+                  ].map((stat) => (
+                    <div
+                      key={stat.label}
+                      className="p-4 bg-primary/5 border border-primary/10 rounded-sm"
+                    >
+                      <div className={cn("text-2xl font-mono font-bold", stat.color)}>
+                        {stat.value}
+                      </div>
+                      <div className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest">
+                        {stat.label}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -223,50 +259,70 @@ export function HeaderAnalyzer() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: idx * 0.1 }}
                   >
-                    <Card className={cn(
-                      "bg-black/40 border transition-colors",
-                      res.status === "SECURE" ? "border-primary/20" : 
-                      res.status === "CRITICAL" ? "border-red-900/50 hover:border-red-500/50" : 
-                      "border-yellow-900/50 hover:border-yellow-500/50"
-                    )}>
+                    <Card
+                      className={cn(
+                        "bg-black/40 border transition-colors",
+                        res.status === "SECURE"
+                          ? "border-primary/20"
+                          : res.status === "CRITICAL"
+                            ? "border-red-900/50 hover:border-red-500/50"
+                            : "border-yellow-900/50 hover:border-yellow-500/50",
+                      )}
+                    >
                       <div className="p-5">
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                           <div className="space-y-1">
                             <div className="flex items-center gap-2">
-                              {res.status === "SECURE" ? <ShieldCheck className="w-4 h-4 text-primary" /> : <ShieldAlert className="w-4 h-4 text-red-500" />}
-                              <span className="font-mono font-bold text-foreground">{res.header}</span>
-                              <Badge className={cn(
-                                "text-[9px] uppercase font-mono px-1.5 py-0",
-                                res.status === "SECURE" ? "bg-primary/20 text-primary border-primary/40" : 
-                                res.status === "CRITICAL" ? "bg-red-500/20 text-red-500 border-red-500/40" : 
-                                "bg-yellow-500/20 text-yellow-500 border-yellow-500/40"
-                              )}>
+                              {res.status === "SECURE" ? (
+                                <ShieldCheck className="w-4 h-4 text-primary" />
+                              ) : (
+                                <ShieldAlert className="w-4 h-4 text-red-500" />
+                              )}
+                              <span className="font-mono font-bold text-foreground">
+                                {res.header}
+                              </span>
+                              <Badge
+                                className={cn(
+                                  "text-[9px] uppercase font-mono px-1.5 py-0",
+                                  res.status === "SECURE"
+                                    ? "bg-primary/20 text-primary border-primary/40"
+                                    : res.status === "CRITICAL"
+                                      ? "bg-red-500/20 text-red-500 border-red-500/40"
+                                      : "bg-yellow-500/20 text-yellow-500 border-yellow-500/40",
+                                )}
+                              >
                                 {res.status}
                               </Badge>
                             </div>
-                            <p className="text-xs text-muted-foreground font-mono">{res.description}</p>
+                            <p className="text-xs text-muted-foreground font-mono">
+                              {res.description}
+                            </p>
                           </div>
                           <div className="min-w-[200px] text-right">
-                             {res.value ? (
-                               <div className="text-[10px] font-mono text-foreground/40 bg-white/5 p-2 rounded truncate max-w-xs ml-auto">
-                                 {res.value}
-                               </div>
-                             ) : (
-                               <div className="text-[10px] font-mono text-red-500/60 uppercase">
-                                 Value Not Detected
-                               </div>
-                             )}
+                            {res.value ? (
+                              <div className="text-[10px] font-mono text-foreground/40 bg-white/5 p-2 rounded truncate max-w-xs ml-auto">
+                                {res.value}
+                              </div>
+                            ) : (
+                              <div className="text-[10px] font-mono text-red-500/60 uppercase">
+                                Value Not Detected
+                              </div>
+                            )}
                           </div>
                         </div>
                         {res.recommendation && (
                           <div className="mt-4 p-3 bg-red-500/5 border-l-2 border-red-500 rounded-sm">
-                             <div className="flex items-start gap-2">
-                               <AlertTriangle className="w-3 h-3 text-red-500 mt-0.5 shrink-0" />
-                               <div className="space-y-1">
-                                 <p className="text-[10px] font-mono font-bold text-red-500 uppercase">Remediation Step:</p>
-                                 <p className="text-[11px] font-mono text-red-200/60">{res.recommendation}</p>
-                               </div>
-                             </div>
+                            <div className="flex items-start gap-2">
+                              <AlertTriangle className="w-3 h-3 text-red-500 mt-0.5 shrink-0" />
+                              <div className="space-y-1">
+                                <p className="text-[10px] font-mono font-bold text-red-500 uppercase">
+                                  Remediation Step:
+                                </p>
+                                <p className="text-[11px] font-mono text-red-200/60">
+                                  {res.recommendation}
+                                </p>
+                              </div>
+                            </div>
                           </div>
                         )}
                       </div>
@@ -283,7 +339,9 @@ export function HeaderAnalyzer() {
                 Dump Raw Headers
               </summary>
               <div className="mt-4 p-6 bg-black rounded-lg border border-white/5 font-mono text-xs overflow-x-auto text-primary/80 leading-relaxed">
-                <div className="mb-4 text-foreground/40 italic">// Detected HTTP/1.1 or HTTP/2 response headers</div>
+                <div className="mb-4 text-foreground/40 italic">
+                  // Detected HTTP/1.1 or HTTP/2 response headers
+                </div>
                 {Object.entries(auditData.rawHeaders).map(([k, v]) => (
                   <div key={k} className="flex gap-4 mb-1">
                     <span className="text-primary font-bold min-w-[150px]">{k}:</span>
@@ -295,48 +353,59 @@ export function HeaderAnalyzer() {
 
             {/* CTA Panel */}
             <Card className="border-primary/20 bg-linear-to-br from-primary/10 to-transparent p-8 text-center space-y-6">
-               <div className="max-w-xl mx-auto space-y-2">
-                  <h3 className="text-xl font-bold font-mono uppercase italic tracking-tighter">Automate Design Integrity</h3>
-                  <p className="text-sm text-muted-foreground font-mono">Continuous security auditing for your production stack. Get alerted the microsecond a header is misconfigured or a CSP is breached.</p>
-               </div>
-               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button 
-                    className="px-10 h-12 uppercase font-mono font-bold tracking-tighter group"
-                    onClick={() => {
-                      router.push(`/dashboard/monitors/new?url=${encodeURIComponent(url)}&type=HTTP`);
-                    }}
-                  >
-                     Full Infrastructure Scan
-                     <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="px-10 h-12 uppercase font-mono font-bold tracking-tighter"
-                    onClick={() => {
-                      const report = `PULSEGUARD SECURITY AUDIT REPORT\n` +
-                                     `TARGET: ${auditData.url}\n` +
-                                     `GRADE: ${auditData.grade} (${auditData.score}%)\n` +
-                                     `DATE: ${new Date().toISOString()}\n\n` +
-                                     `DETAILED RESULTS:\n` +
-                                     auditData.results.map(r => 
-                                       `[${r.status}] ${r.header}\n - ${r.description}\n - Value: ${r.value || 'N/A'}\n${r.recommendation ? ` - Recommended: ${r.recommendation}\n` : ''}`
-                                     ).join('\n') +
-                                     `\n\nRAW HEADERS:\n` +
-                                     Object.entries(auditData.rawHeaders).map(([k, v]) => `${k}: ${v}`).join('\n');
-                      
-                      const blob = new Blob([report], { type: "text/plain" });
-                      const link = document.createElement("a");
-                      link.href = URL.createObjectURL(blob);
-                      link.download = `security-audit-${auditData.url.replace(/[^a-z0-9]/gi, '-')}.txt`;
-                      document.body.appendChild(link);
-                      link.click();
-                      document.body.removeChild(link);
-                      toast.success("Security report downloaded");
-                    }}
-                  >
-                     Download Text Evidence
-                  </Button>
-               </div>
+              <div className="max-w-xl mx-auto space-y-2">
+                <h3 className="text-xl font-bold font-mono uppercase italic tracking-tighter">
+                  Automate Design Integrity
+                </h3>
+                <p className="text-sm text-muted-foreground font-mono">
+                  Continuous security auditing for your production stack. Get alerted the
+                  microsecond a header is misconfigured or a CSP is breached.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button
+                  className="px-10 h-12 uppercase font-mono font-bold tracking-tighter group"
+                  onClick={() => {
+                    router.push(`/dashboard/monitors/new?url=${encodeURIComponent(url)}&type=HTTP`);
+                  }}
+                >
+                  Full Infrastructure Scan
+                  <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Button>
+                <Button
+                  variant="outline"
+                  className="px-10 h-12 uppercase font-mono font-bold tracking-tighter"
+                  onClick={() => {
+                    const report =
+                      `PULSEGUARD SECURITY AUDIT REPORT\n` +
+                      `TARGET: ${auditData.url}\n` +
+                      `GRADE: ${auditData.grade} (${auditData.score}%)\n` +
+                      `DATE: ${new Date().toISOString()}\n\n` +
+                      `DETAILED RESULTS:\n` +
+                      auditData.results
+                        .map(
+                          (r) =>
+                            `[${r.status}] ${r.header}\n - ${r.description}\n - Value: ${r.value || "N/A"}\n${r.recommendation ? ` - Recommended: ${r.recommendation}\n` : ""}`,
+                        )
+                        .join("\n") +
+                      `\n\nRAW HEADERS:\n` +
+                      Object.entries(auditData.rawHeaders)
+                        .map(([k, v]) => `${k}: ${v}`)
+                        .join("\n");
+
+                    const blob = new Blob([report], { type: "text/plain" });
+                    const link = document.createElement("a");
+                    link.href = URL.createObjectURL(blob);
+                    link.download = `security-audit-${auditData.url.replace(/[^a-z0-9]/gi, "-")}.txt`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    toast.success("Security report downloaded");
+                  }}
+                >
+                  Download Text Evidence
+                </Button>
+              </div>
             </Card>
           </motion.div>
         )}

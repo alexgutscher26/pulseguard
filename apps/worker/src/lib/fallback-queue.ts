@@ -41,9 +41,9 @@ export class FallbackQueue {
     try {
       // RPOP with count is supported by Upstash Redis
       const results = await this.redis.rpop<string | string[]>(this.QUEUE_KEY, count);
-      
+
       if (!results) return [];
-      
+
       const items = Array.isArray(results) ? results : [results];
       return items.map((r) => JSON.parse(r));
     } catch (err) {

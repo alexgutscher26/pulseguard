@@ -78,7 +78,7 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
               TARGET_ENDPOINT: <code className="text-foreground">{monitor.url}</code>
             </p>
             {monitor.runbookUrl && (
-              <a 
+              <a
                 href={monitor.runbookUrl}
                 target="_blank"
                 rel="noreferrer"

@@ -14,7 +14,7 @@ This section contains **3 rules** focused on advanced patterns.
 ## Rule 8.1: Initialize App Once, Not Per Mount
 
 **Impact:** LOW-MEDIUM  
-**Tags:** initialization, useEffect, app-startup, side-effects  
+**Tags:** initialization, useEffect, app-startup, side-effects
 
 ## Initialize App Once, Not Per Mount
 
@@ -57,7 +57,7 @@ Reference: [Initializing the application](https://react.dev/learn/you-might-not-
 ## Rule 8.2: Store Event Handlers in Refs
 
 **Impact:** LOW  
-**Tags:** advanced, hooks, refs, event-handlers, optimization  
+**Tags:** advanced, hooks, refs, event-handlers, optimization
 
 ## Store Event Handlers in Refs
 
@@ -113,7 +113,7 @@ function useWindowEvent(event: string, handler: (e) => void) {
 ## Rule 8.3: useEffectEvent for Stable Callback Refs
 
 **Impact:** LOW  
-**Tags:** advanced, hooks, useEffectEvent, refs, optimization  
+**Tags:** advanced, hooks, useEffectEvent, refs, optimization
 
 ## useEffectEvent for Stable Callback Refs
 
@@ -147,4 +147,3 @@ function SearchInput({ onSearch }: { onSearch: (q: string) => void }) {
   }, [query])
 }
 ```
-

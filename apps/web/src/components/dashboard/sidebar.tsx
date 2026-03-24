@@ -45,7 +45,7 @@ export function Sidebar() {
           {navigation.map((item) => {
             const isActive = pathname === item.href;
             return (
-               <Link
+              <Link
                 key={item.name}
                 href={item.href as any}
                 className={cn(
@@ -63,9 +63,7 @@ export function Sidebar() {
                       : "text-muted-foreground group-hover:text-primary transition-colors",
                   )}
                 />
-                <p>
-                  {item.name}
-                </p>
+                <p>{item.name}</p>
               </Link>
             );
           })}
@@ -74,11 +72,12 @@ export function Sidebar() {
 
       {/* Bottom CTA */}
       <div className="relative z-10 p-5 rounded-2xl border border-white/10 bg-[#0A0A0A] flex flex-col gap-3">
-        <p className="text-sm text-foreground font-semibold">
-          Upgrade your plan
-        </p>
+        <p className="text-sm text-foreground font-semibold">Upgrade your plan</p>
         <p className="text-xs text-muted-foreground">Unlock multi-region verification.</p>
-        <Link href="/dashboard/settings?tab=billing" className="w-full mt-2 bg-primary text-primary-foreground text-xs font-semibold rounded-full hover:bg-primary/90 transition-all py-2.5 flex items-center justify-center">
+        <Link
+          href="/dashboard/settings?tab=billing"
+          className="w-full mt-2 bg-primary text-primary-foreground text-xs font-semibold rounded-full hover:bg-primary/90 transition-all py-2.5 flex items-center justify-center"
+        >
           Upgrade Now
         </Link>
       </div>

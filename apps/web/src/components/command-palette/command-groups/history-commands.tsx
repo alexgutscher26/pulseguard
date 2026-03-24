@@ -23,12 +23,10 @@ export function HistoryCommands() {
             // But cmdk handles clicks on items.
             // For history, we want to simulate a selection of the corresponding item in other groups
             // OR we just provide a shortcut back to it.
-            
             // To make this work seamlessly, the history item should just be a shortcut.
             // However, cmdk's item registry is internal.
-            
             // Simpler approach: History items just show the intent.
-            // For now, we'll just let the user see them. 
+            // For now, we'll just let the user see them.
             // Better: We track the PATH or ACTION in recentCommands.
           }}
           badge={{ label: "Recent", variant: "default" }}

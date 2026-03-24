@@ -28,7 +28,7 @@ interface SubscriptionResult {
 export async function initiateSubscription(
   statusPageId: string,
   email: string,
-  monitorIds: string[]
+  monitorIds: string[],
 ): Promise<SubscriptionResult> {
   try {
     // Validate email format
@@ -113,7 +113,7 @@ export async function initiateSubscription(
 
     // Send verification email
     const verifyUrl = `${getBaseUrl()}/subscribe/${verificationToken}`;
-    
+
     await sendSubscriptionConfirm(email, {
       pageTitle: statusPage.title,
       verifyUrl,
@@ -145,12 +145,20 @@ export async function verifySubscription(token: string): Promise<SubscriptionRes
     });
 
     if (!subscriptionToken) {
-      return { success: false, message: "Invalid or expired verification link.", error: "INVALID_TOKEN" };
+      return {
+        success: false,
+        message: "Invalid or expired verification link.",
+        error: "INVALID_TOKEN",
+      };
     }
 
     // Check if token is expired
     if (subscriptionToken.expiresAt < new Date()) {
-      return { success: false, message: "Verification link has expired. Please subscribe again.", error: "TOKEN_EXPIRED" };
+      return {
+        success: false,
+        message: "Verification link has expired. Please subscribe again.",
+        error: "TOKEN_EXPIRED",
+      };
     }
 
     // Check if already used
@@ -222,7 +230,7 @@ export async function updateSubscriptionPreferences(
     notifyIncidents?: boolean;
     notifyMaintenance?: boolean;
     monitorIds?: string[];
-  }
+  },
 ): Promise<SubscriptionResult> {
   try {
     const subscriber = await prisma.statusPageSubscriber.findUnique({
@@ -236,9 +244,7 @@ export async function updateSubscriptionPreferences(
 
     // Validate monitor IDs if provided
     const validMonitorIds = subscriber.statusPage.monitors.map((m) => m.monitorId);
-    const selectedMonitorIds = preferences.monitorIds?.filter((id) =>
-      validMonitorIds.includes(id)
-    );
+    const selectedMonitorIds = preferences.monitorIds?.filter((id) => validMonitorIds.includes(id));
 
     // Update preferences
     await prisma.statusPageSubscriber.update({
@@ -307,10 +313,7 @@ export async function unsubscribe(manageToken: string): Promise<SubscriptionResu
 /**
  * Get all verified subscribers for a status page (for sending notifications)
  */
-export async function getVerifiedSubscribers(
-  statusPageId: string,
-  monitorId?: string
-) {
+export async function getVerifiedSubscribers(statusPageId: string, monitorId?: string) {
   try {
     const whereClause: any = {
       statusPageId,

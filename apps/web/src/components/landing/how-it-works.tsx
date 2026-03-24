@@ -5,19 +5,22 @@ export default function HowItWorks() {
     {
       number: "1",
       title: "Connect",
-      description: "Import your API endpoints, servers, and domain details. PulseGuard maps your infrastructure instantly.",
+      description:
+        "Import your API endpoints, servers, and domain details. PulseGuard maps your infrastructure instantly.",
       icon: <Upload className="size-8 text-primary" strokeWidth={1.5} />,
     },
     {
       number: "2",
       title: "Monitor",
-      description: "Our global mesh checks responses and latencies from multiple regions to establish an operational baseline automatically.",
+      description:
+        "Our global mesh checks responses and latencies from multiple regions to establish an operational baseline automatically.",
       icon: <Radar className="size-8 text-primary" strokeWidth={1.5} />,
     },
     {
       number: "3",
       title: "Alert",
-      description: "Get instant notifications across Slack, SMS, and tools. The system handles 24/7 surveillance while you focus on growth.",
+      description:
+        "Get instant notifications across Slack, SMS, and tools. The system handles 24/7 surveillance while you focus on growth.",
       icon: <BellRing className="size-8 text-primary" strokeWidth={1.5} />,
     },
   ];
@@ -43,10 +46,8 @@ export default function HowItWorks() {
                 </div>
                 {step.icon}
               </div>
-              
-              <h3 className="text-xl font-bold text-foreground mb-3">
-                {step.title}
-              </h3>
+
+              <h3 className="text-xl font-bold text-foreground mb-3">{step.title}</h3>
               <p className="text-muted-foreground text-sm leading-relaxed max-w-[280px]">
                 {step.description}
               </p>

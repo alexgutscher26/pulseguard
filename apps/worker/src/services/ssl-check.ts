@@ -1,4 +1,3 @@
-
 export interface SSLResult {
   domain: string;
   grade: "A+" | "A" | "B" | "C" | "F";
@@ -22,7 +21,7 @@ export interface SSLResult {
 
 /**
  * Check SSL Health for a target domain.
- * 
+ *
  * In a Cloudflare Worker, we have limited access to the raw TLS handshake.
  * We rely on:
  * 1. Connectivity check (fetch)
@@ -32,7 +31,7 @@ export interface SSLResult {
 export async function checkSSL(targetUrl: string): Promise<SSLResult> {
   const url = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
   const domain = new URL(url).hostname;
-  
+
   let response: Response | null = null;
   let apiResponse: Response | null = null;
   let errorReason = "";
@@ -60,71 +59,75 @@ export async function checkSSL(targetUrl: string): Promise<SSLResult> {
       headers: { "User-Agent": "PulseGuard-Worker/1.0" },
       signal: AbortSignal.timeout(10000),
     });
-    
+
     if (apiResponse.ok) {
-       const json: any = await apiResponse.json();
-       if (json.status === "OK" && json.certificate) {
-          certData = json.certificate;
-       }
+      const json: any = await apiResponse.json();
+      if (json.status === "OK" && json.certificate) {
+        certData = json.certificate;
+      }
     }
-  } catch(e) {
+  } catch (e) {
     console.error(`[SSL Check] Failed to reach external API for ${domain}:`, e);
   }
 
   // 3. Fallback logic if API fails
   if (!certData) {
-     if (!response) {
-        const isExpired = errorReason.includes("expired") || errorReason.includes("CERT_DATE_INVALID");
-        return {
-          domain,
-          grade: "F",
-          status: isExpired ? "EXPIRED" : "INVALID",
-          issuer: "Unknown",
-          validFrom: new Date().toISOString(),
-          validTo: new Date().toISOString(),
-          daysRemaining: 0,
-          hasHSTS: false,
-          protocol: "Unknown",
-          cipher: "Unknown",
-          chain: [],
-          details: { tls13: false, tls12: false, tls11: false, tls10: false, pfs: false }
-        };
-     } else {
-        // Site is reachable but 3rd party API failed. Return best-effort safe estimation.
-        return {
-          domain,
-          grade: hasHSTS && isLongHSTS ? "A+" : hasHSTS ? "A" : "B",
-          status: "VALID",
-          issuer: "Unknown (API Failed)",
-          validFrom: new Date().toISOString(),
-          validTo: new Date(Date.now() + 86400000 * 30).toISOString(),
-          daysRemaining: 30, // Mocked fallback
-          hasHSTS,
-          protocol: "Unknown",
-          cipher: "Unknown",
-          chain: [],
-          details: { tls13: true, tls12: true, tls11: false, tls10: false, pfs: true }
-        };
-     }
+    if (!response) {
+      const isExpired =
+        errorReason.includes("expired") || errorReason.includes("CERT_DATE_INVALID");
+      return {
+        domain,
+        grade: "F",
+        status: isExpired ? "EXPIRED" : "INVALID",
+        issuer: "Unknown",
+        validFrom: new Date().toISOString(),
+        validTo: new Date().toISOString(),
+        daysRemaining: 0,
+        hasHSTS: false,
+        protocol: "Unknown",
+        cipher: "Unknown",
+        chain: [],
+        details: { tls13: false, tls12: false, tls11: false, tls10: false, pfs: false },
+      };
+    } else {
+      // Site is reachable but 3rd party API failed. Return best-effort safe estimation.
+      return {
+        domain,
+        grade: hasHSTS && isLongHSTS ? "A+" : hasHSTS ? "A" : "B",
+        status: "VALID",
+        issuer: "Unknown (API Failed)",
+        validFrom: new Date().toISOString(),
+        validTo: new Date(Date.now() + 86400000 * 30).toISOString(),
+        daysRemaining: 30, // Mocked fallback
+        hasHSTS,
+        protocol: "Unknown",
+        cipher: "Unknown",
+        chain: [],
+        details: { tls13: true, tls12: true, tls11: false, tls10: false, pfs: true },
+      };
+    }
   }
 
   // 4. Parse real cert data
   const validFrom = new Date(certData.valid_from);
   const validTo = new Date(certData.valid_to);
   const now = new Date();
-  const daysRemaining = Math.max(0, Math.floor((validTo.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
-  
+  const daysRemaining = Math.max(
+    0,
+    Math.floor((validTo.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)),
+  );
+
   let status: "VALID" | "EXPIRED" | "INVALID" = "VALID";
   if (now > validTo) status = "EXPIRED";
   else if (now < validFrom) status = "INVALID";
 
   let grade: "A+" | "A" | "B" | "C" | "F" = "B";
   if (status !== "VALID") {
-      grade = "F";
+    grade = "F";
   } else if (hasHSTS && isLongHSTS) {
-      grade = "A+";
+    grade = "A+";
   } else if (hasHSTS) {
-      grade = "A";
+    grade = "A";
   }
 
   const issuerName = certData.issuer?.CN || certData.issuer?.O || "Unknown";
@@ -140,16 +143,14 @@ export async function checkSSL(targetUrl: string): Promise<SSLResult> {
     hasHSTS,
     protocol: certData.protocol || "TLS",
     cipher: certData.cipher || "Unknown",
-    chain: [
-        { subject: domain, issuer: issuerName, valid: status === "VALID" }
-    ],
+    chain: [{ subject: domain, issuer: issuerName, valid: status === "VALID" }],
     details: {
-        tls13: certData.protocol === "TLSv1.3",
-        tls12: certData.protocol === "TLSv1.2",
-        tls11: false,
-        tls10: false,
-        // Estimation for PFS since cipher dictates it
-        pfs: !!certData.cipher?.includes("GCM") || !!certData.cipher?.includes("CHACHA") || true
-    }
+      tls13: certData.protocol === "TLSv1.3",
+      tls12: certData.protocol === "TLSv1.2",
+      tls11: false,
+      tls10: false,
+      // Estimation for PFS since cipher dictates it
+      pfs: !!certData.cipher?.includes("GCM") || !!certData.cipher?.includes("CHACHA") || true,
+    },
   };
 }

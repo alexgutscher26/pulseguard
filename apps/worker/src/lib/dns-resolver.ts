@@ -8,11 +8,11 @@ export async function resolveDNS(hostname: string): Promise<string | null> {
     const response = await fetch(url, {
       headers: { accept: "application/dns-json" },
     });
-    
+
     if (!response.ok) return null;
-    
+
     const data: any = await response.json();
-    
+
     // Status 0 means NOERROR
     if (data.Status === 0 && data.Answer && data.Answer.length > 0) {
       // Find the first A record (Type 1)

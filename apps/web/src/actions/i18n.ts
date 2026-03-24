@@ -25,7 +25,7 @@ export async function getLanguageSettings(statusPageId: string): Promise<I18nSet
 export async function updateLanguageSettings(
   statusPageId: string,
   locale: string,
-  data: { enabled?: boolean; overrides?: Record<string, string> }
+  data: { enabled?: boolean; overrides?: Record<string, string> },
 ) {
   await prisma.statusPageI18n.upsert({
     where: {

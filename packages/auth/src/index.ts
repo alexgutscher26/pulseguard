@@ -64,7 +64,7 @@ export const auth = betterAuth({
     "mybettertapp://",
     "exp://",
     "https://pulseguard-org.vercel.app/",
-    "https://pulseguard.com"
+    "https://pulseguard.com",
   ],
   emailAndPassword: {
     enabled: true,

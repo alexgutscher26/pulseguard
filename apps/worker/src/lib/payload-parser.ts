@@ -1,6 +1,6 @@
 /**
  * PulseGuard Sentinel: High-Performance Payload Validation Engine
- * 
+ *
  * Provides a WASM-identical API for validating response bodies and status codes
  * against complex expectations (regex, JSON paths).
  */
@@ -19,15 +19,15 @@ export interface Expectation {
 
 /**
  * Validates a monitor check result using deep inspection.
- * 
- * Performance Note: This JS implementation matches the WASM/Rust API defined in 
- * packages/wasm-parser. It uses a high-density switch-map for status code validation 
+ *
+ * Performance Note: This JS implementation matches the WASM/Rust API defined in
+ * packages/wasm-parser. It uses a high-density switch-map for status code validation
  * and cached regex engines for body inspections.
  */
 export function validatePayload(
   body: string,
   statusCode: number,
-  expectationsStr: string | null | undefined
+  expectationsStr: string | null | undefined,
 ): ValidationResult {
   if (!expectationsStr) {
     return { success: true };

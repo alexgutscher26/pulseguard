@@ -8,11 +8,7 @@ interface ConfirmationDialogProps {
   onCancel: () => void;
 }
 
-export function ConfirmationDialog({
-  message,
-  onConfirm,
-  onCancel,
-}: ConfirmationDialogProps) {
+export function ConfirmationDialog({ message, onConfirm, onCancel }: ConfirmationDialogProps) {
   return (
     <div className="p-4 border-t border-border bg-muted/50">
       <p className="text-sm text-foreground mb-3">{message}</p>

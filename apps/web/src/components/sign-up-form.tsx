@@ -91,7 +91,7 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
         </div>
 
         <div>
-           <form.Field name="email">
+          <form.Field name="email">
             {(field) => (
               <div className="space-y-2">
                 <Label
@@ -121,7 +121,7 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
         </div>
 
         <div>
-           <form.Field name="password">
+          <form.Field name="password">
             {(field) => (
               <div className="space-y-2">
                 <Label
@@ -166,12 +166,12 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
       <div className="text-center pt-2">
         <span className="text-sm text-muted-foreground font-medium">Already have an account? </span>
         <Button
-           variant="link"
-           onClick={onSwitchToSignIn}
-           className="text-primary hover:text-primary/90 font-semibold text-sm h-auto p-0"
-         >
-           Log in
-         </Button>
+          variant="link"
+          onClick={onSwitchToSignIn}
+          className="text-primary hover:text-primary/90 font-semibold text-sm h-auto p-0"
+        >
+          Log in
+        </Button>
       </div>
     </div>
   );

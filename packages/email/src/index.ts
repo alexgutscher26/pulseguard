@@ -252,7 +252,6 @@ export async function sendStatusUpdate(
 
 export { MonthlyReportDocument } from "./templates/MonthlyReport";
 
-
 export async function renderMonthlyReportToBuffer(stats: any): Promise<Buffer> {
   const stream = await renderToStream(React.createElement(MonthlyReportDocument, { stats }) as any);
   const chunks: Uint8Array[] = [];
@@ -294,4 +293,3 @@ export async function sendMonthlyReport(
     return { error: error instanceof Error ? error.message : "Unknown error" };
   }
 }
-

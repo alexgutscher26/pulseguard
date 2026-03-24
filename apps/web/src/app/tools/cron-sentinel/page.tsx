@@ -4,10 +4,12 @@ import { CronSentinel } from "./builder";
 
 export const metadata: Metadata = {
   title: "Cron Expression Generator & Debugger | PulseGuard",
-  description: "Free cron expression generator and debugger for infrastructure monitoring. Visualize schedules, humanize cron strings, and plan next executions.",
+  description:
+    "Free cron expression generator and debugger for infrastructure monitoring. Visualize schedules, humanize cron strings, and plan next executions.",
   openGraph: {
     title: "Cron Expression Generator & Debugger",
-    description: "Visualize and plan your monitoring schedule with PulseGuard's cron pulse sentinel.",
+    description:
+      "Visualize and plan your monitoring schedule with PulseGuard's cron pulse sentinel.",
     type: "website",
   },
 };
@@ -23,8 +25,8 @@ export default function CronSentinelPage() {
               Cron Pulse Sentinel
             </h1>
             <p className="text-muted-foreground text-lg md:text-xl max-w-3xl mx-auto font-mono">
-              [CALIBRATING EXECUTION ENGINE... ]
-              Generate, debug, and visualize monitoring schedules with sub-second precision.
+              [CALIBRATING EXECUTION ENGINE... ] Generate, debug, and visualize monitoring schedules
+              with sub-second precision.
             </p>
           </div>
 

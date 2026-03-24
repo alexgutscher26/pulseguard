@@ -139,7 +139,9 @@ Build failed at step: TypeScript compilation
 
 ### Details
 ```
+
 error TS2345: Argument of type 'string' is not assignable...
+
 ```
 
 ### Resolution
@@ -156,12 +158,12 @@ Run `/deploy rollback` if needed.
 
 ## Platform Support
 
-| Platform | Command | Notes |
-|----------|---------|-------|
-| Vercel | `vercel --prod` | Auto-detected for Next.js |
-| Railway | `railway up` | Needs Railway CLI |
-| Fly.io | `fly deploy` | Needs flyctl |
-| Docker | `docker compose up -d` | For self-hosted |
+| Platform | Command                | Notes                     |
+| -------- | ---------------------- | ------------------------- |
+| Vercel   | `vercel --prod`        | Auto-detected for Next.js |
+| Railway  | `railway up`           | Needs Railway CLI         |
+| Fly.io   | `fly deploy`           | Needs flyctl              |
+| Docker   | `docker compose up -d` | For self-hosted           |
 
 ---
 

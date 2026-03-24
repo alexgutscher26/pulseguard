@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
-  typedRoutes: true, 
+  typedRoutes: true,
   reactCompiler: true,
   typescript: {
     ignoreBuildErrors: true,

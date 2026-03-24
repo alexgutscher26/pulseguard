@@ -7,7 +7,6 @@ export default function LandingFooter() {
       <div className="max-w-6xl mx-auto px-6 md:px-12 flex flex-col gap-24">
         {/* Main Grid Content */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-12 md:gap-8">
-          
           {/* Col 1 - Brand */}
           <div className="flex flex-col gap-4 md:col-span-2">
             <div className="flex items-center gap-2">
@@ -25,13 +24,22 @@ export default function LandingFooter() {
               PRODUCT
             </span>
             <div className="flex flex-col gap-3">
-              <Link href="#features" className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit">
+              <Link
+                href="#features"
+                className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit"
+              >
                 Features
               </Link>
-              <Link href="#pricing" className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit">
+              <Link
+                href="#pricing"
+                className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit"
+              >
                 Pricing
               </Link>
-              <Link href="#" className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit">
+              <Link
+                href="#"
+                className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit"
+              >
                 API Docs
               </Link>
             </div>
@@ -43,13 +51,22 @@ export default function LandingFooter() {
               COMPANY
             </span>
             <div className="flex flex-col gap-3">
-              <Link href="#" className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit">
+              <Link
+                href="#"
+                className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit"
+              >
                 About
               </Link>
-              <Link href="#" className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit">
+              <Link
+                href="#"
+                className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit"
+              >
                 Blog
               </Link>
-              <Link href="#" className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit">
+              <Link
+                href="#"
+                className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit"
+              >
                 Careers
               </Link>
             </div>
@@ -61,10 +78,16 @@ export default function LandingFooter() {
               LEGAL
             </span>
             <div className="flex flex-col gap-3">
-              <Link href="#" className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit">
+              <Link
+                href="#"
+                className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit"
+              >
                 Privacy
               </Link>
-              <Link href="#" className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit">
+              <Link
+                href="#"
+                className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit"
+              >
                 Terms
               </Link>
             </div>
@@ -85,7 +108,6 @@ export default function LandingFooter() {
             </Link>
           </div>
         </div>
-
       </div>
     </footer>
   );

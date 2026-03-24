@@ -42,37 +42,31 @@ export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
   useEffect(() => {
     if (lastEvent) {
       console.log("Received Live Event:", lastEvent);
-      queryClient.setQueryData(
-        ["monitor", initialMonitor.id],
-        (oldData: any) => {
-          if (!oldData) return oldData;
+      queryClient.setQueryData(["monitor", initialMonitor.id], (oldData: any) => {
+        if (!oldData) return oldData;
 
-          const newEvent = {
-            id: `live-${Date.now()}`,
-            status: lastEvent.status,
-            latency: lastEvent.latency,
-            timestamp: new Date(lastEvent.timestamp).toISOString(),
-            errorReason: null,
-            region: lastEvent.region,
-          };
+        const newEvent = {
+          id: `live-${Date.now()}`,
+          status: lastEvent.status,
+          latency: lastEvent.latency,
+          timestamp: new Date(lastEvent.timestamp).toISOString(),
+          errorReason: null,
+          region: lastEvent.region,
+        };
 
-          return {
-            ...oldData,
-            status: lastEvent.status,
-            events: [newEvent, ...(oldData.events || [])],
-          };
-        },
-      );
+        return {
+          ...oldData,
+          status: lastEvent.status,
+          events: [newEvent, ...(oldData.events || [])],
+        };
+      });
 
       // Optional: Toast for major status changes
       if (monitor?.status !== lastEvent.status) {
-        toast(
-          lastEvent.status === "UP" ? "Monitor Recovered" : "Monitor Down",
-          {
-            description: `Latency: ${lastEvent.latency}ms`,
-            action: { label: "Dismiss", onClick: () => {} },
-          },
-        );
+        toast(lastEvent.status === "UP" ? "Monitor Recovered" : "Monitor Down", {
+          description: `Latency: ${lastEvent.latency}ms`,
+          action: { label: "Dismiss", onClick: () => {} },
+        });
       }
     }
   }, [lastEvent, initialMonitor.id, queryClient, monitor?.status]);
@@ -96,9 +90,7 @@ export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
 
     const checkStale = async () => {
       const lastEvent = monitor.events?.[0];
-      const lastCheckTime = lastEvent
-        ? new Date(lastEvent.timestamp).getTime()
-        : 0;
+      const lastCheckTime = lastEvent ? new Date(lastEvent.timestamp).getTime() : 0;
       const now = Date.now();
       const diffSeconds = (now - lastCheckTime) / 1000;
 
@@ -197,10 +189,7 @@ export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
         >
           <MonitorStatsGrid monitor={monitor} />
 
-          <ResponseTimeChart
-            data={latencyHistory || []}
-            isLoading={isLoadingLatency}
-          />
+          <ResponseTimeChart data={latencyHistory || []} isLoading={isLoadingLatency} />
 
           <MonitorCharts monitor={monitor} />
 
@@ -235,12 +224,10 @@ export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
         >
           <div className="flex flex-col items-center justify-center p-12 border border-zinc-800 rounded-lg bg-zinc-950/30 border-dashed">
             <Settings className="size-12 text-zinc-700 mb-4" />
-            <h3 className="text-lg font-medium text-foreground mb-2">
-              Monitor Settings
-            </h3>
+            <h3 className="text-lg font-medium text-foreground mb-2">Monitor Settings</h3>
             <p className="text-muted-foreground mb-6 text-center max-w-sm">
-              Configure monitor frequency, timeouts, alert thresholds, and
-              notifications in the dedicated settings page.
+              Configure monitor frequency, timeouts, alert thresholds, and notifications in the
+              dedicated settings page.
             </p>
             <Link
               href={`/dashboard/monitors/${monitor.id}/settings`}

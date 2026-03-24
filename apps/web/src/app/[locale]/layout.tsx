@@ -27,9 +27,5 @@ export default async function LocaleLayout({
   // But since we are nested inside the root layout (probably), we might need to handle this.
   // For now, let's just provide the context.
 
-  return (
-    <NextIntlClientProvider messages={messages}>
-      {children}
-    </NextIntlClientProvider>
-  );
+  return <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>;
 }

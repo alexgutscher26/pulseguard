@@ -60,9 +60,7 @@ export function SlaReportView({ monitorId }: { monitorId: string }) {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-medium text-foreground">
-          SLA & Uptime Report
-        </h3>
+        <h3 className="text-lg font-medium text-foreground">SLA & Uptime Report</h3>
         <Select value={range} onValueChange={(v: "7d" | "30d") => setRange(v)}>
           <SelectTrigger className="w-[180px] bg-zinc-950/50 border-zinc-800">
             <SelectValue placeholder="Select period" />
@@ -133,24 +131,18 @@ export function SlaReportView({ monitorId }: { monitorId: string }) {
           )}
         >
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              SLA Status
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">SLA Status</CardTitle>
           </CardHeader>
           <CardContent className="flex items-center gap-2">
             {isSlaMet ? (
               <>
                 <CheckCircle2 className="size-5 text-emerald-500" />
-                <span className="text-lg font-bold text-emerald-500 font-mono">
-                  PASS
-                </span>
+                <span className="text-lg font-bold text-emerald-500 font-mono">PASS</span>
               </>
             ) : (
               <>
                 <AlertTriangle className="size-5 text-red-500" />
-                <span className="text-lg font-bold text-red-500 font-mono">
-                  FAIL
-                </span>
+                <span className="text-lg font-bold text-red-500 font-mono">FAIL</span>
               </>
             )}
           </CardContent>
@@ -167,10 +159,7 @@ export function SlaReportView({ monitorId }: { monitorId: string }) {
         <CardContent>
           <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={dailyBreakdown}
-                margin={{ top: 10, right: 30, left: 0, bottom: 5 }}
-              >
+              <BarChart data={dailyBreakdown} margin={{ top: 10, right: 30, left: 0, bottom: 5 }}>
                 <XAxis
                   dataKey="date"
                   tickFormatter={(val) => format(new Date(val as string | number), "MMM d")}
@@ -197,17 +186,13 @@ export function SlaReportView({ monitorId }: { monitorId: string }) {
                       const dateStr = format(new Date(label as string | number), "MMM d, yyyy");
                       return (
                         <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-3 shadow-xl backdrop-blur-md">
-                          <p className="mb-2 text-sm font-medium text-zinc-400">
-                            {dateStr}
-                          </p>
+                          <p className="mb-2 text-sm font-medium text-zinc-400">{dateStr}</p>
                           <div className="space-y-1">
                             <div className="flex items-center gap-2">
                               <div
                                 className={cn(
                                   "size-2 rounded-full",
-                                  data.uptimePct >= 99.9
-                                    ? "bg-emerald-500"
-                                    : "bg-red-500",
+                                  data.uptimePct >= 99.9 ? "bg-emerald-500" : "bg-red-500",
                                 )}
                               />
                               <p className="text-sm font-bold text-zinc-100 font-mono">
@@ -218,8 +203,7 @@ export function SlaReportView({ monitorId }: { monitorId: string }) {
                               Downtime: {data.downDuration} min
                             </p>
                             <p className="text-xs text-zinc-500">
-                              Checks: {data.checksTotal} (Down:{" "}
-                              {data.checksDown})
+                              Checks: {data.checksTotal} (Down: {data.checksDown})
                             </p>
                           </div>
                         </div>
@@ -228,12 +212,7 @@ export function SlaReportView({ monitorId }: { monitorId: string }) {
                     return null;
                   }}
                 />
-                <ReferenceLine
-                  y={99.9}
-                  stroke="#10b981"
-                  strokeDasharray="3 3"
-                  opacity={0.5}
-                />
+                <ReferenceLine y={99.9} stroke="#10b981" strokeDasharray="3 3" opacity={0.5} />
                 <Bar dataKey="uptimePct" radius={[4, 4, 0, 0]}>
                   {dailyBreakdown.map((entry, index) => (
                     <Cell

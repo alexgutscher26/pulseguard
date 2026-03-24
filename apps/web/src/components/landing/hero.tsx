@@ -8,7 +8,6 @@ export default function Hero() {
       <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/20 rounded-full blur-[120px] translate-x-1/3 -translate-y-1/4 pointer-events-none"></div>
 
       <div className="max-w-4xl mx-auto px-6 md:px-12 relative z-20 w-full text-center flex flex-col items-center">
-        
         {/* Header */}
         <h1 className="text-5xl md:text-[5rem] font-bold tracking-tight leading-none mb-8">
           <span className="text-primary">System critical uptime</span>
@@ -18,14 +17,16 @@ export default function Hero() {
 
         {/* Subheading */}
         <p className="text-muted-foreground text-lg md:text-xl leading-relaxed max-w-2xl mb-12">
-          Pulseguard transforms your monitoring with surveillance protocols that verify connections, ensure 50ms latency checks, and alert instantly. 24/7 monitoring that scales with your infrastructure.
+          Pulseguard transforms your monitoring with surveillance protocols that verify connections,
+          ensure 50ms latency checks, and alert instantly. 24/7 monitoring that scales with your
+          infrastructure.
         </p>
 
         {/* Input Bar */}
         <div className="relative w-full max-w-2xl mb-12 rounded-2xl bg-[#0a0a0a] border border-white/5 shadow-[0_0_40px_-10px_rgba(57,255,20,0.15)] transition-shadow hover:shadow-[0_0_60px_-15px_rgba(57,255,20,0.2)]">
           <div className="flex items-center px-4 py-3">
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder="https://api.your-app.com |"
               className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground/50 border-none outline-none text-lg min-w-0"
             />

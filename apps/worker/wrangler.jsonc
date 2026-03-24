@@ -8,32 +8,32 @@
     "UPSTASH_REDIS_REST_URL": "",
     "UPSTASH_REDIS_REST_TOKEN": "",
     "SHARD_ID": 0,
-    "TOTAL_SHARDS": 1
+    "TOTAL_SHARDS": 1,
   },
   "triggers": {
-    "crons": ["* * * * *", "*/5 * * * *", "0 * * * *", "0 0 * * *", "0 9 1 * *"]
+    "crons": ["* * * * *", "*/5 * * * *", "0 * * * *", "0 0 * * *", "0 9 1 * *"],
   },
   "durable_objects": {
     "bindings": [
       {
         "name": "LATENCY_AGGREGATOR",
-        "class_name": "LatencyAggregator"
+        "class_name": "LatencyAggregator",
       },
       {
         "name": "MONITOR_CHANNEL",
-        "class_name": "MonitorChannel"
-      }
-    ]
+        "class_name": "MonitorChannel",
+      },
+    ],
   },
   "migrations": [
     {
       "tag": "v1",
-      "new_sqlite_classes": ["LatencyAggregator"]
+      "new_sqlite_classes": ["LatencyAggregator"],
     },
     {
       "tag": "v2",
-      "new_sqlite_classes": ["MonitorChannel"]
-    }
+      "new_sqlite_classes": ["MonitorChannel"],
+    },
   ],
   "observability": {
     "enabled": true,
@@ -42,20 +42,20 @@
       "enabled": true,
       "head_sampling_rate": 1,
       "persist": true,
-      "invocation_logs": true
+      "invocation_logs": true,
     },
     "traces": {
       "enabled": false,
       "persist": true,
-      "head_sampling_rate": 1
-    }
+      "head_sampling_rate": 1,
+    },
   },
   "kv_namespaces": [
     {
       "binding": "DNS_CACHE",
-      "id": "dns-cache-kv"
-    }
-  ]
+      "id": "dns-cache-kv",
+    },
+  ],
   // Queues are dormant for Free Plan (Upgrade required)
   // "queues": {
   //   "producers": [

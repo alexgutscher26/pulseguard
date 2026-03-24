@@ -57,19 +57,13 @@ export function DashboardStats({ stats: data }: { stats: DashboardStatsData }) {
           className="bg-[#0a0a0a] border border-white/5 rounded-2xl p-6 hover:border-white/10 transition-all duration-300"
         >
           <div className="flex items-center justify-between mb-4">
-            <p className="text-muted-foreground text-sm font-medium">
-              {stat.name}
-            </p>
+            <p className="text-muted-foreground text-sm font-medium">{stat.name}</p>
             <div className="p-2 bg-white/5 rounded-xl">
               <stat.icon className={`size-4 ${stat.iconColor}`} />
             </div>
           </div>
-          <p className="text-3xl font-bold text-foreground tracking-tight">
-            {stat.value}
-          </p>
-          <p
-            className={`text-xs font-medium mt-2 flex items-center gap-1 ${stat.changeColor}`}
-          >
+          <p className="text-3xl font-bold text-foreground tracking-tight">{stat.value}</p>
+          <p className={`text-xs font-medium mt-2 flex items-center gap-1 ${stat.changeColor}`}>
             {stat.trend === "up" && <TrendingUp className="size-3" />}
             {stat.trend === "down" && <TrendingDown className="size-3" />}
             {stat.change}

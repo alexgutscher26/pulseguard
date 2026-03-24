@@ -90,7 +90,7 @@ export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () 
         </div>
 
         <div>
-           <form.Field name="password">
+          <form.Field name="password">
             {(field) => (
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -100,7 +100,12 @@ export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () 
                   >
                     Password
                   </Label>
-                  <Button variant="link" className="text-xs h-auto p-0 font-medium text-muted-foreground hover:text-foreground">Forgot password?</Button>
+                  <Button
+                    variant="link"
+                    className="text-xs h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
+                  >
+                    Forgot password?
+                  </Button>
                 </div>
                 <Input
                   id={field.name}

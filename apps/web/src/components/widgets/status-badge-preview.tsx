@@ -19,10 +19,7 @@ const STATUS_COLORS = {
   major: "#ef4444",
 };
 
-export function StatusBadgePreview({
-  theme,
-  badgeText,
-}: StatusBadgePreviewProps) {
+export function StatusBadgePreview({ theme, badgeText }: StatusBadgePreviewProps) {
   return (
     <div className="rounded-sm border border-primary/20 bg-card/40 p-6 backdrop-blur-sm">
       <h3 className="text-sm font-bold font-mono uppercase tracking-tight text-foreground mb-4">
@@ -50,10 +47,7 @@ export function StatusBadgePreview({
               className="w-2.5 h-2.5 rounded-full animate-pulse"
               style={{ backgroundColor: STATUS_COLORS.operational }}
             />
-            <span
-              className="text-sm font-medium"
-              style={{ color: theme.textColor }}
-            >
+            <span className="text-sm font-medium" style={{ color: theme.textColor }}>
               {badgeText.operational}
             </span>
           </div>
@@ -76,10 +70,7 @@ export function StatusBadgePreview({
               className="w-2.5 h-2.5 rounded-full animate-pulse"
               style={{ backgroundColor: STATUS_COLORS.partial }}
             />
-            <span
-              className="text-sm font-medium"
-              style={{ color: theme.textColor }}
-            >
+            <span className="text-sm font-medium" style={{ color: theme.textColor }}>
               {badgeText.partial}
             </span>
           </div>
@@ -102,10 +93,7 @@ export function StatusBadgePreview({
               className="w-2.5 h-2.5 rounded-full animate-pulse"
               style={{ backgroundColor: STATUS_COLORS.major }}
             />
-            <span
-              className="text-sm font-medium"
-              style={{ color: theme.textColor }}
-            >
+            <span className="text-sm font-medium" style={{ color: theme.textColor }}>
               {badgeText.major}
             </span>
           </div>
@@ -132,10 +120,7 @@ export function StatusBadgePreview({
                 className="w-2.5 h-2.5 rounded-full animate-pulse"
                 style={{ backgroundColor: STATUS_COLORS.operational }}
               />
-              <span
-                className="text-sm font-medium"
-                style={{ color: theme.textColor }}
-              >
+              <span className="text-sm font-medium" style={{ color: theme.textColor }}>
                 {badgeText.operational}
               </span>
             </div>
@@ -155,10 +140,7 @@ export function StatusBadgePreview({
                 className="w-2.5 h-2.5 rounded-full animate-pulse"
                 style={{ backgroundColor: STATUS_COLORS.operational }}
               />
-              <span
-                className="text-sm font-medium"
-                style={{ color: theme.textColor }}
-              >
+              <span className="text-sm font-medium" style={{ color: theme.textColor }}>
                 {badgeText.operational}
               </span>
             </div>

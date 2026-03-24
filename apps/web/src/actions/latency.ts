@@ -2,8 +2,6 @@
 
 import prisma from "@pulseguard/db";
 
-
-
 export type LatencyDataPoint = {
   timestamp: string; // ISO string for client serialization
   avgLatency: number;
@@ -13,8 +11,8 @@ export type LatencyDataPoint = {
 };
 
 export async function getMonitorLatencyHistory(
-  monitorId: string, 
-  timeRange: '24h' = '24h'
+  monitorId: string,
+  timeRange: "24h" = "24h",
 ): Promise<LatencyDataPoint[]> {
   const now = new Date();
   const past24h = new Date(now.getTime() - 24 * 60 * 60 * 1000);
@@ -25,7 +23,7 @@ export async function getMonitorLatencyHistory(
       timestamp: {
         gte: past24h,
       },
-      granularity: "ONE_MINUTE" // Assuming we want high-res data, fallback to HOURLY if volume is huge
+      granularity: "ONE_MINUTE", // Assuming we want high-res data, fallback to HOURLY if volume is huge
     },
     orderBy: {
       timestamp: "asc",

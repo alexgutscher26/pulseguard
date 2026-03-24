@@ -1,15 +1,6 @@
 import React from "react";
 import { render } from "@react-email/render";
-import {
-  Html,
-  Head,
-  Body,
-  Container,
-  Section,
-  Text,
-  Link,
-  Hr,
-} from "@react-email/components";
+import { Html, Head, Body, Container, Section, Text, Link, Hr } from "@react-email/components";
 import { emailTheme } from "../styles/theme";
 
 export interface StatusUpdateData {
@@ -30,11 +21,9 @@ export interface StatusUpdateData {
 }
 
 export function StatusUpdate({ data }: { data: StatusUpdateData }) {
-  const isResolved =
-    data.incidentStatus === "RESOLVED" || data.incidentStatus === "COMPLETED";
+  const isResolved = data.incidentStatus === "RESOLVED" || data.incidentStatus === "COMPLETED";
   const isMaintenance =
-    data.incidentStatus === "SCHEDULED" ||
-    data.incidentStatus === "IN_PROGRESS";
+    data.incidentStatus === "SCHEDULED" || data.incidentStatus === "IN_PROGRESS";
 
   let statusColor: string = emailTheme.colors.destructive;
   let statusIcon = "⚠️";
@@ -228,8 +217,6 @@ export function StatusUpdate({ data }: { data: StatusUpdateData }) {
   );
 }
 
-export async function renderStatusUpdate(
-  data: StatusUpdateData,
-): Promise<string> {
+export async function renderStatusUpdate(data: StatusUpdateData): Promise<string> {
   return await render(<StatusUpdate data={data} />);
 }

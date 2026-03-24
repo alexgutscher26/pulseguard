@@ -1,4 +1,3 @@
-
 import { Pool } from "pg";
 import { config } from "dotenv";
 config({ path: "../../.env" });
@@ -10,14 +9,17 @@ console.log("Testing connection to:", url?.replace(/:[^:]*@/, ":***@"));
 const cleanUrl = url?.replace(/[?&]sslmode=[^&]+/, "");
 
 const pool = new Pool({
-    connectionString: cleanUrl,
-    ssl: { rejectUnauthorized: false }
+  connectionString: cleanUrl,
+  ssl: { rejectUnauthorized: false },
 });
 
-pool.connect().then(client => {
+pool
+  .connect()
+  .then((client) => {
     console.log("Connected successfully via pg");
     client.release();
     pool.end();
-}).catch(e => {
+  })
+  .catch((e) => {
     console.error("PG Connection Error:", e);
-});
+  });

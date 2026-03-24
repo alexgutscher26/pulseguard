@@ -23,7 +23,7 @@ export class MonitorChannel extends DurableObject {
       // Security Validation: Deep Authentication (Session + Ownership or Public Status Page)
       // is completely enforced at the Worker Gateway (`src/index.ts`) before forwarding to this DO.
       // Since DOs are not internet-routable directly, this is strictly secure.
-      
+
       const pair = new WebSocketPair();
       const [client, server] = Object.values(pair);
 
@@ -43,7 +43,7 @@ export class MonitorChannel extends DurableObject {
       try {
         const payload = await request.json();
         const activeConnections = this.broadcast(payload);
-        
+
         return new Response(JSON.stringify({ success: true, receivers: activeConnections }), {
           headers: { "Content-Type": "application/json" },
         });
@@ -57,27 +57,27 @@ export class MonitorChannel extends DurableObject {
 
   // =========================================================================
   // DO HIBERNATION API METHODS
-  // Defining these on the prototype instructs Cloudflare to automatically 
+  // Defining these on the prototype instructs Cloudflare to automatically
   // hibernate this DO and wake it ONLY when events fire, drastically reducing CPU time.
   // =========================================================================
 
   webSocketMessage() {
-     // No incoming client messages are expected for the read-only dashboard feed.
+    // No incoming client messages are expected for the read-only dashboard feed.
   }
 
   webSocketClose() {
-     // Cloudflare natively drops `_ws` from `this.ctx.getWebSockets()` automatically!
-     // No manual array `.delete(ws)` logic needed.
+    // Cloudflare natively drops `_ws` from `this.ctx.getWebSockets()` automatically!
+    // No manual array `.delete(ws)` logic needed.
   }
 
   webSocketError() {
-     // Automatically handled by the underlying DO container.
+    // Automatically handled by the underlying DO container.
   }
 
   private broadcast(data: any): number {
     const message = JSON.stringify(data);
     const sockets = this.ctx.getWebSockets();
-    
+
     sockets.forEach((ws) => {
       try {
         ws.send(message);

@@ -10,7 +10,7 @@ export class DatabaseCircuitBreaker {
   private redis: Redis;
   private STATE_KEY = "pulseguard:cb:tripped_at";
   private FAIL_COUNT_KEY = "pulseguard:cb:fail_count";
-  
+
   // Threshold of failures before tripping (e.g., 5 failures in a short window)
   private THRESHOLD = 5;
   // How long to stay in OPEN state before trying HALF_OPEN recovery (seconds)
@@ -30,12 +30,12 @@ export class DatabaseCircuitBreaker {
     try {
       const trippedAt = await this.redis.get<number>(this.STATE_KEY);
       if (!trippedAt) return "CLOSED";
-      
+
       const elapsed = (Date.now() - trippedAt) / 1000;
       if (elapsed > this.RECOVERY_TIME) {
         return "HALF_OPEN";
       }
-      
+
       return "OPEN";
     } catch (err) {
       // If Redis is down, we must still allow work. Default to CLOSED.
@@ -50,11 +50,11 @@ export class DatabaseCircuitBreaker {
   async recordFailure(error: any) {
     // Only trip on connection-related errors
     const errorMsg = error?.message || "";
-    const isConnError = 
+    const isConnError =
       errorMsg.includes("MaxClientsInSessionMode") || // Neon/Supabase pooler limit
       errorMsg.includes("connection pool exhausted") ||
       errorMsg.includes("ECONNREFUSED");
-      
+
     if (!isConnError) return;
 
     try {
@@ -62,7 +62,7 @@ export class DatabaseCircuitBreaker {
       if (fails === 1) {
         await this.redis.expire(this.FAIL_COUNT_KEY, 300); // Reset count after 5 mins
       }
-      
+
       if (fails >= this.THRESHOLD) {
         await this.trip();
       }
@@ -91,7 +91,9 @@ export class DatabaseCircuitBreaker {
   private async trip() {
     try {
       await this.redis.set(this.STATE_KEY, Date.now());
-      console.warn(`[CircuitBreaker] CRITICAL: DB connection pool exhausted. Tripping circuit for ${this.RECOVERY_TIME}s.`);
+      console.warn(
+        `[CircuitBreaker] CRITICAL: DB connection pool exhausted. Tripping circuit for ${this.RECOVERY_TIME}s.`,
+      );
     } catch (err) {
       console.error(`[CircuitBreaker] Failed to trip circuit in Redis:`, err);
     }

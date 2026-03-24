@@ -1,4 +1,3 @@
-
 export async function auditDNS(domain: string) {
   const records: Record<string, any> = {
     MX: [],
@@ -9,7 +8,7 @@ export async function auditDNS(domain: string) {
   const fetchDns = async (type: string, name: string) => {
     try {
       const res = await fetch(`https://cloudflare-dns.com/dns-query?name=${name}&type=${type}`, {
-        headers: { "accept": "application/dns-json" }
+        headers: { accept: "application/dns-json" },
       });
       return await res.json();
     } catch {
@@ -44,18 +43,18 @@ export async function auditDNS(domain: string) {
   // MX Audit
   if (records.MX.length > 0) {
     score += 30;
-    results.push({ 
-      key: "MX", 
-      status: "SECURE", 
-      value: records.MX.join(", "), 
-      desc: "Mail exchange records configured. Domain can receive mail." 
+    results.push({
+      key: "MX",
+      status: "SECURE",
+      value: records.MX.join(", "),
+      desc: "Mail exchange records configured. Domain can receive mail.",
     });
   } else {
-    results.push({ 
-      key: "MX", 
-      status: "CRITICAL", 
-      value: "None", 
-      desc: "No MX records found. This domain cannot receive email." 
+    results.push({
+      key: "MX",
+      status: "CRITICAL",
+      value: "None",
+      desc: "No MX records found. This domain cannot receive email.",
     });
   }
 
@@ -63,18 +62,20 @@ export async function auditDNS(domain: string) {
   if (records.SPF) {
     score += 35;
     const isStrict = records.SPF.includes("-all");
-    results.push({ 
-      key: "SPF", 
-      status: isStrict ? "SECURE" : "WARNING", 
-      value: records.SPF, 
-      desc: isStrict ? "SPF policy is strict (-all)." : "SPF policy is soft (~all). Consider hardening to -all." 
+    results.push({
+      key: "SPF",
+      status: isStrict ? "SECURE" : "WARNING",
+      value: records.SPF,
+      desc: isStrict
+        ? "SPF policy is strict (-all)."
+        : "SPF policy is soft (~all). Consider hardening to -all.",
     });
   } else {
-    results.push({ 
-      key: "SPF", 
-      status: "CRITICAL", 
-      value: "Missing", 
-      desc: "SPF record missing. Spammers can easily spoof your domain." 
+    results.push({
+      key: "SPF",
+      status: "CRITICAL",
+      value: "Missing",
+      desc: "SPF record missing. Spammers can easily spoof your domain.",
     });
   }
 
@@ -82,18 +83,20 @@ export async function auditDNS(domain: string) {
   if (records.DMARC) {
     score += 35;
     const isEnforced = records.DMARC.includes("p=reject") || records.DMARC.includes("p=quarantine");
-    results.push({ 
-      key: "DMARC", 
-      status: isEnforced ? "SECURE" : "WARNING", 
-      value: records.DMARC, 
-      desc: isEnforced ? "DMARC policy is enforced (reject/quarantine)." : "DMARC policy is set to none. It provides visibility but no protection." 
+    results.push({
+      key: "DMARC",
+      status: isEnforced ? "SECURE" : "WARNING",
+      value: records.DMARC,
+      desc: isEnforced
+        ? "DMARC policy is enforced (reject/quarantine)."
+        : "DMARC policy is set to none. It provides visibility but no protection.",
     });
   } else {
-    results.push({ 
-      key: "DMARC", 
-      status: "CRITICAL", 
-      value: "Missing", 
-      desc: "DMARC record missing. Essential for modern email deliverability." 
+    results.push({
+      key: "DMARC",
+      status: "CRITICAL",
+      value: "Missing",
+      desc: "DMARC record missing. Essential for modern email deliverability.",
     });
   }
 
@@ -105,6 +108,6 @@ export async function auditDNS(domain: string) {
     score,
     grade,
     results,
-    raw: records
+    raw: records,
   };
 }

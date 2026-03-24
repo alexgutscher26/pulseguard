@@ -13,7 +13,7 @@ export class PercentileCalculator {
 
   getPercentile(p: number): number {
     if (this.values.length === 0) return 0;
-    
+
     if (!this.sorted) {
       this.values.sort((a, b) => a - b);
       this.sorted = true;
@@ -30,7 +30,7 @@ export class PercentileCalculator {
 
     const lowerValue = this.values[lower];
     const upperValue = this.values[upper];
-    
+
     if (lowerValue === undefined || upperValue === undefined) {
       return 0;
     }

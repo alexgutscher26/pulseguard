@@ -3,10 +3,7 @@ import { auth } from "@pulseguard/auth";
 import prisma from "@pulseguard/db";
 import { headers } from "next/headers";
 
-export async function GET(
-  req: NextRequest,
-  context: { params: Promise<{ id: string }> }
-) {
+export async function GET(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await context.params;
 
@@ -40,7 +37,9 @@ export async function GET(
     const endParam = searchParams.get("end");
     const format = searchParams.get("format") || "csv";
 
-    const startDate = startParam ? new Date(startParam) : new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // Default 7 days
+    const startDate = startParam
+      ? new Date(startParam)
+      : new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // Default 7 days
     const endDate = endParam ? new Date(endParam) : new Date();
 
     // 4. Fetch Data (In batches or standard fetch - for simplicity we fetch all for now, but limit to 50k)
@@ -79,14 +78,16 @@ export async function GET(
 
     // CSV Format
     const csvHeader = "Timestamp,Status,Latency (ms),Region,Error Details\n";
-    const csvRows = events.map((e) => {
-      const ts = e.timestamp.toISOString();
-      const status = e.status;
-      const latency = e.latency;
-      const region = e.region || "Global";
-      const error = e.errorReason ? `"${e.errorReason.replace(/"/g, '""')}"` : "";
-      return `${ts},${status},${latency},${region},${error}`;
-    }).join("\n");
+    const csvRows = events
+      .map((e) => {
+        const ts = e.timestamp.toISOString();
+        const status = e.status;
+        const latency = e.latency;
+        const region = e.region || "Global";
+        const error = e.errorReason ? `"${e.errorReason.replace(/"/g, '""')}"` : "";
+        return `${ts},${status},${latency},${region},${error}`;
+      })
+      .join("\n");
 
     const csvContent = csvHeader + csvRows;
 
@@ -96,7 +97,6 @@ export async function GET(
         "Content-Disposition": `attachment; filename="monitor-${monitor.name.replace(/[^a-z0-9]/gi, "-").toLowerCase()}-${startDate.toISOString().split("T")[0]}.csv"`,
       },
     });
-
   } catch (error) {
     console.error("Export error:", error);
     return new NextResponse("Internal Server Error", { status: 500 });

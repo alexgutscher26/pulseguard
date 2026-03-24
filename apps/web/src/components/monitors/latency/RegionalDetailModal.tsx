@@ -1,12 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, TrendingUp, Clock, CheckCircle } from "lucide-react";
@@ -26,9 +21,7 @@ export function RegionalDetailModal({
   onClose,
   regionData,
 }: RegionalDetailModalProps) {
-  const [detailedData, setDetailedData] = useState<RegionData | null>(
-    regionData || null,
-  );
+  const [detailedData, setDetailedData] = useState<RegionData | null>(regionData || null);
   const [isLoading, setIsLoading] = useState(!regionData);
 
   useEffect(() => {
@@ -43,9 +36,7 @@ export function RegionalDetailModal({
         );
         if (!res.ok) throw new Error("Failed to fetch regional data");
         const data = (await res.json()) as any;
-        const regionInfo = data.regions.find(
-          (r: RegionData) => r.region === region,
-        );
+        const regionInfo = data.regions.find((r: RegionData) => r.region === region);
         setDetailedData(regionInfo || null);
       } catch (error) {
         console.error("[RegionalDetailModal] Error:", error);
@@ -111,22 +102,10 @@ export function RegionalDetailModal({
                   label="P50 (Median)"
                   value={`${Math.round(currentData?.absolute.p50 || 0)}ms`}
                 />
-                <MetricCard
-                  label="P95"
-                  value={`${Math.round(currentData?.absolute.p95 || 0)}ms`}
-                />
-                <MetricCard
-                  label="P99"
-                  value={`${Math.round(currentData?.absolute.p99 || 0)}ms`}
-                />
-                <MetricCard
-                  label="Min"
-                  value={`${Math.round(currentData?.absolute.min || 0)}ms`}
-                />
-                <MetricCard
-                  label="Max"
-                  value={`${Math.round(currentData?.absolute.max || 0)}ms`}
-                />
+                <MetricCard label="P95" value={`${Math.round(currentData?.absolute.p95 || 0)}ms`} />
+                <MetricCard label="P99" value={`${Math.round(currentData?.absolute.p99 || 0)}ms`} />
+                <MetricCard label="Min" value={`${Math.round(currentData?.absolute.min || 0)}ms`} />
+                <MetricCard label="Max" value={`${Math.round(currentData?.absolute.max || 0)}ms`} />
               </div>
             </div>
 
@@ -155,8 +134,7 @@ export function RegionalDetailModal({
                   </div>
                   {currentData?.relative && (
                     <div className="text-xs text-muted-foreground mt-1 font-mono">
-                      Current: {currentData.relative.vsBaseline.toFixed(2)}x
-                      baseline
+                      Current: {currentData.relative.vsBaseline.toFixed(2)}x baseline
                     </div>
                   )}
                 </div>
@@ -182,18 +160,13 @@ export function RegionalDetailModal({
                 <div className="space-y-1 text-sm relative z-10">
                   <div>
                     <span className="text-muted-foreground">Status:</span>{" "}
-                    <Badge
-                      variant="outline"
-                      className="border-destructive/30 text-destructive"
-                    >
+                    <Badge variant="outline" className="border-destructive/30 text-destructive">
                       {detailedData.currentIncident?.status}
                     </Badge>
                   </div>
                   <div>
                     <span className="text-muted-foreground">Started:</span>{" "}
-                    {new Date(
-                      detailedData.currentIncident?.startedAt || "",
-                    ).toLocaleString()}
+                    {new Date(detailedData.currentIncident?.startedAt || "").toLocaleString()}
                   </div>
                   <div>
                     <span className="text-muted-foreground">Duration:</span>{" "}

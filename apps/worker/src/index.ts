@@ -2,6 +2,9 @@ import { getPrisma } from "@pulseguard/db";
 import type { ExecutionContext } from "@cloudflare/workers-types";
 export { LatencyAggregator } from "./durable-objects/latency-aggregator";
 export { MonitorChannel } from "./durable-objects/MonitorChannel";
+import { ProxyMesh, QuantumAnomalyDetector } from "./services/mesh";
+
+const mesh = new ProxyMesh();
 
 export interface Env {
   CHECK_QUEUE: Queue<any>;
@@ -38,33 +41,35 @@ async function performCheck(
   }
 
   const urlStr = monitor.url;
-  
+
   // 1. Initial Standard Check
   let result = await performInternalRequest(monitor, urlStr);
 
   // 2. DNS Fallback Layer: If DNS failed but we have a cached IP
   if (result.status === "DOWN" && result.errorReason === "DNS_ERROR" && env?.DNS_CACHE) {
-     try {
-       const urlObj = new URL(urlStr);
-       const hostname = urlObj.hostname;
-       
-       const cachedValue = await env.DNS_CACHE.get(`dns:${hostname}`);
-       if (cachedValue) {
-          const { ip } = JSON.parse(cachedValue) as { ip: string };
-          console.warn(`[DNSFallback] DNS failed for ${hostname}. Retrying via IP ${ip}...`);
-          
-          // Re-map the hostname to IP for the fetch
-          const ipUrl = urlStr.replace(hostname, ip);
-          const fallbackResult = await performInternalRequest(monitor, ipUrl, { Host: hostname });
-          
-          if (fallbackResult.status === "UP") {
-             console.log(`[DNSFallback] SUCCESS: ${hostname} reached via direct IP. False positive avoided.`);
-             return fallbackResult;
-          }
-       }
-     } catch (err) {
-        // Fallback-of-fallback failure
-     }
+    try {
+      const urlObj = new URL(urlStr);
+      const hostname = urlObj.hostname;
+
+      const cachedValue = await env.DNS_CACHE.get(`dns:${hostname}`);
+      if (cachedValue) {
+        const { ip } = JSON.parse(cachedValue) as { ip: string };
+        console.warn(`[DNSFallback] DNS failed for ${hostname}. Retrying via IP ${ip}...`);
+
+        // Re-map the hostname to IP for the fetch
+        const ipUrl = urlStr.replace(hostname, ip);
+        const fallbackResult = await performInternalRequest(monitor, ipUrl, { Host: hostname });
+
+        if (fallbackResult.status === "UP") {
+          console.log(
+            `[DNSFallback] SUCCESS: ${hostname} reached via direct IP. False positive avoided.`,
+          );
+          return fallbackResult;
+        }
+      }
+    } catch (err) {
+      // Fallback-of-fallback failure
+    }
   }
 
   return result;
@@ -76,7 +81,7 @@ async function performCheck(
 async function performInternalRequest(
   monitor: any,
   urlStr: string,
-  extraHeaders?: Record<string, string>
+  extraHeaders?: Record<string, string>,
 ): Promise<{ status: "UP" | "DOWN" | "MAINTENANCE"; latency: number; errorReason?: string }> {
   const start = Date.now();
   let currentStatus: "UP" | "DOWN" | "MAINTENANCE" = "DOWN";
@@ -84,7 +89,6 @@ async function performInternalRequest(
   let errorReason: string | undefined = undefined;
 
   try {
-
     if (urlStr.startsWith("http://") || urlStr.startsWith("https://")) {
       const response = await fetch(urlStr, {
         method: "GET",
@@ -97,7 +101,7 @@ async function performInternalRequest(
       });
       currentStatus = response.ok ? "UP" : "DOWN";
 
-      const body = await response.text(); 
+      const body = await response.text();
       currentStatus = response.ok ? "UP" : "DOWN";
 
       // 3. Deep Payload/Status Validation (WASM/Rust Optimized Bridge)
@@ -155,7 +159,11 @@ async function performInternalRequest(
       (err.message && err.message.includes("Connection refused"))
     ) {
       errorReason = "CONNECTION_REFUSED";
-    } else if (err.code === "ENOTFOUND" || (err.message && err.message.includes("getaddrinfo")) || (err.message && err.message.includes("dns"))) {
+    } else if (
+      err.code === "ENOTFOUND" ||
+      (err.message && err.message.includes("getaddrinfo")) ||
+      (err.message && err.message.includes("dns"))
+    ) {
       errorReason = "DNS_ERROR";
     } else {
       errorReason = "UNKNOWN_ERROR";
@@ -192,7 +200,7 @@ async function recordLatencyToAggregator(
   monitorId: string,
   region: string,
   latency: number,
-  success: boolean
+  success: boolean,
 ): Promise<void> {
   if (!env?.LATENCY_AGGREGATOR) return;
 
@@ -202,17 +210,19 @@ async function recordLatencyToAggregator(
     const stub = env.LATENCY_AGGREGATOR.get(id);
 
     // Send latency data
-    await stub.fetch("https://latency-aggregator/record", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        monitorId,
-        region,
-        latency,
-        success,
-        timestamp: Date.now(),
-      }),
-    }).then(r => r.text()); // Consume body
+    await stub
+      .fetch("https://latency-aggregator/record", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          monitorId,
+          region,
+          latency,
+          success,
+          timestamp: Date.now(),
+        }),
+      })
+      .then((r) => r.text()); // Consume body
   } catch (error) {
     console.error(`[LatencyAggregator] Failed to record latency:`, error);
   }
@@ -222,7 +232,7 @@ async function recordLatencyToAggregator(
 async function broadcastLiveEvent(
   env: Env | undefined,
   monitorId: string,
-  event: any
+  event: any,
 ): Promise<void> {
   if (!env?.MONITOR_CHANNEL) return;
 
@@ -233,38 +243,46 @@ async function broadcastLiveEvent(
 
     // Send broadcast
     // We don't await this to avoid blocking the check loop (fire and forget)
-    stub.fetch("https://monitor-channel/broadcast", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(event),
-    }).then(r => r.text()).catch(err => console.error(`[MonitorChannel] Broadcast failed:`, err));
-
+    stub
+      .fetch("https://monitor-channel/broadcast", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(event),
+      })
+      .then((r) => r.text())
+      .catch((err) => console.error(`[MonitorChannel] Broadcast failed:`, err));
   } catch (error) {
     console.error(`[MonitorChannel] Failed to setup broadcast:`, error);
   }
 }
 
-
 // Helper: Reusable processing logic with Time-Based Limit
-export async function processBatch(monitors: any[], prisma: any, env: Env): Promise<{ processed: string[]; remaining: any[] }> {
+export async function processBatch(
+  monitors: any[],
+  prisma: any,
+  env: Env,
+): Promise<{ processed: string[]; remaining: any[] }> {
   console.log(`Processing batch of ${monitors.length} monitors...`);
-  
+
   const { FallbackQueue } = await import("./lib/fallback-queue");
   const { DatabaseCircuitBreaker } = await import("./lib/circuit-breaker");
 
   const fallbackQueue = new FallbackQueue(env.UPSTASH_REDIS_REST_URL, env.UPSTASH_REDIS_REST_TOKEN);
-  const circuitBreaker = new DatabaseCircuitBreaker(env.UPSTASH_REDIS_REST_URL, env.UPSTASH_REDIS_REST_TOKEN);
+  const circuitBreaker = new DatabaseCircuitBreaker(
+    env.UPSTASH_REDIS_REST_URL,
+    env.UPSTASH_REDIS_REST_TOKEN,
+  );
 
   const circuitState = await circuitBreaker.getState();
-  
+
   // Dynamic import since we just created it
   const { IncidentService } = await import("./lib/incident-service");
   const incidentService = new IncidentService(prisma);
-  // REMOVED: Wall-time limit check. 
-  // Reason: performance.now() measures wall time (including IO), not CPU time. 
+  // REMOVED: Wall-time limit check.
+  // Reason: performance.now() measures wall time (including IO), not CPU time.
   // Cloudflare Free Plan has 10ms CPU limit but allows longer wall time for IO.
   // Using wall time to limit execution caused premature stops and dropped checks because Queues are not available.
-  
+
   const processedIds: string[] = [];
   const remainingMonitors: any[] = [];
 
@@ -273,36 +291,42 @@ export async function processBatch(monitors: any[], prisma: any, env: Env): Prom
 
     // --- DYNAMIC THRESHOLDING CALCULATION ---
     let effectiveTimeout = monitor.timeout || 10;
+    let capturedLatencies: number[] | undefined;
+
     if (monitor.dynamicThresholding) {
       try {
         const lastEvents = await prisma.monitorEvent.findMany({
           where: { monitorId: monitor.id, status: "UP" },
           orderBy: { timestamp: "desc" },
           take: 50, // Get recent events to compute p95
-          select: { latency: true }
+          select: { latency: true },
         });
-        
+
         if (lastEvents.length >= 10) {
+          const latencies = lastEvents.map((e: any) => e.latency);
+          capturedLatencies = latencies;
           // Sort ascending to find p95
-          const sorted = lastEvents.map((e: any) => e.latency).sort((a: number, b: number) => a - b);
+          const sorted = [...latencies].sort((a: number, b: number) => a - b);
           const p95Index = Math.floor(sorted.length * 0.95);
           const p95Latency = sorted[p95Index];
-          
+
           // Calc dynamic (p95 + 30% buffer, convert ms to seconds)
           let calcTimeout = (p95Latency * 1.3) / 1000;
-          
+
           // Enforce bounds min 2, max 30
           if (calcTimeout < 2) calcTimeout = 2;
           if (calcTimeout > 30) calcTimeout = 30;
-          
+
           effectiveTimeout = calcTimeout;
-          console.log(`[DynamicThreshold] ${monitor.name}: p95=${p95Latency}ms -> New Timeout=${effectiveTimeout.toFixed(2)}s`);
+          console.log(
+            `[DynamicThreshold] ${monitor.name}: p95=${p95Latency}ms -> New Timeout=${effectiveTimeout.toFixed(2)}s`,
+          );
         }
       } catch (calcErr) {
         console.error(`[DynamicThreshold] Failed to calculate for ${monitor.name}:`, calcErr);
       }
     }
-    
+
     // Set the resolved timeout on the monitor object for the checks
     monitor.timeout = effectiveTimeout;
 
@@ -359,7 +383,7 @@ export async function processBatch(monitors: any[], prisma: any, env: Env): Prom
                 monitor.id,
                 regionalResult.region,
                 regionalResult.latency,
-                regionalResult.status === "UP"
+                regionalResult.status === "UP",
               );
 
               // Manage Regional Incidents
@@ -416,113 +440,126 @@ export async function processBatch(monitors: any[], prisma: any, env: Env): Prom
 
           // Base retry from current region
           let retryResult = await performCheck(monitor, env);
-          
+
           // If still DOWN locally and it's an HTTP check, try from an external proxy (Region B)
           if (retryResult.status === "DOWN" && monitor.url.startsWith("http")) {
             try {
-              console.log(`[MultiVector] Local check confirmed DOWN. Attempting proxy check from external network (Region B)...`);
-              const encodedUrl = encodeURIComponent(monitor.url);
-              // Proxying through allorigins acts as a distinct network perspective to prevent false positives
-              const proxyUrl = `https://api.allorigins.win/get?url=${encodedUrl}`;
-              
-              const proxyRes = await fetch(proxyUrl, {
-                method: "GET",
-                signal: AbortSignal.timeout(5000),
-              });
-              
-              if (proxyRes.ok) {
-                 const data: any = await proxyRes.json();
-                 // Check if the proxy successfully reached the target
-                 if (data.status && data.status.http_code >= 200 && data.status.http_code < 400) {
-                    console.log(`[MultiVector] External proxy reported UP! False positive averted for ${monitor.name}.`);
-                    retryResult.status = "UP";
-                    retryResult.errorReason = undefined;
-                    // We keep the initially higher latency to reflect the degraded state realistically
-                 }
+              console.log(
+                `[MultiVector] Local check confirmed DOWN. Attempting fallback via Component 18-1-0 (Proxy Mesh)...`,
+              );
+              const proxyResult = await mesh.component_18_1_0(monitor.url, 5000);
+
+              if (proxyResult.status === "UP") {
+                console.log(
+                  `[MultiVector] Component 18-1-0 reported UP! False positive averted for ${monitor.name}. Mesh Load: OK.`,
+                );
+                retryResult.status = "UP";
+                retryResult.errorReason = undefined;
+                // We keep the initially higher latency to reflect the degraded state realistically
+              } else if (proxyResult.error === "MESH_CONGESTION_FAILSAFE") {
+                console.warn(`[Mesh] Critical IOPS breach. Component 18-1-0 inhibited.`);
               }
             } catch (err) {
-               console.warn(`[MultiVector] External proxy check failed, preserving DOWN state:`, err);
+              console.warn(
+                `[MultiVector] Component 18-1-0 check failed, preserving DOWN state:`,
+                err,
+              );
             }
           }
 
           result = retryResult;
-          console.log(`[MultiVector] Final verification result for ${monitor.name}: ${result.status}`);
+          console.log(
+            `[MultiVector] Final verification result for ${monitor.name}: ${result.status}`,
+          );
         }
       }
 
       const { status: currentStatus, latency, errorReason } = result;
 
+      // --- QUANTUM ANOMALY DETECTION ---
+      if (capturedLatencies) {
+        const anomaly = QuantumAnomalyDetector.detect(latency, capturedLatencies);
+        if (anomaly.isAnomaly) {
+          console.warn(
+            `[Mesh] QUANTUM ANOMALY detected for ${monitor.name}! Z-Score: ${anomaly.score}`,
+          );
+          // In the future, we can trigger high-severity alerts or automated runbooks here
+        }
+      }
+
       // Circuit Breaker Calculation
       let nextCheckTime = new Date(Date.now() + (monitor.interval || 60) * 1000);
-      
+
       if (currentStatus === "DOWN") {
         try {
-           const activeIncident = await incidentService.findActiveIncident(monitor.id);
-           if (activeIncident) {
-             const downtimeDuration = Date.now() - activeIncident.createdAt.getTime();
-             const ONE_HOUR = 60 * 60 * 1000;
-             
-             if (downtimeDuration > ONE_HOUR) {
-               console.log(`[CircuitBreaker] Monitor ${monitor.id} down for >1h. Applying 10m backoff.`);
-               const BACKOFF_INTERVAL = 10 * 60 * 1000; // 600s
-               nextCheckTime = new Date(Date.now() + BACKOFF_INTERVAL);
-             }
-           }
+          const activeIncident = await incidentService.findActiveIncident(monitor.id);
+          if (activeIncident) {
+            const downtimeDuration = Date.now() - activeIncident.createdAt.getTime();
+            const ONE_HOUR = 60 * 60 * 1000;
+
+            if (downtimeDuration > ONE_HOUR) {
+              console.log(
+                `[CircuitBreaker] Monitor ${monitor.id} down for >1h. Applying 10m backoff.`,
+              );
+              const BACKOFF_INTERVAL = 10 * 60 * 1000; // 600s
+              nextCheckTime = new Date(Date.now() + BACKOFF_INTERVAL);
+            }
+          }
         } catch (cbError) {
-           console.error(`[CircuitBreaker] Error checking incident duration:`, cbError);
+          console.error(`[CircuitBreaker] Error checking incident duration:`, cbError);
         }
       }
 
       // --- PERSISTENCE: Save result and update monitor ---
       const persistUpdate = async () => {
-         try {
-            if (circuitState === "OPEN") {
-               throw new Error("CircuitBreaker: OPEN. Avoiding database writes.");
-            }
+        try {
+          if (circuitState === "OPEN") {
+            throw new Error("CircuitBreaker: OPEN. Avoiding database writes.");
+          }
 
-            await prisma.$transaction([
-               prisma.monitorEvent.create({
-                 data: {
-                   monitorId: monitor.id,
-                   status: currentStatus as any,
-                   latency: latency,
-                   errorReason: errorReason,
-                   timestamp: new Date(),
-                 },
-               }),
-               prisma.monitor.update({
-                 where: { id: monitor.id },
-                 data: {
-                   status: currentStatus as any,
-                   lastCheck: new Date(),
-                   nextCheck: nextCheckTime,
-                 },
-               }),
-             ]);
+          await prisma.$transaction([
+            prisma.monitorEvent.create({
+              data: {
+                monitorId: monitor.id,
+                status: currentStatus as any,
+                latency: latency,
+                errorReason: errorReason,
+                timestamp: new Date(),
+              },
+            }),
+            prisma.monitor.update({
+              where: { id: monitor.id },
+              data: {
+                status: currentStatus as any,
+                lastCheck: new Date(),
+                nextCheck: nextCheckTime,
+              },
+            }),
+          ]);
 
-             // Successfully saved - if we were in HALF_OPEN, we can now mark as healthy
-             if (circuitState === "HALF_OPEN") {
-                await circuitBreaker.recordSuccess();
-             }
-         } catch (dbErr: any) {
-            console.error(`[Persistence] Primary DB failure for ${monitor.name}:`, dbErr.message);
+          // Successfully saved - if we were in HALF_OPEN, we can now mark as healthy
+          if (circuitState === "HALF_OPEN") {
+            await circuitBreaker.recordSuccess();
+          }
+        } catch (dbErr: any) {
+          console.error(`[Persistence] Primary DB failure for ${monitor.name}:`, dbErr.message);
 
-            // Record failure to circuit breaker (may trip)
-            await circuitBreaker.recordFailure(dbErr);
+          // Record failure to circuit breaker (may trip)
+          await circuitBreaker.recordFailure(dbErr);
 
-            // Fallback to Redis for the Event (durability)
-            await fallbackQueue.push({
-               monitorId: monitor.id,
-               status: currentStatus,
-               latency: latency,
-               errorReason: errorReason,
-               timestamp: new Date().toISOString(),
-            });
-         }
+          // Fallback to Redis for the Event (durability)
+          await fallbackQueue.push({
+            monitorId: monitor.id,
+            status: currentStatus,
+            latency: latency,
+            errorReason: errorReason,
+            timestamp: new Date().toISOString(),
+          });
+        }
       };
 
       // We usually want to await this to ensure sequential processing in the batch if needed
-      // but in a serverless env, we can fire-and-forget IF we wrap it in waitUntil, 
+      // but in a serverless env, we can fire-and-forget IF we wrap it in waitUntil,
       // however here we are in a loop so it's safer to await to avoid overwhelming the worker's open sockets.
       await persistUpdate();
 
@@ -701,25 +738,31 @@ export async function processBatch(monitors: any[], prisma: any, env: Env): Prom
       }
       // --- DNS CACHE CAPTURE: Store last known good IP ---
       if (currentStatus === "UP" && env.DNS_CACHE) {
-         try {
-            const urlObj = new URL(monitor.url);
-            const hostname = urlObj.hostname;
-            
-            // We only resolve if it's not a raw IP already
-            if (!/^[0-9.]+$/.test(hostname)) {
-               // We don't await this to keep the check loop fast
-               const { resolveDNS } = await import("./lib/dns-resolver");
-               resolveDNS(hostname).then(ip => {
-                  if (ip && env.DNS_CACHE) {
-                     env.DNS_CACHE.put(`dns:${hostname}`, JSON.stringify({ ip, timestamp: Date.now() }), { 
-                        expirationTtl: 60 * 60 * 24 // 24 hours
-                     });
-                  }
-               }).catch(() => {});
-            }
-         } catch (dnsErr) {
-            // Silently ignore DNS capture failures
-         }
+        try {
+          const urlObj = new URL(monitor.url);
+          const hostname = urlObj.hostname;
+
+          // We only resolve if it's not a raw IP already
+          if (!/^[0-9.]+$/.test(hostname)) {
+            // We don't await this to keep the check loop fast
+            const { resolveDNS } = await import("./lib/dns-resolver");
+            resolveDNS(hostname)
+              .then((ip) => {
+                if (ip && env.DNS_CACHE) {
+                  env.DNS_CACHE.put(
+                    `dns:${hostname}`,
+                    JSON.stringify({ ip, timestamp: Date.now() }),
+                    {
+                      expirationTtl: 60 * 60 * 24, // 24 hours
+                    },
+                  );
+                }
+              })
+              .catch(() => {});
+          }
+        } catch (dnsErr) {
+          // Silently ignore DNS capture failures
+        }
       }
 
       processedIds.push(monitor.id);
@@ -728,7 +771,7 @@ export async function processBatch(monitors: any[], prisma: any, env: Env): Prom
       console.error(`Failed to process monitor ${monitor.id}:`, err);
       // We count it as processed (failed) to avoid infinite retry loops for bad data
       // Unless it's a timeout error, which might be retryable
-      processedIds.push(monitor.id); 
+      processedIds.push(monitor.id);
     }
   }
 
@@ -754,7 +797,7 @@ export default {
       let rawToken: string | null | undefined = url.searchParams.get("token");
 
       console.log(`[WS] Handshake for Monitor: ${monitorId}. Cookie present: ${!!cookieHeader}`);
-      
+
       if (!rawToken && cookieHeader) {
         const secureMatch = cookieHeader.match(/__Secure-better-auth\.session_token=([^;]+)/);
         const regularMatch = cookieHeader.match(/better-auth\.session_token=([^;]+)/);
@@ -767,13 +810,13 @@ export default {
         const token = decodeURIComponent(rawToken);
         const session = await prisma.session.findUnique({
           where: { token },
-          select: { userId: true, expiresAt: true }
+          select: { userId: true, expiresAt: true },
         });
 
         if (session && session.expiresAt > new Date()) {
           const monitor = await prisma.monitor.findUnique({
             where: { id: monitorId },
-            select: { userId: true }
+            select: { userId: true },
           });
 
           if (monitor && monitor.userId === session.userId) {
@@ -787,10 +830,10 @@ export default {
         const publicMonitor = await prisma.statusPageMonitor.findFirst({
           where: {
             monitorId: monitorId,
-            statusPage: { isPrivate: false }
-          }
+            statusPage: { isPrivate: false },
+          },
         });
-        
+
         if (!publicMonitor) {
           return new Response("Unauthorized", { status: 401 });
         }
@@ -802,180 +845,193 @@ export default {
 
       // We rewrite the URL to /websocket so the DO knows it's a client connection
       const doUrl = new URL("https://monitor-channel/websocket");
-      
+
       // Pass the original request (headers, upgrade, etc) but with new URL
       return stub.fetch(doUrl.toString(), request);
     }
 
-
     // API Route: /api/dns-audit
     if (url.pathname === "/api/dns-audit" && request.method === "POST") {
-       try {
-         const body: any = await request.json();
-         const { domain: targetDomain } = body;
-         
-         if (!targetDomain) return new Response("Missing 'domain' body param", { status: 400 });
- 
-         const { auditDNS } = await import("./services/dns-audit");
-         const results = await auditDNS(targetDomain);
- 
-         return new Response(JSON.stringify(results), {
-           headers: { 
-             "Content-Type": "application/json",
-             "Access-Control-Allow-Origin": "*",
-             "Access-Control-Allow-Methods": "POST, OPTIONS",
-             "Access-Control-Allow-Headers": "Content-Type"
-           } 
-         });
-       } catch (err: any) {
-         return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" }});
-       }
+      try {
+        const body: any = await request.json();
+        const { domain: targetDomain } = body;
+
+        if (!targetDomain) return new Response("Missing 'domain' body param", { status: 400 });
+
+        const { auditDNS } = await import("./services/dns-audit");
+        const results = await auditDNS(targetDomain);
+
+        return new Response(JSON.stringify(results), {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+          },
+        });
+      } catch (err: any) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
     }
- 
- 
-     // API Route: /api/payload-audit
+
+    // API Route: /api/payload-audit
     if (url.pathname === "/api/payload-audit" && request.method === "POST") {
-       try {
-         const body: any = await request.json();
-         const { url: targetUrl, pattern } = body;
-         
-         if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
- 
-         const finalUrl = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
- 
-         const { auditPayload } = await import("./services/payload-audit");
-         const results = await auditPayload(finalUrl, pattern);
- 
-         return new Response(JSON.stringify(results), {
-           headers: { 
-             "Content-Type": "application/json",
-             "Access-Control-Allow-Origin": "*",
-             "Access-Control-Allow-Methods": "POST, OPTIONS",
-             "Access-Control-Allow-Headers": "Content-Type"
-           } 
-         });
-       } catch (err: any) {
-         return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" }});
-       }
+      try {
+        const body: any = await request.json();
+        const { url: targetUrl, pattern } = body;
+
+        if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
+
+        const finalUrl = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
+
+        const { auditPayload } = await import("./services/payload-audit");
+        const results = await auditPayload(finalUrl, pattern);
+
+        return new Response(JSON.stringify(results), {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+          },
+        });
+      } catch (err: any) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
     }
- 
- 
-     // API Route: /api/security-headers
+
+    // API Route: /api/security-headers
     if (url.pathname === "/api/security-headers" && request.method === "POST") {
-       try {
-         const body: any = await request.json();
-         const { url: targetUrl } = body;
-         
-         if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
- 
-         const finalUrl = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
- 
-         const { checkSecurityHeaders } = await import("./services/security-headers");
-         const results = await checkSecurityHeaders(finalUrl);
- 
-         return new Response(JSON.stringify(results), {
-           headers: { 
-             "Content-Type": "application/json",
-             "Access-Control-Allow-Origin": "*",
-             "Access-Control-Allow-Methods": "POST, OPTIONS",
-             "Access-Control-Allow-Headers": "Content-Type"
-           } 
-         });
-       } catch (err: any) {
-         return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" }});
-       }
+      try {
+        const body: any = await request.json();
+        const { url: targetUrl } = body;
+
+        if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
+
+        const finalUrl = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
+
+        const { checkSecurityHeaders } = await import("./services/security-headers");
+        const results = await checkSecurityHeaders(finalUrl);
+
+        return new Response(JSON.stringify(results), {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+          },
+        });
+      } catch (err: any) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
     }
- 
- 
-     // API Route: /api/ssl-check
+
+    // API Route: /api/ssl-check
     if (url.pathname === "/api/ssl-check" && request.method === "POST") {
-       try {
-         const body: any = await request.json();
-         const { url: targetUrl } = body;
-         
-         if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
+      try {
+        const body: any = await request.json();
+        const { url: targetUrl } = body;
 
-         const { checkSSL } = await import("./services/ssl-check");
-         const results = await checkSSL(targetUrl);
+        if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
 
-         return new Response(JSON.stringify(results), {
-           headers: { 
-             "Content-Type": "application/json",
-             "Access-Control-Allow-Origin": "*",
-             "Access-Control-Allow-Methods": "POST, OPTIONS",
-             "Access-Control-Allow-Headers": "Content-Type"
-           } 
-         });
-       } catch (err: any) {
-         return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" }});
-       }
+        const { checkSSL } = await import("./services/ssl-check");
+        const results = await checkSSL(targetUrl);
+
+        return new Response(JSON.stringify(results), {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+          },
+        });
+      } catch (err: any) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
     }
-    
 
     // API Route: /api/port-check
     if (url.pathname === "/api/port-check" && request.method === "POST") {
-       try {
-         const body: any = await request.json();
-         const { host, port } = body;
-         
-         if (!host || !port) return new Response("Missing host or port", { status: 400 });
+      try {
+        const body: any = await request.json();
+        const { host, port } = body;
 
-         const { checkPort } = await import("./services/port-check");
-         const result = await checkPort(host, parseInt(port));
+        if (!host || !port) return new Response("Missing host or port", { status: 400 });
 
-         // Add helper: Current IP (for 'My IP' button)
-         // Note: We don't return the IP in the check result, but the frontend might request it separately.
-         // For now, minimal return.
-         
-         return new Response(JSON.stringify(result), {
-           headers: { 
-             "Content-Type": "application/json",
-             "Access-Control-Allow-Origin": "*",
-             "Access-Control-Allow-Methods": "POST, OPTIONS",
-             "Access-Control-Allow-Headers": "Content-Type"
-           } 
-         });
-       } catch (err: any) {
-         return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" }});
-       }
+        const { checkPort } = await import("./services/port-check");
+        const result = await checkPort(host, parseInt(port));
+
+        // Add helper: Current IP (for 'My IP' button)
+        // Note: We don't return the IP in the check result, but the frontend might request it separately.
+        // For now, minimal return.
+
+        return new Response(JSON.stringify(result), {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+          },
+        });
+      } catch (err: any) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
     }
 
     // API Route: /api/global-latency
     if (url.pathname === "/api/global-latency" && request.method === "POST") {
-       try {
-         const body: any = await request.json();
-         const { url: targetUrl } = body;
-         
-         if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
+      try {
+        const body: any = await request.json();
+        const { url: targetUrl } = body;
 
-         // Add protocol if missing
-         const finalUrl = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
+        if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
 
-         const { checkGlobalLatency } = await import("./services/global-latency");
-         const results = await checkGlobalLatency(finalUrl);
+        // Add protocol if missing
+        const finalUrl = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
 
-         return new Response(JSON.stringify(results), {
-           headers: { 
-             "Content-Type": "application/json",
-             "Access-Control-Allow-Origin": "*", // Allow CORS for web app
-             "Access-Control-Allow-Methods": "POST, OPTIONS",
-             "Access-Control-Allow-Headers": "Content-Type"
-           } 
-         });
-       } catch (err: any) {
-         return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" }});
-       }
+        const { checkGlobalLatency } = await import("./services/global-latency");
+        const results = await checkGlobalLatency(finalUrl);
+
+        return new Response(JSON.stringify(results), {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*", // Allow CORS for web app
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+          },
+        });
+      } catch (err: any) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
     }
 
     // CORS Preflight
     if (request.method === "OPTIONS") {
-       return new Response(null, {
-         headers: {
-           "Access-Control-Allow-Origin": "*",
-           "Access-Control-Allow-Methods": "POST, OPTIONS",
-           "Access-Control-Allow-Headers": "Content-Type"
-         }
-       });
+      return new Response(null, {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "POST, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type",
+        },
+      });
     }
 
     return new Response("PulseGuard Worker is Running", { status: 200 });
@@ -992,21 +1048,24 @@ export default {
       ctx.waitUntil(
         import("./services/reportGenerator")
           .then((m) => m.generateAndSendMonthlyReports(prisma, env))
-          .catch((err) => console.error("Monthly Report Job Failed:", err))
+          .catch((err) => console.error("Monthly Report Job Failed:", err)),
       );
     }
 
     // --- DATABASE SYNC: Restore data from Redis fallback if DB is healthy ---
     const { DatabaseCircuitBreaker } = await import("./lib/circuit-breaker");
-    const circuitBreaker = new DatabaseCircuitBreaker(env.UPSTASH_REDIS_REST_URL, env.UPSTASH_REDIS_REST_TOKEN);
+    const circuitBreaker = new DatabaseCircuitBreaker(
+      env.UPSTASH_REDIS_REST_URL,
+      env.UPSTASH_REDIS_REST_TOKEN,
+    );
     const circuitState = await circuitBreaker.getState();
-    
+
     if (circuitState !== "OPEN") {
-       ctx.waitUntil(
-          import("./services/db-sync")
-             .then(m => m.syncFallbackToDatabase(prisma, env))
-             .catch(err => console.error("[Sync] Background task failed:", err))
-       );
+      ctx.waitUntil(
+        import("./services/db-sync")
+          .then((m) => m.syncFallbackToDatabase(prisma, env))
+          .catch((err) => console.error("[Sync] Background task failed:", err)),
+      );
     }
 
     // FREE TIER CONFIG: Process 5 monitors per cron tick (1 min)
@@ -1031,7 +1090,7 @@ export default {
 
       if (targetIds.length === 0) return;
 
-      const ids = targetIds.map(t => t.id);
+      const ids = targetIds.map((t) => t.id);
 
       // Fetch full monitor data for the batch
       const monitors = await prisma.monitor.findMany({
@@ -1069,12 +1128,16 @@ export default {
       // Offload remaining to Queue if any
       if (remaining.length > 0) {
         if (env.CHECK_QUEUE) {
-          console.warn(`[SmartBatch] Offloading ${remaining.length} monitors to Queue due to CPU limits.`);
+          console.warn(
+            `[SmartBatch] Offloading ${remaining.length} monitors to Queue due to CPU limits.`,
+          );
           // Send remaining monitors as individual messages or small batches
           const messages = remaining.map((m) => ({ body: m }));
-          await env.CHECK_QUEUE.sendBatch(messages); 
+          await env.CHECK_QUEUE.sendBatch(messages);
         } else {
-          console.error("[SmartBatch] Critical: CPU limit reached but NO CHECK_QUEUE defined. Checks dropped.");
+          console.error(
+            "[SmartBatch] Critical: CPU limit reached but NO CHECK_QUEUE defined. Checks dropped.",
+          );
         }
       }
 
@@ -1093,9 +1156,6 @@ export default {
       return;
     }
 
-
-
-
     // Default: 'monitor-checks' queue
     const prisma = getPrisma(env.DATABASE_URL);
     const monitors = batch.messages.map((msg) => msg.body);
@@ -1104,10 +1164,12 @@ export default {
 
     // Ack processed messages, Retry remaining
     if (remaining.length > 0) {
-      console.warn(`[SmartBatch] Queue processing hit limit. Retrying ${remaining.length} messages.`);
-      
+      console.warn(
+        `[SmartBatch] Queue processing hit limit. Retrying ${remaining.length} messages.`,
+      );
+
       // Get IDs of remaining monitors for lookup
-      const remainingIds = new Set(remaining.map(m => m.id));
+      const remainingIds = new Set(remaining.map((m) => m.id));
 
       // Retry specific messages
       for (const msg of batch.messages) {
@@ -1123,4 +1185,3 @@ export default {
     }
   },
 };
-

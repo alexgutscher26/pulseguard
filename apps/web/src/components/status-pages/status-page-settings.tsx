@@ -3,15 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { updateStatusPage } from "@/actions/status-pages";
 import { toast } from "sonner";
-import {
-  Loader2,
-  Palette,
-  Globe,
-  Shield,
-  Search,
-  Eye,
-  FileCode,
-} from "lucide-react";
+import { Loader2, Palette, Globe, Shield, Search, Eye, FileCode } from "lucide-react";
 import { StatusPageI18n } from "./status-page-i18n";
 
 interface StatusPageSettingsProps {
@@ -44,10 +36,7 @@ const themes = [
 
 export function StatusPageSettings({ page }: StatusPageSettingsProps) {
   const updateWithId = updateStatusPage.bind(null, page.id);
-  const [state, formAction, isPending] = useActionState(
-    updateWithId,
-    initialState,
-  );
+  const [state, formAction, isPending] = useActionState(updateWithId, initialState);
 
   // Parse existing theme
   const currentTheme = (page.theme as any)?.value || "cyberpunk";
@@ -132,10 +121,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 id="isPrivate"
                 className="accent-primary size-4"
               />
-              <label
-                htmlFor="isPrivate"
-                className="text-sm font-bold text-foreground"
-              >
+              <label htmlFor="isPrivate" className="text-sm font-bold text-foreground">
                 Make Page Private
               </label>
             </div>
@@ -177,9 +163,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
             <input
               type="hidden"
               name="theme"
-              value={JSON.stringify(
-                themes.find((t) => t.value === selectedTheme),
-              )}
+              value={JSON.stringify(themes.find((t) => t.value === selectedTheme))}
             />
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
@@ -209,9 +193,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                         style={{ backgroundColor: theme.colors.primary }}
                       />
                     </div>
-                    <span className="font-mono text-[10px] font-bold uppercase">
-                      {theme.name}
-                    </span>
+                    <span className="font-mono text-[10px] font-bold uppercase">{theme.name}</span>
                   </div>
                 </button>
               ))}
@@ -282,10 +264,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 />
               </div>
               <div className="flex items-center justify-between">
-                <label
-                  htmlFor="showUptime"
-                  className="text-sm font-mono text-muted-foreground"
-                >
+                <label htmlFor="showUptime" className="text-sm font-mono text-muted-foreground">
                   Show Uptime Percentage
                 </label>
                 <input
@@ -312,10 +291,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 />
               </div>
               <div className="flex items-center justify-between">
-                <label
-                  htmlFor="showPaused"
-                  className="text-sm font-mono text-muted-foreground"
-                >
+                <label htmlFor="showPaused" className="text-sm font-mono text-muted-foreground">
                   Show Paused Monitors
                 </label>
                 <input

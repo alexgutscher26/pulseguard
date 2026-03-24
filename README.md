@@ -6,6 +6,7 @@
 [![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?style=flat&logo=prisma)](https://www.prisma.io/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=flat&logo=tailwind-css)](https://tailwindcss.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+
 > **A Operational Intelligence Node for Modern Infrastructure**
 
 **PulseGuard** is a next-generation, full-stack website monitoring and uptime platform designed for developers who demand reliability with style. Built on the edge with real-time capabilities, PulseGuard provides comprehensive insights into your infrastructure's health with a stunning cyberpunk-inspired interface.
@@ -179,7 +180,7 @@ pulseguard/
     - Copy `.env.example` to `.env` in `apps/web` and `apps/worker` (if applicable).
     - Ensure your `DATABASE_URL` is set correctly in `packages/db/.env` or the root `.env`.
 
-    *Example `apps/web/.env`:*
+    _Example `apps/web/.env`:_
 
     ```env
     DATABASE_URL="postgresql://user:password@localhost:5432/pulseguard"
@@ -212,7 +213,7 @@ pulseguard/
 
 | Command               | Description                                       |
 | :-------------------- | :------------------------------------------------ |
-| `bun run dev`         | Start all apps in development mode (web + worker)|
+| `bun run dev`         | Start all apps in development mode (web + worker) |
 | `bun run dev:web`     | Start only the web dashboard                      |
 | `bun run dev:native`  | Start the mobile app (Expo)                       |
 | `bun run build`       | Build all apps and packages for production        |
@@ -276,7 +277,7 @@ PulseGuard is optimized for deployment on **Cloudflare's edge platform**.
 bun run deploy
 ```
 
-*Ensure you have `wrangler` authenticated with your Cloudflare account.*
+_Ensure you have `wrangler` authenticated with your Cloudflare account._
 
 ### Environment Variables
 

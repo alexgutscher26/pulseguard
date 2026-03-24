@@ -4,25 +4,19 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Wand2, 
-  Save, 
-  FileDown, 
-  Loader2, 
-  History, 
-  Terminal, 
-  Activity, 
-  ShieldCheck, 
+import {
+  Wand2,
+  Save,
+  FileDown,
+  Loader2,
+  History,
+  Terminal,
+  Activity,
+  ShieldCheck,
   Info,
-  Sparkles
+  Sparkles,
 } from "lucide-react";
 import {
   upsertPostMortem,
@@ -120,7 +114,8 @@ export function PostMortemEditor({
           })
           .join("\n");
 
-        const header = "| Time | Region | Status | Latency | Detail |\n| :--- | :--- | :--- | :--- | :--- |\n";
+        const header =
+          "| Time | Region | Status | Latency | Detail |\n| :--- | :--- | :--- | :--- | :--- |\n";
         setFormData((prev) => ({ ...prev, timeline: header + timelineEntries }));
         toast.success(`Populated ${logs.length} events from system logs`);
       } else {
@@ -174,7 +169,7 @@ ${formData.actionItems || "(No action items provided)"}
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="space-y-6"
@@ -185,7 +180,9 @@ ${formData.actionItems || "(No action items provided)"}
             <span className="p-1 bg-primary/10 rounded border border-primary/20">
               <Terminal className="size-4 text-primary" />
             </span>
-            <h2 className="text-xl font-bold font-mono tracking-tight uppercase">SRE Post-Mortem Editor</h2>
+            <h2 className="text-xl font-bold font-mono tracking-tight uppercase">
+              SRE Post-Mortem Editor
+            </h2>
           </div>
           <p className="text-sm text-muted-foreground font-mono">
             Incident: <span className="text-primary">{incidentTitle}</span>
@@ -201,9 +198,9 @@ ${formData.actionItems || "(No action items provided)"}
             <FileDown className="mr-2 size-4 text-primary" />
             Export MD
           </Button>
-          <Button 
-            size="sm" 
-            onClick={handleSave} 
+          <Button
+            size="sm"
+            onClick={handleSave}
             disabled={isSaving}
             className="font-mono text-xs uppercase bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_15px_rgba(var(--primary),0.3)]"
           >
@@ -219,19 +216,31 @@ ${formData.actionItems || "(No action items provided)"}
 
       <Tabs defaultValue="analysis" className="w-full">
         <TabsList className="bg-muted/30 border border-primary/10 p-1 w-full md:w-auto grid grid-cols-2 md:inline-flex h-auto">
-          <TabsTrigger value="analysis" className="font-mono text-xs uppercase py-2 data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+          <TabsTrigger
+            value="analysis"
+            className="font-mono text-xs uppercase py-2 data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
+          >
             <Info className="size-3 mr-2" />
             I. Analysis
           </TabsTrigger>
-          <TabsTrigger value="timeline" className="font-mono text-xs uppercase py-2 data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+          <TabsTrigger
+            value="timeline"
+            className="font-mono text-xs uppercase py-2 data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
+          >
             <History className="size-3 mr-2" />
             II. Timeline
           </TabsTrigger>
-          <TabsTrigger value="corrective" className="font-mono text-xs uppercase py-2 data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+          <TabsTrigger
+            value="corrective"
+            className="font-mono text-xs uppercase py-2 data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
+          >
             <ShieldCheck className="size-3 mr-2" />
             III. Corrective
           </TabsTrigger>
-          <TabsTrigger value="preview" className="font-mono text-xs uppercase py-2 data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+          <TabsTrigger
+            value="preview"
+            className="font-mono text-xs uppercase py-2 data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
+          >
             <Activity className="size-3 mr-2" />
             IV. Full Review
           </TabsTrigger>
@@ -340,8 +349,8 @@ ${formData.actionItems || "(No action items provided)"}
                   onChange={(e) => handleInputChange("timeline", e.target.value)}
                 />
                 <div className="mt-4 p-4 bg-muted/20 border border-dashed border-primary/20 rounded font-mono text-xs text-muted-foreground">
-                  TIP: You can manually format this as a table for better readability. 
-                  The auto-populate tool uses downtime window metrics (StartedAt &rarr; ResolvedAt).
+                  TIP: You can manually format this as a table for better readability. The
+                  auto-populate tool uses downtime window metrics (StartedAt &rarr; ResolvedAt).
                 </div>
               </CardContent>
             </Card>
@@ -351,7 +360,9 @@ ${formData.actionItems || "(No action items provided)"}
             <div className="grid gap-6">
               <Card className="bg-card/40 border-primary/10">
                 <CardHeader className="pb-3 border-b border-primary/5">
-                  <CardTitle className="text-sm font-mono">ACTION ITEMS & PREVENTIVE MEASURES</CardTitle>
+                  <CardTitle className="text-sm font-mono">
+                    ACTION ITEMS & PREVENTIVE MEASURES
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="pt-4">
                   <Textarea
@@ -384,9 +395,11 @@ ${formData.actionItems || "(No action items provided)"}
               <div className="absolute top-0 right-0 p-8 opacity-5">
                 <Terminal className="size-64" />
               </div>
-              
+
               <div className="border-b border-primary/30 pb-6 mb-10">
-                <h1 className="text-4xl font-black font-mono tracking-tighter uppercase mb-2">POS-MOR_REP://{incidentId.slice(0, 8)}</h1>
+                <h1 className="text-4xl font-black font-mono tracking-tighter uppercase mb-2">
+                  POS-MOR_REP://{incidentId.slice(0, 8)}
+                </h1>
                 <div className="flex gap-10 font-mono text-[10px] text-primary uppercase tracking-[0.2em]">
                   <div>SUBJECT: {incidentTitle}</div>
                   <div>STATUS: {formData.status}</div>
@@ -395,31 +408,51 @@ ${formData.actionItems || "(No action items provided)"}
               </div>
 
               <section className="space-y-4">
-                <h2 className="text-lg font-bold font-mono border-l-4 border-primary pl-4 uppercase tracking-tighter">01. Summary</h2>
-                <div className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap pl-5">{formData.summary || "Pending input..."}</div>
+                <h2 className="text-lg font-bold font-mono border-l-4 border-primary pl-4 uppercase tracking-tighter">
+                  01. Summary
+                </h2>
+                <div className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap pl-5">
+                  {formData.summary || "Pending input..."}
+                </div>
               </section>
 
               <div className="grid md:grid-cols-2 gap-10">
                 <section className="space-y-4">
-                  <h2 className="text-lg font-bold font-mono border-l-4 border-primary pl-4 uppercase tracking-tighter">02. Root Cause</h2>
-                  <div className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap pl-5">{formData.rootCause || "Pending analysis..."}</div>
+                  <h2 className="text-lg font-bold font-mono border-l-4 border-primary pl-4 uppercase tracking-tighter">
+                    02. Root Cause
+                  </h2>
+                  <div className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap pl-5">
+                    {formData.rootCause || "Pending analysis..."}
+                  </div>
                 </section>
                 <section className="space-y-4">
-                  <h2 className="text-lg font-bold font-mono border-l-4 border-primary pl-4 uppercase tracking-tighter">03. Impact Scope</h2>
-                  <div className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap pl-5">{formData.impactScope || "Pending assessment..."}</div>
+                  <h2 className="text-lg font-bold font-mono border-l-4 border-primary pl-4 uppercase tracking-tighter">
+                    03. Impact Scope
+                  </h2>
+                  <div className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap pl-5">
+                    {formData.impactScope || "Pending assessment..."}
+                  </div>
                 </section>
               </div>
 
               <section className="space-y-4">
-                <h2 className="text-lg font-bold font-mono border-l-4 border-primary pl-4 uppercase tracking-tighter">04. Timeline Analysis</h2>
+                <h2 className="text-lg font-bold font-mono border-l-4 border-primary pl-4 uppercase tracking-tighter">
+                  04. Timeline Analysis
+                </h2>
                 <div className="bg-muted/30 p-6 rounded-sm border border-primary/10 font-mono text-xs overflow-x-auto">
-                  <pre className="whitespace-pre-wrap text-muted-foreground">{formData.timeline || "No timeline data recorded."}</pre>
+                  <pre className="whitespace-pre-wrap text-muted-foreground">
+                    {formData.timeline || "No timeline data recorded."}
+                  </pre>
                 </div>
               </section>
 
               <section className="space-y-4">
-                <h2 className="text-lg font-bold font-mono border-l-4 border-primary pl-4 uppercase tracking-tighter">05. Preventive Action</h2>
-                <div className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap pl-5 font-mono">{formData.actionItems || "No actions defined."}</div>
+                <h2 className="text-lg font-bold font-mono border-l-4 border-primary pl-4 uppercase tracking-tighter">
+                  05. Preventive Action
+                </h2>
+                <div className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap pl-5 font-mono">
+                  {formData.actionItems || "No actions defined."}
+                </div>
               </section>
 
               <div className="mt-20 pt-10 border-t border-primary/10 flex justify-between items-center opacity-30 font-mono text-[8px] uppercase tracking-widest">
@@ -437,8 +470,13 @@ ${formData.actionItems || "(No action items provided)"}
           <span>Last Sync: {new Date().toLocaleTimeString()}</span>
         </div>
         <div className="flex items-center gap-2">
-          <Label htmlFor="status-select" className="text-[10px] font-mono uppercase text-muted-foreground">Classification:</Label>
-          <select 
+          <Label
+            htmlFor="status-select"
+            className="text-[10px] font-mono uppercase text-muted-foreground"
+          >
+            Classification:
+          </Label>
+          <select
             id="status-select"
             className="bg-background border border-primary/20 text-[10px] font-mono px-2 py-1 rounded cursor-pointer hover:border-primary/50 transition-colors uppercase"
             value={formData.status}
@@ -453,4 +491,3 @@ ${formData.actionItems || "(No action items provided)"}
     </motion.div>
   );
 }
-

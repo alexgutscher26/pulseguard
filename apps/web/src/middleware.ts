@@ -23,8 +23,7 @@ export async function middleware(request: NextRequest) {
   if (pathname.startsWith("/dashboard") || pathname.startsWith("/login")) {
     const cookieHeader = request.headers.get("cookie") || "";
     const hasSessionCookie =
-      cookieHeader.includes("better-auth.session_token") ||
-      cookieHeader.includes("session_token");
+      cookieHeader.includes("better-auth.session_token") || cookieHeader.includes("session_token");
 
     if (pathname.startsWith("/dashboard") && !hasSessionCookie) {
       return NextResponse.redirect(new URL("/login", request.url));
@@ -59,28 +58,25 @@ export async function middleware(request: NextRequest) {
     const pathParts = pathname.split("/").filter(Boolean);
     const hasLocale = pathParts.length > 0 && routing.locales.includes(pathParts[0] as any);
     const locale = hasLocale ? pathParts[0] : routing.defaultLocale;
-    
+
     // Path without locale (ensure we treat root / correctly)
-    const pathWithoutLocale = hasLocale 
-      ? "/" + pathParts.slice(1).join("/") 
-      : pathname;
+    const pathWithoutLocale = hasLocale ? "/" + pathParts.slice(1).join("/") : pathname;
 
     // 3. Construct Rewrite Target
     let rewriteTarget = "";
-    
+
     if (isStatusPageDomain) {
       rewriteTarget = `/${locale}/status-page${pathWithoutLocale === "/" ? "" : pathWithoutLocale}`;
-      
+
       // Avoid infinite loop if already rewritten (check via header or path structure?)
-      // next-intl middleware might have already set x-middleware-rewrite. 
+      // next-intl middleware might have already set x-middleware-rewrite.
       // But we are overriding with our own rewrite.
-      
+
       url.pathname = rewriteTarget;
       return NextResponse.rewrite(url);
-      
     } else if (isCustomDomain) {
       rewriteTarget = `/${locale}/status-page/domain/${hostname}${pathWithoutLocale === "/" ? "" : pathWithoutLocale}`;
-      
+
       console.log(`[Middleware] rewrite custom domain ${hostname} to ${rewriteTarget}`);
       url.pathname = rewriteTarget;
       return NextResponse.rewrite(url);

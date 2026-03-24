@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Search,
-  Plus,
-  LogOut,
-  User,
-  Settings,
-  Menu,
-} from "lucide-react";
+import { Search, Plus, LogOut, User, Settings, Menu } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -24,9 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export function DashboardHeader({
-  onMenuClick,
-}: { onMenuClick?: () => void } = {}) {
+export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = {}) {
   const { data: session } = authClient.useSession();
   const pathname = usePathname();
   const router = useRouter();
@@ -109,7 +100,7 @@ export function DashboardHeader({
                   {session?.user?.name || "Operator"}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                   {session?.user?.email || "admin@pulseguard.io"}
+                  {session?.user?.email || "admin@pulseguard.io"}
                 </p>
               </div>
               {/* Avatar */}

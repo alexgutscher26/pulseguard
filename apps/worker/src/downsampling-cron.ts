@@ -1,4 +1,4 @@
-import { getPrisma} from "@pulseguard/db";
+import { getPrisma } from "@pulseguard/db";
 
 interface Env {
   DATABASE_URL: string;
@@ -37,21 +37,28 @@ async function downsample1mTo5m(prisma: any): Promise<void> {
   const fiveMinAggregates = [];
   for (const [key, aggregates] of grouped.entries()) {
     const [monitorId, region] = key.split(":");
-    
+
     // Calculate weighted averages
     const totalSamples = aggregates.reduce((sum, a) => sum + a.sampleCount, 0);
     if (totalSamples === 0) continue;
 
-    const avgLatency = aggregates.reduce((sum, a) => sum + a.avgLatency * a.sampleCount, 0) / totalSamples;
-    const minLatency = Math.min(...aggregates.map(a => a.minLatency));
-    const maxLatency = Math.max(...aggregates.map(a => a.maxLatency));
-    const p50Latency = aggregates.reduce((sum, a) => sum + a.p50Latency * a.sampleCount, 0) / totalSamples;
-    const p95Latency = aggregates.reduce((sum, a) => sum + a.p95Latency * a.sampleCount, 0) / totalSamples;
-    const p99Latency = aggregates.reduce((sum, a) => sum + a.p99Latency * a.sampleCount, 0) / totalSamples;
-    const successRate = aggregates.reduce((sum, a) => sum + a.successRate * a.sampleCount, 0) / totalSamples;
+    const avgLatency =
+      aggregates.reduce((sum, a) => sum + a.avgLatency * a.sampleCount, 0) / totalSamples;
+    const minLatency = Math.min(...aggregates.map((a) => a.minLatency));
+    const maxLatency = Math.max(...aggregates.map((a) => a.maxLatency));
+    const p50Latency =
+      aggregates.reduce((sum, a) => sum + a.p50Latency * a.sampleCount, 0) / totalSamples;
+    const p95Latency =
+      aggregates.reduce((sum, a) => sum + a.p95Latency * a.sampleCount, 0) / totalSamples;
+    const p99Latency =
+      aggregates.reduce((sum, a) => sum + a.p99Latency * a.sampleCount, 0) / totalSamples;
+    const successRate =
+      aggregates.reduce((sum, a) => sum + a.successRate * a.sampleCount, 0) / totalSamples;
 
     // Round timestamp to 5-minute boundary
-    const timestamp = new Date(Math.floor(fiveMinutesAgo.getTime() / (5 * 60 * 1000)) * (5 * 60 * 1000));
+    const timestamp = new Date(
+      Math.floor(fiveMinutesAgo.getTime() / (5 * 60 * 1000)) * (5 * 60 * 1000),
+    );
 
     fiveMinAggregates.push({
       monitorId,
@@ -110,20 +117,27 @@ async function downsample5mTo1h(prisma: any): Promise<void> {
   const hourlyAggregates = [];
   for (const [key, aggregates] of grouped.entries()) {
     const [monitorId, region] = key.split(":");
-    
+
     const totalSamples = aggregates.reduce((sum, a) => sum + a.sampleCount, 0);
     if (totalSamples === 0) continue;
 
-    const avgLatency = aggregates.reduce((sum, a) => sum + a.avgLatency * a.sampleCount, 0) / totalSamples;
-    const minLatency = Math.min(...aggregates.map(a => a.minLatency));
-    const maxLatency = Math.max(...aggregates.map(a => a.maxLatency));
-    const p50Latency = aggregates.reduce((sum, a) => sum + a.p50Latency * a.sampleCount, 0) / totalSamples;
-    const p95Latency = aggregates.reduce((sum, a) => sum + a.p95Latency * a.sampleCount, 0) / totalSamples;
-    const p99Latency = aggregates.reduce((sum, a) => sum + a.p99Latency * a.sampleCount, 0) / totalSamples;
-    const successRate = aggregates.reduce((sum, a) => sum + a.successRate * a.sampleCount, 0) / totalSamples;
+    const avgLatency =
+      aggregates.reduce((sum, a) => sum + a.avgLatency * a.sampleCount, 0) / totalSamples;
+    const minLatency = Math.min(...aggregates.map((a) => a.minLatency));
+    const maxLatency = Math.max(...aggregates.map((a) => a.maxLatency));
+    const p50Latency =
+      aggregates.reduce((sum, a) => sum + a.p50Latency * a.sampleCount, 0) / totalSamples;
+    const p95Latency =
+      aggregates.reduce((sum, a) => sum + a.p95Latency * a.sampleCount, 0) / totalSamples;
+    const p99Latency =
+      aggregates.reduce((sum, a) => sum + a.p99Latency * a.sampleCount, 0) / totalSamples;
+    const successRate =
+      aggregates.reduce((sum, a) => sum + a.successRate * a.sampleCount, 0) / totalSamples;
 
     // Round timestamp to hour boundary
-    const timestamp = new Date(Math.floor(oneHourAgo.getTime() / (60 * 60 * 1000)) * (60 * 60 * 1000));
+    const timestamp = new Date(
+      Math.floor(oneHourAgo.getTime() / (60 * 60 * 1000)) * (60 * 60 * 1000),
+    );
 
     hourlyAggregates.push({
       monitorId,
@@ -191,14 +205,14 @@ async function cleanupOldData(prisma: any): Promise<void> {
 async function summarizeDailyEvents(prisma: any): Promise<void> {
   const now = new Date();
   const utcNow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-  
+
   // Target: The specific calendar day that ended 7 days ago.
   // Example: Today is Day 8. 7 days ago (end of retention) was Day 1.
   // We summarize Day 0 (8 days ago) to be safe and ensuring it's fully complete.
   const startOfDay = new Date(utcNow.getTime() - 8 * 24 * 60 * 60 * 1000);
   const endOfDay = new Date(utcNow.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-  console.log(`[Summarize] Processing day: ${startOfDay.toISOString().split('T')[0]}`);
+  console.log(`[Summarize] Processing day: ${startOfDay.toISOString().split("T")[0]}`);
 
   // Fetch all monitors
   const monitors = await prisma.monitor.findMany({ select: { id: true } });
@@ -206,72 +220,72 @@ async function summarizeDailyEvents(prisma: any): Promise<void> {
   for (const monitor of monitors) {
     // Check if summary already exists
     const existing = await prisma.dailyMonitorSummary.findUnique({
-        where: {
-            monitorId_date: {
-                monitorId: monitor.id,
-                date: startOfDay
-            }
-        }
+      where: {
+        monitorId_date: {
+          monitorId: monitor.id,
+          date: startOfDay,
+        },
+      },
     });
 
     if (existing) continue;
 
     // 1. Get total checks
     const totalChecks = await prisma.monitorEvent.count({
-        where: {
-            monitorId: monitor.id,
-            timestamp: { gte: startOfDay, lt: endOfDay }
-        }
+      where: {
+        monitorId: monitor.id,
+        timestamp: { gte: startOfDay, lt: endOfDay },
+      },
     });
 
     if (totalChecks === 0) continue;
 
     // 2. Get status counts
     const statusCounts = await prisma.monitorEvent.groupBy({
-        by: ['status'],
-        where: {
-            monitorId: monitor.id,
-            timestamp: { gte: startOfDay, lt: endOfDay }
-        },
-        _count: true
+      by: ["status"],
+      where: {
+        monitorId: monitor.id,
+        timestamp: { gte: startOfDay, lt: endOfDay },
+      },
+      _count: true,
     });
 
     let checksUp = 0;
     let checksDown = 0;
-    
+
     for (const s of statusCounts) {
-        if (s.status === 'UP') checksUp += s._count;
-        if (s.status === 'DOWN') checksDown += s._count; 
+      if (s.status === "UP") checksUp += s._count;
+      if (s.status === "DOWN") checksDown += s._count;
     }
 
     // 3. Avg Latency
     const latencyAgg = await prisma.monitorEvent.aggregate({
-        where: {
-            monitorId: monitor.id,
-            timestamp: { gte: startOfDay, lt: endOfDay }
-        },
-        _avg: { latency: true }
+      where: {
+        monitorId: monitor.id,
+        timestamp: { gte: startOfDay, lt: endOfDay },
+      },
+      _avg: { latency: true },
     });
 
     const avgLatency = Math.round(latencyAgg._avg.latency || 0);
 
     const totalValid = checksUp + checksDown;
     const uptimePct = totalValid > 0 ? (checksUp / totalValid) * 100 : 0;
-    
+
     const minutesInDay = 24 * 60;
     const downDuration = Math.round((checksDown / totalChecks) * minutesInDay);
 
     await prisma.dailyMonitorSummary.create({
-        data: {
-            monitorId: monitor.id,
-            date: startOfDay,
-            uptimePct,
-            avgLatency,
-            checksTotal: totalChecks,
-            checksUp,
-            checksDown,
-            downDuration
-        }
+      data: {
+        monitorId: monitor.id,
+        date: startOfDay,
+        uptimePct,
+        avgLatency,
+        checksTotal: totalChecks,
+        checksUp,
+        checksDown,
+        downDuration,
+      },
     });
   }
   console.log(`[Summarize] Completed summary for ${monitors.length} monitors.`);
@@ -281,19 +295,19 @@ async function summarizeDailyEvents(prisma: any): Promise<void> {
  * Cleanup raw MonitorEvent rows older than 7 days.
  */
 async function cleanupRawMonitorEvents(prisma: any): Promise<void> {
-    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    
-    // We assume summarization ran for '8 days ago'.
-    // So '7 days ago' and older is safe to delete.
-    const result = await prisma.monitorEvent.deleteMany({
-        where: {
-            timestamp: { lt: sevenDaysAgo }
-        }
-    });
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
-    if (result.count > 0) {
-        console.log(`[Cleanup] Deleted ${result.count} raw monitor events > 7 days old`);
-    }
+  // We assume summarization ran for '8 days ago'.
+  // So '7 days ago' and older is safe to delete.
+  const result = await prisma.monitorEvent.deleteMany({
+    where: {
+      timestamp: { lt: sevenDaysAgo },
+    },
+  });
+
+  if (result.count > 0) {
+    console.log(`[Cleanup] Deleted ${result.count} raw monitor events > 7 days old`);
+  }
 }
 
 /**
@@ -315,7 +329,7 @@ export default {
       if (cron === "0 * * * *") {
         console.log("[Downsampling] Running 5m → 1h downsampling");
         await downsample5mTo1h(prisma);
-        
+
         console.log("[Downsampling] Running aggregate cleanup");
         await cleanupOldData(prisma);
       }
@@ -328,7 +342,6 @@ export default {
         console.log("[Aggregator] Running Raw Event Cleanup");
         await cleanupRawMonitorEvents(prisma);
       }
-
     } catch (error) {
       console.error("[Downsampling] Error:", error);
     }

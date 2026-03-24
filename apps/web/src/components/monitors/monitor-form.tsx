@@ -1,16 +1,6 @@
 "use client";
 
-import {
-  Activity,
-  Globe,
-  Server,
-  Clock,
-  Save,
-  X,
-  Loader2,
-  ChevronDown,
-  Book,
-} from "lucide-react";
+import { Activity, Globe, Server, Clock, Save, X, Loader2, ChevronDown, Book } from "lucide-react";
 import Link from "next/link";
 import { createMonitor, updateMonitor } from "@/actions/monitors";
 import { useActionState, useState } from "react";
@@ -48,15 +38,10 @@ interface MonitorFormProps {
  */
 export function MonitorForm({ monitor }: MonitorFormProps) {
   const searchParams = useSearchParams();
-  const typeParam = searchParams.get("type")?.toUpperCase() as
-    | "HTTP"
-    | "PING"
-    | "PORT"
-    | null;
+  const typeParam = searchParams.get("type")?.toUpperCase() as "HTTP" | "PING" | "PORT" | null;
 
   // Parse initial values
-  let initialType: "HTTP" | "PING" | "PORT" =
-    monitor?.type || typeParam || "HTTP";
+  let initialType: "HTTP" | "PING" | "PORT" = monitor?.type || typeParam || "HTTP";
   let initialUrl = monitor?.url || "";
   let initialPort = "";
   let initialRegions: string[] = [];
@@ -81,11 +66,8 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
     }
   }
 
-  const [monitorType, setMonitorType] = useState<"HTTP" | "PING" | "PORT">(
-    initialType,
-  );
-  const [selectedRegions, setSelectedRegions] =
-    useState<string[]>(initialRegions);
+  const [monitorType, setMonitorType] = useState<"HTTP" | "PING" | "PORT">(initialType);
+  const [selectedRegions, setSelectedRegions] = useState<string[]>(initialRegions);
   const [threshold, setThreshold] = useState(monitor?.alertThreshold || 1);
   const [runbookUrl, setRunbookUrl] = useState(monitor?.runbookUrl || "");
 
@@ -95,11 +77,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
 
   useEffect(() => {
     if (state.success) {
-      toast.success(
-        monitor
-          ? "Monitor updated successfully"
-          : "Monitor created successfully",
-      );
+      toast.success(monitor ? "Monitor updated successfully" : "Monitor created successfully");
       router.push("/dashboard/monitors");
       router.refresh();
     } else if (state.error) {
@@ -164,9 +142,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                   onChange={() => setMonitorType("PING")}
                 />
                 <Activity className="size-6 text-primary mb-1" />
-                <span className="text-xs font-bold text-foreground font-mono uppercase">
-                  Ping
-                </span>
+                <span className="text-xs font-bold text-foreground font-mono uppercase">Ping</span>
               </label>
               <label
                 className={`flex flex-col items-center justify-center gap-2 p-4 border ${monitorType === "PORT" ? "border-primary bg-primary/20" : "border-primary/20 bg-primary/5"} cursor-pointer hover:bg-primary/10 hover:border-primary/50 transition-all group/type relative overflow-hidden`}
@@ -180,9 +156,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                   onChange={() => setMonitorType("PORT")}
                 />
                 <Server className="size-6 text-primary mb-1" />
-                <span className="text-xs font-bold text-foreground font-mono uppercase">
-                  Port
-                </span>
+                <span className="text-xs font-bold text-foreground font-mono uppercase">Port</span>
               </label>
             </div>
           </div>
@@ -198,11 +172,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
               defaultValue={monitor?.name}
               className="bg-secondary/20 border border-primary/20 focus:border-primary/60 text-foreground text-sm rounded-sm p-3 font-mono placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full"
               type="text"
-              placeholder={
-                monitorType === "HTTP"
-                  ? "e.g. Production API"
-                  : "e.g. Game Server"
-              }
+              placeholder={monitorType === "HTTP" ? "e.g. Production API" : "e.g. Game Server"}
             />
           </div>
 
@@ -241,10 +211,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
           </div>
 
           {/* Region Selector */}
-          <RegionSelector
-            selectedRegions={selectedRegions}
-            onChange={setSelectedRegions}
-          />
+          <RegionSelector selectedRegions={selectedRegions} onChange={setSelectedRegions} />
 
           {/* Alert Threshold (Only if regions are selected) */}
           {selectedRegions.length > 0 && (
@@ -264,8 +231,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                 />
                 <p className="text-[10px] text-primary/60 font-mono uppercase">
                   Only alert when at least{" "}
-                  <span className="text-primary font-bold">{threshold}</span>{" "}
-                  regions are down
+                  <span className="text-primary font-bold">{threshold}</span> regions are down
                 </p>
               </div>
             </div>
@@ -331,7 +297,10 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                   className="accent-primary size-4 cursor-pointer"
                 />
                 <div className="flex flex-col">
-                  <label htmlFor="dynamicThresholding" className="text-[10px] font-bold text-foreground font-mono uppercase cursor-pointer">
+                  <label
+                    htmlFor="dynamicThresholding"
+                    className="text-[10px] font-bold text-foreground font-mono uppercase cursor-pointer"
+                  >
                     Dynamic Timeout
                   </label>
                   <p className="text-[9px] text-primary/60 font-mono mt-0.5 max-w-[150px]">

@@ -26,8 +26,8 @@ export default function GlobalLatencyPage() {
               Global Latency Checker
             </h1>
             <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto">
-              Test your website's performance from 10+ cities worldwide in
-              real-time. Identify bottlenecks and ensure global availability.
+              Test your website's performance from 10+ cities worldwide in real-time. Identify
+              bottlenecks and ensure global availability.
             </p>
           </div>
 

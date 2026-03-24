@@ -25,27 +25,27 @@ export default function LandingHeader() {
     <header className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
       <div className="pointer-events-auto flex items-center justify-between px-6 py-3 bg-[#0a0a0a]/60 backdrop-blur-xl border border-white/5 shadow-2xl rounded-full w-full max-w-5xl">
         <div className="flex items-center gap-4">
-          <Link
-            href="/"
-            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-          >
+          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <Activity className="size-5 text-primary" />
-            <span className="font-semibold text-lg tracking-tight text-foreground">
-              PulseGuard
-            </span>
+            <span className="font-semibold text-lg tracking-tight text-foreground">PulseGuard</span>
           </Link>
         </div>
 
         <nav className="hidden md:flex items-center gap-8">
           {/* Tools Dropdown */}
-          <div 
+          <div
             className="relative"
             onMouseEnter={() => setIsToolsOpen(true)}
             onMouseLeave={() => setIsToolsOpen(false)}
           >
             <button className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-all cursor-pointer focus:outline-none py-2 group">
               Tools
-              <ChevronDown className={cn("h-3 w-3 transition-transform duration-300", isToolsOpen && "rotate-180")} />
+              <ChevronDown
+                className={cn(
+                  "h-3 w-3 transition-transform duration-300",
+                  isToolsOpen && "rotate-180",
+                )}
+              />
             </button>
 
             <AnimatePresence>

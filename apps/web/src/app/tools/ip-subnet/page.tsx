@@ -4,10 +4,12 @@ import { SubnetCalculator } from "./calculator";
 
 export const metadata: Metadata = {
   title: "IP Subnet Calculator | PulseGuard",
-  description: "Free IP Subnet Calculator to visualize network masks, broadcast addresses, and host ranges. Decode binary bitmasks and optimize your infrastructure topology.",
+  description:
+    "Free IP Subnet Calculator to visualize network masks, broadcast addresses, and host ranges. Decode binary bitmasks and optimize your infrastructure topology.",
   openGraph: {
     title: "IP Subnet Calculator",
-    description: "Visualize and decompose your network topology with PulseGuard's IP pulse sentinel.",
+    description:
+      "Visualize and decompose your network topology with PulseGuard's IP pulse sentinel.",
     type: "website",
   },
 };
@@ -23,8 +25,8 @@ export default function IPSubnetPage() {
               Network Pulse Sentinel
             </h1>
             <p className="text-muted-foreground text-lg md:text-xl max-w-3xl mx-auto font-mono">
-              [DECOMPOSING TOPOLOGY BITSETS... ]
-              Instantly resolve address ranges, masks, and network geometry.
+              [DECOMPOSING TOPOLOGY BITSETS... ] Instantly resolve address ranges, masks, and
+              network geometry.
             </p>
           </div>
 

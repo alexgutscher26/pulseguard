@@ -1,4 +1,3 @@
-
 export interface HeaderScanResult {
   header: string;
   status: "SECURE" | "WARNING" | "CRITICAL" | "INFO";
@@ -37,7 +36,8 @@ export async function checkSecurityHeaders(targetUrl: string) {
         status: "CRITICAL",
         value: null,
         description: "HSTS header is missing. Attacks like SSL stripping can succeed.",
-        recommendation: "Add 'Strict-Transport-Security: max-age=31536000; includeSubDomains; preload'",
+        recommendation:
+          "Add 'Strict-Transport-Security: max-age=31536000; includeSubDomains; preload'",
       });
     }
 
@@ -64,11 +64,12 @@ export async function checkSecurityHeaders(targetUrl: string) {
     // 3. X-Frame-Options
     const xfo = headers.get("x-frame-options");
     if (xfo) {
-       results.push({
+      results.push({
         header: "X-Frame-Options",
         status: "SECURE",
         value: xfo,
-        description: "Indicates whether a browser should be allowed to render a page in a frame or iframe.",
+        description:
+          "Indicates whether a browser should be allowed to render a page in a frame or iframe.",
       });
     } else {
       score -= 15;
@@ -84,11 +85,12 @@ export async function checkSecurityHeaders(targetUrl: string) {
     // 4. X-Content-Type-Options
     const xcto = headers.get("x-content-type-options");
     if (xcto?.toLowerCase() === "nosniff") {
-       results.push({
+      results.push({
         header: "X-Content-Type-Options",
         status: "SECURE",
         value: xcto,
-        description: "Prevents the browser from MIME-sniffing a response away from the declared content-type.",
+        description:
+          "Prevents the browser from MIME-sniffing a response away from the declared content-type.",
       });
     } else {
       score -= 10;
@@ -96,7 +98,8 @@ export async function checkSecurityHeaders(targetUrl: string) {
         header: "X-Content-Type-Options",
         status: "WARNING",
         value: xcto || null,
-        description: "MIME sniffing is not disabled. Could lead to security risks with user-uploaded content.",
+        description:
+          "MIME sniffing is not disabled. Could lead to security risks with user-uploaded content.",
         recommendation: "Set 'X-Content-Type-Options: nosniff'.",
       });
     }
@@ -104,7 +107,7 @@ export async function checkSecurityHeaders(targetUrl: string) {
     // 5. Referrer-Policy
     const rp = headers.get("referrer-policy");
     if (rp) {
-       results.push({
+      results.push({
         header: "Referrer-Policy",
         status: "SECURE",
         value: rp,
@@ -126,8 +129,8 @@ export async function checkSecurityHeaders(targetUrl: string) {
     const xpb = headers.get("x-powered-by");
 
     if (server) {
-       score -= 5;
-       results.push({
+      score -= 5;
+      results.push({
         header: "Server",
         status: "WARNING",
         value: server,
@@ -137,8 +140,8 @@ export async function checkSecurityHeaders(targetUrl: string) {
     }
 
     if (xpb) {
-       score -= 5;
-       results.push({
+      score -= 5;
+      results.push({
         header: "X-Powered-By",
         status: "WARNING",
         value: xpb,

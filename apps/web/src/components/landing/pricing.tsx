@@ -92,7 +92,7 @@ export default function Pricing() {
               <Link
                 href="/signup"
                 className="mt-auto flex w-full items-center justify-center h-12 bg-transparent border border-white/10 hover:bg-white/5 text-foreground text-sm font-semibold rounded-full transition-colors"
-               >
+              >
                 Initialize
               </Link>
             </div>
@@ -103,12 +103,10 @@ export default function Pricing() {
             <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-primary text-black text-[11px] font-bold uppercase tracking-wider px-4 py-1.5 rounded-full">
               Most Popular
             </div>
-            
+
             <div className="p-8 border-b border-primary/20 bg-primary/5 rounded-t-2xl">
               <h3 className="text-primary font-semibold text-xl">The Netrunner</h3>
-              <p className="text-sm text-primary/70 mt-2">
-                For the Indie Founders & Power Users.
-              </p>
+              <p className="text-sm text-primary/70 mt-2">For the Indie Founders & Power Users.</p>
               <div className="mt-6 flex items-baseline gap-1">
                 <span className="text-5xl font-bold tracking-tight text-foreground">
                   {billing === "yearly" ? "$140" : "$14"}
@@ -212,7 +210,7 @@ export default function Pricing() {
               <Link
                 href={`/signup?plan=construct&billing=${billing}`}
                 className="mt-auto flex w-full items-center justify-center h-12 bg-transparent border border-white/10 hover:bg-white/5 text-foreground text-sm font-semibold rounded-full transition-colors"
-                >
+              >
                 Initialize Core
               </Link>
             </div>

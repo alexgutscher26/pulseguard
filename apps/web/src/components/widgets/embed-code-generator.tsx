@@ -14,9 +14,7 @@ export function EmbedCodeGenerator({ slug }: EmbedCodeGeneratorProps) {
   // Use environment variable or fallback
   const baseUrl =
     process.env.NEXT_PUBLIC_APP_URL ||
-    (typeof window !== "undefined"
-      ? window.location.origin
-      : "https://your-domain.com");
+    (typeof window !== "undefined" ? window.location.origin : "https://your-domain.com");
 
   const embedCode = `<!-- PulseGuard Status Widget -->
 <div id="pulseguard-status"></div>
@@ -80,15 +78,10 @@ export function EmbedCodeGenerator({ slug }: EmbedCodeGeneratorProps) {
 
       {/* Instructions */}
       <div className="mt-4 space-y-2 text-xs text-muted-foreground/80 font-mono">
-        <p className="font-bold text-primary/80 uppercase tracking-wider">
-          Installation:
-        </p>
+        <p className="font-bold text-primary/80 uppercase tracking-wider">Installation:</p>
         <ol className="list-decimal list-inside space-y-1 pl-2">
           <li>Copy the code above</li>
-          <li>
-            Paste it into your website's HTML where you want the status badge to
-            appear
-          </li>
+          <li>Paste it into your website's HTML where you want the status badge to appear</li>
           <li>The widget will automatically update every 60 seconds</li>
         </ol>
       </div>
@@ -100,8 +93,7 @@ export function EmbedCodeGenerator({ slug }: EmbedCodeGeneratorProps) {
         </summary>
         <div className="mt-3 p-4 bg-background/50 rounded-sm border border-primary/10 space-y-3">
           <p className="text-xs text-muted-foreground">
-            You can customize the target element by adding this before the
-            script:
+            You can customize the target element by adding this before the script:
           </p>
           <pre className="bg-zinc-950 border border-zinc-800 rounded-sm p-3 text-xs font-mono text-zinc-300 overflow-x-auto">
             {`<script>
