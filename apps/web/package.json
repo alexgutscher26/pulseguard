@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build && node node_modules/@opennextjs/cloudflare/dist/cli/index.js --skip-build",
+    "build": "next build && node node_modules/@opennextjs/cloudflare/dist/cli/index.js -s",
     "start": "next start",
     "dev": "next dev",
     "dev:bare": "next dev --port 3001"
