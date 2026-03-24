@@ -1,6 +1,8 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getMonitor } from "@/actions/monitors";
 import { MonitorSettingsView } from "@/components/monitors/settings-view";
+import { auth } from "@pulseguard/auth";
+import { headers } from "next/headers";
 
 /**
  * Renders the monitor settings page.
@@ -11,11 +13,21 @@ import { MonitorSettingsView } from "@/components/monitors/settings-view";
  * @param {Promise<{ id: string }>} params.params - A promise that resolves to an object containing the monitor id.
  */
 export default async function MonitorSettingsPage({ params }: { params: Promise<{ id: string }> }) {
-  // ... (auth checks)
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) {
+    redirect("/login");
+  }
+
   const { id } = await params;
+  console.log(`[Debug] Fetching monitor settings for ID: ${id}`);
+  
   const monitor = await getMonitor(id);
 
   if (!monitor) {
+    console.warn(`[Debug] Monitor not found or unauthorized for ID: ${id}`);
     notFound();
   }
 

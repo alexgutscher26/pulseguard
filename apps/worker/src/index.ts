@@ -744,11 +744,15 @@ export default {
       // Support token via query param as fallback for cross-origin WebSockets
       let rawToken: string | null | undefined = url.searchParams.get("token");
 
+      console.log(`[WS] Handshake for Monitor: ${monitorId}. Cookie present: ${!!cookieHeader}`);
+      
       if (!rawToken && cookieHeader) {
         const secureMatch = cookieHeader.match(/__Secure-better-auth\.session_token=([^;]+)/);
         const regularMatch = cookieHeader.match(/better-auth\.session_token=([^;]+)/);
         rawToken = secureMatch?.[1] || regularMatch?.[1] || null;
       }
+
+      console.log(`[WS] Extracted Token: ${rawToken ? "✓ Found" : "✗ Missing"}`);
 
       if (rawToken) {
         const token = decodeURIComponent(rawToken);

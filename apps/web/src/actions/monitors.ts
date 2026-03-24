@@ -377,8 +377,9 @@ export async function getMonitor(id: string) {
     });
     return monitor;
   } catch (error) {
-    console.error("Failed to fetch monitor", error);
-    return null;
+    console.error("Failed to fetch monitor from DB:", error);
+    // Throwing here triggers the error.tsx instead of notFound.tsx
+    throw error;
   }
 }
 
