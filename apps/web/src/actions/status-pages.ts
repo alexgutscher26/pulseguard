@@ -182,13 +182,17 @@ export async function getStatusPage(id: string) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) return null;
 
-  return prisma.statusPage.findFirst({
-    where: { id, userId: session.user.id },
+  return prisma.statusPage.findUnique({
+    where: { id, userId: session.user.id } as any,
     include: {
       monitors: {
         include: {
           monitor: true,
+          group: true,
         },
+        orderBy: { sortOrder: "asc" },
+      },
+      groups: {
         orderBy: { sortOrder: "asc" },
       },
       i18nSettings: true,

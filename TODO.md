@@ -162,18 +162,32 @@ Expand what PulseGuard can actually guard.
 Public-facing transparency for users and internal collaboration for teams.
 
 ### 🌐 Status Pages
-
 - [x] **Public & Private Status Pages**
   - Route: `status.pulseguard.com/[slug]` or Custom Domain (CNAME).
   - Private Pages: Password protection, SS0-based access, IP Whitelisting.
-- [ ] **Multi-Tenant Status Pages**
-  - Allow B2B SaaS users to render isolated status pages for _their_ individual clients, showing only relevant service parts.
+- [ ] **OpenStatus Parity (Competitive Shield)**
+  - [x] **Logical Grouping**: Implement `StatusPageGroup` model for collapsible sections (e.g. "Services", "API", "Nodes").
+  - [ ] **Tracker Customization**:
+    - [ ] **Bar Type**: Toggle between `Absolute` (real data) and `Manual` (overridden status).
+    - [ ] **Card Type**: Toggle between `Duration` (percent base) and `Requests` (count base) for trackers.
+    - [ ] **Manual Overrides**: Ability to manually set a day's status (Operational, Degraded, etc.) regardless of automated checks.
+  - [ ] **Enriched Branding & Links**:
+    - [ ] **Logo Link**: Explicit `homepageUrl` field for branding.
+    - [ ] **Contact Support**: `contactUrl` field to show a "Message" icon/button on the header.
+    - [ ] **Footer Navigation**: Support custom links in the footer (Terms, Privacy, Twitter).
+  - [ ] **Developer UX (Live Preview)**:
+    - [ ] **Floating Edit Button**: Add a "View and Configure" mode that adds an overlay to the public status page for real-time design editing.
+  - [ ] **Theme Store Integration**: Store custom brand color variables (Operational, Error, Degraded) in a `theme` JSON blob.
+  - [ ] **Advanced Branding**: Support Favicon URL, Logo URL, and Footer Links (Contact, Home, Support).
+  - [ ] **SEO Meta Injection**: Support `metaTitle`, `metaDescription`, and `ogImageUrl` for better social sharing.
+  - [ ] **Metrics Toggles**: Allow users to toggle between Latency, Uptime %, and Check Counts visibility per monitor.
+  - [x] **Global Audience (i18n)**: Leverage `StatusPageI18n` for full locale switching support.
 - [ ] **Deep Aesthetic Injection**
   - Allow users to inject custom CSS/JS for fully white-labeled page rendering.
-- [x] **Global Audience (i18n)**
-  - Auto-translate status page based on browser locale.
 - [x] **Subscription System**
   - Support Email, RSS, and Atom feeds.
+- [ ] **Magic-Link Authentication**
+  - Allow authorized corporate viewers to access private pages via email links without passwords.
 - [ ] **SLA Customer Portal**
   - A secure view where clients can log in to generate official SLA performance reports for billing discussions.
 

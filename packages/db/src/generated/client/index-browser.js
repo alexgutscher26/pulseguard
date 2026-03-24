@@ -358,10 +358,22 @@ exports.Prisma.StatusPageScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.StatusPageGroupScalarFieldEnum = {
+  id: 'id',
+  statusPageId: 'statusPageId',
+  name: 'name',
+  description: 'description',
+  sortOrder: 'sortOrder',
+  isExpanded: 'isExpanded',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.StatusPageMonitorScalarFieldEnum = {
   id: 'id',
   statusPageId: 'statusPageId',
   monitorId: 'monitorId',
+  groupId: 'groupId',
   displayName: 'displayName',
   displayGroup: 'displayGroup',
   sortOrder: 'sortOrder',
@@ -537,6 +549,7 @@ exports.Prisma.ModelName = {
   MaintenanceWindow: 'MaintenanceWindow',
   StatusPageI18n: 'StatusPageI18n',
   StatusPage: 'StatusPage',
+  StatusPageGroup: 'StatusPageGroup',
   StatusPageMonitor: 'StatusPageMonitor',
   StatusPageView: 'StatusPageView',
   StatusPageSubscriber: 'StatusPageSubscriber',

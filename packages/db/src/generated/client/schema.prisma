@@ -437,6 +437,7 @@ model StatusPage {
   userId       String
   user         User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
   monitors     StatusPageMonitor[]
+  groups       StatusPageGroup[]
   views        StatusPageView[]
   i18nSettings StatusPageI18n[]
   subscribers  StatusPageSubscriber[]
@@ -444,9 +445,28 @@ model StatusPage {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([id, userId])
   @@index([slug])
   @@index([customDomain])
   @@index([userId])
+}
+
+model StatusPageGroup {
+  id           String     @id @default(cuid())
+  statusPageId String
+  statusPage   StatusPage @relation(fields: [statusPageId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+  sortOrder   Int     @default(0)
+  isExpanded  Boolean @default(true)
+
+  monitors StatusPageMonitor[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([statusPageId])
 }
 
 model StatusPageMonitor {
@@ -458,8 +478,11 @@ model StatusPageMonitor {
   monitorId String
   monitor   Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
 
+  groupId String?
+  group   StatusPageGroup? @relation(fields: [groupId], references: [id], onDelete: SetNull)
+
   displayName  String? // Override monitor name contextually
-  displayGroup String? // "API", "Database", etc.
+  displayGroup String? // Legacy field, might be replaced by StatusPageGroup
   sortOrder    Int     @default(0)
 
   createdAt DateTime @default(now())
