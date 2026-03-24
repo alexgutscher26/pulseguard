@@ -132,6 +132,10 @@ Expand what PulseGuard can actually guard.
   - Fetch WHOIS/RDAP data. Alert on `serverHold`, `clientHold`, or `pendingDelete` statuses.
 - [ ] **Heartbeat / Cron Monitor (Push Monitoring)**
   - "Inverse" monitoring. Provide a unique webhook URL. Alert if URL _not_ called within user-defined timeframe. Useful for backup job verifications.
+- [ ] **MCP (Model Context Protocol) Sentinel**
+  - [ ] **JSON-RPC Ping Check**: Specialized template for monitoring MCP servers using standard JSON-RPC 2.0 pings.
+  - [ ] **JSON Body Assertions**: Pre-configured assertions for `jsonrpc: 2.0` and `result: {}` validation.
+  - [ ] **Deep Property Validation**: Use dot-path notation (e.g., `result.tools.0.name`) to verify tool availability.
 
 ### 🧪 API & Synthetic Monitors (Pro/Business)
 
@@ -152,6 +156,11 @@ Expand what PulseGuard can actually guard.
   - Stores regional performance data and executes checks from selected origins.
 - [ ] **True Concurrent Global Ping (Paid)**
   - Implement Cloudflare Durable Objects to guarantee simultaneously fired checks from exactly 5/10/20 requested global datacenters.
+- [ ] **Private Monitoring Probes (The Internal Guard)**
+  - [ ] **Stateless Probes (Docker/WASM)**: Self-hostable worker instances that poll PulseGuard for jobs.
+  - [ ] **Cloudflare Native Deployment**: Support for deploying probes to **Cloudflare Containers** (serverless OCI) for edge-native private monitoring.
+  - [ ] **Token-Based Proxying**: Secure monitoring of services behind corporate firewalls or VPNs.
+  - [ ] **Heartbeat Config**: Alert if a probe loses connection for >X seconds.
 - [ ] **BGP Route Monitoring**
   - Detect BGP leaks or route hijacking affecting user traffic routing to the monitored endpoints.
 
@@ -186,6 +195,10 @@ Public-facing transparency for users and internal collaboration for teams.
   - Allow users to inject custom CSS/JS for fully white-labeled page rendering.
 - [x] **Subscription System**
   - Support Email, RSS, and Atom feeds.
+- [ ] **Embeddable SVG Status Badges (Shields)**
+  - [ ] **Dynamic SVG Rendering**: Endpoint (`/api/badge/[slug].svg`) that returns real-time status as an image for GitHub READMEs.
+  - [ ] **Customization Query Param**: `?theme=dark`, `?style=flat|outline`, and `?size=sm|lg`.
+  - [ ] **Markdown Snippet Generator**: 1-click copy for "Status: Operational" badges in the dashboard.
 - [ ] **Magic-Link Authentication**
   - Allow authorized corporate viewers to access private pages via email links without passwords.
 - [ ] **SLA Customer Portal**
@@ -216,6 +229,11 @@ Connect PulseGuard natively to the entire DevOps toolchain.
   - Support open-source and self-hosted chat protocols.
 - [ ] **Microsoft Teams & Discord Rich Bots**
   - Interactive cards inside chat where users can "Acknowledge" the incident directly from the IM client.
+- [ ] **Conversational Slack Agent (@PulseGuard)**
+  - [ ] **Incident Ops**: Commands to `create`, `update`, and `resolve` incidents directly from Slack threads.
+  - [ ] **Status Queries**: Ask `@PulseGuard what's the status of my monitors?` for real-time summaries.
+  - [ ] **Maintenance Scheduling**: `@PulseGuard schedule maintenance for API tomorrow 2pm-3pm`.
+  - [ ] **Slash Command (`/pulse`)**: Quick access to monitor lists and global pulse health.
 
 ### 🏢 Enterprise DevOps Tools
 
@@ -294,13 +312,19 @@ Enterprise-grade controls to pass strict compliance reviews.
 Made for developers, by developers.
 
 - [ ] **Official CLI Tool (`pulseguard-cli`)**
-  - Commands: `pulse monitor ls`, `pulse trigger <id>`, `pulse logs tail`.
+  - [ ] **Monitoring as Code (MaC)**: `pulse monitors import` and `pulse monitors apply` using `pulseguard.yaml` sync (OpenStatus parity).
+  - [ ] **Live Debugging**: `pulse logs tail` and `pulse trigger <id>` for instant monitoring verification.
+  - [ ] **CI/CD Integration**: Command to wait for health checks to pass before completing a deployment step.
 - [ ] **Terraform & Pulumi Providers**
   - Manage PulseGuard architecture purely as code (IaC) alongside the rest of the stack.
 - [ ] **Language SDKs**
   - Publish official typed libraries for Node.js, Python, Go, and Rust.
 - [ ] **CI/CD Integrations (GitHub Actions, Vercel, Netlify)**
-  - Automatically create a transient monitor for ephemeral PR preview environments. Destroy monitor when PR merges.
+  - [ ] **PulseGuard GitHub Action**: `uses: pulseguard/action@v1` to trigger synthetic tests on deploy.
+  - [ ] **Instant Trigger**: API endpoint to force-run checks immediately for CI validation (OpenStatus parity).
+  - [ ] **Deployment Gates**: Fail build/deploy if critical monitors (`ids: [...]`) fail after X retries.
+  - [ ] **PR Summaries**: Automatically comment on GitHub PRs with latency/uptime stats for transient preview environments.
+  - [ ] **Transient Monitor Management**: Automatically create/destroy monitors for ephemeral PR environments.
 
 ---
 
@@ -405,6 +429,12 @@ Strategies to win the indie developer market against established giants and mode
 | **Analytics & Insights**  | Basic                | Actionable, AI-assisted                  |
 | **Community & Templates** | Basic                | Extensive (1-click Stack Imports)        |
 | **Export & Migration**    | Possible             | Effortless 1-click JSON                  |
+| **Private Monitoring**   | Docker Probes        | Plan: Hybrid Probes (Edge + On-prem)     |
+| **CLI / MaC**            | Import/Apply YAML    | Plan: `pulse monitors apply` sync        |
+| **Slack Agent**          | Conversational NL    | Added: Conversational (@PulseGuard) Bot  |
+| **MCP Monitoring**       | JSON-RPC Assertions  | Plan: MCP Sentinel Template              |
+| **Synthetic CI/CD**      | GitHub Action Trigger| Plan: `pulseguard-action` + Gates        |
+| **Status Badges**        | SVG/PNG (v2) Support | Plan: Dynamic SVG Generator              |
 
 ### 🚀 Marketing Strategy: "Stop Monitor Hoarding, Start Monitoring Smarter"
 
