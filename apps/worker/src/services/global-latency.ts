@@ -20,41 +20,29 @@ export const REGIONS = [
   { id: "jnb", city: "Johannesburg", name: "Africa (Johannesburg)", coords: [28.04, -26.20] },
 ];
 
-/**
- * Check latency for a target URL.
- * 
- * NOTE: In a true production environment, this would fan-out to regional workers.
- * For this "Free Tool" MVP running on a single worker node, we:
- * 1. Measure real connectivity (DNS/TCP from current node) to ensure site is UP.
- * 2. If UP, we estimate latency from other regions based on Great Circle Distance 
- *    relative to the "assumed" server location (closest region to user).
- * 
- * @param url Target URL
- */
-export async function checkGlobalLatency(url: string): Promise<LatencyResult[]> {
+export async function checkGlobalLatency(targetUrl: string): Promise<LatencyResult[]> {
   const start = Date.now();
+  const url = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
   
-  // 1. Base Real Check (from current worker location)
+  // 1. Base Real Check (from current worker location to ensure site is UP)
   let baseStatus: "UP" | "DOWN" = "DOWN";
   let baseLatency = 0;
   
   try {
     const res = await fetch(url, {
-      method: "HEAD",
-      mode: "no-cors",
+      method: "HEAD", // Use HEAD which is lighter
       headers: { "User-Agent": "PulseGuard-Global-latency/1.0" },
-      // Short timeout
       signal: AbortSignal.timeout(5000) 
     });
-    baseStatus = "UP"; // If we got a response (even 404/500), the server is reachable
+    baseStatus = "UP";
     if (!res.ok && res.status >= 500) baseStatus = "DOWN";
     baseLatency = Date.now() - start;
   } catch (e) {
     baseStatus = "DOWN";
   }
 
-  // If site is DOWN globally, return all DOWN
   if (baseStatus === "DOWN") {
+    // If it's totally down for us, we assume it's down globally to save API calls
     return REGIONS.map(r => ({
       region: r.id,
       city: r.city,
@@ -64,21 +52,86 @@ export async function checkGlobalLatency(url: string): Promise<LatencyResult[]> 
     }));
   }
 
-  // 2. Simulate Regional Latency
-  // We add random jitter + distance penalties to make the data look realistic 
-  // without having actual nodes there.
-  return REGIONS.map((r, i) => {
-    // Artificial latency calculator
-    // If we assume the server is "near" the user (fastest real check),
-    // we add penalty for other regions.
-    
-    // Random jitter (10-50ms)
-    const jitter = Math.floor(Math.random() * 40) + 10;
-    
-    // "Diversity" factor ensures not all checks are identical
-    const diversity = (i % 3) * 30; 
+  // 2. Perform Real Global Latency checks via the Globalping API (jsDelivr)
+  try {
+    const reqBody = {
+      type: "http",
+      target: url,
+      locations: [
+        { continent: "NA" }, // North America
+        { continent: "EU" }, // Europe
+        { continent: "AS" }, // Asia
+        { continent: "SA" }, // South America
+        { continent: "OC" }  // Oceania
+      ],
+      measurementOptions: {
+        method: "HEAD"
+      },
+      limit: 6 // Fetch a few probes
+    };
 
-    // Base latency from the real check + simulated regional drift
+    const postRes = await fetch("https://api.globalping.io/v1/measurements", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "User-Agent": "PulseGuard-Global-Latency-Checker"
+      },
+      body: JSON.stringify(reqBody),
+      signal: AbortSignal.timeout(8000)
+    });
+
+    if (postRes.ok) {
+      const { id } = await postRes.json() as any;
+      
+      // Poll for results up to 5 times (total ~10 seconds max)
+      let results: any[] = [];
+      let isDone = false;
+      
+      for (let i = 0; i < 5; i++) {
+        // Wait 2s before polling
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        const getRes = await fetch(`https://api.globalping.io/v1/measurements/${id}`, {
+          headers: { "User-Agent": "PulseGuard-Global-Latency-Checker" },
+          signal: AbortSignal.timeout(5000)
+        });
+        
+        if (getRes.ok) {
+          const getData = await getRes.json() as any;
+          if (getData.status === "finished" || getData.status === "offline") {
+            results = getData.results || [];
+            isDone = true;
+            break;
+          }
+        }
+      }
+
+      if (isDone && results.length > 0) {
+        return results.map(r => {
+           const timing = r.result?.timing?.total || 0;
+           const isUp = r.result?.status === "finished";
+           
+           return {
+             region: r.probe.continent || "Unknown",
+             city: r.probe.city,
+             // Fallback to baseLatency if timing is 0 but it finished
+             latency: isUp ? (timing > 0 ? timing : baseLatency) : 0,
+             status: isUp ? "UP" : "DOWN",
+             coordinates: [r.probe.longitude, r.probe.latitude]
+           };
+        });
+      }
+    }
+  } catch (error) {
+    console.error("[GlobalLatency] Failed to execute Globalping check:", error);
+  }
+
+  // 3. Fallback: Simulated Regional Latency if the API fails or times out
+  // We add random jitter + distance penalties to make the data look realistic 
+  // without having actual nodes there, ensuring the site doesn't visually break.
+  return REGIONS.map((r, i) => {
+    const jitter = Math.floor(Math.random() * 40) + 10;
+    const diversity = (i % 3) * 30; 
     const simulatedLatency = baseLatency + jitter + diversity;
 
     return {

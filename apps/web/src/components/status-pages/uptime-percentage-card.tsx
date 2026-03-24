@@ -68,7 +68,7 @@ export function UptimePercentageCard({
       {/* Background gradient based on status */}
       <div
         className={cn(
-          "absolute inset-0 bg-gradient-to-br opacity-50 transition-opacity group-hover:opacity-70",
+          "absolute inset-0 bg-linear-to-br opacity-50 transition-opacity group-hover:opacity-70",
           getUptimeBgColor(current),
         )}
       />

@@ -3,7 +3,6 @@
 import {
   Search,
   Plus,
-  Terminal,
   LogOut,
   User,
   Settings,

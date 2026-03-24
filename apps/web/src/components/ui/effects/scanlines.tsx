@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
 
 export function Scanlines() {
   const [mounted, setMounted] = useState(false);

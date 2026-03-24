@@ -1,5 +1,3 @@
-import { PrismaClient } from "@prisma/client";
-
 export interface MonthlyStats {
   globalUptime: number;
   totalIncidents: number;

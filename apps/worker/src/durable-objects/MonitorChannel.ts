@@ -5,16 +5,10 @@ interface Env {
 }
 
 export class MonitorChannel extends DurableObject {
-  private sessions: Set<WebSocket> = new Set();
-
   constructor(state: DurableObjectState, env: Env) {
     super(state, env);
-    // Recover existing websockets if the DO was Hibernated (Serverless mode)
-    // and we want to persist connections. 
-    // For now, we'll just track active ones in memory.
-    this.ctx.getWebSockets().forEach((ws) => {
-      this.sessions.add(ws);
-    });
+    // With DO Hibernation, Cloudflare persists the WebSocket state automatically.
+    // There is no need to manually recover or track subsets of active connections!
   }
 
   async fetch(request: Request): Promise<Response> {
@@ -26,16 +20,16 @@ export class MonitorChannel extends DurableObject {
         return new Response("Expected Upgrade: websocket", { status: 426 });
       }
 
-      // TODO: Authenticate the user here using the cookie or token from request headers.
-      // For Phase 1 validation, we might skip deep auth check inside DO 
-      // if it's already done by the Worker wrapper, but ideally DO checks too.
+      // Security Validation: Deep Authentication (Session + Ownership or Public Status Page)
+      // is completely enforced at the Worker Gateway (`src/index.ts`) before forwarding to this DO.
+      // Since DOs are not internet-routable directly, this is strictly secure.
       
       const pair = new WebSocketPair();
       const [client, server] = Object.values(pair);
 
-      // Handle the server side of the socket
+      // Handle the server side of the socket natively (Opts into Hibernation API)
       // @ts-ignore - Cloudflare types nuance
-      this.handleSession(server);
+      this.ctx.acceptWebSocket(server);
 
       return new Response(null, {
         status: 101,
@@ -45,12 +39,12 @@ export class MonitorChannel extends DurableObject {
     }
 
     // 2. Handle Broadcast (Internal API)
-    // Called by the Monitor Runner Worker to push updates
     if (request.method === "POST" && url.pathname === "/broadcast") {
       try {
         const payload = await request.json();
-        this.broadcast(payload);
-        return new Response(JSON.stringify({ success: true, receivers: this.sessions.size }), {
+        const activeConnections = this.broadcast(payload);
+        
+        return new Response(JSON.stringify({ success: true, receivers: activeConnections }), {
           headers: { "Content-Type": "application/json" },
         });
       } catch (e) {
@@ -61,36 +55,37 @@ export class MonitorChannel extends DurableObject {
     return new Response("Not Found", { status: 404 });
   }
 
-  private handleSession(ws: WebSocket) {
-    // Accept the websocket
-    this.ctx.acceptWebSocket(ws);
-    this.sessions.add(ws);
+  // =========================================================================
+  // DO HIBERNATION API METHODS
+  // Defining these on the prototype instructs Cloudflare to automatically 
+  // hibernate this DO and wake it ONLY when events fire, drastically reducing CPU time.
+  // =========================================================================
 
-    // Set up event listeners
-    // Note: In Cloudflare DOs, we use this.ctx.acceptWebSocket(ws) which handles the "open" state.
-    // We mainly care about close/error here to remove from the set.
-    // However, the standard way with `ctx.acceptWebSocket` is to rely on `webSocketMessage` / `webSocketClose` handlers
-    // on the class itself if we want to use the hibernation API, OR standard event listeners if not hibernating.
-    // For simplicity in this Phase 1, we will use standard event listeners on the socket instance.
-    
-    ws.addEventListener("close", () => {
-      this.sessions.delete(ws);
-    });
-
-    ws.addEventListener("error", () => {
-      this.sessions.delete(ws);
-    });
+  webSocketMessage() {
+     // No incoming client messages are expected for the read-only dashboard feed.
   }
 
-  private broadcast(data: any) {
+  webSocketClose() {
+     // Cloudflare natively drops `_ws` from `this.ctx.getWebSockets()` automatically!
+     // No manual array `.delete(ws)` logic needed.
+  }
+
+  webSocketError() {
+     // Automatically handled by the underlying DO container.
+  }
+
+  private broadcast(data: any): number {
     const message = JSON.stringify(data);
-    this.sessions.forEach((ws) => {
+    const sockets = this.ctx.getWebSockets();
+    
+    sockets.forEach((ws) => {
       try {
         ws.send(message);
       } catch (e) {
-        // Remove dead connections
-        this.sessions.delete(ws);
+        // Just in case a socket is closing in transit, preventing the loop from crashing
       }
     });
+
+    return sockets.length;
   }
 }

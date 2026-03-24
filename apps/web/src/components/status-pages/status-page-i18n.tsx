@@ -5,14 +5,6 @@ import { updateLanguageSettings } from "@/actions/i18n";
 import { toast } from "sonner";
 import { Globe, Edit, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { StatusPageMessageEditor } from "./status-page-message-editor";
 
 const SUPPORTED_LOCALES = [
   { code: "en", label: "English" },

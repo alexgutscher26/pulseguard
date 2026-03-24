@@ -96,7 +96,7 @@ export function SSLChecker() {
 
       if (!res.ok) throw new Error("Check failed");
 
-      const data = await res.json();
+      const data = (await res.json()) as SSLResult;
       setResult(data);
 
       if (!unlocked) {
