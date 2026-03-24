@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build && bunx @opennextjs/cloudflare",
+    "build": "next build && bunx @opennextjs/cloudflare build",
     "start": "next start",
     "dev": "next dev",
     "dev:bare": "next dev --port 3001"
