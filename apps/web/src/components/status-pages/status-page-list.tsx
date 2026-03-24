@@ -8,14 +8,24 @@ import { CreateStatusPageModal } from "./create-status-page-modal";
 
 export function StatusPageList({ initialPages }: { initialPages: any[] }) {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-// TODO: Implement this 
-  // Helper to determine link - locally we rewrite, so localhost:3000/status-page/slug works for now if we add rewrite rule,
-  // or subdomain.localhost:3000 if using that strategy.
-  // For now let's assume path based for simple view.
   const getPublicLink = (page: any) => {
     if (page.customDomain) return `https://${page.customDomain}`;
-    // In production it would be slug.pulseguard.com or similar.
-    // For local dev, maybe /status-page/[slug] via Next.js route
+    
+    if (typeof window !== "undefined") {
+      const host = window.location.host;
+      
+      // Local development or generic path-based fallback
+      if (host.includes("localhost") || host.includes("127.0.0.1")) {
+        return `/status-page/${page.slug}`;
+      }
+      
+      // Production subdomain strategy:
+      // Replaces the "app." prefix with the page slug (e.g., app.pulseguard.cloud -> slug.pulseguard.cloud)
+      // Otherwise assumes root domain and prepends slug.
+      const baseDomain = host.startsWith("app.") ? host.replace("app.", "") : host;
+      return `https://${page.slug}.${baseDomain}`;
+    }
+
     return `/status-page/${page.slug}`;
   };
 

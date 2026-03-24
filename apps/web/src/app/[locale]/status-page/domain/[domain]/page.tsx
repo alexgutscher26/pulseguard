@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { PublicView } from "@/components/status-pages/public-view";
 import { headers, cookies } from "next/headers";
 import { PasswordProtection } from "@/components/status-pages/password-protection";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { getI18nOverrides } from "@/actions/i18n";

@@ -5,7 +5,7 @@ import { auth } from "@pulseguard/auth";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 
-import { $Enums } from "@prisma/client";
+import { $Enums } from "@pulseguard/db";
 
 export type IncidentTemplateData = {
   name: string;

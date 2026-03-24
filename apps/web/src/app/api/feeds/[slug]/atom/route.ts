@@ -1,11 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import prisma from "@pulseguard/db";
 import { generateAtomFeed } from "@/lib/feeds/atom-generator";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(
-  request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   try {

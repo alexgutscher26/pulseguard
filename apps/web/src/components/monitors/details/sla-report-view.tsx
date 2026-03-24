@@ -173,7 +173,7 @@ export function SlaReportView({ monitorId }: { monitorId: string }) {
               >
                 <XAxis
                   dataKey="date"
-                  tickFormatter={(val) => format(new Date(val), "MMM d")}
+                  tickFormatter={(val) => format(new Date(val as string | number), "MMM d")}
                   stroke="#52525b"
                   fontSize={12}
                   tickLine={false}
@@ -194,7 +194,7 @@ export function SlaReportView({ monitorId }: { monitorId: string }) {
                   content={({ active, payload, label }) => {
                     if (active && payload && payload.length) {
                       const data = payload[0].payload;
-                      const dateStr = format(new Date(label), "MMM d, yyyy");
+                      const dateStr = format(new Date(label as string | number), "MMM d, yyyy");
                       return (
                         <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-3 shadow-xl backdrop-blur-md">
                           <p className="mb-2 text-sm font-medium text-zinc-400">

@@ -58,7 +58,7 @@ export default function LandingHeader() {
                 ].map((tool) => (
                   <Link
                     key={tool.name}
-                    href={tool.href}
+                    href={tool.href as any}
                     className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 transition-colors text-muted-foreground hover:text-foreground group/item"
                   >
                     <div className="text-primary group-hover/item:scale-110 transition-transform">
@@ -79,7 +79,7 @@ export default function LandingHeader() {
           ].map((item) => (
             <Link
               key={item.name}
-              href={item.href}
+              href={item.href as any}
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               {item.name}

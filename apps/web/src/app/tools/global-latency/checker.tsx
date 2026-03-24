@@ -90,7 +90,7 @@ export function LatencyChecker() {
 
       if (!res.ok) throw new Error("Failed to fetch latency data");
 
-      const data = await res.json();
+      const data = (await res.json()) as LatencyResult[];
       setResults(data);
 
       // Auto-open gate if not unlocked
