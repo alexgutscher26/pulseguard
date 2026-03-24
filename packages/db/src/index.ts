@@ -18,12 +18,12 @@ export const createPrisma = (databaseUrl?: string) => {
 
   const poolConfig: any = {
     connectionString: cleanUrl,
-    // Keep pool size small — Neon's session-mode pooler caps total clients at `pool_size`.
-    // Each serverless function instance must use a tiny slice to avoid MaxClientsInSessionMode.
-    max: 5,
+    // Slightly increase max to avoid checkout timeout when multiple actions happen at once (like Dashboard)
+    max: 10,
     // Release idle connections quickly in a serverless environment
     idleTimeoutMillis: 10_000,
-    connectionTimeoutMillis: 5_000,
+    // Increase to 30s as default to handle cold-starts/latency spikes better
+    connectionTimeoutMillis: 30_000,
   };
 
   if (isSsl) {
@@ -36,9 +36,16 @@ export const createPrisma = (databaseUrl?: string) => {
   return new PrismaClient({ adapter });
 };
 
-// Default instance for environments where the database URL is available
-let _prisma: PrismaClient | null = null;
-const prismaInstances = new Map<string, PrismaClient>();
+// Global type for singleton storage
+type PrismaSingleton = {
+  prisma?: PrismaClient;
+  instances?: Map<string, PrismaClient>;
+};
+
+const g = globalThis as unknown as PrismaSingleton;
+if (!g.instances) {
+  g.instances = new Map<string, PrismaClient>();
+}
 
 const getUrl = () => {
   if (typeof process !== "undefined" && process.env?.DATABASE_URL) {
@@ -58,22 +65,22 @@ const getUrl = () => {
 
 export const getPrisma = (databaseUrl?: string) => {
   if (databaseUrl) {
-    if (!prismaInstances.has(databaseUrl)) {
-      prismaInstances.set(databaseUrl, createPrisma(databaseUrl));
+    if (!g.instances!.has(databaseUrl)) {
+      g.instances!.set(databaseUrl, createPrisma(databaseUrl));
     }
-    return prismaInstances.get(databaseUrl)!;
+    return g.instances!.get(databaseUrl)!;
   }
 
-  if (!_prisma) {
+  if (!g.prisma) {
     const url = getUrl();
     if (!url) {
       throw new Error(
         "DATABASE_URL is not set. Ensure it's provided in your environment variables.",
       );
     }
-    _prisma = createPrisma(url);
+    g.prisma = createPrisma(url);
   }
-  return _prisma;
+  return g.prisma;
 };
 
 // Proxy to allow default import to work like a PrismaClient instance
