@@ -468,9 +468,22 @@ export async function processBatch(
                   retryResult.status = "UP";
                   retryResult.errorReason = undefined;
                 } else {
-                  console.warn(
-                    `[MultiVector] ALL verification vectors (Local, Retry, 18-1-0, 18-1-1) confirmed DOWN for ${monitor.name}.`,
+                  console.log(
+                    `[MultiVector] Component 18-1-1 also DOWN. Trying final High-Fidelity Vector 19-3-1...`,
                   );
+                  // Use captured latencies for quantum verification if available
+                  const finalVector = await mesh.component_19_3_1(monitor.url, capturedLatencies || [], 2000);
+                  if (finalVector.status === "UP") {
+                    console.log(
+                      `[MultiVector] Component 19-3-1 reported UP! False positive averted for ${monitor.name}. (Anomaly: ${finalVector.anomaly?.isAnomaly})`,
+                    );
+                    retryResult.status = "UP";
+                    retryResult.errorReason = undefined;
+                  } else {
+                    console.warn(
+                      `[MultiVector] ALL verification vectors (Local, Retry, 18-1-0, 18-1-1, 19-3-1) confirmed DOWN for ${monitor.name}.`,
+                    );
+                  }
                 }
               }
             } catch (err) {
@@ -804,7 +817,7 @@ export default {
           // Perform Auth Check (verify session cookie or allow if on a public status page)
           const cookieHeader = request.headers.get("Cookie");
           let isAuthenticated = false;
-          const prisma = getPrisma(env.DATABASE_URL);
+          let prisma = getPrisma(env.DATABASE_URL);
 
           // Support token via query param as fallback for cross-origin WebSockets
           let rawToken: string | null | undefined = url.searchParams.get("token");
@@ -819,37 +832,64 @@ export default {
 
           console.log(`[WS] Extracted Token: ${rawToken ? "✓ Found" : "✗ Missing"}`);
 
-          if (rawToken) {
-            const token = decodeURIComponent(rawToken);
-            const session = await prisma.session.findUnique({
-              where: { token },
-              select: { userId: true, expiresAt: true },
-            });
+          // Perform Auth Check with Retry logic for stale DB connections
+          const performHandshake = async (retry: boolean = true): Promise<Response | null> => {
+            try {
+              if (rawToken) {
+                const token = decodeURIComponent(rawToken);
+                const session = await prisma.session.findUnique({
+                  where: { token },
+                  select: { userId: true, expiresAt: true },
+                });
 
-            if (session && session.expiresAt > new Date()) {
-              const monitor = await prisma.monitor.findUnique({
-                where: { id: monitorId },
-                select: { userId: true },
-              });
+                if (session && session.expiresAt > new Date()) {
+                  const monitor = await prisma.monitor.findUnique({
+                    where: { id: monitorId },
+                    select: { userId: true },
+                  });
 
-              if (monitor && monitor.userId === session.userId) {
-                isAuthenticated = true;
+                  if (monitor && monitor.userId === session.userId) {
+                    isAuthenticated = true;
+                  }
+                }
               }
+
+              if (!isAuthenticated) {
+                // Fallback: If no valid session, check if monitor is exposed on any public Status Page
+                const publicMonitor = await prisma.statusPageMonitor.findFirst({
+                  where: {
+                    monitorId: monitorId,
+                    statusPage: { isPrivate: false },
+                  },
+                });
+
+                if (!publicMonitor) {
+                  return new Response("Unauthorized", { status: 401 });
+                }
+                isAuthenticated = true; // Mark as authenticated via public access
+              }
+              return null; // Success, continue
+            } catch (err: any) {
+              if (retry && (err.message?.includes("Connection terminated unexpectedly") || 
+                  err.message?.includes("is closed") || 
+                  err.message?.includes("not found"))) {
+                console.warn(`[WS Handshake] Stale DB connection detected. Resetting Prisma and retrying...`);
+                const { resetPrisma } = await import("@pulseguard/db");
+                resetPrisma(env.DATABASE_URL);
+                // Re-get the new instance
+                prisma = getPrisma(env.DATABASE_URL);
+                // Retry
+                return await performHandshake(false); // Only retry once
+              }
+              throw err; // Re-throw if retry failed or hit different error
             }
-          }
+          };
+
+          const authResponse = await performHandshake();
+          if (authResponse) return authResponse;
 
           if (!isAuthenticated) {
-            // Fallback: If no valid session, check if monitor is exposed on any public Status Page
-            const publicMonitor = await prisma.statusPageMonitor.findFirst({
-              where: {
-                monitorId: monitorId,
-                statusPage: { isPrivate: false },
-              },
-            });
-
-            if (!publicMonitor) {
-              return new Response("Unauthorized", { status: 401 });
-            }
+            return new Response("Unauthorized", { status: 401 });
           }
 
           // Forward to Durable Object
@@ -1057,7 +1097,7 @@ export default {
   // 1. Cron: Find pending checks and run them (Free Tier Batch Mode)
   async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
     console.log(`Cron triggered: ${event.cron}`);
-    const prisma = getPrisma(env.DATABASE_URL);
+    let prisma = getPrisma(env.DATABASE_URL);
 
     // Monthly PDF Report Trigger
     if (event.cron === "0 9 1 * *") {
@@ -1092,22 +1132,43 @@ export default {
     const totalShards = Number(env.TOTAL_SHARDS || 1);
     const shardId = Number(env.SHARD_ID || 0);
 
+    const runWithRetry = async (retry: boolean = true): Promise<any> => {
+      try {
+        // Find active monitors that are due for a check, but only for THIS shard
+        // We use a raw query to fetch just the IDs that belong to the current shard's hash-space.
+        // Postgres: Use abs(hashtext(id)) % totalShards = shardId
+        const targetIds: { id: string }[] = await prisma.$queryRaw`
+          SELECT id FROM "Monitor"
+          WHERE ("status" IN ('UP', 'DOWN', 'MAINTENANCE'))
+          AND ("nextCheck" IS NULL OR "nextCheck" <= NOW())
+          AND (abs(hashtext(id)) % ${totalShards}) = ${shardId}
+          ORDER BY "nextCheck" ASC
+          LIMIT ${BATCH_SIZE}
+        `;
+        return targetIds;
+      } catch (err: any) {
+        if (retry && (err.message?.includes("Connection terminated unexpectedly") || 
+            err.message?.includes("is closed") || 
+            err.message?.includes("not found"))) {
+          console.warn(`[Sync] Stale DB connection detected in schedule. Resetting Prisma and retrying...`);
+          const { resetPrisma } = await import("@pulseguard/db");
+          resetPrisma(env.DATABASE_URL);
+          // Re-get new prisma instance
+          prisma = getPrisma(env.DATABASE_URL);
+          // Retry
+          return await runWithRetry(false);
+        }
+        throw err;
+      }
+    };
+
     try {
-      // Find active monitors that are due for a check, but only for THIS shard
-      // We use a raw query to fetch just the IDs that belong to the current shard's hash-space.
-      // Postgres: Use abs(hashtext(id)) % totalShards = shardId
-      const targetIds: { id: string }[] = await prisma.$queryRaw`
-        SELECT id FROM "Monitor"
-        WHERE ("status" IN ('UP', 'DOWN', 'MAINTENANCE'))
-        AND ("nextCheck" IS NULL OR "nextCheck" <= NOW())
-        AND (abs(hashtext(id)) % ${totalShards}) = ${shardId}
-        ORDER BY "nextCheck" ASC
-        LIMIT ${BATCH_SIZE}
-      `;
+      // Shard-based monitor fetching
+      const targetIds = await runWithRetry();
 
       if (targetIds.length === 0) return;
 
-      const ids = targetIds.map((t) => t.id);
+      const ids = targetIds.map((t: { id: any; }) => t.id);
 
       // Fetch full monitor data for the batch
       const monitors = await prisma.monitor.findMany({

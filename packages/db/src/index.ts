@@ -16,8 +16,9 @@ export const createPrisma = (databaseUrl?: string) => {
 
   const poolConfig: any = {
     connectionString: cleanUrl,
-    // Slightly increase max to avoid checkout timeout when multiple actions happen at once (like Dashboard)
-    max: 10,
+    // Reduced to 3 to avoid pool exhaustion with many concurrent isolates/workers.
+    // Supabase Pooler (Supavisor) can be sensitive to many checkout attempts.
+    max: 3,
     // Release idle connections quickly in a serverless environment
     idleTimeoutMillis: 10_000,
     // Increase to 30s as default to handle cold-starts/latency spikes better
@@ -63,6 +64,21 @@ const getUrl = () => {
     return env.DATABASE_URL;
   } catch (e) {
     return undefined;
+  }
+};
+
+export const resetPrisma = (databaseUrl?: string) => {
+  if (databaseUrl) {
+    if (g.instances!.has(databaseUrl)) {
+      const client = g.instances!.get(databaseUrl);
+      client?.$disconnect().catch(() => {});
+      g.instances!.delete(databaseUrl);
+    }
+  } else {
+    if (g.prisma) {
+      g.prisma.$disconnect().catch(() => {});
+      g.prisma = undefined;
+    }
   }
 };
 
