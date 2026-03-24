@@ -31,14 +31,15 @@ export default function LandingHeader() {
 
         <nav className="hidden md:flex items-center gap-8">
           {/* Tools Dropdown */}
-          <div className="relative group/dropdown">
-            <button className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer focus:outline-none">
+          <div className="relative group">
+            <button className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer focus:outline-none py-2">
               Tools
-              <ChevronDown className="h-3 w-3 transition-transform group-hover/dropdown:rotate-180" />
+              <ChevronDown className="h-3 w-3 transition-transform group-hover:rotate-180" />
             </button>
 
-            <div className="absolute top-full -left-4 pt-4 w-56 opacity-0 translate-y-2 pointer-events-none group-hover/dropdown:opacity-100 group-hover/dropdown:translate-y-0 group-hover/dropdown:pointer-events-auto transition-all duration-200 ease-out">
-              <div className="bg-[#0a0a0a]/95 backdrop-blur-xl border border-white/5 p-2 rounded-2xl shadow-xl grid gap-1 relative overflow-hidden">
+            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 w-56 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-200 ease-out z-[100]">
+              <div className="bg-[#0a0a0a]/95 backdrop-blur-xl border border-white/5 p-2 rounded-2xl shadow-2xl grid gap-1 relative overflow-hidden">
+                <div className="absolute inset-0 bg-primary/5 opacity-50" />
                 {[
                   {
                     name: "Global Latency",
@@ -59,7 +60,7 @@ export default function LandingHeader() {
                   <Link
                     key={tool.name}
                     href={tool.href as any}
-                    className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 transition-colors text-muted-foreground hover:text-foreground group/item"
+                    className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 transition-colors text-muted-foreground hover:text-foreground group/item relative z-10"
                   >
                     <div className="text-primary group-hover/item:scale-110 transition-transform">
                       {tool.icon}
