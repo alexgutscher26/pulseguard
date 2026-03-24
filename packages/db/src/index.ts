@@ -1,4 +1,4 @@
-import { PrismaClient } from "./generated/client/index.js";
+import { PrismaClient } from "./generated/client/edge.js";
 
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
@@ -100,4 +100,4 @@ const prismaProxy = new Proxy({} as PrismaClient, {
 });
 
 export default prismaProxy;
-export * from "./generated/client/index.js";
+export * from "./generated/client/edge.js";

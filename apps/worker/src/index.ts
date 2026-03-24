@@ -791,261 +791,267 @@ export async function processBatch(
 
 export default {
   // Required: Basic fetch handler
-  async fetch(request: Request, env: Env, _ctx: ExecutionContext) {
-    const url = new URL(request.url);
+  async fetch(request: Request, env: Env, ctx: ExecutionContext) {
+    try {
+      const url = new URL(request.url);
 
-    // WebSocket Route: /ws/monitors/:id
-    if (url.pathname.startsWith("/ws/monitors/")) {
-      const monitorId = url.pathname.split("/")[3];
-      if (!monitorId) return new Response("Missing Monitor ID", { status: 400 });
+      // WebSocket Route: /ws/monitors/:id
+      if (url.pathname.startsWith("/ws/monitors/")) {
+      try {
+        const monitorId = url.pathname.split("/")[3];
+          if (!monitorId) return new Response("Missing Monitor ID", { status: 400 });
 
-      // Perform Auth Check (verify session cookie or allow if on a public status page)
-      const cookieHeader = request.headers.get("Cookie");
-      let isAuthenticated = false;
-      const prisma = getPrisma(env.DATABASE_URL);
+          // Perform Auth Check (verify session cookie or allow if on a public status page)
+          const cookieHeader = request.headers.get("Cookie");
+          let isAuthenticated = false;
+          const prisma = getPrisma(env.DATABASE_URL);
 
-      // Support token via query param as fallback for cross-origin WebSockets
-      let rawToken: string | null | undefined = url.searchParams.get("token");
+          // Support token via query param as fallback for cross-origin WebSockets
+          let rawToken: string | null | undefined = url.searchParams.get("token");
 
-      console.log(`[WS] Handshake for Monitor: ${monitorId}. Cookie present: ${!!cookieHeader}`);
+          console.log(`[WS] Handshake for Monitor: ${monitorId}. Cookie present: ${!!cookieHeader}`);
 
-      if (!rawToken && cookieHeader) {
-        const secureMatch = cookieHeader.match(/__Secure-better-auth\.session_token=([^;]+)/);
-        const regularMatch = cookieHeader.match(/better-auth\.session_token=([^;]+)/);
-        rawToken = secureMatch?.[1] || regularMatch?.[1] || null;
-      }
-
-      console.log(`[WS] Extracted Token: ${rawToken ? "✓ Found" : "✗ Missing"}`);
-
-      if (rawToken) {
-        const token = decodeURIComponent(rawToken);
-        const session = await prisma.session.findUnique({
-          where: { token },
-          select: { userId: true, expiresAt: true },
-        });
-
-        if (session && session.expiresAt > new Date()) {
-          const monitor = await prisma.monitor.findUnique({
-            where: { id: monitorId },
-            select: { userId: true },
-          });
-
-          if (monitor && monitor.userId === session.userId) {
-            isAuthenticated = true;
+          if (!rawToken && cookieHeader) {
+            const secureMatch = cookieHeader.match(/__Secure-better-auth\.session_token=([^;]+)/);
+            const regularMatch = cookieHeader.match(/better-auth\.session_token=([^;]+)/);
+            rawToken = secureMatch?.[1] || regularMatch?.[1] || null;
           }
+
+          console.log(`[WS] Extracted Token: ${rawToken ? "✓ Found" : "✗ Missing"}`);
+
+          if (rawToken) {
+            const token = decodeURIComponent(rawToken);
+            const session = await prisma.session.findUnique({
+              where: { token },
+              select: { userId: true, expiresAt: true },
+            });
+
+            if (session && session.expiresAt > new Date()) {
+              const monitor = await prisma.monitor.findUnique({
+                where: { id: monitorId },
+                select: { userId: true },
+              });
+
+              if (monitor && monitor.userId === session.userId) {
+                isAuthenticated = true;
+              }
+            }
+          }
+
+          if (!isAuthenticated) {
+            // Fallback: If no valid session, check if monitor is exposed on any public Status Page
+            const publicMonitor = await prisma.statusPageMonitor.findFirst({
+              where: {
+                monitorId: monitorId,
+                statusPage: { isPrivate: false },
+              },
+            });
+
+            if (!publicMonitor) {
+              return new Response("Unauthorized", { status: 401 });
+            }
+          }
+
+          // Forward to Durable Object
+          const id = env.MONITOR_CHANNEL.idFromName(monitorId);
+          const stub = env.MONITOR_CHANNEL.get(id);
+
+          // We rewrite the URL to /websocket so the DO knows it's a client connection
+          const doUrl = new URL("https://monitor-channel/websocket");
+
+          // Pass the original request (headers, upgrade, etc) but with new URL
+          return stub.fetch(doUrl.toString(), request);
+        } catch (err: any) {
+          console.error(`[WS ERROR] Critical failure in /ws/monitors/ handler:`, err);
+          return new Response(`Internal Server Error: ${err.message}\nStack: ${err.stack}`, { status: 500 });
         }
       }
 
-      if (!isAuthenticated) {
-        // Fallback: If no valid session, check if monitor is exposed on any public Status Page
-        const publicMonitor = await prisma.statusPageMonitor.findFirst({
-          where: {
-            monitorId: monitorId,
-            statusPage: { isPrivate: false },
-          },
-        });
+      // API Route: /api/dns-audit
+      if (url.pathname === "/api/dns-audit" && request.method === "POST") {
+        try {
+          const body: any = await request.json();
+          const { domain: targetDomain } = body;
 
-        if (!publicMonitor) {
-          return new Response("Unauthorized", { status: 401 });
+          if (!targetDomain) return new Response("Missing 'domain' body param", { status: 400 });
+
+          const { auditDNS } = await import("./services/dns-audit");
+          const results = await auditDNS(targetDomain);
+
+          return new Response(JSON.stringify(results), {
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods": "POST, OPTIONS",
+              "Access-Control-Allow-Headers": "Content-Type",
+            },
+          });
+        } catch (err: any) {
+          return new Response(JSON.stringify({ error: err.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
         }
       }
 
-      // Forward to Durable Object
-      const id = env.MONITOR_CHANNEL.idFromName(monitorId);
-      const stub = env.MONITOR_CHANNEL.get(id);
+      // API Route: /api/payload-audit
+      if (url.pathname === "/api/payload-audit" && request.method === "POST") {
+        try {
+          const body: any = await request.json();
+          const { url: targetUrl, pattern } = body;
 
-      // We rewrite the URL to /websocket so the DO knows it's a client connection
-      const doUrl = new URL("https://monitor-channel/websocket");
+          if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
 
-      // Pass the original request (headers, upgrade, etc) but with new URL
-      return stub.fetch(doUrl.toString(), request);
-    }
+          const finalUrl = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
 
-    // API Route: /api/dns-audit
-    if (url.pathname === "/api/dns-audit" && request.method === "POST") {
-      try {
-        const body: any = await request.json();
-        const { domain: targetDomain } = body;
+          const { auditPayload } = await import("./services/payload-audit");
+          const results = await auditPayload(finalUrl, pattern);
 
-        if (!targetDomain) return new Response("Missing 'domain' body param", { status: 400 });
+          return new Response(JSON.stringify(results), {
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods": "POST, OPTIONS",
+              "Access-Control-Allow-Headers": "Content-Type",
+            },
+          });
+        } catch (err: any) {
+          return new Response(JSON.stringify({ error: err.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+      }
 
-        const { auditDNS } = await import("./services/dns-audit");
-        const results = await auditDNS(targetDomain);
+      // API Route: /api/security-headers
+      if (url.pathname === "/api/security-headers" && request.method === "POST") {
+        try {
+          const body: any = await request.json();
+          const { url: targetUrl } = body;
 
-        return new Response(JSON.stringify(results), {
+          if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
+
+          const finalUrl = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
+
+          const { checkSecurityHeaders } = await import("./services/security-headers");
+          const results = await checkSecurityHeaders(finalUrl);
+
+          return new Response(JSON.stringify(results), {
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods": "POST, OPTIONS",
+              "Access-Control-Allow-Headers": "Content-Type",
+            },
+          });
+        } catch (err: any) {
+          return new Response(JSON.stringify({ error: err.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+      }
+
+      // API Route: /api/ssl-check
+      if (url.pathname === "/api/ssl-check" && request.method === "POST") {
+        try {
+          const body: any = await request.json();
+          const { url: targetUrl } = body;
+
+          if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
+
+          const { checkSSL } = await import("./services/ssl-check");
+          const results = await checkSSL(targetUrl);
+
+          return new Response(JSON.stringify(results), {
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods": "POST, OPTIONS",
+              "Access-Control-Allow-Headers": "Content-Type",
+            },
+          });
+        } catch (err: any) {
+          return new Response(JSON.stringify({ error: err.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+      }
+
+      // API Route: /api/port-check
+      if (url.pathname === "/api/port-check" && request.method === "POST") {
+        try {
+          const body: any = await request.json();
+          const { host, port } = body;
+
+          if (!host || !port) return new Response("Missing host or port", { status: 400 });
+
+          const { checkPort } = await import("./services/port-check");
+          const result = await checkPort(host, parseInt(port));
+
+          return new Response(JSON.stringify(result), {
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods": "POST, OPTIONS",
+              "Access-Control-Allow-Headers": "Content-Type",
+            },
+          });
+        } catch (err: any) {
+          return new Response(JSON.stringify({ error: err.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+      }
+
+      // API Route: /api/global-latency
+      if (url.pathname === "/api/global-latency" && request.method === "POST") {
+        try {
+          const body: any = await request.json();
+          const { url: targetUrl } = body;
+
+          if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
+
+          // Add protocol if missing
+          const finalUrl = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
+
+          const { checkGlobalLatency } = await import("./services/global-latency");
+          const results = await checkGlobalLatency(finalUrl);
+
+          return new Response(JSON.stringify(results), {
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods": "POST, OPTIONS",
+              "Access-Control-Allow-Headers": "Content-Type",
+            },
+          });
+        } catch (err: any) {
+          return new Response(JSON.stringify({ error: err.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+      }
+
+      // CORS Preflight
+      if (request.method === "OPTIONS") {
+        return new Response(null, {
           headers: {
-            "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "POST, OPTIONS",
             "Access-Control-Allow-Headers": "Content-Type",
           },
         });
-      } catch (err: any) {
-        return new Response(JSON.stringify({ error: err.message }), {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        });
       }
+
+      return new Response("PulseGuard Worker is Running", { status: 200 });
+    } catch (globalErr: any) {
+      console.error(`[GLOBAL WORKER ERROR]`, globalErr);
+      return new Response(`Global Worker Error: ${globalErr.message}`, { status: 500 });
     }
-
-    // API Route: /api/payload-audit
-    if (url.pathname === "/api/payload-audit" && request.method === "POST") {
-      try {
-        const body: any = await request.json();
-        const { url: targetUrl, pattern } = body;
-
-        if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
-
-        const finalUrl = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
-
-        const { auditPayload } = await import("./services/payload-audit");
-        const results = await auditPayload(finalUrl, pattern);
-
-        return new Response(JSON.stringify(results), {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "POST, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type",
-          },
-        });
-      } catch (err: any) {
-        return new Response(JSON.stringify({ error: err.message }), {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-    }
-
-    // API Route: /api/security-headers
-    if (url.pathname === "/api/security-headers" && request.method === "POST") {
-      try {
-        const body: any = await request.json();
-        const { url: targetUrl } = body;
-
-        if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
-
-        const finalUrl = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
-
-        const { checkSecurityHeaders } = await import("./services/security-headers");
-        const results = await checkSecurityHeaders(finalUrl);
-
-        return new Response(JSON.stringify(results), {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "POST, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type",
-          },
-        });
-      } catch (err: any) {
-        return new Response(JSON.stringify({ error: err.message }), {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-    }
-
-    // API Route: /api/ssl-check
-    if (url.pathname === "/api/ssl-check" && request.method === "POST") {
-      try {
-        const body: any = await request.json();
-        const { url: targetUrl } = body;
-
-        if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
-
-        const { checkSSL } = await import("./services/ssl-check");
-        const results = await checkSSL(targetUrl);
-
-        return new Response(JSON.stringify(results), {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "POST, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type",
-          },
-        });
-      } catch (err: any) {
-        return new Response(JSON.stringify({ error: err.message }), {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-    }
-
-    // API Route: /api/port-check
-    if (url.pathname === "/api/port-check" && request.method === "POST") {
-      try {
-        const body: any = await request.json();
-        const { host, port } = body;
-
-        if (!host || !port) return new Response("Missing host or port", { status: 400 });
-
-        const { checkPort } = await import("./services/port-check");
-        const result = await checkPort(host, parseInt(port));
-
-        // Add helper: Current IP (for 'My IP' button)
-        // Note: We don't return the IP in the check result, but the frontend might request it separately.
-        // For now, minimal return.
-
-        return new Response(JSON.stringify(result), {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "POST, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type",
-          },
-        });
-      } catch (err: any) {
-        return new Response(JSON.stringify({ error: err.message }), {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-    }
-
-    // API Route: /api/global-latency
-    if (url.pathname === "/api/global-latency" && request.method === "POST") {
-      try {
-        const body: any = await request.json();
-        const { url: targetUrl } = body;
-
-        if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
-
-        // Add protocol if missing
-        const finalUrl = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
-
-        const { checkGlobalLatency } = await import("./services/global-latency");
-        const results = await checkGlobalLatency(finalUrl);
-
-        return new Response(JSON.stringify(results), {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*", // Allow CORS for web app
-            "Access-Control-Allow-Methods": "POST, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type",
-          },
-        });
-      } catch (err: any) {
-        return new Response(JSON.stringify({ error: err.message }), {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-    }
-
-    // CORS Preflight
-    if (request.method === "OPTIONS") {
-      return new Response(null, {
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "POST, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type",
-        },
-      });
-    }
-
-    return new Response("PulseGuard Worker is Running", { status: 200 });
   },
 
   // 1. Cron: Find pending checks and run them (Free Tier Batch Mode)
