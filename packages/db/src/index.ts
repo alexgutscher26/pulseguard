@@ -6,6 +6,12 @@ import { Pool } from "pg";
 export const createPrisma = (databaseUrl?: string) => {
   const url = databaseUrl || process.env.DATABASE_URL;
 
+  if (!url) {
+    throw new Error(
+      "DATABASE_URL is not set. Ensure it's provided in your environment variables."
+    );
+  }
+
   // Determine if SSL is needed but remove sslmode from URL to avoid conflict with explicit ssl config
   const isSsl = url.includes("sslmode=require") || url.includes("sslmode=verify");
   const cleanUrl = url.replace(/[?&]sslmode=[^&]+/, "");
