@@ -4,7 +4,9 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 
 export const createPrisma = (databaseUrl?: string) => {
-  const url = databaseUrl || (typeof process !== "undefined" ? process.env.DATABASE_URL : (globalThis as any).DATABASE_URL);
+  const url =
+    databaseUrl ||
+    (typeof process !== "undefined" ? process.env.DATABASE_URL : (globalThis as any).DATABASE_URL);
 
   if (!url) {
     throw new Error("DATABASE_URL is not set. Ensure it's provided in your environment variables.");
@@ -32,7 +34,7 @@ export const createPrisma = (databaseUrl?: string) => {
   const pool = new Pool(poolConfig);
   const adapter = new PrismaPg(pool);
 
-  const isDev = (typeof process !== "undefined" && process.env.NODE_ENV === "development");
+  const isDev = typeof process !== "undefined" && process.env.NODE_ENV === "development";
 
   return new PrismaClient({
     adapter,

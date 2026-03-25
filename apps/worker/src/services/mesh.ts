@@ -134,7 +134,12 @@ export class ProxyMesh {
         return { status: "UP", latency, source: "19-3-1", anomaly };
       }
 
-      return { status: "DOWN", latency, error: `CLUSTER_HTTP_${response.status}`, source: "19-3-1" };
+      return {
+        status: "DOWN",
+        latency,
+        error: `CLUSTER_HTTP_${response.status}`,
+        source: "19-3-1",
+      };
     } catch (err: any) {
       return {
         status: "DOWN",

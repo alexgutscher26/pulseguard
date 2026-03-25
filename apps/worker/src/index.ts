@@ -83,7 +83,7 @@ async function performInternalRequest(
   urlStr: string,
   extraHeaders?: Record<string, string>,
 ): Promise<{ status: "UP" | "DOWN" | "MAINTENANCE"; latency: number; errorReason?: string }> {
-  const start = Date.now();
+  const start = performance.now();
   let currentStatus: "UP" | "DOWN" | "MAINTENANCE" = "DOWN";
   let latency = 0;
   let errorReason: string | undefined = undefined;
@@ -92,7 +92,7 @@ async function performInternalRequest(
     if (urlStr.startsWith("http://") || urlStr.startsWith("https://")) {
       const method = monitor.method || "GET";
       const userHeaders: Record<string, string> = {};
-      
+
       if (monitor.headers) {
         try {
           const parsed = JSON.parse(monitor.headers);
@@ -106,6 +106,7 @@ async function performInternalRequest(
         }
       }
 
+      const startFetch = performance.now();
       const response = await fetch(urlStr, {
         method,
         headers: {
@@ -120,6 +121,7 @@ async function performInternalRequest(
       currentStatus = response.ok ? "UP" : "DOWN";
 
       const body = await response.text();
+      latency = Math.round(performance.now() - startFetch);
       currentStatus = response.ok ? "UP" : "DOWN";
 
       // 3. Deep Payload/Status Validation (WASM/Rust Optimized Bridge)
@@ -163,7 +165,9 @@ async function performInternalRequest(
       throw new Error("Unknown protocol");
     }
 
-    latency = Date.now() - start;
+    if (latency === 0) {
+      latency = Math.round(performance.now() - start);
+    }
   } catch (err: any) {
     console.error(`Error checking ${urlStr}:`, err);
     latency = 0;
@@ -490,7 +494,11 @@ export async function processBatch(
                     `[MultiVector] Component 18-1-1 also DOWN. Trying final High-Fidelity Vector 19-3-1...`,
                   );
                   // Use captured latencies for quantum verification if available
-                  const finalVector = await mesh.component_19_3_1(monitor.url, capturedLatencies || [], 2000);
+                  const finalVector = await mesh.component_19_3_1(
+                    monitor.url,
+                    capturedLatencies || [],
+                    2000,
+                  );
                   if (finalVector.status === "UP") {
                     console.log(
                       `[MultiVector] Component 19-3-1 reported UP! False positive averted for ${monitor.name}. (Anomaly: ${finalVector.anomaly?.isAnomaly})`,
@@ -728,52 +736,63 @@ export async function processBatch(
               console.error(`[Notification] Failed to send direct notification:`, notifError);
             }
           }
-        } else if (latency > 1000) {
-          // High Latency Threshold (1000ms)
-          // HIGH LATENCY ALERT
-          const notificationPayload = {
-            type: "HIGH_LATENCY" as const,
-            monitorId: monitor.id,
-            monitorName: monitor.name,
-            url: monitor.url,
-            status: "UP" as const,
-            latency: latency,
-            timestamp: new Date().toISOString(),
-            reason: `High Latency: ${latency}ms`,
-          };
+        } else {
+          // CHECK FOR CUSTOM ALERT RULES (Latency Thresholds)
+          const latencyRule = monitor.alertRules?.find(
+            (r: any) => r.trigger === "LATENCY" && r.enabled,
+          );
 
-          if (env && env.NOTIFICATION_QUEUE) {
-            console.log(
-              `[Notification] Queueing HIGH LATENCY alert for ${monitor.name} (${latency}ms)`,
-            );
-            await env.NOTIFICATION_QUEUE.send(notificationPayload);
-          } else {
-            // FALLBACK: Direct notification for local dev
-            console.warn(
-              `[Notification] Queue not available - sending notification directly for ${monitor.name}`,
-            );
-            try {
-              const { default: notificationHandler } = await import("./notification-handler");
-              await notificationHandler.queue(
-                {
-                  queue: "notifications",
-                  messages: [
-                    {
-                      id: `local-${Date.now()}`,
-                      timestamp: new Date(),
-                      body: notificationPayload,
-                      ack: () => {},
-                      retry: () => {},
-                    },
-                  ],
-                  ackAll: () => {},
-                  retryAll: () => {},
-                } as any,
-                env as any,
-                {} as any,
+          const threshold = latencyRule?.threshold || 1000; // Default to 1000ms if no rule
+          const comparison = latencyRule?.comparison || "GT";
+
+          const isHighLatency = comparison === "GT" ? latency > threshold : latency < threshold;
+
+          if (isHighLatency) {
+            // HIGH LATENCY ALERT
+            const notificationPayload = {
+              type: "HIGH_LATENCY" as const,
+              monitorId: monitor.id,
+              monitorName: monitor.name,
+              url: monitor.url,
+              status: "UP" as const,
+              latency: latency,
+              timestamp: new Date().toISOString(),
+              reason: `High Latency: ${latency}ms (Threshold: ${threshold}ms)`,
+            };
+
+            if (env && env.NOTIFICATION_QUEUE) {
+              console.log(
+                `[Notification] Queueing HIGH LATENCY alert for ${monitor.name} (${latency}ms > ${threshold}ms)`,
               );
-            } catch (notifError) {
-              console.error(`[Notification] Failed to send direct notification:`, notifError);
+              await env.NOTIFICATION_QUEUE.send(notificationPayload);
+            } else {
+              // FALLBACK: Direct notification for local dev
+              console.warn(
+                `[Notification] Queue not available - sending notification directly for ${monitor.name}`,
+              );
+              try {
+                const { default: notificationHandler } = await import("./notification-handler");
+                await notificationHandler.queue(
+                  {
+                    queue: "notifications",
+                    messages: [
+                      {
+                        id: `local-${Date.now()}`,
+                        timestamp: new Date(),
+                        body: notificationPayload,
+                        ack: () => {},
+                        retry: () => {},
+                      },
+                    ],
+                    ackAll: () => {},
+                    retryAll: () => {},
+                  } as any,
+                  env as any,
+                  {} as any,
+                );
+              } catch (notifError) {
+                console.error(`[Notification] Failed to send direct notification:`, notifError);
+              }
             }
           }
         }
@@ -828,8 +847,8 @@ export default {
 
       // WebSocket Route: /ws/monitors/:id
       if (url.pathname.startsWith("/ws/monitors/")) {
-      try {
-        const monitorId = url.pathname.split("/")[3];
+        try {
+          const monitorId = url.pathname.split("/")[3];
           if (!monitorId) return new Response("Missing Monitor ID", { status: 400 });
 
           // Perform Auth Check (verify session cookie or allow if on a public status page)
@@ -840,7 +859,9 @@ export default {
           // Support token via query param as fallback for cross-origin WebSockets
           let rawToken: string | null | undefined = url.searchParams.get("token");
 
-          console.log(`[WS] Handshake for Monitor: ${monitorId}. Cookie present: ${!!cookieHeader}`);
+          console.log(
+            `[WS] Handshake for Monitor: ${monitorId}. Cookie present: ${!!cookieHeader}`,
+          );
 
           if (!rawToken && cookieHeader) {
             const secureMatch = cookieHeader.match(/__Secure-better-auth\.session_token=([^;]+)/);
@@ -888,10 +909,15 @@ export default {
               }
               return null; // Success, continue
             } catch (err: any) {
-              if (retry && (err.message?.includes("Connection terminated unexpectedly") || 
-                  err.message?.includes("is closed") || 
-                  err.message?.includes("not found"))) {
-                console.warn(`[WS Handshake] Stale DB connection detected. Resetting Prisma and retrying...`);
+              if (
+                retry &&
+                (err.message?.includes("Connection terminated unexpectedly") ||
+                  err.message?.includes("is closed") ||
+                  err.message?.includes("not found"))
+              ) {
+                console.warn(
+                  `[WS Handshake] Stale DB connection detected. Resetting Prisma and retrying...`,
+                );
                 const { resetPrisma } = await import("@pulseguard/db");
                 resetPrisma(env.DATABASE_URL);
                 // Re-get the new instance
@@ -921,7 +947,9 @@ export default {
           return stub.fetch(doUrl.toString(), request);
         } catch (err: any) {
           console.error(`[WS ERROR] Critical failure in /ws/monitors/ handler:`, err);
-          return new Response(`Internal Server Error: ${err.message}\nStack: ${err.stack}`, { status: 500 });
+          return new Response(`Internal Server Error: ${err.message}\nStack: ${err.stack}`, {
+            status: 500,
+          });
         }
       }
 
@@ -1165,10 +1193,15 @@ export default {
         `;
         return targetIds;
       } catch (err: any) {
-        if (retry && (err.message?.includes("Connection terminated unexpectedly") || 
-            err.message?.includes("is closed") || 
-            err.message?.includes("not found"))) {
-          console.warn(`[Sync] Stale DB connection detected in schedule. Resetting Prisma and retrying...`);
+        if (
+          retry &&
+          (err.message?.includes("Connection terminated unexpectedly") ||
+            err.message?.includes("is closed") ||
+            err.message?.includes("not found"))
+        ) {
+          console.warn(
+            `[Sync] Stale DB connection detected in schedule. Resetting Prisma and retrying...`,
+          );
           const { resetPrisma } = await import("@pulseguard/db");
           resetPrisma(env.DATABASE_URL);
           // Re-get new prisma instance
@@ -1186,7 +1219,7 @@ export default {
 
       if (targetIds.length === 0) return;
 
-      const ids = targetIds.map((t: { id: any; }) => t.id);
+      const ids = targetIds.map((t: { id: any }) => t.id);
 
       // Fetch full monitor data for the batch
       const monitors = await prisma.monitor.findMany({
@@ -1212,6 +1245,9 @@ export default {
               endAt: { gte: new Date() },
             },
             take: 1,
+          },
+          alertRules: {
+            where: { enabled: true },
           },
         },
       });

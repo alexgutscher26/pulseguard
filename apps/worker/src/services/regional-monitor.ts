@@ -27,10 +27,7 @@ export interface Monitor {
  * Perform a check from a specific region
  * Uses Cloudflare's global network - the Worker will execute from the nearest edge location
  */
-async function checkFromRegion(
-  monitor: Monitor,
-  region: string,
-): Promise<RegionalCheckResult> {
+async function checkFromRegion(monitor: Monitor, region: string): Promise<RegionalCheckResult> {
   const start = Date.now();
   const url = monitor.url;
   const timeout = monitor.timeout;

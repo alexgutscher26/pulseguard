@@ -171,6 +171,7 @@ Expand what PulseGuard can actually guard.
 Public-facing transparency for users and internal collaboration for teams.
 
 ### 🌐 Status Pages
+
 - [x] **Public & Private Status Pages**
   - Route: `status.pulseguard.com/[slug]` or Custom Domain (CNAME).
   - Private Pages: Password protection, SS0-based access, IP Whitelisting.
@@ -420,21 +421,21 @@ Strategies to win the indie developer market against established giants and mode
 
 ### 📊 Competitive Comparison (PulseGuard vs OpenStatus)
 
-| Feature                   | OpenStatus           | PulseGuard (Indie Focus)                 |
-| :------------------------ | :------------------- | :--------------------------------------- |
-| **Check Interval**        | 1-5 minutes          | 1-minute (Initiate) / 30-sec (Netrunner) |
-| **Setup Complexity**      | Medium               | One-click Integrations                   |
-| **Status Page Branding**  | Custom Domains       | Full Cyberpunk Aesthetic Control         |
-| **Incident Comm.**        | Manual Slack / Email | Fully Automated + Templates              |
-| **Analytics & Insights**  | Basic                | Actionable, AI-assisted                  |
-| **Community & Templates** | Basic                | Extensive (1-click Stack Imports)        |
-| **Export & Migration**    | Possible             | Effortless 1-click JSON                  |
-| **Private Monitoring**   | Docker Probes        | Plan: Hybrid Probes (Edge + On-prem)     |
-| **CLI / MaC**            | Import/Apply YAML    | Plan: `pulse monitors apply` sync        |
-| **Slack Agent**          | Conversational NL    | Added: Conversational (@PulseGuard) Bot  |
-| **MCP Monitoring**       | JSON-RPC Assertions  | Plan: MCP Sentinel Template              |
-| **Synthetic CI/CD**      | GitHub Action Trigger| Plan: `pulseguard-action` + Gates        |
-| **Status Badges**        | SVG/PNG (v2) Support | Plan: Dynamic SVG Generator              |
+| Feature                   | OpenStatus            | PulseGuard (Indie Focus)                 |
+| :------------------------ | :-------------------- | :--------------------------------------- |
+| **Check Interval**        | 1-5 minutes           | 1-minute (Initiate) / 30-sec (Netrunner) |
+| **Setup Complexity**      | Medium                | One-click Integrations                   |
+| **Status Page Branding**  | Custom Domains        | Full Cyberpunk Aesthetic Control         |
+| **Incident Comm.**        | Manual Slack / Email  | Fully Automated + Templates              |
+| **Analytics & Insights**  | Basic                 | Actionable, AI-assisted                  |
+| **Community & Templates** | Basic                 | Extensive (1-click Stack Imports)        |
+| **Export & Migration**    | Possible              | Effortless 1-click JSON                  |
+| **Private Monitoring**    | Docker Probes         | Plan: Hybrid Probes (Edge + On-prem)     |
+| **CLI / MaC**             | Import/Apply YAML     | Plan: `pulse monitors apply` sync        |
+| **Slack Agent**           | Conversational NL     | Added: Conversational (@PulseGuard) Bot  |
+| **MCP Monitoring**        | JSON-RPC Assertions   | Plan: MCP Sentinel Template              |
+| **Synthetic CI/CD**       | GitHub Action Trigger | Plan: `pulseguard-action` + Gates        |
+| **Status Badges**         | SVG/PNG (v2) Support  | Plan: Dynamic SVG Generator              |
 
 ### 🚀 Marketing Strategy: "Stop Monitor Hoarding, Start Monitoring Smarter"
 
