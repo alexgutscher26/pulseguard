@@ -69,6 +69,7 @@ export class LatencyAggregator extends DurableObject {
 
     try {
       const aggregates = [];
+      const baselineUpdates: { monitorId: string; region: string; currentAvg: number }[] = [];
 
       for (const [key, buffer] of this.buffers.entries()) {
         const [monitorId, region] = key.split(":");
@@ -91,8 +92,8 @@ export class LatencyAggregator extends DurableObject {
             successRate: data.successRate,
           });
 
-          // Update regional baseline (30-day rolling average)
-          await this.updateBaseline(prisma, monitorId, region, data.avgLatency);
+          // Collect regional baseline update
+          baselineUpdates.push({ monitorId, region, currentAvg: data.avgLatency });
         }
 
         buffer.reset();
@@ -103,6 +104,9 @@ export class LatencyAggregator extends DurableObject {
         await prisma.latencyAggregate.createMany({
           data: aggregates,
         });
+
+        // Update regional baselines in batch
+        await this.updateBaselinesBatched(prisma, baselineUpdates);
 
         console.log(`[LatencyAggregator] Flushed ${aggregates.length} aggregates`);
 
@@ -120,41 +124,75 @@ export class LatencyAggregator extends DurableObject {
   }
 
   /**
-   * Update regional baseline (30-day rolling average)
+   * Update regional baselines in batch (30-day rolling average)
    */
-  private async updateBaseline(
+  private async updateBaselinesBatched(
     prisma: any,
-    monitorId: string,
-    region: string,
-    currentAvg: number,
+    updates: { monitorId: string; region: string; currentAvg: number }[],
   ): Promise<void> {
+    if (updates.length === 0) return;
+
     try {
-      const existing = await prisma.regionalBaseline.findUnique({
+      // Find existing baselines for the given monitorId and region pairs
+      const existingBaselines = await prisma.regionalBaseline.findMany({
         where: {
-          monitorId_region: { monitorId, region },
+          OR: updates.map((u) => ({
+            monitorId: u.monitorId,
+            region: u.region,
+          })),
         },
       });
 
-      if (existing) {
-        // Exponential moving average (alpha = 0.1 for ~30-day equivalent)
-        const newBaseline = existing.baselineLatency * 0.9 + currentAvg * 0.1;
+      const existingMap = new Map<string, any>(
+        existingBaselines.map((b: any) => [`${b.monitorId}:${b.region}`, b]),
+      );
 
-        await prisma.regionalBaseline.update({
-          where: { id: existing.id },
-          data: { baselineLatency: newBaseline },
-        });
-      } else {
-        // Create new baseline
-        await prisma.regionalBaseline.create({
-          data: {
-            monitorId,
-            region,
-            baselineLatency: currentAvg,
-          },
-        });
+      const creates: any[] = [];
+      const updatePromises: any[] = [];
+
+      for (const u of updates) {
+        const key = `${u.monitorId}:${u.region}`;
+        const existing = existingMap.get(key);
+
+        if (existing) {
+          // Exponential moving average (alpha = 0.1 for ~30-day equivalent)
+          const newBaseline = existing.baselineLatency * 0.9 + u.currentAvg * 0.1;
+
+          updatePromises.push(
+            prisma.regionalBaseline.update({
+              where: { id: existing.id },
+              data: { baselineLatency: newBaseline },
+            }),
+          );
+        } else {
+          // Create new baseline
+          creates.push({
+            monitorId: u.monitorId,
+            region: u.region,
+            baselineLatency: u.currentAvg,
+          });
+        }
       }
+
+      // Execute creations and updates in parallel
+      const operations = [];
+
+      if (creates.length > 0) {
+        operations.push(
+          prisma.regionalBaseline.createMany({
+            data: creates,
+          }),
+        );
+      }
+
+      if (updatePromises.length > 0) {
+        // Use a transaction for the updates to ensure atomicity and reduce round trips
+        operations.push(prisma.$transaction(updatePromises));
+      }
+
+      await Promise.all(operations);
     } catch (error) {
-      console.error("[LatencyAggregator] Baseline update error:", error);
+      console.error("[LatencyAggregator] Batch baseline update error:", error);
     }
   }
 
