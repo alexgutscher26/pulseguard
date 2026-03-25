@@ -22,6 +22,9 @@ export const metadata: Metadata = {
     "24/7 monitoring and instant notifications. Start monitoring your website performance in minutes.",
 };
 
+/**
+ * Renders the root layout of the application with children components.
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
