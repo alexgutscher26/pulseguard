@@ -4,6 +4,7 @@ export { LatencyAggregator } from "./durable-objects/latency-aggregator";
 export { MonitorChannel } from "./durable-objects/MonitorChannel";
 import { ProxyMesh, QuantumAnomalyDetector } from "./services/mesh";
 import { InsightService, InsightType, InsightSeverity } from "./lib/insight-service";
+import { verifySession, verifyMonitorAccess } from "./lib/auth";
 
 const mesh = new ProxyMesh();
 
@@ -937,89 +938,12 @@ export default {
           const monitorId = url.pathname.split("/")[3];
           if (!monitorId) return new Response("Missing Monitor ID", { status: 400 });
 
-          // Perform Auth Check (verify session cookie or allow if on a public status page)
-          const cookieHeader = request.headers.get("Cookie");
-          let isAuthenticated = false;
-          let prisma = getPrisma(env.DATABASE_URL);
+          // Auth Check
+          const session = await verifySession(request, env);
 
-          // Support token via query param as fallback for cross-origin WebSockets
-          let rawToken: string | null | undefined = url.searchParams.get("token");
-
-          console.log(
-            `[WS] Handshake for Monitor: ${monitorId}. Cookie present: ${!!cookieHeader}`,
-          );
-
-          if (!rawToken && cookieHeader) {
-            const secureMatch = cookieHeader.match(/__Secure-better-auth\.session_token=([^;]+)/);
-            const regularMatch = cookieHeader.match(/better-auth\.session_token=([^;]+)/);
-            rawToken = secureMatch?.[1] || regularMatch?.[1] || null;
-          }
-
-          console.log(`[WS] Extracted Token: ${rawToken ? "✓ Found" : "✗ Missing"}`);
-
-          // Perform Auth Check with Retry logic for stale DB connections
-          const performHandshake = async (retry: boolean = true): Promise<Response | null> => {
-            try {
-              if (rawToken) {
-                const token = decodeURIComponent(rawToken);
-                const session = await prisma.session.findUnique({
-                  where: { token },
-                  select: { userId: true, expiresAt: true },
-                });
-
-                if (session && session.expiresAt > new Date()) {
-                  const monitor = await prisma.monitor.findUnique({
-                    where: { id: monitorId },
-                    select: { userId: true },
-                  });
-
-                  if (monitor && monitor.userId === session.userId) {
-                    isAuthenticated = true;
-                  }
-                }
-              }
-
-              if (!isAuthenticated) {
-                // Fallback: If no valid session, check if monitor is exposed on any public Status Page
-                const publicMonitor = await prisma.statusPageMonitor.findFirst({
-                  where: {
-                    monitorId: monitorId,
-                    statusPage: { isPrivate: false },
-                  },
-                });
-
-                if (!publicMonitor) {
-                  return new Response("Unauthorized", { status: 401 });
-                }
-                isAuthenticated = true; // Mark as authenticated via public access
-              }
-              return null; // Success, continue
-            } catch (err: any) {
-              if (
-                retry &&
-                (err.message?.includes("Connection terminated unexpectedly") ||
-                  err.message?.includes("is closed") ||
-                  err.message?.includes("not found"))
-              ) {
-                console.warn(
-                  `[WS Handshake] Stale DB connection detected. Resetting Prisma and retrying...`,
-                );
-                const { resetPrisma } = await import("@pulseguard/db");
-                resetPrisma(env.DATABASE_URL);
-                // Re-get the new instance
-                prisma = getPrisma(env.DATABASE_URL);
-                // Retry
-                return await performHandshake(false); // Only retry once
-              }
-              throw err; // Re-throw if retry failed or hit different error
-            }
-          };
-
-          const authResponse = await performHandshake();
-          if (authResponse) return authResponse;
-
-          if (!isAuthenticated) {
-            return new Response("Unauthorized", { status: 401 });
+          const hasAccess = await verifyMonitorAccess(session?.userId || null, monitorId, env);
+          if (!hasAccess) {
+            return new Response("Forbidden", { status: 403 });
           }
 
           // Forward to Durable Object
