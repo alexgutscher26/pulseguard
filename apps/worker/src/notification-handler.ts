@@ -58,6 +58,42 @@ export default {
 
     const monitorMap = new Map(monitors.map((m) => [m.id, m]));
 
+    // --- Pre-fetch STATUS PAGE SUBSCRIBER ALERTS ---
+    const incidentMonitorIds = Array.from(
+      new Set(
+        batch.messages
+          .filter(
+            (msg) =>
+              msg.body.type === "INCIDENT_CREATED" || msg.body.type === "INCIDENT_RESOLVED",
+          )
+          .map((msg) => msg.body.monitorId),
+      ),
+    );
+
+    let allStatusPages: any[] = [];
+    if (incidentMonitorIds.length > 0) {
+      allStatusPages = await prisma.statusPage.findMany({
+        where: { monitors: { some: { monitorId: { in: incidentMonitorIds } } } },
+        include: {
+          monitors: true,
+          subscribers: {
+            where: { verified: true },
+            include: { monitorSubscriptions: true },
+          },
+        },
+      });
+    }
+
+    const statusPageMap = new Map<string, any[]>();
+    for (const page of allStatusPages) {
+      for (const sm of page.monitors) {
+        if (!statusPageMap.has(sm.monitorId)) {
+          statusPageMap.set(sm.monitorId, []);
+        }
+        statusPageMap.get(sm.monitorId)!.push(page);
+      }
+    }
+
     await Promise.all(
       batch.messages.map(async (msg) => {
         const notification = msg.body;
@@ -134,7 +170,7 @@ export default {
             reason: notification.reason,
             downtimeDuration,
             failedRegions: notification.failedRegions,
-            runbookUrl: notification.runbookUrl || monitor?.runbookUrl,
+            runbookUrl: notification.runbookUrl || monitor?.runbookUrl || undefined,
           };
 
           // --- 1. OWNER ALERTS (Email, Slack, Discord) ---
@@ -182,15 +218,7 @@ export default {
             notification.type === "INCIDENT_CREATED" ||
             notification.type === "INCIDENT_RESOLVED"
           ) {
-            const statusPages = await prisma.statusPage.findMany({
-              where: { monitors: { some: { monitorId: notification.monitorId } } },
-              include: {
-                subscribers: {
-                  where: { verified: true },
-                  include: { monitorSubscriptions: true },
-                },
-              },
-            });
+            const statusPages = statusPageMap.get(notification.monitorId) || [];
 
             for (const page of statusPages) {
               const mappedStatus =
@@ -203,20 +231,20 @@ export default {
                   : `${notification.monitorName} has recovered`);
 
               // Filter subscribers
-              const subscribersToNotify = page.subscribers.filter((sub) => {
+              const subscribersToNotify = page.subscribers.filter((sub: any) => {
                 // Check preferences
                 if (notification.type === "INCIDENT_CREATED" && !sub.notifyIncidents) return false;
                 if (notification.type === "INCIDENT_RESOLVED" && !sub.notifyIncidents) return false;
 
                 // Check monitor subscription
                 const isSubscribedToMonitor = sub.monitorSubscriptions.some(
-                  (ms) => ms.monitorId === notification.monitorId,
+                  (ms: any) => ms.monitorId === notification.monitorId,
                 );
                 return isSubscribedToMonitor;
               });
 
               // Send emails
-              subscribersToNotify.forEach((sub) => {
+              subscribersToNotify.forEach((sub: any) => {
                 const updateData: StatusUpdateData = {
                   pageTitle: page.title,
                   incidentTitle: incidentTitle,
