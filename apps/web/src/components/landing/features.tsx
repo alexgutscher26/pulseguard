@@ -1,4 +1,5 @@
 import { CheckCircle2, Globe, Database, Shield, Server, Activity, Loader2 } from "lucide-react";
+import { LiveStatusDemo } from "./live-status-demo";
 
 export default function Features() {
   return (
@@ -16,35 +17,8 @@ export default function Features() {
 
         {/* Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Card 1: Live Status Demo */}
           <div className="bg-[#0a0a0a] border border-white/5 rounded-2xl p-6 flex flex-col group hover:border-white/10 transition-colors">
-            {/* Visual Area */}
-            <div className="bg-[#111] border border-white/5 rounded-xl h-[220px] w-full mb-6 relative overflow-hidden p-4">
-              {/* Lightning Bolt Top Right */}
-              <div className="absolute top-4 right-4 size-12 rounded-full border border-white/10 flex items-center justify-center">
-                <Activity className="size-6 text-primary group-hover:scale-110 transition-transform" />
-              </div>
-
-              {/* Chat-like rows to match placeholder style */}
-              <div className="w-[60%] h-12 bg-white/5 rounded-xl mb-3 flex items-center px-4">
-                <div className="w-1/2 h-2 rounded-full bg-white/20"></div>
-              </div>
-
-              <div className="w-[45%] h-12 bg-white/5 rounded-xl mb-3 flex items-center px-4">
-                <div className="w-[40%] h-2 rounded-full bg-white/20"></div>
-              </div>
-
-              {/* Bright Green Box */}
-              <div className="absolute top-1/2 left-[30%] w-[60%] h-14 bg-primary/20 border border-primary rounded-xl flex flex-col justify-center px-4 gap-2">
-                <div className="w-[60%] h-2 rounded-full bg-primary/80"></div>
-                <div className="w-[40%] h-2 rounded-full bg-primary/50"></div>
-              </div>
-
-              <div className="w-[30%] h-10 bg-white/5 rounded-xl mt-8 flex items-center px-4">
-                <div className="w-full h-2 rounded-full bg-white/20"></div>
-              </div>
-            </div>
-
+            <LiveStatusDemo />
             <h3 className="text-lg font-bold text-foreground mb-2">Live Status Demo</h3>
             <p className="text-sm text-muted-foreground/80 leading-relaxed">
               See PulseGuard handle real infrastructure inquiries instantly
