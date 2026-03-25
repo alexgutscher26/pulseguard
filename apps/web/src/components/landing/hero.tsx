@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, CornerDownLeft, Command } from "lucide-react";
+import { AVAILABLE_REGIONS, PRODUCT_CONFIG } from "@pulseguard/shared";
 
 export default function Hero() {
   return (
@@ -16,8 +17,8 @@ export default function Hero() {
 
         {/* Subheading */}
         <p className="text-muted-foreground text-lg md:text-xl leading-relaxed max-w-2xl mb-12 text-balance">
-          Pulseguard transforms your monitoring with a global surveillance network of 50+ nodes. 
-          Verify connections, ensure 50ms latency checks, and alert instantly with 
+          Pulseguard transforms your monitoring with a global surveillance network of {AVAILABLE_REGIONS.length}+ nodes. 
+          Verify connections, ensure {PRODUCT_CONFIG.LATENCY_GOAL_MS}ms latency checks, and alert instantly with 
           infrastructure-grade precision.
         </p>
 
@@ -52,7 +53,7 @@ export default function Hero() {
         {/* Stats */}
         <div className="mb-2">
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
-            <span className="text-primary">10,000</span> free checks
+            <span className="text-primary">{PRODUCT_CONFIG.FREE_CHECKS_LIMIT.toLocaleString()}</span> free checks
           </h2>
         </div>
         <p className="text-muted-foreground/60 mb-12 font-medium">

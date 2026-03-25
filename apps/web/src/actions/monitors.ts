@@ -1,5 +1,7 @@
 "use server";
 
+import { env } from "@pulseguard/env/server";
+
 import prisma from "@pulseguard/db";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
@@ -715,7 +717,7 @@ async function dispatchNotifications(
   };
 
   const notificationType = status === "DOWN" ? "INCIDENT_CREATED" : "INCIDENT_RESOLVED";
-  const apiKey = process.env.RESEND_API_KEY;
+  const apiKey = env.RESEND_API_KEY;
 
   if (!apiKey) console.warn("[Notification] RESEND_API_KEY is missing!");
 
@@ -850,7 +852,7 @@ async function sendSlackAlert(
             {
               type: "button",
               text: { type: "plain_text", text: "View Dashboard" },
-              url: "https://pulseguard.com/dashboard/monitors/" + data.monitorId,
+              url: `${env.NEXT_PUBLIC_APP_URL}/dashboard/monitors/${data.monitorId}`,
               style: isDown ? "danger" : "primary",
             },
           ],

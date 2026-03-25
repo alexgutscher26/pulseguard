@@ -1,0 +1,11 @@
+/**
+ * Global Product Configuration & Limits
+ */
+
+export const PRODUCT_CONFIG = {
+  FREE_CHECKS_LIMIT: 10000,
+  LATENCY_GOAL_MS: 50,
+  DEFAULT_CHECK_INTERVAL_SECONDS: 60,
+  MIN_CHECK_INTERVAL_SECONDS: 30,
+  MAX_TIMEOUT_SECONDS: 30,
+};

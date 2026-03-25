@@ -12,6 +12,8 @@ export const env = createEnv({
     OPENAI_API_KEY: z.string().min(1).optional(),
     UPSTASH_REDIS_REST_URL: z.string().url().optional(),
     UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
+    NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
+    RESEND_API_KEY: z.string().min(1).optional(),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,

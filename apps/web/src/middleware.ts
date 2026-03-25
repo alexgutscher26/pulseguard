@@ -37,11 +37,13 @@ export async function middleware(request: NextRequest) {
   }
 
   // 🌍 Status Page & Custom Domain Logic with i18n
+  const appUrl = new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000");
+  const appHost = appUrl.host;
   const isStatusPageDomain = hostname.startsWith("status.");
   const isCustomDomain =
     hostname !== "localhost:3000" &&
-    hostname !== "app.pulseguard.com" &&
-    hostname !== "pulseguard.com" &&
+    hostname !== `app.${appHost}` &&
+    hostname !== appHost &&
     !hostname.includes("vercel.app");
 
   if (isStatusPageDomain || isCustomDomain) {

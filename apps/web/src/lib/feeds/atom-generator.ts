@@ -1,3 +1,5 @@
+import { env } from "@pulseguard/env/web";
+
 /**
  * Atom 1.0 Feed Generator
  * Generates valid Atom XML for status page incidents and events
@@ -77,7 +79,7 @@ export function generateAtomFeed(config: AtomFeedConfig): string {
   <link href="${escapeXml(link)}" rel="alternate"/>
   <link href="${escapeXml(link)}/feed/atom" rel="self" type="application/atom+xml"/>
   <updated>${formatIso8601(updated)}</updated>
-  <generator uri="https://pulseguard.com">PulseGuard Status Page</generator>
+  <generator uri="${escapeXml(env.NEXT_PUBLIC_APP_URL)}">PulseGuard Status Page</generator>
   ${
     author
       ? `<author>

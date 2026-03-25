@@ -148,7 +148,7 @@ export async function sendTestNotification(id: string) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           username: "PulseGuard Sentinel",
-          avatar_url: "https://pulseguard.com/icon.png", // Optional: Add app icon if available
+          avatar_url: `${process.env.NEXT_PUBLIC_APP_URL}/icon.png`, // Optional: Add app icon if available
           embeds: [
             {
               title: "🔴 Test Alert: System Down",

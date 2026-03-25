@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { PRODUCT_CONFIG } from "@pulseguard/shared";
 
 export default function CTA() {
   return (
@@ -13,7 +14,7 @@ export default function CTA() {
         </h2>
 
         <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mb-12">
-          Start with 10,000 free checks. No credit card required.
+          Start with {PRODUCT_CONFIG.FREE_CHECKS_LIMIT.toLocaleString()} free checks. No credit card required.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full">
