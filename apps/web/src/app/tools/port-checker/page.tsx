@@ -15,6 +15,9 @@ export const metadata: Metadata = {
   ],
 };
 
+/**
+ * Renders the Port Checker page with a header and main content.
+ */
 export default function PortCheckerPage() {
   return (
     <div className="min-h-screen bg-background">

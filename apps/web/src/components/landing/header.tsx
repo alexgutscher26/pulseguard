@@ -17,6 +17,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
+/**
+ * Renders the landing header component with navigation and session management.
+ */
 export default function LandingHeader() {
   const session = authClient.useSession();
   const [isToolsOpen, setIsToolsOpen] = useState(false);

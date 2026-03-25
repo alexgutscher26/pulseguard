@@ -15,6 +15,9 @@ export const metadata: Metadata = {
   ],
 };
 
+/**
+ * Renders the Global Latency Checker page.
+ */
 export default function GlobalLatencyPage() {
   return (
     <div className="min-h-screen bg-background">

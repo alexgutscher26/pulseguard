@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   keywords: ["ssl checker", "tls health", "certificate expiry", "https check", "security scan"],
 };
 
+/**
+ * Renders the SSL Checker page with a header and main content.
+ */
 export default function SSLCheckerPage() {
   return (
     <div className="min-h-screen bg-background">
