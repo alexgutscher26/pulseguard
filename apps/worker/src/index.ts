@@ -27,10 +27,10 @@ import { connect } from "cloudflare:sockets";
 /**
  * Perform a health check on a given monitor URL.
  *
- * The function checks the status of the URL by making an HTTP GET request, establishing a TCP connection, or sending a ping based on the URL protocol. It measures the latency and captures any error reasons if the check fails. The function handles various protocols and classifies errors into specific categories for better diagnostics.
+ * The function checks the status of the URL by making an HTTP GET request, establishing a TCP connection, or sending a ping based on the URL protocol. It measures the latency and captures any error reasons if the check fails. The function handles various protocols and classifies errors into specific categories for better diagnostics. If the monitor is explicitly marked as "MAINTENANCE", the check is skipped.
  *
- * @param monitor - An object containing the URL to be monitored.
- * @returns An object containing the status ("UP" or "DOWN"), the latency in milliseconds, and an optional error reason.
+ * @param monitor - An object containing the URL to be monitored and optional timeout settings.
+ * @returns An object containing the status ("UP", "DOWN", or "MAINTENANCE"), the latency in milliseconds, and an optional error reason.
  */
 async function performCheck(
   monitor: any,
@@ -218,6 +218,19 @@ async function shouldSendAlert(monitorId: string, prisma: any): Promise<boolean>
 }
 
 // Helper: Record latency to Aggregator DO
+/**
+ * Records latency data to the aggregator service.
+ *
+ * This function checks if the LATENCY_AGGREGATOR is defined in the environment. If it is, it retrieves the corresponding
+ * DO instance using the monitorId and sends a POST request with the latency data, including the monitorId, region,
+ * latency value, success status, and a timestamp. Any errors during the fetch operation are logged to the console.
+ *
+ * @param {Env | undefined} env - The environment object that may contain the LATENCY_AGGREGATOR.
+ * @param {string} monitorId - The identifier for the monitor.
+ * @param {string} region - The region associated with the latency data.
+ * @param {number} latency - The recorded latency value.
+ * @param {boolean} success - Indicates whether the operation was successful.
+ */
 async function recordLatencyToAggregator(
   env: Env | undefined,
   monitorId: string,
@@ -252,6 +265,15 @@ async function recordLatencyToAggregator(
 }
 
 // Helper: Broadcast live event to MonitorChannel DO
+/**
+ * Broadcasts a live event to the specified monitor channel.
+ *
+ * This function checks if the MONITOR_CHANNEL is defined in the environment. If it is, it retrieves the DO instance using the monitorId and sends a broadcast request with the event data. The request is sent without awaiting the response to prevent blocking the check loop, allowing for a fire-and-forget approach. Errors during the broadcast setup or execution are logged to the console.
+ *
+ * @param {Env | undefined} env - The environment object that may contain the MONITOR_CHANNEL.
+ * @param {string} monitorId - The identifier for the monitor to which the event is being broadcasted.
+ * @param {any} event - The event data to be broadcasted.
+ */
 async function broadcastLiveEvent(
   env: Env | undefined,
   monitorId: string,
