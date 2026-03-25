@@ -1,7 +1,9 @@
 import { DurableObject } from "cloudflare:workers";
+import { getPrisma } from "@pulseguard/db";
 
 interface Env {
   // Add other bindings here if needed
+  DATABASE_URL: string;
 }
 
 export class MonitorChannel extends DurableObject {
@@ -23,6 +25,93 @@ export class MonitorChannel extends DurableObject {
       // Security Validation: Deep Authentication (Session + Ownership or Public Status Page)
       // is completely enforced at the Worker Gateway (`src/index.ts`) before forwarding to this DO.
       // Since DOs are not internet-routable directly, this is strictly secure.
+
+      const monitorId = url.searchParams.get("monitorId");
+      if (!monitorId) {
+        return new Response("Missing Monitor ID", { status: 400 });
+      }
+
+      const cookieHeader = request.headers.get("Cookie");
+      let rawToken = url.searchParams.get("token");
+
+      if (!rawToken && cookieHeader) {
+        const secureMatch = cookieHeader.match(/__Secure-better-auth\.session_token=([^;]+)/);
+        const regularMatch = cookieHeader.match(/better-auth\.session_token=([^;]+)/);
+        rawToken = secureMatch?.[1] || regularMatch?.[1] || null;
+      }
+
+      let isAuthenticated = false;
+
+      // @ts-ignore - this.env is typed differently in different versions, but available
+      const env = this.env as Env;
+
+      if (env.DATABASE_URL) {
+        let prisma = getPrisma(env.DATABASE_URL);
+
+        const performHandshake = async (retry: boolean = true): Promise<Response | null> => {
+          try {
+            if (rawToken) {
+              const token = decodeURIComponent(rawToken);
+              const session = await prisma.session.findUnique({
+                where: { token },
+                select: { userId: true, expiresAt: true },
+              });
+
+              if (session && session.expiresAt > new Date()) {
+                const monitor = await prisma.monitor.findUnique({
+                  where: { id: monitorId },
+                  select: { userId: true },
+                });
+
+                if (monitor && monitor.userId === session.userId) {
+                  isAuthenticated = true;
+                }
+              }
+            }
+
+            if (!isAuthenticated) {
+              // Fallback: Check if monitor is exposed on any public Status Page
+              const publicMonitor = await prisma.statusPageMonitor.findFirst({
+                where: {
+                  monitorId: monitorId,
+                  statusPage: { isPrivate: false },
+                },
+              });
+
+              if (publicMonitor) {
+                isAuthenticated = true; // Mark as authenticated via public access
+              }
+            }
+            return null;
+          } catch (err: any) {
+            if (
+              retry &&
+              (err.message?.includes("Connection terminated unexpectedly") ||
+                err.message?.includes("is closed") ||
+                err.message?.includes("not found"))
+            ) {
+              console.warn(`[MonitorChannel WS] Stale DB connection detected. Resetting Prisma...`);
+              const { resetPrisma } = await import("@pulseguard/db");
+              resetPrisma(env.DATABASE_URL);
+              prisma = getPrisma(env.DATABASE_URL);
+              return await performHandshake(false);
+            }
+            throw err;
+          }
+        };
+
+        const authResponse = await performHandshake();
+        if (authResponse) return authResponse;
+      } else {
+        // Fallback or warning if no DB URL is provided in the DO env
+        console.warn("[MonitorChannel] No DATABASE_URL provided in Env, skipping deep DO auth.");
+        // We'll trust the Worker Gateway if we can't check
+        isAuthenticated = true;
+      }
+
+      if (!isAuthenticated) {
+        return new Response("Unauthorized", { status: 401 });
+      }
 
       const pair = new WebSocketPair();
       const [client, server] = Object.values(pair);

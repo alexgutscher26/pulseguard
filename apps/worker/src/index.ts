@@ -952,6 +952,8 @@ export default {
 
           // We rewrite the URL to /websocket so the DO knows it's a client connection
           const doUrl = new URL("https://monitor-channel/websocket");
+          doUrl.searchParams.set("monitorId", monitorId);
+          if (rawToken) doUrl.searchParams.set("token", rawToken);
 
           // Pass the original request (headers, upgrade, etc) but with new URL
           return stub.fetch(doUrl.toString(), request);
