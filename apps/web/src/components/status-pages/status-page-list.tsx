@@ -1,5 +1,6 @@
 "use client";
 
+import { env } from "@pulseguard/env/web";
 import { useState } from "react";
 import Link from "next/link";
 import { Plus, Globe, ExternalLink, Settings } from "lucide-react";
@@ -10,22 +11,8 @@ export function StatusPageList({ initialPages }: { initialPages: any[] }) {
   const getPublicLink = (page: any) => {
     if (page.customDomain) return `https://${page.customDomain}`;
 
-    if (typeof window !== "undefined") {
-      const host = window.location.host;
-
-      // Local development or generic path-based fallback
-      if (host.includes("localhost") || host.includes("127.0.0.1")) {
-        return `/status-page/${page.slug}`;
-      }
-
-      // Production subdomain strategy:
-      // Replaces the "app." prefix with the page slug (e.g., app.pulseguard.cloud -> slug.pulseguard.cloud)
-      // Otherwise assumes root domain and prepends slug.
-      const baseDomain = host.startsWith("app.") ? host.replace("app.", "") : host;
-      return `https://${page.slug}.${baseDomain}`;
-    }
-
-    return `/status-page/${page.slug}`;
+    // Remove protocol for cleaner URLs if needed, but here we just need a valid href
+    return `${env.NEXT_PUBLIC_APP_URL}/status-page/${page.slug}`;
   };
 
   return (
