@@ -27,7 +27,18 @@ except:
 
 
 def find_schema_files(project_path: Path) -> list:
-    """Find database schema files."""
+    """Find database schema files.
+    
+    This function searches for database schema files within the specified
+    project_path. It looks for Prisma schema files located at
+    '**/prisma/schema.prisma' and Drizzle schema files in both  '**/drizzle/*.ts'
+    and '**/schema/*.ts'. The function filters the  Drizzle files to include only
+    those that contain 'schema' or 'table'  in their names, and returns a limited
+    list of the found schema files.
+    
+    Args:
+        project_path (Path): The path to the project directory to search for schema files.
+    """
     schemas = []
     
     # Prisma schema
@@ -45,7 +56,21 @@ def find_schema_files(project_path: Path) -> list:
 
 
 def validate_prisma_schema(file_path: Path) -> list:
-    """Validate Prisma schema file."""
+    """Validate a Prisma schema file for common issues.
+    
+    This function reads the content of a Prisma schema file and checks for various
+    validation rules, including naming conventions for models and enums, the
+    presence of required fields like @id and createdAt, and suggestions for
+    indexing foreign keys. It utilizes regular expressions to identify models,
+    relations, and enums, and collects any issues found during the validation
+    process.
+    
+    Args:
+        file_path (Path): The path to the Prisma schema file to be validated.
+    
+    Returns:
+        list: A list of validation issues found in the schema.
+    """
     issues = []
     
     try:
@@ -92,6 +117,14 @@ def validate_prisma_schema(file_path: Path) -> list:
 
 
 def main():
+    """Run the main schema validation process.
+    
+    This function orchestrates the schema validation by first determining the
+    project path from command-line arguments. It then locates schema files and
+    validates each one based on its type, specifically handling 'prisma' schemas.
+    The results, including any issues found, are summarized and printed, and the
+    function exits with a structured output.
+    """
     project_path = Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
     
     print(f"\n{'='*60}")

@@ -16,7 +16,18 @@ except AttributeError:
     pass  # Python < 3.7
 
 def find_api_files(project_path: Path) -> list:
-    """Find API-related files."""
+    """Find API-related files.
+    
+    This function searches for files related to APIs within a specified  project
+    directory. It uses a set of predefined patterns to locate  files with names
+    that include 'api' or are located in common API  directories such as 'routes',
+    'controllers', and 'endpoints'.  The function also filters out any files
+    located in directories  that are typically not relevant, such as
+    'node_modules', '.git',  'dist', 'build', and '__pycache__'.
+    
+    Args:
+        project_path (Path): The path to the project directory to search.
+    """
     patterns = [
         "**/*api*.ts", "**/*api*.js", "**/*api*.py",
         "**/routes/*.ts", "**/routes/*.js", "**/routes/*.py",
@@ -35,7 +46,22 @@ def find_api_files(project_path: Path) -> list:
     return [f for f in files if not any(x in str(f) for x in ['node_modules', '.git', 'dist', 'build', '__pycache__'])]
 
 def check_openapi_spec(file_path: Path) -> dict:
-    """Check OpenAPI/Swagger specification."""
+    """Check OpenAPI/Swagger specification for compliance and issues.
+    
+    This function reads an OpenAPI or Swagger specification from a given file path,
+    checking for the presence of required fields and structure. It validates both
+    JSON and YAML formats, ensuring that essential components like the OpenAPI
+    version, paths, and API information are defined. The function collects any
+    issues found during the validation process and returns a summary of passed
+    checks and identified issues.
+    
+    Args:
+        file_path (Path): The path to the OpenAPI/Swagger specification file.
+    
+    Returns:
+        dict: A dictionary containing the file path, lists of passed checks and issues, and
+            the type of specification.
+    """
     issues = []
     passed = []
     
@@ -92,7 +118,21 @@ def check_openapi_spec(file_path: Path) -> dict:
     return {'file': str(file_path), 'passed': passed, 'issues': issues, 'type': 'openapi'}
 
 def check_api_code(file_path: Path) -> dict:
-    """Check API code for common issues."""
+    """Check API code for common issues.
+    
+    This function analyzes the content of a file specified by `file_path` to
+    identify common API-related issues. It checks for the presence of error
+    handling, HTTP status codes, input validation, authentication middleware, rate
+    limiting, and logging. The results are categorized into passed checks and
+    issues found, which are returned in a dictionary format.
+    
+    Args:
+        file_path (Path): The path to the file to be checked.
+    
+    Returns:
+        dict: A dictionary containing the file path, lists of passed checks and issues, and
+            the type of the check.
+    """
     issues = []
     passed = []
     
@@ -160,6 +200,14 @@ def check_api_code(file_path: Path) -> dict:
     return {'file': str(file_path), 'passed': passed, 'issues': issues, 'type': 'code'}
 
 def main():
+    """Run the main API validation process.
+    
+    This function serves as the entry point for validating API files within a
+    specified project directory. It first determines the target directory, then
+    searches for API-related files. Depending on the file type, it checks either
+    the OpenAPI specification or the API code, collecting results and printing a
+    summary of passed checks and critical issues.
+    """
     target = sys.argv[1] if len(sys.argv) > 1 else "."
     project_path = Path(target)
     
