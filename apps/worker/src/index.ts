@@ -197,17 +197,8 @@ async function performInternalRequest(
 }
 
 // Helper: Check for flapping (Rate Limiting)
-async function shouldSendAlert(monitorId: string, prisma: any): Promise<boolean> {
-  const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-
-  // Count status changes in the last 5 minutes
-  const recentEvents = await prisma.monitorEvent.count({
-    where: {
-      monitorId: monitorId,
-      timestamp: { gt: fiveMinutesAgo },
-      status: { not: "MAINTENANCE" },
-    },
-  });
+function shouldSendAlert(monitorId: string, eventCounts: Map<string, number>): boolean {
+  const recentEvents = eventCounts.get(monitorId) || 0;
 
   // If > 3 events in 5 mins (e.g. DOWN -> UP -> DOWN -> ...), suppress
   if (recentEvents > 3) {
@@ -331,6 +322,38 @@ export async function processBatch(
 
   const processedIds: string[] = [];
   const remainingMonitors: any[] = [];
+
+  // --- BULK FETCH DATA START ---
+  const monitorIds = monitors.map((m) => m.id);
+  const activeIncidentsMap = new Map<string, any>();
+  const eventCountsMap = new Map<string, number>();
+
+  // 1. Fetch Active Incidents
+  const activeIncidents = await incidentService.findActiveIncidentsForMonitors(monitorIds);
+  for (const incident of activeIncidents) {
+    // The service returns list ordered by createdAt desc.
+    // We want to map monitorId -> latest incident.
+    if (!activeIncidentsMap.has(incident.monitorId)) {
+      activeIncidentsMap.set(incident.monitorId, incident);
+    }
+  }
+
+  // 2. Fetch Event Counts (for flapping detection)
+  const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+  const eventCounts = await prisma.monitorEvent.groupBy({
+    by: ["monitorId"],
+    where: {
+      monitorId: { in: monitorIds },
+      timestamp: { gt: fiveMinutesAgo },
+      status: { not: "MAINTENANCE" },
+    },
+    _count: true,
+  });
+
+  for (const count of eventCounts) {
+    eventCountsMap.set(count.monitorId, count._count);
+  }
+  // --- BULK FETCH DATA END ---
 
   for (let i = 0; i < monitors.length; i++) {
     const monitor = monitors[i];
@@ -671,8 +694,8 @@ export async function processBatch(
 
       // --- INCIDENT MANAGEMENT ---
       if (currentStatus === "DOWN" && !maintenanceActive) {
-        const activeIncident = await incidentService.findActiveIncident(monitor.id);
-        const alertable = await shouldSendAlert(monitor.id, prisma);
+        const activeIncident = activeIncidentsMap.get(monitor.id);
+        const alertable = shouldSendAlert(monitor.id, eventCountsMap);
 
         if (!activeIncident && alertable) {
           // CREATE NEW INCIDENT
@@ -733,7 +756,7 @@ export async function processBatch(
           await incidentService.logStillDown(activeIncident.id);
         }
       } else if (currentStatus === "UP" && !maintenanceActive) {
-        const activeIncident = await incidentService.findActiveIncident(monitor.id);
+        const activeIncident = activeIncidentsMap.get(monitor.id);
 
         if (activeIncident) {
           // RESOLVE INCIDENT

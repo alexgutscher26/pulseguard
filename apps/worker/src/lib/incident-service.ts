@@ -33,6 +33,16 @@ export class IncidentService {
     });
   }
 
+  async findActiveIncidentsForMonitors(monitorIds: string[]) {
+    return this.prisma.incident.findMany({
+      where: {
+        monitorId: { in: monitorIds },
+        resolvedAt: null,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+  }
+
   async createIncident(monitorId: string, title: string, description: string) {
     // 1. Double check we don't already have one (concurrency safety)
     const existing = await this.findActiveIncident(monitorId);
