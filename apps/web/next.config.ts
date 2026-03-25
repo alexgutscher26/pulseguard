@@ -8,10 +8,7 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  allowedDevOrigins: [
-    "localhost:3000",
-    ...(process.env.ALLOWED_DEV_ORIGINS?.split(",") || []),
-  ],
+  allowedDevOrigins: process.env.ALLOWED_DEV_ORIGINS?.split(",") || [],
 };
 
 import createNextIntlPlugin from "next-intl/plugin";
