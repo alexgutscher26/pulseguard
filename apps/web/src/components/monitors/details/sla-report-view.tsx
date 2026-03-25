@@ -26,6 +26,14 @@ import { useState } from "react";
 import { AlertTriangle, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+/**
+ * Render the SLA report view for a specific monitor.
+ *
+ * This function fetches the SLA report data based on the provided monitorId and selected time range. It handles loading and error states, displays summary cards for overall uptime, total downtime, total checks, and SLA status, and renders a daily uptime breakdown chart. The visual representation of the SLA status is determined by comparing the uptime percentage against a threshold.
+ *
+ * @param monitorId - The ID of the monitor for which the SLA report is generated.
+ * @returns A JSX element representing the SLA report view.
+ */
 export function SlaReportView({ monitorId }: { monitorId: string }) {
   const [range, setRange] = useState<"7d" | "30d">("7d");
 
