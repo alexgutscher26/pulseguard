@@ -45,7 +45,15 @@ export async function recordStatusPageView(pageId: string) {
 }
 
 /**
- * Fetch analytics data for the dashboard
+ * Fetch analytics data for the dashboard.
+ *
+ * This function retrieves the status page analytics for a given pageId over a specified number of days.
+ * It queries the database for views, groups the data by day, and calculates total views and unique visitors.
+ * The results are returned in a structured format suitable for charting. Error handling is included to manage
+ * potential failures during data fetching.
+ *
+ * @param {string} pageId - The ID of the status page for which analytics are being fetched.
+ * @param {number} [days=30] - The number of days to look back for analytics data.
  */
 export async function getStatusPageAnalytics(pageId: string, days: number = 30) {
   // Basic verification of ownership should happen in the parent component or here if we pass session.

@@ -8,7 +8,13 @@ import { headers, cookies } from "next/headers";
 
 /**
  * Adds a custom domain to a Vercel project via their API.
- * Requires VERCEL_PROJECT_ID, VERCEL_TEAM_ID, and VERCEL_API_TOKEN environment variables.
+ *
+ * The function checks for the presence of required environment variables (VERCEL_API_TOKEN and VERCEL_PROJECT_ID)
+ * and attempts to add the specified domain to the Vercel project. If the domain already exists, it handles the
+ * error gracefully. In case of a successful addition, it returns the verification status of the domain.
+ *
+ * @param domain - The custom domain to be added to the Vercel project.
+ * @returns An object indicating the success status and verification of the domain.
  */
 async function addDomainToVercel(domain: string) {
   if (!process.env.VERCEL_API_TOKEN || !process.env.VERCEL_PROJECT_ID) {
@@ -163,6 +169,11 @@ export async function createStatusPage(prevState: any, formData: FormData) {
   }
 }
 
+/**
+ * Retrieves status pages for the authenticated user.
+ *
+ * This function first obtains the user session using the auth.api.getSession method. If the session does not contain a user, it returns an empty array. Otherwise, it queries the database for status pages associated with the user's ID, ordering them by creation date in descending order and including a count of related monitors.
+ */
 export async function getStatusPages() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) return [];
@@ -178,6 +189,15 @@ export async function getStatusPages() {
   });
 }
 
+/**
+ * Retrieves the status page for a given user ID.
+ *
+ * This function first checks the user's session using the auth.api.getSession method. If the user is not authenticated, it returns null.
+ * If the user is authenticated, it queries the database for a unique status page associated with the provided ID and the user's ID,
+ * including related monitors and internationalization settings.
+ *
+ * @param {string} id - The unique identifier of the status page to retrieve.
+ */
 export async function getStatusPage(id: string) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) return null;
@@ -200,6 +220,16 @@ export async function getStatusPage(id: string) {
   });
 }
 
+/**
+ * Update the status page with the provided data.
+ *
+ * This function retrieves the current user session and checks for authorization. It then constructs an object with the updated status page data from the provided FormData. After verifying the current status page, it updates the database with the new values and triggers revalidation for the affected paths. If any errors occur during the process, it logs the error and returns a failure response.
+ *
+ * @param id - The unique identifier of the status page to be updated.
+ * @param prevState - The previous state of the status page (not used in the current implementation).
+ * @param formData - The FormData object containing the updated status page information.
+ * @returns An object indicating the success of the update operation.
+ */
 export async function updateStatusPage(id: string, prevState: any, formData: FormData) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) return { success: false, error: "Unauthorized" };
@@ -266,6 +296,15 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
   }
 }
 
+/**
+ * Adds a monitor to a specified status page.
+ *
+ * The function first retrieves the user session to ensure authorization. It then checks if the specified page exists for the user. If the page is found, it creates a new monitor entry associated with the page and triggers revalidation for the relevant paths. If any errors occur, such as duplicate entries, they are handled gracefully.
+ *
+ * @param pageId - The ID of the status page to which the monitor will be added.
+ * @param monitorId - The ID of the monitor to be associated with the status page.
+ * @returns An object indicating the success of the operation and any associated error messages.
+ */
 export async function addMonitorToPage(pageId: string, monitorId: string) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) return { success: false, error: "Unauthorized" };
@@ -292,6 +331,15 @@ export async function addMonitorToPage(pageId: string, monitorId: string) {
   }
 }
 
+/**
+ * Remove a monitor from a specified status page.
+ *
+ * This function first retrieves the user session to ensure authorization. It then checks if the specified page exists for the user. If the page is found, it deletes the monitor associated with the page and revalidates the paths for the dashboard and status page. In case of any errors during the process, it logs the error and returns a failure response.
+ *
+ * @param pageId - The ID of the status page from which the monitor will be removed.
+ * @param monitorId - The ID of the monitor to be removed from the status page.
+ * @returns An object indicating the success of the operation and any associated error message.
+ */
 export async function removeMonitorFromPage(pageId: string, monitorId: string) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) return { success: false, error: "Unauthorized" };
@@ -318,6 +366,16 @@ export async function removeMonitorFromPage(pageId: string, monitorId: string) {
   }
 }
 
+/**
+ * Verifies the password for a status page and manages authentication cookies.
+ *
+ * This function retrieves a status page by its ID and checks if the provided password matches the stored password.
+ * If the password is correct, it sets an authentication cookie that expires in 24 hours.
+ * If the page is not found or the password is incorrect, it returns an appropriate error message.
+ *
+ * @param {string} pageId - The ID of the status page to verify.
+ * @param {string} password - The password to validate against the status page.
+ */
 export async function verifyStatusPagePassword(pageId: string, password: string) {
   const page = await prisma.statusPage.findUnique({ where: { id: pageId } });
   if (!page || !page.password) return { success: false, error: "Page not found or no password" };
