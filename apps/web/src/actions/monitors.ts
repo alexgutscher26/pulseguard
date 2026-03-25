@@ -966,3 +966,70 @@ export async function getDashboardStats() {
     };
   }
 }
+
+/**
+ * Retrieve active (non-dismissed) AI insights for the current user's monitors.
+ */
+export async function getMonitorInsights(monitorId?: string) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) return [];
+
+  try {
+    const insights = await prisma.monitorInsight.findMany({
+      where: {
+        monitor: {
+          id: monitorId,
+          userId: session.user.id,
+        },
+        dismissed: false,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        monitor: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+    return insights;
+  } catch (error) {
+    console.error("Failed to fetch insights", error);
+    return [];
+  }
+}
+
+/**
+ * Marks an AI insight as dismissed so it no longer appears on the dashboard.
+ */
+export async function dismissInsight(id: string) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) return { success: false, error: "Unauthorized" };
+
+  try {
+    await prisma.monitorInsight.update({
+      where: {
+        id,
+        monitor: {
+          userId: session.user.id,
+        },
+      },
+      data: {
+        dismissed: true,
+      },
+    });
+    revalidatePath("/dashboard");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to dismiss insight", error);
+    return { success: false, error: "Failed to dismiss insight" };
+  }
+}

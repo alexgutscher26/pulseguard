@@ -3,6 +3,7 @@ import type { ExecutionContext } from "@cloudflare/workers-types";
 export { LatencyAggregator } from "./durable-objects/latency-aggregator";
 export { MonitorChannel } from "./durable-objects/MonitorChannel";
 import { ProxyMesh, QuantumAnomalyDetector } from "./services/mesh";
+import { InsightService, InsightType, InsightSeverity } from "./lib/insight-service";
 
 const mesh = new ProxyMesh();
 
@@ -300,6 +301,7 @@ export async function processBatch(
   // Dynamic import since we just created it
   const { IncidentService } = await import("./lib/incident-service");
   const incidentService = new IncidentService(prisma);
+  const insightService = new InsightService(prisma);
   // REMOVED: Wall-time limit check.
   // Reason: performance.now() measures wall time (including IO), not CPU time.
   // Cloudflare Free Plan has 10ms CPU limit but allows longer wall time for IO.
@@ -526,14 +528,36 @@ export async function processBatch(
 
       const { status: currentStatus, latency, errorReason } = result;
 
-      // --- QUANTUM ANOMALY DETECTION ---
+      // --- QUANTUM ANOMALY DETECTION (Invisible AI) ---
       if (capturedLatencies) {
         const anomaly = QuantumAnomalyDetector.detect(latency, capturedLatencies);
         if (anomaly.isAnomaly) {
           console.warn(
             `[Mesh] QUANTUM ANOMALY detected for ${monitor.name}! Z-Score: ${anomaly.score}`,
           );
-          // In the future, we can trigger high-severity alerts or automated runbooks here
+          
+          // Store insight
+          await insightService.createInsight({
+            monitorId: monitor.id,
+            type: InsightType.ANOMALY,
+            severity: anomaly.score > 5 ? InsightSeverity.CRITICAL : InsightSeverity.WARNING,
+            message: `Latency Anomaly Detected: ${monitor.name} is performing significantly outside expected baseline (Z-Score: ${anomaly.score}).`,
+            metadata: { score: anomaly.score, latency }
+          });
+        }
+
+        // Periodically run heuristic advice (every ~10 checks)
+        if (Math.random() < 0.1) {
+          try {
+            const recentEvents = await prisma.monitorEvent.findMany({
+              where: { monitorId: monitor.id, status: "UP" },
+              orderBy: { timestamp: "desc" },
+              take: 20
+            });
+            await insightService.analyzeAndProvideAdvice(monitor.id, monitor.name, recentEvents);
+          } catch (e) {
+            console.error(`[InsightAdvice] Failed for ${monitor.name}:`, e);
+          }
         }
       }
 

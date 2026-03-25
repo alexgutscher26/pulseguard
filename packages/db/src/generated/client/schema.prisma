@@ -184,6 +184,32 @@ model PostMortem {
   @@index([incidentId])
 }
 
+enum InsightType {
+  ANOMALY
+  ADVICE
+  PREDICTION
+}
+
+enum InsightSeverity {
+  INFO
+  WARNING
+  CRITICAL
+}
+
+model MonitorInsight {
+  id        String          @id @default(cuid())
+  monitor   Monitor         @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  monitorId String
+  type      InsightType
+  severity  InsightSeverity @default(INFO)
+  message   String
+  metadata  Json? // { zScore: 3.5, region: "us-east" }
+  dismissed Boolean         @default(false)
+  createdAt DateTime        @default(now())
+
+  @@index([monitorId])
+}
+
 enum LatencyGranularity {
   ONE_MINUTE
   FIVE_MINUTE
@@ -335,6 +361,7 @@ model Monitor {
   statusPages          StatusPageMonitor[]
   monitorSubscriptions MonitorSubscription[]
   dailySummaries       DailyMonitorSummary[]
+  insights             MonitorInsight[]
 
   nextCheck           DateTime?
   lastCheck           DateTime?

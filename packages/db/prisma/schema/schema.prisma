@@ -45,6 +45,7 @@ model Monitor {
   statusPages          StatusPageMonitor[]
   monitorSubscriptions MonitorSubscription[]
   dailySummaries       DailyMonitorSummary[]
+  insights             MonitorInsight[]
 
   nextCheck            DateTime?
   lastCheck            DateTime?
