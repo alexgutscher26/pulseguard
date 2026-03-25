@@ -9,17 +9,16 @@ export default function Hero() {
 
       <div className="max-w-4xl mx-auto px-6 md:px-12 relative z-20 w-full text-center flex flex-col items-center">
         {/* Header */}
-        <h1 className="text-5xl md:text-[5rem] font-bold tracking-tight leading-none mb-8">
-          <span className="text-primary">System critical uptime</span>
-          <br />
-          <span className="text-foreground">with zero false positives</span>
+        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.05] mb-10 text-balance">
+          <span className="text-primary block mb-2">Critical Uptime.</span>
+          <span className="text-foreground">Zero False Positives.</span>
         </h1>
 
         {/* Subheading */}
-        <p className="text-muted-foreground text-lg md:text-xl leading-relaxed max-w-2xl mb-12">
-          Pulseguard transforms your monitoring with surveillance protocols that verify connections,
-          ensure 50ms latency checks, and alert instantly. 24/7 monitoring that scales with your
-          infrastructure.
+        <p className="text-muted-foreground text-lg md:text-xl leading-relaxed max-w-2xl mb-12 text-balance">
+          Pulseguard transforms your monitoring with surveillance protocols that
+          verify connections, ensure 50ms latency checks, and alert instantly.
+          24/7 monitoring that scales with your infrastructure.
         </p>
 
         {/* Input Bar */}
