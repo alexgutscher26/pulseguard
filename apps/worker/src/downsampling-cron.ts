@@ -217,18 +217,21 @@ async function summarizeDailyEvents(prisma: any): Promise<void> {
   // Fetch all monitors
   const monitors = await prisma.monitor.findMany({ select: { id: true } });
 
+  // Bulk fetch existing summaries for all monitors for the given date
+  const monitorIds = monitors.map((m: any) => m.id);
+  const existingSummaries = await prisma.dailyMonitorSummary.findMany({
+    where: {
+      monitorId: { in: monitorIds },
+      date: startOfDay,
+    },
+    select: { monitorId: true },
+  });
+
+  const existingMonitorIds = new Set(existingSummaries.map((s: any) => s.monitorId));
+
   for (const monitor of monitors) {
     // Check if summary already exists
-    const existing = await prisma.dailyMonitorSummary.findUnique({
-      where: {
-        monitorId_date: {
-          monitorId: monitor.id,
-          date: startOfDay,
-        },
-      },
-    });
-
-    if (existing) continue;
+    if (existingMonitorIds.has(monitor.id)) continue;
 
     // 1. Get total checks
     const totalChecks = await prisma.monitorEvent.count({
