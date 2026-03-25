@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { useHeatmapScale, type MetricType } from "./hooks/useHeatmapScale";
 import type { LatencyHeatmapData } from "./hooks/useLatencyData";
 import { cn } from "@/lib/utils";
+import { AVAILABLE_REGIONS } from "@pulseguard/shared";
 
 interface HeatmapGridProps {
   data: LatencyHeatmapData;
@@ -117,20 +118,14 @@ export function HeatmapGrid({ data, metricType, onRegionClick }: HeatmapGridProp
   );
 }
 
-/**
- * Get human-readable region name
- */
-function getRegionName(region: string): string {
-  const regionNames: Record<string, string> = {
-    "us-east": "🇺🇸 US East",
-    "us-west": "🇺🇸 US West",
-    "eu-west": "🇪🇺 EU West",
-    "eu-central": "🇪🇺 EU Central",
-    "ap-south": "🇮🇳 Asia Pacific",
-    "ap-southeast": "🇸🇬 Southeast Asia",
-  };
+// Pre-compute region names for O(1) lookup
+const REGION_NAME_MAP = new Map(AVAILABLE_REGIONS.map((r) => [r.code, `${r.flag} ${r.name}`]));
 
-  return regionNames[region] || region;
+/**
+ * Get human-readable region name with flag
+ */
+function getRegionName(code: string): string {
+  return REGION_NAME_MAP.get(code) || code;
 }
 
 /**

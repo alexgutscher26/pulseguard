@@ -4,6 +4,7 @@ import { CheckCircle, ExternalLink } from "lucide-react";
 import { toggleMonitor } from "@/actions/monitors";
 import { toast } from "sonner";
 import { useTransition } from "react";
+import { AVAILABLE_REGIONS } from "@pulseguard/shared";
 
 /**
  * Render the detailed header for a monitor, displaying its status and controls.
@@ -144,7 +145,7 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
 
         <div className="mt-4 flex items-center gap-2 text-primary text-xs font-bold uppercase tracking-wider font-mono">
           <CheckCircle className="size-4" />
-          Verified from 12 Nodes
+          Verified from {AVAILABLE_REGIONS.length} Nodes
         </div>
       </div>
     </div>

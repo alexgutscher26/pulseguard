@@ -16,9 +16,9 @@ export default function Hero() {
 
         {/* Subheading */}
         <p className="text-muted-foreground text-lg md:text-xl leading-relaxed max-w-2xl mb-12 text-balance">
-          Pulseguard transforms your monitoring with surveillance protocols that verify connections,
-          ensure 50ms latency checks, and alert instantly. 24/7 monitoring that scales with your
-          infrastructure.
+          Pulseguard transforms your monitoring with a global surveillance network of 50+ nodes. 
+          Verify connections, ensure 50ms latency checks, and alert instantly with 
+          infrastructure-grade precision.
         </p>
 
         {/* Input Bar */}

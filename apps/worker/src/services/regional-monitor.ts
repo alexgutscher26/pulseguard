@@ -107,10 +107,18 @@ export async function performRegionalChecks(monitor: Monitor): Promise<RegionalC
     return [result];
   }
 
-  // Perform checks from all selected regions in parallel
-  const checks = regions.map((region) => checkFromRegion(monitor, region));
+  // Perform checks with a concurrency limit of 10 to protect free-tier CPU / Fetch limits
+  const results: RegionalCheckResult[] = [];
+  const concurrencyLimit = 10;
 
-  return Promise.all(checks);
+  for (let i = 0; i < regions.length; i += concurrencyLimit) {
+    const batch = regions.slice(i, i + concurrencyLimit);
+    const batchPromises = batch.map((region) => checkFromRegion(monitor, region));
+    const batchResults = await Promise.all(batchPromises);
+    results.push(...batchResults);
+  }
+
+  return results;
 }
 
 /**

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AVAILABLE_REGIONS, CONTINENTS } from "@pulseguard/shared/regions";
+import { AVAILABLE_REGIONS, CONTINENTS } from "@pulseguard/shared";
 import { Check } from "lucide-react";
 
 interface RegionSelectorProps {

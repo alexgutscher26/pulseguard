@@ -298,6 +298,7 @@ export async function processBatch(
   monitors: any[],
   prisma: any,
   env: Env,
+  ctx: ExecutionContext,
 ): Promise<{ processed: string[]; remaining: any[] }> {
   console.log(`Processing batch of ${monitors.length} monitors...`);
 
@@ -431,32 +432,54 @@ export async function processBatch(
             // Capture failed regions
             failedRegions = regionalResults.filter((r) => r.status === "DOWN").map((r) => r.region);
 
-            // Store each regional result AND manage regional incidents
+            const isMajorOutage = failedRegions.length >= (monitor.alertThreshold || 1);
+            const overallStatus = isMajorOutage ? "DOWN" : "UP";
+            const avgLatency = getAverageLatency(regionalResults);
+
+            // AGGRESSIVE AGGREGATION: Smart Filtering to save DB space and CPU
+            // We store ALL regional results in the Durable Object (LatencyAggregator) for high-res charts.
+            // But in the main DB (MonitorEvent), we only store:
+            // 1. The summary "global" result
+            // 2. Individual regional results ONLY if they are DOWN (for incident tracking)
+            const eventsToCreate = [];
+
+            // Add the summary event
+            eventsToCreate.push({
+              monitorId: monitor.id,
+              status: overallStatus as any,
+              latency: avgLatency,
+              errorReason: isMajorOutage ? `${failedRegions.length} regions failing` : undefined,
+              region: "global",
+              timestamp: new Date(),
+            });
+
+            // Store each regional result in LatencyAggregator (Fire and forget)
             for (const regionalResult of regionalResults) {
-              await prisma.monitorEvent.create({
-                data: {
+              ctx.waitUntil(
+                recordLatencyToAggregator(
+                  env,
+                  monitor.id,
+                  regionalResult.region,
+                  regionalResult.latency,
+                  regionalResult.status === "UP",
+                ),
+              );
+
+              // Only add to DB if DOWN (to save massive IOPS)
+              if (regionalResult.status === "DOWN") {
+                eventsToCreate.push({
                   monitorId: monitor.id,
-                  status: regionalResult.status as any,
+                  status: "DOWN" as any,
                   latency: regionalResult.latency,
                   errorReason: regionalResult.errorReason,
                   region: regionalResult.region,
                   timestamp: regionalResult.timestamp,
-                },
-              });
+                });
 
-              // Record latency to aggregator
-              await recordLatencyToAggregator(
-                env,
-                monitor.id,
-                regionalResult.region,
-                regionalResult.latency,
-                regionalResult.status === "UP",
-              );
-
-              // Manage Regional Incidents
-              if (regionalResult.status === "DOWN") {
+                // Manage Regional Incidents
                 await incidentService.createRegionalIncident(monitor.id, regionalResult.region);
               } else {
+                // Auto-resolve regional incident if previously down
                 const activeRegional = await incidentService.findActiveRegionalIncident(
                   monitor.id,
                   regionalResult.region,
@@ -467,21 +490,17 @@ export async function processBatch(
               }
             }
 
-            // Determine overall status based on threshold
-            const failedCount = failedRegions.length;
-            const threshold = monitor.alertThreshold || 1;
-            const overallStatus = failedCount >= threshold ? "DOWN" : "UP";
-            const avgLatency = getAverageLatency(regionalResults);
+            // BATCH CREATE (Highly efficient)
+            if (eventsToCreate.length > 0) {
+              await prisma.monitorEvent.createMany({
+                data: eventsToCreate,
+              });
+            }
 
             result = {
               status: overallStatus,
               latency: avgLatency,
-              errorReason:
-                overallStatus === "DOWN"
-                  ? regionalResults.find((r) => r.status === "DOWN")?.errorReason
-                  : failedCount > 0
-                    ? `${failedCount} regions failing (below threshold)`
-                    : undefined,
+              errorReason: isMajorOutage ? `${failedRegions.length} regions failing` : undefined,
             };
           } catch (regionalError) {
             console.error(
@@ -1325,7 +1344,7 @@ export default {
 
       // --- FREE PLAN: DIRECT EXECUTION ---
       // We process them right here instead of queuing
-      const { remaining } = await processBatch(monitors, prisma, env);
+      const { remaining } = await processBatch(monitors, prisma, env, ctx);
 
       // Offload remaining to Queue if any
       if (remaining.length > 0) {
@@ -1362,7 +1381,7 @@ export default {
     const prisma = getPrisma(env.DATABASE_URL);
     const monitors = batch.messages.map((msg) => msg.body);
 
-    const { remaining } = await processBatch(monitors, prisma, env);
+    const { remaining } = await processBatch(monitors, prisma, env, ctx);
 
     // Ack processed messages, Retry remaining
     if (remaining.length > 0) {

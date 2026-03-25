@@ -11,10 +11,15 @@ export default async function MonitorDetailPage({ params }: { params: Promise<{ 
     notFound();
   }
 
+  // Ensure data is POJO-ified for serialization to client component
+  // Turbopack serialization for heavy nested objects can sometimes panic if not plain objects
+  const serializableMonitor = JSON.parse(JSON.stringify(monitor));
+  const serializableInsights = JSON.parse(JSON.stringify(insights));
+
   return (
     <div className="flex flex-col gap-6 p-6">
-      <AIInsights insights={insights} />
-      <MonitorDetailView initialMonitor={monitor} />
+      <AIInsights insights={serializableInsights} />
+      <MonitorDetailView initialMonitor={serializableMonitor} />
     </div>
   );
 }
