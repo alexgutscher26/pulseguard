@@ -1,20 +1,17 @@
-"use client";
+import { auth } from "@pulseguard/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import LoginClient from "./login-client";
 
-import { useState } from "react";
-import AuthLayout from "@/components/auth-layout";
-import SignInForm from "@/components/sign-in-form";
-import SignUpForm from "@/components/sign-up-form";
+export default async function LoginPage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-export default function LoginPage() {
-  const [showSignIn, setShowSignIn] = useState(true);
+  // If the user has a valid active session, redirect them to the dashboard
+  if (session?.user) {
+    redirect("/dashboard");
+  }
 
-  return (
-    <AuthLayout title={showSignIn ? "System Login" : "New User Registration"}>
-      {showSignIn ? (
-        <SignInForm onSwitchToSignUp={() => setShowSignIn(false)} />
-      ) : (
-        <SignUpForm onSwitchToSignIn={() => setShowSignIn(true)} />
-      )}
-    </AuthLayout>
-  );
+  return <LoginClient />;
 }
