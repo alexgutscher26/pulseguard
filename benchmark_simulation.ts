@@ -1,4 +1,3 @@
-
 const ITERATIONS = 100;
 const EVENT_COUNT = 100000;
 
@@ -33,18 +32,18 @@ function measureInMemory() {
 function measureSimulatedDB() {
   const start = performance.now();
   for (let i = 0; i < ITERATIONS; i++) {
-      // Simulate DB returning pre-calculated values
-      // In reality, the DB does work, but we save:
-      // 1. Serialization/Deserialization of 100k objects
-      // 2. Network transfer of 100k objects
-      // 3. Allocating 100k objects in JS heap
-      // 4. Iterating over them in JS
+    // Simulate DB returning pre-calculated values
+    // In reality, the DB does work, but we save:
+    // 1. Serialization/Deserialization of 100k objects
+    // 2. Network transfer of 100k objects
+    // 3. Allocating 100k objects in JS heap
+    // 4. Iterating over them in JS
 
-      // We can't easily simulate DB time here without a DB, but we can simulate the "Application Side" cost being 0.
-      // But let's at least pretend we have the numbers.
-      const totalCount = EVENT_COUNT;
-      const upCount = Math.floor(EVENT_COUNT * 0.9); // simplified
-      const avgLat = 250;
+    // We can't easily simulate DB time here without a DB, but we can simulate the "Application Side" cost being 0.
+    // But let's at least pretend we have the numbers.
+    const totalCount = EVENT_COUNT;
+    const upCount = Math.floor(EVENT_COUNT * 0.9); // simplified
+    const avgLat = 250;
   }
   return performance.now() - start;
 }

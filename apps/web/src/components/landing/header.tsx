@@ -42,16 +42,13 @@ export default function LandingHeader() {
   return (
     <header className="fixed top-5 left-0 right-0 z-50 flex justify-center px-4 w-full">
       <div className="flex items-center justify-between px-6 h-14 bg-background/70 backdrop-blur-md border border-border shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)] rounded-2xl w-full max-w-5xl transition-all duration-300">
-
         {/* Brand Logo */}
         <div className="flex items-center gap-4">
           <Link href="/" className="flex items-center gap-2.5 group">
             <div className="p-1.5 bg-primary/5 border border-primary/10 rounded-lg group-hover:border-primary/30 group-hover:bg-primary/10 transition-all duration-300">
               <Activity className="size-4.5 text-primary" />
             </div>
-            <span className="font-bold text-foreground text-sm tracking-tight">
-              PulseGuard
-            </span>
+            <span className="font-bold text-foreground text-sm tracking-tight">PulseGuard</span>
           </Link>
         </div>
 
@@ -84,15 +81,51 @@ export default function LandingHeader() {
                 >
                   <div className="bg-popover border border-border p-2 rounded-xl shadow-[0_12px_38px_rgba(0,0,0,0.125)] dark:shadow-[0_12px_38px_rgba(0,0,0,0.5)] grid grid-cols-1 gap-1 relative overflow-hidden">
                     {[
-                      { name: "IP Subnet Analyzer", href: "/tools/ip-subnet", icon: <Network className="h-4 w-4" /> },
-                      { name: "Global Ping Latency", href: "/tools/global-latency", icon: <Globe className="h-4 w-4" /> },
-                      { name: "DNS Sentinel Verify", href: "/tools/dns-sentinel", icon: <Globe className="h-4 w-4" /> },
-                      { name: "Cron Heartbeat Watch", href: "/tools/cron-sentinel", icon: <Clock className="h-4 w-4" /> },
-                      { name: "Payload RegEx Parser", href: "/tools/payload-regex", icon: <Code2 className="h-4 w-4" /> },
-                      { name: "HTTP Header Audit", href: "/tools/http-headers", icon: <ShieldCheck className="h-4 w-4" /> },
-                      { name: "SSL Cryptographic", href: "/tools/ssl-checker", icon: <ShieldCheck className="h-4 w-4" /> },
-                      { name: "Network Port Prober", href: "/tools/port-checker", icon: <Terminal className="h-4 w-4" /> },
-                      { name: "Visual Monitor Diff", href: "/tools/visual-diff", icon: <Activity className="h-4 w-4" /> },
+                      {
+                        name: "IP Subnet Analyzer",
+                        href: "/tools/ip-subnet",
+                        icon: <Network className="h-4 w-4" />,
+                      },
+                      {
+                        name: "Global Ping Latency",
+                        href: "/tools/global-latency",
+                        icon: <Globe className="h-4 w-4" />,
+                      },
+                      {
+                        name: "DNS Sentinel Verify",
+                        href: "/tools/dns-sentinel",
+                        icon: <Globe className="h-4 w-4" />,
+                      },
+                      {
+                        name: "Cron Heartbeat Watch",
+                        href: "/tools/cron-sentinel",
+                        icon: <Clock className="h-4 w-4" />,
+                      },
+                      {
+                        name: "Payload RegEx Parser",
+                        href: "/tools/payload-regex",
+                        icon: <Code2 className="h-4 w-4" />,
+                      },
+                      {
+                        name: "HTTP Header Audit",
+                        href: "/tools/http-headers",
+                        icon: <ShieldCheck className="h-4 w-4" />,
+                      },
+                      {
+                        name: "SSL Cryptographic",
+                        href: "/tools/ssl-checker",
+                        icon: <ShieldCheck className="h-4 w-4" />,
+                      },
+                      {
+                        name: "Network Port Prober",
+                        href: "/tools/port-checker",
+                        icon: <Terminal className="h-4 w-4" />,
+                      },
+                      {
+                        name: "Visual Monitor Diff",
+                        href: "/tools/visual-diff",
+                        icon: <Activity className="h-4 w-4" />,
+                      },
                     ].map((tool) => (
                       <Link
                         key={tool.name}

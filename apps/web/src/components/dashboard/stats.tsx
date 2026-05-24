@@ -54,18 +54,22 @@ export function DashboardStats({ stats: data }: { stats: DashboardStatsData }) {
       {stats.map((stat) => (
         <div
           key={stat.name}
-          className="bg-[#0a0a0a] border border-white/5 rounded-2xl p-6 hover:border-white/10 transition-all duration-300"
+          className="bg-card border border-border rounded-xl p-6 hover:border-primary/20 hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-300 relative overflow-hidden group"
         >
           <div className="flex items-center justify-between mb-4">
-            <p className="text-muted-foreground text-sm font-medium">{stat.name}</p>
-            <div className="p-2 bg-white/5 rounded-xl">
+            <p className="text-muted-foreground text-xs font-bold uppercase tracking-wider">
+              {stat.name}
+            </p>
+            <div className="p-2 bg-accent rounded-lg border border-border/50 group-hover:border-primary/10 transition-colors">
               <stat.icon className={`size-4 ${stat.iconColor}`} />
             </div>
           </div>
-          <p className="text-3xl font-bold text-foreground tracking-tight">{stat.value}</p>
-          <p className={`text-xs font-medium mt-2 flex items-center gap-1 ${stat.changeColor}`}>
-            {stat.trend === "up" && <TrendingUp className="size-3" />}
-            {stat.trend === "down" && <TrendingDown className="size-3" />}
+          <p className="text-2xl font-extrabold text-foreground tracking-tight">{stat.value}</p>
+          <p
+            className={`text-[10px] font-bold uppercase tracking-wider mt-2 flex items-center gap-1.5 ${stat.changeColor}`}
+          >
+            {stat.trend === "up" && <TrendingUp className="size-3.5" />}
+            {stat.trend === "down" && <TrendingDown className="size-3.5" />}
             {stat.change}
           </p>
         </div>

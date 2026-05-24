@@ -9,9 +9,11 @@ export default function Pricing() {
   const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
 
   return (
-    <section className="py-28 bg-background relative overflow-hidden border-b border-border" id="pricing">
+    <section
+      className="py-28 bg-background relative overflow-hidden border-b border-border"
+      id="pricing"
+    >
       <div className="max-w-5xl mx-auto px-6 md:px-12 relative z-20">
-        
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-16">
           <div className="inline-flex items-center gap-2 mb-4 text-xs font-semibold text-primary uppercase tracking-wider">
@@ -56,11 +58,12 @@ export default function Pricing() {
 
         {/* Pricing Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-          
           {/* Tier 1: The Initiate */}
           <div className="bg-card border border-border rounded-2xl flex flex-col relative hover:border-primary/20 transition-all duration-300">
             <div className="p-8 border-b border-border">
-              <h3 className="text-foreground font-bold text-lg uppercase tracking-wider">The Initiate</h3>
+              <h3 className="text-foreground font-bold text-lg uppercase tracking-wider">
+                The Initiate
+              </h3>
               <p className="text-xs text-muted-foreground mt-1">
                 Perfect for indie developers & side projects.
               </p>
@@ -112,7 +115,9 @@ export default function Pricing() {
             </div>
 
             <div className="p-8 border-b border-primary/20 bg-primary/5 rounded-t-2xl">
-              <h3 className="text-primary font-bold text-lg uppercase tracking-wider">The Netrunner</h3>
+              <h3 className="text-primary font-bold text-lg uppercase tracking-wider">
+                The Netrunner
+              </h3>
               <p className="text-xs text-primary/70 mt-1">Ideal for growing SaaS & power users.</p>
               <div className="mt-6 flex items-baseline gap-1">
                 <span className="text-4xl font-extrabold tracking-tight text-foreground">
@@ -168,7 +173,9 @@ export default function Pricing() {
           {/* Tier 3: The Construct */}
           <div className="bg-card border border-border rounded-2xl flex flex-col relative hover:border-primary/20 transition-all duration-300">
             <div className="p-8 border-b border-border">
-              <h3 className="text-foreground font-bold text-lg uppercase tracking-wider">The Construct</h3>
+              <h3 className="text-foreground font-bold text-lg uppercase tracking-wider">
+                The Construct
+              </h3>
               <p className="text-xs text-muted-foreground mt-1">
                 Enterprise reliability for professional teams.
               </p>
@@ -222,10 +229,8 @@ export default function Pricing() {
               </Link>
             </div>
           </div>
-
         </div>
       </div>
     </section>
   );
 }
-

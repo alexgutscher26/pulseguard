@@ -12,7 +12,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const isMobile = useMobile();
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#0A0A0A] text-foreground font-sans">
+    <div className="flex h-screen overflow-hidden bg-background text-foreground font-sans">
       {/* Desktop Sidebar - Hidden on Mobile */}
       {!isMobile && <Sidebar />}
 
@@ -25,7 +25,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <DashboardHeader onMenuClick={() => setIsMobileMenuOpen(true)} />
         <div className="p-8 max-w-[1400px] mx-auto w-full relative">
           {/* Subtle Accent Glow */}
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full pointer-events-none -z-10"></div>
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/[0.02] blur-[120px] rounded-full pointer-events-none -z-10"></div>
           {children}
         </div>
       </main>

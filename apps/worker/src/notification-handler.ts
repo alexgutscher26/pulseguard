@@ -63,8 +63,7 @@ export default {
       new Set(
         batch.messages
           .filter(
-            (msg) =>
-              msg.body.type === "INCIDENT_CREATED" || msg.body.type === "INCIDENT_RESOLVED",
+            (msg) => msg.body.type === "INCIDENT_CREATED" || msg.body.type === "INCIDENT_RESOLVED",
           )
           .map((msg) => msg.body.monitorId),
       ),

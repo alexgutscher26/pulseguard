@@ -20,13 +20,17 @@ export function HeatmapLegend({ metricType, colorScale }: HeatmapLegendProps) {
       : [{ type: metricType as "absolute" | "relative", title: "" }];
 
   return (
-    <div className="flex flex-col gap-4 p-4 bg-card rounded-lg border">
-      <h3 className="text-sm font-semibold">Legend</h3>
+    <div className="flex flex-col gap-4 p-5 bg-card border border-border rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.02)]">
+      <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Legend</h3>
 
       <div className="flex flex-col lg:flex-row gap-6">
         {scales.map(({ type, title }) => (
           <div key={type} className="flex-1">
-            {title && <h4 className="text-xs font-medium text-muted-foreground mb-2">{title}</h4>}
+            {title && (
+              <h4 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80 mb-2">
+                {title}
+              </h4>
+            )}
 
             <div className="flex flex-wrap gap-3">
               {COLOR_SCALES[type].ranges.map((range, i) => (

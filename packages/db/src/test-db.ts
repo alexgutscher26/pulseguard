@@ -7,8 +7,8 @@ async function main() {
       where: { id: "cmn46mt9r000104jia4ga6ko1" },
       include: {
         events: { take: 1 },
-        maintenanceWindows: true
-      }
+        maintenanceWindows: true,
+      },
     });
 
     if (monitor) {

@@ -17,7 +17,8 @@ export default function CTA() {
         </h2>
 
         <p className="text-muted-foreground text-sm sm:text-base max-w-2xl mb-10">
-          Get started with {PRODUCT_CONFIG.FREE_CHECKS_LIMIT.toLocaleString()} free checks. Try all core monitoring systems without a credit card.
+          Get started with {PRODUCT_CONFIG.FREE_CHECKS_LIMIT.toLocaleString()} free checks. Try all
+          core monitoring systems without a credit card.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full relative z-10">
@@ -39,4 +40,3 @@ export default function CTA() {
     </section>
   );
 }
-

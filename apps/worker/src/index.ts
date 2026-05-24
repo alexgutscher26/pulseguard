@@ -598,14 +598,14 @@ export async function processBatch(
           console.warn(
             `[Mesh] QUANTUM ANOMALY detected for ${monitor.name}! Z-Score: ${anomaly.score}`,
           );
-          
+
           // Store insight
           await insightService.createInsight({
             monitorId: monitor.id,
             type: InsightType.ANOMALY,
             severity: anomaly.score > 5 ? InsightSeverity.CRITICAL : InsightSeverity.WARNING,
             message: `Latency Anomaly Detected: ${monitor.name} is performing significantly outside expected baseline (Z-Score: ${anomaly.score}).`,
-            metadata: { score: anomaly.score, latency }
+            metadata: { score: anomaly.score, latency },
           });
         }
 
@@ -615,7 +615,7 @@ export async function processBatch(
             const recentEvents = await prisma.monitorEvent.findMany({
               where: { monitorId: monitor.id, status: "UP" },
               orderBy: { timestamp: "desc" },
-              take: 20
+              take: 20,
             });
             await insightService.analyzeAndProvideAdvice(monitor.id, monitor.name, recentEvents);
           } catch (e) {

@@ -32,7 +32,7 @@ export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = 
   };
 
   return (
-    <header className="sticky top-0 z-10 flex items-center justify-between border-b border-white/5 bg-[#0a0a0a]/80 backdrop-blur-md px-4 md:px-8 py-4 overflow-hidden">
+    <header className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background/80 backdrop-blur-md px-4 md:px-8 py-4 overflow-hidden">
       <div className="flex items-center gap-2 md:gap-4 relative z-20 min-w-0 flex-1 md:flex-none">
         {/* Hamburger Menu - Mobile Only */}
         {isMobile && onMenuClick && (
@@ -41,10 +41,10 @@ export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = 
               trigger("light");
               onMenuClick();
             }}
-            className="flex items-center justify-center size-10 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-colors shrink-0 active:scale-95"
+            className="flex items-center justify-center size-10 rounded-lg border border-border bg-card hover:bg-accent transition-colors shrink-0 active:scale-95 cursor-pointer"
             aria-label="Open navigation menu"
           >
-            <Menu className="size-5 text-foreground" />
+            <Menu className="size-4.5 text-foreground" />
           </button>
         )}
 
@@ -64,13 +64,13 @@ export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = 
             });
             document.dispatchEvent(event);
           }}
-          className="relative hidden md:flex items-center gap-3 bg-white/5 text-foreground rounded-full border border-white/5 hover:border-white/10 focus:border-white/20 focus:ring-1 focus:ring-primary/20 w-72 px-4 py-2 transition-all group cursor-pointer"
+          className="relative hidden md:flex items-center gap-3 bg-accent/30 text-foreground rounded-lg border border-border hover:border-border/80 focus:border-primary/20 focus:ring-1 focus:ring-primary/20 w-72 px-4 py-2 transition-all group cursor-pointer"
         >
           <Search className="text-muted-foreground size-4 group-hover:text-foreground transition-colors" />
-          <span className="flex-1 text-left text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+          <span className="flex-1 text-left text-xs text-muted-foreground group-hover:text-foreground transition-colors">
             Search...
           </span>
-          <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold bg-white/10 text-muted-foreground rounded-full">
+          <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-semibold bg-accent text-muted-foreground rounded">
             <span>⌘</span>
             <span>K</span>
           </kbd>
@@ -79,7 +79,7 @@ export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = 
         {/* Add Monitor Button - Hidden on Mobile */}
         <Link
           href="/dashboard/monitors/new"
-          className="hidden md:flex items-center justify-center h-9 px-4 bg-primary text-primary-foreground text-sm font-semibold rounded-full hover:bg-primary/90 transition-colors gap-2 cursor-pointer"
+          className="hidden md:flex items-center justify-center h-9 px-4 bg-primary text-primary-foreground text-xs font-bold rounded-lg hover:bg-primary/95 transition-colors gap-2 cursor-pointer shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
         >
           <Plus className="size-4" />
           <span>Add Monitor</span>
@@ -91,20 +91,20 @@ export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = 
         </div>
 
         {/* User Menu */}
-        <div className="flex items-center gap-3 border-l border-white/10 pl-2 md:pl-6 h-8">
+        <div className="flex items-center gap-3 border-l border-border pl-2 md:pl-6 h-8">
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-3 outline-none group cursor-pointer">
               {/* User Name - Desktop Only */}
               <div className="text-right hidden lg:block">
-                <p className="text-sm text-foreground font-semibold">
+                <p className="text-xs text-foreground font-bold leading-tight">
                   {session?.user?.name || "Operator"}
                 </p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-[10px] text-muted-foreground font-medium mt-0.5">
                   {session?.user?.email || "admin@pulseguard.io"}
                 </p>
               </div>
               {/* Avatar */}
-              <div className="size-9 rounded-full overflow-hidden border border-white/10 relative hover:border-white/20 transition-colors shrink-0">
+              <div className="size-9 rounded-full overflow-hidden border border-border relative hover:border-primary/20 transition-colors shrink-0">
                 <img // eslint-disable-next-line @next/next/no-img-element
                   className="w-full h-full object-cover transition-opacity"
                   alt="User profile"
@@ -117,37 +117,37 @@ export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = 
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
-              className="w-56 bg-[#0a0a0a] border border-white/5 text-foreground rounded-2xl p-1"
+              className="w-56 bg-popover border border-border text-foreground rounded-xl p-1 shadow-[0_8px_30px_rgba(0,0,0,0.05)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)]"
             >
               <DropdownMenuGroup>
-                <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground">
+                <DropdownMenuLabel className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider px-2.5 py-2">
                   My Account
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-white/5" />
+                <DropdownMenuSeparator className="bg-border/60" />
                 <DropdownMenuItem
-                  className="text-sm font-medium focus:bg-white/5 focus:text-foreground cursor-pointer rounded-xl"
+                  className="text-xs font-semibold focus:bg-accent focus:text-foreground cursor-pointer rounded-lg px-2.5 py-2"
                   onClick={() => router.push("/dashboard/settings?tab=general")}
                 >
-                  <User className="mr-2 h-4 w-4" />
+                  <User className="mr-2 h-3.5 w-3.5" />
                   <span>Profile</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  className="text-sm font-medium focus:bg-white/5 focus:text-foreground cursor-pointer rounded-xl"
+                  className="text-xs font-semibold focus:bg-accent focus:text-foreground cursor-pointer rounded-lg px-2.5 py-2"
                   onClick={() => router.push("/dashboard/settings")}
                 >
-                  <Settings className="mr-2 h-4 w-4" />
+                  <Settings className="mr-2 h-3.5 w-3.5" />
                   <span>Settings</span>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
-              <DropdownMenuSeparator className="bg-white/5" />
+              <DropdownMenuSeparator className="bg-border/60" />
               <DropdownMenuItem
-                className="text-sm font-medium text-red-500 focus:bg-red-500/10 focus:text-red-500 cursor-pointer rounded-xl"
+                className="text-xs font-semibold text-red-500 focus:bg-red-500/10 focus:text-red-500 cursor-pointer rounded-lg px-2.5 py-2"
                 onClick={async () => {
                   await authClient.signOut();
                   window.location.href = "/login";
                 }}
               >
-                <LogOut className="mr-2 h-4 w-4" />
+                <LogOut className="mr-2 h-3.5 w-3.5" />
                 <span>Log out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>

@@ -29,9 +29,11 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section className="py-28 bg-background relative overflow-hidden border-b border-border" id="how-it-works">
+    <section
+      className="py-28 bg-background relative overflow-hidden border-b border-border"
+      id="how-it-works"
+    >
       <div className="max-w-5xl mx-auto px-6 md:px-12 relative z-20">
-        
         {/* Header */}
         <div className="max-w-2xl mb-20">
           <div className="inline-flex items-center gap-2 mb-4 text-xs font-semibold text-primary uppercase tracking-wider">
@@ -49,7 +51,6 @@ export default function HowItWorks() {
         <div className="relative grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
           {steps.map((step, index) => (
             <div key={index} className="flex flex-col items-start relative z-10 group">
-              
               {/* Process indicator box */}
               <div className="relative mb-6 w-14 h-14 bg-muted/40 border border-border rounded-xl flex items-center justify-center group-hover:border-primary/20 transition-all duration-300">
                 {step.icon}
@@ -62,7 +63,9 @@ export default function HowItWorks() {
                 <span className="text-muted-foreground/80">{step.category}</span>
               </div>
 
-              <h3 className="text-base font-bold text-foreground tracking-tight mb-2 uppercase">{step.title}</h3>
+              <h3 className="text-base font-bold text-foreground tracking-tight mb-2 uppercase">
+                {step.title}
+              </h3>
               <p className="text-xs text-muted-foreground leading-relaxed max-w-[280px]">
                 {step.description}
               </p>

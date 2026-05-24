@@ -35,7 +35,7 @@ export default function Hero() {
 
     setIsScanning(true);
     setScanProgress(0);
-    
+
     // Animate scan progress bar
     let progress = 0;
     const progressInterval = setInterval(() => {
@@ -48,7 +48,7 @@ export default function Hero() {
 
     // Randomize nodes during scan
     setActiveNodes([]);
-    
+
     setTimeout(() => {
       // Set the display url
       let cleanUrl = inputUrl.trim().replace(/^https?:\/\//i, "");
@@ -81,7 +81,7 @@ export default function Hero() {
 
       <div className="max-w-5xl mx-auto px-6 md:px-12 relative z-20 w-full text-center flex flex-col items-center">
         {/* Animated Pill Badge */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -99,11 +99,16 @@ export default function Hero() {
 
         {/* Subheading */}
         <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mb-10 text-balance">
-          PulseGuard tracks latency goals and validates connections using a global array of {AVAILABLE_REGIONS.length}+ regional nodes. Monitor continuously, assure API responses, and alert instantly.
+          PulseGuard tracks latency goals and validates connections using a global array of{" "}
+          {AVAILABLE_REGIONS.length}+ regional nodes. Monitor continuously, assure API responses,
+          and alert instantly.
         </p>
 
         {/* Probe Input Form */}
-        <form onSubmit={handleScan} className="relative w-full max-w-xl mb-14 bg-background/50 border border-border p-1.5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)] rounded-xl flex items-center transition-all duration-300 hover:border-primary/30">
+        <form
+          onSubmit={handleScan}
+          className="relative w-full max-w-xl mb-14 bg-background/50 border border-border p-1.5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)] rounded-xl flex items-center transition-all duration-300 hover:border-primary/30"
+        >
           <input
             type="text"
             value={inputUrl}
@@ -112,7 +117,7 @@ export default function Hero() {
             placeholder="https://api.your-app.com/health"
             className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground/50 border-none outline-none px-3.5 text-sm min-w-0"
           />
-          <button 
+          <button
             type="submit"
             disabled={isScanning || !inputUrl}
             className="bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-semibold px-4.5 py-2.5 rounded-lg transition-colors flex items-center gap-1.5 shrink-0 disabled:opacity-40"
@@ -140,10 +145,12 @@ export default function Hero() {
 
         {/* Interactive Dashboard Mockup Container */}
         <div className="w-full max-w-3xl border border-border bg-card rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.6)] overflow-hidden text-left relative">
-          
           {/* Scan overlay loader bar */}
           {isScanning && (
-            <div className="absolute top-0 left-0 h-1 bg-primary transition-all duration-100" style={{ width: `${scanProgress}%` }}></div>
+            <div
+              className="absolute top-0 left-0 h-1 bg-primary transition-all duration-100"
+              style={{ width: `${scanProgress}%` }}
+            ></div>
           )}
 
           {/* Window control header */}
@@ -161,13 +168,14 @@ export default function Hero() {
 
           {/* Content area */}
           <div className="p-6 grid grid-cols-1 md:grid-cols-12 gap-6">
-            
             {/* Monitor Information Side */}
             <div className="md:col-span-7 flex flex-col justify-between min-h-[140px]">
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <Activity className="size-4.5 text-primary" />
-                  <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Active Monitor</span>
+                  <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                    Active Monitor
+                  </span>
                 </div>
                 <div className="text-xl font-bold text-foreground truncate max-w-full">
                   {displayUrl}
@@ -183,12 +191,14 @@ export default function Hero() {
                 {/* 30 green blocks */}
                 <div className="flex items-center gap-1">
                   {Array.from({ length: 30 }).map((_, idx) => (
-                    <div 
-                      key={idx} 
+                    <div
+                      key={idx}
                       className="flex-1 h-6 transition-all duration-300"
                       style={{
-                        backgroundColor: activeNodes.includes(idx) ? "var(--primary)" : "rgba(255,255,255,0.05)",
-                        opacity: activeNodes.includes(idx) ? 1 : 0.2
+                        backgroundColor: activeNodes.includes(idx)
+                          ? "var(--primary)"
+                          : "rgba(255,255,255,0.05)",
+                        opacity: activeNodes.includes(idx) ? 1 : 0.2,
                       }}
                     ></div>
                   ))}
@@ -201,7 +211,7 @@ export default function Hero() {
               <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                 Regional Latencies
               </div>
-              
+
               {/* Region 1: US East */}
               <div className="flex items-center justify-between border-b border-border/40 pb-2">
                 <div className="flex items-center gap-2 text-xs">
@@ -229,13 +239,9 @@ export default function Hero() {
                 <span className="text-xs font-bold text-foreground">{latencies.ap}ms</span>
               </div>
             </div>
-
           </div>
-
         </div>
-
       </div>
     </section>
   );
 }
-

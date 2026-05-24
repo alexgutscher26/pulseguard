@@ -917,55 +917,50 @@ export async function getDashboardStats() {
     const userId = session.user.id;
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
-    const [
-      activeMonitorsCount,
-      activeAlertsCount,
-      totalEventsCount,
-      upEventsCount,
-      latencyAgg,
-    ] = await Promise.all([
-      // 1. Active Monitors
-      prisma.monitor.count({
-        where: {
-          userId,
-          status: { not: "PAUSED" },
-        },
-      }),
-      // 2. Active Alerts (Monitors currently DOWN)
-      prisma.monitor.count({
-        where: {
-          userId,
-          status: "DOWN",
-        },
-      }),
-      // 3. Total Events (Last 24h)
-      prisma.monitorEvent.count({
-        where: {
-          monitor: { userId },
-          timestamp: { gte: oneDayAgo },
-        },
-      }),
-      // 4. UP Events (Last 24h)
-      prisma.monitorEvent.count({
-        where: {
-          monitor: { userId },
-          timestamp: { gte: oneDayAgo },
-          status: "UP",
-        },
-      }),
-      // 5. Avg Latency for UP events (Last 24h)
-      prisma.monitorEvent.aggregate({
-        where: {
-          monitor: { userId },
-          timestamp: { gte: oneDayAgo },
-          status: "UP",
-          latency: { gt: 0 },
-        },
-        _avg: {
-          latency: true,
-        },
-      }),
-    ]);
+    const [activeMonitorsCount, activeAlertsCount, totalEventsCount, upEventsCount, latencyAgg] =
+      await Promise.all([
+        // 1. Active Monitors
+        prisma.monitor.count({
+          where: {
+            userId,
+            status: { not: "PAUSED" },
+          },
+        }),
+        // 2. Active Alerts (Monitors currently DOWN)
+        prisma.monitor.count({
+          where: {
+            userId,
+            status: "DOWN",
+          },
+        }),
+        // 3. Total Events (Last 24h)
+        prisma.monitorEvent.count({
+          where: {
+            monitor: { userId },
+            timestamp: { gte: oneDayAgo },
+          },
+        }),
+        // 4. UP Events (Last 24h)
+        prisma.monitorEvent.count({
+          where: {
+            monitor: { userId },
+            timestamp: { gte: oneDayAgo },
+            status: "UP",
+          },
+        }),
+        // 5. Avg Latency for UP events (Last 24h)
+        prisma.monitorEvent.aggregate({
+          where: {
+            monitor: { userId },
+            timestamp: { gte: oneDayAgo },
+            status: "UP",
+            latency: { gt: 0 },
+          },
+          _avg: {
+            latency: true,
+          },
+        }),
+      ]);
 
     let globalUptime = 0;
     if (totalEventsCount > 0) {

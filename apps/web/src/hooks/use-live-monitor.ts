@@ -52,18 +52,19 @@ export function useLiveMonitor(monitorId: string) {
             setLastEvent(data);
           }
         } catch (e) {
-          console.error("Failed to parse live event", e);
+          console.warn("[PulseGuard] Failed to parse live event:", e);
         }
       };
 
       ws.onclose = () => {
         setIsConnected(false);
-        // Reconnect after 3s
-        reconnectTimer = setTimeout(connect, 3000);
+        clearTimeout(reconnectTimer);
+        // Reconnect after 5s to be less aggressive
+        reconnectTimer = setTimeout(connect, 5000);
       };
 
-      ws.onerror = (err) => {
-        console.error("WebSocket Error:", err);
+      ws.onerror = () => {
+        console.warn("[PulseGuard] Live Feed WebSocket connection encountered an error (reconnecting...).");
         ws?.close();
       };
     };
@@ -71,7 +72,12 @@ export function useLiveMonitor(monitorId: string) {
     connect();
 
     return () => {
-      if (ws) ws.close();
+      if (ws) {
+        // Remove listeners before closing to prevent reconnect on unmount
+        ws.onclose = null;
+        ws.onerror = null;
+        ws.close();
+      }
       clearTimeout(reconnectTimer);
     };
   }, [monitorId]);

@@ -29,7 +29,7 @@ export class InsightService {
     // Limit spam: Only create if no active insight of same type in last 5 minutes
     // unless severity is CRITICAL.
     const windowMs = data.severity === InsightSeverity.CRITICAL ? 60 * 1000 : 5 * 60 * 1000;
-    
+
     const recent = await this.prisma.monitorInsight.findFirst({
       where: {
         monitorId: data.monitorId,
@@ -43,10 +43,10 @@ export class InsightService {
       // Update message if it's more specific or just refresh the timestamp
       return this.prisma.monitorInsight.update({
         where: { id: recent.id },
-        data: { 
+        data: {
           message: data.message,
           createdAt: new Date(), // Push to top
-          metadata: data.metadata 
+          metadata: data.metadata,
         },
       });
     }
@@ -72,9 +72,9 @@ export class InsightService {
   async analyzeAndProvideAdvice(monitorId: string, monitorName: string, recentEvents: any[]) {
     if (recentEvents.length < 5) return;
 
-    const latencies = recentEvents.map(e => e.latency);
+    const latencies = recentEvents.map((e) => e.latency);
     const avg = latencies.reduce((a, b) => a + b, 0) / latencies.length;
-    
+
     // 1. Detect Latency Drift (Advice)
     const firstHalf = latencies.slice(0, Math.floor(latencies.length / 2));
     const recentHalf = latencies.slice(Math.floor(latencies.length / 2));
@@ -87,7 +87,7 @@ export class InsightService {
         type: InsightType.ADVICE,
         severity: InsightSeverity.WARNING,
         message: `Performance Degradation: ${monitorName} is 50% slower than its 24h baseline. Check for server-side resource exhaustion.`,
-        metadata: { diff: recentAvg - firstAvg, avg }
+        metadata: { diff: recentAvg - firstAvg, avg },
       });
     }
 

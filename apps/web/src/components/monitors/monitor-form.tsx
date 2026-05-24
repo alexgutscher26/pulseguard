@@ -32,13 +32,6 @@ interface MonitorFormProps {
   };
 }
 
-/**
- * Renders a form for creating or editing a monitor configuration.
- *
- * The function initializes the form with values from the provided monitor object, handling different monitor types (HTTP, PING, PORT) and their specific input requirements. It manages form submission actions, displays success or error messages based on the submission state, and navigates to the dashboard upon successful submission.
- *
- * @param {MonitorFormProps} props - The properties for the MonitorForm component, including the monitor object.
- */
 export function MonitorForm({ monitor }: MonitorFormProps) {
   const searchParams = useSearchParams();
   const typeParam = searchParams.get("type")?.toUpperCase() as "HTTP" | "PING" | "PORT" | null;
@@ -112,98 +105,107 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
   }, [state, router, monitor]);
 
   return (
-    <div className="max-w-2xl mx-auto flex flex-col gap-8">
-      <div className="flex flex-col gap-2">
-        <h3 className="text-xl font-bold text-foreground font-mono uppercase tracking-tight flex items-center gap-2">
-          <Activity className="size-5 text-primary" />
-          {monitor ? "Edit Monitor" : "New Monitor Protocol"}
+    <div className="max-w-2xl mx-auto flex flex-col gap-6">
+      <div className="flex flex-col gap-1.5 px-1">
+        <h3 className="text-sm font-bold text-foreground uppercase tracking-wider flex items-center gap-2">
+          <Activity className="size-4 text-primary" />
+          {monitor ? "Edit Monitor" : "New Monitor Setup"}
         </h3>
-        <p className="text-sm text-primary/60 font-mono">
+        <p className="text-xs text-muted-foreground font-medium">
           {monitor
-            ? "Update your monitor configuration"
-            : "Configure a new endpoint for continuous tracking"}
+            ? "Update your monitor configuration and threshold settings"
+            : "Configure a new endpoint for continuous global verification"}
         </p>
       </div>
 
       <form
         action={formAction}
-        className="bg-card/40 border border-primary/20 p-8 backdrop-blur-sm relative group"
+        className="bg-card border border-border p-6 md:p-8 rounded-xl backdrop-blur-sm shadow-[0_8px_30px_rgba(0,0,0,0.02)]"
       >
-        {/* Decor */}
-        <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-primary/30 group-hover:border-primary/60 transition-colors pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-8 h-8 border-b border-l border-primary/30 group-hover:border-primary/60 transition-colors pointer-events-none"></div>
-
         <div className="flex flex-col gap-6">
           {/* Monitor Type */}
           <div className="flex flex-col gap-2">
-            <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
+            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
               Monitor Type
             </label>
             <div className="grid grid-cols-3 gap-4">
               <label
-                className={`flex flex-col items-center justify-center gap-2 p-4 border ${monitorType === "HTTP" ? "border-primary bg-primary/20" : "border-primary/20 bg-primary/5"} cursor-pointer hover:bg-primary/10 hover:border-primary/50 transition-all group/type relative overflow-hidden`}
+                className={`flex flex-col items-center justify-center gap-2.5 p-4 rounded-xl border transition-all cursor-pointer ${
+                  monitorType === "HTTP"
+                    ? "border-primary bg-primary/5 text-foreground shadow-[0_2px_8px_rgba(0,0,0,0.02)]"
+                    : "border-border bg-card text-muted-foreground hover:bg-accent/40 hover:text-foreground"
+                }`}
               >
                 <input
                   type="radio"
                   name="type"
                   value="HTTP"
-                  className="sr-only peer"
+                  className="sr-only"
                   checked={monitorType === "HTTP"}
                   onChange={() => setMonitorType("HTTP")}
                 />
-                <Globe className="size-6 text-primary mb-1" />
-                <span className="text-xs font-bold text-foreground font-mono uppercase">
-                  HTTP/HTTPS
-                </span>
+                <Globe className="size-5" />
+                <span className="text-[11px] font-bold uppercase tracking-wider">HTTP/HTTPS</span>
               </label>
+
               <label
-                className={`flex flex-col items-center justify-center gap-2 p-4 border ${monitorType === "PING" ? "border-primary bg-primary/20" : "border-primary/20 bg-primary/5"} cursor-pointer hover:bg-primary/10 hover:border-primary/50 transition-all group/type relative overflow-hidden`}
+                className={`flex flex-col items-center justify-center gap-2.5 p-4 rounded-xl border transition-all cursor-pointer ${
+                  monitorType === "PING"
+                    ? "border-primary bg-primary/5 text-foreground shadow-[0_2px_8px_rgba(0,0,0,0.02)]"
+                    : "border-border bg-card text-muted-foreground hover:bg-accent/40 hover:text-foreground"
+                }`}
               >
                 <input
                   type="radio"
                   name="type"
                   value="PING"
-                  className="sr-only peer"
+                  className="sr-only"
                   checked={monitorType === "PING"}
                   onChange={() => setMonitorType("PING")}
                 />
-                <Activity className="size-6 text-primary mb-1" />
-                <span className="text-xs font-bold text-foreground font-mono uppercase">Ping</span>
+                <Activity className="size-5" />
+                <span className="text-[11px] font-bold uppercase tracking-wider">Ping</span>
               </label>
+
               <label
-                className={`flex flex-col items-center justify-center gap-2 p-4 border ${monitorType === "PORT" ? "border-primary bg-primary/20" : "border-primary/20 bg-primary/5"} cursor-pointer hover:bg-primary/10 hover:border-primary/50 transition-all group/type relative overflow-hidden`}
+                className={`flex flex-col items-center justify-center gap-2.5 p-4 rounded-xl border transition-all cursor-pointer ${
+                  monitorType === "PORT"
+                    ? "border-primary bg-primary/5 text-foreground shadow-[0_2px_8px_rgba(0,0,0,0.02)]"
+                    : "border-border bg-card text-muted-foreground hover:bg-accent/40 hover:text-foreground"
+                }`}
               >
                 <input
                   type="radio"
                   name="type"
                   value="PORT"
-                  className="sr-only peer"
+                  className="sr-only"
                   checked={monitorType === "PORT"}
                   onChange={() => setMonitorType("PORT")}
                 />
-                <Server className="size-6 text-primary mb-1" />
-                <span className="text-xs font-bold text-foreground font-mono uppercase">Port</span>
+                <Server className="size-5" />
+                <span className="text-[11px] font-bold uppercase tracking-wider">Port</span>
               </label>
             </div>
           </div>
 
-          {/* Basic Info */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
+          {/* Friendly Name */}
+          <div className="flex flex-col gap-2">
+            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
               Friendly Name
             </label>
             <input
               name="name"
               required
               defaultValue={monitor?.name}
-              className="bg-secondary/20 border border-primary/20 focus:border-primary/60 text-foreground text-sm rounded-sm p-3 font-mono placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full"
+              className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-3 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full"
               type="text"
               placeholder={monitorType === "HTTP" ? "e.g. Production API" : "e.g. Game Server"}
             />
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
+          {/* Target Host */}
+          <div className="flex flex-col gap-2">
+            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
               {monitorType === "HTTP" ? "Target URL" : "Hostname / IP"}
             </label>
             <div className="flex gap-4">
@@ -211,7 +213,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                 name="url"
                 required
                 defaultValue={initialUrl}
-                className="bg-secondary/20 border border-primary/20 focus:border-primary/60 text-foreground text-sm rounded-sm p-3 font-mono placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full"
+                className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-3 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full"
                 type="text"
                 placeholder={
                   monitorType === "HTTP"
@@ -225,7 +227,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                     name="port"
                     required
                     defaultValue={initialPort}
-                    className="bg-secondary/20 border border-primary/20 focus:border-primary/60 text-foreground text-sm rounded-sm p-3 font-mono placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full"
+                    className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-3 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full"
                     type="number"
                     placeholder="8080"
                     min="1"
@@ -238,9 +240,9 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
 
           {/* HTTP Advanced Config */}
           {monitorType === "HTTP" && (
-            <div className="flex flex-col gap-6 border-l-2 border-primary/20 pl-6 py-2">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
+            <div className="flex flex-col gap-5 border-l border-border pl-6 py-1">
+              <div className="flex flex-col gap-2">
+                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                   HTTP Method
                 </label>
                 <div className="relative group/select">
@@ -248,27 +250,27 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                     name="method"
                     value={method}
                     onChange={(e) => setMethod(e.target.value)}
-                    className="bg-secondary/20 border border-primary/20 focus:border-primary/60 text-foreground text-sm rounded-sm p-3 pr-10 font-mono focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full appearance-none cursor-pointer"
+                    className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-3 pr-10 text-foreground focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full appearance-none cursor-pointer"
                   >
                     {["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"].map((m) => (
-                      <option key={m} value={m} className="bg-background text-foreground">
+                      <option key={m} value={m} className="bg-popover text-foreground">
                         {m}
                       </option>
                     ))}
                   </select>
-                  <ChevronDown className="absolute top-3.5 right-3 size-3 text-primary/40 pointer-events-none group-focus-within/select:text-primary transition-colors" />
+                  <ChevronDown className="absolute top-3.5 right-3 size-3.5 text-muted-foreground/60 pointer-events-none group-focus-within/select:text-foreground transition-colors" />
                 </div>
               </div>
 
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
-                  <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
+                  <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                     Custom Headers
                   </label>
                   <button
                     type="button"
                     onClick={addHeader}
-                    className="text-[10px] font-bold text-primary hover:text-primary/80 uppercase font-mono transition-colors"
+                    className="text-[10px] font-bold text-primary hover:underline uppercase tracking-wider transition-all cursor-pointer"
                   >
                     + Add Header
                   </button>
@@ -280,19 +282,19 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                         placeholder="Key"
                         value={header.key}
                         onChange={(e) => updateHeader(index, "key", e.target.value)}
-                        className="bg-secondary/20 border border-primary/20 focus:border-primary/60 text-foreground text-xs rounded-sm p-2 font-mono flex-1 focus:outline-none"
+                        className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-2.5 text-foreground focus:outline-none flex-1"
                       />
                       <input
                         placeholder="Value"
                         value={header.value}
                         onChange={(e) => updateHeader(index, "value", e.target.value)}
-                        className="bg-secondary/20 border border-primary/20 focus:border-primary/60 text-foreground text-xs rounded-sm p-2 font-mono flex-1 focus:outline-none"
+                        className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-2.5 text-foreground focus:outline-none flex-1"
                       />
                       {headersList.length > 1 && (
                         <button
                           type="button"
                           onClick={() => removeHeader(index)}
-                          className="p-2 text-primary/40 hover:text-red-500 transition-colors"
+                          className="p-2 text-muted-foreground hover:text-red-500 transition-colors cursor-pointer"
                         >
                           <X className="size-4" />
                         </button>
@@ -300,7 +302,6 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                     </div>
                   ))}
                 </div>
-                {/* Hidden input to stringify headers for form submission */}
                 <input
                   type="hidden"
                   name="headers"
@@ -309,15 +310,15 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
               </div>
 
               {["POST", "PUT", "PATCH"].includes(method) && (
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
+                <div className="flex flex-col gap-2">
+                  <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                     Request Body
                   </label>
                   <textarea
                     name="body"
                     value={requestBody}
                     onChange={(e) => setRequestBody(e.target.value)}
-                    className="bg-secondary/20 border border-primary/20 focus:border-primary/60 text-foreground text-sm rounded-sm p-3 font-mono placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full min-h-[100px] resize-y"
+                    className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-3 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full min-h-[100px] resize-y"
                     placeholder='{"key": "value"}'
                   />
                 </div>
@@ -328,10 +329,10 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
           {/* Region Selector */}
           <RegionSelector selectedRegions={selectedRegions} onChange={setSelectedRegions} />
 
-          {/* Alert Threshold (Only if regions are selected) */}
+          {/* Alert Threshold */}
           {selectedRegions.length > 0 && (
-            <div className="flex flex-col gap-1.5 p-4 border border-primary/20 bg-primary/5 rounded-sm">
-              <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
+            <div className="flex flex-col gap-2.5 p-5 border border-border bg-accent/30 rounded-xl">
+              <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                 Alert Threshold
               </label>
               <div className="flex items-center gap-4">
@@ -342,130 +343,134 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                   max={selectedRegions.length}
                   value={threshold}
                   onChange={(e) => setThreshold(parseInt(e.target.value) || 1)}
-                  className="bg-secondary/20 border border-primary/20 focus:border-primary/60 text-foreground text-sm rounded-sm p-2 w-20 font-mono focus:outline-none"
+                  className="bg-card border border-border focus:border-primary/20 text-xs font-bold rounded-lg p-2 w-20 text-center text-foreground focus:outline-none"
                 />
-                <p className="text-[10px] text-primary/60 font-mono uppercase">
+                <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider leading-relaxed">
                   Only alert when at least{" "}
-                  <span className="text-primary font-bold">{threshold}</span> regions are down
+                  <span className="text-foreground font-extrabold">{threshold}</span> regions are
+                  down
                 </p>
               </div>
             </div>
           )}
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
+            <div className="flex flex-col gap-2">
+              <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                 Check Interval
               </label>
               <div className="relative group/select">
-                <Clock className="absolute top-3 left-3 size-4 text-primary/40 pointer-events-none group-focus-within/select:text-primary transition-colors" />
+                <Clock className="absolute top-3.5 left-3 size-4 text-muted-foreground/60 pointer-events-none group-focus-within/select:text-foreground transition-colors" />
                 <select
                   name="interval"
                   defaultValue={monitor?.interval}
-                  className="bg-secondary/20 border border-primary/20 focus:border-primary/60 text-foreground text-sm rounded-sm p-3 pl-10 pr-10 font-mono focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full appearance-none cursor-pointer"
+                  className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-3 pl-10 pr-10 text-foreground focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full appearance-none cursor-pointer"
                 >
-                  <option value="30" className="bg-background text-foreground">
+                  <option value="30" className="bg-popover text-foreground">
                     30 Seconds
                   </option>
-                  <option value="60" className="bg-background text-foreground">
+                  <option value="60" className="bg-popover text-foreground">
                     1 Minute
                   </option>
-                  <option value="300" className="bg-background text-foreground">
+                  <option value="300" className="bg-popover text-foreground">
                     5 Minutes
                   </option>
-                  <option value="600" className="bg-background text-foreground">
+                  <option value="600" className="bg-popover text-foreground">
                     10 Minutes
                   </option>
                 </select>
-                <ChevronDown className="absolute top-3.5 right-3 size-3 text-primary/40 pointer-events-none group-focus-within/select:text-primary transition-colors" />
+                <ChevronDown className="absolute top-3.5 right-3 size-3.5 text-muted-foreground/60 pointer-events-none group-focus-within/select:text-foreground transition-colors" />
               </div>
             </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
+
+            <div className="flex flex-col gap-2">
+              <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                 Request Timeout
               </label>
               <div className="relative group/select">
-                <Clock className="absolute top-3 left-3 size-4 text-primary/40 pointer-events-none group-focus-within/select:text-primary transition-colors" />
+                <Clock className="absolute top-3.5 left-3 size-4 text-muted-foreground/60 pointer-events-none group-focus-within/select:text-foreground transition-colors" />
                 <select
                   name="timeout"
                   defaultValue={monitor?.timeout}
-                  className="bg-secondary/20 border border-primary/20 focus:border-primary/60 text-foreground text-sm rounded-sm p-3 pl-10 pr-10 font-mono focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full appearance-none cursor-pointer"
+                  className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-3 pl-10 pr-10 text-foreground focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full appearance-none cursor-pointer"
                 >
-                  <option value="5" className="bg-background text-foreground">
+                  <option value="5" className="bg-popover text-foreground">
                     5 Seconds
                   </option>
-                  <option value="10" className="bg-background text-foreground">
+                  <option value="10" className="bg-popover text-foreground">
                     10 Seconds
                   </option>
-                  <option value="30" className="bg-background text-foreground">
+                  <option value="30" className="bg-popover text-foreground">
                     30 Seconds
                   </option>
                 </select>
-                <ChevronDown className="absolute top-3.5 right-3 size-3 text-primary/40 pointer-events-none group-focus-within/select:text-primary transition-colors" />
-              </div>
-              <div className="mt-2 flex items-center gap-3 border border-primary/20 bg-primary/5 p-3 rounded-sm">
-                <input
-                  type="checkbox"
-                  id="dynamicThresholding"
-                  name="dynamicThresholding"
-                  defaultChecked={monitor?.dynamicThresholding}
-                  className="accent-primary size-4 cursor-pointer"
-                />
-                <div className="flex flex-col">
-                  <label
-                    htmlFor="dynamicThresholding"
-                    className="text-[10px] font-bold text-foreground font-mono uppercase cursor-pointer"
-                  >
-                    Dynamic Timeout
-                  </label>
-                  <p className="text-[9px] text-primary/60 font-mono mt-0.5 max-w-[150px]">
-                    Auto-scale timeout to p95 historical latency
-                  </p>
-                </div>
+                <ChevronDown className="absolute top-3.5 right-3 size-3.5 text-muted-foreground/60 pointer-events-none group-focus-within/select:text-foreground transition-colors" />
               </div>
             </div>
           </div>
 
-          <div className="flex flex-col gap-1.5">
+          <div className="flex items-center gap-3 border border-border bg-accent/30 p-4 rounded-xl mt-1">
+            <input
+              type="checkbox"
+              id="dynamicThresholding"
+              name="dynamicThresholding"
+              defaultChecked={monitor?.dynamicThresholding}
+              className="accent-primary size-4 cursor-pointer rounded border-border"
+            />
+            <div className="flex flex-col">
+              <label
+                htmlFor="dynamicThresholding"
+                className="text-[10px] font-bold text-foreground uppercase tracking-wider cursor-pointer"
+              >
+                Dynamic Timeout
+              </label>
+              <p className="text-[9px] text-muted-foreground font-semibold uppercase mt-0.5 tracking-wider">
+                Auto-scale timeout to p95 historical latency
+              </p>
+            </div>
+          </div>
+
+          {/* Runbook Url */}
+          <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
-              <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
+              <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                 Remediation Runbook (Optional)
               </label>
-              <div className="flex items-center gap-1.5 text-primary/40 group-hover:text-primary transition-colors cursor-help">
-                <p className="text-[9px] font-mono italic">Attach Confluence or Markdown link</p>
-              </div>
+              <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-wider">
+                Attach playbook or documentation link
+              </p>
             </div>
             <div className="relative group/input">
-              <Book className="absolute top-3 left-3 size-4 text-primary/40 pointer-events-none group-focus-within/input:text-primary transition-colors" />
+              <Book className="absolute top-3.5 left-3 size-4 text-muted-foreground/60 pointer-events-none group-focus-within/input:text-foreground transition-colors" />
               <input
                 name="runbookUrl"
                 value={runbookUrl}
                 onChange={(e) => setRunbookUrl(e.target.value)}
-                className="bg-secondary/20 border border-primary/20 focus:border-primary/60 text-foreground text-sm rounded-sm p-3 pl-10 font-mono placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all w-full"
+                className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-3 pl-10 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full"
                 type="url"
-                placeholder="https://confluence.company.com/runbook/monitor-01"
+                placeholder="https://docs.company.com/runbooks/api-monitoring"
               />
             </div>
           </div>
 
-          <div className="h-px bg-primary/20 my-2"></div>
+          <div className="h-px bg-border my-2"></div>
 
           <div className="flex items-center justify-end gap-3">
             <Link
               href="/dashboard/monitors"
-              className="px-6 py-2.5 border border-primary/20 text-primary/60 hover:text-primary hover:border-primary/50 text-xs font-bold uppercase tracking-wider font-mono transition-all flex items-center gap-2"
+              className="px-4 py-2 border border-border text-muted-foreground hover:text-foreground hover:bg-accent text-xs font-bold rounded-lg transition-all flex items-center gap-2 cursor-pointer"
             >
-              <X className="size-4" /> Cancel
+              <X className="size-3.5" /> Cancel
             </Link>
             <button
               type="submit"
               disabled={isPending}
-              className="px-6 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-bold uppercase tracking-wider font-mono transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/95 text-xs font-bold rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
             >
               {isPending ? (
-                <Loader2 className="size-4 animate-spin" />
+                <Loader2 className="size-3.5 animate-spin" />
               ) : (
-                <Save className="size-4" />
+                <Save className="size-3.5" />
               )}
               {monitor ? "Save Changes" : "Create Monitor"}
             </button>

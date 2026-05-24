@@ -5,10 +5,8 @@ export default function LandingFooter() {
   return (
     <footer className="py-16 md:py-20 border-t border-border bg-background relative overflow-hidden">
       <div className="max-w-5xl mx-auto px-6 md:px-12 flex flex-col gap-16">
-        
         {/* Main Grid Content */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-12 md:gap-8">
-          
           {/* Col 1 - Brand */}
           <div className="flex flex-col gap-4 md:col-span-2">
             <div className="flex items-center gap-2">
@@ -116,4 +114,3 @@ export default function LandingFooter() {
     </footer>
   );
 }
-

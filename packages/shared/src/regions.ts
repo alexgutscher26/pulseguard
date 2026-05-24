@@ -21,8 +21,18 @@ export const AVAILABLE_REGIONS: Region[] = [
   { code: "ca-central-1", name: "Canada (Toronto)", continent: "North America", flag: "🇨🇦" },
   { code: "ca-west-1", name: "Canada (Vancouver)", continent: "North America", flag: "🇨🇦" },
   { code: "mx-central-1", name: "Mexico (Querétaro)", continent: "North America", flag: "🇲🇽" },
-  { code: "us-northeast-1", name: "US Northeast (New York)", continent: "North America", flag: "🇺🇸" },
-  { code: "us-southeast-1", name: "US Southeast (Atlanta)", continent: "North America", flag: "🇺🇸" },
+  {
+    code: "us-northeast-1",
+    name: "US Northeast (New York)",
+    continent: "North America",
+    flag: "🇺🇸",
+  },
+  {
+    code: "us-southeast-1",
+    name: "US Southeast (Atlanta)",
+    continent: "North America",
+    flag: "🇺🇸",
+  },
   { code: "us-mountain-1", name: "US Mountain (Denver)", continent: "North America", flag: "🇺🇸" },
 
   // Europe (15)
@@ -44,7 +54,12 @@ export const AVAILABLE_REGIONS: Region[] = [
 
   // Asia Pacific (12)
   { code: "ap-east-1", name: "Asia Pacific (Hong Kong)", continent: "Asia Pacific", flag: "🇭🇰" },
-  { code: "ap-southeast-1", name: "Asia Pacific (Singapore)", continent: "Asia Pacific", flag: "🇸🇬" },
+  {
+    code: "ap-southeast-1",
+    name: "Asia Pacific (Singapore)",
+    continent: "Asia Pacific",
+    flag: "🇸🇬",
+  },
   { code: "ap-southeast-2", name: "Asia Pacific (Sydney)", continent: "Asia Pacific", flag: "🇦🇺" },
   { code: "ap-southeast-3", name: "Asia Pacific (Jakarta)", continent: "Asia Pacific", flag: "🇮🇩" },
   { code: "ap-northeast-1", name: "Asia Pacific (Tokyo)", continent: "Asia Pacific", flag: "🇯🇵" },
@@ -52,15 +67,30 @@ export const AVAILABLE_REGIONS: Region[] = [
   { code: "ap-northeast-3", name: "Asia Pacific (Osaka)", continent: "Asia Pacific", flag: "🇯🇵" },
   { code: "ap-south-1", name: "Asia Pacific (Mumbai)", continent: "Asia Pacific", flag: "🇮🇳" },
   { code: "ap-south-2", name: "Asia Pacific (Hyderabad)", continent: "Asia Pacific", flag: "🇮🇳" },
-  { code: "ap-southeast-4", name: "Asia Pacific (Melbourne)", continent: "Asia Pacific", flag: "🇦🇺" },
+  {
+    code: "ap-southeast-4",
+    name: "Asia Pacific (Melbourne)",
+    continent: "Asia Pacific",
+    flag: "🇦🇺",
+  },
   { code: "ap-southeast-5", name: "Asia Pacific (Bangkok)", continent: "Asia Pacific", flag: "🇹🇭" },
-  { code: "ap-southeast-6", name: "Asia Pacific (Ho Chi Minh)", continent: "Asia Pacific", flag: "🇻🇳" },
+  {
+    code: "ap-southeast-6",
+    name: "Asia Pacific (Ho Chi Minh)",
+    continent: "Asia Pacific",
+    flag: "🇻🇳",
+  },
 
   // South America (4)
   { code: "sa-east-1", name: "South America (São Paulo)", continent: "South America", flag: "🇧🇷" },
   { code: "sa-west-1", name: "South America (Santiago)", continent: "South America", flag: "🇨🇱" },
   { code: "sa-north-1", name: "South America (Bogotá)", continent: "South America", flag: "🇨🇴" },
-  { code: "sa-south-1", name: "South America (Buenos Aires)", continent: "South America", flag: "🇦🇷" },
+  {
+    code: "sa-south-1",
+    name: "South America (Buenos Aires)",
+    continent: "South America",
+    flag: "🇦🇷",
+  },
 
   // Africa (4)
   { code: "af-south-1", name: "Africa (Cape Town)", continent: "Africa", flag: "🇿🇦" },

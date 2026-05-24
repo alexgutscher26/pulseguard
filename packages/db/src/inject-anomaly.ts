@@ -17,11 +17,11 @@ async function main() {
       type: "ANOMALY",
       severity: "WARNING",
       message: `Latency Anomaly Detected: ${monitor.name} is performing 340% outside expected baseline (Z-Score: 4.8).`,
-      metadata: { 
-        score: 4.8, 
-        latency: 450, 
+      metadata: {
+        score: 4.8,
+        latency: 450,
         region: "us-east-1",
-        simulated: true 
+        simulated: true,
       },
     },
   });

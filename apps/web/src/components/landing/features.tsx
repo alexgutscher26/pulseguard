@@ -1,12 +1,19 @@
-import { CheckCircle2, Globe, Database, Shield, Server, Activity, Loader2, ArrowUpRight } from "lucide-react";
+import {
+  CheckCircle2,
+  Globe,
+  Database,
+  Shield,
+  Server,
+  Activity,
+  Loader2,
+  ArrowUpRight,
+} from "lucide-react";
 import { LiveStatusDemo } from "./live-status-demo";
 
 export default function Features() {
   return (
     <section className="py-28 bg-background relative overflow-hidden" id="features">
-      
       <div className="max-w-5xl mx-auto px-6 md:px-12 relative z-20">
-        
         {/* Header */}
         <div className="max-w-2xl mb-20">
           <div className="inline-flex items-center gap-2 mb-4 text-xs font-semibold text-primary uppercase tracking-wider">
@@ -16,13 +23,13 @@ export default function Features() {
             See PulseGuard in action
           </h2>
           <p className="text-muted-foreground text-sm leading-relaxed">
-            Watch how global surveillance and high-frequency checks prevent latency degradation and downtime incidents across your system.
+            Watch how global surveillance and high-frequency checks prevent latency degradation and
+            downtime incidents across your system.
           </p>
         </div>
 
         {/* Modernist Card Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
           {/* Card 1: Live Status Demo */}
           <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between group hover:border-primary/20 hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-300 min-h-[440px]">
             <div className="flex-1 flex flex-col justify-center mb-6">
@@ -33,21 +40,22 @@ export default function Features() {
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-base font-bold text-foreground tracking-tight">Live Latency Grid</h3>
+                <h3 className="text-base font-bold text-foreground tracking-tight">
+                  Live Latency Grid
+                </h3>
                 <ArrowUpRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Probe endpoints dynamically. Run instant checks from global centers and view JSON payload structures.
+                Probe endpoints dynamically. Run instant checks from global centers and view JSON
+                payload structures.
               </p>
             </div>
           </div>
 
           {/* Card 2: Incident Resolution */}
           <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between group hover:border-primary/20 hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-300 min-h-[440px]">
-            
             {/* Visual Area */}
             <div className="h-[200px] w-full mb-6 relative flex flex-col items-center justify-center p-2">
-              
               {/* Stacked Cards */}
               <div className="relative w-full h-[120px] flex items-center justify-center">
                 {/* Left Card */}
@@ -92,18 +100,20 @@ export default function Features() {
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-base font-bold text-foreground tracking-tight">Automated Dispatch</h3>
+                <h3 className="text-base font-bold text-foreground tracking-tight">
+                  Automated Dispatch
+                </h3>
                 <ArrowUpRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Connect channels effortlessly. Resolve complex outages by triggering webhook integrations and alerts.
+                Connect channels effortlessly. Resolve complex outages by triggering webhook
+                integrations and alerts.
               </p>
             </div>
           </div>
 
           {/* Card 3: Multi-Region Support */}
           <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between group hover:border-primary/20 hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-300 min-h-[440px]">
-            
             {/* Visual Area */}
             <div className="h-[200px] w-full mb-6 relative flex items-center justify-center">
               <svg className="absolute inset-0 w-full h-full" viewBox="0 0 300 200">
@@ -188,11 +198,14 @@ export default function Features() {
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-base font-bold text-foreground tracking-tight">Global Verification</h3>
+                <h3 className="text-base font-bold text-foreground tracking-tight">
+                  Global Verification
+                </h3>
                 <ArrowUpRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Eliminate localized errors. Nodes cross-reference downtime signatures dynamically before triggering pages.
+                Eliminate localized errors. Nodes cross-reference downtime signatures dynamically
+                before triggering pages.
               </p>
             </div>
           </div>

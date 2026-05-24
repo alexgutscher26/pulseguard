@@ -1,15 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
 
 export function Scanlines() {
   const [mounted, setMounted] = useState(false);
+  const { theme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   if (!mounted) return null;
+
+  // Only render scanline overlay for retro/cyberpunk themes
+  if (theme !== "matrix" && theme !== "cyberpunk") return null;
 
   return (
     <div className="pointer-events-none fixed inset-0 z-50 h-screen w-screen overflow-hidden">

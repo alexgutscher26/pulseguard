@@ -32,13 +32,14 @@ type FilterStatus = "UP" | "DOWN" | "PAUSED" | "MAINTENANCE";
 function UptimeBar({ status }: { status: number }) {
   let colorClass = "bg-emerald-500"; // Green
   if (status === 0) colorClass = "bg-red-500"; // Red
-  if (status === -1) colorClass = "bg-white/10"; // Grey
+  if (status === -1) colorClass = "bg-muted"; // Grey (Theme aware)
   if (status === 2) colorClass = "bg-amber-500"; // Maintenance
 
   const opacityClass = status === 0.5 ? "opacity-50" : "";
-  if (status === 0.5) return <div className="h-4 w-1 bg-emerald-500 rounded-full opacity-50"></div>;
+  if (status === 0.5)
+    return <div className="h-4.5 w-1 bg-emerald-500 rounded-full opacity-50"></div>;
 
-  return <div className={`h-4 w-1 rounded-full ${colorClass} ${opacityClass}`}></div>;
+  return <div className={`h-4.5 w-1 rounded-full ${colorClass} ${opacityClass}`}></div>;
 }
 
 /**
@@ -141,47 +142,49 @@ export function MonitorsTable({ monitors }: MonitorsTableProps) {
     <div>
       {/* SectionHeader */}
       <div className="flex items-center justify-between mb-4 px-1">
-        <h2 className="text-lg font-bold text-foreground tracking-tight">Your Monitors</h2>
+        <h2 className="text-sm font-bold text-foreground uppercase tracking-wider">
+          Your Monitors
+        </h2>
         <div className="flex gap-2">
           <DropdownMenu>
-            <DropdownMenuTrigger className="bg-white/5 text-foreground text-xs font-semibold px-4 py-2 rounded-full hover:bg-white/10 transition-colors flex items-center gap-2 border border-white/5 outline-none">
+            <DropdownMenuTrigger className="bg-card text-foreground text-xs font-bold px-3.5 py-2 rounded-lg hover:bg-accent transition-colors flex items-center gap-2 border border-border outline-none cursor-pointer">
               <Filter className="size-3.5" />
               Filter {filterStatuses.length > 0 && `(${filterStatuses.length})`}
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
-              className="w-48 bg-[#0a0a0a] border-white/5 text-foreground rounded-2xl p-1"
+              className="w-48 bg-popover border border-border text-foreground rounded-xl p-1 shadow-[0_8px_30px_rgba(0,0,0,0.05)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)]"
             >
               <DropdownMenuGroup>
-                <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground">
+                <DropdownMenuLabel className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider px-2 py-1.5">
                   Filter By Status
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-white/5" />
+                <DropdownMenuSeparator className="bg-border/60" />
                 <DropdownMenuCheckboxItem
                   checked={filterStatuses.includes("UP")}
                   onCheckedChange={() => toggleFilter("UP")}
-                  className="focus:bg-white/5 data-[state=checked]:text-foreground rounded-xl"
+                  className="focus:bg-accent focus:text-foreground cursor-pointer rounded-lg text-xs font-semibold px-2 py-1.5"
                 >
                   Up
                 </DropdownMenuCheckboxItem>
                 <DropdownMenuCheckboxItem
                   checked={filterStatuses.includes("DOWN")}
                   onCheckedChange={() => toggleFilter("DOWN")}
-                  className="focus:bg-white/5 data-[state=checked]:text-foreground rounded-xl"
+                  className="focus:bg-accent focus:text-foreground cursor-pointer rounded-lg text-xs font-semibold px-2 py-1.5"
                 >
                   Down
                 </DropdownMenuCheckboxItem>
                 <DropdownMenuCheckboxItem
                   checked={filterStatuses.includes("PAUSED")}
                   onCheckedChange={() => toggleFilter("PAUSED")}
-                  className="focus:bg-white/5 data-[state=checked]:text-foreground rounded-xl"
+                  className="focus:bg-accent focus:text-foreground cursor-pointer rounded-lg text-xs font-semibold px-2 py-1.5"
                 >
                   Paused
                 </DropdownMenuCheckboxItem>
                 <DropdownMenuCheckboxItem
                   checked={filterStatuses.includes("MAINTENANCE")}
                   onCheckedChange={() => toggleFilter("MAINTENANCE")}
-                  className="focus:bg-white/5 data-[state=checked]:text-foreground rounded-xl"
+                  className="focus:bg-accent focus:text-foreground cursor-pointer rounded-lg text-xs font-semibold px-2 py-1.5"
                 >
                   Maintenance
                 </DropdownMenuCheckboxItem>
@@ -190,34 +193,34 @@ export function MonitorsTable({ monitors }: MonitorsTableProps) {
           </DropdownMenu>
 
           <DropdownMenu>
-            <DropdownMenuTrigger className="bg-white/5 text-foreground text-xs font-semibold px-4 py-2 rounded-full hover:bg-white/10 transition-colors flex items-center gap-2 border border-white/5 outline-none">
+            <DropdownMenuTrigger className="bg-card text-foreground text-xs font-bold px-3.5 py-2 rounded-lg hover:bg-accent transition-colors flex items-center gap-2 border border-border outline-none cursor-pointer">
               <ArrowUpDown className="size-3.5" />
               Sort: {sort}
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
-              className="w-48 bg-[#0a0a0a] border-white/5 text-foreground rounded-2xl p-1"
+              className="w-48 bg-popover border border-border text-foreground rounded-xl p-1 shadow-[0_8px_30px_rgba(0,0,0,0.05)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)]"
             >
               <DropdownMenuGroup>
-                <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground">
+                <DropdownMenuLabel className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider px-2 py-1.5">
                   Sort Order
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-white/5" />
+                <DropdownMenuSeparator className="bg-border/60" />
                 <DropdownMenuItem
                   onClick={() => setSort("name")}
-                  className="focus:bg-white/5 cursor-pointer rounded-xl text-sm"
+                  className="focus:bg-accent focus:text-foreground cursor-pointer rounded-lg text-xs font-semibold px-2 py-1.5"
                 >
                   Name (A-Z)
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => setSort("status")}
-                  className="focus:bg-white/5 cursor-pointer rounded-xl text-sm"
+                  className="focus:bg-accent focus:text-foreground cursor-pointer rounded-lg text-xs font-semibold px-2 py-1.5"
                 >
                   Status
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => setSort("uptime")}
-                  className="focus:bg-white/5 cursor-pointer rounded-xl text-sm"
+                  className="focus:bg-accent focus:text-foreground cursor-pointer rounded-lg text-xs font-semibold px-2 py-1.5"
                 >
                   Uptime (High-Low)
                 </DropdownMenuItem>
@@ -228,39 +231,39 @@ export function MonitorsTable({ monitors }: MonitorsTableProps) {
       </div>
 
       {/* Table */}
-      <div className="border border-white/5 bg-[#0a0a0a] rounded-2xl overflow-hidden shadow-sm relative">
+      <div className="border border-border bg-card rounded-xl overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.02)] relative">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className="bg-[#111] border-b border-white/5">
+            <thead className="bg-accent/40 border-b border-border">
               <tr>
-                <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <th className="px-6 py-4 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                   Site Name
                 </th>
-                <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <th className="px-6 py-4 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <th className="px-6 py-4 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                   Recent Events
                 </th>
-                <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <th className="px-6 py-4 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                   Response
                 </th>
-                <th className="px-6 py-4 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <th className="px-6 py-4 text-right text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-border">
               {sortedMonitors.map((site) => (
-                <tr key={site.id} className="hover:bg-white/5 transition-colors group">
+                <tr key={site.id} className="hover:bg-accent/30 transition-colors group">
                   <td className="px-6 py-5">
                     <div className="flex flex-col">
-                      <span className="text-sm font-semibold text-foreground">{site.name}</span>
+                      <span className="text-xs font-bold text-foreground">{site.name}</span>
                       <a
                         href={site.url}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-xs text-muted-foreground hover:text-foreground hover:underline transition-colors mt-0.5"
+                        className="text-[11px] text-muted-foreground hover:text-foreground hover:underline transition-colors mt-0.5"
                       >
                         {site.url}
                       </a>
@@ -268,26 +271,26 @@ export function MonitorsTable({ monitors }: MonitorsTableProps) {
                   </td>
                   <td className="px-6 py-5">
                     {site.status === "UP" && (
-                      <span className="inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold bg-emerald-500/10 text-emerald-500 rounded-full">
-                        <span className="size-1.5 rounded-full bg-emerald-500"></span>
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-500 rounded-full border border-emerald-500/10">
+                        <span className="size-1 bg-emerald-500 rounded-full animate-pulse"></span>
                         Up
                       </span>
                     )}
                     {site.status === "DOWN" && (
-                      <span className="inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold bg-red-500/10 text-red-500 rounded-full">
-                        <span className="size-1.5 rounded-full bg-red-500"></span>
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-red-500/10 text-red-500 rounded-full border border-red-500/10">
+                        <span className="size-1 bg-red-500 rounded-full animate-pulse"></span>
                         Down
                       </span>
                     )}
                     {site.status === "PAUSED" && (
-                      <span className="inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold bg-gray-500/10 text-gray-400 rounded-full">
-                        <span className="size-1.5 rounded-full bg-gray-500"></span>
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-gray-500/10 text-gray-400 rounded-full border border-gray-500/10">
+                        <span className="size-1 bg-gray-400 rounded-full"></span>
                         Paused
                       </span>
                     )}
                     {site.status === "MAINTENANCE" && (
-                      <span className="inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold bg-amber-500/10 text-amber-500 rounded-full">
-                        <span className="size-1.5 rounded-full bg-amber-500"></span>
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-500 rounded-full border border-amber-500/10">
+                        <span className="size-1 bg-amber-500 rounded-full"></span>
                         Maint.
                       </span>
                     )}
@@ -299,14 +302,14 @@ export function MonitorsTable({ monitors }: MonitorsTableProps) {
                           <UptimeBar key={i} status={val} />
                         ))}
                       </div>
-                      <span className="text-sm font-semibold text-foreground tracking-tight">
+                      <span className="text-xs font-bold text-foreground tracking-tight">
                         {getUptime(site.events)}%
                       </span>
                     </div>
                   </td>
                   <td className="px-6 py-5">
                     <span
-                      className={`text-sm font-semibold ${
+                      className={`text-xs font-bold ${
                         site.status === "DOWN" ? "text-red-500" : "text-muted-foreground"
                       }`}
                     >
@@ -333,7 +336,10 @@ export function MonitorsTable({ monitors }: MonitorsTableProps) {
               ))}
               {sortedMonitors.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-6 py-10 text-center text-muted-foreground text-sm">
+                  <td
+                    colSpan={5}
+                    className="px-6 py-10 text-center text-muted-foreground text-xs font-semibold"
+                  >
                     No monitors found matching your criteria.
                   </td>
                 </tr>

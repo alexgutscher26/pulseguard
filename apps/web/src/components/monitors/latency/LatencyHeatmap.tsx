@@ -42,20 +42,21 @@ export function LatencyHeatmap({
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between px-1">
         <div>
-          <h2 className="text-2xl font-bold flex items-center gap-2">
-            <TrendingUp className="h-6 w-6" />
+          <h2 className="text-sm font-bold text-foreground uppercase tracking-wider flex items-center gap-2">
+            <TrendingUp className="h-4.5 w-4.5 text-primary" />
             Latency Heatmap
           </h2>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-xs text-muted-foreground mt-1">
             Real-time latency performance across regions
           </p>
         </div>
 
         {data && (
-          <div className="text-sm text-muted-foreground">
-            <span className="font-medium">{data.regions.length}</span> regions monitored
+          <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+            <span className="font-extrabold text-foreground">{data.regions.length}</span> regions
+            monitored
           </div>
         )}
       </div>
@@ -93,7 +94,7 @@ export function LatencyHeatmap({
       {/* Heatmap Grid */}
       {data && !isLoading && (
         <>
-          <div className="rounded-lg border bg-card overflow-hidden">
+          <div className="rounded-xl border border-border bg-card overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.02)]">
             <HeatmapGrid data={data} metricType={metricType} onRegionClick={setSelectedRegion} />
           </div>
 
@@ -143,13 +144,17 @@ function StatCard({
 }) {
   return (
     <div
-      className={`p-4 rounded-lg border ${
-        variant === "destructive" ? "bg-destructive/10 border-destructive" : "bg-card"
+      className={`p-5 rounded-xl border transition-all hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] ${
+        variant === "destructive"
+          ? "bg-red-500/10 border-red-500/20 text-red-500"
+          : "bg-card border-border"
       }`}
     >
-      <div className="text-sm text-muted-foreground">{label}</div>
+      <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+        {label}
+      </div>
       <div
-        className={`text-2xl font-bold mt-1 ${variant === "destructive" ? "text-destructive" : ""}`}
+        className={`text-xl font-extrabold mt-2 tracking-tight ${variant === "destructive" ? "text-red-500" : "text-foreground"}`}
       >
         {value}
       </div>

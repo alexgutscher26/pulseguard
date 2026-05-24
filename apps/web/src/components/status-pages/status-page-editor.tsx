@@ -136,7 +136,8 @@ export function StatusPageEditor({ page, allMonitors }: { page: any; allMonitors
               target="_blank"
               className="flex items-center gap-2 text-sm text-primary hover:underline font-mono"
             >
-              {env.NEXT_PUBLIC_APP_URL.replace("https://", "").replace("http://", "")}/status-page/{page.slug} <ExternalLink className="size-3" />
+              {env.NEXT_PUBLIC_APP_URL.replace("https://", "").replace("http://", "")}/status-page/
+              {page.slug} <ExternalLink className="size-3" />
             </a>
           </div>
         </div>
