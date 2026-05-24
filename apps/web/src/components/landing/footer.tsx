@@ -1,44 +1,48 @@
 import Link from "next/link";
-import { Zap, Twitter, Github } from "lucide-react";
+import { Activity, Twitter, Github } from "lucide-react";
 
 export default function LandingFooter() {
   return (
-    <footer className="py-16 md:py-24 border-t border-white/5 bg-background relative overflow-hidden">
-      <div className="max-w-6xl mx-auto px-6 md:px-12 flex flex-col gap-24">
+    <footer className="py-16 md:py-20 border-t border-border bg-background relative overflow-hidden">
+      <div className="max-w-5xl mx-auto px-6 md:px-12 flex flex-col gap-16">
+        
         {/* Main Grid Content */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-12 md:gap-8">
+          
           {/* Col 1 - Brand */}
           <div className="flex flex-col gap-4 md:col-span-2">
             <div className="flex items-center gap-2">
-              <Zap className="size-5 text-primary" fill="currentColor" strokeWidth={1} />
-              <span className="text-foreground font-bold tracking-tight text-xl">PulseGuard</span>
+              <div className="p-1 bg-primary/5 border border-primary/10 rounded-lg">
+                <Activity className="size-4 text-primary" />
+              </div>
+              <span className="text-foreground font-bold tracking-tight text-base">PulseGuard</span>
             </div>
-            <p className="text-muted-foreground text-[15px] font-medium max-w-xs leading-relaxed">
-              Global infrastructure surveillance made simple.
+            <p className="text-muted-foreground text-xs font-medium max-w-xs leading-relaxed">
+              Global infrastructure uptime and latency surveillance made simple.
             </p>
           </div>
 
           {/* Col 2 - Product */}
-          <div className="flex flex-col gap-5">
-            <span className="text-muted-foreground/50 text-[11px] font-bold uppercase tracking-widest">
-              PRODUCT
+          <div className="flex flex-col gap-4">
+            <span className="text-muted-foreground/50 text-[10px] font-bold uppercase tracking-wider">
+              Product
             </span>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2.5">
               <Link
                 href="#features"
-                className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit"
+                className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
               >
                 Features
               </Link>
               <Link
                 href="#pricing"
-                className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit"
+                className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
               >
                 Pricing
               </Link>
               <Link
                 href="#"
-                className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit"
+                className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
               >
                 API Docs
               </Link>
@@ -46,26 +50,26 @@ export default function LandingFooter() {
           </div>
 
           {/* Col 3 - Company */}
-          <div className="flex flex-col gap-5">
-            <span className="text-muted-foreground/50 text-[11px] font-bold uppercase tracking-widest">
-              COMPANY
+          <div className="flex flex-col gap-4">
+            <span className="text-muted-foreground/50 text-[10px] font-bold uppercase tracking-wider">
+              Company
             </span>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2.5">
               <Link
                 href="#"
-                className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit"
+                className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
               >
                 About
               </Link>
               <Link
                 href="#"
-                className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit"
+                className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
               >
                 Blog
               </Link>
               <Link
                 href="#"
-                className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit"
+                className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
               >
                 Careers
               </Link>
@@ -73,38 +77,38 @@ export default function LandingFooter() {
           </div>
 
           {/* Col 4 - Legal */}
-          <div className="flex flex-col gap-5">
-            <span className="text-muted-foreground/50 text-[11px] font-bold uppercase tracking-widest">
-              LEGAL
+          <div className="flex flex-col gap-4">
+            <span className="text-muted-foreground/50 text-[10px] font-bold uppercase tracking-wider">
+              Legal
             </span>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2.5">
               <Link
                 href="#"
-                className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit"
+                className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
               >
-                Privacy
+                Privacy Policy
               </Link>
               <Link
                 href="#"
-                className="text-muted-foreground hover:text-foreground text-[14px] font-medium transition-colors w-fit"
+                className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
               >
-                Terms
+                Terms of Service
               </Link>
             </div>
           </div>
         </div>
 
-        {/* Footer Bottom Sidebar */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-white/5">
+        {/* Footer Bottom */}
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-border">
           <span className="text-muted-foreground text-xs font-medium">
             © {new Date().getFullYear()} PulseGuard. All rights reserved.
           </span>
-          <div className="flex items-center gap-5 text-muted-foreground">
-            <Link href="#" className="hover:text-foreground hover:scale-105 transition-all">
-              <Twitter className="size-[18px]" />
+          <div className="flex items-center gap-4 text-muted-foreground">
+            <Link href="#" className="hover:text-foreground transition-all">
+              <Twitter className="size-[17px]" />
             </Link>
-            <Link href="#" className="hover:text-foreground hover:scale-105 transition-all">
-              <Github className="size-[18px]" />
+            <Link href="#" className="hover:text-foreground transition-all">
+              <Github className="size-[17px]" />
             </Link>
           </div>
         </div>
@@ -112,3 +116,4 @@ export default function LandingFooter() {
     </footer>
   );
 }
+

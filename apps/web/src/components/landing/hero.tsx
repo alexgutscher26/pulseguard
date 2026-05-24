@@ -1,81 +1,241 @@
+"use client";
+
 import Link from "next/link";
-import { ArrowRight, CornerDownLeft, Command } from "lucide-react";
+import { ArrowRight, Globe, Shield, Activity, Clock, CheckCircle } from "lucide-react";
 import { AVAILABLE_REGIONS, PRODUCT_CONFIG } from "@pulseguard/shared";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Hero() {
-  return (
-    <section className="relative pt-32 pb-20 overflow-hidden min-h-[90vh] flex flex-col justify-center bg-background">
-      {/* Background Glow matching the image */}
-      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/20 rounded-full blur-[120px] translate-x-1/3 -translate-y-1/4 pointer-events-none"></div>
+  const [inputUrl, setInputUrl] = useState("");
+  const [displayUrl, setDisplayUrl] = useState("api.your-app.com");
+  const [latencies, setLatencies] = useState({ us: 18, eu: 42, ap: 88 });
+  const [isScanning, setIsScanning] = useState(false);
+  const [scanProgress, setScanProgress] = useState(100);
+  const [activeNodes, setActiveNodes] = useState<number[]>(Array.from({ length: 30 }, (_, i) => i));
 
-      <div className="max-w-4xl mx-auto px-6 md:px-12 relative z-20 w-full text-center flex flex-col items-center">
+  // Simulate background latency shifts
+  useEffect(() => {
+    if (isScanning) return;
+
+    const interval = setInterval(() => {
+      setLatencies({
+        us: Math.floor(Math.random() * 12) + 12,
+        eu: Math.floor(Math.random() * 15) + 35,
+        ap: Math.floor(Math.random() * 20) + 80,
+      });
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [isScanning]);
+
+  const handleScan = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputUrl || isScanning) return;
+
+    setIsScanning(true);
+    setScanProgress(0);
+    
+    // Animate scan progress bar
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+      progress += 5;
+      setScanProgress(progress);
+      if (progress >= 100) {
+        clearInterval(progressInterval);
+      }
+    }, 100);
+
+    // Randomize nodes during scan
+    setActiveNodes([]);
+    
+    setTimeout(() => {
+      // Set the display url
+      let cleanUrl = inputUrl.trim().replace(/^https?:\/\//i, "");
+      if (cleanUrl.length > 32) cleanUrl = cleanUrl.substring(0, 30) + "...";
+      setDisplayUrl(cleanUrl);
+
+      // Add nodes one by one
+      let count = 0;
+      const nodeInterval = setInterval(() => {
+        setActiveNodes((prev) => [...prev, count]);
+        count++;
+        if (count >= 30) {
+          clearInterval(nodeInterval);
+        }
+      }, 30);
+
+      setLatencies({
+        us: Math.floor(Math.random() * 10) + 10,
+        eu: Math.floor(Math.random() * 15) + 32,
+        ap: Math.floor(Math.random() * 20) + 75,
+      });
+      setIsScanning(false);
+    }, 2000);
+  };
+
+  return (
+    <section className="relative pt-36 pb-20 overflow-hidden min-h-screen flex flex-col justify-center bg-background border-b border-border">
+      {/* Sleek, soft radial backdrop glows */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-b from-primary/10 via-primary/5 to-transparent rounded-full blur-[100px] pointer-events-none"></div>
+
+      <div className="max-w-5xl mx-auto px-6 md:px-12 relative z-20 w-full text-center flex flex-col items-center">
+        {/* Animated Pill Badge */}
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="inline-flex items-center gap-2 mb-8 text-[11px] font-semibold tracking-wider text-primary bg-primary/10 border border-primary/20 px-3.5 py-1 rounded-full uppercase"
+        >
+          <span className="size-1.5 bg-primary rounded-full animate-pulse"></span>
+          <span>Mesh network monitoring deployed</span>
+        </motion.div>
+
         {/* Header */}
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.05] mb-10 text-balance">
-          <span className="text-primary block mb-2">Critical Uptime.</span>
-          <span className="text-foreground">Zero False Positives.</span>
+        <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-[1.05] mb-8 text-balance text-foreground max-w-4xl">
+          Critical Uptime. <br className="hidden sm:inline" />
+          <span className="text-muted-foreground">Zero False Positives.</span>
         </h1>
 
         {/* Subheading */}
-        <p className="text-muted-foreground text-lg md:text-xl leading-relaxed max-w-2xl mb-12 text-balance">
-          Pulseguard transforms your monitoring with a global surveillance network of {AVAILABLE_REGIONS.length}+ nodes. 
-          Verify connections, ensure {PRODUCT_CONFIG.LATENCY_GOAL_MS}ms latency checks, and alert instantly with 
-          infrastructure-grade precision.
+        <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mb-10 text-balance">
+          PulseGuard tracks latency goals and validates connections using a global array of {AVAILABLE_REGIONS.length}+ regional nodes. Monitor continuously, assure API responses, and alert instantly.
         </p>
 
-        {/* Input Bar */}
-        <div className="relative w-full max-w-2xl mb-12 rounded-2xl bg-[#0a0a0a] border border-white/5 shadow-[0_0_40px_-10px_rgba(57,255,20,0.15)] transition-shadow hover:shadow-[0_0_60px_-15px_rgba(57,255,20,0.2)]">
-          <div className="flex items-center px-4 py-3">
-            <input
-              type="text"
-              placeholder="https://api.your-app.com |"
-              className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground/50 border-none outline-none text-lg min-w-0"
-            />
-            <div className="flex items-center gap-3 ml-4 shrink-0">
-              <div className="hidden sm:flex items-center gap-1 text-muted-foreground/50 text-xs font-mono">
-                <Command className="size-3" />
-                <CornerDownLeft className="size-3" />
-              </div>
-              <button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-5 py-2 rounded-xl transition-colors">
-                Try it
-              </button>
-            </div>
-          </div>
-        </div>
+        {/* Probe Input Form */}
+        <form onSubmit={handleScan} className="relative w-full max-w-xl mb-14 bg-background/50 border border-border p-1.5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)] rounded-xl flex items-center transition-all duration-300 hover:border-primary/30">
+          <input
+            type="text"
+            value={inputUrl}
+            onChange={(e) => setInputUrl(e.target.value)}
+            disabled={isScanning}
+            placeholder="https://api.your-app.com/health"
+            className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground/50 border-none outline-none px-3.5 text-sm min-w-0"
+          />
+          <button 
+            type="submit"
+            disabled={isScanning || !inputUrl}
+            className="bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-semibold px-4.5 py-2.5 rounded-lg transition-colors flex items-center gap-1.5 shrink-0 disabled:opacity-40"
+          >
+            {isScanning ? "Scanning..." : "Verify Uptime"}
+            <ArrowRight className="size-3.5" />
+          </button>
+        </form>
 
-        {/* Separator */}
-        <div className="flex items-center justify-center gap-3 text-muted-foreground/30 mb-8 font-mono text-xs">
-          <span>✕</span>
-          <span>◇</span>
-          <span>✕</span>
-          <span>◇</span>
-        </div>
-
-        {/* Stats */}
-        <div className="mb-2">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
-            <span className="text-primary">{PRODUCT_CONFIG.FREE_CHECKS_LIMIT.toLocaleString()}</span> free checks
-          </h2>
-        </div>
-        <p className="text-muted-foreground/60 mb-12 font-medium">
-          deploy global monitors instantly
-        </p>
-
-        {/* Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4">
+        {/* CTAs */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-16">
           <Link
             href="/signup"
-            className="flex items-center justify-center h-12 px-8 bg-primary hover:bg-primary/90 text-primary-foreground text-base font-semibold rounded-full transition-colors"
+            className="flex items-center justify-center h-11 px-6 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold rounded-lg transition-colors"
           >
-            Start Free Trial <ArrowRight className="ml-2 size-4" />
+            Start Free Trial <ArrowRight className="ml-1.5 size-3.5" />
           </Link>
           <Link
-            href="#demo"
-            className="flex items-center justify-center h-12 px-8 bg-transparent border border-white/10 text-foreground text-base font-semibold rounded-full hover:bg-white/5 transition-colors"
+            href="#features"
+            className="flex items-center justify-center h-11 px-6 bg-transparent border border-border text-foreground hover:bg-accent text-xs font-semibold rounded-lg transition-colors"
           >
-            View Docs <ArrowRight className="ml-2 size-4" />
+            Explore Features
           </Link>
         </div>
+
+        {/* Interactive Dashboard Mockup Container */}
+        <div className="w-full max-w-3xl border border-border bg-card rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.6)] overflow-hidden text-left relative">
+          
+          {/* Scan overlay loader bar */}
+          {isScanning && (
+            <div className="absolute top-0 left-0 h-1 bg-primary transition-all duration-100" style={{ width: `${scanProgress}%` }}></div>
+          )}
+
+          {/* Window control header */}
+          <div className="border-b border-border px-4 py-3 flex items-center justify-between bg-muted/30 select-none">
+            <div className="flex items-center gap-1.5">
+              <span className="size-2.5 rounded-full bg-border"></span>
+              <span className="size-2.5 rounded-full bg-border"></span>
+              <span className="size-2.5 rounded-full bg-border"></span>
+            </div>
+            <div className="text-[10px] font-semibold text-muted-foreground tracking-wide font-mono">
+              PULSEGUARD_SATELLITE_DEMO
+            </div>
+            <div className="w-10"></div>
+          </div>
+
+          {/* Content area */}
+          <div className="p-6 grid grid-cols-1 md:grid-cols-12 gap-6">
+            
+            {/* Monitor Information Side */}
+            <div className="md:col-span-7 flex flex-col justify-between min-h-[140px]">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <Activity className="size-4.5 text-primary" />
+                  <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Active Monitor</span>
+                </div>
+                <div className="text-xl font-bold text-foreground truncate max-w-full">
+                  {displayUrl}
+                </div>
+              </div>
+
+              {/* Uptime nodes list */}
+              <div className="mt-4">
+                <div className="flex justify-between items-center text-[10px] text-muted-foreground font-semibold mb-2">
+                  <span>30-DAY OPERATIONAL MATRIX</span>
+                  <span className="text-primary font-bold">100.0% UPTIME</span>
+                </div>
+                {/* 30 green blocks */}
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: 30 }).map((_, idx) => (
+                    <div 
+                      key={idx} 
+                      className="flex-1 h-6 transition-all duration-300"
+                      style={{
+                        backgroundColor: activeNodes.includes(idx) ? "var(--primary)" : "rgba(255,255,255,0.05)",
+                        opacity: activeNodes.includes(idx) ? 1 : 0.2
+                      }}
+                    ></div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Regional Latency Side */}
+            <div className="md:col-span-5 border-t md:border-t-0 md:border-l border-border pt-6 md:pt-0 md:pl-6 flex flex-col gap-4 font-mono">
+              <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                Regional Latencies
+              </div>
+              
+              {/* Region 1: US East */}
+              <div className="flex items-center justify-between border-b border-border/40 pb-2">
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="size-1.5 bg-primary rounded-full"></span>
+                  <span className="text-muted-foreground">US East (Virginia)</span>
+                </div>
+                <span className="text-xs font-bold text-foreground">{latencies.us}ms</span>
+              </div>
+
+              {/* Region 2: EU Central */}
+              <div className="flex items-center justify-between border-b border-border/40 pb-2">
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="size-1.5 bg-primary rounded-full"></span>
+                  <span className="text-muted-foreground">EU Central (Frankfurt)</span>
+                </div>
+                <span className="text-xs font-bold text-foreground">{latencies.eu}ms</span>
+              </div>
+
+              {/* Region 3: Asia Pacific */}
+              <div className="flex items-center justify-between pb-1">
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="size-1.5 bg-primary rounded-full"></span>
+                  <span className="text-muted-foreground">Asia North (Tokyo)</span>
+                </div>
+                <span className="text-xs font-bold text-foreground">{latencies.ap}ms</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
     </section>
   );
 }
+

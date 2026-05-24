@@ -3,52 +3,67 @@ import { Upload, Radar, BellRing } from "lucide-react";
 export default function HowItWorks() {
   const steps = [
     {
-      number: "1",
-      title: "Connect",
+      number: "01",
+      category: "Connect",
+      title: "Integrate Endpoints",
       description:
-        "Import your API endpoints, servers, and domain details. PulseGuard maps your infrastructure instantly.",
-      icon: <Upload className="size-8 text-primary" strokeWidth={1.5} />,
+        "Input your API endpoints, server nodes, and domains. PulseGuard catalogs your stack layout immediately.",
+      icon: <Upload className="size-5 text-primary" strokeWidth={1.8} />,
     },
     {
-      number: "2",
-      title: "Monitor",
+      number: "02",
+      category: "Surveillance",
+      title: "Establish Monitoring",
       description:
-        "Our global mesh checks responses and latencies from multiple regions to establish an operational baseline automatically.",
-      icon: <Radar className="size-8 text-primary" strokeWidth={1.5} />,
+        "Our global network coordinates checks across multiple regions to compute an active performance baseline.",
+      icon: <Radar className="size-5 text-primary" strokeWidth={1.8} />,
     },
     {
-      number: "3",
-      title: "Alert",
+      number: "03",
+      category: "Alerting",
+      title: "Receive Alerts",
       description:
-        "Get instant notifications across Slack, SMS, and tools. The system handles 24/7 surveillance while you focus on growth.",
-      icon: <BellRing className="size-8 text-primary" strokeWidth={1.5} />,
+        "Connect directly to Slack, Discord, SMS, or PagerDuty. Get notified instantly when performance degrades.",
+      icon: <BellRing className="size-5 text-primary" strokeWidth={1.8} />,
     },
   ];
 
   return (
-    <section className="py-24 bg-background relative overflow-hidden" id="how-it-works">
-      <div className="max-w-6xl mx-auto px-6 md:px-12">
-        <div className="text-center mb-20 flex flex-col items-center">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4">
-            How it <span className="text-primary">works</span>
+    <section className="py-28 bg-background relative overflow-hidden border-b border-border" id="how-it-works">
+      <div className="max-w-5xl mx-auto px-6 md:px-12 relative z-20">
+        
+        {/* Header */}
+        <div className="max-w-2xl mb-20">
+          <div className="inline-flex items-center gap-2 mb-4 text-xs font-semibold text-primary uppercase tracking-wider">
+            <span>Workflow</span>
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-4">
+            How it works
           </h2>
-          <p className="text-muted-foreground text-lg">
-            From setup to live surveillance in three simple steps
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            Go from initial configuration to live global monitoring in three straightforward steps.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
+        {/* Technical pipeline cards */}
+        <div className="relative grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
           {steps.map((step, index) => (
-            <div key={index} className="flex flex-col items-center text-center">
-              <div className="relative mb-10 w-24 h-24 bg-white/5 border border-white/10 rounded-[24px] flex items-center justify-center shadow-lg">
-                <div className="absolute -top-3 -left-3 size-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm shadow-[0_4px_15px_rgba(57,255,20,0.4)]">
-                  {step.number}
-                </div>
+            <div key={index} className="flex flex-col items-start relative z-10 group">
+              
+              {/* Process indicator box */}
+              <div className="relative mb-6 w-14 h-14 bg-muted/40 border border-border rounded-xl flex items-center justify-center group-hover:border-primary/20 transition-all duration-300">
                 {step.icon}
               </div>
 
-              <h3 className="text-xl font-bold text-foreground mb-3">{step.title}</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed max-w-[280px]">
+              {/* Step indicator */}
+              <div className="flex items-center gap-1.5 mb-2 font-mono text-[10px] font-bold text-primary uppercase tracking-wider">
+                <span>{step.number}</span>
+                <span className="text-border">/</span>
+                <span className="text-muted-foreground/80">{step.category}</span>
+              </div>
+
+              <h3 className="text-base font-bold text-foreground tracking-tight mb-2 uppercase">{step.title}</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed max-w-[280px]">
                 {step.description}
               </p>
             </div>

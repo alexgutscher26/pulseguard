@@ -25,28 +25,34 @@ export default function FAQ() {
   ];
 
   return (
-    <section className="py-24 bg-background relative overflow-hidden" id="faq">
+    <section className="py-28 bg-background relative overflow-hidden" id="faq">
       <div className="max-w-3xl mx-auto px-6">
-        <div className="text-center mb-16 flex flex-col items-center">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4">
-            Frequently asked <span className="text-primary">questions</span>
+        
+        {/* Header */}
+        <div className="flex flex-col items-center text-center mb-16">
+          <div className="inline-flex items-center gap-2 mb-4 text-xs font-semibold text-primary uppercase tracking-wider">
+            <span>Support</span>
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-4">
+            Frequently asked questions
           </h2>
-          <p className="text-muted-foreground text-lg">
-            Everything you need to know about PulseGuard
+          <p className="text-muted-foreground text-sm leading-relaxed max-w-md">
+            Find immediate answers regarding PulseGuard's global network, subscription models, and telemetry configurations.
           </p>
         </div>
 
-        <div className="flex flex-col gap-4">
+        {/* Minimalist Separator Layout */}
+        <div className="divide-y divide-border border-t border-b border-border">
           {faqs.map((item, i) => (
             <details
               key={i}
-              className="group bg-[#0a0a0a] border border-white/5 rounded-2xl overflow-hidden transition-all hover:border-white/10"
+              className="group overflow-hidden transition-all duration-300"
             >
-              <summary className="flex items-center justify-between p-6 cursor-pointer font-medium text-foreground hover:bg-white/5 transition-colors list-none outline-none focus-visible:ring-1 focus-visible:ring-primary/50 [&::-webkit-details-marker]:hidden">
-                <span className="text-[15px] sm:text-base">{item.q}</span>
-                <ChevronDown className="size-4 text-muted-foreground group-open:rotate-180 transition-transform duration-300 shrink-0 ml-4" />
+              <summary className="flex items-center justify-between py-5 cursor-pointer font-semibold text-foreground hover:text-primary transition-colors list-none outline-none focus-visible:ring-1 focus-visible:ring-primary/50 [&::-webkit-details-marker]:hidden">
+                <span className="text-sm sm:text-base tracking-tight">{item.q}</span>
+                <ChevronDown className="size-4 text-muted-foreground/60 group-open:rotate-180 group-open:text-primary transition-all duration-300 shrink-0 ml-4" />
               </summary>
-              <div className="px-6 pb-6 text-muted-foreground text-sm leading-relaxed pt-2">
+              <div className="pb-5 text-muted-foreground text-xs leading-relaxed transition-all duration-300">
                 {item.a}
               </div>
             </details>
@@ -56,3 +62,4 @@ export default function FAQ() {
     </section>
   );
 }
+

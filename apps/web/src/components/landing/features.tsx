@@ -1,186 +1,200 @@
-import { CheckCircle2, Globe, Database, Shield, Server, Activity, Loader2 } from "lucide-react";
+import { CheckCircle2, Globe, Database, Shield, Server, Activity, Loader2, ArrowUpRight } from "lucide-react";
 import { LiveStatusDemo } from "./live-status-demo";
 
 export default function Features() {
   return (
-    <section className="py-24 bg-background relative overflow-hidden" id="features">
-      <div className="max-w-6xl mx-auto px-6 md:px-12">
+    <section className="py-28 bg-background relative overflow-hidden" id="features">
+      
+      <div className="max-w-5xl mx-auto px-6 md:px-12 relative z-20">
+        
         {/* Header */}
-        <div className="text-center mb-16 flex flex-col items-center">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4">
-            See <span className="text-primary">PulseGuard</span> in action
+        <div className="max-w-2xl mb-20">
+          <div className="inline-flex items-center gap-2 mb-4 text-xs font-semibold text-primary uppercase tracking-wider">
+            <span>Uptime Orchestration</span>
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-4">
+            See PulseGuard in action
           </h2>
-          <p className="text-muted-foreground text-lg">
-            Watch how global surveillance prevents downtime experiences
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            Watch how global surveillance and high-frequency checks prevent latency degradation and downtime incidents across your system.
           </p>
         </div>
 
-        {/* Cards Grid */}
+        {/* Modernist Card Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-[#0a0a0a] border border-white/5 rounded-2xl p-6 flex flex-col group hover:border-white/10 transition-colors">
-            <LiveStatusDemo />
-            <h3 className="text-lg font-bold text-foreground mb-2">Live Status Demo</h3>
-            <p className="text-sm text-muted-foreground/80 leading-relaxed">
-              See PulseGuard handle real infrastructure inquiries instantly
-            </p>
+          
+          {/* Card 1: Live Status Demo */}
+          <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between group hover:border-primary/20 hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-300 min-h-[440px]">
+            <div className="flex-1 flex flex-col justify-center mb-6">
+              <div className="p-3 bg-muted/30 border border-border/60 rounded-xl shadow-sm relative overflow-hidden group-hover:border-primary/10 transition-all duration-300">
+                <LiveStatusDemo />
+              </div>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-base font-bold text-foreground tracking-tight">Live Latency Grid</h3>
+                <ArrowUpRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Probe endpoints dynamically. Run instant checks from global centers and view JSON payload structures.
+              </p>
+            </div>
           </div>
 
           {/* Card 2: Incident Resolution */}
-          <div className="bg-[#0a0a0a] border border-white/5 rounded-2xl p-6 flex flex-col group hover:border-white/10 transition-colors">
+          <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between group hover:border-primary/20 hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-300 min-h-[440px]">
+            
             {/* Visual Area */}
-            <div className="h-[220px] w-full mb-6 relative flex flex-col items-center justify-center p-2">
+            <div className="h-[200px] w-full mb-6 relative flex flex-col items-center justify-center p-2">
+              
               {/* Stacked Cards */}
-              <div className="relative w-full h-[120px] flex items-center justify-center mt-4">
+              <div className="relative w-full h-[120px] flex items-center justify-center">
                 {/* Left Card */}
-                <div className="absolute left-[5%] top-4 w-[110px] h-[75px] bg-[#1a1a1a] border border-white/10 rounded-xl flex flex-col p-3 shadow-xl transform -rotate-6 transition-transform group-hover:rotate-0">
-                  <div className="w-full h-1.5 bg-white/20 rounded-full mb-2"></div>
-                  <div className="w-2/3 h-1.5 bg-white/20 rounded-full"></div>
-                  <CheckCircle2 className="size-4 text-primary absolute bottom-3 right-3" />
+                <div className="absolute left-[5%] top-4 w-[110px] h-[75px] bg-muted/40 border border-border/80 rounded-xl flex flex-col p-3 shadow-md transform -rotate-6 transition-all duration-300 group-hover:-translate-x-2 group-hover:rotate-0">
+                  <div className="w-full h-1 bg-foreground/10 rounded-full mb-2"></div>
+                  <div className="w-2/3 h-1 bg-foreground/10 rounded-full"></div>
+                  <CheckCircle2 className="size-3.5 text-primary absolute bottom-2.5 right-2.5" />
                 </div>
 
                 {/* Center Card */}
-                <div className="absolute z-10 w-[120px] h-[85px] bg-[#1a1a1a] border border-white/20 rounded-xl flex flex-col p-3 shadow-2xl transform -translate-y-2 transition-transform group-hover:-translate-y-4">
-                  <div className="w-full h-1.5 bg-white/20 rounded-full mb-2"></div>
-                  <div className="w-2/3 h-1.5 bg-white/20 rounded-full mb-2"></div>
-                  <div className="w-1/2 h-1.5 bg-white/20 rounded-full"></div>
-                  <CheckCircle2 className="size-5 text-primary absolute bottom-3 right-3 shadow-[0_0_15px_rgba(57,255,20,0.5)] rounded-full bg-black" />
+                <div className="absolute z-10 w-[125px] h-[85px] bg-card border border-border rounded-xl flex flex-col p-3 shadow-lg transform -translate-y-2 transition-all duration-300 group-hover:-translate-y-3.5 group-hover:border-primary/30">
+                  <div className="w-full h-1 bg-foreground/20 rounded-full mb-2"></div>
+                  <div className="w-2/3 h-1 bg-foreground/20 rounded-full mb-2"></div>
+                  <div className="w-1/2 h-1 bg-foreground/15 rounded-full"></div>
+                  <CheckCircle2 className="size-4.5 text-primary absolute bottom-2.5 right-2.5" />
                 </div>
 
                 {/* Right Card */}
-                <div className="absolute right-[5%] top-6 w-[110px] h-[75px] bg-[#1a1a1a] border border-white/10 rounded-xl flex flex-col p-3 shadow-xl transform rotate-6 transition-transform group-hover:rotate-0">
-                  <div className="w-full h-1.5 bg-white/20 rounded-full mb-2"></div>
-                  <div className="w-[80%] h-1.5 bg-white/20 rounded-full"></div>
-                  <Loader2 className="size-4 text-primary/70 animate-spin absolute bottom-3 right-3" />
+                <div className="absolute right-[5%] top-6 w-[110px] h-[75px] bg-muted/40 border border-border/80 rounded-xl flex flex-col p-3 shadow-md transform rotate-6 transition-all duration-300 group-hover:translate-x-2 group-hover:rotate-0">
+                  <div className="w-full h-1 bg-foreground/10 rounded-full mb-2"></div>
+                  <div className="w-[80%] h-1 bg-foreground/10 rounded-full"></div>
+                  <Loader2 className="size-3.5 text-primary/70 animate-spin absolute bottom-2.5 right-2.5" />
                 </div>
               </div>
 
               {/* Progress Bars */}
-              <div className="w-full flex gap-4 mt-auto mb-2 px-8">
-                <div className="flex-1 flex items-center gap-2">
-                  <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
-                    <div className="h-full bg-primary/80 w-[87%]"></div>
+              <div className="w-full flex gap-3 mt-auto mb-2 px-4">
+                <div className="flex-1 flex items-center gap-1.5 text-[9px] font-medium text-muted-foreground">
+                  <div className="h-1 w-full bg-muted rounded-full overflow-hidden">
+                    <div className="h-full bg-primary/70 w-[87%] transition-all duration-500 group-hover:bg-primary"></div>
                   </div>
-                  <span className="text-[10px] font-mono text-muted-foreground">87%</span>
+                  <span>87%</span>
                 </div>
-                <div className="flex-1 flex items-center gap-2">
-                  <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
-                    <div className="h-full bg-primary/60 w-[92%]"></div>
+                <div className="flex-1 flex items-center gap-1.5 text-[9px] font-medium text-muted-foreground">
+                  <div className="h-1 w-full bg-muted rounded-full overflow-hidden">
+                    <div className="h-full bg-primary/50 w-[92%] transition-all duration-500 group-hover:bg-primary"></div>
                   </div>
-                  <span className="text-[10px] font-mono text-muted-foreground">92%</span>
+                  <span>92%</span>
                 </div>
               </div>
             </div>
 
-            <h3 className="text-lg font-bold text-foreground mb-2">Incident Resolution</h3>
-            <p className="text-sm text-muted-foreground/80 leading-relaxed">
-              Watch alerts resolve complex automated support tickets
-            </p>
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-base font-bold text-foreground tracking-tight">Automated Dispatch</h3>
+                <ArrowUpRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Connect channels effortlessly. Resolve complex outages by triggering webhook integrations and alerts.
+              </p>
+            </div>
           </div>
 
           {/* Card 3: Multi-Region Support */}
-          <div className="bg-[#0a0a0a] border border-white/5 rounded-2xl p-6 flex flex-col group hover:border-white/10 transition-colors">
+          <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between group hover:border-primary/20 hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-300 min-h-[440px]">
+            
             {/* Visual Area */}
-            <div className="h-[220px] w-full mb-6 relative flex items-center justify-center">
-              {/* Dotted lines grid background */}
-              <svg className="absolute inset-0 w-full h-full" viewBox="0 0 300 220">
+            <div className="h-[200px] w-full mb-6 relative flex items-center justify-center">
+              <svg className="absolute inset-0 w-full h-full" viewBox="0 0 300 200">
                 <circle
                   cx="150"
-                  cy="110"
-                  r="70"
+                  cy="100"
+                  r="60"
                   fill="none"
-                  stroke="rgba(255,255,255,0.05)"
+                  stroke="currentColor"
+                  className="text-border/40"
                   strokeWidth="1"
                   strokeDasharray="4 4"
                 />
                 <circle
                   cx="150"
-                  cy="110"
-                  r="40"
+                  cy="100"
+                  r="35"
                   fill="none"
-                  stroke="rgba(255,255,255,0.05)"
+                  stroke="currentColor"
+                  className="text-border/40"
                   strokeWidth="1"
                   strokeDasharray="4 4"
                 />
                 {/* Lines radiating */}
                 <line
                   x1="150"
-                  y1="110"
-                  x2="60"
-                  y2="40"
-                  stroke="rgba(57,255,20,0.3)"
-                  strokeWidth="1.5"
-                  strokeDasharray="4 4"
-                  className="group-hover:stroke-[rgba(57,255,20,0.6)] transition-all"
+                  y1="100"
+                  x2="70"
+                  y2="50"
+                  stroke="currentColor"
+                  className="text-border/60 group-hover:text-primary transition-all duration-300"
+                  strokeWidth="1"
                 />
                 <line
                   x1="150"
-                  y1="110"
-                  x2="240"
-                  y2="40"
-                  stroke="rgba(57,255,20,0.3)"
-                  strokeWidth="1.5"
-                  strokeDasharray="4 4"
-                  className="group-hover:stroke-[rgba(57,255,20,0.6)] transition-all"
+                  y1="100"
+                  x2="230"
+                  y2="50"
+                  stroke="currentColor"
+                  className="text-border/60 group-hover:text-primary transition-all duration-300"
+                  strokeWidth="1"
                 />
                 <line
                   x1="150"
-                  y1="110"
-                  x2="60"
-                  y2="180"
-                  stroke="rgba(57,255,20,0.3)"
-                  strokeWidth="1.5"
-                  strokeDasharray="4 4"
-                  className="group-hover:stroke-[rgba(57,255,20,0.6)] transition-all"
+                  y1="100"
+                  x2="70"
+                  y2="150"
+                  stroke="currentColor"
+                  className="text-border/60 group-hover:text-primary transition-all duration-300"
+                  strokeWidth="1"
                 />
                 <line
                   x1="150"
-                  y1="110"
-                  x2="240"
-                  y2="180"
-                  stroke="rgba(57,255,20,0.3)"
-                  strokeWidth="1.5"
-                  strokeDasharray="4 4"
-                  className="group-hover:stroke-[rgba(57,255,20,0.6)] transition-all"
-                />
-                <line
-                  x1="150"
-                  y1="110"
-                  x2="150"
-                  y2="30"
-                  stroke="rgba(57,255,20,0.3)"
-                  strokeWidth="1.5"
-                  strokeDasharray="4 4"
-                  className="group-hover:stroke-[rgba(57,255,20,0.6)] transition-all"
+                  y1="100"
+                  x2="230"
+                  y2="150"
+                  stroke="currentColor"
+                  className="text-border/60 group-hover:text-primary transition-all duration-300"
+                  strokeWidth="1"
                 />
               </svg>
 
               {/* Center Glowing Hub */}
-              <div className="absolute z-10 size-16 bg-primary/10 border border-primary/50 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(57,255,20,0.3)] group-hover:shadow-[0_0_40px_rgba(57,255,20,0.5)] transition-shadow">
-                <div className="size-3 bg-primary rounded-full"></div>
+              <div className="absolute z-10 size-10 bg-primary/5 border border-primary/20 rounded-xl flex items-center justify-center shadow-sm group-hover:bg-primary/10 transition-all duration-300">
+                <div className="size-2 bg-primary rounded-full"></div>
               </div>
 
               {/* Surrounding Nodes */}
-              <div className="absolute top-[20px] left-[45px] size-10 bg-[#111] border border-white/10 rounded-full flex items-center justify-center text-muted-foreground group-hover:border-white/30 transition-colors">
-                <Globe className="size-4" />
+              <div className="absolute top-[28px] left-[55px] size-7 bg-muted/60 border border-border/80 rounded-lg flex items-center justify-center text-muted-foreground group-hover:border-primary/25 transition-all text-[8px] font-bold font-mono">
+                NYC
               </div>
-              <div className="absolute top-[20px] right-[45px] size-10 bg-[#111] border border-white/10 rounded-full flex items-center justify-center text-muted-foreground group-hover:border-white/30 transition-colors">
-                <Shield className="size-4" />
+              <div className="absolute top-[28px] right-[55px] size-7 bg-muted/60 border border-border/80 rounded-lg flex items-center justify-center text-muted-foreground group-hover:border-primary/25 transition-all text-[8px] font-bold font-mono">
+                FRA
               </div>
-              <div className="absolute bottom-[20px] left-[45px] size-10 bg-[#111] border border-white/10 rounded-full flex items-center justify-center text-muted-foreground group-hover:border-white/30 transition-colors">
-                <Database className="size-4" />
+              <div className="absolute bottom-[28px] left-[55px] size-7 bg-muted/60 border border-border/80 rounded-lg flex items-center justify-center text-muted-foreground group-hover:border-primary/25 transition-all text-[8px] font-bold font-mono">
+                LND
               </div>
-              <div className="absolute bottom-[20px] right-[45px] size-10 bg-[#111] border border-white/10 rounded-full flex items-center justify-center text-muted-foreground group-hover:border-white/30 transition-colors">
-                <Server className="size-4" />
-              </div>
-              <div className="absolute top-[10px] left-[130px] size-10 bg-[#111] border border-white/10 rounded-full flex items-center justify-center text-muted-foreground group-hover:border-white/30 transition-colors">
-                <Activity className="size-4" />
+              <div className="absolute bottom-[28px] right-[55px] size-7 bg-muted/60 border border-border/80 rounded-lg flex items-center justify-center text-muted-foreground group-hover:border-primary/25 transition-all text-[8px] font-bold font-mono">
+                TYO
               </div>
             </div>
 
-            <h3 className="text-lg font-bold text-foreground mb-2">Multi-Region Support</h3>
-            <p className="text-sm text-muted-foreground/80 leading-relaxed">
-              Seamless infrastructure surveillance across all zones
-            </p>
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-base font-bold text-foreground tracking-tight">Global Verification</h3>
+                <ArrowUpRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Eliminate localized errors. Nodes cross-reference downtime signatures dynamically before triggering pages.
+              </p>
+            </div>
           </div>
         </div>
       </div>

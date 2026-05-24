@@ -9,24 +9,29 @@ export default function Pricing() {
   const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
 
   return (
-    <section className="py-24 bg-background relative overflow-hidden" id="pricing">
-      <div className="max-w-6xl mx-auto px-6 md:px-12">
-        <div className="text-center mb-16 flex flex-col items-center">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4">
-            Select your <span className="text-primary">plan</span>
+    <section className="py-28 bg-background relative overflow-hidden border-b border-border" id="pricing">
+      <div className="max-w-5xl mx-auto px-6 md:px-12 relative z-20">
+        
+        {/* Header */}
+        <div className="flex flex-col items-center text-center mb-16">
+          <div className="inline-flex items-center gap-2 mb-4 text-xs font-semibold text-primary uppercase tracking-wider">
+            <span>Flexible Pricing</span>
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-4">
+            Select your plan
           </h2>
-          <p className="text-muted-foreground text-lg">
-            Simple, transparent pricing for any infrastructure
+          <p className="text-muted-foreground text-sm leading-relaxed max-w-lg">
+            Simple, developer-friendly options designed to scale with your backend infrastructure.
           </p>
 
-          {/* Billing Toggle */}
-          <div className="flex items-center gap-2 bg-[#0a0a0a] p-1.5 border border-white/5 rounded-full mt-8">
+          {/* Minimalist Billing Toggle */}
+          <div className="flex items-center gap-1 bg-muted p-1 border border-border rounded-full mt-8">
             <button
               onClick={() => setBilling("monthly")}
               className={cn(
-                "px-6 py-2.5 text-sm font-semibold transition-all rounded-full",
+                "px-5 py-2 text-xs font-semibold transition-all rounded-full cursor-pointer",
                 billing === "monthly"
-                  ? "bg-white/10 text-foreground shadow-sm"
+                  ? "bg-card text-foreground shadow-sm border border-border/10"
                   : "text-muted-foreground hover:text-foreground",
               )}
             >
@@ -35,188 +40,192 @@ export default function Pricing() {
             <button
               onClick={() => setBilling("yearly")}
               className={cn(
-                "px-6 py-2.5 text-sm font-semibold transition-all rounded-full flex items-center gap-2",
+                "px-5 py-2 text-xs font-semibold transition-all rounded-full flex items-center gap-1.5 cursor-pointer",
                 billing === "yearly"
-                  ? "bg-white/10 text-foreground shadow-sm"
+                  ? "bg-card text-foreground shadow-sm border border-border/10"
                   : "text-muted-foreground hover:text-foreground",
               )}
             >
               Yearly
-              <span className="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded-full font-bold">
+              <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold">
                 Save 17%
               </span>
             </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* Pricing Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+          
           {/* Tier 1: The Initiate */}
-          <div className="bg-[#0a0a0a] border border-white/5 rounded-2xl flex flex-col relative group hover:border-white/10 transition-colors">
-            <div className="p-8 border-b border-white/5">
-              <h3 className="text-foreground font-semibold text-xl">The Initiate</h3>
-              <p className="text-sm text-muted-foreground mt-2">
-                "The Gateway Drug" for side projects.
+          <div className="bg-card border border-border rounded-2xl flex flex-col relative hover:border-primary/20 transition-all duration-300">
+            <div className="p-8 border-b border-border">
+              <h3 className="text-foreground font-bold text-lg uppercase tracking-wider">The Initiate</h3>
+              <p className="text-xs text-muted-foreground mt-1">
+                Perfect for indie developers & side projects.
               </p>
               <div className="mt-6 flex items-baseline gap-1">
-                <span className="text-5xl font-bold tracking-tight text-foreground">$0</span>
-                <span className="text-muted-foreground text-sm font-medium">
+                <span className="text-4xl font-extrabold tracking-tight text-foreground">$0</span>
+                <span className="text-muted-foreground text-xs font-medium">
                   /{billing === "yearly" ? "yr" : "mo"}
                 </span>
               </div>
             </div>
 
-            <div className="p-8 flex-1 flex flex-col gap-6">
-              <ul className="text-sm space-y-4 text-muted-foreground font-medium">
+            <div className="p-8 flex-1 flex flex-col justify-between gap-8">
+              <ul className="text-xs space-y-4 text-muted-foreground/90 font-medium">
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
                   <span className="text-foreground">50 Active Monitors</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>3-Minute Heartbeat</span>
+                  <span>3-Minute Heartbeat checks</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>1 Public Status Page</span>
+                  <span>1 Public Status page</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>Email, Discord, Slack</span>
+                  <span>Email & Discord dispatches</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>3 Days Log Retention</span>
+                  <span>3 Days Log retention</span>
                 </li>
               </ul>
 
               <Link
                 href="/signup"
-                className="mt-auto flex w-full items-center justify-center h-12 bg-transparent border border-white/10 hover:bg-white/5 text-foreground text-sm font-semibold rounded-full transition-colors"
+                className="flex w-full items-center justify-center h-10 bg-transparent border border-border hover:bg-accent text-foreground text-xs font-semibold rounded-lg transition-colors"
               >
-                Initialize
+                Get Started
               </Link>
             </div>
           </div>
 
           {/* Tier 2: The Netrunner */}
-          <div className="bg-[#0a0a0a] border border-primary/50 shadow-[0_0_40px_rgba(57,255,20,0.1)] rounded-2xl flex flex-col relative transform md:-translate-y-4">
-            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-primary text-black text-[11px] font-bold uppercase tracking-wider px-4 py-1.5 rounded-full">
+          <div className="bg-card border-2 border-primary/40 rounded-2xl flex flex-col relative shadow-[0_12px_40px_rgba(0,0,0,0.04)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.45)] transform md:-translate-y-2 hover:border-primary transition-all duration-300">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-wider px-3.5 py-1 rounded-full shadow-sm">
               Most Popular
             </div>
 
             <div className="p-8 border-b border-primary/20 bg-primary/5 rounded-t-2xl">
-              <h3 className="text-primary font-semibold text-xl">The Netrunner</h3>
-              <p className="text-sm text-primary/70 mt-2">For the Indie Founders & Power Users.</p>
+              <h3 className="text-primary font-bold text-lg uppercase tracking-wider">The Netrunner</h3>
+              <p className="text-xs text-primary/70 mt-1">Ideal for growing SaaS & power users.</p>
               <div className="mt-6 flex items-baseline gap-1">
-                <span className="text-5xl font-bold tracking-tight text-foreground">
+                <span className="text-4xl font-extrabold tracking-tight text-foreground">
                   {billing === "yearly" ? "$140" : "$14"}
                 </span>
-                <span className="text-muted-foreground text-sm font-medium">
+                <span className="text-muted-foreground text-xs font-medium">
                   /{billing === "yearly" ? "yr" : "mo"}
                 </span>
               </div>
             </div>
 
-            <div className="p-8 flex-1 flex flex-col gap-6">
-              <ul className="text-sm space-y-4 text-muted-foreground font-medium">
+            <div className="p-8 flex-1 flex flex-col justify-between gap-8">
+              <ul className="text-xs space-y-4 text-muted-foreground font-medium">
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span className="text-foreground font-bold">200 Active Monitors</span>
+                  <span className="text-foreground font-semibold">200 Active Monitors</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span className="text-foreground font-bold">30-Second Heartbeat</span>
+                  <span className="text-foreground font-semibold">30-Second Heartbeat checks</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>Multi-Region (3x) Verification</span>
+                  <span>Multi-Region verification</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>Invisible AI Layer (Anomaly + Hints)</span>
+                  <span>Anomalous latency indicators</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>SSL, TCP, Keyword Monitors</span>
+                  <span>SSL & Port monitoring</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>White-label Status Pages</span>
+                  <span>White-label Status pages</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>30 Days Logs + PDF Reports</span>
+                  <span>30 Days Logs & PDF reports</span>
                 </li>
               </ul>
 
               <Link
                 href={`/signup?plan=netrunner&billing=${billing}`}
-                className="mt-auto flex w-full items-center justify-center h-12 bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-semibold rounded-full transition-colors"
+                className="flex w-full items-center justify-center h-10 bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-semibold rounded-lg transition-colors"
               >
-                Jack In
+                Subscribe Now
               </Link>
             </div>
           </div>
 
           {/* Tier 3: The Construct */}
-          <div className="bg-[#0a0a0a] border border-white/5 rounded-2xl flex flex-col relative group hover:border-white/10 transition-colors">
-            <div className="p-8 border-b border-white/5">
-              <h3 className="text-foreground font-semibold text-xl">The Construct</h3>
-              <p className="text-sm text-muted-foreground mt-2">
-                Enterprise reliability for Teams.
+          <div className="bg-card border border-border rounded-2xl flex flex-col relative hover:border-primary/20 transition-all duration-300">
+            <div className="p-8 border-b border-border">
+              <h3 className="text-foreground font-bold text-lg uppercase tracking-wider">The Construct</h3>
+              <p className="text-xs text-muted-foreground mt-1">
+                Enterprise reliability for professional teams.
               </p>
               <div className="mt-6 flex items-baseline gap-1">
-                <span className="text-5xl font-bold tracking-tight text-foreground">
+                <span className="text-4xl font-extrabold tracking-tight text-foreground">
                   {billing === "yearly" ? "$690" : "$69"}
                 </span>
-                <span className="text-muted-foreground text-sm font-medium">
+                <span className="text-muted-foreground text-xs font-medium">
                   /{billing === "yearly" ? "yr" : "mo"}
                 </span>
               </div>
             </div>
 
-            <div className="p-8 flex-1 flex flex-col gap-6">
-              <ul className="text-sm space-y-4 text-muted-foreground font-medium">
+            <div className="p-8 flex-1 flex flex-col justify-between gap-8">
+              <ul className="text-xs space-y-4 text-muted-foreground/90 font-medium">
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span className="text-foreground">Unlimited Monitors (~1k Cap)</span>
+                  <span className="text-foreground">Unlimited Monitors</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>10-Second HFT Heartbeat</span>
+                  <span>10-Second HFT Heartbeat checks</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>Global Pulse (5 Regions)</span>
+                  <span>Full Global Pulse coverage (5 regions)</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>RBAC, SSO & Workspaces</span>
+                  <span>SSO, SAML & Workspaces</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>PagerDuty / OpsGenie Sync</span>
+                  <span>PagerDuty & custom alerts</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>Private Status Pages</span>
+                  <span>Private status portals</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>1 Year Audit Retention</span>
+                  <span>1 Year Log retention</span>
                 </li>
               </ul>
 
               <Link
                 href={`/signup?plan=construct&billing=${billing}`}
-                className="mt-auto flex w-full items-center justify-center h-12 bg-transparent border border-white/10 hover:bg-white/5 text-foreground text-sm font-semibold rounded-full transition-colors"
+                className="flex w-full items-center justify-center h-10 bg-transparent border border-border hover:bg-accent text-foreground text-xs font-semibold rounded-lg transition-colors"
               >
-                Initialize Core
+                Contact Enterprise
               </Link>
             </div>
           </div>
+
         </div>
       </div>
     </section>
   );
 }
+
