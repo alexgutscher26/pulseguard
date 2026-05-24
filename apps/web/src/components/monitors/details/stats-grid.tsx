@@ -25,7 +25,7 @@ export function MonitorStatsGrid({ monitor }: { monitor: any }) {
   const downtimeMinutes = (downCount * intervalMinutes).toFixed(0);
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div className="flex flex-col gap-2 rounded-sm p-4 md:p-6 border border-primary/20 bg-card/40 backdrop-blur-sm relative group overflow-hidden">
         <div className="absolute inset-0 bg-primary/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
         <div className="flex justify-between items-center relative z-10">
@@ -42,7 +42,7 @@ export function MonitorStatsGrid({ monitor }: { monitor: any }) {
         </p>
       </div>
 
-      <div className="flex flex-col gap-2 rounded-sm p-6 border border-primary/20 bg-card/40 backdrop-blur-sm relative group overflow-hidden">
+      <div className="flex flex-col gap-2 rounded-sm p-4 md:p-6 border border-primary/20 bg-card/40 backdrop-blur-sm relative group overflow-hidden">
         <div className="absolute inset-0 bg-primary/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
         <div className="flex justify-between items-center relative z-10">
           <p className="text-primary/60 text-[10px] font-bold uppercase tracking-widest font-mono">
@@ -58,7 +58,7 @@ export function MonitorStatsGrid({ monitor }: { monitor: any }) {
         </p>
       </div>
 
-      <div className="flex flex-col gap-2 rounded-sm p-6 border border-primary/20 bg-card/40 backdrop-blur-sm relative group overflow-hidden">
+      <div className="flex flex-col gap-2 rounded-sm p-4 md:p-6 border border-primary/20 bg-card/40 backdrop-blur-sm relative group overflow-hidden">
         <div className="absolute inset-0 bg-primary/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
         <div className="flex justify-between items-center relative z-10">
           <p className="text-primary/60 text-[10px] font-bold uppercase tracking-widest font-mono">

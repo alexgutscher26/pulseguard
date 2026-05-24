@@ -15,13 +15,13 @@ const REGIONS = [
   { name: "Oregon", code: "US-West", lat: 45.52, lng: -122.68, color: 0x10b981 },
   { name: "Virginia", code: "US-East", lat: 37.43, lng: -78.65, color: 0x10b981 },
   { name: "Singapore", code: "APAC", lat: 1.35, lng: 103.82, color: 0x10b981 },
-  { name: "Sydney", code: "OCE", lat: -33.86, lng: 151.20, color: 0x10b981 },
+  { name: "Sydney", code: "OCE", lat: -33.86, lng: 151.2, color: 0x10b981 },
   { name: "São Paulo", code: "SA", lat: -23.55, lng: -46.63, color: 0x10b981 },
 ];
 
 // Target destination coordinates (Representing the target servers)
 const TARGETS = [
-  { name: "Main Hub", lat: 40.71, lng: -74.00, color: 0x10b981 }, // New York
+  { name: "Main Hub", lat: 40.71, lng: -74.0, color: 0x10b981 }, // New York
 ];
 
 export function GlobeVisualization({ monitors }: GlobeVisualizationProps) {
@@ -64,7 +64,7 @@ export function GlobeVisualization({ monitors }: GlobeVisualizationProps) {
       try {
         const url = `${wsBaseUrl}/ws/monitors/${monitor.id}`;
         const ws = new WebSocket(url);
-        
+
         ws.onmessage = (event) => {
           try {
             const data = JSON.parse(event.data);
@@ -116,7 +116,7 @@ export function GlobeVisualization({ monitors }: GlobeVisualizationProps) {
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    
+
     // Clear container and append canvas
     containerRef.current.innerHTML = "";
     containerRef.current.appendChild(renderer.domElement);
@@ -262,7 +262,10 @@ export function GlobeVisualization({ monitors }: GlobeVisualizationProps) {
       const mid = new THREE.Vector3().addVectors(startPos, endPos).multiplyScalar(0.5);
       const dist = startPos.distanceTo(endPos);
       const height = dist * 0.35;
-      const ctrl = mid.clone().normalize().multiplyScalar(radius + height);
+      const ctrl = mid
+        .clone()
+        .normalize()
+        .multiplyScalar(radius + height);
 
       const curve = new THREE.QuadraticBezierCurve3(startPos, ctrl, endPos);
       const points = curve.getPoints(30);
@@ -357,10 +360,11 @@ export function GlobeVisualization({ monitors }: GlobeVisualizationProps) {
           const drawCount = Math.floor(laser.progress * laser.points.length);
           const currentPoints = laser.points.slice(0, Math.max(drawCount, 2));
           laser.line.geometry.setFromPoints(currentPoints);
-          
+
           // Fade opacity out as it completes
           if (laser.progress > 0.7) {
-            (laser.line.material as THREE.LineBasicMaterial).opacity = 1 - (laser.progress - 0.7) / 0.3;
+            (laser.line.material as THREE.LineBasicMaterial).opacity =
+              1 - (laser.progress - 0.7) / 0.3;
           }
         }
       }
@@ -389,13 +393,13 @@ export function GlobeVisualization({ monitors }: GlobeVisualizationProps) {
       canvas.removeEventListener("mousedown", handleMouseDown);
       canvas.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
-      
+
       // Dispose materials
       sphereGeometry.dispose();
       sphereMaterial.dispose();
       pointsGeometry.dispose();
       pointsMaterial.dispose();
-      
+
       activeLasers.forEach((l) => {
         globeGroup.remove(l.line);
         l.line.geometry.dispose();
@@ -411,7 +415,7 @@ export function GlobeVisualization({ monitors }: GlobeVisualizationProps) {
   return (
     <div className="border border-primary/20 bg-card/40 backdrop-blur-md rounded-xl overflow-hidden shadow-lg transition-all duration-300">
       {/* Panel Header */}
-      <div 
+      <div
         className="flex items-center justify-between px-6 py-4 cursor-pointer hover:bg-primary/5 transition-colors border-b border-zinc-900/60"
         onClick={() => setIsOpen(!isOpen)}
       >
@@ -440,8 +444,11 @@ export function GlobeVisualization({ monitors }: GlobeVisualizationProps) {
         <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
           {/* Globe Canvas Container */}
           <div className="col-span-1 lg:col-span-2 relative min-h-[400px]">
-            <div ref={containerRef} className="w-full h-[400px] cursor-grab active:cursor-grabbing" />
-            
+            <div
+              ref={containerRef}
+              className="w-full h-[400px] cursor-grab active:cursor-grabbing"
+            />
+
             {/* Visual HUD overlays */}
             <div className="absolute top-2 left-2 z-10 flex flex-col gap-1 p-2 bg-black/60 border border-zinc-800 rounded font-mono text-[9px] text-zinc-400">
               <div className="flex items-center gap-1.5">
@@ -470,9 +477,7 @@ export function GlobeVisualization({ monitors }: GlobeVisualizationProps) {
                   </div>
                 ))}
                 {activeChecks.length === 0 && (
-                  <div className="text-zinc-600 italic">
-                    Listening for websocket pings...
-                  </div>
+                  <div className="text-zinc-600 italic">Listening for websocket pings...</div>
                 )}
               </div>
             </div>

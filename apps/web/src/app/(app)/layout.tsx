@@ -6,21 +6,17 @@ import { MobileSidebar } from "@/components/dashboard/mobile-sidebar";
 import { DashboardHeader } from "@/components/dashboard/header";
 import { CommandPalette } from "@/components/command-palette/command-palette";
 import { TerminalView } from "@/components/dashboard/terminal-view";
-import { useMobile } from "@/hooks/use-mobile";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const isMobile = useMobile();
 
   return (
     <div className="flex h-screen overflow-hidden bg-background text-foreground font-sans">
-      {/* Desktop Sidebar - Hidden on Mobile */}
-      {!isMobile && <Sidebar />}
+      {/* Desktop Sidebar */}
+      <Sidebar />
 
       {/* Mobile Sidebar Drawer */}
-      {isMobile && (
-        <MobileSidebar isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
-      )}
+      <MobileSidebar isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
 
       <main className="flex-1 flex flex-col overflow-y-auto">
         <DashboardHeader onMenuClick={() => setIsMobileMenuOpen(true)} />

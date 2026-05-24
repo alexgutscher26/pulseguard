@@ -96,7 +96,7 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
               <p className="text-[10px] font-bold text-primary/50 uppercase tracking-widest font-mono">
                 Monitoring State
               </p>
-              <label className="relative flex h-[24px] w-[44px] cursor-pointer items-center rounded-full border border-primary/20 bg-secondary/50 p-1">
+              <label className="relative flex h-[32px] w-[56px] md:h-[24px] md:w-[44px] cursor-pointer items-center rounded-full border border-primary/20 bg-secondary/50 p-1 active:scale-95 transition-transform shrink-0">
                 <input
                   type="checkbox"
                   className="peer sr-only"
@@ -105,7 +105,7 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
                   onChange={(e) => handleToggle(e.target.checked)}
                 />
                 <span className="absolute inset-0 rounded-full transition-colors peer-checked:bg-primary/20"></span>
-                <span className="h-4 w-4 rounded-full bg-primary/50 shadow-sm transition-transform peer-checked:translate-x-5 peer-checked:bg-primary"></span>
+                <span className="h-6 w-6 md:h-4 md:w-4 rounded-full bg-primary/50 shadow-sm transition-transform peer-checked:translate-x-6 md:peer-checked:translate-x-5 peer-checked:bg-primary"></span>
               </label>
             </div>
           </div>

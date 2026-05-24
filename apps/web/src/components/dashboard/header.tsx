@@ -5,7 +5,6 @@ import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ModeToggle } from "@/components/mode-toggle";
-import { useMobile } from "@/hooks/use-mobile";
 import { useHaptic } from "@/hooks/use-haptic";
 import { useTerminalStore } from "@/hooks/use-terminal-store";
 import {
@@ -22,7 +21,6 @@ export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = 
   const { data: session } = authClient.useSession();
   const pathname = usePathname();
   const router = useRouter();
-  const isMobile = useMobile();
   const { trigger } = useHaptic();
   const { isTerminalMode, toggleTerminalMode } = useTerminalStore();
 
@@ -37,13 +35,13 @@ export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = 
     <header className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background/80 backdrop-blur-md px-4 md:px-8 py-4 overflow-hidden">
       <div className="flex items-center gap-2 md:gap-4 relative z-20 min-w-0 flex-1 md:flex-none">
         {/* Hamburger Menu - Mobile Only */}
-        {isMobile && onMenuClick && (
+        {onMenuClick && (
           <button
             onClick={() => {
               trigger("light");
               onMenuClick();
             }}
-            className="flex items-center justify-center size-10 rounded-lg border border-border bg-card hover:bg-accent transition-colors shrink-0 active:scale-95 cursor-pointer"
+            className="md:hidden flex items-center justify-center size-10 rounded-lg border border-border bg-card hover:bg-accent transition-colors shrink-0 active:scale-95 cursor-pointer"
             aria-label="Open navigation menu"
           >
             <Menu className="size-4.5 text-foreground" />

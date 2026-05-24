@@ -1,7 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { Activity, LayoutDashboard, Monitor, Bell, Settings, TriangleAlert, X } from "lucide-react";
+import {
+  Activity,
+  LayoutDashboard,
+  Monitor,
+  Bell,
+  Settings,
+  TriangleAlert,
+  X,
+  Globe,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { Drawer } from "@/components/ui/drawer";
@@ -11,6 +20,7 @@ import { useHaptic } from "@/hooks/use-haptic";
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Monitors", href: "/dashboard/monitors", icon: Monitor },
+  { name: "Status Pages", href: "/dashboard/pages", icon: Globe },
   { name: "Incidents", href: "/dashboard/incidents", icon: TriangleAlert },
   { name: "Alerts", href: "/dashboard/alerts", icon: Bell },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },

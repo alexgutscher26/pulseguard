@@ -20,7 +20,7 @@ const GlobeVisualization = dynamic(
         Initializing 3D Vector Space Matrix...
       </div>
     ),
-  }
+  },
 );
 
 export default function Dashboard({

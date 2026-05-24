@@ -347,7 +347,7 @@ export function MonitorGridCard({
             size="sm"
             onClick={handleRunCheck}
             disabled={checking}
-            className="h-7 px-2 text-zinc-400 hover:text-primary hover:bg-primary/5 text-[9px] uppercase font-bold tracking-wider"
+            className="min-h-[44px] md:h-7 px-4 md:px-2 text-zinc-400 hover:text-primary hover:bg-primary/5 text-[9px] uppercase font-bold tracking-wider flex items-center justify-center"
           >
             {checking ? (
               <Loader2 className="size-3 mr-1 animate-spin" />

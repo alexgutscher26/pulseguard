@@ -34,9 +34,11 @@ This plan outlines the design and implementation of a rotating 3D network globe 
 ### [Component Name] Dashboard 3D Visualization
 
 #### [NEW] [globe-visualization.tsx](file:///c:/Users/gutsc/OneDrive/Desktop/pulseguard/apps/web/src/components/dashboard/globe-visualization.tsx)
+
 Create a component encapsulating the Three.js scene, rendering the wireframe globe, dot matrix continents, target nodes, and dynamic laser spline arcs.
 
 #### [MODIFY] [dashboard.tsx](file:///c:/Users/gutsc/OneDrive/Desktop/pulseguard/apps/web/src/app/%28app%29/dashboard/dashboard.tsx)
+
 Integrate the Globe Visualization panel at the top of the dashboard, toggled by a "Show Map Matrix" switch.
 
 ---
@@ -44,6 +46,7 @@ Integrate the Globe Visualization panel at the top of the dashboard, toggled by 
 ## Task Breakdown
 
 ### Task 1: Package Installation & Three.js Canvas Scaffolding
+
 - **Agent**: `frontend-specialist`
 - **Skills**: `frontend-design`, `react-best-practices`
 - **Priority**: P1
@@ -53,6 +56,7 @@ Integrate the Globe Visualization panel at the top of the dashboard, toggled by 
 - **VERIFY**: Canvas loads and renders a rotating 3D sphere.
 
 ### Task 2: Globe Texturing & Coordinate Mapping
+
 - **Agent**: `frontend-specialist`
 - **Skills**: `ui-ux-pro-max`
 - **Priority**: P1
@@ -62,6 +66,7 @@ Integrate the Globe Visualization panel at the top of the dashboard, toggled by 
 - **VERIFY**: Globe looks like a holographic cyberpunk map with regional nodes positioned correctly.
 
 ### Task 3: Real-time Laser splines & Spark animations
+
 - **Agent**: `frontend-specialist`
 - **Skills**: `react-best-practices`
 - **Priority**: P1
@@ -71,6 +76,7 @@ Integrate the Globe Visualization panel at the top of the dashboard, toggled by 
 - **VERIFY**: Triggering a check draws an animated laser path to the target node.
 
 ### Task 4: Interactive Dashboard Toolbar
+
 - **Agent**: `frontend-specialist`
 - **Skills**: `frontend-design`
 - **Priority**: P2
@@ -80,6 +86,7 @@ Integrate the Globe Visualization panel at the top of the dashboard, toggled by 
 - **VERIFY**: Globe expands and collapses correctly without breaking main layout.
 
 ### Task 5: Master Checklist Verification
+
 - **Agent**: `test-engineer`
 - **Skills**: `webapp-testing`
 - **Priority**: P3
@@ -93,10 +100,12 @@ Integrate the Globe Visualization panel at the top of the dashboard, toggled by 
 ## Verification Plan
 
 ### Automated Tests
+
 - Typecheck: `bun run check-types`
 - Next.js build verification: `bun run build`
 
 ### Manual Verification
+
 - Expand map matrix on dashboard.
 - Observe globe rotation.
 - Run a check on a monitor, check if laser fires from origin region to target destination.

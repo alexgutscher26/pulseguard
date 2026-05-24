@@ -56,12 +56,32 @@ export function TerminalView() {
     if (isTerminalMode && history.length === 0) {
       const initLogs: LogLine[] = [
         { text: asciiBanner, type: "info", timestamp: getTimestamp() },
-        { text: "ESTABLISHING SECURE PROTOCOL LAYER...", type: "output", timestamp: getTimestamp() },
-        { text: "CONNECTING TO GLOBAL EDGE PULSE RESIDENTS...", type: "output", timestamp: getTimestamp() },
+        {
+          text: "ESTABLISHING SECURE PROTOCOL LAYER...",
+          type: "output",
+          timestamp: getTimestamp(),
+        },
+        {
+          text: "CONNECTING TO GLOBAL EDGE PULSE RESIDENTS...",
+          type: "output",
+          timestamp: getTimestamp(),
+        },
         { text: "TERMINAL CONNECTION ONLINE.", type: "success", timestamp: getTimestamp() },
-        { text: "Type 'help' to review operators database. Press 'Tab' to autocomplete.", type: "info", timestamp: getTimestamp() },
-        { text: "Press 'Esc' or type 'exit' to return to standard telemetry interface.", type: "info", timestamp: getTimestamp() },
-        { text: "--------------------------------------------------------------------------------", type: "output", timestamp: getTimestamp() },
+        {
+          text: "Type 'help' to review operators database. Press 'Tab' to autocomplete.",
+          type: "info",
+          timestamp: getTimestamp(),
+        },
+        {
+          text: "Press 'Esc' or type 'exit' to return to standard telemetry interface.",
+          type: "info",
+          timestamp: getTimestamp(),
+        },
+        {
+          text: "--------------------------------------------------------------------------------",
+          type: "output",
+          timestamp: getTimestamp(),
+        },
       ];
       setHistory(initLogs);
     }
@@ -107,7 +127,7 @@ export function TerminalView() {
       try {
         const url = `${wsBaseUrl}/ws/monitors/${monitor.id}`;
         const ws = new WebSocket(url);
-        
+
         ws.onmessage = (event) => {
           try {
             const data = JSON.parse(event.data);
@@ -171,7 +191,10 @@ export function TerminalView() {
       case "help":
         addLog("PulseGuard System Console Commands:", "info");
         addLog("  list / ls              List all active monitors and statuses", "info");
-        addLog("  check <id/name>        Initiate query diagnostics check on monitor target", "info");
+        addLog(
+          "  check <id/name>        Initiate query diagnostics check on monitor target",
+          "info",
+        );
         addLog("  logs <id/name>         Fetch last 10 latency log sequences", "info");
         addLog("  clear                  Reset interface screen log", "info");
         addLog("  exit                   Return to standard telemetry", "info");
@@ -183,16 +206,28 @@ export function TerminalView() {
           addLog("No active monitor targets detected in configuration.", "error");
           break;
         }
-        addLog("--------------------------------------------------------------------------------", "output");
+        addLog(
+          "--------------------------------------------------------------------------------",
+          "output",
+        );
         addLog("ID         NAME                 STATUS    TARGET URL", "info");
-        addLog("--------------------------------------------------------------------------------", "output");
+        addLog(
+          "--------------------------------------------------------------------------------",
+          "output",
+        );
         monitors.forEach((m: any) => {
           const shortId = m.id.substring(0, 8);
           const name = m.name.padEnd(20).substring(0, 20);
           const status = m.status.padEnd(9);
-          addLog(`${shortId}   ${name} ${status} ${m.url}`, m.status === "UP" ? "success" : m.status === "DOWN" ? "error" : "output");
+          addLog(
+            `${shortId}   ${name} ${status} ${m.url}`,
+            m.status === "UP" ? "success" : m.status === "DOWN" ? "error" : "output",
+          );
         });
-        addLog("--------------------------------------------------------------------------------", "output");
+        addLog(
+          "--------------------------------------------------------------------------------",
+          "output",
+        );
         break;
 
       case "check": {
@@ -202,7 +237,7 @@ export function TerminalView() {
         }
         const searchArg = args.join(" ").toLowerCase();
         const target = monitors.find(
-          (m: any) => m.id.startsWith(searchArg) || m.name.toLowerCase().includes(searchArg)
+          (m: any) => m.id.startsWith(searchArg) || m.name.toLowerCase().includes(searchArg),
         );
 
         if (!target) {
@@ -210,13 +245,19 @@ export function TerminalView() {
           break;
         }
 
-        addLog(`[INIT] Querying diagnostic check sequence on node "${target.name}" (${target.id.substring(0, 8)})...`, "output");
+        addLog(
+          `[INIT] Querying diagnostic check sequence on node "${target.name}" (${target.id.substring(0, 8)})...`,
+          "output",
+        );
         try {
           const result = await checkMonitor(target.id);
           if (result.success) {
             addLog(`[SUCCESS] Ping complete. Target online. Status: UP.`, "success");
           } else {
-            addLog(`[FAIL] Target unreachable. Reason: ${result.error || "Timeout"}. Status: DOWN.`, "error");
+            addLog(
+              `[FAIL] Target unreachable. Reason: ${result.error || "Timeout"}. Status: DOWN.`,
+              "error",
+            );
           }
         } catch (e: any) {
           addLog(`[ERROR] Diagnostic exception: ${e.message || e}`, "error");
@@ -231,7 +272,7 @@ export function TerminalView() {
         }
         const searchArg = args.join(" ").toLowerCase();
         const target = monitors.find(
-          (m: any) => m.id.startsWith(searchArg) || m.name.toLowerCase().includes(searchArg)
+          (m: any) => m.id.startsWith(searchArg) || m.name.toLowerCase().includes(searchArg),
         );
 
         if (!target) {
@@ -272,7 +313,10 @@ export function TerminalView() {
         break;
 
       default:
-        addLog(`Console error: Command "${command}" not recognized. Type 'help' for manual database.`, "error");
+        addLog(
+          `Console error: Command "${command}" not recognized. Type 'help' for manual database.`,
+          "error",
+        );
         break;
     }
   };
@@ -305,12 +349,14 @@ export function TerminalView() {
   };
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 flex flex-col font-mono text-xs crt-screen p-6 md:p-12 overflow-hidden select-none select-text"
       onClick={() => inputRef.current?.focus()}
     >
       {/* Immersive CRT style injection */}
-      <style dangerouslySetInnerHTML={{__html: `
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
         .crt-screen {
           position: fixed;
           background-color: #030704;
@@ -362,7 +408,9 @@ export function TerminalView() {
           from, to { border-color: transparent }
           50% { border-color: currentColor }
         }
-      `}} />
+      `,
+        }}
+      />
 
       {/* Header Overlay Toolbar */}
       <div className="flex justify-between items-center border-b border-green-500/20 pb-4 mb-4 relative z-10 shrink-0">
@@ -383,25 +431,27 @@ export function TerminalView() {
       {/* Output Console Log LogStream */}
       <div className="flex-1 overflow-y-auto pr-2 space-y-2 relative z-10 scrollbar-thin scrollbar-thumb-green-500/20">
         {history.map((line, i) => {
-          const glowClass = 
-            line.type === "success" 
-              ? "terminal-log-glow-success" 
-              : line.type === "error" 
-              ? "terminal-log-glow-error" 
-              : line.type === "info" 
-              ? "terminal-log-glow-info" 
-              : line.type === "input"
-              ? "terminal-log-glow-input"
-              : line.type === "stream"
-              ? "terminal-log-glow-stream"
-              : "";
+          const glowClass =
+            line.type === "success"
+              ? "terminal-log-glow-success"
+              : line.type === "error"
+                ? "terminal-log-glow-error"
+                : line.type === "info"
+                  ? "terminal-log-glow-info"
+                  : line.type === "input"
+                    ? "terminal-log-glow-input"
+                    : line.type === "stream"
+                      ? "terminal-log-glow-stream"
+                      : "";
           return (
-            <div 
-              key={i} 
+            <div
+              key={i}
               className={`whitespace-pre-wrap leading-relaxed tracking-tight ${glowClass}`}
             >
               {line.type !== "info" && line.type !== "input" && (
-                <span className="text-green-500/40 text-[9px] mr-2 select-none">[{line.timestamp}]</span>
+                <span className="text-green-500/40 text-[9px] mr-2 select-none">
+                  [{line.timestamp}]
+                </span>
               )}
               {line.text}
             </div>
@@ -413,7 +463,9 @@ export function TerminalView() {
       {/* Input Line prompt */}
       <div className="flex items-center gap-2 border-t border-green-500/20 pt-4 mt-4 relative z-10 shrink-0">
         <ArrowRight className="size-3 text-green-500 shrink-0" />
-        <span className="font-bold text-green-500/80 tracking-tight shrink-0">PG_operator@pulseguard:~$</span>
+        <span className="font-bold text-green-500/80 tracking-tight shrink-0">
+          PG_operator@pulseguard:~$
+        </span>
         <div className="flex-1 relative flex items-center">
           <input
             ref={inputRef}
@@ -428,11 +480,11 @@ export function TerminalView() {
             spellCheck={false}
           />
           {/* Custom Blinking Monospace Cursor */}
-          <div 
+          <div
             className="absolute pointer-events-none border-l-[6px] border-white h-4 crt-blink"
             style={{
               left: `${inputVal.length * 7.2}px`, // Simple approximation of Courier character width
-              transform: 'translateY(1px)'
+              transform: "translateY(1px)",
             }}
           />
         </div>

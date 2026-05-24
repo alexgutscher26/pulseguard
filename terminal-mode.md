@@ -40,15 +40,19 @@ This plan outlines the design and implementation of a Terminal-Only Mode for the
 ### [Component Name] Dashboard Terminal Integration
 
 #### [NEW] [use-terminal-store.ts](file:///c:/Users/gutsc/OneDrive/Desktop/pulseguard/apps/web/src/hooks/use-terminal-store.ts)
+
 Create a global Zustand store to coordinate the active state of Terminal-Only Mode.
 
 #### [NEW] [terminal-view.tsx](file:///c:/Users/gutsc/OneDrive/Desktop/pulseguard/apps/web/src/components/dashboard/terminal-view.tsx)
+
 Create the fullscreen terminal shell displaying command history logs, welcome headers, scanline filter overlays, inputs, and autocomplete handlers.
 
 #### [MODIFY] [header.tsx](file:///c:/Users/gutsc/OneDrive/Desktop/pulseguard/apps/web/src/components/dashboard/header.tsx)
+
 Add the dedicated terminal launch button on the header toolbar.
 
 #### [MODIFY] [layout.tsx](file:///c:/Users/gutsc/OneDrive/Desktop/pulseguard/apps/web/src/app/%28app%29/layout.tsx)
+
 Integrate the `<TerminalView />` overlay which covers the screen when Terminal-Only Mode is active.
 
 ---
@@ -56,6 +60,7 @@ Integrate the `<TerminalView />` overlay which covers the screen when Terminal-O
 ## Task Breakdown
 
 ### Task 1: Scaffolding Store & Header Trigger
+
 - **Agent**: `frontend-specialist`
 - **Skills**: `frontend-design`, `react-best-practices`
 - **Priority**: P1
@@ -65,6 +70,7 @@ Integrate the `<TerminalView />` overlay which covers the screen when Terminal-O
 - **VERIFY**: Clicking the header button successfully logs/toggles terminal state.
 
 ### Task 2: Fullscreen Shell & CRT Styles
+
 - **Agent**: `frontend-specialist`
 - **Skills**: `ui-ux-pro-max`, `frontend-design`
 - **Priority**: P1
@@ -74,6 +80,7 @@ Integrate the `<TerminalView />` overlay which covers the screen when Terminal-O
 - **VERIFY**: Enabling terminal mode overlays the entire viewport with a dark CRT screen.
 
 ### Task 3: Interactive CLI Command Parser
+
 - **Agent**: `frontend-specialist`
 - **Skills**: `react-best-practices`
 - **Priority**: P1
@@ -83,6 +90,7 @@ Integrate the `<TerminalView />` overlay which covers the screen when Terminal-O
 - **VERIFY**: Typing commands displays outputs and executes actual triggers against server actions.
 
 ### Task 4: Real-time Event Streaming
+
 - **Agent**: `frontend-specialist`
 - **Skills**: `react-best-practices`
 - **Priority**: P2
@@ -92,6 +100,7 @@ Integrate the `<TerminalView />` overlay which covers the screen when Terminal-O
 - **VERIFY**: Terminal lists live status codes and timings in real-time.
 
 ### Task 5: Master Checklist & Tests
+
 - **Agent**: `test-engineer`
 - **Skills**: `webapp-testing`
 - **Priority**: P3
@@ -105,10 +114,12 @@ Integrate the `<TerminalView />` overlay which covers the screen when Terminal-O
 ## Verification Plan
 
 ### Automated Tests
+
 - Run validation suite: `python .agent/scripts/checklist.py .`
 - Test build process: `bun run build` in web package.
 
 ### Manual Verification
+
 - Toggle Terminal Mode via button.
 - Type `help`, run `ls`, verify list of monitors.
 - Execute `check <id>` to trigger manual check.
@@ -118,8 +129,8 @@ Integrate the `<TerminalView />` overlay which covers the screen when Terminal-O
 ---
 
 ## ✅ PHASE X COMPLETE
+
 - Lint: ✅ Pass (New files checked cleanly; other unrelated workspace files contain existing errors)
 - Security: ✅ No critical issues (Passed security scan verification)
 - Build: ✅ Success
 - Date: 2026-05-24
-
