@@ -1,12 +1,13 @@
 "use client";
 
-import { Search, Plus, LogOut, User, Settings, Menu } from "lucide-react";
+import { Search, Plus, LogOut, User, Settings, Menu, Terminal } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ModeToggle } from "@/components/mode-toggle";
 import { useMobile } from "@/hooks/use-mobile";
 import { useHaptic } from "@/hooks/use-haptic";
+import { useTerminalStore } from "@/hooks/use-terminal-store";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,6 +24,7 @@ export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = 
   const router = useRouter();
   const isMobile = useMobile();
   const { trigger } = useHaptic();
+  const { isTerminalMode, toggleTerminalMode } = useTerminalStore();
 
   const getTitle = () => {
     if (pathname.includes("/dashboard/monitors")) return "Monitors";
@@ -84,6 +86,22 @@ export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = 
           <Plus className="size-4" />
           <span>Add Monitor</span>
         </Link>
+
+        {/* Terminal Toggle Button */}
+        <button
+          onClick={() => {
+            trigger("medium");
+            toggleTerminalMode();
+          }}
+          className={`p-2 rounded-lg border hover:bg-accent hover:text-foreground transition-all cursor-pointer ${
+            isTerminalMode
+              ? "border-primary bg-primary/10 text-primary shadow-[0_0_10px_rgba(var(--color-primary),0.2)] animate-pulse"
+              : "border-border bg-card text-muted-foreground"
+          }`}
+          title="Terminal-Only Mode"
+        >
+          <Terminal className="size-4" />
+        </button>
 
         {/* Mode Toggle - Hidden on Small Mobile */}
         <div className="hidden sm:block text-muted-foreground hover:text-foreground">

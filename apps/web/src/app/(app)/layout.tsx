@@ -5,6 +5,7 @@ import { Sidebar } from "@/components/dashboard/sidebar";
 import { MobileSidebar } from "@/components/dashboard/mobile-sidebar";
 import { DashboardHeader } from "@/components/dashboard/header";
 import { CommandPalette } from "@/components/command-palette/command-palette";
+import { TerminalView } from "@/components/dashboard/terminal-view";
 import { useMobile } from "@/hooks/use-mobile";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -32,6 +33,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
       {/* Global Command Palette */}
       <CommandPalette />
+
+      {/* Immersive Fullscreen Terminal Overlay */}
+      <TerminalView />
     </div>
   );
 }
