@@ -86,11 +86,8 @@ export function Drawer({ isOpen, onClose, children, side = "left" }: DrawerProps
           aria-modal="true"
           aria-label="Navigation drawer"
           drag="x"
-          dragConstraints={side === "left" ? { left: 0, right: 0 } : { left: 0, right: 0 }}
-          dragElastic={{
-            left: side === "left" ? 0.5 : 0.05,
-            right: side === "right" ? 0.5 : 0.05,
-          }}
+          dragConstraints={side === "left" ? { left: -256, right: 0 } : { left: 0, right: 256 }}
+          dragElastic={0.1}
           onDragEnd={(e, { offset, velocity }) => {
             const swipeThreshold = 50;
             const velocityThreshold = 200;
