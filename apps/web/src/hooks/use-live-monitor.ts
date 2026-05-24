@@ -64,7 +64,9 @@ export function useLiveMonitor(monitorId: string) {
       };
 
       ws.onerror = () => {
-        console.warn("[PulseGuard] Live Feed WebSocket connection encountered an error (reconnecting...).");
+        console.warn(
+          "[PulseGuard] Live Feed WebSocket connection encountered an error (reconnecting...).",
+        );
         ws?.close();
       };
     };
