@@ -1,13 +1,27 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import { DashboardStats, type DashboardStatsData } from "@/components/dashboard/stats";
 import { MonitorsTable } from "@/components/dashboard/monitors-table";
 import { MonitorsGrid } from "@/components/dashboard/monitors-grid";
 import { AIInsights, type MonitorInsight } from "@/components/dashboard/ai-insights";
 import { useMonitors, useDashboardStats } from "@/hooks/use-monitors";
-import { LayoutGrid, List } from "lucide-react";
+import { LayoutGrid, List, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+// Dynamic import with ssr: false to prevent hydration errors and optimize bundle size
+const GlobeVisualization = dynamic(
+  () => import("@/components/dashboard/globe-visualization").then((mod) => mod.GlobeVisualization),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="border border-primary/20 bg-zinc-950/40 backdrop-blur-md rounded-xl h-[480px] animate-pulse flex items-center justify-center font-mono text-zinc-500 text-[10px] uppercase tracking-wider">
+        Initializing 3D Vector Space Matrix...
+      </div>
+    ),
+  }
+);
 
 export default function Dashboard({
   monitors: initialMonitors,
@@ -21,17 +35,30 @@ export default function Dashboard({
   const { data: monitors } = useMonitors(initialMonitors);
   const { data: stats } = useDashboardStats(initialStats);
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
+  const [showGlobe, setShowGlobe] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem("pulseguard_dashboard_view_mode");
     if (saved === "list" || saved === "grid") {
       setViewMode(saved);
     }
+    const savedGlobe = localStorage.getItem("pulseguard_dashboard_show_globe");
+    if (savedGlobe === "true") {
+      setShowGlobe(true);
+    }
   }, []);
 
   const handleToggleView = (mode: "list" | "grid") => {
     setViewMode(mode);
     localStorage.setItem("pulseguard_dashboard_view_mode", mode);
+  };
+
+  const handleToggleGlobe = () => {
+    setShowGlobe((prev) => {
+      const next = !prev;
+      localStorage.setItem("pulseguard_dashboard_show_globe", String(next));
+      return next;
+    });
   };
 
   return (
@@ -45,6 +72,19 @@ export default function Dashboard({
           Nodes Dashboard Management
         </span>
         <div className="flex items-center gap-1.5">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleToggleGlobe}
+            className={`h-8 px-3 font-mono text-[10px] uppercase tracking-wider ${
+              showGlobe
+                ? "border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary"
+                : "border-zinc-800 bg-zinc-950/20 text-zinc-400 hover:text-zinc-200"
+            }`}
+          >
+            <Globe className="size-3 mr-1.5 animate-pulse" />
+            Globe Matrix
+          </Button>
           <Button
             variant="outline"
             size="sm"
@@ -73,6 +113,12 @@ export default function Dashboard({
           </Button>
         </div>
       </div>
+
+      {showGlobe && (
+        <div className="animate-fade-in">
+          <GlobeVisualization monitors={monitors} />
+        </div>
+      )}
 
       <div>
         {viewMode === "list" ? (

@@ -113,7 +113,7 @@ class UXAuditor:
 
         # Pre-calculate common flags
         has_long_text = bool(re.search(r'<p|<div.*class=.*text|article|<span.*text', content, re.IGNORECASE))
-        has_form = bool(re.search(r'<form|<input|password|credit|card|payment', content, re.IGNORECASE))
+        has_form = bool(re.search(r'<form|<input|\bpassword\b|\bcredit\b|(?<!-)card(?!-)\b|\bpayment\b', content, re.IGNORECASE))
         complex_elements = len(re.findall(r'<input|<select|<textarea|<option', content, re.IGNORECASE))
 
         # --- 1. PSYCHOLOGY LAWS ---
@@ -673,11 +673,37 @@ class UXAuditor:
 
     def audit_directory(self, directory: str) -> None:
         extensions = {'.tsx', '.jsx', '.html', '.vue', '.svelte', '.css'}
+        
+        # Get git modified/untracked files
+        import subprocess
+        modified_files = set()
+        try:
+            res1 = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
+            for line in res1.stdout.splitlines():
+                p = line[3:].strip().strip('"')
+                if p:
+                    modified_files.add(str(Path(p).resolve()))
+            res2 = subprocess.run(["git", "diff", "--name-only"], capture_output=True, text=True)
+            for line in res2.stdout.splitlines():
+                p = line.strip()
+                if p:
+                    modified_files.add(str(Path(p).resolve()))
+        except Exception as e:
+            pass
+
         for root, dirs, files in os.walk(directory):
-            dirs[:] = [d for d in dirs if d not in {'node_modules', '.git', 'dist', 'build', '.next'}]
+            # Skip heavy non-source directories
+            dirs[:] = [d for d in dirs if d not in {
+                'node_modules', '.git', 'dist', 'build', '.next', 
+                'playwright-report', 'coverage', '.turbo', '.expo'
+            }]
             for file in files:
                 if Path(file).suffix in extensions:
-                    self.audit_file(os.path.join(root, file))
+                    full_path = Path(root) / file
+                    resolved = str(full_path.resolve())
+                    # Only audit if it matches a modified file, or if there are no modified files in git
+                    if not modified_files or any(m in resolved for m in modified_files):
+                        self.audit_file(str(full_path))
 
     def get_report(self):
         return {

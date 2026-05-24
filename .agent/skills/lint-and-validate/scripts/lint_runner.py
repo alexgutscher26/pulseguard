@@ -49,7 +49,8 @@ def detect_project_type(project_path: Path) -> dict:
                 result["linters"].append({"name": "eslint", "cmd": ["npx", "eslint", "."]})
             
             # Check for TypeScript
-            if "typescript" in deps or (project_path / "tsconfig.json").exists():
+            is_monorepo = "workspaces" in pkg
+            if (project_path / "tsconfig.json").exists() and not is_monorepo:
                 result["linters"].append({"name": "tsc", "cmd": ["npx", "tsc", "--noEmit"]})
                 
         except:

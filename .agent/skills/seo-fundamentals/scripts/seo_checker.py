@@ -77,18 +77,39 @@ def is_page_file(file_path: Path) -> bool:
 
 def find_pages(project_path: Path) -> list:
     """Find page files to check."""
-    patterns = ['**/*.html', '**/*.htm', '**/*.jsx', '**/*.tsx']
+    extensions = {'.html', '.htm', '.jsx', '.tsx'}
     
+    # Get git modified/untracked files
+    import subprocess
+    import os
+    modified_files = set()
+    try:
+        res1 = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
+        for line in res1.stdout.splitlines():
+            p = line[3:].strip().strip('"')
+            if p:
+                modified_files.add(str(Path(p).resolve()))
+        res2 = subprocess.run(["git", "diff", "--name-only"], capture_output=True, text=True)
+        for line in res2.stdout.splitlines():
+            p = line.strip()
+            if p:
+                modified_files.add(str(Path(p).resolve()))
+    except Exception as e:
+        pass
+
     files = []
-    for pattern in patterns:
-        for f in project_path.glob(pattern):
-            # Skip excluded directories
-            if any(skip in f.parts for skip in SKIP_DIRS):
-                continue
-            
-            # Check if it's likely a page
-            if is_page_file(f):
-                files.append(f)
+    for root, dirs, files_in_dir in os.walk(project_path):
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS and d not in {
+            'playwright-report', 'coverage', '.turbo', '.expo'
+        }]
+        for file in files_in_dir:
+            full_path = Path(root) / file
+            if full_path.suffix.lower() in extensions:
+                resolved = str(full_path.resolve())
+                # Only audit if it matches a modified file, or if there are no modified files in git
+                if not modified_files or any(m in resolved for m in modified_files):
+                    if is_page_file(full_path):
+                        files.append(full_path)
     
     return files[:50]  # Limit to 50 files
 

@@ -79,10 +79,10 @@ The goal is to wow the user. Think _Tron Legacy_ meets _Mr. Robot_.
   - **Glitch Text**: On 404 pages or critical errors, use CSS glitch effects.
   - **Sound FX (Toggleable)**: Subtle "blip" on successful check, "alarm" sound on critical failure.
   - **Theme Switcher**: "Matrix Green", "Cyberpunk Pink", "Blade Runner Orange", "High-Contrast Terminal".
-- [ ] **Advanced Visual Dashboards**
+- [x] **Advanced Visual Dashboards**
   - **Drag & Drop Layouts**: Allow users to configure their own monitor grid, resizing charts for focus.
   - **Terminal-Only Mode**: A UI mode that mimics a pure CLI inside the browser. Users type commands or watch a log stream instead of GUI widgets.
-  - **3D Network Visualization**: Use Three.js for a rotating globe showing real-time ping lasers across regions.
+  - [x] **3D Network Visualization**: Use Three.js for a rotating globe showing real-time ping lasers across regions.
 
 ### ⌨️ Power User Features
 
@@ -93,7 +93,7 @@ The goal is to wow the user. Think _Tron Legacy_ meets _Mr. Robot_.
   - `j/k` to navigate monitor list.
   - `/` to search.
   - `c` to create monitor.
-- [ ] **Command Palette Enhancements**:
+- [x] **Command Palette Enhancements**:
   - [x] **History & Suggestions**: Recent commands history stored in LocalStorage.
   - Command aliases ("new monitor" → "Create HTTP Monitor").
   - Fuzzy search spanning across documentation, monitors, and incidents.
