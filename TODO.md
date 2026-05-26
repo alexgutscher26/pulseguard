@@ -138,7 +138,7 @@ Expand what PulseGuard can actually guard.
 
 ### 🧪 API & Synthetic Monitors (Pro/Business)
 
-- [ ] **Synthetic Browser Testing**
+- [x] **Synthetic Browser Testing**
   - Run actual headless Playwright/Puppeteer instances in edge workers. Verify heavy SPA load behaviors and interactive elements.
 - [ ] **Multi-Step API Sequence Check**
   - Chain requests: Login & extract JWT token -> Fetch protected data route -> Assert data -> Logout.

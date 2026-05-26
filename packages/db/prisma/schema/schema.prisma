@@ -13,6 +13,8 @@ enum MonitorType {
   HTTP
   PING
   PORT
+  BROWSER
+  SEQUENCE
 }
 
 enum MonitorStatus {
@@ -57,6 +59,7 @@ model Monitor {
   headers              String?   // JSON structure for custom headers
   body                 String?   // Request body for POST/PUT/PATCH
   expectation          String? // JSON structure for response validation
+  script               String? // JSON array of declarative steps for BROWSER monitors
 
   @@index([userId])
   @@index([nextCheck])

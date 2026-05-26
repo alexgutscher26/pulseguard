@@ -33,7 +33,7 @@ enum Severity {
 // Conditional validation schema
 const baseSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  type: z.enum(["HTTP", "PING", "PORT"]),
+  type: z.enum(["HTTP", "PING", "PORT", "BROWSER", "SEQUENCE"]),
   interval: z.coerce.number().min(30),
   timeout: z.coerce.number().min(1),
   url: z.string().optional(), // For HTTP/Ping
@@ -48,6 +48,7 @@ const baseSchema = z.object({
   method: z.string().optional().default("GET"),
   headers: z.string().optional(),
   body: z.string().optional(),
+  script: z.string().optional(),
 });
 
 const monitorSchema = baseSchema.superRefine((data, ctx) => {
@@ -124,6 +125,56 @@ const monitorSchema = baseSchema.superRefine((data, ctx) => {
           path: ["port"],
         });
       }
+    } else if (data.type === "BROWSER") {
+      if (!data.url) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "URL is required for browser monitors",
+          path: ["url"],
+        });
+        return;
+      }
+      const urlCheck = z.string().url("Must be a valid URL").safeParse(data.url);
+      if (!urlCheck.success) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Must be a valid URL",
+          path: ["url"],
+        });
+        return;
+      }
+      if (!data.script) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Script steps are required for browser monitoring",
+          path: ["script"],
+        });
+      }
+    } else if (data.type === "SEQUENCE") {
+      if (!data.url) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Base URL is required for sequence monitors",
+          path: ["url"],
+        });
+        return;
+      }
+      const urlCheck = z.string().url("Must be a valid URL").safeParse(data.url);
+      if (!urlCheck.success) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Must be a valid URL",
+          path: ["url"],
+        });
+        return;
+      }
+      if (!data.script) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Sequence steps are required for sequence monitoring",
+          path: ["script"],
+        });
+      }
     }
   } catch (e) {
     console.error("Schema validation crashed:", e);
@@ -157,7 +208,7 @@ export async function createMonitor(prevState: any, formData: FormData) {
     const rawData = {
       name: (formData.get("name") as string) || "",
       url: (formData.get("url") as string) || undefined,
-      type: (formData.get("type") as "HTTP" | "PING" | "PORT") || "HTTP",
+      type: (formData.get("type") as "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE") || "HTTP",
       interval: Number(formData.get("interval") || 60),
       timeout: Number(formData.get("timeout") || 10),
       port: formData.get("port") ? Number(formData.get("port")) : undefined,
@@ -168,6 +219,7 @@ export async function createMonitor(prevState: any, formData: FormData) {
       method: (formData.get("method") as string) || "GET",
       headers: (formData.get("headers") as string) || undefined,
       body: (formData.get("body") as string) || undefined,
+      script: (formData.get("script") as string) || undefined,
     };
 
     console.log("Creating monitor with data:", rawData);
@@ -205,6 +257,7 @@ export async function createMonitor(prevState: any, formData: FormData) {
         method: data.method,
         headers: data.headers,
         body: data.body,
+        script: data.script,
       },
     });
 
@@ -268,7 +321,7 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
   const rawData = {
     name: (formData.get("name") as string) || "",
     url: (formData.get("url") as string) || undefined,
-    type: (formData.get("type") as "HTTP" | "PING" | "PORT") || "HTTP",
+    type: (formData.get("type") as "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE") || "HTTP",
     interval: Number(formData.get("interval") || 60),
     timeout: Number(formData.get("timeout") || 10),
     port: formData.get("port") ? Number(formData.get("port")) : undefined,
@@ -279,6 +332,7 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
     method: (formData.get("method") as string) || "GET",
     headers: (formData.get("headers") as string) || undefined,
     body: (formData.get("body") as string) || undefined,
+    script: (formData.get("script") as string) || undefined,
   };
 
   console.log("Updating monitor with data:", rawData);
@@ -318,6 +372,7 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
         method: data.method,
         headers: data.headers,
         body: data.body,
+        script: data.script,
       },
     });
 
@@ -480,24 +535,53 @@ export async function checkMonitor(
   const start = Date.now();
   let currentStatus: "UP" | "DOWN" = "DOWN";
   let latency = 0;
+  let errorReason: string | undefined = undefined;
 
   try {
-    const response = await fetch(monitor.url, {
-      method: "GET",
-      headers: {
-        "User-Agent": "PulseGuard-Monitor/1.0",
-        Accept: "*/*",
-      },
-      signal: AbortSignal.timeout((monitor.timeout || 10) * 1000),
-    });
+    if (monitor.type === "BROWSER" || monitor.type === "SEQUENCE") {
+      const workerUrl = process.env.PULSEGUARD_WORKER_URL || "http://localhost:8787";
+      const cookieHeader = (await headers()).get("Cookie");
 
-    latency = Date.now() - start;
-    currentStatus = response.ok ? "UP" : "DOWN";
-  } catch (err) {
+      const response = await fetch(`${workerUrl}/api/check-now`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(cookieHeader ? { Cookie: cookieHeader } : {}),
+        },
+        body: JSON.stringify({ monitor }),
+        signal: AbortSignal.timeout((monitor.timeout || 15) * 1000),
+      });
+
+      latency = Date.now() - start;
+
+      if (response.ok) {
+        const result = (await response.json()) as any;
+        currentStatus = result.status;
+        latency = result.latency;
+        errorReason = result.errorReason;
+      } else {
+        currentStatus = "DOWN";
+        const text = await response.text();
+        errorReason = `Worker HTTP ${response.status}: ${text.substring(0, 50)}`;
+      }
+    } else {
+      const response = await fetch(monitor.url, {
+        method: "GET",
+        headers: {
+          "User-Agent": "PulseGuard-Monitor/1.0",
+          Accept: "*/*",
+        },
+        signal: AbortSignal.timeout((monitor.timeout || 10) * 1000),
+      });
+
+      latency = Date.now() - start;
+      currentStatus = response.ok ? "UP" : "DOWN";
+    }
+  } catch (err: any) {
     console.error(`Error checking ${monitor.url}:`, err);
-    // latency = Date.now() - start; // Latency is effectively timeout or partial
     latency = 0;
     currentStatus = "DOWN";
+    errorReason = err.message ? err.message.substring(0, 100) : "UNKNOWN_ERROR";
   }
 
   try {
@@ -507,6 +591,7 @@ export async function checkMonitor(
           monitorId: monitor.id,
           status: currentStatus,
           latency: latency,
+          errorReason: errorReason,
           timestamp: new Date(),
         },
       }),

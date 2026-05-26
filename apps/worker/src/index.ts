@@ -20,6 +20,7 @@ export interface Env {
   SHARD_ID?: number;
   TOTAL_SHARDS?: number;
   DNS_CACHE?: KVNamespace;
+  BROWSER?: any;
 }
 
 import { connect } from "cloudflare:sockets";
@@ -41,6 +42,15 @@ async function performCheck(
   // If explicitly in maintenance (passed from caller), skip check
   if (monitor.status === "MAINTENANCE") {
     return { status: "MAINTENANCE", latency: 0 };
+  }
+  if (monitor.type === "BROWSER") {
+    const { performBrowserCheck } = await import("./lib/browser-runner");
+    return performBrowserCheck(monitor, env);
+  }
+
+  if (monitor.type === "SEQUENCE") {
+    const { performSequenceCheck } = await import("./lib/sequence-runner");
+    return performSequenceCheck(monitor, env);
   }
 
   const urlStr = monitor.url;
@@ -529,7 +539,7 @@ export async function processBatch(
           let retryResult = await performCheck(monitor, env);
 
           // If still DOWN locally and it's an HTTP check, try from an external proxy (Region B)
-          if (retryResult.status === "DOWN" && monitor.url.startsWith("http")) {
+          if (retryResult.status === "DOWN" && monitor.url.startsWith("http") && monitor.type !== "BROWSER") {
             try {
               console.log(
                 `[MultiVector] Local check confirmed DOWN. Attempting fallback via Component 18-1-0 (Proxy Mesh)...`,
@@ -928,7 +938,7 @@ export async function processBatch(
 
 export default {
   // Required: Basic fetch handler
-  async fetch(request: Request, env: Env, ctx: ExecutionContext) {
+  async fetch(request: Request, env: Env, _ctx: ExecutionContext) {
     try {
       const url = new URL(request.url);
 
@@ -937,6 +947,8 @@ export default {
         try {
           const monitorId = url.pathname.split("/")[3];
           if (!monitorId) return new Response("Missing Monitor ID", { status: 400 });
+
+          const rawToken = url.searchParams.get("token");
 
           // Auth Check
           const session = await verifySession(request, env);
@@ -961,6 +973,58 @@ export default {
           console.error(`[WS ERROR] Critical failure in /ws/monitors/ handler:`, err);
           return new Response(`Internal Server Error: ${err.message}\nStack: ${err.stack}`, {
             status: 500,
+          });
+        }
+      }
+
+      // API Route: /api/check-now
+      if (url.pathname === "/api/check-now" && request.method === "POST") {
+        try {
+          const session = await verifySession(request, env);
+          if (!session?.userId) {
+            return new Response(JSON.stringify({ error: "Unauthorized" }), {
+              status: 401,
+              headers: { 
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+              },
+            });
+          }
+
+          const body: any = await request.json();
+          const { monitor: monitorData } = body;
+
+          if (!monitorData) {
+            return new Response("Missing 'monitor' body param", { status: 400 });
+          }
+
+          const hasAccess = await verifyMonitorAccess(session.userId, monitorData.id, env);
+          if (!hasAccess) {
+            return new Response(JSON.stringify({ error: "Forbidden" }), {
+              status: 403,
+              headers: { 
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+              },
+            });
+          }
+
+          const result = await performCheck(monitorData, env);
+          return new Response(JSON.stringify(result), {
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods": "POST, OPTIONS",
+              "Access-Control-Allow-Headers": "Content-Type",
+            },
+          });
+        } catch (err: any) {
+          return new Response(JSON.stringify({ error: err.message }), {
+            status: 500,
+            headers: { 
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            },
           });
         }
       }

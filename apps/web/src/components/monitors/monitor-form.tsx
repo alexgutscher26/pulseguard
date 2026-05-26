@@ -1,6 +1,6 @@
 "use client";
 
-import { Activity, Globe, Server, Clock, Save, X, Loader2, ChevronDown, Book } from "lucide-react";
+import { Activity, Globe, Server, Clock, Save, X, Loader2, ChevronDown, Book, Plus, Trash2, Chrome, Layers, ArrowUp, ArrowDown } from "lucide-react";
 import Link from "next/link";
 import { createMonitor, updateMonitor } from "@/actions/monitors";
 import { useActionState, useState } from "react";
@@ -19,7 +19,7 @@ interface MonitorFormProps {
     id: string;
     name: string;
     url: string;
-    type: "HTTP" | "PING" | "PORT";
+    type: "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE";
     interval: number;
     timeout: number;
     checkRegions?: string | null;
@@ -29,15 +29,16 @@ interface MonitorFormProps {
     method?: string;
     headers?: string | null;
     body?: string | null;
+    script?: string | null;
   };
 }
 
 export function MonitorForm({ monitor }: MonitorFormProps) {
   const searchParams = useSearchParams();
-  const typeParam = searchParams.get("type")?.toUpperCase() as "HTTP" | "PING" | "PORT" | null;
+  const typeParam = searchParams.get("type")?.toUpperCase() as "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | null;
 
   // Parse initial values
-  let initialType: "HTTP" | "PING" | "PORT" = monitor?.type || typeParam || "HTTP";
+  let initialType: "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" = monitor?.type || typeParam || "HTTP";
   let initialUrl = monitor?.url || "";
   let initialPort = "";
   let initialRegions: string[] = [];
@@ -62,7 +63,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
     }
   }
 
-  const [monitorType, setMonitorType] = useState<"HTTP" | "PING" | "PORT">(initialType);
+  const [monitorType, setMonitorType] = useState<"HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE">(initialType);
   const [selectedRegions, setSelectedRegions] = useState<string[]>(initialRegions);
   const [threshold, setThreshold] = useState(monitor?.alertThreshold || 1);
   const [runbookUrl, setRunbookUrl] = useState(monitor?.runbookUrl || "");
@@ -81,6 +82,110 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
     return [{ key: "", value: "" }];
   });
   const [requestBody, setRequestBody] = useState(monitor?.body || "");
+
+  // Browser Steps State
+  const [steps, setSteps] = useState<{ action: string; value: string; selector: string }[]>(() => {
+    if (monitor?.script) {
+      try {
+        const parsed = JSON.parse(monitor.script);
+        if (Array.isArray(parsed)) {
+          return parsed.map((s: any) => ({
+            action: s.action || "goto",
+            value: s.value || "",
+            selector: s.selector || "",
+          }));
+        }
+      } catch (e) {
+        console.error("Failed to parse browser steps:", e);
+      }
+    }
+    return [{ action: "goto", value: "", selector: "" }];
+  });
+
+  const addStep = () => setSteps([...steps, { action: "goto", value: "", selector: "" }]);
+  const removeStep = (index: number) => setSteps(steps.filter((_, i) => i !== index));
+  const updateStep = (index: number, field: "action" | "value" | "selector", val: string) => {
+    const newSteps = [...steps];
+    newSteps[index][field] = val;
+    setSteps(newSteps);
+  };
+
+  // Sequence Steps State
+  const [sequenceSteps, setSequenceSteps] = useState<{
+    name: string;
+    method: string;
+    url: string;
+    headers: { key: string; value: string }[];
+    body: string;
+    assertions: { type: "status_code" | "body_contains" | "json_path"; path: string; value: string }[];
+    extractions: { name: string; source: "body" | "header"; path: string }[];
+  }[]>(() => {
+    if (monitor?.type === "SEQUENCE" && monitor?.script) {
+      try {
+        const parsed = JSON.parse(monitor.script);
+        if (Array.isArray(parsed)) {
+          return parsed.map((s: any) => ({
+            name: s.name || "",
+            method: s.method || "GET",
+            url: s.url || "",
+            headers: Array.isArray(s.headers) ? s.headers : [],
+            body: s.body || "",
+            assertions: Array.isArray(s.assertions) ? s.assertions : [],
+            extractions: Array.isArray(s.extractions) ? s.extractions : [],
+          }));
+        }
+      } catch (e) {
+        console.error("Failed to parse sequence steps:", e);
+      }
+    }
+    return [
+      {
+        name: "Login",
+        method: "POST",
+        url: "/login",
+        headers: [{ key: "Content-Type", value: "application/json" }],
+        body: '{\n  "username": "admin",\n  "password": "password"\n}',
+        assertions: [{ type: "status_code", path: "", value: "200" }],
+        extractions: [{ name: "token", source: "body", path: "token" }],
+      },
+    ];
+  });
+
+  const addSequenceStep = () => {
+    setSequenceSteps([
+      ...sequenceSteps,
+      {
+        name: `Step ${sequenceSteps.length + 1}`,
+        method: "GET",
+        url: "",
+        headers: [],
+        body: "",
+        assertions: [{ type: "status_code", path: "", value: "200" }],
+        extractions: [],
+      },
+    ]);
+  };
+
+  const removeSequenceStep = (index: number) => {
+    setSequenceSteps(sequenceSteps.filter((_, i) => i !== index));
+  };
+
+  const updateSequenceStep = (index: number, updated: any) => {
+    const next = [...sequenceSteps];
+    next[index] = { ...next[index], ...updated };
+    setSequenceSteps(next);
+  };
+
+  const moveSequenceStep = (index: number, direction: "up" | "down") => {
+    if (direction === "up" && index === 0) return;
+    if (direction === "down" && index === sequenceSteps.length - 1) return;
+    const targetIdx = direction === "up" ? index - 1 : index + 1;
+    const next = [...sequenceSteps];
+    const temp = next[index];
+    next[index] = next[targetIdx];
+    next[targetIdx] = temp;
+    setSequenceSteps(next);
+  };
 
   const addHeader = () => setHeadersList([...headersList, { key: "", value: "" }]);
   const removeHeader = (index: number) => setHeadersList(headersList.filter((_, i) => i !== index));
@@ -128,7 +233,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
               Monitor Type
             </label>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
               <label
                 className={`flex flex-col items-center justify-center gap-2.5 p-4 rounded-xl border transition-all cursor-pointer ${
                   monitorType === "HTTP"
@@ -185,6 +290,44 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                 <Server className="size-5" />
                 <span className="text-[11px] font-bold uppercase tracking-wider">Port</span>
               </label>
+
+              <label
+                className={`flex flex-col items-center justify-center gap-2.5 p-4 rounded-xl border transition-all cursor-pointer ${
+                  monitorType === "BROWSER"
+                    ? "border-primary bg-primary/5 text-foreground shadow-[0_2px_8px_rgba(0,0,0,0.02)]"
+                    : "border-border bg-card text-muted-foreground hover:bg-accent/40 hover:text-foreground"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="type"
+                  value="BROWSER"
+                  className="sr-only"
+                  checked={monitorType === "BROWSER"}
+                  onChange={() => setMonitorType("BROWSER")}
+                />
+                <Chrome className="size-5" />
+                <span className="text-[11px] font-bold uppercase tracking-wider">Browser</span>
+              </label>
+
+              <label
+                className={`flex flex-col items-center justify-center gap-2.5 p-4 rounded-xl border transition-all cursor-pointer col-span-2 md:col-span-1 ${
+                  monitorType === "SEQUENCE"
+                    ? "border-primary bg-primary/5 text-foreground shadow-[0_2px_8px_rgba(0,0,0,0.02)]"
+                    : "border-border bg-card text-muted-foreground hover:bg-accent/40 hover:text-foreground"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="type"
+                  value="SEQUENCE"
+                  className="sr-only"
+                  checked={monitorType === "SEQUENCE"}
+                  onChange={() => setMonitorType("SEQUENCE")}
+                />
+                <Layers className="size-5" />
+                <span className="text-[11px] font-bold uppercase tracking-wider">Sequence</span>
+              </label>
             </div>
           </div>
 
@@ -206,7 +349,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
           {/* Target Host */}
           <div className="flex flex-col gap-2">
             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-              {monitorType === "HTTP" ? "Target URL" : "Hostname / IP"}
+              {monitorType === "HTTP" || monitorType === "BROWSER" ? "Target URL" : "Hostname / IP"}
             </label>
             <div className="flex gap-4">
               <input
@@ -216,8 +359,8 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                 className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-3 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full"
                 type="text"
                 placeholder={
-                  monitorType === "HTTP"
-                    ? "https://api.example.com/health"
+                  monitorType === "HTTP" || monitorType === "BROWSER"
+                    ? "https://example.com"
                     : "192.168.1.1 or example.com"
                 }
               />
@@ -323,6 +466,466 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                   />
                 </div>
               )}
+            </div>
+          )}
+
+          {/* BROWSER Steps Builder */}
+          {monitorType === "BROWSER" && (
+            <div className="flex flex-col gap-5 border-l border-border pl-6 py-1 animate-in fade-in slide-in-from-left-4 duration-300">
+              <div className="flex items-center justify-between">
+                <div className="flex flex-col">
+                  <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                    Browser Steps Script
+                  </label>
+                  <p className="text-[9px] text-muted-foreground font-semibold uppercase mt-0.5 tracking-wider">
+                    Configure sequential browser commands to execute
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={addStep}
+                  className="text-[10px] font-bold text-primary hover:underline uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1"
+                >
+                  <Plus className="size-3" /> Add Step
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-4">
+                {steps.map((step, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col gap-3 p-4 border border-border bg-accent/10 rounded-xl relative group/step"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                        Step {index + 1}
+                      </span>
+                      {steps.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeStep(index)}
+                          className="p-1 text-muted-foreground hover:text-red-500 transition-colors cursor-pointer"
+                        >
+                          <Trash2 className="size-3.5" />
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-3">
+                      {/* Action selector */}
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">
+                          Action
+                        </label>
+                        <div className="relative group/select">
+                          <select
+                            value={step.action}
+                            onChange={(e) => updateStep(index, "action", e.target.value)}
+                            className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-2.5 pr-8 text-foreground focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full appearance-none cursor-pointer"
+                          >
+                            <option value="goto">GOTO (Navigate)</option>
+                            <option value="click">CLICK (Selector)</option>
+                            <option value="fill">FILL (Input selector & value)</option>
+                            <option value="wait">WAIT (Selector or ms)</option>
+                            <option value="assert_text">ASSERT TEXT (Check text)</option>
+                          </select>
+                          <ChevronDown className="absolute top-3 right-2.5 size-3.5 text-muted-foreground/60 pointer-events-none" />
+                        </div>
+                      </div>
+
+                      {/* Selector field (only if clicked, typed, or wait on selector) */}
+                      {["click", "fill", "wait"].includes(step.action) && (
+                        <div className="flex flex-col gap-1.5 col-span-2">
+                          <label className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">
+                            CSS Selector
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="e.g. #login-button or input[name='username']"
+                            value={step.selector}
+                            onChange={(e) => updateStep(index, "selector", e.target.value)}
+                            className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-2.5 text-foreground focus:outline-none w-full"
+                          />
+                        </div>
+                      )}
+
+                      {/* Value field (only if goto, fill, wait ms, or assert_text) */}
+                      {["goto", "fill", "wait", "assert_text"].includes(step.action) && (
+                        <div
+                          className={`flex flex-col gap-1.5 ${
+                            ["click", "fill", "wait"].includes(step.action)
+                              ? "col-span-3"
+                              : "col-span-2"
+                          }`}
+                        >
+                          <label className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">
+                            {step.action === "goto"
+                              ? "URL"
+                              : step.action === "wait"
+                                ? "Time (ms)"
+                                : step.action === "assert_text"
+                                  ? "Expected Text"
+                                  : "Value"}
+                          </label>
+                          <input
+                            type="text"
+                            placeholder={
+                              step.action === "goto"
+                                ? "https://example.com"
+                                : step.action === "wait"
+                                  ? "2000"
+                                  : step.action === "assert_text"
+                                    ? "Welcome back!"
+                                    : "e.g. text to type"
+                            }
+                            value={step.value}
+                            onChange={(e) => updateStep(index, "value", e.target.value)}
+                            className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-2.5 text-foreground focus:outline-none w-full"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <input type="hidden" name="script" value={JSON.stringify(steps)} />
+            </div>
+          )}
+
+          {/* SEQUENCE Steps Builder */}
+          {monitorType === "SEQUENCE" && (
+            <div className="flex flex-col gap-6 border-l border-border pl-6 py-1 animate-in fade-in slide-in-from-left-4 duration-300">
+              <div className="flex items-center justify-between">
+                <div className="flex flex-col">
+                  <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                    API Request Chain Steps
+                  </label>
+                  <p className="text-[9px] text-muted-foreground font-semibold uppercase mt-0.5 tracking-wider">
+                    Configure chained HTTP requests. Values starting with slash / append to the Target URL.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={addSequenceStep}
+                  className="text-[10px] font-bold text-primary hover:underline uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1"
+                >
+                  <Plus className="size-3" /> Add Request Step
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-5">
+                {sequenceSteps.map((step, sIdx) => (
+                  <div
+                    key={sIdx}
+                    className="flex flex-col gap-4 p-5 border border-border bg-accent/5 rounded-xl relative group/step animate-in fade-in slide-in-from-left-2"
+                  >
+                    {/* Step Header */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="flex items-center justify-center size-5 bg-primary/10 text-primary rounded-full text-[10px] font-extrabold">
+                          {sIdx + 1}
+                        </span>
+                        <input
+                          type="text"
+                          value={step.name}
+                          onChange={(e) => updateSequenceStep(sIdx, { name: e.target.value })}
+                          placeholder={`e.g. Login User`}
+                          className="bg-transparent border-b border-transparent hover:border-muted-foreground/20 focus:border-primary text-xs font-bold text-foreground focus:outline-none py-0.5 px-1 min-w-[150px]"
+                        />
+                      </div>
+                      <div className="flex items-center gap-1.5 opacity-60 group-hover/step:opacity-100 transition-opacity">
+                        <button
+                          type="button"
+                          disabled={sIdx === 0}
+                          onClick={() => moveSequenceStep(sIdx, "up")}
+                          className="p-1 text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
+                        >
+                          <ArrowUp className="size-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          disabled={sIdx === sequenceSteps.length - 1}
+                          onClick={() => moveSequenceStep(sIdx, "down")}
+                          className="p-1 text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
+                        >
+                          <ArrowDown className="size-3.5" />
+                        </button>
+                        {sequenceSteps.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => removeSequenceStep(sIdx)}
+                            className="p-1 text-muted-foreground hover:text-red-500 transition-colors cursor-pointer ml-1"
+                          >
+                            <Trash2 className="size-3.5" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-6 gap-3">
+                      {/* Method selector */}
+                      <div className="flex flex-col gap-1.5 col-span-2">
+                        <label className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">
+                          Method
+                        </label>
+                        <div className="relative group/select">
+                          <select
+                            value={step.method}
+                            onChange={(e) => updateSequenceStep(sIdx, { method: e.target.value })}
+                            className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-2.5 pr-8 text-foreground focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full appearance-none cursor-pointer"
+                          >
+                            {["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"].map((m) => (
+                              <option key={m} value={m} className="bg-popover text-foreground">{m}</option>
+                            ))}
+                          </select>
+                          <ChevronDown className="absolute top-3 right-2.5 size-3.5 text-muted-foreground/60 pointer-events-none" />
+                        </div>
+                      </div>
+
+                      {/* URL path / value */}
+                      <div className="flex flex-col gap-1.5 col-span-4">
+                        <label className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">
+                          Endpoint / Path
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. /api/v1/auth/login or {{custom_url}}"
+                          value={step.url}
+                          onChange={(e) => updateSequenceStep(sIdx, { url: e.target.value })}
+                          className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-2.5 text-foreground focus:outline-none w-full"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Step Headers */}
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">
+                          Step Headers
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const newHeaders = [...(step.headers || []), { key: "", value: "" }];
+                            updateSequenceStep(sIdx, { headers: newHeaders });
+                          }}
+                          className="text-[9px] font-bold text-primary hover:underline uppercase tracking-wider transition-all cursor-pointer"
+                        >
+                          + Add Step Header
+                        </button>
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        {(step.headers || []).map((h, hIdx) => (
+                          <div key={hIdx} className="flex gap-2">
+                            <input
+                              placeholder="Key"
+                              value={h.key}
+                              onChange={(e) => {
+                                const newHeaders = [...(step.headers || [])];
+                                newHeaders[hIdx].key = e.target.value;
+                                updateSequenceStep(sIdx, { headers: newHeaders });
+                              }}
+                              className="bg-accent/30 border border-border focus:border-primary/20 text-[11px] font-semibold rounded-lg p-2 text-foreground focus:outline-none flex-1"
+                            />
+                            <input
+                              placeholder="Value (e.g. Bearer {{token}})"
+                              value={h.value}
+                              onChange={(e) => {
+                                const newHeaders = [...(step.headers || [])];
+                                newHeaders[hIdx].value = e.target.value;
+                                updateSequenceStep(sIdx, { headers: newHeaders });
+                              }}
+                              className="bg-accent/30 border border-border focus:border-primary/20 text-[11px] font-semibold rounded-lg p-2 text-foreground focus:outline-none flex-1"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newHeaders = (step.headers || []).filter((_, idx) => idx !== hIdx);
+                                updateSequenceStep(sIdx, { headers: newHeaders });
+                              }}
+                              className="p-1.5 text-muted-foreground hover:text-red-500 transition-colors cursor-pointer"
+                            >
+                              <X className="size-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Step Body */}
+                    {["POST", "PUT", "PATCH", "DELETE"].includes(step.method.toUpperCase()) && (
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">
+                          Request Body (JSON / text)
+                        </label>
+                        <textarea
+                          placeholder='{"username": "admin", "password": "{{admin_password}}"}'
+                          value={step.body}
+                          onChange={(e) => updateSequenceStep(sIdx, { body: e.target.value })}
+                          className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-2.5 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full min-h-[70px] resize-y animate-in fade-in duration-200"
+                        />
+                      </div>
+                    )}
+
+                    {/* Step Assertions */}
+                    <div className="flex flex-col gap-2 border-t border-border/50 pt-3">
+                      <div className="flex items-center justify-between">
+                        <label className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">
+                          Response Assertions
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const newAssertions = [...(step.assertions || []), { type: "status_code", path: "", value: "200" }];
+                            updateSequenceStep(sIdx, { assertions: newAssertions });
+                          }}
+                          className="text-[9px] font-bold text-primary hover:underline uppercase tracking-wider transition-all cursor-pointer"
+                        >
+                          + Add Assertion
+                        </button>
+                      </div>
+                      <div className="flex flex-col gap-2.5">
+                        {(step.assertions || []).map((ast, aIdx) => (
+                          <div key={aIdx} className="grid grid-cols-12 gap-2 items-center animate-in fade-in duration-200">
+                            <div className="col-span-4 relative group/select">
+                              <select
+                                value={ast.type}
+                                onChange={(e) => {
+                                  const newAssertions = [...(step.assertions || [])];
+                                  newAssertions[aIdx].type = e.target.value as any;
+                                  updateSequenceStep(sIdx, { assertions: newAssertions });
+                                }}
+                                className="bg-accent/30 border border-border focus:border-primary/20 text-[11px] font-semibold rounded-lg p-2 pr-7 text-foreground focus:outline-none w-full appearance-none cursor-pointer"
+                              >
+                                <option value="status_code" className="bg-popover text-foreground">Status Code</option>
+                                <option value="body_contains" className="bg-popover text-foreground">Body Contains</option>
+                                <option value="json_path" className="bg-popover text-foreground">JSON Path</option>
+                              </select>
+                              <ChevronDown className="absolute top-2.5 right-2 size-3 text-muted-foreground/60 pointer-events-none" />
+                            </div>
+                            <div className={`${ast.type === "json_path" ? "col-span-3" : "hidden"}`}>
+                              <input
+                                placeholder="JSON path (e.g. data.id)"
+                                value={ast.path}
+                                onChange={(e) => {
+                                  const newAssertions = [...(step.assertions || [])];
+                                  newAssertions[aIdx].path = e.target.value;
+                                  updateSequenceStep(sIdx, { assertions: newAssertions });
+                                }}
+                                className="bg-accent/30 border border-border focus:border-primary/20 text-[11px] font-semibold rounded-lg p-2 text-foreground focus:outline-none w-full"
+                              />
+                            </div>
+                            <div className={`${ast.type === "json_path" ? "col-span-4" : "col-span-7"}`}>
+                              <input
+                                placeholder="Expected value (e.g. 200 or true)"
+                                value={ast.value}
+                                onChange={(e) => {
+                                  const newAssertions = [...(step.assertions || [])];
+                                  newAssertions[aIdx].value = e.target.value;
+                                  updateSequenceStep(sIdx, { assertions: newAssertions });
+                                }}
+                                className="bg-accent/30 border border-border focus:border-primary/20 text-[11px] font-semibold rounded-lg p-2 text-foreground focus:outline-none w-full"
+                              />
+                            </div>
+                            <div className="col-span-1 flex justify-center">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const newAssertions = (step.assertions || []).filter((_, idx) => idx !== aIdx);
+                                  updateSequenceStep(sIdx, { assertions: newAssertions });
+                                }}
+                                className="p-1 text-muted-foreground hover:text-red-500 transition-colors cursor-pointer"
+                              >
+                                <Trash2 className="size-3.5" />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Step Extractions */}
+                    <div className="flex flex-col gap-2 border-t border-border/50 pt-3">
+                      <div className="flex items-center justify-between">
+                        <label className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">
+                          Context Variable Extractions
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const newExtractions = [...(step.extractions || []), { name: "", source: "body", path: "" }];
+                            updateSequenceStep(sIdx, { extractions: newExtractions });
+                          }}
+                          className="text-[9px] font-bold text-primary hover:underline uppercase tracking-wider transition-all cursor-pointer"
+                        >
+                          + Add Extraction
+                        </button>
+                      </div>
+                      <div className="flex flex-col gap-2.5">
+                        {(step.extractions || []).map((ext, eIdx) => (
+                          <div key={eIdx} className="grid grid-cols-12 gap-2 items-center animate-in fade-in duration-200">
+                            <div className="col-span-3">
+                              <input
+                                placeholder="Var Name"
+                                value={ext.name}
+                                onChange={(e) => {
+                                  const newExtractions = [...(step.extractions || [])];
+                                  newExtractions[eIdx].name = e.target.value;
+                                  updateSequenceStep(sIdx, { extractions: newExtractions });
+                                }}
+                                className="bg-accent/30 border border-border focus:border-primary/20 text-[11px] font-semibold rounded-lg p-2 text-foreground focus:outline-none w-full"
+                              />
+                            </div>
+                            <div className="col-span-3 relative group/select">
+                              <select
+                                value={ext.source}
+                                onChange={(e) => {
+                                  const newExtractions = [...(step.extractions || [])];
+                                  newExtractions[eIdx].source = e.target.value as any;
+                                  updateSequenceStep(sIdx, { extractions: newExtractions });
+                                }}
+                                className="bg-accent/30 border border-border focus:border-primary/20 text-[11px] font-semibold rounded-lg p-2 pr-7 text-foreground focus:outline-none w-full appearance-none cursor-pointer"
+                              >
+                                <option value="body" className="bg-popover text-foreground">JSON Body</option>
+                                <option value="header" className="bg-popover text-foreground">Header</option>
+                              </select>
+                              <ChevronDown className="absolute top-2.5 right-2 size-3 text-muted-foreground/60 pointer-events-none" />
+                            </div>
+                            <div className="col-span-5">
+                              <input
+                                placeholder={ext.source === "body" ? "dot.path.key" : "header-key (e.g. Set-Cookie)"}
+                                value={ext.path}
+                                onChange={(e) => {
+                                  const newExtractions = [...(step.extractions || [])];
+                                  newExtractions[eIdx].path = e.target.value;
+                                  updateSequenceStep(sIdx, { extractions: newExtractions });
+                                }}
+                                className="bg-accent/30 border border-border focus:border-primary/20 text-[11px] font-semibold rounded-lg p-2 text-foreground focus:outline-none w-full"
+                              />
+                            </div>
+                            <div className="col-span-1 flex justify-center">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const newExtractions = (step.extractions || []).filter((_, idx) => idx !== eIdx);
+                                  updateSequenceStep(sIdx, { extractions: newExtractions });
+                                }}
+                                className="p-1 text-muted-foreground hover:text-red-500 transition-colors cursor-pointer"
+                              >
+                                <Trash2 className="size-3.5" />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                  </div>
+                ))}
+              </div>
+
+              <input type="hidden" name="script" value={JSON.stringify(sequenceSteps)} />
             </div>
           )}
 
