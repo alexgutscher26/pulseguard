@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { checkMonitor } from "@/actions/monitors";
+import { useHaptic } from "@/hooks/use-haptic";
 
 interface MonitorGridCardProps {
   monitor: any;
@@ -34,19 +35,24 @@ export function MonitorGridCard({
   dragHandleProps,
 }: MonitorGridCardProps) {
   const [checking, setChecking] = useState(false);
+  const { trigger } = useHaptic();
 
   const handleRunCheck = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    trigger("light"); // Subtle click feedback
     setChecking(true);
     try {
       const result = await checkMonitor(monitor.id);
       if (result.success) {
+        trigger("success"); // Premium success tick
         toast.success("Check initiated successfully");
       } else {
+        trigger("error"); // Alert error pulse
         toast.error(result.error || "Failed to initiate check");
       }
     } catch {
+      trigger("error");
       toast.error("Failed to run check");
     } finally {
       setChecking(false);

@@ -19,6 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { MonitorExportModal } from "@/components/monitors/details/export-modal";
+import { useHaptic } from "@/hooks/use-haptic";
 
 /**
  * Monitors the detail view of a specific monitor and manages its state.
@@ -81,13 +82,17 @@ export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
   }, [lastEvent, initialMonitor.id, queryClient, monitor?.status]);
 
   const [isLoading, startTransition] = useTransition();
+  const { trigger } = useHaptic();
 
   const handleRunCheck = () => {
+    trigger("light"); // Subtle click feedback
     startTransition(async () => {
       const result = await checkMonitor(initialMonitor.id);
       if (result.success) {
+        trigger("success"); // Success double-tick
         toast.success("Check initiated successfully");
       } else {
+        trigger("error"); // Error pulse alert
         toast.error(result.error || "Failed to initiate check");
       }
     });

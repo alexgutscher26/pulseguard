@@ -105,8 +105,8 @@ The goal is to wow the user. Think _Tron Legacy_ meets _Mr. Robot_.
   - [x] Sidebar should be a drawer on mobile.
 - [x] **Touch Targets**
   - [x] Increase size of "Run Check" and "Toggle" buttons for thumb usage.
-- [ ] **Swipe-to-close gesture** for drawer.
-- [ ] **Haptic feedback** on mobile devices (via browser vibration API where supported).
+- [x] **Swipe-to-close gesture** for drawer.
+- [x] **Haptic feedback** on mobile devices (via browser vibration API where supported).
 
 ---
 

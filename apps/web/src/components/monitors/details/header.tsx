@@ -5,6 +5,7 @@ import { toggleMonitor } from "@/actions/monitors";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { AVAILABLE_REGIONS } from "@pulseguard/shared";
+import { useHaptic } from "@/hooks/use-haptic";
 
 /**
  * Render the detailed header for a monitor, displaying its status and controls.
@@ -26,13 +27,17 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
   const isPending = monitor.status === "UP" && !hasEvents;
 
   const [isLoading, startTransition] = useTransition();
+  const { trigger } = useHaptic();
 
   const handleToggle = (enabled: boolean) => {
+    trigger("medium"); // Medium vibration trigger on toggling state
     startTransition(async () => {
       const result = await toggleMonitor(monitor.id, enabled);
       if (result.success) {
+        trigger("success"); // Success vibration
         toast.success(enabled ? "Monitoring resumed" : "Monitoring paused");
       } else {
+        trigger("error"); // Error vibration
         toast.error(result.error || "Failed to update monitor");
       }
     });
