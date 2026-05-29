@@ -1,4 +1,5 @@
 "use client";
+// aria-label placeholder
 
 import { useQuery } from "@tanstack/react-query";
 import { getStatusPageAnalytics } from "@/actions/analytics";
@@ -28,7 +29,7 @@ export function StatsCards({ pageId }: { pageId: string }) {
       title: "Views Per Visitor",
       value: data?.uniqueVisitors ? (data.totalViews / data.uniqueVisitors).toFixed(1) : "0.0",
       icon: TrendingUp,
-      color: "text-purple-500",
+      color: "text-amber-500",
     },
   ];
 

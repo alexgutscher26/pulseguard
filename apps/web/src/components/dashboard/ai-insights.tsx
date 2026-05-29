@@ -105,7 +105,7 @@ export function AIInsights({ insights }: AIInsightsProps) {
                       "bg-amber-500/5 border-amber-500/10 text-amber-500",
                     insight.type === "ADVICE" && "bg-primary/5 border-primary/10 text-primary",
                     insight.type === "PREDICTION" &&
-                      "bg-purple-500/5 border-purple-500/10 text-purple-500",
+                      "bg-cyan-500/5 border-cyan-500/10 text-cyan-500",
                   )}
                 >
                   {insight.type === "ANOMALY" && <Activity className="size-4" />}

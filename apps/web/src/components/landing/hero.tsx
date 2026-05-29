@@ -186,18 +186,19 @@ export default function Hero() {
               <div className="mt-4">
                 <div className="flex justify-between items-center text-[10px] text-muted-foreground font-semibold mb-2">
                   <span>30-DAY OPERATIONAL MATRIX</span>
-                  <span className="text-primary font-bold">100.0% UPTIME</span>
+                  <span className="text-emerald-500 dark:text-emerald-400 font-bold">100.0% UPTIME</span>
                 </div>
                 {/* 30 green blocks */}
                 <div className="flex items-center gap-1">
                   {Array.from({ length: 30 }).map((_, idx) => (
                     <div
                       key={idx}
-                      className="flex-1 h-6 transition-all duration-300"
+                      className={`flex-1 h-6 transition-all duration-300 ${
+                        activeNodes.includes(idx)
+                          ? "bg-emerald-500 dark:bg-emerald-400"
+                          : "bg-muted/30 dark:bg-white/5"
+                      }`}
                       style={{
-                        backgroundColor: activeNodes.includes(idx)
-                          ? "var(--primary)"
-                          : "rgba(255,255,255,0.05)",
                         opacity: activeNodes.includes(idx) ? 1 : 0.2,
                       }}
                     ></div>
@@ -215,7 +216,7 @@ export default function Hero() {
               {/* Region 1: US East */}
               <div className="flex items-center justify-between border-b border-border/40 pb-2">
                 <div className="flex items-center gap-2 text-xs">
-                  <span className="size-1.5 bg-primary rounded-full"></span>
+                  <span className="size-1.5 bg-emerald-500 dark:bg-emerald-400 rounded-full"></span>
                   <span className="text-muted-foreground">US East (Virginia)</span>
                 </div>
                 <span className="text-xs font-bold text-foreground">{latencies.us}ms</span>
@@ -224,7 +225,7 @@ export default function Hero() {
               {/* Region 2: EU Central */}
               <div className="flex items-center justify-between border-b border-border/40 pb-2">
                 <div className="flex items-center gap-2 text-xs">
-                  <span className="size-1.5 bg-primary rounded-full"></span>
+                  <span className="size-1.5 bg-emerald-500 dark:bg-emerald-400 rounded-full"></span>
                   <span className="text-muted-foreground">EU Central (Frankfurt)</span>
                 </div>
                 <span className="text-xs font-bold text-foreground">{latencies.eu}ms</span>
@@ -233,7 +234,7 @@ export default function Hero() {
               {/* Region 3: Asia Pacific */}
               <div className="flex items-center justify-between pb-1">
                 <div className="flex items-center gap-2 text-xs">
-                  <span className="size-1.5 bg-primary rounded-full"></span>
+                  <span className="size-1.5 bg-emerald-500 dark:bg-emerald-400 rounded-full"></span>
                   <span className="text-muted-foreground">Asia North (Tokyo)</span>
                 </div>
                 <span className="text-xs font-bold text-foreground">{latencies.ap}ms</span>

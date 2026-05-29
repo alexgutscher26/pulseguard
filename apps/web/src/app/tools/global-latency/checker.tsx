@@ -8,7 +8,7 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
+  TableHead as Th,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
@@ -183,10 +183,10 @@ export function LatencyChecker() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Region</TableHead>
-                    <TableHead>Server Location</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Latency</TableHead>
+                    <Th>Region</Th>
+                    <Th>Server Location</Th>
+                    <Th>Status</Th>
+                    <Th className="text-right">Latency</Th>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

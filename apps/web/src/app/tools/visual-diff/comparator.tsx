@@ -163,7 +163,7 @@ export function VisualDiffComparator() {
                         Execute Visual Probe
                         <ArrowRight className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
                       </span>
-                      <div className="absolute inset-0 bg-linear-to-r from-primary to-purple-600 opacity-0 group-hover/btn:opacity-100 transition-opacity" />
+                      <div className="absolute inset-0 bg-linear-to-r from-primary to-emerald-600 opacity-0 group-hover/btn:opacity-100 transition-opacity" />
                     </Button>
                   </div>
                 </form>
@@ -314,6 +314,7 @@ export function VisualDiffComparator() {
                   <div className="relative aspect-video w-full bg-black group overflow-hidden">
                     <img
                       src={imgA}
+                      alt="Reference snapshot preview"
                       className="absolute inset-0 h-full w-full object-cover opacity-30 grayscale"
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
@@ -321,6 +322,7 @@ export function VisualDiffComparator() {
                       <div className="absolute inset-0 mix-blend-screen overflow-hidden">
                         <img
                           src={imgB}
+                          alt="Mutation target preview"
                           className="h-full w-full object-cover opacity-50 sepia-[1] hue-rotate-[320deg] animate-pulse"
                         />
                       </div>
@@ -344,6 +346,7 @@ export function VisualDiffComparator() {
                     <div className="relative overflow-hidden group">
                       <img
                         src={imgA}
+                        alt="Reference snapshot comparison side-by-side"
                         className="h-full w-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
                         title="Reference"
                       />
@@ -356,6 +359,7 @@ export function VisualDiffComparator() {
                     <div className="relative overflow-hidden group">
                       <img
                         src={imgB}
+                        alt="Mutation target comparison side-by-side"
                         className="h-full w-full object-cover border-l border-primary/30"
                         title="Mutation"
                       />

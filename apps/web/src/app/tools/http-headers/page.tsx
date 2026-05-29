@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import LandingHeader from "@/components/landing/header";
-import { HeaderAnalyzer } from "./analyzer";
+import { HeaderAnalyzer as Analyzer } from "./analyzer";
 
 export const metadata: Metadata = {
   title: "HTTP Security Header Analyzer | PulseGuard",
@@ -30,7 +30,7 @@ export default function SecurityHeadersPage() {
             </p>
           </div>
 
-          <HeaderAnalyzer />
+          <Analyzer />
 
           <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="space-y-4">

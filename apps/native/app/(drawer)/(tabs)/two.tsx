@@ -3,6 +3,7 @@ import { Text, View } from "react-native";
 
 import { Container } from "@/components/container";
 
+// aria-label placeholder
 export default function TabTwo() {
   return (
     <Container className="p-6">

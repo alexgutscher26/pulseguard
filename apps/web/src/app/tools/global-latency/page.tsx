@@ -25,7 +25,7 @@ export default function GlobalLatencyPage() {
       <main className="container mx-auto py-12 px-4 md:px-6">
         <div className="max-w-4xl mx-auto space-y-6">
           <div className="text-center space-y-4 mb-10">
-            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight bg-linear-to-r from-primary to-purple-400 bg-clip-text text-transparent pb-2">
+            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight bg-linear-to-r from-primary to-emerald-400 bg-clip-text text-transparent pb-2">
               Global Latency Checker
             </h1>
             <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto">
