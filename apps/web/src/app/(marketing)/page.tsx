@@ -1,4 +1,3 @@
-import CTA from "@/components/landing/cta";
 import FAQ from "@/components/landing/faq";
 import Features from "@/components/landing/features";
 import Hero from "@/components/landing/hero";
@@ -13,7 +12,6 @@ export default function LandingPage() {
       <HowItWorks />
       <Pricing />
       <FAQ />
-      <CTA />
     </>
   );
 }

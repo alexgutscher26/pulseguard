@@ -1,14 +1,11 @@
 import {
   CheckCircle2,
-  Globe,
-  Database,
-  Shield,
-  Server,
-  Activity,
   Loader2,
   ArrowUpRight,
 } from "lucide-react";
 import { LiveStatusDemo } from "./live-status-demo";
+import Link from "next/link";
+// aria-label placeholder
 
 export default function Features() {
   return (
@@ -31,7 +28,10 @@ export default function Features() {
         {/* Modernist Card Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Card 1: Live Status Demo */}
-          <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between group hover:border-primary/20 hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-300 min-h-[440px]">
+          <Link
+            href={"/features/latency-grid" as any}
+            className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between group hover:border-primary/20 hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-300 min-h-[440px] block"
+          >
             <div className="flex-1 flex flex-col justify-center mb-6">
               <div className="p-3 bg-muted/30 border border-border/60 rounded-xl shadow-sm relative overflow-hidden group-hover:border-primary/10 transition-all duration-300">
                 <LiveStatusDemo />
@@ -50,10 +50,13 @@ export default function Features() {
                 payload structures.
               </p>
             </div>
-          </div>
+          </Link>
 
           {/* Card 2: Incident Resolution */}
-          <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between group hover:border-primary/20 hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-300 min-h-[440px]">
+          <Link
+            href={"/features/automated-dispatch" as any}
+            className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between group hover:border-primary/20 hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-300 min-h-[440px] block"
+          >
             {/* Visual Area */}
             <div className="h-[200px] w-full mb-6 relative flex flex-col items-center justify-center p-2">
               {/* Stacked Cards */}
@@ -110,10 +113,13 @@ export default function Features() {
                 integrations and alerts.
               </p>
             </div>
-          </div>
+          </Link>
 
           {/* Card 3: Multi-Region Support */}
-          <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between group hover:border-primary/20 hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-300 min-h-[440px]">
+          <Link
+            href={"/features/global-verification" as any}
+            className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between group hover:border-primary/20 hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-300 min-h-[440px] block"
+          >
             {/* Visual Area */}
             <div className="h-[200px] w-full mb-6 relative flex items-center justify-center">
               <svg className="absolute inset-0 w-full h-full" viewBox="0 0 300 200">
@@ -208,7 +214,7 @@ export default function Features() {
                 before triggering pages.
               </p>
             </div>
-          </div>
+          </Link>
         </div>
       </div>
     </section>

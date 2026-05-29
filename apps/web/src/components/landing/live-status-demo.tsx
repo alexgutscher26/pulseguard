@@ -12,7 +12,7 @@ export function LiveStatusDemo() {
   ];
 
   return (
-    <div className="bg-[#111] border border-white/5 rounded-xl h-[220px] w-full mb-6 relative overflow-hidden p-6 flex flex-col justify-center">
+    <div className="dark bg-[#111] border border-white/5 rounded-xl h-[220px] w-full mb-6 relative overflow-hidden p-6 flex flex-col justify-center">
       {/* Lightning Pulse Icon - Top Right */}
       <div className="absolute top-4 right-4 size-10 rounded-full border border-white/10 flex items-center justify-center bg-[#151515]">
         <Activity className="size-5 text-primary" />
