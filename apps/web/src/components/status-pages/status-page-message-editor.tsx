@@ -87,7 +87,7 @@ export function StatusPageMessageEditor({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto bg-[#0A0A0A] border border-primary/20 text-foreground">
+      <DialogContent className="dark max-w-2xl max-h-[80vh] overflow-y-auto bg-zinc-950 border border-primary/20 text-foreground">
         <DialogHeader>
           <DialogTitle className="text-xl font-mono uppercase font-bold text-primary">
             Edit Translations ({locale.toUpperCase()})

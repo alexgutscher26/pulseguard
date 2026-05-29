@@ -138,7 +138,7 @@ export function NotificationChannels({
               <Plus className="size-4" /> Add Channel
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] border-primary/20 bg-black/90 backdrop-blur-xl">
+          <DialogContent className="dark sm:max-w-[425px] border-primary/20 bg-zinc-950 backdrop-blur-xl text-foreground">
             <DialogHeader>
               <DialogTitle className="font-mono uppercase tracking-wider text-primary">
                 New Channel

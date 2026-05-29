@@ -85,9 +85,12 @@ export default function Hero() {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 mb-8 text-[11px] font-semibold tracking-wider text-primary bg-primary/10 border border-primary/20 px-3.5 py-1 rounded-full uppercase"
+          className="inline-flex items-center gap-2 mb-8 text-[11px] font-bold tracking-wider text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-400/10 border border-emerald-500/20 dark:border-emerald-400/20 px-3.5 py-1.5 rounded-full uppercase shadow-[0_0_12px_rgba(16,185,129,0.05)] dark:shadow-[0_0_12px_rgba(52,211,153,0.15)]"
         >
-          <span className="size-1.5 bg-primary rounded-full animate-pulse"></span>
+          <span className="relative flex size-1.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full size-1.5 bg-emerald-500 dark:bg-emerald-400"></span>
+          </span>
           <span>Mesh network monitoring deployed</span>
         </motion.div>
 

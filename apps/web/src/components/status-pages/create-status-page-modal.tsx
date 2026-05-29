@@ -34,7 +34,7 @@ export function CreateStatusPageModal({ isOpen, onClose }: Props) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-[#050505] border-primary/20 text-foreground sm:max-w-md">
+      <DialogContent className="dark bg-zinc-950 border-primary/20 text-foreground sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 font-mono uppercase tracking-widest text-primary">
             <Globe className="size-5" /> New Status Page

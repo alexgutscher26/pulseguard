@@ -39,7 +39,7 @@ export function DangerZone() {
               Delete Account
             </button>
           </DialogTrigger>
-          <DialogContent className="bg-black/90 border-red-500/30 sm:max-w-[425px]">
+          <DialogContent className="dark bg-zinc-950 border-red-500/30 sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle className="text-red-500 font-mono uppercase tracking-widest flex items-center gap-2">
                 <AlertTriangle className="size-5" />

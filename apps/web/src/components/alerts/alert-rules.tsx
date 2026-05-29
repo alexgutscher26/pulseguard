@@ -182,7 +182,7 @@ export function AlertRules({
               <Plus className="size-4" /> Add Rule
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[500px] border-primary/20 bg-black/90 backdrop-blur-xl">
+          <DialogContent className="dark sm:max-w-[500px] border-primary/20 bg-zinc-950 backdrop-blur-xl text-foreground">
             <DialogHeader>
               <DialogTitle className="font-mono uppercase tracking-wider text-primary">
                 New Alert Rule

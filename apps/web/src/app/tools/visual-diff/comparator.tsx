@@ -138,7 +138,7 @@ export function VisualDiffComparator() {
                       </div>
                     </div>
                     <div className="space-y-4">
-                      <Label className="text-[10px] uppercase font-bold tracking-[2px] text-secondary/70">
+                      <Label className="text-[10px] uppercase font-bold tracking-[2px] text-primary/70">
                         Point B (Target Mutation)
                       </Label>
                       <div className="relative group/input">
@@ -146,9 +146,9 @@ export function VisualDiffComparator() {
                           placeholder="Leave empty for history compare"
                           value={url2}
                           onChange={(e) => setUrl2(e.target.value)}
-                          className="bg-background border-secondary/20 focus:border-secondary transition-all duration-300 rounded-none h-12 pl-10"
+                          className="bg-background border-primary/20 focus:border-primary transition-all duration-300 rounded-none h-12 pl-10"
                         />
-                        <Search className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground group-focus-within/input:text-secondary transition-colors" />
+                        <Search className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground group-focus-within/input:text-primary transition-colors" />
                       </div>
                     </div>
                   </div>
@@ -292,7 +292,7 @@ export function VisualDiffComparator() {
                     </div>
 
                     <div className="absolute top-4 right-4 z-20">
-                      <Badge className="bg-secondary/80 backdrop-blur-sm italic uppercase tracking-tighter">
+                      <Badge className="bg-emerald-600/90 dark:bg-emerald-500/90 text-white backdrop-blur-sm italic uppercase tracking-tighter">
                         Mutation
                       </Badge>
                     </div>

@@ -279,9 +279,6 @@ export function PortChecker() {
 
         {/* Batch Scanner (Gated) */}
         <Card className="border-border/50 bg-muted/20 relative overflow-hidden flex flex-col">
-          <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
-            <Terminal className="w-64 h-64" />
-          </div>
 
           <CardHeader>
             <CardTitle className="font-mono flex items-center gap-2">
@@ -320,16 +317,16 @@ export function PortChecker() {
 
       {/* Unlock Dialog */}
       <Dialog open={gateOpen} onOpenChange={setGateOpen}>
-        <DialogContent className="sm:max-w-md bg-black/90 border-primary/20 text-foreground font-mono">
+        <DialogContent className="dark sm:max-w-md bg-zinc-950 border-emerald-500/20 text-foreground font-mono">
           <DialogHeader>
-            <DialogTitle className="text-primary">AUTHENTICATION_REQUIRED</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-emerald-400 font-mono tracking-wider">AUTHENTICATION_REQUIRED</DialogTitle>
+            <DialogDescription className="text-zinc-400">
               Please identify yourself to access advanced scanning tools.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="email" className="uppercase text-xs">
+              <Label htmlFor="email" className="uppercase text-xs text-zinc-400">
                 Operator Email
               </Label>
               <Input
@@ -337,7 +334,7 @@ export function PortChecker() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="operator@system.com"
-                className="bg-background/50 border-primary/30"
+                className="bg-zinc-900 border-zinc-800 text-zinc-100 placeholder:text-zinc-600 focus-visible:ring-emerald-500/50 focus-visible:border-emerald-500"
               />
             </div>
           </div>
@@ -346,7 +343,7 @@ export function PortChecker() {
               type="button"
               onClick={handleUnlock}
               disabled={isEmailSubmitting}
-              className="w-full font-bold"
+              className="w-full font-bold bg-emerald-600 hover:bg-emerald-500 text-white border-none"
             >
               {isEmailSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               AUTHORIZE_ACCESS
