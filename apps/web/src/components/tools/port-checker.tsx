@@ -281,7 +281,7 @@ export function PortChecker() {
           <CardContent className="flex-1 flex flex-col relative">
             <div
               className={cn(
-                "flex-1 bg-zinc-950/90 rounded-md p-4 font-mono text-xs text-primary/80 mb-4 overflow-hidden min-h-[150px]",
+                "flex-1 dark bg-zinc-950/90 rounded-md p-4 font-mono text-xs text-primary/80 mb-4 overflow-hidden min-h-[150px]",
                 "shadow-inner border border-primary/20",
               )}
             >

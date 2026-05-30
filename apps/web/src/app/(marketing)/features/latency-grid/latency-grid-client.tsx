@@ -114,8 +114,8 @@ export function LatencyGridClient() {
       {/* Interactive Mockup Panel */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Radar Display */}
-        <div className="lg:col-span-7 border border-border/30 bg-card/40 backdrop-blur-md p-6 rounded-none space-y-6">
-          <div className="flex items-center justify-between border-b border-border/10 pb-4">
+        <div className="lg:col-span-7 border border-primary/20 bg-card/90 dark:bg-card/40 backdrop-blur-md p-6 rounded-none space-y-6">
+          <div className="flex items-center justify-between border-b border-primary/10 pb-4">
             <div>
               <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest font-mono">
                 <Globe className="size-4 text-emerald-500 animate-pulse" />
@@ -136,16 +136,16 @@ export function LatencyGridClient() {
             {REGIONS.map((r) => (
               <div
                 key={r.id}
-                className="border border-border/20 bg-background/40 p-4 flex flex-col justify-between min-h-[90px] group hover:border-emerald-500/20 transition-all duration-300"
+                className="border border-primary/15 bg-background hover:bg-muted/30 dark:bg-background/25 p-4 flex flex-col justify-between min-h-[90px] group hover:border-emerald-500/40 transition-all duration-300"
               >
                 <div className="flex justify-between items-start">
-                  <span className="text-[10px] font-bold text-muted-foreground/80 tracking-wider uppercase font-mono">
+                  <span className="text-[10px] font-bold text-muted-foreground tracking-wider uppercase font-mono">
                     {r.code}
                   </span>
                   <div className="size-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
                 </div>
                 <div>
-                  <div className="text-[10px] font-semibold text-muted-foreground/60 truncate">
+                  <div className="text-[10px] font-semibold text-muted-foreground/90 truncate">
                     {r.name}
                   </div>
                   <div className="text-xl font-bold font-mono text-foreground mt-1 flex items-baseline gap-1">
@@ -158,7 +158,7 @@ export function LatencyGridClient() {
           </div>
 
           {/* Action Trigger Form */}
-          <form onSubmit={handleTest} className="flex gap-4 pt-4 border-t border-border/10">
+          <form onSubmit={handleTest} className="flex gap-4 pt-4 border-t border-primary/10">
             <div className="flex-1">
               <label htmlFor="feature-url" className="sr-only">
                 Test Target URL
@@ -170,13 +170,13 @@ export function LatencyGridClient() {
                 value={inputUrl}
                 onChange={(e) => setInputUrl(e.target.value)}
                 disabled={isScanning}
-                className="w-full bg-background border border-border/30 h-10 px-4 text-xs font-mono text-foreground placeholder:text-muted-foreground/40 focus:border-emerald-500/50 outline-none transition-colors"
+                className="w-full bg-background border border-primary/20 h-10 px-4 text-xs font-mono text-foreground placeholder:text-muted-foreground/70 focus:border-emerald-500/50 outline-none transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
               />
             </div>
             <button
               type="submit"
               disabled={isScanning || !inputUrl}
-              className="bg-primary text-primary-foreground hover:bg-primary/95 text-xs font-bold uppercase tracking-widest px-6 h-10 transition-colors disabled:opacity-40"
+              className="bg-primary text-primary-foreground hover:bg-primary/95 text-xs font-bold uppercase tracking-widest px-6 h-10 transition-colors disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed"
             >
               {isScanning ? "Probing..." : "Test Endpoint"}
             </button>
@@ -186,7 +186,7 @@ export function LatencyGridClient() {
         {/* Feature breakdown */}
         <div className="lg:col-span-5 space-y-6">
           <div className="space-y-2">
-            <div className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest font-mono">
+            <div className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest font-mono">
               Sentinel Attributes
             </div>
             <h3 className="text-xl font-bold text-foreground">
@@ -197,12 +197,12 @@ export function LatencyGridClient() {
           <div className="space-y-6 pt-4">
             {/* Attribute 1 */}
             <div className="flex gap-4 items-start">
-              <div className="p-2.5 bg-emerald-500/5 border border-emerald-500/10 rounded-sm text-emerald-500">
+              <div className="p-2.5 bg-emerald-500/10 dark:bg-emerald-500/5 border border-emerald-500/15 rounded-sm text-emerald-600 dark:text-emerald-400">
                 <Activity className="size-4.5" />
               </div>
               <div className="space-y-1">
                 <h4 className="text-sm font-bold text-foreground">High-Frequency Checks</h4>
-                <p className="text-xs text-muted-foreground leading-relaxed">
+                <p className="text-xs text-foreground/80 leading-relaxed">
                   Validate availability up to once every 10 seconds. Minimize detection delay and
                   intercept incidents before users notice them.
                 </p>
@@ -211,12 +211,12 @@ export function LatencyGridClient() {
 
             {/* Attribute 2 */}
             <div className="flex gap-4 items-start">
-              <div className="p-2.5 bg-emerald-500/5 border border-emerald-500/10 rounded-sm text-emerald-500">
+              <div className="p-2.5 bg-emerald-500/10 dark:bg-emerald-500/5 border border-emerald-500/15 rounded-sm text-emerald-600 dark:text-emerald-400">
                 <Clock className="size-4.5" />
               </div>
               <div className="space-y-1">
                 <h4 className="text-sm font-bold text-foreground">Millisecond Resolution</h4>
-                <p className="text-xs text-muted-foreground leading-relaxed">
+                <p className="text-xs text-foreground/80 leading-relaxed">
                   Track response variations down to single milliseconds. Establish performance
                   baselines and identify gradual network regressions.
                 </p>
@@ -225,12 +225,12 @@ export function LatencyGridClient() {
 
             {/* Attribute 3 */}
             <div className="flex gap-4 items-start">
-              <div className="p-2.5 bg-emerald-500/5 border border-emerald-500/10 rounded-sm text-emerald-500">
+              <div className="p-2.5 bg-emerald-500/10 dark:bg-emerald-500/5 border border-emerald-500/15 rounded-sm text-emerald-600 dark:text-emerald-400">
                 <Server className="size-4.5" />
               </div>
               <div className="space-y-1">
                 <h4 className="text-sm font-bold text-foreground">Response Dissection</h4>
-                <p className="text-xs text-muted-foreground leading-relaxed">
+                <p className="text-xs text-foreground/80 leading-relaxed">
                   Inspect response payloads, return codes, and header structures. Confirm not just
                   connectivity, but transaction integrity.
                 </p>

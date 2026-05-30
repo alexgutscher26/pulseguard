@@ -157,7 +157,7 @@ export function DispatchClient() {
       {/* Interactive Simulator */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
         {/* Pipeline simulation visual */}
-        <div className="lg:col-span-6 border border-border/30 bg-card/40 backdrop-blur-md p-6 rounded-none flex flex-col justify-between min-h-[380px]">
+        <div className="lg:col-span-6 border border-primary/20 bg-card/90 dark:bg-card/40 backdrop-blur-md p-6 rounded-none flex flex-col justify-between min-h-[380px]">
           <div>
             <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest font-mono mb-6">
               Incident Dispatch Flow Simulator
@@ -168,7 +168,7 @@ export function DispatchClient() {
               {/* Step 1: Sentinel Alert */}
               <div className="flex items-center gap-4">
                 <div
-                  className={`p-2.5 rounded-sm border ${dispatchStep >= 1 ? "bg-red-500/10 border-red-500 text-red-500 animate-pulse" : "bg-muted/10 border-border/30 text-muted-foreground"}`}
+                  className={`p-2.5 rounded-sm border ${dispatchStep >= 1 ? "bg-red-500/10 border-red-500 text-red-500 animate-pulse" : "bg-muted/50 border-primary/20 text-muted-foreground"}`}
                 >
                   <AlertTriangle className="size-5" />
                 </div>
@@ -195,7 +195,7 @@ export function DispatchClient() {
               {/* Step 2: Assembly */}
               <div className="flex items-center gap-4">
                 <div
-                  className={`p-2.5 rounded-sm border ${dispatchStep >= 2 ? "bg-emerald-500/10 border-emerald-500 text-emerald-500" : "bg-muted/10 border-border/30 text-muted-foreground"}`}
+                  className={`p-2.5 rounded-sm border ${dispatchStep >= 2 ? "bg-emerald-500/10 border-emerald-500 text-emerald-500" : "bg-muted/50 border-primary/20 text-muted-foreground"}`}
                 >
                   <Zap className="size-5" />
                 </div>
@@ -226,7 +226,7 @@ export function DispatchClient() {
               {/* Step 3: Broadcast */}
               <div className="flex items-center gap-4">
                 <div
-                  className={`p-2.5 rounded-sm border ${dispatchStep >= 3 ? "bg-cyan-500/10 border-cyan-500 text-cyan-500" : "bg-muted/10 border-border/30 text-muted-foreground"}`}
+                  className={`p-2.5 rounded-sm border ${dispatchStep >= 3 ? "bg-cyan-500/10 border-cyan-500 text-cyan-500" : "bg-muted/50 border-primary/20 text-muted-foreground"}`}
                 >
                   <Send className="size-5 animate-pulse" />
                 </div>
@@ -244,7 +244,7 @@ export function DispatchClient() {
             </div>
           </div>
 
-          <div className="pt-6 border-t border-border/10 flex items-center justify-between">
+          <div className="pt-6 border-t border-primary/10 flex items-center justify-between">
             <span className="text-[10px] font-mono text-muted-foreground">
               {dispatchStep === 4
                 ? "✓ DISPATCH DISSEMINATED"
@@ -255,7 +255,7 @@ export function DispatchClient() {
             <button
               onClick={triggerDispatch}
               disabled={isDispatching}
-              className="bg-red-500 hover:bg-red-600 text-white text-xs font-bold uppercase tracking-widest px-6 py-2.5 rounded-sm transition-colors disabled:opacity-40"
+              className="bg-red-500 hover:bg-red-600 text-white text-xs font-bold uppercase tracking-widest px-6 py-2.5 rounded-sm transition-colors disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed"
             >
               {isDispatching ? "Dispatching..." : "Simulate Outage Alert"}
             </button>
@@ -263,9 +263,9 @@ export function DispatchClient() {
         </div>
 
         {/* Integration configuration mock */}
-        <div className="lg:col-span-6 border border-border/30 bg-card/40 backdrop-blur-md p-6 rounded-none flex flex-col justify-between min-h-[380px]">
+        <div className="lg:col-span-6 border border-primary/20 bg-card/90 dark:bg-card/40 backdrop-blur-md p-6 rounded-none flex flex-col justify-between min-h-[380px]">
           <div>
-            <div className="flex items-center justify-between border-b border-border/10 pb-4 mb-6">
+            <div className="flex items-center justify-between border-b border-primary/10 pb-4 mb-6">
               <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest font-mono">
                 Integration Payload Console
               </span>
@@ -274,7 +274,7 @@ export function DispatchClient() {
                   <button
                     key={ch.id}
                     onClick={() => setSelectedChannel(ch.id)}
-                    className={`p-1.5 border rounded-sm transition-all ${selectedChannel === ch.id ? "border-emerald-500 text-emerald-500 bg-emerald-500/5" : "border-border/30 text-muted-foreground hover:text-foreground"}`}
+                    className={`p-1.5 border rounded-sm transition-all ${selectedChannel === ch.id ? "border-emerald-500 text-emerald-500 bg-emerald-500/5" : "border-primary/20 text-muted-foreground hover:text-foreground"}`}
                     title={ch.name}
                   >
                     <ch.icon className="size-4" />
@@ -284,7 +284,7 @@ export function DispatchClient() {
             </div>
 
             {/* Code Console */}
-            <div className="bg-black/50 border border-border/20 p-4 rounded-sm font-mono text-xs text-foreground overflow-auto max-h-[220px]">
+            <div className="dark bg-zinc-950 border border-primary/20 p-4 rounded-sm font-mono text-xs text-foreground overflow-auto max-h-[220px] shadow-inner">
               <pre className="text-emerald-400">{getPayload()}</pre>
             </div>
           </div>

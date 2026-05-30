@@ -109,7 +109,7 @@ export function VerificationClient() {
       {/* Interactive Consensus Map Mockup */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
         {/* Consensus voting visualizer */}
-        <div className="lg:col-span-7 border border-border/30 bg-card/40 backdrop-blur-md p-6 rounded-none flex flex-col justify-between min-h-[420px] relative overflow-hidden">
+        <div className="lg:col-span-7 border border-primary/20 bg-card/90 dark:bg-card/40 backdrop-blur-md p-6 rounded-none flex flex-col justify-between min-h-[420px] relative overflow-hidden">
           {/* Background layout grid */}
           <div className="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px]" />
 
@@ -174,7 +174,7 @@ export function VerificationClient() {
                           ? "border-emerald-500/50 bg-emerald-500/5 text-emerald-500"
                           : node.status === "DOWN"
                             ? "border-red-500/50 bg-red-500/5 text-red-500"
-                            : "border-border/30 bg-background text-muted-foreground"
+                            : "border-primary/20 bg-background text-muted-foreground"
                       }`}
                     >
                       <span className="text-[9px] font-bold">{node.code}</span>
@@ -193,7 +193,7 @@ export function VerificationClient() {
           </div>
 
           {/* Action Trigger Buttons */}
-          <div className="pt-6 border-t border-border/10 flex flex-col sm:flex-row gap-4 items-center justify-between z-10">
+          <div className="pt-6 border-t border-primary/10 flex flex-col sm:flex-row gap-4 items-center justify-between z-10">
             <span className="text-[10px] font-mono text-muted-foreground">
               {isVerifying ? "VOTING IN PROGRESS..." : "SIMULATOR READY"}
             </span>
@@ -201,14 +201,14 @@ export function VerificationClient() {
               <button
                 onClick={() => runConsensusSimulation("local")}
                 disabled={isVerifying}
-                className="border border-border hover:bg-accent text-foreground text-xs font-bold uppercase tracking-widest px-4 py-2.5 rounded-sm transition-all disabled:opacity-40"
+                className="border border-primary/20 hover:bg-accent text-foreground text-xs font-bold uppercase tracking-widest px-4 py-2.5 rounded-sm transition-all disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed"
               >
                 Simulate Localized Error
               </button>
               <button
                 onClick={() => runConsensusSimulation("global")}
                 disabled={isVerifying}
-                className="bg-red-500 hover:bg-red-600 text-white text-xs font-bold uppercase tracking-widest px-4 py-2.5 rounded-sm transition-all disabled:opacity-40"
+                className="bg-red-500 hover:bg-red-600 text-white text-xs font-bold uppercase tracking-widest px-4 py-2.5 rounded-sm transition-all disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed"
               >
                 Simulate Global Outage
               </button>
@@ -217,13 +217,13 @@ export function VerificationClient() {
         </div>
 
         {/* Informational Output Terminal */}
-        <div className="lg:col-span-5 border border-border/30 bg-card/40 backdrop-blur-md p-6 rounded-none flex flex-col justify-between min-h-[420px]">
+        <div className="lg:col-span-5 border border-primary/20 bg-card/90 dark:bg-card/40 backdrop-blur-md p-6 rounded-none flex flex-col justify-between min-h-[420px]">
           <div>
             <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest font-mono mb-4">
               Consensus Terminal Output
             </div>
 
-            <div className="bg-black/50 border border-border/20 p-4 rounded-sm font-mono text-[11px] text-foreground min-h-[220px]">
+            <div className="dark bg-zinc-950 border border-primary/20 p-4 rounded-sm font-mono text-[11px] text-foreground min-h-[220px]">
               {outcome === "STANDBY" && (
                 <div className="text-muted-foreground/60">
                   [CONSOLE STANDBY]
