@@ -32,7 +32,7 @@ export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = 
   };
 
   return (
-    <header className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background/80 backdrop-blur-md px-4 md:px-8 py-4 overflow-hidden">
+    <header className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background/80 backdrop-blur-md px-8 py-8 overflow-hidden">
       <div className="flex items-center gap-2 md:gap-4 relative z-20 min-w-0 flex-1 md:flex-none">
         {/* Hamburger Menu - Mobile Only */}
         {onMenuClick && (
