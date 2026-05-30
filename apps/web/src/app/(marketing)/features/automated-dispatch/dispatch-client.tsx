@@ -167,10 +167,23 @@ export function DispatchClient() {
             <div className="space-y-8 relative">
               {/* Step 1: Sentinel Alert */}
               <div className="flex items-center gap-4">
-                <div
-                  className={`p-2.5 rounded-sm border ${dispatchStep >= 1 ? "bg-red-500/10 border-red-500 text-red-500 animate-pulse" : "bg-muted/50 border-primary/20 text-muted-foreground"}`}
-                >
-                  <AlertTriangle className="size-5" />
+                <div className="relative">
+                  <div
+                    className={`relative z-10 p-2.5 rounded-sm border ${dispatchStep >= 1 ? "bg-red-500/10 border-red-500 text-red-500 animate-pulse" : "bg-muted/50 border-primary/20 text-muted-foreground"}`}
+                  >
+                    <AlertTriangle className="size-5" />
+                  </div>
+                  {/* Connector line 1 */}
+                  <div className="absolute top-[calc(100%-1px)] left-1/2 -translate-x-1/2 w-[1px] h-[34px] bg-border/20 z-0 overflow-hidden">
+                    {dispatchStep >= 1 && (
+                      <motion.div
+                        className="w-full bg-emerald-500"
+                        initial={{ height: 0 }}
+                        animate={{ height: "100%" }}
+                        transition={{ duration: 1 }}
+                      />
+                    )}
+                  </div>
                 </div>
                 <div className="flex-1">
                   <div className="text-xs font-bold text-foreground">Outage Event Triggered</div>
@@ -180,24 +193,25 @@ export function DispatchClient() {
                 </div>
               </div>
 
-              {/* Connector line 1 */}
-              <div className="absolute left-[19px] top-[26px] w-[1px] h-[34px] bg-border/20">
-                {dispatchStep >= 1 && (
-                  <motion.div
-                    className="w-full bg-emerald-500"
-                    initial={{ height: 0 }}
-                    animate={{ height: "100%" }}
-                    transition={{ duration: 1 }}
-                  />
-                )}
-              </div>
-
               {/* Step 2: Assembly */}
               <div className="flex items-center gap-4">
-                <div
-                  className={`p-2.5 rounded-sm border ${dispatchStep >= 2 ? "bg-emerald-500/10 border-emerald-500 text-emerald-500" : "bg-muted/50 border-primary/20 text-muted-foreground"}`}
-                >
-                  <Zap className="size-5" />
+                <div className="relative">
+                  <div
+                    className={`relative z-10 p-2.5 rounded-sm border ${dispatchStep >= 2 ? "bg-emerald-500/10 border-emerald-500 text-emerald-500" : "bg-muted/50 border-primary/20 text-muted-foreground"}`}
+                  >
+                    <Zap className="size-5" />
+                  </div>
+                  {/* Connector line 2 */}
+                  <div className="absolute top-[calc(100%-1px)] left-1/2 -translate-x-1/2 w-[1px] h-[34px] bg-border/20 z-0 overflow-hidden">
+                    {dispatchStep >= 2 && (
+                      <motion.div
+                        className="w-full bg-emerald-500"
+                        initial={{ height: 0 }}
+                        animate={{ height: "100%" }}
+                        transition={{ duration: 1 }}
+                      />
+                    )}
+                  </div>
                 </div>
                 <div className="flex-1">
                   <div className="text-xs font-bold text-foreground">
@@ -211,24 +225,14 @@ export function DispatchClient() {
                 </div>
               </div>
 
-              {/* Connector line 2 */}
-              <div className="absolute left-[19px] top-[90px] w-[1px] h-[34px] bg-border/20">
-                {dispatchStep >= 2 && (
-                  <motion.div
-                    className="w-full bg-emerald-500"
-                    initial={{ height: 0 }}
-                    animate={{ height: "100%" }}
-                    transition={{ duration: 1 }}
-                  />
-                )}
-              </div>
-
               {/* Step 3: Broadcast */}
               <div className="flex items-center gap-4">
-                <div
-                  className={`p-2.5 rounded-sm border ${dispatchStep >= 3 ? "bg-cyan-500/10 border-cyan-500 text-cyan-500" : "bg-muted/50 border-primary/20 text-muted-foreground"}`}
-                >
-                  <Send className="size-5 animate-pulse" />
+                <div className="relative">
+                  <div
+                    className={`relative z-10 p-2.5 rounded-sm border ${dispatchStep >= 3 ? "bg-cyan-500/10 border-cyan-500 text-cyan-500" : "bg-muted/50 border-primary/20 text-muted-foreground"}`}
+                  >
+                    <Send className="size-5 animate-pulse" />
+                  </div>
                 </div>
                 <div className="flex-1">
                   <div className="text-xs font-bold text-foreground">

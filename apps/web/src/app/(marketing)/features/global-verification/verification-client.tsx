@@ -45,18 +45,23 @@ export function VerificationClient() {
     // Step 1: Trigger checks sequentially
     let i = 0;
     const interval = setInterval(() => {
+      const currentIndex = i;
       setNodes((prev) => {
         const next = [...prev];
         if (mode === "local") {
           // Only Singapore fails
-          if (i === 4) {
-            next[i] = { ...next[i], status: "DOWN", latency: 0 };
+          if (currentIndex === 4) {
+            next[currentIndex] = { ...next[currentIndex], status: "DOWN", latency: 0 };
           } else {
-            next[i] = { ...next[i], status: "UP", latency: Math.floor(Math.random() * 40) + 12 };
+            next[currentIndex] = {
+              ...next[currentIndex],
+              status: "UP",
+              latency: Math.floor(Math.random() * 40) + 12,
+            };
           }
         } else {
           // All nodes fail
-          next[i] = { ...next[i], status: "DOWN", latency: 0 };
+          next[currentIndex] = { ...next[currentIndex], status: "DOWN", latency: 0 };
         }
         return next;
       });
@@ -150,10 +155,10 @@ export function VerificationClient() {
                       style={{ transform: `rotate(${(angle * 180) / Math.PI + 90}deg)` }}
                     >
                       <line
-                        x1="0"
-                        y1="0"
-                        x2="0"
-                        y2={radius}
+                        x1="100"
+                        y1="100"
+                        x2="100"
+                        y2={100 + radius}
                         stroke="currentColor"
                         className={
                           node.status === "UP"
