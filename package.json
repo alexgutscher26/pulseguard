@@ -27,7 +27,8 @@
   },
   "type": "module",
   "scripts": {
-    "dev": "turbo dev",
+    "predev": "node scripts/sync-env.js",
+    "dev": "turbo dev --filter=!@pulseguard/infra",
     "build": "turbo build",
     "check-types": "turbo check-types",
     "dev:native": "turbo -F native dev",

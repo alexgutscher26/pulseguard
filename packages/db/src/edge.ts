@@ -18,9 +18,9 @@ export const createPrisma = (databaseUrl?: string) => {
 
   const poolConfig: any = {
     connectionString: cleanUrl,
-    // Reduced to 3 to avoid pool exhaustion with many concurrent isolates/workers.
-    // Supabase Pooler (Supavisor) can be sensitive to many checkout attempts.
-    max: 3,
+    // Set max: 1 for edge workers to prevent stale connections from being reused in the pool.
+    // Since worker isolates run single-threaded, they only need 1 connection.
+    max: 1,
     // Release idle connections quickly in a serverless environment
     idleTimeoutMillis: 10_000,
     // Increase to 30s as default to handle cold-starts/latency spikes better
@@ -32,14 +32,19 @@ export const createPrisma = (databaseUrl?: string) => {
   }
 
   const pool = new Pool(poolConfig);
+  pool.on("error", (err) => {
+    console.error("[PG Pool Error] Unexpected error on idle client:", err.message);
+  });
   const adapter = new PrismaPg(pool);
 
   const isDev = typeof process !== "undefined" && process.env.NODE_ENV === "development";
 
-  return new PrismaClient({
+  const client = new PrismaClient({
     adapter,
     log: isDev ? ["query", "error", "warn"] : ["error"],
   });
+  (client as any).$pool = pool;
+  return client;
 };
 
 // Global type for singleton storage
@@ -67,12 +72,20 @@ export const resetPrisma = (databaseUrl?: string) => {
   if (databaseUrl) {
     if (g.instances!.has(databaseUrl)) {
       const client = g.instances!.get(databaseUrl);
-      client?.$disconnect().catch(() => {});
+      if (client) {
+        client.$disconnect().catch(() => {});
+        if ((client as any).$pool) {
+          (client as any).$pool.end().catch(() => {});
+        }
+      }
       g.instances!.delete(databaseUrl);
     }
   } else {
     if (g.prisma) {
       g.prisma.$disconnect().catch(() => {});
+      if ((g.prisma as any).$pool) {
+        (g.prisma as any).$pool.end().catch(() => {});
+      }
       g.prisma = undefined;
     }
   }

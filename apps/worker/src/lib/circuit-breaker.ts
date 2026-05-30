@@ -38,8 +38,12 @@ export class DatabaseCircuitBreaker {
 
       return "OPEN";
     } catch (err) {
-      // If Redis is down, we must still allow work. Default to CLOSED.
-      console.error(`[CircuitBreaker] Failed to fetch state from Redis:`, err);
+      // If Redis is unreachable (incl. wrangler dev local proxy errors), still allow work.
+      const errStr = String(err);
+      const isLocalProxyError = errStr.includes("1016") || errStr.includes("error code");
+      if (!isLocalProxyError) {
+        console.error(`[CircuitBreaker] Failed to fetch state from Redis:`, err);
+      }
       return "CLOSED";
     }
   }
@@ -67,7 +71,10 @@ export class DatabaseCircuitBreaker {
         await this.trip();
       }
     } catch (err) {
-      console.error(`[CircuitBreaker] Failed to record failure to Redis:`, err);
+      const errStr = String(err);
+      if (!errStr.includes("1016") && !errStr.includes("error code")) {
+        console.error(`[CircuitBreaker] Failed to record failure to Redis:`, err);
+      }
     }
   }
 
@@ -95,7 +102,10 @@ export class DatabaseCircuitBreaker {
         `[CircuitBreaker] CRITICAL: DB connection pool exhausted. Tripping circuit for ${this.RECOVERY_TIME}s.`,
       );
     } catch (err) {
-      console.error(`[CircuitBreaker] Failed to trip circuit in Redis:`, err);
+      const errStr = String(err);
+      if (!errStr.includes("1016") && !errStr.includes("error code")) {
+        console.error(`[CircuitBreaker] Failed to trip circuit in Redis:`, err);
+      }
     }
   }
 }

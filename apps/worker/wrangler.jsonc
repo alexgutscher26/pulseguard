@@ -8,13 +8,21 @@
   },
   "vars": {
     "NODE_ENV": "production",
-    "UPSTASH_REDIS_REST_URL": "",
-    "UPSTASH_REDIS_REST_TOKEN": "",
+    // UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN are set as Cloudflare Secrets
+    // Run: npx wrangler secret put UPSTASH_REDIS_REST_URL
+    // Run: npx wrangler secret put UPSTASH_REDIS_REST_TOKEN
     "SHARD_ID": 0,
     "TOTAL_SHARDS": 1,
   },
   "triggers": {
-    "crons": ["* * * * *", "*/5 * * * *", "0 * * * *", "0 0 * * *", "0 9 1 * *"],
+    "crons": ["* * * * *", "*/5 * * * *", "0 * * * *", "0 0 * * *"],
+  },
+  // Local dev config: connect to real remote bindings instead of local simulation
+  // This prevents "proxy request failed" errors when crons fire in wrangler dev
+  "dev": {
+    "remote": false,
+    "local_protocol": "http",
+    "upstream_protocol": "https",
   },
   "durable_objects": {
     "bindings": [
@@ -56,7 +64,7 @@
   "kv_namespaces": [
     {
       "binding": "DNS_CACHE",
-      "id": "dns-cache-kv",
+      "id": "433c972a19cf4eeb8318fa093548511b",
     },
   ],
   // Queues are dormant for Free Plan (Upgrade required)

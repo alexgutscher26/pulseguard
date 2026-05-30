@@ -281,6 +281,7 @@ async function broadcastLiveEvent(
   env: Env | undefined,
   monitorId: string,
   event: any,
+  ctx?: ExecutionContext,
 ): Promise<void> {
   if (!env?.MONITOR_CHANNEL) return;
 
@@ -290,8 +291,7 @@ async function broadcastLiveEvent(
     const stub = env.MONITOR_CHANNEL.get(id);
 
     // Send broadcast
-    // We don't await this to avoid blocking the check loop (fire and forget)
-    stub
+    const promise = stub
       .fetch("https://monitor-channel/broadcast", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -299,6 +299,12 @@ async function broadcastLiveEvent(
       })
       .then((r) => r.text())
       .catch((err) => console.error(`[MonitorChannel] Broadcast failed:`, err));
+
+    if (ctx) {
+      ctx.waitUntil(promise);
+    } else {
+      await promise;
+    }
   } catch (error) {
     console.error(`[MonitorChannel] Failed to setup broadcast:`, error);
   }
@@ -715,14 +721,19 @@ export async function processBatch(
       await persistUpdate();
 
       // BROADCAST LIVE EVENT
-      broadcastLiveEvent(env, monitor.id, {
-        type: "check_result",
-        monitorId: monitor.id,
-        status: currentStatus,
-        latency: latency,
-        region: "global", // Default for now, update if regional
-        timestamp: new Date().getTime(),
-      });
+      broadcastLiveEvent(
+        env,
+        monitor.id,
+        {
+          type: "check_result",
+          monitorId: monitor.id,
+          status: currentStatus,
+          latency: latency,
+          region: "global", // Default for now, update if regional
+          timestamp: new Date().getTime(),
+        },
+        ctx,
+      );
 
       // --- INCIDENT MANAGEMENT ---
       if (currentStatus === "DOWN" && !maintenanceActive) {
@@ -1262,15 +1273,7 @@ export default {
     console.log(`Cron triggered: ${event.cron}`);
     let prisma = getPrisma(env.DATABASE_URL);
 
-    // Monthly PDF Report Trigger
-    if (event.cron === "0 9 1 * *") {
-      console.log("Starting Monthly Report Job...");
-      ctx.waitUntil(
-        import("./services/reportGenerator")
-          .then((m) => m.generateAndSendMonthlyReports(prisma, env))
-          .catch((err) => console.error("Monthly Report Job Failed:", err)),
-      );
-    }
+
 
     // --- DATABASE SYNC: Restore data from Redis fallback if DB is healthy ---
     const { DatabaseCircuitBreaker } = await import("./lib/circuit-breaker");
@@ -1396,6 +1399,14 @@ export default {
       console.log(`Monitors processed successfully.`);
     } catch (error) {
       console.error("Error in scheduled handler:", error);
+    } finally {
+      try {
+        const { resetPrisma } = await import("@pulseguard/db");
+        resetPrisma(env.DATABASE_URL);
+        console.log("[Sync] Cleaned up database connection pool after cron execution.");
+      } catch (err) {
+        console.error("Failed to reset Prisma pool in finally:", err);
+      }
     }
   },
 

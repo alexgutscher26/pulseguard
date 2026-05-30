@@ -1,7 +1,5 @@
 import { Resend } from "resend";
-import { renderToStream } from "@react-pdf/renderer";
 import React from "react";
-import { MonthlyReportDocument } from "./templates/MonthlyReport";
 
 let resendClient: Resend | null = null;
 
@@ -250,9 +248,9 @@ export async function sendStatusUpdate(
   }
 }
 
-export { MonthlyReportDocument } from "./templates/MonthlyReport";
-
 export async function renderMonthlyReportToBuffer(stats: any): Promise<Buffer> {
+  const { renderToStream } = await import("@react-pdf/renderer");
+  const { MonthlyReportDocument } = await import("./templates/MonthlyReport");
   const stream = await renderToStream(React.createElement(MonthlyReportDocument, { stats }) as any);
   const chunks: Uint8Array[] = [];
   // @ts-ignore - ReadableStream iteration
