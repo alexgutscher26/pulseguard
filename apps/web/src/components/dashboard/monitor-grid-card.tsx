@@ -73,15 +73,20 @@ export function MonitorGridCard({
 
   // Mini Sparkline SVG path generator
   const generateSparkline = () => {
-    if (latencies.length < 2) return "";
+    if (latencies.length === 0) return "";
     const points = [...latencies].reverse();
-    const max = Math.max(...points, 100);
-    const min = Math.min(...points, 0);
-    const range = max - min || 1;
-
     const width = size === "2x1" ? 220 : 380;
     const height = 60;
     const padding = 5;
+
+    if (points.length === 1) {
+      const y = height / 2;
+      return `M ${padding} ${y} H ${width - padding}`;
+    }
+
+    const max = Math.max(...points, 100);
+    const min = Math.min(...points, 0);
+    const range = max - min || 1;
 
     const pointsList = points.map((l, i) => {
       const x = (i / (points.length - 1)) * (width - padding * 2) + padding;
@@ -100,6 +105,7 @@ export function MonitorGridCard({
   };
 
   const sparklinePath = generateSparkline();
+  const sparklineAreaPath = sparklinePath ? `${sparklinePath} V 60 H 5 Z` : "";
 
   // Status-based colors
   const statusColor =
@@ -241,6 +247,23 @@ export function MonitorGridCard({
           <div className="flex-1 max-w-[50%] h-[60px] relative">
             {sparklinePath ? (
               <svg className="w-full h-full overflow-visible" viewBox="0 0 220 60">
+                <defs>
+                  <linearGradient id={`grad-2x1-${monitor.id}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="currentColor" stopOpacity="0.2" />
+                    <stop offset="100%" stopColor="currentColor" stopOpacity="0.0" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d={sparklineAreaPath}
+                  fill={`url(#grad-2x1-${monitor.id})`}
+                  className={
+                    monitor.status === "UP"
+                      ? "text-emerald-500"
+                      : monitor.status === "DOWN"
+                        ? "text-red-500"
+                        : "text-amber-500"
+                  }
+                />
                 <path
                   d={sparklinePath}
                   fill="none"
@@ -286,6 +309,23 @@ export function MonitorGridCard({
           <div className="flex-1 min-h-[100px] h-full relative">
             {sparklinePath ? (
               <svg className="w-full h-full overflow-visible" viewBox="0 0 380 60">
+                <defs>
+                  <linearGradient id={`grad-2x2-${monitor.id}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="currentColor" stopOpacity="0.2" />
+                    <stop offset="100%" stopColor="currentColor" stopOpacity="0.0" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d={sparklineAreaPath}
+                  fill={`url(#grad-2x2-${monitor.id})`}
+                  className={
+                    monitor.status === "UP"
+                      ? "text-emerald-500"
+                      : monitor.status === "DOWN"
+                        ? "text-red-500"
+                        : "text-amber-500"
+                  }
+                />
                 <path
                   d={sparklinePath}
                   fill="none"

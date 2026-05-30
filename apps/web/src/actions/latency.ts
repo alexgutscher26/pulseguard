@@ -37,12 +37,62 @@ export async function getMonitorLatencyHistory(
     },
   });
 
-  // Transform for client
-  return aggregates.map((agg) => ({
-    timestamp: agg.timestamp.toISOString(),
-    avgLatency: agg.avgLatency,
-    minLatency: agg.minLatency,
-    maxLatency: agg.maxLatency,
-    p95Latency: agg.p95Latency,
-  }));
+  if (aggregates.length > 0) {
+    // Transform for client
+    return aggregates.map((agg) => ({
+      timestamp: agg.timestamp.toISOString(),
+      avgLatency: agg.avgLatency,
+      minLatency: agg.minLatency,
+      maxLatency: agg.maxLatency,
+      p95Latency: agg.p95Latency,
+    }));
+  }
+
+  // Fallback: Query raw MonitorEvents for the last 24 hours (helpful in local dev where aggregates aren't cron-created)
+  const events = await prisma.monitorEvent.findMany({
+    where: {
+      monitorId: monitorId,
+      timestamp: {
+        gte: past24h,
+      },
+      status: "UP", // Only average/min/max of successful checks
+    },
+    orderBy: {
+      timestamp: "asc",
+    },
+    select: {
+      timestamp: true,
+      latency: true,
+    },
+  });
+
+  const groups = new Map<string, number[]>();
+  for (const event of events) {
+    const date = new Date(event.timestamp);
+    date.setSeconds(0);
+    date.setMilliseconds(0);
+    const key = date.toISOString();
+    if (!groups.has(key)) {
+      groups.set(key, []);
+    }
+    groups.get(key)!.push(event.latency);
+  }
+
+  const result: LatencyDataPoint[] = [];
+  for (const [timestamp, lats] of groups.entries()) {
+    const avg = lats.reduce((a, b) => a + b, 0) / lats.length;
+    const min = Math.min(...lats);
+    const max = Math.max(...lats);
+    const sorted = [...lats].sort((a, b) => a - b);
+    const p95 = sorted[Math.floor(sorted.length * 0.95)] || avg;
+
+    result.push({
+      timestamp,
+      avgLatency: avg,
+      minLatency: min,
+      maxLatency: max,
+      p95Latency: p95,
+    });
+  }
+  return result;
 }

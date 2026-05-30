@@ -10,7 +10,12 @@ import { MonitorStatsGrid } from "@/components/monitors/details/stats-grid";
 import { MonitorCharts } from "@/components/monitors/details/charts";
 import { IncidentHistory } from "@/components/monitors/details/incident-history";
 import { LatencyHeatmap } from "@/components/monitors/latency";
-import { ResponseTimeChart } from "@/components/charts/response-time-chart";
+import dynamic from "next/dynamic";
+
+const ResponseTimeChart = dynamic(
+  () => import("@/components/charts/response-time-chart").then((mod) => mod.ResponseTimeChart),
+  { ssr: false }
+);
 import { SlaReportView } from "@/components/monitors/details/sla-report-view";
 import { ChevronLeft, Play, Loader2, Settings, Download } from "lucide-react";
 import Link from "next/link";
