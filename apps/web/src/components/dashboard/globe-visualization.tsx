@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { Globe, MapPin, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getSessionToken } from "@/actions/monitors";
 
 interface GlobeVisualizationProps {
   monitors: any[];
@@ -47,51 +48,63 @@ export function GlobeVisualization({ monitors }: GlobeVisualizationProps) {
   useEffect(() => {
     if (!isOpen || monitors.length === 0) return;
 
-    // Determine WebSocket base URL
-    let wsBaseUrl = process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";
-    if (wsBaseUrl.startsWith("http://")) {
-      wsBaseUrl = wsBaseUrl.replace("http://", "ws://");
-    } else if (wsBaseUrl.startsWith("https://")) {
-      wsBaseUrl = wsBaseUrl.replace("https://", "wss://");
-    } else if (!wsBaseUrl.includes("://")) {
-      const protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
-      wsBaseUrl = `${protocol}${wsBaseUrl}`;
-    }
-
+    let active = true;
     const sockets: WebSocket[] = [];
 
-    monitors.forEach((monitor: any) => {
-      try {
-        const url = `${wsBaseUrl}/ws/monitors/${monitor.id}`;
-        const ws = new WebSocket(url);
+    async function initWebSockets() {
+      const token = await getSessionToken();
+      if (!active) return;
 
-        ws.onmessage = (event) => {
-          try {
-            const data = JSON.parse(event.data);
-            if (data.type === "check_result") {
-              const regionName = data.region || "global";
-              eventQueueRef.current.push({
-                region: regionName,
-                status: data.status,
-                latency: data.latency,
-              });
-
-              // Add alert log message temporarily to states
-              const checkMsg = `[MATRIX] Event: ${monitor.name} (${monitor.id.substring(0, 8)}) pinged ${dataRegionCode(regionName)}: ${data.status} (${data.latency}ms)`;
-              setActiveChecks((prev) => [checkMsg, ...prev].slice(0, 4));
-            }
-          } catch {
-            // Silently catch parsing failures
-          }
-        };
-
-        sockets.push(ws);
-      } catch (err) {
-        console.warn("Failed to open WebSocket in Globe Visualization:", monitor.id, err);
+      // Determine WebSocket base URL
+      let wsBaseUrl = process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";
+      if (wsBaseUrl.startsWith("http://")) {
+        wsBaseUrl = wsBaseUrl.replace("http://", "ws://");
+      } else if (wsBaseUrl.startsWith("https://")) {
+        wsBaseUrl = wsBaseUrl.replace("https://", "wss://");
+      } else if (!wsBaseUrl.includes("://")) {
+        const protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+        wsBaseUrl = `${protocol}${wsBaseUrl}`;
       }
-    });
+
+      monitors.forEach((monitor: any) => {
+        try {
+          const urlObj = new URL(`${wsBaseUrl}/ws/monitors/${monitor.id}`);
+          if (token) {
+            urlObj.searchParams.set("token", token);
+          }
+          const ws = new WebSocket(urlObj.toString());
+
+          ws.onmessage = (event) => {
+            try {
+              const data = JSON.parse(event.data);
+              if (data.type === "check_result") {
+                const regionName = data.region || "global";
+                eventQueueRef.current.push({
+                  region: regionName,
+                  status: data.status,
+                  latency: data.latency,
+                });
+
+                // Add alert log message temporarily to states
+                const checkMsg = `[MATRIX] Event: ${monitor.name} (${monitor.id.substring(0, 8)}) pinged ${dataRegionCode(regionName)}: ${data.status} (${data.latency}ms)`;
+                setActiveChecks((prev) => [checkMsg, ...prev].slice(0, 4));
+              }
+            } catch {
+              // Silently catch parsing failures
+            }
+          };
+
+          sockets.push(ws);
+        } catch (err) {
+          console.warn("Failed to open WebSocket in Globe Visualization:", monitor.id, err);
+        }
+      });
+    }
+
+    initWebSockets();
 
     return () => {
+      active = false;
       sockets.forEach((ws) => {
         ws.onmessage = null;
         ws.close();

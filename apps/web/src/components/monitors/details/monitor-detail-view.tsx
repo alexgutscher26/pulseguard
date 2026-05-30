@@ -14,7 +14,7 @@ import dynamic from "next/dynamic";
 
 const ResponseTimeChart = dynamic(
   () => import("@/components/charts/response-time-chart").then((mod) => mod.ResponseTimeChart),
-  { ssr: false }
+  { ssr: false },
 );
 import { SlaReportView } from "@/components/monitors/details/sla-report-view";
 import { ChevronLeft, Play, Loader2, Settings, Download } from "lucide-react";

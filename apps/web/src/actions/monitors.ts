@@ -1,12 +1,13 @@
 "use server";
 
 import { env } from "@pulseguard/env/server";
+import net from "net";
 
 import prisma from "@pulseguard/db";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { auth } from "@pulseguard/auth";
-import { headers } from "next/headers";
+import { headers, cookies } from "next/headers";
 import { sendMonitorAlert, type MonitorAlertData } from "@pulseguard/email";
 
 // Helper Types for Incident Management
@@ -565,17 +566,57 @@ export async function checkMonitor(
         errorReason = `Worker HTTP ${response.status}: ${text.substring(0, 50)}`;
       }
     } else {
-      const response = await fetch(monitor.url, {
-        method: "GET",
-        headers: {
-          "User-Agent": "PulseGuard-Monitor/1.0",
-          Accept: "*/*",
-        },
-        signal: AbortSignal.timeout((monitor.timeout || 10) * 1000),
-      });
+      if (monitor.url.startsWith("ping://") || monitor.url.startsWith("tcp://")) {
+        const isPing = monitor.url.startsWith("ping://");
+        const part = monitor.url.replace(isPing ? "ping://" : "tcp://", "");
+        const [hostname, portStr] = part.split(":");
+        const port = isPing ? 80 : parseInt(portStr);
 
-      latency = Date.now() - start;
-      currentStatus = response.ok ? "UP" : "DOWN";
+        if (!hostname || (isNaN(port) && !isPing)) {
+          throw new Error("Invalid host or port in URL");
+        }
+
+        await new Promise<void>((resolve, reject) => {
+          const socket = net.connect({
+            host: hostname,
+            port: port,
+          });
+
+          socket.setTimeout((monitor.timeout || 10) * 1000);
+
+          socket.on("connect", () => {
+            currentStatus = "UP";
+            socket.end();
+            resolve();
+          });
+
+          socket.on("timeout", () => {
+            socket.destroy();
+            reject(new Error("TIMEOUT"));
+          });
+
+          socket.on("error", (err) => {
+            socket.destroy();
+            reject(err);
+          });
+        });
+
+        latency = Math.round(Date.now() - start);
+      } else if (monitor.url.startsWith("http://") || monitor.url.startsWith("https://")) {
+        const response = await fetch(monitor.url, {
+          method: "GET",
+          headers: {
+            "User-Agent": "PulseGuard-Monitor/1.0",
+            Accept: "*/*",
+          },
+          signal: AbortSignal.timeout((monitor.timeout || 10) * 1000),
+        });
+
+        latency = Math.round(Date.now() - start);
+        currentStatus = response.ok ? "UP" : "DOWN";
+      } else {
+        throw new Error(`Unsupported protocol in URL: ${monitor.url}`);
+      }
     }
   } catch (err: any) {
     console.error(`Error checking ${monitor.url}:`, err);
@@ -719,6 +760,28 @@ export async function checkMonitor(
       console.error("Failed to process incidents/notifications in manual check:", notifError);
     }
     // -----------------------------------------------------
+
+    // Broadcast live event to worker
+    try {
+      const workerUrl = process.env.PULSEGUARD_WORKER_URL || "http://localhost:8787";
+      await fetch(`${workerUrl}/api/broadcast`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          monitorId: monitor.id,
+          event: {
+            type: "check_result",
+            monitorId: monitor.id,
+            status: currentStatus,
+            latency: latency,
+            region: "global",
+            timestamp: Date.now(),
+          },
+        }),
+      }).catch((e) => console.warn("Failed to send broadcast to worker:", e));
+    } catch (e) {
+      console.warn("Failed to broadcast check event:", e);
+    }
 
     revalidatePath(`/dashboard/monitors/${id}`);
     revalidatePath("/dashboard/monitors");
@@ -1136,4 +1199,16 @@ export async function dismissInsight(id: string) {
     console.error("Failed to dismiss insight", error);
     return { success: false, error: "Failed to dismiss insight" };
   }
+}
+
+/**
+ * Retrieve the current session token to authenticate WebSockets
+ */
+export async function getSessionToken() {
+  const cookieStore = await cookies();
+  const token =
+    cookieStore.get("better-auth.session_token")?.value ||
+    cookieStore.get("__Secure-better-auth.session_token")?.value ||
+    null;
+  return token;
 }

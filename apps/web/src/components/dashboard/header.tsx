@@ -111,7 +111,10 @@ export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = 
         {/* User Menu */}
         <div className="flex items-center gap-3 border-l border-border pl-2 md:pl-6 h-8">
           <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-3 outline-none group cursor-pointer">
+            <DropdownMenuTrigger
+              id="user-menu-trigger"
+              className="flex items-center gap-3 outline-none group cursor-pointer"
+            >
               {/* User Name - Desktop Only */}
               <div className="text-right hidden lg:block">
                 <p className="text-xs text-foreground font-bold leading-tight">

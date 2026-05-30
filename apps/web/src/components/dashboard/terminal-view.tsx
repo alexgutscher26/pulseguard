@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getMonitors, checkMonitor } from "@/actions/monitors";
+import { getMonitors, checkMonitor, getSessionToken } from "@/actions/monitors";
 import { getMonitorLatencyHistory } from "@/actions/latency";
 import { useTerminalStore } from "@/hooks/use-terminal-store";
 import { X, Terminal, ArrowRight, CornerDownLeft } from "lucide-react";
@@ -110,44 +110,56 @@ export function TerminalView() {
   useEffect(() => {
     if (!isTerminalMode || monitors.length === 0) return;
 
-    // Determine WebSocket base URL
-    let wsBaseUrl = WORKER_URL;
-    if (wsBaseUrl.startsWith("http://")) {
-      wsBaseUrl = wsBaseUrl.replace("http://", "ws://");
-    } else if (wsBaseUrl.startsWith("https://")) {
-      wsBaseUrl = wsBaseUrl.replace("https://", "wss://");
-    } else if (!wsBaseUrl.includes("://")) {
-      const protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
-      wsBaseUrl = `${protocol}${wsBaseUrl}`;
-    }
-
+    let active = true;
     const sockets: WebSocket[] = [];
 
-    monitors.forEach((monitor: any) => {
-      try {
-        const url = `${wsBaseUrl}/ws/monitors/${monitor.id}`;
-        const ws = new WebSocket(url);
+    async function init() {
+      const token = await getSessionToken();
+      if (!active) return;
 
-        ws.onmessage = (event) => {
-          try {
-            const data = JSON.parse(event.data);
-            if (data.type === "check_result") {
-              const time = getTimestamp();
-              const logText = `[STREAM] Target "${monitor.name}" (${monitor.id.substring(0, 8)}) check: ${data.status} (${data.latency}ms) [Region: ${data.region || "Global"}]`;
-              setHistory((prev) => [...prev, { text: logText, type: "stream", timestamp: time }]);
-            }
-          } catch {
-            // Silently catch parsing failures
-          }
-        };
-
-        sockets.push(ws);
-      } catch (err) {
-        console.warn("Failed to open WebSocket in Terminal Mode:", monitor.id, err);
+      // Determine WebSocket base URL
+      let wsBaseUrl = WORKER_URL;
+      if (wsBaseUrl.startsWith("http://")) {
+        wsBaseUrl = wsBaseUrl.replace("http://", "ws://");
+      } else if (wsBaseUrl.startsWith("https://")) {
+        wsBaseUrl = wsBaseUrl.replace("https://", "wss://");
+      } else if (!wsBaseUrl.includes("://")) {
+        const protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+        wsBaseUrl = `${protocol}${wsBaseUrl}`;
       }
-    });
+
+      monitors.forEach((monitor: any) => {
+        try {
+          const urlObj = new URL(`${wsBaseUrl}/ws/monitors/${monitor.id}`);
+          if (token) {
+            urlObj.searchParams.set("token", token);
+          }
+          const ws = new WebSocket(urlObj.toString());
+
+          ws.onmessage = (event) => {
+            try {
+              const data = JSON.parse(event.data);
+              if (data.type === "check_result") {
+                const time = getTimestamp();
+                const logText = `[STREAM] Target "${monitor.name}" (${monitor.id.substring(0, 8)}) check: ${data.status} (${data.latency}ms) [Region: ${data.region || "Global"}]`;
+                setHistory((prev) => [...prev, { text: logText, type: "stream", timestamp: time }]);
+              }
+            } catch {
+              // Silently catch parsing failures
+            }
+          };
+
+          sockets.push(ws);
+        } catch (err) {
+          console.warn("Failed to open WebSocket in Terminal Mode:", monitor.id, err);
+        }
+      });
+    }
+
+    init();
 
     return () => {
+      active = false;
       sockets.forEach((ws) => {
         ws.onmessage = null;
         ws.close();

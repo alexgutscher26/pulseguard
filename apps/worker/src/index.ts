@@ -1033,6 +1033,43 @@ export default {
         }
       }
 
+      // API Route: /api/broadcast
+      if (url.pathname === "/api/broadcast" && request.method === "POST") {
+        try {
+          const body: any = await request.json();
+          const { monitorId, event } = body;
+
+          if (!monitorId || !event) {
+            return new Response("Missing monitorId or event", { status: 400 });
+          }
+
+          // Forward to Durable Object
+          const id = env.MONITOR_CHANNEL.idFromName(monitorId);
+          const stub = env.MONITOR_CHANNEL.get(id);
+
+          await stub.fetch("https://monitor-channel/broadcast", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(event),
+          });
+
+          return new Response(JSON.stringify({ success: true }), {
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            },
+          });
+        } catch (err: any) {
+          return new Response(JSON.stringify({ error: err.message }), {
+            status: 500,
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            },
+          });
+        }
+      }
+
       // API Route: /api/dns-audit
       if (url.pathname === "/api/dns-audit" && request.method === "POST") {
         try {

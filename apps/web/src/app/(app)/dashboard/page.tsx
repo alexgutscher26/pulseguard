@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { getDashboardStats, getMonitors, getMonitorInsights } from "@/actions/monitors";
-import Dashboard from "./dashboard";
+import DashboardClient from "./dashboard-client";
 
 /**
  * Renders the Dashboard page after validating the user session.
@@ -29,5 +29,7 @@ export default async function DashboardPage() {
     getMonitorInsights(),
   ]);
 
-  return <Dashboard monitors={monitors} stats={stats} insights={insights} />;
+  return <DashboardClient monitors={monitors} stats={stats} insights={insights} />;
 }
+
+
