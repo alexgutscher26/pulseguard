@@ -351,7 +351,7 @@ export function VisualDiffComparator() {
                         title="Reference"
                       />
                       <div className="absolute bottom-4 left-4">
-                        <Badge className="bg-black/60 border-primary text-primary italic uppercase text-[8px]">
+                        <Badge className="bg-background/80 backdrop-blur-xs border border-primary/20 text-primary italic uppercase text-[8px]">
                           09:00 AM - REF_SNAPSHOT
                         </Badge>
                       </div>
@@ -366,7 +366,7 @@ export function VisualDiffComparator() {
                       <div className="absolute bottom-4 left-4">
                         <Badge
                           variant="destructive"
-                          className="bg-black/60 italic uppercase text-[8px]"
+                          className="bg-destructive/80 backdrop-blur-xs italic uppercase text-[8px]"
                         >
                           10:45 AM - DETECTED_DIFF
                         </Badge>

@@ -1,8 +1,4 @@
-import {
-  CheckCircle2,
-  Loader2,
-  ArrowUpRight,
-} from "lucide-react";
+import { CheckCircle2, Loader2, ArrowUpRight } from "lucide-react";
 import { LiveStatusDemo } from "./live-status-demo";
 import Link from "next/link";
 // aria-label placeholder

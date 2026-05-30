@@ -1,6 +1,22 @@
 "use client";
 
-import { Activity, Globe, Server, Clock, Save, X, Loader2, ChevronDown, Book, Plus, Trash2, Chrome, Layers, ArrowUp, ArrowDown } from "lucide-react";
+import {
+  Activity,
+  Globe,
+  Server,
+  Clock,
+  Save,
+  X,
+  Loader2,
+  ChevronDown,
+  Book,
+  Plus,
+  Trash2,
+  Chrome,
+  Layers,
+  ArrowUp,
+  ArrowDown,
+} from "lucide-react";
 import Link from "next/link";
 import { createMonitor, updateMonitor } from "@/actions/monitors";
 import { useActionState, useState } from "react";
@@ -35,10 +51,17 @@ interface MonitorFormProps {
 
 export function MonitorForm({ monitor }: MonitorFormProps) {
   const searchParams = useSearchParams();
-  const typeParam = searchParams.get("type")?.toUpperCase() as "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | null;
+  const typeParam = searchParams.get("type")?.toUpperCase() as
+    | "HTTP"
+    | "PING"
+    | "PORT"
+    | "BROWSER"
+    | "SEQUENCE"
+    | null;
 
   // Parse initial values
-  let initialType: "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" = monitor?.type || typeParam || "HTTP";
+  let initialType: "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" =
+    monitor?.type || typeParam || "HTTP";
   let initialUrl = monitor?.url || "";
   let initialPort = "";
   let initialRegions: string[] = [];
@@ -63,7 +86,9 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
     }
   }
 
-  const [monitorType, setMonitorType] = useState<"HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE">(initialType);
+  const [monitorType, setMonitorType] = useState<"HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE">(
+    initialType,
+  );
   const [selectedRegions, setSelectedRegions] = useState<string[]>(initialRegions);
   const [threshold, setThreshold] = useState(monitor?.alertThreshold || 1);
   const [runbookUrl, setRunbookUrl] = useState(monitor?.runbookUrl || "");
@@ -111,15 +136,21 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
   };
 
   // Sequence Steps State
-  const [sequenceSteps, setSequenceSteps] = useState<{
-    name: string;
-    method: string;
-    url: string;
-    headers: { key: string; value: string }[];
-    body: string;
-    assertions: { type: "status_code" | "body_contains" | "json_path"; path: string; value: string }[];
-    extractions: { name: string; source: "body" | "header"; path: string }[];
-  }[]>(() => {
+  const [sequenceSteps, setSequenceSteps] = useState<
+    {
+      name: string;
+      method: string;
+      url: string;
+      headers: { key: string; value: string }[];
+      body: string;
+      assertions: {
+        type: "status_code" | "body_contains" | "json_path";
+        path: string;
+        value: string;
+      }[];
+      extractions: { name: string; source: "body" | "header"; path: string }[];
+    }[]
+  >(() => {
     if (monitor?.type === "SEQUENCE" && monitor?.script) {
       try {
         const parsed = JSON.parse(monitor.script);
@@ -602,7 +633,8 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                     API Request Chain Steps
                   </label>
                   <p className="text-[9px] text-muted-foreground font-semibold uppercase mt-0.5 tracking-wider">
-                    Configure chained HTTP requests. Values starting with slash / append to the Target URL.
+                    Configure chained HTTP requests. Values starting with slash / append to the
+                    Target URL.
                   </p>
                 </div>
                 <button
@@ -676,7 +708,9 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                             className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-2.5 pr-8 text-foreground focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full appearance-none cursor-pointer"
                           >
                             {["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"].map((m) => (
-                              <option key={m} value={m} className="bg-popover text-foreground">{m}</option>
+                              <option key={m} value={m} className="bg-popover text-foreground">
+                                {m}
+                              </option>
                             ))}
                           </select>
                           <ChevronDown className="absolute top-3 right-2.5 size-3.5 text-muted-foreground/60 pointer-events-none" />
@@ -741,7 +775,9 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                             <button
                               type="button"
                               onClick={() => {
-                                const newHeaders = (step.headers || []).filter((_, idx) => idx !== hIdx);
+                                const newHeaders = (step.headers || []).filter(
+                                  (_, idx) => idx !== hIdx,
+                                );
                                 updateSequenceStep(sIdx, { headers: newHeaders });
                               }}
                               className="p-1.5 text-muted-foreground hover:text-red-500 transition-colors cursor-pointer"
@@ -777,7 +813,10 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                         <button
                           type="button"
                           onClick={() => {
-                            const newAssertions = [...(step.assertions || []), { type: "status_code", path: "", value: "200" }];
+                            const newAssertions = [
+                              ...(step.assertions || []),
+                              { type: "status_code", path: "", value: "200" },
+                            ];
                             updateSequenceStep(sIdx, { assertions: newAssertions });
                           }}
                           className="text-[9px] font-bold text-primary hover:underline uppercase tracking-wider transition-all cursor-pointer"
@@ -787,7 +826,10 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                       </div>
                       <div className="flex flex-col gap-2.5">
                         {(step.assertions || []).map((ast, aIdx) => (
-                          <div key={aIdx} className="grid grid-cols-12 gap-2 items-center animate-in fade-in duration-200">
+                          <div
+                            key={aIdx}
+                            className="grid grid-cols-12 gap-2 items-center animate-in fade-in duration-200"
+                          >
                             <div className="col-span-4 relative group/select">
                               <select
                                 value={ast.type}
@@ -798,13 +840,24 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                                 }}
                                 className="bg-accent/30 border border-border focus:border-primary/20 text-[11px] font-semibold rounded-lg p-2 pr-7 text-foreground focus:outline-none w-full appearance-none cursor-pointer"
                               >
-                                <option value="status_code" className="bg-popover text-foreground">Status Code</option>
-                                <option value="body_contains" className="bg-popover text-foreground">Body Contains</option>
-                                <option value="json_path" className="bg-popover text-foreground">JSON Path</option>
+                                <option value="status_code" className="bg-popover text-foreground">
+                                  Status Code
+                                </option>
+                                <option
+                                  value="body_contains"
+                                  className="bg-popover text-foreground"
+                                >
+                                  Body Contains
+                                </option>
+                                <option value="json_path" className="bg-popover text-foreground">
+                                  JSON Path
+                                </option>
                               </select>
                               <ChevronDown className="absolute top-2.5 right-2 size-3 text-muted-foreground/60 pointer-events-none" />
                             </div>
-                            <div className={`${ast.type === "json_path" ? "col-span-3" : "hidden"}`}>
+                            <div
+                              className={`${ast.type === "json_path" ? "col-span-3" : "hidden"}`}
+                            >
                               <input
                                 placeholder="JSON path (e.g. data.id)"
                                 value={ast.path}
@@ -816,7 +869,9 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                                 className="bg-accent/30 border border-border focus:border-primary/20 text-[11px] font-semibold rounded-lg p-2 text-foreground focus:outline-none w-full"
                               />
                             </div>
-                            <div className={`${ast.type === "json_path" ? "col-span-4" : "col-span-7"}`}>
+                            <div
+                              className={`${ast.type === "json_path" ? "col-span-4" : "col-span-7"}`}
+                            >
                               <input
                                 placeholder="Expected value (e.g. 200 or true)"
                                 value={ast.value}
@@ -832,7 +887,9 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                               <button
                                 type="button"
                                 onClick={() => {
-                                  const newAssertions = (step.assertions || []).filter((_, idx) => idx !== aIdx);
+                                  const newAssertions = (step.assertions || []).filter(
+                                    (_, idx) => idx !== aIdx,
+                                  );
                                   updateSequenceStep(sIdx, { assertions: newAssertions });
                                 }}
                                 className="p-1 text-muted-foreground hover:text-red-500 transition-colors cursor-pointer"
@@ -854,7 +911,10 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                         <button
                           type="button"
                           onClick={() => {
-                            const newExtractions = [...(step.extractions || []), { name: "", source: "body", path: "" }];
+                            const newExtractions = [
+                              ...(step.extractions || []),
+                              { name: "", source: "body", path: "" },
+                            ];
                             updateSequenceStep(sIdx, { extractions: newExtractions });
                           }}
                           className="text-[9px] font-bold text-primary hover:underline uppercase tracking-wider transition-all cursor-pointer"
@@ -864,7 +924,10 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                       </div>
                       <div className="flex flex-col gap-2.5">
                         {(step.extractions || []).map((ext, eIdx) => (
-                          <div key={eIdx} className="grid grid-cols-12 gap-2 items-center animate-in fade-in duration-200">
+                          <div
+                            key={eIdx}
+                            className="grid grid-cols-12 gap-2 items-center animate-in fade-in duration-200"
+                          >
                             <div className="col-span-3">
                               <input
                                 placeholder="Var Name"
@@ -887,14 +950,22 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                                 }}
                                 className="bg-accent/30 border border-border focus:border-primary/20 text-[11px] font-semibold rounded-lg p-2 pr-7 text-foreground focus:outline-none w-full appearance-none cursor-pointer"
                               >
-                                <option value="body" className="bg-popover text-foreground">JSON Body</option>
-                                <option value="header" className="bg-popover text-foreground">Header</option>
+                                <option value="body" className="bg-popover text-foreground">
+                                  JSON Body
+                                </option>
+                                <option value="header" className="bg-popover text-foreground">
+                                  Header
+                                </option>
                               </select>
                               <ChevronDown className="absolute top-2.5 right-2 size-3 text-muted-foreground/60 pointer-events-none" />
                             </div>
                             <div className="col-span-5">
                               <input
-                                placeholder={ext.source === "body" ? "dot.path.key" : "header-key (e.g. Set-Cookie)"}
+                                placeholder={
+                                  ext.source === "body"
+                                    ? "dot.path.key"
+                                    : "header-key (e.g. Set-Cookie)"
+                                }
                                 value={ext.path}
                                 onChange={(e) => {
                                   const newExtractions = [...(step.extractions || [])];
@@ -908,7 +979,9 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                               <button
                                 type="button"
                                 onClick={() => {
-                                  const newExtractions = (step.extractions || []).filter((_, idx) => idx !== eIdx);
+                                  const newExtractions = (step.extractions || []).filter(
+                                    (_, idx) => idx !== eIdx,
+                                  );
                                   updateSequenceStep(sIdx, { extractions: newExtractions });
                                 }}
                                 className="p-1 text-muted-foreground hover:text-red-500 transition-colors cursor-pointer"
@@ -920,7 +993,6 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                         ))}
                       </div>
                     </div>
-
                   </div>
                 ))}
               </div>

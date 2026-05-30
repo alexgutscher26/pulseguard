@@ -81,7 +81,7 @@ export async function performBrowserCheck(
           // Wait for text to appear in body using standard page string expression evaluation
           await page.waitForFunction(
             `document.body.innerText.includes(${JSON.stringify(step.value)})`,
-            {}
+            {},
           );
           break;
 

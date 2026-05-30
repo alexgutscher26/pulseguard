@@ -117,7 +117,7 @@ export function HeaderAnalyzer() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40 group-focus-within:text-primary transition-colors" />
               <Input
                 placeholder="TARGET_URL (e.g. google.com)"
-                className="pl-10 h-12 bg-black/40 border-primary/20 font-mono text-sm focus-visible:ring-primary/40 focus-visible:border-primary/60"
+                className="pl-10 h-12 bg-background/50 border-primary/20 font-mono text-sm focus-visible:ring-primary/40 focus-visible:border-primary/60"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
               />
@@ -171,7 +171,7 @@ export function HeaderAnalyzer() {
           >
             {/* Summary Grade */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="col-span-1 border-primary/20 bg-black/60 shadow-2xl relative overflow-hidden flex flex-col items-center justify-center py-10">
+              <Card className="col-span-1 border-primary/20 bg-card/60 shadow-2xl relative overflow-hidden flex flex-col items-center justify-center py-10">
                 <div className="absolute top-4 left-4">
                   <Badge
                     variant="outline"
@@ -197,7 +197,7 @@ export function HeaderAnalyzer() {
                 </div>
               </Card>
 
-              <Card className="col-span-2 border-primary/20 bg-black/40 backdrop-blur-sm p-6 space-y-4">
+              <Card className="col-span-2 border-primary/20 bg-card/40 backdrop-blur-sm p-6 space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="font-mono text-sm uppercase tracking-widest text-primary/80">
                     Audit Executive Summary
@@ -261,7 +261,7 @@ export function HeaderAnalyzer() {
                   >
                     <Card
                       className={cn(
-                        "bg-black/40 border transition-colors",
+                        "bg-card/40 border transition-colors",
                         res.status === "SECURE"
                           ? "border-primary/20"
                           : res.status === "CRITICAL"
@@ -300,25 +300,25 @@ export function HeaderAnalyzer() {
                           </div>
                           <div className="min-w-[200px] text-right">
                             {res.value ? (
-                              <div className="text-[10px] font-mono text-foreground/40 bg-white/5 p-2 rounded truncate max-w-xs ml-auto">
+                              <div className="text-[10px] font-mono text-muted-foreground bg-muted p-2 rounded truncate max-w-xs ml-auto border border-border/50">
                                 {res.value}
                               </div>
                             ) : (
-                              <div className="text-[10px] font-mono text-red-500/60 uppercase">
+                              <div className="text-[10px] font-mono text-red-600 dark:text-red-400 font-semibold uppercase">
                                 Value Not Detected
                               </div>
                             )}
                           </div>
                         </div>
                         {res.recommendation && (
-                          <div className="mt-4 p-3 bg-red-500/5 border-l-2 border-red-500 rounded-sm">
+                          <div className="mt-4 p-3 bg-red-500/10 border-l-2 border-red-500 rounded-sm">
                             <div className="flex items-start gap-2">
                               <AlertTriangle className="w-3 h-3 text-red-500 mt-0.5 shrink-0" />
                               <div className="space-y-1">
                                 <p className="text-[10px] font-mono font-bold text-red-500 uppercase">
                                   Remediation Step:
                                 </p>
-                                <p className="text-[11px] font-mono text-red-200/60">
+                                <p className="text-[11px] font-mono text-red-700 dark:text-red-200">
                                   {res.recommendation}
                                 </p>
                               </div>
@@ -338,14 +338,14 @@ export function HeaderAnalyzer() {
                 <ChevronDown className="w-3 h-3 group-open:rotate-180 transition-transform" />
                 Dump Raw Headers
               </summary>
-              <div className="mt-4 p-6 bg-black rounded-lg border border-white/5 font-mono text-xs overflow-x-auto text-primary/80 leading-relaxed">
-                <div className="mb-4 text-foreground/40 italic">
+              <div className="mt-4 p-6 bg-muted rounded-lg border border-border font-mono text-xs overflow-x-auto text-foreground/85 leading-relaxed">
+                <div className="mb-4 text-muted-foreground/50 italic">
                   // Detected HTTP/1.1 or HTTP/2 response headers
                 </div>
                 {Object.entries(auditData.rawHeaders).map(([k, v]) => (
                   <div key={k} className="flex gap-4 mb-1">
                     <span className="text-primary font-bold min-w-[150px]">{k}:</span>
-                    <span className="text-foreground/60 break-all">{v}</span>
+                    <span className="text-muted-foreground break-all">{v}</span>
                   </div>
                 ))}
               </div>

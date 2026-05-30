@@ -117,7 +117,7 @@ export function DNSAnalyzer() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40 group-focus-within:text-primary transition-colors" />
               <Input
                 placeholder="TARGET_DOMAIN (e.g. cloudflare.com)"
-                className="pl-10 h-12 bg-black/40 border-primary/20 font-mono text-sm focus-visible:ring-primary/40"
+                className="pl-10 h-12 bg-background/50 border-primary/20 font-mono text-sm focus-visible:ring-primary/40"
                 value={domain}
                 onChange={(e) => setDomain(e.target.value)}
               />
@@ -180,7 +180,7 @@ export function DNSAnalyzer() {
           >
             {/* Summary Scoreboard */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <Card className="md:col-span-1 bg-black border border-primary/20 flex flex-col items-center justify-center py-12 relative overflow-hidden group">
+              <Card className="md:col-span-1 bg-card border border-primary/20 flex flex-col items-center justify-center py-12 relative overflow-hidden group">
                 <div className="absolute top-0 left-0 w-1 h-full bg-primary" />
                 <div className="text-[10px] font-mono text-primary/60 uppercase tracking-widest absolute top-4">
                   Integrity Level
@@ -210,11 +210,11 @@ export function DNSAnalyzer() {
                 ].map((stat) => (
                   <Card
                     key={stat.label}
-                    className="bg-white/5 border-primary/10 p-6 space-y-2 group hover:bg-white/10 transition-colors"
+                    className="bg-card/40 border border-primary/10 p-6 space-y-2 group hover:bg-card/60 transition-colors"
                   >
                     <div className="flex items-center gap-2">
                       {stat.icon}
-                      <span className="text-[10px] uppercase font-mono text-foreground/40 tracking-widest">
+                      <span className="text-[10px] uppercase font-mono text-muted-foreground tracking-widest">
                         {stat.label}
                       </span>
                     </div>
@@ -241,7 +241,7 @@ export function DNSAnalyzer() {
                   >
                     <Card
                       className={cn(
-                        "bg-black/60 border hover:shadow-[0_0_20px_rgba(34,197,94,0.05)] transition-all",
+                        "bg-card/60 border hover:shadow-[0_0_20px_rgba(34,197,94,0.05)] transition-all",
                         res.status === "SECURE"
                           ? "border-primary/20"
                           : res.status === "CRITICAL"
@@ -277,7 +277,7 @@ export function DNSAnalyzer() {
                             {res.desc}
                           </p>
                         </div>
-                        <div className="bg-white/5 p-3 rounded-lg border border-white/5 max-w-sm w-full truncate font-mono text-[11px] text-foreground/60 shadow-inner">
+                        <div className="bg-muted p-3 rounded-lg border border-border max-w-sm w-full truncate font-mono text-[11px] text-muted-foreground shadow-inner">
                           {res.value}
                         </div>
                       </div>

@@ -3,7 +3,15 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Globe, ShieldCheck, Zap, AlertTriangle, RefreshCw, CheckCircle2 } from "lucide-react";
+import {
+  ArrowLeft,
+  Globe,
+  ShieldCheck,
+  Zap,
+  AlertTriangle,
+  RefreshCw,
+  CheckCircle2,
+} from "lucide-react";
 import { motion } from "framer-motion";
 
 interface NodeState {
@@ -32,7 +40,7 @@ export function VerificationClient() {
     setOutcome("STANDBY");
 
     // Initialize all to waiting
-    setNodes(INITIAL_NODES.map(n => ({ ...n, status: "WAIT" })));
+    setNodes(INITIAL_NODES.map((n) => ({ ...n, status: "WAIT" })));
 
     // Step 1: Trigger checks sequentially
     let i = 0;
@@ -93,7 +101,8 @@ export function VerificationClient() {
           Global Verification
         </h1>
         <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
-          Zero false alarm consensus checking. Avoid alert fatigue by cross-referencing outages using multiple global vantage nodes before triggering high-priority pages.
+          Zero false alarm consensus checking. Avoid alert fatigue by cross-referencing outages
+          using multiple global vantage nodes before triggering high-priority pages.
         </p>
       </div>
 
@@ -136,7 +145,10 @@ export function VerificationClient() {
                     }}
                   >
                     {/* Visual connection line to center */}
-                    <svg className="absolute w-[200px] h-[200px] pointer-events-none -z-10 overflow-visible" style={{ transform: `rotate(${(angle * 180) / Math.PI + 90}deg)` }}>
+                    <svg
+                      className="absolute w-[200px] h-[200px] pointer-events-none -z-10 overflow-visible"
+                      style={{ transform: `rotate(${(angle * 180) / Math.PI + 90}deg)` }}
+                    >
                       <line
                         x1="0"
                         y1="0"
@@ -167,7 +179,11 @@ export function VerificationClient() {
                     >
                       <span className="text-[9px] font-bold">{node.code}</span>
                       <span className="text-[7px]">
-                        {node.status === "UP" ? `${node.latency}ms` : node.status === "DOWN" ? "FAIL" : "WAIT"}
+                        {node.status === "UP"
+                          ? `${node.latency}ms`
+                          : node.status === "DOWN"
+                            ? "FAIL"
+                            : "WAIT"}
                       </span>
                     </div>
                   </div>
@@ -225,7 +241,9 @@ export function VerificationClient() {
               )}
               {outcome === "FILTERED" && (
                 <div className="space-y-2 text-xs">
-                  <div className="text-emerald-400 font-bold">&gt; CONSENSUS EVALUATION COMPLETE</div>
+                  <div className="text-emerald-400 font-bold">
+                    &gt; CONSENSUS EVALUATION COMPLETE
+                  </div>
                   <div className="text-muted-foreground">
                     - NYC, LND, FRA, TYO status: UP (100.0%)
                     <br />- SIN status: DOWN (503 Service Unavailable)
@@ -234,7 +252,8 @@ export function VerificationClient() {
                     &gt; [LOCALIZED ANOMALY DETECTED - ROUTING IGNORED]
                   </div>
                   <div className="text-muted-foreground text-[10px]">
-                    Analysis: Connection failure isolated strictly to Singapore routing. Rest of global check nodes reported normal server status. Alert execution blocked.
+                    Analysis: Connection failure isolated strictly to Singapore routing. Rest of
+                    global check nodes reported normal server status. Alert execution blocked.
                   </div>
                 </div>
               )}
@@ -248,7 +267,8 @@ export function VerificationClient() {
                     &gt; [TRUE GLOBAL OUTAGE CONFIRMED]
                   </div>
                   <div className="text-muted-foreground text-[10px]">
-                    Analysis: Verified server failure across 5 global regions. consensus reached. Dispatching alert triggers to on-call targets.
+                    Analysis: Verified server failure across 5 global regions. consensus reached.
+                    Dispatching alert triggers to on-call targets.
                   </div>
                 </div>
               )}
@@ -270,7 +290,8 @@ export function VerificationClient() {
             Vantage Vantage Points
           </h3>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Checks are executed from distinct networks and physical centers, preventing false failures caused by localized cloud provider drops.
+            Checks are executed from distinct networks and physical centers, preventing false
+            failures caused by localized cloud provider drops.
           </p>
         </div>
         <div className="space-y-2">
@@ -279,7 +300,8 @@ export function VerificationClient() {
             Dynamic Voting Threshold
           </h3>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Configure how many regions must report failure before confirming an incident. Set strict 100% agreement or a simple majority vote.
+            Configure how many regions must report failure before confirming an incident. Set strict
+            100% agreement or a simple majority vote.
           </p>
         </div>
         <div className="space-y-2">
@@ -288,7 +310,8 @@ export function VerificationClient() {
             Trace Routing
           </h3>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            During failures, nodes capture traceroutes to identify exactly where the connection broke, helping your team diagnose external ISP problems.
+            During failures, nodes capture traceroutes to identify exactly where the connection
+            broke, helping your team diagnose external ISP problems.
           </p>
         </div>
       </div>

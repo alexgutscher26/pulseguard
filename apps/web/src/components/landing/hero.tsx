@@ -189,7 +189,9 @@ export default function Hero() {
               <div className="mt-4">
                 <div className="flex justify-between items-center text-[10px] text-muted-foreground font-semibold mb-2">
                   <span>30-DAY OPERATIONAL MATRIX</span>
-                  <span className="text-emerald-500 dark:text-emerald-400 font-bold">100.0% UPTIME</span>
+                  <span className="text-emerald-500 dark:text-emerald-400 font-bold">
+                    100.0% UPTIME
+                  </span>
                 </div>
                 {/* 30 green blocks */}
                 <div className="flex items-center gap-1">

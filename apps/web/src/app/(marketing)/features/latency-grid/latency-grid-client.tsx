@@ -106,7 +106,8 @@ export function LatencyGridClient() {
           Live Latency Grid
         </h1>
         <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
-          High-frequency checking from global edge centers. Measure server responsiveness, regional load times, and payload delivery sizes with millisecond precision.
+          High-frequency checking from global edge centers. Measure server responsiveness, regional
+          load times, and payload delivery sizes with millisecond precision.
         </p>
       </div>
 
@@ -122,7 +123,10 @@ export function LatencyGridClient() {
               </div>
               <h2 className="text-lg font-bold text-foreground mt-1 font-mono">{targetUrl}</h2>
             </div>
-            <Badge variant="outline" className="text-emerald-500 border-emerald-500/20 bg-emerald-500/5 font-mono uppercase text-[9px] tracking-widest animate-pulse">
+            <Badge
+              variant="outline"
+              className="text-emerald-500 border-emerald-500/20 bg-emerald-500/5 font-mono uppercase text-[9px] tracking-widest animate-pulse"
+            >
               {isScanning ? "Probing..." : "Active"}
             </Badge>
           </div>
@@ -156,7 +160,9 @@ export function LatencyGridClient() {
           {/* Action Trigger Form */}
           <form onSubmit={handleTest} className="flex gap-4 pt-4 border-t border-border/10">
             <div className="flex-1">
-              <label htmlFor="feature-url" className="sr-only">Test Target URL</label>
+              <label htmlFor="feature-url" className="sr-only">
+                Test Target URL
+              </label>
               <input
                 id="feature-url"
                 type="text"
@@ -183,7 +189,9 @@ export function LatencyGridClient() {
             <div className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest font-mono">
               Sentinel Attributes
             </div>
-            <h3 className="text-xl font-bold text-foreground">Continuous Monitoring Capabilities</h3>
+            <h3 className="text-xl font-bold text-foreground">
+              Continuous Monitoring Capabilities
+            </h3>
           </div>
 
           <div className="space-y-6 pt-4">
@@ -195,7 +203,8 @@ export function LatencyGridClient() {
               <div className="space-y-1">
                 <h4 className="text-sm font-bold text-foreground">High-Frequency Checks</h4>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Validate availability up to once every 10 seconds. Minimize detection delay and intercept incidents before users notice them.
+                  Validate availability up to once every 10 seconds. Minimize detection delay and
+                  intercept incidents before users notice them.
                 </p>
               </div>
             </div>
@@ -208,7 +217,8 @@ export function LatencyGridClient() {
               <div className="space-y-1">
                 <h4 className="text-sm font-bold text-foreground">Millisecond Resolution</h4>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Track response variations down to single milliseconds. Establish performance baselines and identify gradual network regressions.
+                  Track response variations down to single milliseconds. Establish performance
+                  baselines and identify gradual network regressions.
                 </p>
               </div>
             </div>
@@ -221,7 +231,8 @@ export function LatencyGridClient() {
               <div className="space-y-1">
                 <h4 className="text-sm font-bold text-foreground">Response Dissection</h4>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Inspect response payloads, return codes, and header structures. Confirm not just connectivity, but transaction integrity.
+                  Inspect response payloads, return codes, and header structures. Confirm not just
+                  connectivity, but transaction integrity.
                 </p>
               </div>
             </div>
@@ -235,7 +246,8 @@ export function LatencyGridClient() {
           Ready for Global Surveillance?
         </h3>
         <p className="text-xs text-muted-foreground leading-relaxed max-w-sm mx-auto">
-          Start monitoring your endpoints from all 10 regions instantly. Setup takes less than 2 minutes.
+          Start monitoring your endpoints from all 10 regions instantly. Setup takes less than 2
+          minutes.
         </p>
         <div className="flex justify-center gap-4">
           <Link
@@ -257,9 +269,19 @@ export function LatencyGridClient() {
 }
 
 // Simple Badge component
-function Badge({ children, className, variant }: { children: React.ReactNode; className?: string; variant?: string }) {
+function Badge({
+  children,
+  className,
+  variant,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  variant?: string;
+}) {
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${className}`}>
+    <span
+      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${className}`}
+    >
       {children}
     </span>
   );

@@ -4,7 +4,7 @@
   "compatibility_date": "2026-01-24",
   "compatibility_flags": ["nodejs_compat"],
   "browser": {
-    "binding": "BROWSER"
+    "binding": "BROWSER",
   },
   "vars": {
     "NODE_ENV": "production",

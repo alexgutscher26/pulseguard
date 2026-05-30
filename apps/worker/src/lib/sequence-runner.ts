@@ -52,7 +52,7 @@ function isAbsoluteUrl(url: string): boolean {
  */
 export async function performSequenceCheck(
   monitor: { url: string; script: string | null; timeout?: number },
-  _env?: any
+  _env?: any,
 ): Promise<{ status: "UP" | "DOWN"; latency: number; errorReason?: string }> {
   const steps: SequenceStep[] = JSON.parse(monitor.script || "[]");
   if (steps.length === 0) {
@@ -200,7 +200,9 @@ export async function performSequenceCheck(
               variables[extraction.name] = String(value);
             }
           } catch {
-            console.error(`[SequenceRunner] Extraction failed for variable ${extraction.name}: response is not valid JSON`);
+            console.error(
+              `[SequenceRunner] Extraction failed for variable ${extraction.name}: response is not valid JSON`,
+            );
           }
         } else if (extraction.source === "header") {
           const value = response.headers.get(extraction.path.toLowerCase());

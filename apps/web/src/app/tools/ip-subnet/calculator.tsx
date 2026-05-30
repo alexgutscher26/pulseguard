@@ -64,7 +64,7 @@ export function SubnetCalculator() {
                 <Input
                   value={ip}
                   onChange={(e) => setIp(e.target.value)}
-                  className="h-12 bg-black/60 border-primary/20 font-mono text-xl tracking-widest text-primary focus-visible:ring-primary/40 truncate"
+                  className="h-12 bg-background/50 border-primary/20 font-mono text-xl tracking-widest text-primary focus-visible:ring-primary/40 truncate"
                   placeholder="192.168.1.1"
                 />
               </div>
@@ -126,7 +126,7 @@ export function SubnetCalculator() {
               animate={{ opacity: 1, x: 0 }}
               className="grid grid-cols-1 md:grid-cols-2 gap-4"
             >
-              <Card className="bg-black/60 border-primary/20 p-6 space-y-4">
+              <Card className="bg-card/60 border-primary/20 p-6 space-y-4">
                 <div className="flex items-center gap-2 text-primary">
                   <Network className="w-4 h-4" />
                   <span className="text-[10px] uppercase font-mono font-bold tracking-widest">
@@ -142,9 +142,9 @@ export function SubnetCalculator() {
                   ].map((item) => (
                     <div
                       key={item.label}
-                      className="flex justify-between items-center border-b border-white/5 pb-2"
+                      className="flex justify-between items-center border-b border-border/50 pb-2"
                     >
-                      <div className="text-[9px] font-mono text-white/40 uppercase tracking-widest">
+                      <div className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest">
                         {item.label}
                       </div>
                       <div className="text-sm font-mono text-primary italic font-bold tracking-tight">
@@ -155,7 +155,7 @@ export function SubnetCalculator() {
                 </div>
               </Card>
 
-              <Card className="bg-black/60 border-primary/20 p-6 space-y-4">
+              <Card className="bg-card/60 border-primary/20 p-6 space-y-4">
                 <div className="flex items-center gap-2 text-primary">
                   <Layers className="w-4 h-4" />
                   <span className="text-[10px] uppercase font-mono font-bold tracking-widest">
@@ -166,25 +166,25 @@ export function SubnetCalculator() {
                   <div className="text-5xl font-mono font-black italic text-primary tracking-tighter">
                     {result.numHosts.toLocaleString()}
                   </div>
-                  <div className="text-[10px] uppercase tracking-widest text-foreground/40 font-bold">
+                  <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">
                     Allocatable Host nodes
                   </div>
                 </div>
-                <div className="flex justify-between items-center text-[10px] font-mono p-3 bg-white/5 rounded-lg border border-white/5">
-                  <div className="text-foreground/40 uppercase">Wildcard Mask</div>
+                <div className="flex justify-between items-center text-[10px] font-mono p-3 bg-muted rounded-lg border border-border">
+                  <div className="text-muted-foreground uppercase">Wildcard Mask</div>
                   <div className="text-primary italic font-bold">{result.wildcard}</div>
                 </div>
               </Card>
 
               {/* Binary matrix */}
-              <Card className="md:col-span-2 bg-black border border-primary/20 overflow-hidden relative group">
+              <Card className="md:col-span-2 bg-card border border-primary/20 overflow-hidden relative group">
                 {/* Scanning Line Animation */}
                 <motion.div
                   animate={{ top: ["0%", "100%", "0%"] }}
                   transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
                   className="absolute h-px w-full left-0 bg-primary/20 shadow-[0_0_10px_rgba(34,197,94,0.5)] z-20"
                 />
-                <div className="bg-white/5 p-4 border-b border-white/5 flex items-center justify-between">
+                <div className="bg-muted p-4 border-b border-border flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Terminal className="w-4 h-4 text-primary" />
                     <span className="text-[10px] uppercase font-mono font-bold tracking-[0.2em] text-primary">
@@ -201,7 +201,7 @@ export function SubnetCalculator() {
                 <div className="p-8 space-y-6 font-mono relative">
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <div className="text-[8px] text-white/30 uppercase tracking-[0.3em] font-bold">
+                      <div className="text-[8px] text-muted-foreground/60 uppercase tracking-[0.3em] font-bold">
                         Network bitset
                       </div>
                       <div className="text-primary tracking-[0.4em] font-black text-xs md:text-lg break-all">
@@ -209,7 +209,7 @@ export function SubnetCalculator() {
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <div className="text-[8px] text-white/30 uppercase tracking-[0.3em] font-bold">
+                      <div className="text-[8px] text-muted-foreground/60 uppercase tracking-[0.3em] font-bold">
                         Address bitset
                       </div>
                       <div className="text-primary/60 tracking-[0.4em] font-black text-xs md:text-lg break-all">
@@ -220,7 +220,7 @@ export function SubnetCalculator() {
                   <div className="p-4 bg-primary/5 rounded border border-primary/10 mt-6">
                     <div className="flex items-start gap-3">
                       <Info className="w-4 h-4 text-primary mt-1 shrink-0" />
-                      <p className="text-[10px] text-foreground/60 leading-relaxed uppercase tracking-tighter italic">
+                      <p className="text-[10px] text-muted-foreground leading-relaxed uppercase tracking-tighter italic">
                         The leading bits represent your network prefix. Host addresses are allocated
                         within the zero-bit space.
                       </p>

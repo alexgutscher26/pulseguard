@@ -539,7 +539,11 @@ export async function processBatch(
           let retryResult = await performCheck(monitor, env);
 
           // If still DOWN locally and it's an HTTP check, try from an external proxy (Region B)
-          if (retryResult.status === "DOWN" && monitor.url.startsWith("http") && monitor.type !== "BROWSER") {
+          if (
+            retryResult.status === "DOWN" &&
+            monitor.url.startsWith("http") &&
+            monitor.type !== "BROWSER"
+          ) {
             try {
               console.log(
                 `[MultiVector] Local check confirmed DOWN. Attempting fallback via Component 18-1-0 (Proxy Mesh)...`,
@@ -984,7 +988,7 @@ export default {
           if (!session?.userId) {
             return new Response(JSON.stringify({ error: "Unauthorized" }), {
               status: 401,
-              headers: { 
+              headers: {
                 "Content-Type": "application/json",
                 "Access-Control-Allow-Origin": "*",
               },
@@ -1002,7 +1006,7 @@ export default {
           if (!hasAccess) {
             return new Response(JSON.stringify({ error: "Forbidden" }), {
               status: 403,
-              headers: { 
+              headers: {
                 "Content-Type": "application/json",
                 "Access-Control-Allow-Origin": "*",
               },
@@ -1021,7 +1025,7 @@ export default {
         } catch (err: any) {
           return new Response(JSON.stringify({ error: err.message }), {
             status: 500,
-            headers: { 
+            headers: {
               "Content-Type": "application/json",
               "Access-Control-Allow-Origin": "*",
             },

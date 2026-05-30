@@ -5,16 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Terminal,
-  Loader2,
-  Lock,
-  ArrowRight,
-  CheckCircle2,
-  XCircle,
-  AlertTriangle,
-  Play,
-} from "lucide-react";
+import { Terminal, Loader2, Lock, CheckCircle2, XCircle, AlertTriangle, Play } from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -279,7 +270,6 @@ export function PortChecker() {
 
         {/* Batch Scanner (Gated) */}
         <Card className="border-border/50 bg-muted/20 relative overflow-hidden flex flex-col">
-
           <CardHeader>
             <CardTitle className="font-mono flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-yellow-500" />
@@ -291,8 +281,8 @@ export function PortChecker() {
           <CardContent className="flex-1 flex flex-col relative">
             <div
               className={cn(
-                "flex-1 bg-black/80 rounded-md p-4 font-mono text-xs text-green-500/80 mb-4 overflow-hidden min-h-[150px]",
-                "shadow-inner border border-white/10",
+                "flex-1 bg-zinc-950/90 rounded-md p-4 font-mono text-xs text-primary/80 mb-4 overflow-hidden min-h-[150px]",
+                "shadow-inner border border-primary/20",
               )}
             >
               {logs.map((log, i) => (
@@ -317,16 +307,18 @@ export function PortChecker() {
 
       {/* Unlock Dialog */}
       <Dialog open={gateOpen} onOpenChange={setGateOpen}>
-        <DialogContent className="dark sm:max-w-md bg-zinc-950 border-emerald-500/20 text-foreground font-mono">
+        <DialogContent className="sm:max-w-md bg-background/95 border-primary/20 text-foreground font-mono backdrop-blur-md">
           <DialogHeader>
-            <DialogTitle className="text-emerald-400 font-mono tracking-wider">AUTHENTICATION_REQUIRED</DialogTitle>
-            <DialogDescription className="text-zinc-400">
+            <DialogTitle className="text-primary font-mono tracking-wider">
+              AUTHENTICATION_REQUIRED
+            </DialogTitle>
+            <DialogDescription className="text-muted-foreground">
               Please identify yourself to access advanced scanning tools.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="email" className="uppercase text-xs text-zinc-400">
+              <Label htmlFor="email" className="uppercase text-xs text-muted-foreground">
                 Operator Email
               </Label>
               <Input
@@ -334,7 +326,7 @@ export function PortChecker() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="operator@system.com"
-                className="bg-zinc-900 border-zinc-800 text-zinc-100 placeholder:text-zinc-600 focus-visible:ring-emerald-500/50 focus-visible:border-emerald-500"
+                className="font-mono bg-background/50 border-primary/20 focus-visible:ring-primary"
               />
             </div>
           </div>
@@ -343,7 +335,7 @@ export function PortChecker() {
               type="button"
               onClick={handleUnlock}
               disabled={isEmailSubmitting}
-              className="w-full font-bold bg-emerald-600 hover:bg-emerald-500 text-white border-none"
+              className="w-full font-mono font-bold tracking-wider"
             >
               {isEmailSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               AUTHORIZE_ACCESS

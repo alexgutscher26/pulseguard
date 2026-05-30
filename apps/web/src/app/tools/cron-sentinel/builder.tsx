@@ -126,7 +126,7 @@ export function CronSentinel() {
                   <Input
                     value={cron}
                     onChange={(e) => setCron(e.target.value)}
-                    className="pl-10 h-14 bg-black/60 border-primary/20 font-mono text-xl tracking-widest text-primary focus-visible:ring-primary/40 focus-visible:border-primary/60"
+                    className="pl-10 h-14 bg-background/50 border-primary/20 font-mono text-xl tracking-widest text-primary focus-visible:ring-primary/40 focus-visible:border-primary/60"
                   />
                   <Button
                     variant="ghost"
@@ -194,8 +194,8 @@ export function CronSentinel() {
 
         {/* Right: Debugger/Timeline */}
         <div className="space-y-6">
-          <Card className="border-primary/20 bg-black/60 h-full overflow-hidden flex flex-col">
-            <CardHeader className="bg-white/5 border-b border-white/5">
+          <Card className="border border-primary/20 bg-card/60 h-full overflow-hidden flex flex-col">
+            <CardHeader className="bg-muted p-4 border-b border-border">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Play className="w-4 h-4 text-primary animate-pulse" />

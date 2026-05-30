@@ -3,14 +3,52 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Zap, Shield, AlertTriangle, Send, CheckCircle2, MessageSquare, PhoneCall, Mail } from "lucide-react";
+import {
+  ArrowLeft,
+  Zap,
+  Shield,
+  AlertTriangle,
+  Send,
+  CheckCircle2,
+  MessageSquare,
+  PhoneCall,
+  Mail,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const CHANNELS = [
-  { id: "webhook", name: "Custom Webhooks", icon: Send, color: "text-emerald-500", bg: "bg-emerald-500/5", desc: "Generic JSON payload POST delivery" },
-  { id: "slack", name: "Slack Channel", icon: MessageSquare, color: "text-cyan-500", bg: "bg-cyan-500/5", desc: "Interactive channel message posts" },
-  { id: "pagerduty", name: "PagerDuty Trigger", icon: PhoneCall, color: "text-amber-500", bg: "bg-amber-500/5", desc: "On-call rotation page alert dispatch" },
-  { id: "email", name: "Direct Mail", icon: Mail, color: "text-muted-foreground", bg: "bg-muted/10", desc: "Detailed HTML incident status report logs" },
+  {
+    id: "webhook",
+    name: "Custom Webhooks",
+    icon: Send,
+    color: "text-emerald-500",
+    bg: "bg-emerald-500/5",
+    desc: "Generic JSON payload POST delivery",
+  },
+  {
+    id: "slack",
+    name: "Slack Channel",
+    icon: MessageSquare,
+    color: "text-cyan-500",
+    bg: "bg-cyan-500/5",
+    desc: "Interactive channel message posts",
+  },
+  {
+    id: "pagerduty",
+    name: "PagerDuty Trigger",
+    icon: PhoneCall,
+    color: "text-amber-500",
+    bg: "bg-amber-500/5",
+    desc: "On-call rotation page alert dispatch",
+  },
+  {
+    id: "email",
+    name: "Direct Mail",
+    icon: Mail,
+    color: "text-muted-foreground",
+    bg: "bg-muted/10",
+    desc: "Detailed HTML incident status report logs",
+  },
 ];
 
 export function DispatchClient() {
@@ -111,7 +149,8 @@ export function DispatchClient() {
           Automated Dispatch
         </h1>
         <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
-          Zero delay integration pipeline. Automatically dispatch alerts, invoke custom webhooks, and page on-call engineering schedules the instant an outage signature is validated.
+          Zero delay integration pipeline. Automatically dispatch alerts, invoke custom webhooks,
+          and page on-call engineering schedules the instant an outage signature is validated.
         </p>
       </div>
 
@@ -128,7 +167,9 @@ export function DispatchClient() {
             <div className="space-y-8 relative">
               {/* Step 1: Sentinel Alert */}
               <div className="flex items-center gap-4">
-                <div className={`p-2.5 rounded-sm border ${dispatchStep >= 1 ? "bg-red-500/10 border-red-500 text-red-500 animate-pulse" : "bg-muted/10 border-border/30 text-muted-foreground"}`}>
+                <div
+                  className={`p-2.5 rounded-sm border ${dispatchStep >= 1 ? "bg-red-500/10 border-red-500 text-red-500 animate-pulse" : "bg-muted/10 border-border/30 text-muted-foreground"}`}
+                >
                   <AlertTriangle className="size-5" />
                 </div>
                 <div className="flex-1">
@@ -153,13 +194,19 @@ export function DispatchClient() {
 
               {/* Step 2: Assembly */}
               <div className="flex items-center gap-4">
-                <div className={`p-2.5 rounded-sm border ${dispatchStep >= 2 ? "bg-emerald-500/10 border-emerald-500 text-emerald-500" : "bg-muted/10 border-border/30 text-muted-foreground"}`}>
+                <div
+                  className={`p-2.5 rounded-sm border ${dispatchStep >= 2 ? "bg-emerald-500/10 border-emerald-500 text-emerald-500" : "bg-muted/10 border-border/30 text-muted-foreground"}`}
+                >
                   <Zap className="size-5" />
                 </div>
                 <div className="flex-1">
-                  <div className="text-xs font-bold text-foreground">Payload Assembly & Signing</div>
+                  <div className="text-xs font-bold text-foreground">
+                    Payload Assembly & Signing
+                  </div>
                   <div className="text-[10px] text-muted-foreground font-mono mt-0.5">
-                    {dispatchStep >= 2 ? "[Signature Generated: verified_sha256]" : "[Waiting for event...]"}
+                    {dispatchStep >= 2
+                      ? "[Signature Generated: verified_sha256]"
+                      : "[Waiting for event...]"}
                   </div>
                 </div>
               </div>
@@ -178,13 +225,19 @@ export function DispatchClient() {
 
               {/* Step 3: Broadcast */}
               <div className="flex items-center gap-4">
-                <div className={`p-2.5 rounded-sm border ${dispatchStep >= 3 ? "bg-cyan-500/10 border-cyan-500 text-cyan-500" : "bg-muted/10 border-border/30 text-muted-foreground"}`}>
+                <div
+                  className={`p-2.5 rounded-sm border ${dispatchStep >= 3 ? "bg-cyan-500/10 border-cyan-500 text-cyan-500" : "bg-muted/10 border-border/30 text-muted-foreground"}`}
+                >
                   <Send className="size-5 animate-pulse" />
                 </div>
                 <div className="flex-1">
-                  <div className="text-xs font-bold text-foreground">Multi-Channel Broadcasting</div>
+                  <div className="text-xs font-bold text-foreground">
+                    Multi-Channel Broadcasting
+                  </div>
                   <div className="text-[10px] text-muted-foreground font-mono mt-0.5">
-                    {dispatchStep >= 3 ? `[Broadcasting to ${selectedChannel.toUpperCase()}...]` : "[Waiting for payload...]"}
+                    {dispatchStep >= 3
+                      ? `[Broadcasting to ${selectedChannel.toUpperCase()}...]`
+                      : "[Waiting for payload...]"}
                   </div>
                 </div>
               </div>
@@ -193,7 +246,11 @@ export function DispatchClient() {
 
           <div className="pt-6 border-t border-border/10 flex items-center justify-between">
             <span className="text-[10px] font-mono text-muted-foreground">
-              {dispatchStep === 4 ? "✓ DISPATCH DISSEMINATED" : isDispatching ? "PROBING SIGNAL..." : "STANDBY"}
+              {dispatchStep === 4
+                ? "✓ DISPATCH DISSEMINATED"
+                : isDispatching
+                  ? "PROBING SIGNAL..."
+                  : "STANDBY"}
             </span>
             <button
               onClick={triggerDispatch}
@@ -247,7 +304,8 @@ export function DispatchClient() {
             Signed Webhooks
           </h3>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            All POST payload calls contain a custom sha256 signature header, allowing your endpoint to verify the integrity and origin of the request.
+            All POST payload calls contain a custom sha256 signature header, allowing your endpoint
+            to verify the integrity and origin of the request.
           </p>
         </div>
         <div className="space-y-2">
@@ -256,7 +314,8 @@ export function DispatchClient() {
             Retry Backoff
           </h3>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Automatic retry with exponential backoff ensures delivery even during temporary network interruptions on third-party webhook receivers.
+            Automatic retry with exponential backoff ensures delivery even during temporary network
+            interruptions on third-party webhook receivers.
           </p>
         </div>
         <div className="space-y-2">
@@ -265,7 +324,8 @@ export function DispatchClient() {
             Payload Customization
           </h3>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Customize JSON schemas to match your internal format requirements directly inside our integrations panel.
+            Customize JSON schemas to match your internal format requirements directly inside our
+            integrations panel.
           </p>
         </div>
       </div>

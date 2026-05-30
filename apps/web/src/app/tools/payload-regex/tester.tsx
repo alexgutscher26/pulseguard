@@ -129,7 +129,7 @@ export function PayloadTester() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40 group-focus-within/url:text-primary transition-colors" />
                 <Input
                   placeholder="TARGET_ENDPOINT (URL)"
-                  className="pl-10 bg-black/40 border-primary/20 font-mono text-sm focus-visible:ring-primary/40"
+                  className="pl-10 bg-background/50 border-primary/20 font-mono text-sm focus-visible:ring-primary/40"
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                 />
@@ -138,7 +138,7 @@ export function PayloadTester() {
                 <Code2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40 group-focus-within/pattern:text-primary transition-colors" />
                 <Input
                   placeholder="REGEX_SEQUENCE (e.g. <title>.*</title>)"
-                  className="pl-10 bg-black/40 border-primary/20 font-mono text-sm focus-visible:ring-primary/40"
+                  className="pl-10 bg-background/50 border-primary/20 font-mono text-sm focus-visible:ring-primary/40"
                   value={pattern}
                   onChange={(e) => setPattern(e.target.value)}
                 />
@@ -166,7 +166,7 @@ export function PayloadTester() {
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, y: 10 }}
-            className="flex flex-col items-center justify-center py-20 bg-black/20 border border-primary/10 rounded-xl space-y-8"
+            className="flex flex-col items-center justify-center py-20 bg-card/20 border border-primary/10 rounded-xl space-y-8"
           >
             <div className="flex gap-1">
               {[...Array(5)].map((_, i) => (
@@ -198,7 +198,7 @@ export function PayloadTester() {
           >
             {/* Summary Stats */}
             <div className="lg:col-span-1 space-y-6">
-              <Card className="bg-black/80 border-primary/30 relative overflow-hidden group">
+              <Card className="bg-card/80 border-primary/30 relative overflow-hidden group">
                 <div className="absolute top-0 right-0 w-20 h-20 bg-primary/10 rotate-45 translate-x-10 -translate-y-10 group-hover:bg-primary/20 transition-colors" />
                 <CardHeader className="pb-2">
                   <CardTitle className="text-xs uppercase font-mono text-primary/60 tracking-widest">
@@ -236,7 +236,7 @@ export function PayloadTester() {
                     </div>
                   </div>
 
-                  <div className="space-y-4 pt-4 border-t border-white/5">
+                  <div className="space-y-4 pt-4 border-t border-border">
                     {[
                       {
                         label: "Matches Identified",
@@ -256,9 +256,9 @@ export function PayloadTester() {
                     ].map((stat) => (
                       <div
                         key={stat.label}
-                        className="flex justify-between items-center bg-white/5 p-3 rounded hover:bg-white/10 transition-colors"
+                        className="flex justify-between items-center bg-muted/50 p-3 rounded hover:bg-muted transition-colors border border-border/30"
                       >
-                        <div className="flex items-center gap-2 text-[10px] font-mono uppercase text-foreground/60 tracking-wider">
+                        <div className="flex items-center gap-2 text-[10px] font-mono uppercase text-muted-foreground tracking-wider">
                           {stat.icon}
                           {stat.label}
                         </div>
@@ -287,7 +287,7 @@ export function PayloadTester() {
                   <div className="flex items-center gap-2 text-red-500 font-bold font-mono text-xs uppercase italic">
                     <AlertTriangle className="w-4 h-4" /> Error Log
                   </div>
-                  <p className="text-[11px] font-mono text-red-200/60 leading-relaxed">
+                  <p className="text-[11px] font-mono text-red-700 dark:text-red-300 leading-relaxed">
                     {result.errorMessage}
                   </p>
                 </Card>
@@ -296,8 +296,8 @@ export function PayloadTester() {
 
             {/* Payload Viewer */}
             <div className="lg:col-span-2">
-              <Card className="h-full border-primary/20 bg-black shadow-2xl overflow-hidden flex flex-col">
-                <div className="bg-white/5 p-3 flex items-center justify-between border-b border-primary/10">
+              <Card className="h-full border-primary/20 bg-card shadow-2xl overflow-hidden flex flex-col">
+                <div className="bg-muted p-3 flex items-center justify-between border-b border-primary/10">
                   <div className="flex items-center gap-2">
                     <Terminal className="w-4 h-4 text-primary" />
                     <span className="text-xs font-mono text-primary font-bold uppercase tracking-widest">
@@ -312,10 +312,8 @@ export function PayloadTester() {
                 </div>
                 <div
                   className={cn(
-                    "flex-1 p-6 font-mono text-xs overflow-auto relative custom-scrollbar transition-all duration-500",
-                    isIntegrityActive
-                      ? "bg-primary/5 text-primary brightness-125"
-                      : "text-primary/60",
+                    "flex-1 p-6 font-mono text-xs overflow-auto relative custom-scrollbar transition-all duration-500 bg-muted/20",
+                    isIntegrityActive ? "text-primary brightness-125" : "text-muted-foreground",
                   )}
                 >
                   {isIntegrityActive && (
@@ -389,7 +387,7 @@ export function PayloadTester() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl flex flex-col p-4 md:p-8"
+            className="fixed inset-0 z-50 bg-background/95 backdrop-blur-xl flex flex-col p-4 md:p-8"
           >
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center gap-4">
@@ -406,8 +404,8 @@ export function PayloadTester() {
                 [ESC] CLOSE
               </Button>
             </div>
-            <div className="flex-1 bg-black border border-primary/20 rounded-xl p-8 overflow-auto font-mono text-xs leading-loose custom-scrollbar">
-              <pre className="text-primary whitespace-pre-wrap break-all">{result.payload}</pre>
+            <div className="flex-1 bg-muted border border-primary/20 rounded-xl p-8 overflow-auto font-mono text-xs leading-loose custom-scrollbar">
+              <pre className="text-foreground whitespace-pre-wrap break-all">{result.payload}</pre>
             </div>
           </motion.div>
         )}
