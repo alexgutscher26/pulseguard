@@ -1,4 +1,4 @@
-"use client";
+"use client"; // active audit modification
 
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
