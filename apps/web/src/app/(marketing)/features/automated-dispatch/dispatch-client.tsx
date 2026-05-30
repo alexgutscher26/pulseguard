@@ -1,5 +1,6 @@
 "use client";
 // aria-label placeholder
+// Centered step connector lines
 
 import { useState } from "react";
 import Link from "next/link";
