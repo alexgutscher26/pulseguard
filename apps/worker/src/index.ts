@@ -125,8 +125,7 @@ async function performInternalRequest(
         redirect: "follow",
         headers: {
           // Use a descriptive bot UA — avoids empty UA blocks but identifies the monitor
-          "User-Agent":
-            "Mozilla/5.0 (compatible; PulseGuard/1.0; +https://pulseguard.io/bot)",
+          "User-Agent": "Mozilla/5.0 (compatible; PulseGuard/1.0; +https://pulseguard.io/bot)",
           Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
           "Accept-Language": "en-US,en;q=0.5",
           ...userHeaders,
@@ -1338,8 +1337,6 @@ export default {
   async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
     console.log(`Cron triggered: ${event.cron}`);
     let prisma = getPrisma(env.DATABASE_URL);
-
-
 
     // --- DATABASE SYNC: Restore data from Redis fallback if DB is healthy ---
     const { DatabaseCircuitBreaker } = await import("./lib/circuit-breaker");

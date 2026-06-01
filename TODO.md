@@ -116,7 +116,7 @@ Expand what PulseGuard can actually guard.
 
 ### 🕵️ Core Advanced Monitors
 
-- [ ] **Keyword & Payload Monitor**
+- [x] **Keyword & Payload Monitor**
   - Input: "Expected String" or "Forbidden String".
   - Logic: Fetch HTML -> Check `body.includes(string)`.
   - JSON Path Extraction: Verify specific JSON keys/values match assertions (e.g., `$.status === "healthy"`).

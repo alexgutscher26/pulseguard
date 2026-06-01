@@ -48,6 +48,14 @@ pub fn validate_payload(body: &str, status_code: u16, expectations_json: &str) -
         }
     }
 
+    if let Some(excludes) = expectations.get("body_excludes") {
+        if let Some(pattern) = excludes.as_str() {
+            if body.contains(pattern) {
+                return ValidationResult { success: false, error_message: Some("FORBIDDEN_STRING_FOUND".into()) };
+            }
+        }
+    }
+
     if let Some(regex_str) = expectations.get("body_regex") {
         if let Some(pattern) = regex_str.as_str() {
             let r = match Regex::new(pattern) {
@@ -60,26 +68,85 @@ pub fn validate_payload(body: &str, status_code: u16, expectations_json: &str) -
         }
     }
 
-    // 3. JSON Path Validation (Simplified helper)
-    // Expectation format: { "json_path": { "path.to.key": "expected_value" } }
-    if let Some(paths) = expectations.get("json_path") {
-       if let Some(map) = paths.as_object() {
-           let parsed_body: Value = match serde_json::from_str(body) {
-               Ok(v) => v,
-               Err(_) => return ValidationResult { success: false, error_message: Some("NOT_JSON".into()) },
-           };
-           
-           for (path, expected) in map {
-               let mut current = &parsed_body;
-               for part in path.split('.') {
-                   current = &current[part];
-               }
-               
-               if current.as_str() != expected.as_str() {
-                  return ValidationResult { success: false, error_message: Some(format!("JSON_VALUE_MISMATCH: {}", path)) };
+    // 3. JSON Path & Assertions Validation (Simplified helper)
+    if expectations.get("json_path").is_some() || expectations.get("json_assertions").is_some() {
+        let parsed_body: Value = match serde_json::from_str(body) {
+            Ok(v) => v,
+            Err(_) => return ValidationResult { success: false, error_message: Some("NOT_JSON".into()) },
+        };
+        
+        if let Some(paths) = expectations.get("json_path") {
+           if let Some(map) = paths.as_object() {
+               for (path, expected) in map {
+                   let mut current = &parsed_body;
+                   for part in path.split('.') {
+                       current = &current[part];
+                   }
+                   
+                   if current.as_str() != expected.as_str() {
+                      return ValidationResult { success: false, error_message: Some(format!("JSON_VALUE_MISMATCH: {}", path)) };
+                   }
                }
            }
-       }
+        }
+
+        if let Some(assertions) = expectations.get("json_assertions") {
+            if let Some(arr) = assertions.as_array() {
+                for item in arr {
+                    let path = item.get("path").and_then(|v| v.as_str()).unwrap_or("");
+                    let operator = item.get("operator").and_then(|v| v.as_str()).unwrap_or("==");
+                    let expected_val = item.get("value").map(|v| match v {
+                        Value::String(s) => s.clone(),
+                        Value::Bool(b) => b.to_string(),
+                        Value::Number(n) => n.to_string(),
+                        _ => v.to_string()
+                    }).unwrap_or_default();
+
+                    let mut clean_path = path;
+                    if clean_path.starts_with("$.") {
+                        clean_path = &clean_path[2..];
+                    } else if clean_path.starts_with('$') {
+                        clean_path = &clean_path[1..];
+                    }
+                    if clean_path.starts_with('.') {
+                        clean_path = &clean_path[1..];
+                    }
+
+                    let mut current = &parsed_body;
+                    if !clean_path.is_empty() {
+                        for part in clean_path.split('.') {
+                            current = &current[part];
+                        }
+                    }
+
+                    let actual_val = match current {
+                        Value::String(s) => s.clone(),
+                        Value::Bool(b) => b.to_string(),
+                        Value::Number(n) => n.to_string(),
+                        Value::Null => "null".to_string(),
+                        _ => current.to_string()
+                    };
+
+                    let matches = match operator {
+                        "==" | "===" | "equals" => actual_val == expected_val,
+                        "!=" | "!==" | "not_equals" => actual_val != expected_val,
+                        "contains" => actual_val.contains(&expected_val),
+                        "not_contains" => !actual_val.contains(&expected_val),
+                        _ => actual_val == expected_val,
+                    };
+
+                    if !matches {
+                        return ValidationResult {
+                            success: false,
+                            error_message: Some(format!(
+                                "JSON_ASSERT_FAIL: Path \"{}\" {} \"{}\" (Actual: \"{}\")",
+                                path, operator, expected_val, actual_val
+                            )),
+                        };
+                    }
+                }
+            }
+        }
     }
 
     ValidationResult { success: true, error_message: None }

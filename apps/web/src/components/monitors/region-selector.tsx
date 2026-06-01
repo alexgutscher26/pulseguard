@@ -50,7 +50,8 @@ export function RegionSelector({ selectedRegions, onChange }: RegionSelectorProp
       </label>
 
       <div className="text-sm text-primary/60 font-mono mb-2">
-        Select up to {MAX_REGIONS} regions to monitor your service from. Leave empty for single-region monitoring.
+        Select up to {MAX_REGIONS} regions to monitor your service from. Leave empty for
+        single-region monitoring.
       </div>
 
       {selectedRegions.length > MAX_REGIONS && (

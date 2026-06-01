@@ -50,6 +50,7 @@ const baseSchema = z.object({
   headers: z.string().optional(),
   body: z.string().optional(),
   script: z.string().optional(),
+  expectation: z.string().optional(),
 });
 
 const monitorSchema = baseSchema.superRefine((data, ctx) => {
@@ -221,6 +222,7 @@ export async function createMonitor(prevState: any, formData: FormData) {
       headers: (formData.get("headers") as string) || undefined,
       body: (formData.get("body") as string) || undefined,
       script: (formData.get("script") as string) || undefined,
+      expectation: (formData.get("expectation") as string) || undefined,
     };
 
     console.log("Creating monitor with data:", rawData);
@@ -259,6 +261,7 @@ export async function createMonitor(prevState: any, formData: FormData) {
         headers: data.headers,
         body: data.body,
         script: data.script,
+        expectation: data.expectation,
       },
     });
 
@@ -334,6 +337,7 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
     headers: (formData.get("headers") as string) || undefined,
     body: (formData.get("body") as string) || undefined,
     script: (formData.get("script") as string) || undefined,
+    expectation: (formData.get("expectation") as string) || undefined,
   };
 
   console.log("Updating monitor with data:", rawData);
@@ -374,6 +378,7 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
         headers: data.headers,
         body: data.body,
         script: data.script,
+        expectation: data.expectation,
       },
     });
 
@@ -603,24 +608,53 @@ export async function checkMonitor(
 
         latency = Math.round(Date.now() - start);
       } else if (monitor.url.startsWith("http://") || monitor.url.startsWith("https://")) {
+        const method = monitor.method || "GET";
+        const userHeaders: Record<string, string> = {};
+
+        if (monitor.headers) {
+          try {
+            const parsed = JSON.parse(monitor.headers);
+            if (Array.isArray(parsed)) {
+              parsed.forEach((h: { key: string; value: string }) => {
+                if (h.key) userHeaders[h.key] = h.value;
+              });
+            }
+          } catch (e) {
+            console.error("Failed to parse monitor headers:", e);
+          }
+        }
+
         const response = await fetch(monitor.url, {
-          method: "GET",
+          method,
           redirect: "follow",
           headers: {
             "User-Agent": "Mozilla/5.0 (compatible; PulseGuard/1.0; +https://pulseguard.io/bot)",
             Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
             "Accept-Language": "en-US,en;q=0.5",
+            ...userHeaders,
           },
+          body: ["POST", "PUT", "PATCH"].includes(method) ? monitor.body : undefined,
           signal: AbortSignal.timeout((monitor.timeout || 10) * 1000),
         });
 
+        const body = await response.text();
         latency = Math.round(Date.now() - start);
         // Treat 2xx, 3xx as UP. Treat 429 as UP — rate-limited means server is alive.
         const isRateLimited = response.status === 429;
         const isHealthyStatus =
           response.ok || (response.status >= 300 && response.status < 400) || isRateLimited;
         currentStatus = isHealthyStatus ? "UP" : "DOWN";
-        if (!isHealthyStatus) errorReason = `HTTP_${response.status}`;
+
+        if (currentStatus === "UP" && monitor.expectation) {
+          const { validatePayload } = await import("@/lib/payload-parser");
+          const validation = validatePayload(body, response.status, monitor.expectation);
+          if (!validation.success) {
+            currentStatus = "DOWN";
+            errorReason = validation.errorMessage || `HTTP_${response.status}`;
+          }
+        } else if (!isHealthyStatus) {
+          errorReason = `HTTP_${response.status}`;
+        }
       } else {
         throw new Error(`Unsupported protocol in URL: ${monitor.url}`);
       }

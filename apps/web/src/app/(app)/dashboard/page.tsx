@@ -31,5 +31,3 @@ export default async function DashboardPage() {
 
   return <DashboardClient monitors={monitors} stats={stats} insights={insights} />;
 }
-
-

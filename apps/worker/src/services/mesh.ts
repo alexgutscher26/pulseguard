@@ -40,8 +40,15 @@ export class ProxyMesh {
 
       if (!response.ok) {
         // The PROXY itself failed — not the target. Treat as proxy unavailable.
-        console.warn(`[Mesh 18-1-0] Proxy returned ${response.status} — proxy unavailable, not target.`);
-        return { status: "DOWN", latency: Date.now() - start, error: "PROXY_UNAVAILABLE", source: "18-1-0" };
+        console.warn(
+          `[Mesh 18-1-0] Proxy returned ${response.status} — proxy unavailable, not target.`,
+        );
+        return {
+          status: "DOWN",
+          latency: Date.now() - start,
+          error: "PROXY_UNAVAILABLE",
+          source: "18-1-0",
+        };
       }
 
       const data: any = await response.json();
@@ -54,7 +61,9 @@ export class ProxyMesh {
 
       // If allorigins couldn't fetch at all (http_code 0 or missing), treat as proxy failure
       if (!data.status || data.status.http_code === 0) {
-        console.warn(`[Mesh 18-1-0] Proxy returned http_code=0 — proxy could not reach target, skipping.`);
+        console.warn(
+          `[Mesh 18-1-0] Proxy returned http_code=0 — proxy could not reach target, skipping.`,
+        );
         return { status: "DOWN", latency, error: "PROXY_FETCH_FAILED", source: "18-1-0" };
       }
 

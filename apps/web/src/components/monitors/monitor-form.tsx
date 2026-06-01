@@ -16,6 +16,7 @@ import {
   Layers,
   ArrowUp,
   ArrowDown,
+  ShieldCheck,
 } from "lucide-react";
 import Link from "next/link";
 import { createMonitor, updateMonitor } from "@/actions/monitors";
@@ -46,6 +47,7 @@ interface MonitorFormProps {
     headers?: string | null;
     body?: string | null;
     script?: string | null;
+    expectation?: string | null;
   };
 }
 
@@ -107,6 +109,45 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
     return [{ key: "", value: "" }];
   });
   const [requestBody, setRequestBody] = useState(monitor?.body || "");
+
+  // Expectations State
+  const [expectedString, setExpectedString] = useState(() => {
+    if (monitor?.expectation) {
+      try {
+        const parsed = JSON.parse(monitor.expectation);
+        return parsed.body_contains || "";
+      } catch (e) {
+        console.error("Failed to parse body_contains:", e);
+      }
+    }
+    return "";
+  });
+
+  const [forbiddenString, setForbiddenString] = useState(() => {
+    if (monitor?.expectation) {
+      try {
+        const parsed = JSON.parse(monitor.expectation);
+        return parsed.body_excludes || "";
+      } catch (e) {
+        console.error("Failed to parse body_excludes:", e);
+      }
+    }
+    return "";
+  });
+
+  const [jsonAssertions, setJsonAssertions] = useState<
+    { path: string; operator: string; value: string }[]
+  >(() => {
+    if (monitor?.expectation) {
+      try {
+        const parsed = JSON.parse(monitor.expectation);
+        if (Array.isArray(parsed.json_assertions)) return parsed.json_assertions;
+      } catch (e) {
+        console.error("Failed to parse json_assertions:", e);
+      }
+    }
+    return [];
+  });
 
   // Browser Steps State
   const [steps, setSteps] = useState<{ action: string; value: string; selector: string }[]>(() => {
@@ -497,6 +538,142 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                   />
                 </div>
               )}
+
+              {/* Response Validation Expectations */}
+              <div className="h-px bg-border my-4"></div>
+
+              <div className="flex flex-col gap-5">
+                <div className="flex flex-col">
+                  <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                    <ShieldCheck className="size-4 text-primary animate-pulse" />
+                    Response Validation (Expectations)
+                  </label>
+                  <p className="text-[9px] text-muted-foreground font-semibold uppercase mt-0.5 tracking-wider">
+                    Verify response payloads and match custom content expectations
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                      Expected String (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      value={expectedString}
+                      onChange={(e) => setExpectedString(e.target.value)}
+                      className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-3 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full"
+                      placeholder="e.g. Success, Welcome, etc."
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                      Forbidden String (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      value={forbiddenString}
+                      onChange={(e) => setForbiddenString(e.target.value)}
+                      className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-3 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full"
+                      placeholder="e.g. Error, Failed, etc."
+                    />
+                  </div>
+                </div>
+
+                {/* JSON Path Assertions List */}
+                <div className="flex flex-col gap-2.5 mt-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                      JSON Path Assertions
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setJsonAssertions([
+                          ...jsonAssertions,
+                          { path: "$.status", operator: "==", value: "healthy" },
+                        ]);
+                      }}
+                      className="text-[10px] font-bold text-primary hover:underline uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1"
+                    >
+                      <Plus className="size-3" /> Add JSON Assertion
+                    </button>
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    {jsonAssertions.map((assertion, index) => (
+                      <div
+                        key={index}
+                        className="flex gap-2 items-center animate-in fade-in duration-200"
+                      >
+                        <input
+                          placeholder="JSON Path (e.g. $.status)"
+                          value={assertion.path}
+                          onChange={(e) => {
+                            const newAssertions = [...jsonAssertions];
+                            newAssertions[index].path = e.target.value;
+                            setJsonAssertions(newAssertions);
+                          }}
+                          className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-2.5 text-foreground focus:outline-none flex-1"
+                        />
+                        <div className="relative group/select w-28">
+                          <select
+                            value={assertion.operator}
+                            onChange={(e) => {
+                              const newAssertions = [...jsonAssertions];
+                              newAssertions[index].operator = e.target.value;
+                              setJsonAssertions(newAssertions);
+                            }}
+                            className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-2.5 pr-8 text-foreground focus:outline-none w-full appearance-none cursor-pointer"
+                          >
+                            <option value="==">==</option>
+                            <option value="!=">!=</option>
+                            <option value="contains">contains</option>
+                            <option value="not_contains">not_contains</option>
+                          </select>
+                          <ChevronDown className="absolute top-3 right-2.5 size-3.5 text-muted-foreground/60 pointer-events-none" />
+                        </div>
+                        <input
+                          placeholder="Expected Value"
+                          value={assertion.value}
+                          onChange={(e) => {
+                            const newAssertions = [...jsonAssertions];
+                            newAssertions[index].value = e.target.value;
+                            setJsonAssertions(newAssertions);
+                          }}
+                          className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-2.5 text-foreground focus:outline-none flex-1"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setJsonAssertions(jsonAssertions.filter((_, i) => i !== index));
+                          }}
+                          className="p-2 text-muted-foreground hover:text-red-500 transition-colors cursor-pointer"
+                        >
+                          <Trash2 className="size-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <input
+                type="hidden"
+                name="expectation"
+                value={JSON.stringify({
+                  body_contains: expectedString || undefined,
+                  body_excludes: forbiddenString || undefined,
+                  json_assertions: jsonAssertions
+                    .filter((a) => a.path)
+                    .map((a) => ({
+                      path: a.path,
+                      operator: a.operator,
+                      value: a.value,
+                    })),
+                })}
+              />
             </div>
           )}
 

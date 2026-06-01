@@ -1,7 +1,9 @@
 import { getPrisma } from "@pulseguard/db";
 import worker from "./index";
 
-const prisma = getPrisma("postgresql://postgres.ysoiyyfpkarveocytgeb:Yj3zX0k5MA8WqA1V@aws-1-us-east-1.pooler.supabase.com:5432/postgres");
+const prisma = getPrisma(
+  "postgresql://postgres.ysoiyyfpkarveocytgeb:Yj3zX0k5MA8WqA1V@aws-1-us-east-1.pooler.supabase.com:5432/postgres",
+);
 
 // 1. Reset nextCheck for Google to force it to be checked
 console.log("Forcing nextCheck of Google to past...");
@@ -13,7 +15,8 @@ await prisma.monitor.updateMany({
 });
 
 const env = {
-  DATABASE_URL: "postgresql://postgres.ysoiyyfpkarveocytgeb:Yj3zX0k5MA8WqA1V@aws-1-us-east-1.pooler.supabase.com:5432/postgres",
+  DATABASE_URL:
+    "postgresql://postgres.ysoiyyfpkarveocytgeb:Yj3zX0k5MA8WqA1V@aws-1-us-east-1.pooler.supabase.com:5432/postgres",
   UPSTASH_REDIS_REST_URL: "https://steady-humpback-140053.upstash.io",
   UPSTASH_REDIS_REST_TOKEN: "gQAAAAAAAiMVAAIgcDI3OTNjYjE3YmQyNjM0ZGY3ODM5NDk2YjYzY2VjNWIzZQ",
   TOTAL_SHARDS: 1,
@@ -27,8 +30,8 @@ const event = {
 
 const ctx = {
   waitUntil: (promise: Promise<any>) => {
-    promise.catch(err => console.error("waitUntil promise failed:", err));
-  }
+    promise.catch((err) => console.error("waitUntil promise failed:", err));
+  },
 } as any;
 
 console.log("Triggering scheduled handler manually...");
@@ -48,5 +51,7 @@ const recentEvents = await prisma.monitorEvent.findMany({
 
 console.log("\n=== RECENT EVENTS FOR GOOGLE ===");
 for (const e of recentEvents) {
-  console.log(`  [${e.status}] region=${e.region} lat=${e.latency}ms err=${e.errorReason ?? "none"} @${e.timestamp}`);
+  console.log(
+    `  [${e.status}] region=${e.region} lat=${e.latency}ms err=${e.errorReason ?? "none"} @${e.timestamp}`,
+  );
 }

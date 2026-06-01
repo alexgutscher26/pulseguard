@@ -54,8 +54,7 @@ async function checkFromRegion(monitor: Monitor, region: string): Promise<Region
       redirect: "follow",
       headers: {
         // Use a real browser UA to avoid bot detection (429) from sites like Google
-        "User-Agent":
-          "Mozilla/5.0 (compatible; PulseGuard/1.0; +https://pulseguard.io/bot)",
+        "User-Agent": "Mozilla/5.0 (compatible; PulseGuard/1.0; +https://pulseguard.io/bot)",
         Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.5",
         ...userHeaders,
