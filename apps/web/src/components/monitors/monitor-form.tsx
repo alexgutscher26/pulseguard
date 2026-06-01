@@ -36,7 +36,7 @@ interface MonitorFormProps {
     id: string;
     name: string;
     url: string;
-    type: "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE";
+    type: "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL";
     interval: number;
     timeout: number;
     checkRegions?: string | null;
@@ -59,10 +59,11 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
     | "PORT"
     | "BROWSER"
     | "SEQUENCE"
+    | "SSL"
     | null;
 
   // Parse initial values
-  let initialType: "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" =
+  let initialType: "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL" =
     monitor?.type || typeParam || "HTTP";
   let initialUrl = monitor?.url || "";
   let initialPort = "";
@@ -88,9 +89,9 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
     }
   }
 
-  const [monitorType, setMonitorType] = useState<"HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE">(
-    initialType,
-  );
+  const [monitorType, setMonitorType] = useState<
+    "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL"
+  >(initialType);
   const [selectedRegions, setSelectedRegions] = useState<string[]>(initialRegions);
   const [threshold, setThreshold] = useState(monitor?.alertThreshold || 1);
   const [runbookUrl, setRunbookUrl] = useState(monitor?.runbookUrl || "");
@@ -305,7 +306,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
               Monitor Type
             </label>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
               <label
                 className={`flex flex-col items-center justify-center gap-2.5 p-4 rounded-xl border transition-all cursor-pointer ${
                   monitorType === "HTTP"
@@ -383,7 +384,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
               </label>
 
               <label
-                className={`flex flex-col items-center justify-center gap-2.5 p-4 rounded-xl border transition-all cursor-pointer col-span-2 md:col-span-1 ${
+                className={`flex flex-col items-center justify-center gap-2.5 p-4 rounded-xl border transition-all cursor-pointer ${
                   monitorType === "SEQUENCE"
                     ? "border-primary bg-primary/5 text-foreground shadow-[0_2px_8px_rgba(0,0,0,0.02)]"
                     : "border-border bg-card text-muted-foreground hover:bg-accent/40 hover:text-foreground"
@@ -399,6 +400,25 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                 />
                 <Layers className="size-5" />
                 <span className="text-[11px] font-bold uppercase tracking-wider">Sequence</span>
+              </label>
+
+              <label
+                className={`flex flex-col items-center justify-center gap-2.5 p-4 rounded-xl border transition-all cursor-pointer ${
+                  monitorType === "SSL"
+                    ? "border-primary bg-primary/5 text-foreground shadow-[0_2px_8px_rgba(0,0,0,0.02)]"
+                    : "border-border bg-card text-muted-foreground hover:bg-accent/40 hover:text-foreground"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="type"
+                  value="SSL"
+                  className="sr-only"
+                  checked={monitorType === "SSL"}
+                  onChange={() => setMonitorType("SSL")}
+                />
+                <ShieldCheck className="size-5" />
+                <span className="text-[11px] font-bold uppercase tracking-wider">SSL/TLS</span>
               </label>
             </div>
           </div>
@@ -421,7 +441,9 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
           {/* Target Host */}
           <div className="flex flex-col gap-2">
             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-              {monitorType === "HTTP" || monitorType === "BROWSER" ? "Target URL" : "Hostname / IP"}
+              {monitorType === "HTTP" || monitorType === "BROWSER" || monitorType === "SSL"
+                ? "Target URL / Domain"
+                : "Hostname / IP"}
             </label>
             <div className="flex gap-4">
               <input
@@ -433,7 +455,9 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                 placeholder={
                   monitorType === "HTTP" || monitorType === "BROWSER"
                     ? "https://example.com"
-                    : "192.168.1.1 or example.com"
+                    : monitorType === "SSL"
+                      ? "example.com or https://example.com"
+                      : "192.168.1.1 or example.com"
                 }
               />
               {monitorType === "PORT" && (

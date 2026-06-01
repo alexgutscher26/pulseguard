@@ -55,10 +55,14 @@ export async function sendMonitorAlert(
     const resend = getResendClient(apiKey);
     const { renderMonitorAlert } = await import("./templates/monitor-alert");
 
-    const subject =
+    let subject =
       data.status === "DOWN"
         ? `🔴 [CRITICAL] ${data.monitorName} is DOWN`
         : `✅ [RESOLVED] ${data.monitorName} is UP`;
+
+    if (data.reason?.includes("expires in") || data.reason?.includes("SSL certificate expires")) {
+      subject = `⚠️ [EXPIRY WARNING] ${data.monitorName} SSL Certificate Expires Soon`;
+    }
 
     const html = await renderMonitorAlert(data);
 

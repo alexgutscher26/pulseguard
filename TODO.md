@@ -120,10 +120,10 @@ Expand what PulseGuard can actually guard.
   - Input: "Expected String" or "Forbidden String".
   - Logic: Fetch HTML -> Check `body.includes(string)`.
   - JSON Path Extraction: Verify specific JSON keys/values match assertions (e.g., `$.status === "healthy"`).
-- [ ] **SSL/TLS Sentinel**
+- [x] **SSL/TLS Sentinel**
   - Check certificate expiry date, issuer, and validity.
   - Alert: "Certificate expires in 30/14/7/3/1 days". Include checks for legacy protocols (TLS 1.0/1.1 deprecation warnings).
-- [ ] **TCP/Port Monitor**
+- [x] **TCP/Port Monitor**
   - Verify `connect()` to database ports (5432) or Redis (6379) works via lightweight TCP ping.
 - [ ] **DNS Watchdog**
   - Check if domain resolves to expected IP. Detect DNS propagation anomalies.

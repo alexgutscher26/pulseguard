@@ -15,7 +15,7 @@ export interface Env {
 }
 
 interface NotificationMessage {
-  type?: "INCIDENT_CREATED" | "INCIDENT_RESOLVED" | "HIGH_LATENCY";
+  type?: "INCIDENT_CREATED" | "INCIDENT_RESOLVED" | "HIGH_LATENCY" | "SSL_EXPIRY";
   incidentId?: string;
   monitorId: string;
   monitorName: string;
@@ -27,6 +27,7 @@ interface NotificationMessage {
   reason?: string;
   failedRegions?: string[];
   runbookUrl?: string;
+  daysRemaining?: number;
 }
 
 export default {
@@ -120,8 +121,8 @@ export default {
 
             // 2. STATUS_CHANGE trigger
             if (rule.trigger === "STATUS_CHANGE") {
-              // If High Latency, only alert if rule is "Any Status Change" (no specific target)
-              if (notification.type === "HIGH_LATENCY") {
+              // If High Latency or SSL Expiry, only alert if rule is "Any Status Change" (no specific target)
+              if (notification.type === "HIGH_LATENCY" || notification.type === "SSL_EXPIRY") {
                 return !rule.targetStatus;
               }
 
@@ -130,6 +131,19 @@ export default {
                 return notification.status === rule.targetStatus;
               }
               return true; // Any status change matches (UP->DOWN, DOWN->UP)
+            }
+
+            // 3. SSL_EXPIRY trigger
+            if (rule.trigger === "SSL_EXPIRY" && notification.type === "SSL_EXPIRY") {
+              if (rule.threshold && notification.daysRemaining !== undefined) {
+                if (rule.comparison === "LT" || !rule.comparison) {
+                  return notification.daysRemaining <= rule.threshold;
+                }
+                if (rule.comparison === "GT") {
+                  return notification.daysRemaining > rule.threshold;
+                }
+              }
+              return true;
             }
 
             return false;
@@ -302,6 +316,10 @@ async function sendDiscordAlert(url: string, data: MonitorAlertData, type?: stri
     title = `⚠️ High Latency: ${data.monitorName}`;
     color = 16753920; // #FFA500 (Orange)
   }
+  if (type === "SSL_EXPIRY") {
+    title = `⚠️ SSL Expiry Warning: ${data.monitorName}`;
+    color = 16753920; // #FFA500 (Orange)
+  }
 
   const payload = {
     username: "PulseGuard",
@@ -404,6 +422,7 @@ async function sendSlackAlert(
   if (type === "INCIDENT_CREATED") headerText = `🔥 Incident: ${data.monitorName} is DOWN`;
   if (type === "INCIDENT_RESOLVED") headerText = `✅ Resolved: ${data.monitorName} Recovered`;
   if (type === "HIGH_LATENCY") headerText = `⚠️ High Latency: ${data.monitorName}`;
+  if (type === "SSL_EXPIRY") headerText = `⚠️ SSL Expiry Warning: ${data.monitorName}`;
 
   const payload = {
     text: headerText,

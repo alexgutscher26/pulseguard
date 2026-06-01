@@ -15,6 +15,7 @@ enum MonitorType {
   PORT
   BROWSER
   SEQUENCE
+  SSL
 }
 
 enum MonitorStatus {

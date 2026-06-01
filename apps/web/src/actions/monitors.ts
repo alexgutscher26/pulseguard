@@ -34,7 +34,7 @@ enum Severity {
 // Conditional validation schema
 const baseSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  type: z.enum(["HTTP", "PING", "PORT", "BROWSER", "SEQUENCE"]),
+  type: z.enum(["HTTP", "PING", "PORT", "BROWSER", "SEQUENCE", "SSL"]),
   interval: z.coerce.number().min(30),
   timeout: z.coerce.number().min(1),
   url: z.string().optional(), // For HTTP/Ping
@@ -177,6 +177,14 @@ const monitorSchema = baseSchema.superRefine((data, ctx) => {
           path: ["script"],
         });
       }
+    } else if (data.type === "SSL") {
+      if (!data.url) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Hostname / URL is required for SSL monitors",
+          path: ["url"],
+        });
+      }
     }
   } catch (e) {
     console.error("Schema validation crashed:", e);
@@ -210,7 +218,9 @@ export async function createMonitor(prevState: any, formData: FormData) {
     const rawData = {
       name: (formData.get("name") as string) || "",
       url: (formData.get("url") as string) || undefined,
-      type: (formData.get("type") as "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE") || "HTTP",
+      type:
+        (formData.get("type") as "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL") ||
+        "HTTP",
       interval: Number(formData.get("interval") || 60),
       timeout: Number(formData.get("timeout") || 10),
       port: formData.get("port") ? Number(formData.get("port")) : undefined,
@@ -325,7 +335,8 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
   const rawData = {
     name: (formData.get("name") as string) || "",
     url: (formData.get("url") as string) || undefined,
-    type: (formData.get("type") as "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE") || "HTTP",
+    type:
+      (formData.get("type") as "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL") || "HTTP",
     interval: Number(formData.get("interval") || 60),
     timeout: Number(formData.get("timeout") || 10),
     port: formData.get("port") ? Number(formData.get("port")) : undefined,
@@ -544,7 +555,7 @@ export async function checkMonitor(
   let errorReason: string | undefined = undefined;
 
   try {
-    if (monitor.type === "BROWSER" || monitor.type === "SEQUENCE") {
+    if (monitor.type === "BROWSER" || monitor.type === "SEQUENCE" || monitor.type === "SSL") {
       const workerUrl = process.env.PULSEGUARD_WORKER_URL || "http://localhost:8787";
       const cookieHeader = (await headers()).get("Cookie");
 

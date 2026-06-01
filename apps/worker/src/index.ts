@@ -38,7 +38,14 @@ import { performRegionalChecks, getAverageLatency } from "./services/regional-mo
 async function performCheck(
   monitor: any,
   env?: Env,
-): Promise<{ status: "UP" | "DOWN" | "MAINTENANCE"; latency: number; errorReason?: string }> {
+): Promise<{
+  status: "UP" | "DOWN" | "MAINTENANCE";
+  latency: number;
+  errorReason?: string;
+  daysRemaining?: number;
+  issuer?: string;
+  protocol?: string;
+}> {
   // If explicitly in maintenance (passed from caller), skip check
   if (monitor.status === "MAINTENANCE") {
     return { status: "MAINTENANCE", latency: 0 };
@@ -51,6 +58,37 @@ async function performCheck(
   if (monitor.type === "SEQUENCE") {
     const { performSequenceCheck } = await import("./lib/sequence-runner");
     return performSequenceCheck(monitor, env);
+  }
+
+  if (monitor.type === "SSL") {
+    const { checkSSL } = await import("./services/ssl-check");
+    try {
+      const startSsl = performance.now();
+      const sslResult = await checkSSL(monitor.url);
+      const sslLatency = Math.round(performance.now() - startSsl);
+
+      let currentStatus: "UP" | "DOWN" = "UP";
+      let errorReason: string | undefined = undefined;
+
+      if (sslResult.status !== "VALID") {
+        currentStatus = "DOWN";
+        errorReason = `SSL_${sslResult.status}`;
+      } else if (sslResult.protocol === "TLSv1.0" || sslResult.protocol === "TLSv1.1") {
+        currentStatus = "DOWN";
+        errorReason = "LEGACY_TLS_PROTOCOL";
+      }
+
+      return {
+        status: currentStatus,
+        latency: sslLatency,
+        errorReason,
+        daysRemaining: sslResult.daysRemaining,
+        issuer: sslResult.issuer,
+        protocol: sslResult.protocol,
+      };
+    } catch (e: any) {
+      return { status: "DOWN", latency: 0, errorReason: "SSL_CHECK_FAILED" };
+    }
   }
 
   const urlStr = monitor.url;
@@ -625,7 +663,7 @@ export async function processBatch(
         }
       }
 
-      const { status: currentStatus, latency, errorReason } = result;
+      const { status: currentStatus, latency, errorReason, daysRemaining, issuer } = result;
 
       // --- QUANTUM ANOMALY DETECTION (Invisible AI) ---
       if (capturedLatencies) {
@@ -750,6 +788,97 @@ export async function processBatch(
         },
         ctx,
       );
+
+      // --- SSL EXPIRY ALERTS ---
+      if (daysRemaining !== undefined && env) {
+        const milestones = [30, 14, 7, 3, 1];
+        const matchingMilestone = milestones.find((m) => daysRemaining <= m);
+
+        if (matchingMilestone !== undefined) {
+          const redisKey = `ssl_alert:${monitor.id}:${matchingMilestone}`;
+          let alreadySent = false;
+
+          if (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN) {
+            try {
+              const redisUrl = `${env.UPSTASH_REDIS_REST_URL}/get/${redisKey}`;
+              const redisRes = await fetch(redisUrl, {
+                headers: { Authorization: `Bearer ${env.UPSTASH_REDIS_REST_TOKEN}` },
+              });
+              if (redisRes.ok) {
+                const redisData = (await redisRes.json()) as any;
+                if (redisData.result) {
+                  alreadySent = true;
+                }
+              }
+            } catch (err) {
+              console.error("[SSL Expiry] Failed to query Redis cache:", err);
+            }
+          }
+
+          if (!alreadySent) {
+            const sslRules = (monitor.alertRules || []).filter(
+              (rule: any) => rule.trigger === "SSL_EXPIRY" && rule.enabled,
+            );
+
+            // Trigger if custom rules exist or by default if days remaining <= 7
+            const shouldAlert = sslRules.length > 0 || daysRemaining <= 7;
+
+            if (shouldAlert) {
+              console.log(
+                `[SSL Expiry Alert] Monitor ${monitor.name} certificate expires in ${daysRemaining} days (Milestone: ${matchingMilestone}d)`,
+              );
+
+              const notificationPayload = {
+                type: "SSL_EXPIRY" as const,
+                monitorId: monitor.id,
+                monitorName: monitor.name,
+                url: monitor.url,
+                status: currentStatus,
+                reason: `SSL certificate expires in ${daysRemaining} days (Issuer: ${issuer || "Unknown"})`,
+                timestamp: new Date().toISOString(),
+                daysRemaining,
+              };
+
+              if (env.NOTIFICATION_QUEUE) {
+                await env.NOTIFICATION_QUEUE.send(notificationPayload);
+              } else {
+                try {
+                  const { default: notificationHandler } = await import("./notification-handler");
+                  await notificationHandler.queue(
+                    {
+                      queue: "notifications",
+                      messages: [
+                        {
+                          id: `ssl-local-${Date.now()}`,
+                          timestamp: new Date(),
+                          body: notificationPayload,
+                          ack: () => {},
+                          retry: () => {},
+                        },
+                      ],
+                    } as any,
+                    env,
+                    ctx,
+                  );
+                } catch (err) {
+                  console.error("Failed to run local notification handler for SSL expiry:", err);
+                }
+              }
+
+              if (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN) {
+                try {
+                  const setUrl = `${env.UPSTASH_REDIS_REST_URL}/set/${redisKey}/sent/EX/604800`;
+                  await fetch(setUrl, {
+                    headers: { Authorization: `Bearer ${env.UPSTASH_REDIS_REST_TOKEN}` },
+                  });
+                } catch (err) {
+                  console.error("[SSL Expiry] Failed to save to Redis cache:", err);
+                }
+              }
+            }
+          }
+        }
+      }
 
       // --- INCIDENT MANAGEMENT ---
       if (currentStatus === "DOWN" && !maintenanceActive) {

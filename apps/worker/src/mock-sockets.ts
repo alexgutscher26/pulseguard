@@ -1,4 +1,4 @@
-export function connect(options: any) {
+export function connect(_options: any) {
   return {
     opened: Promise.resolve(),
     close: () => Promise.resolve(),
