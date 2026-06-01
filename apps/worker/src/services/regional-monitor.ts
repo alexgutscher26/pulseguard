@@ -51,9 +51,13 @@ async function checkFromRegion(monitor: Monitor, region: string): Promise<Region
 
     const response = await fetch(url, {
       method,
+      redirect: "follow",
       headers: {
-        "User-Agent": `PulseGuard-Monitor/1.0 (Region: ${region})`,
-        Accept: "*/*",
+        // Use a real browser UA to avoid bot detection (429) from sites like Google
+        "User-Agent":
+          "Mozilla/5.0 (compatible; PulseGuard/1.0; +https://pulseguard.io/bot)",
+        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
         ...userHeaders,
       },
       body: ["POST", "PUT", "PATCH"].includes(method) ? monitor.body : undefined,
@@ -65,12 +69,23 @@ async function checkFromRegion(monitor: Monitor, region: string): Promise<Region
 
     const latency = Date.now() - start;
 
+    // Treat 2xx, 3xx as UP — healthy responses
+    // Treat 429 (Too Many Requests) as UP — the server is alive and responding,
+    // it's just rate-limiting our IP. This is NOT a real outage.
+    const isRateLimited = response.status === 429;
+    const isHealthy =
+      response.ok || (response.status >= 300 && response.status < 400) || isRateLimited;
+
     return {
       region,
-      status: response.ok ? "UP" : "DOWN",
+      status: isHealthy ? "UP" : "DOWN",
       latency,
       timestamp: new Date(),
-      errorReason: response.ok ? undefined : `HTTP ${response.status}`,
+      errorReason: isRateLimited
+        ? undefined // 429 = alive, suppress error
+        : isHealthy
+          ? undefined
+          : `HTTP ${response.status}`,
     };
   } catch (error) {
     const latency = Date.now() - start;
@@ -107,12 +122,30 @@ export async function performRegionalChecks(monitor: Monitor): Promise<RegionalC
     return [result];
   }
 
-  // Perform checks with a concurrency limit of 10 to protect free-tier CPU / Fetch limits
-  const results: RegionalCheckResult[] = [];
-  const concurrencyLimit = 10;
+  // CLOUDFLARE FREE PLAN: Hard cap at 10 regions.
+  // Each region = 1 fetch subrequest. Free plan allows ~50 per invocation total.
+  // With retries, multi-vector, and DB writes, we must stay well under that.
+  const MAX_REGIONS = 10;
+  if (regions.length > MAX_REGIONS) {
+    console.warn(
+      `[Regional] Monitor has ${regions.length} regions but capping to ${MAX_REGIONS} to avoid exceeding Cloudflare subrequest limits.`,
+    );
+    regions = regions.slice(0, MAX_REGIONS);
+  }
 
-  for (let i = 0; i < regions.length; i += concurrencyLimit) {
-    const batch = regions.slice(i, i + concurrencyLimit);
+  // Run regions sequentially in small batches with a short delay between batches.
+  // This avoids burst-firing 10 identical requests at the same target IP simultaneously,
+  // which triggers rate-limiting (HTTP 429) from sites like Google.
+  const results: RegionalCheckResult[] = [];
+  const BATCH_SIZE = 3;
+  const BATCH_DELAY_MS = 200; // Small delay between batches to spread load
+
+  for (let i = 0; i < regions.length; i += BATCH_SIZE) {
+    if (i > 0) {
+      // Brief pause between batches to avoid triggering rate-limits
+      await new Promise((r) => setTimeout(r, BATCH_DELAY_MS));
+    }
+    const batch = regions.slice(i, i + BATCH_SIZE);
     const batchPromises = batch.map((region) => checkFromRegion(monitor, region));
     const batchResults = await Promise.all(batchPromises);
     results.push(...batchResults);

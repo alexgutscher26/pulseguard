@@ -6,7 +6,12 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
-    "noUnusedLocals": false
+    "noUnusedLocals": false,
+    "baseUrl": ".",
+    "paths": {
+      "cloudflare:sockets": ["./src/mock-sockets.ts"],
+      "cloudflare:workers": ["./src/mock-workers.ts"]
+    }
   },
   "include": ["src/**/*.ts", "scripts/**/*.js"],
   "exclude": ["node_modules", "src/**/*.bench.test.ts"]

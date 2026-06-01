@@ -605,15 +605,22 @@ export async function checkMonitor(
       } else if (monitor.url.startsWith("http://") || monitor.url.startsWith("https://")) {
         const response = await fetch(monitor.url, {
           method: "GET",
+          redirect: "follow",
           headers: {
-            "User-Agent": "PulseGuard-Monitor/1.0",
-            Accept: "*/*",
+            "User-Agent": "Mozilla/5.0 (compatible; PulseGuard/1.0; +https://pulseguard.io/bot)",
+            Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.5",
           },
           signal: AbortSignal.timeout((monitor.timeout || 10) * 1000),
         });
 
         latency = Math.round(Date.now() - start);
-        currentStatus = response.ok ? "UP" : "DOWN";
+        // Treat 2xx, 3xx as UP. Treat 429 as UP — rate-limited means server is alive.
+        const isRateLimited = response.status === 429;
+        const isHealthyStatus =
+          response.ok || (response.status >= 300 && response.status < 400) || isRateLimited;
+        currentStatus = isHealthyStatus ? "UP" : "DOWN";
+        if (!isHealthyStatus) errorReason = `HTTP_${response.status}`;
       } else {
         throw new Error(`Unsupported protocol in URL: ${monitor.url}`);
       }

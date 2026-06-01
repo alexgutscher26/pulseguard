@@ -12,10 +12,13 @@ interface RegionSelectorProps {
 export function RegionSelector({ selectedRegions, onChange }: RegionSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
 
+  const MAX_REGIONS = 10;
+
   const toggleRegion = (regionCode: string) => {
     if (selectedRegions.includes(regionCode)) {
       onChange(selectedRegions.filter((r) => r !== regionCode));
     } else {
+      if (selectedRegions.length >= MAX_REGIONS) return; // Hard cap
       onChange([...selectedRegions, regionCode]);
     }
   };
@@ -31,9 +34,9 @@ export function RegionSelector({ selectedRegions, onChange }: RegionSelectorProp
       // Deselect all from this continent
       onChange(selectedRegions.filter((code) => !continentRegions.includes(code)));
     } else {
-      // Select all from this continent
-      const newSelection = [...new Set([...selectedRegions, ...continentRegions])];
-      onChange(newSelection);
+      // Select all from this continent — but respect the 10-region cap
+      const combined = [...new Set([...selectedRegions, ...continentRegions])];
+      onChange(combined.slice(0, MAX_REGIONS));
     }
   };
 
@@ -47,8 +50,14 @@ export function RegionSelector({ selectedRegions, onChange }: RegionSelectorProp
       </label>
 
       <div className="text-sm text-primary/60 font-mono mb-2">
-        Select regions to monitor your service from. Leave empty for single-region monitoring.
+        Select up to {MAX_REGIONS} regions to monitor your service from. Leave empty for single-region monitoring.
       </div>
+
+      {selectedRegions.length > MAX_REGIONS && (
+        <div className="px-3 py-2 mb-2 bg-red-500/10 border border-red-500/30 text-red-400 text-[10px] font-mono uppercase tracking-wider">
+          ⚠ Max {MAX_REGIONS} regions allowed on free plan. Extra regions will be ignored.
+        </div>
+      )}
 
       <div className="border border-primary/20 bg-secondary/20 backdrop-blur-sm relative group/regions">
         <button

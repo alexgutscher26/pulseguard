@@ -122,20 +122,30 @@ async function performInternalRequest(
       const startFetch = performance.now();
       const response = await fetch(urlStr, {
         method,
+        redirect: "follow",
         headers: {
-          "User-Agent": "PulseGuard-Monitor/1.0",
-          Accept: "*/*",
+          // Use a descriptive bot UA — avoids empty UA blocks but identifies the monitor
+          "User-Agent":
+            "Mozilla/5.0 (compatible; PulseGuard/1.0; +https://pulseguard.io/bot)",
+          Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+          "Accept-Language": "en-US,en;q=0.5",
           ...userHeaders,
           ...extraHeaders,
         },
         body: ["POST", "PUT", "PATCH"].includes(method) ? monitor.body : undefined,
         signal: AbortSignal.timeout((monitor.timeout || 10) * 1000),
       });
-      currentStatus = response.ok ? "UP" : "DOWN";
 
       const body = await response.text();
       latency = Math.round(performance.now() - startFetch);
-      currentStatus = response.ok ? "UP" : "DOWN";
+
+      // Treat 2xx, 3xx as UP — redirects are healthy (e.g. google.com -> www.google.com)
+      // Treat 429 (Too Many Requests) as UP — the server is alive and responding,
+      // it's just throttling this IP. A rate-limit is NOT a real outage.
+      const isRateLimited = response.status === 429;
+      const isHealthyStatus =
+        response.ok || (response.status >= 300 && response.status < 400) || isRateLimited;
+      currentStatus = isHealthyStatus ? "UP" : "DOWN";
 
       // 3. Deep Payload/Status Validation (WASM/Rust Optimized Bridge)
       if (currentStatus === "UP" && monitor.expectation) {
@@ -145,7 +155,7 @@ async function performInternalRequest(
           currentStatus = "DOWN";
           errorReason = validation.errorMessage || `HTTP_${response.status}`;
         }
-      } else if (!response.ok) {
+      } else if (!isHealthyStatus) {
         errorReason = `HTTP_${response.status}`;
       }
     } else if (urlStr.startsWith("tcp://")) {
@@ -449,7 +459,14 @@ export async function processBatch(
             // Capture failed regions
             failedRegions = regionalResults.filter((r) => r.status === "DOWN").map((r) => r.region);
 
-            const isMajorOutage = failedRegions.length >= (monitor.alertThreshold || 1);
+            // Require a MAJORITY of regions to be DOWN before marking as global outage.
+            // With alertThreshold=1 (the DB default), even 1 flaky region triggers DOWN — too noisy.
+            // Use the higher of: the monitor's custom alertThreshold OR 50% of checked regions.
+            const majorityThreshold = Math.max(
+              monitor.alertThreshold || 1,
+              Math.ceil(regionalResults.length / 2),
+            );
+            const isMajorOutage = failedRegions.length >= majorityThreshold;
             const overallStatus = isMajorOutage ? "DOWN" : "UP";
             const avgLatency = getAverageLatency(regionalResults);
 
@@ -989,6 +1006,55 @@ export default {
           return new Response(`Internal Server Error: ${err.message}\nStack: ${err.stack}`, {
             status: 500,
           });
+        }
+      }
+
+      // DEBUG Route: /api/debug-fetch?url=https://google.com
+      // Temporarily exposes raw fetch result for diagnosing false DOWN reports
+      if (url.pathname === "/api/debug-fetch") {
+        const targetUrl = url.searchParams.get("url");
+        if (!targetUrl) {
+          return new Response(JSON.stringify({ error: "Missing ?url= param" }), {
+            status: 400,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+        try {
+          const start = Date.now();
+          const res = await fetch(targetUrl, {
+            method: "GET",
+            redirect: "follow",
+            headers: { "User-Agent": "PulseGuard-Debug/1.0", Accept: "*/*" },
+            signal: AbortSignal.timeout(10000),
+          });
+          await res.text(); // consume body
+          const latency = Date.now() - start;
+          const isHealthy = res.ok || (res.status >= 300 && res.status < 400);
+          return new Response(
+            JSON.stringify({
+              url: targetUrl,
+              finalUrl: res.url,
+              status: res.status,
+              ok: res.ok,
+              isHealthy,
+              verdict: isHealthy ? "UP" : "DOWN",
+              latency,
+            }),
+            {
+              headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+              },
+            },
+          );
+        } catch (err: any) {
+          return new Response(
+            JSON.stringify({ url: targetUrl, error: err.message, verdict: "DOWN" }),
+            {
+              status: 200,
+              headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+            },
+          );
         }
       }
 
