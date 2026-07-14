@@ -140,13 +140,13 @@ Expand what PulseGuard can actually guard.
 
 - [x] **Synthetic Browser Testing**
   - Run actual headless Playwright/Puppeteer instances in edge workers. Verify heavy SPA load behaviors and interactive elements.
-- [ ] **Multi-Step API Sequence Check**
+- [x] **Multi-Step API Sequence Check**
   - Chain requests: Login & extract JWT token -> Fetch protected data route -> Assert data -> Logout.
-- [ ] **GraphQL Introspection Monitor**
+- [x] **GraphQL Introspection Monitor**
   - Continually query specific GraphQL mutations/queries and validate typed schema returns.
-- [ ] **gRPC & WebSocket Stream Monitor**
+- [x] **gRPC & WebSocket Stream Monitor**
   - Maintain a live WebSocket connection or gRPC stream for X seconds and assert message payload rate.
-- [ ] **Database Direct Query Monitor**
+- [x] **Database Direct Query Monitor**
   - Run a lightweight `SELECT 1` or measure specific slow query execution times across Postgres, MySQL, or MongoDB directly.
 
 ### 🌍 Multi-Region Capabilities

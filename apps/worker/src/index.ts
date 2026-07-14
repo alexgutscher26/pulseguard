@@ -174,6 +174,60 @@ async function performCheck(
     }
   }
 
+  if (monitor.type === "GRAPHQL") {
+    const { checkGraphQL } = await import("./services/graphql-monitor");
+    try {
+      const gqlQuery = monitor.body || undefined;
+      const gqlAssertions = monitor.expectation
+        ? (JSON.parse(monitor.expectation).assertions as any[]) || []
+        : [];
+      const result = await checkGraphQL(monitor.url, gqlQuery, undefined, gqlAssertions);
+      return {
+        status: result.status,
+        latency: result.latency,
+        errorReason: result.errorReason,
+      };
+    } catch (e: any) {
+      return { status: "DOWN", latency: 0, errorReason: "GRAPHQL_CHECK_FAILED" };
+    }
+  }
+
+  if (monitor.type === "WEBSOCKET") {
+    const { checkWebSocket } = await import("./services/websocket-monitor");
+    try {
+      const listenSeconds = monitor.timeout || 5;
+      const wsAssertion = monitor.expectation
+        ? (JSON.parse(monitor.expectation) as any)
+        : undefined;
+      const result = await checkWebSocket(monitor.url, listenSeconds, wsAssertion);
+      return {
+        status: result.status,
+        latency: result.latency,
+        errorReason: result.errorReason,
+      };
+    } catch (e: any) {
+      return { status: "DOWN", latency: 0, errorReason: "WEBSOCKET_CHECK_FAILED" };
+    }
+  }
+
+  if (monitor.type === "DATABASE") {
+    const { checkDatabase } = await import("./services/database-monitor");
+    try {
+      const dbQuery = monitor.body || undefined;
+      const dbExpectation = monitor.expectation
+        ? (JSON.parse(monitor.expectation) as any)
+        : undefined;
+      const result = await checkDatabase(monitor.url, dbQuery, dbExpectation);
+      return {
+        status: result.status,
+        latency: result.latency,
+        errorReason: result.errorReason,
+      };
+    } catch (e: any) {
+      return { status: "DOWN", latency: 0, errorReason: "DATABASE_CHECK_FAILED" };
+    }
+  }
+
   const urlStr = monitor.url;
 
   // 1. Initial Standard Check
@@ -1612,6 +1666,89 @@ export default {
 
           const { checkMCP } = await import("./services/mcp-sentinel");
           const results = await checkMCP(finalUrl, assertions || [], method, params);
+
+          return new Response(JSON.stringify(results), {
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods": "POST, OPTIONS",
+              "Access-Control-Allow-Headers": "Content-Type",
+            },
+          });
+        } catch (err: any) {
+          return new Response(JSON.stringify({ error: err.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+      }
+
+      // API Route: /api/graphql-check
+      if (url.pathname === "/api/graphql-check" && request.method === "POST") {
+        try {
+          const body: any = await request.json();
+          const { url: targetUrl, query, operationName, assertions, variables } = body;
+
+          if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
+
+          const finalUrl = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
+
+          const { checkGraphQL } = await import("./services/graphql-monitor");
+          const results = await checkGraphQL(finalUrl, query, operationName, assertions, variables);
+
+          return new Response(JSON.stringify(results), {
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods": "POST, OPTIONS",
+              "Access-Control-Allow-Headers": "Content-Type",
+            },
+          });
+        } catch (err: any) {
+          return new Response(JSON.stringify({ error: err.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+      }
+
+      // API Route: /api/websocket-check
+      if (url.pathname === "/api/websocket-check" && request.method === "POST") {
+        try {
+          const body: any = await request.json();
+          const { url: targetUrl, listenSeconds, assertion } = body;
+
+          if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
+
+          const { checkWebSocket } = await import("./services/websocket-monitor");
+          const results = await checkWebSocket(targetUrl, listenSeconds || 5, assertion);
+
+          return new Response(JSON.stringify(results), {
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods": "POST, OPTIONS",
+              "Access-Control-Allow-Headers": "Content-Type",
+            },
+          });
+        } catch (err: any) {
+          return new Response(JSON.stringify({ error: err.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+      }
+
+      // API Route: /api/database-check
+      if (url.pathname === "/api/database-check" && request.method === "POST") {
+        try {
+          const body: any = await request.json();
+          const { connectionUrl, query, expectation } = body;
+
+          if (!connectionUrl) return new Response("Missing 'connectionUrl' body param", { status: 400 });
+
+          const { checkDatabase } = await import("./services/database-monitor");
+          const results = await checkDatabase(connectionUrl, query, expectation);
 
           return new Response(JSON.stringify(results), {
             headers: {

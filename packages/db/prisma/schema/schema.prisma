@@ -20,6 +20,9 @@ enum MonitorType {
   DOMAIN
   HEARTBEAT
   MCP
+  GRAPHQL
+  WEBSOCKET
+  DATABASE
 }
 
 enum MonitorStatus {
