@@ -11,6 +11,7 @@ enum AlertTrigger {
   STATUS_CHANGE
   LATENCY
   SSL_EXPIRY
+  DNS_WATCHDOG
 }
 
 enum ComparisonOperator {

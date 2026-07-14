@@ -16,6 +16,7 @@ enum MonitorType {
   BROWSER
   SEQUENCE
   SSL
+  DNS
 }
 
 enum MonitorStatus {

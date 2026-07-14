@@ -125,7 +125,7 @@ Expand what PulseGuard can actually guard.
   - Alert: "Certificate expires in 30/14/7/3/1 days". Include checks for legacy protocols (TLS 1.0/1.1 deprecation warnings).
 - [x] **TCP/Port Monitor**
   - Verify `connect()` to database ports (5432) or Redis (6379) works via lightweight TCP ping.
-- [ ] **DNS Watchdog**
+- [x] **DNS Watchdog**
   - Check if domain resolves to expected IP. Detect DNS propagation anomalies.
 - [ ] **Domain Expiration Guard**
   - Fetch WHOIS/RDAP data. Alert on `serverHold`, `clientHold`, or `pendingDelete` statuses.

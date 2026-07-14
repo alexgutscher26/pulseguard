@@ -91,6 +91,29 @@ async function performCheck(
     }
   }
 
+  if (monitor.type === "DNS") {
+    const { checkDNSWatchdog } = await import("./services/dns-watchdog");
+    try {
+      const startDns = performance.now();
+      const expected = monitor.expectation
+        ? (JSON.parse(monitor.expectation).expectedIPs as string[]) || []
+        : [];
+      const dnsResult = await checkDNSWatchdog(monitor.url, expected);
+      const dnsLatency = Math.round(performance.now() - startDns);
+
+      const isHealthy = dnsResult.anomalies.length === 0;
+      return {
+        status: isHealthy ? "UP" : "DOWN",
+        latency: dnsLatency,
+        errorReason: isHealthy
+          ? undefined
+          : `DNS_ANOMALY: ${dnsResult.anomalies.join("; ")}`,
+      };
+    } catch (e: any) {
+      return { status: "DOWN", latency: 0, errorReason: "DNS_CHECK_FAILED" };
+    }
+  }
+
   const urlStr = monitor.url;
 
   // 1. Initial Standard Check
@@ -1399,6 +1422,33 @@ export default {
           const result = await checkPort(host, parseInt(port));
 
           return new Response(JSON.stringify(result), {
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods": "POST, OPTIONS",
+              "Access-Control-Allow-Headers": "Content-Type",
+            },
+          });
+        } catch (err: any) {
+          return new Response(JSON.stringify({ error: err.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+      }
+
+      // API Route: /api/dns-watchdog
+      if (url.pathname === "/api/dns-watchdog" && request.method === "POST") {
+        try {
+          const body: any = await request.json();
+          const { domain, expectedIPs } = body;
+
+          if (!domain) return new Response("Missing 'domain' body param", { status: 400 });
+
+          const { checkDNSWatchdog } = await import("./services/dns-watchdog");
+          const results = await checkDNSWatchdog(domain, expectedIPs || []);
+
+          return new Response(JSON.stringify(results), {
             headers: {
               "Content-Type": "application/json",
               "Access-Control-Allow-Origin": "*",
