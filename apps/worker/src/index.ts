@@ -151,6 +151,29 @@ async function performCheck(
     }
   }
 
+  if (monitor.type === "MCP") {
+    const { checkMCP } = await import("./services/mcp-sentinel");
+    try {
+      const mcpMethod = monitor.script
+        ? (JSON.parse(monitor.script).method as string) || "tools/list"
+        : "tools/list";
+      const mcpParams = monitor.script
+        ? (JSON.parse(monitor.script).params as Record<string, unknown> | undefined)
+        : undefined;
+      const mcpAssertions = monitor.expectation
+        ? (JSON.parse(monitor.expectation).assertions as any[]) || []
+        : [];
+      const result = await checkMCP(monitor.url, mcpAssertions, mcpMethod, mcpParams);
+      return {
+        status: result.status,
+        latency: result.latency,
+        errorReason: result.errorReason,
+      };
+    } catch (e: any) {
+      return { status: "DOWN", latency: 0, errorReason: "MCP_CHECK_FAILED" };
+    }
+  }
+
   const urlStr = monitor.url;
 
   // 1. Initial Standard Check
@@ -1560,6 +1583,35 @@ export default {
 
           const { checkDomainExpiration } = await import("./services/domain-expiration");
           const results = await checkDomainExpiration(domain);
+
+          return new Response(JSON.stringify(results), {
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods": "POST, OPTIONS",
+              "Access-Control-Allow-Headers": "Content-Type",
+            },
+          });
+        } catch (err: any) {
+          return new Response(JSON.stringify({ error: err.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+      }
+
+      // API Route: /api/mcp-check
+      if (url.pathname === "/api/mcp-check" && request.method === "POST") {
+        try {
+          const body: any = await request.json();
+          const { url: targetUrl, method, params, assertions } = body;
+
+          if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
+
+          const finalUrl = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
+
+          const { checkMCP } = await import("./services/mcp-sentinel");
+          const results = await checkMCP(finalUrl, assertions || [], method, params);
 
           return new Response(JSON.stringify(results), {
             headers: {

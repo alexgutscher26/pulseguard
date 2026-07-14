@@ -19,6 +19,7 @@ enum MonitorType {
   DNS
   DOMAIN
   HEARTBEAT
+  MCP
 }
 
 enum MonitorStatus {

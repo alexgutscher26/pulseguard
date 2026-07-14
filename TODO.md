@@ -131,10 +131,10 @@ Expand what PulseGuard can actually guard.
   - Fetch WHOIS/RDAP data. Alert on `serverHold`, `clientHold`, or `pendingDelete` statuses.
 - [x] **Heartbeat / Cron Monitor (Push Monitoring)**
   - "Inverse" monitoring. Provide a unique webhook URL. Alert if URL _not_ called within user-defined timeframe. Useful for backup job verifications.
-- [ ] **MCP (Model Context Protocol) Sentinel**
-  - [ ] **JSON-RPC Ping Check**: Specialized template for monitoring MCP servers using standard JSON-RPC 2.0 pings.
-  - [ ] **JSON Body Assertions**: Pre-configured assertions for `jsonrpc: 2.0` and `result: {}` validation.
-  - [ ] **Deep Property Validation**: Use dot-path notation (e.g., `result.tools.0.name`) to verify tool availability.
+- [x] **MCP (Model Context Protocol) Sentinel**
+  - [x] **JSON-RPC Ping Check**: Specialized template for monitoring MCP servers using standard JSON-RPC 2.0 pings.
+  - [x] **JSON Body Assertions**: Pre-configured assertions for `jsonrpc: 2.0` and `result: {}` validation.
+  - [x] **Deep Property Validation**: Use dot-path notation (e.g., `result.tools.0.name`) to verify tool availability.
 
 ### 🧪 API & Synthetic Monitors (Pro/Business)
 
