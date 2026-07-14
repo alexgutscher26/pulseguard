@@ -23,6 +23,7 @@ enum MonitorType {
   GRAPHQL
   WEBSOCKET
   DATABASE
+  BGP
 }
 
 enum MonitorStatus {
@@ -74,6 +75,49 @@ model Monitor {
   @@index([nextCheck])
 }
 
+enum ProbeStatus {
+  ACTIVE
+  INACTIVE
+  DISCONNECTED
+}
+
+model Probe {
+  id             String      @id @default(cuid())
+  name           String
+  token          String      @unique
+  userId         String
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status         ProbeStatus @default(ACTIVE)
+  version        String?
+  platform       String?     // "docker", "wasm", "cloudflare-container"
+  region         String?     // User-defined label for where this probe runs
+  lastHeartbeat  DateTime?
+  heartbeatInterval Int     @default(60) // Seconds between expected heartbeats
+  ipAddress      String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  assignments ProbeAssignment[]
+  monitorEvents MonitorEvent[]
+
+  @@index([userId])
+  @@index([token])
+  @@index([status])
+}
+
+model ProbeAssignment {
+  id        String   @id @default(cuid())
+  probeId   String
+  probe     Probe    @relation(fields: [probeId], references: [id], onDelete: Cascade)
+  monitorId String
+  monitor   Monitor  @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([probeId, monitorId])
+  @@index([probeId])
+  @@index([monitorId])
+}
+
 model HeartbeatPing {
   id        String   @id @default(cuid())
   monitorId String
@@ -93,12 +137,15 @@ model MonitorEvent {
   errorReason String? // "TIMEOUT", "DNS_ERROR", "HTTP_500", etc.
   timestamp   DateTime      @default(now())
   region      String? // Region code where check was performed: "us-east", "eu-west", etc.
+  probeId     String? // If checked by a private probe
+  probe       Probe?        @relation(fields: [probeId], references: [id], onDelete: SetNull)
 
   monitor Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
 
   @@index([monitorId])
   @@index([timestamp])
   @@index([region])
+  @@index([probeId])
 }
 
 model MaintenanceWindow {

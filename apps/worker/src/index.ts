@@ -228,6 +228,26 @@ async function performCheck(
     }
   }
 
+  if (monitor.type === "BGP") {
+    const { checkBGPTRoute } = await import("./services/bgp-monitor");
+    try {
+      const startBgp = performance.now();
+      const expectation = monitor.expectation
+        ? (JSON.parse(monitor.expectation) as any)
+        : undefined;
+      const result = await checkBGPTRoute(monitor.url, expectation);
+      const bgpLatency = Math.round(performance.now() - startBgp);
+
+      return {
+        status: result.status,
+        latency: bgpLatency,
+        errorReason: result.errorReason,
+      };
+    } catch (e: any) {
+      return { status: "DOWN", latency: 0, errorReason: "BGP_CHECK_FAILED" };
+    }
+  }
+
   const urlStr = monitor.url;
 
   // 1. Initial Standard Check
@@ -1766,6 +1786,34 @@ export default {
         }
       }
 
+      // API Route: /api/bgp-check
+      if (url.pathname === "/api/bgp-check" && request.method === "POST") {
+        try {
+          const body: any = await request.json();
+          const { url: targetUrl, expectedAsn, expectedPrefix } = body;
+
+          if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
+
+          const { checkBGPTRoute } = await import("./services/bgp-monitor");
+          const expectation = expectedAsn || expectedPrefix ? { expectedAsn, expectedPrefix } : undefined;
+          const results = await checkBGPTRoute(targetUrl, expectation);
+
+          return new Response(JSON.stringify(results), {
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods": "POST, OPTIONS",
+              "Access-Control-Allow-Headers": "Content-Type",
+            },
+          });
+        } catch (err: any) {
+          return new Response(JSON.stringify({ error: err.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+      }
+
       // API Route: /api/global-latency
       if (url.pathname === "/api/global-latency" && request.method === "POST") {
         try {
@@ -1793,6 +1841,90 @@ export default {
             status: 500,
             headers: { "Content-Type": "application/json" },
           });
+        }
+      }
+
+      // --- PROBE REGISTRY API ---
+
+      // POST /api/probes/register
+      if (url.pathname === "/api/probes/register" && request.method === "POST") {
+        try {
+          const session = await verifySession(request, env);
+          if (!session?.userId) {
+            return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { "Content-Type": "application/json" } });
+          }
+
+          const body: any = await request.json();
+          const { name, platform, region, heartbeatInterval } = body;
+          if (!name) return new Response(JSON.stringify({ error: "Missing 'name'" }), { status: 400, headers: { "Content-Type": "application/json" } });
+
+          const prisma = getPrisma(env.DATABASE_URL);
+          const { registerProbe } = await import("./services/probe-registry");
+          const probe = await registerProbe(prisma, session.userId, name, platform, region, heartbeatInterval);
+
+          return new Response(JSON.stringify(probe), { status: 201, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } });
+        } catch (err: any) {
+          return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" } });
+        }
+      }
+
+      // POST /api/probes/poll
+      if (url.pathname === "/api/probes/poll" && request.method === "POST") {
+        try {
+          const token = request.headers.get("Authorization")?.replace("Bearer ", "");
+          if (!token) return new Response(JSON.stringify({ error: "Missing token" }), { status: 401, headers: { "Content-Type": "application/json" } });
+
+          const prisma = getPrisma(env.DATABASE_URL);
+          const { authenticateProbe, pollJobs } = await import("./services/probe-registry");
+          const probe = await authenticateProbe(prisma, token);
+          if (!probe) return new Response(JSON.stringify({ error: "Invalid or inactive probe" }), { status: 403, headers: { "Content-Type": "application/json" } });
+
+          const body: any = await request.json().catch(() => ({}));
+          const jobs = await pollJobs(prisma, probe.id, body.maxJobs || 10);
+
+          return new Response(JSON.stringify({ probeId: probe.id, jobs }), { status: 200, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } });
+        } catch (err: any) {
+          return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" } });
+        }
+      }
+
+      // POST /api/probes/result
+      if (url.pathname === "/api/probes/result" && request.method === "POST") {
+        try {
+          const token = request.headers.get("Authorization")?.replace("Bearer ", "");
+          if (!token) return new Response(JSON.stringify({ error: "Missing token" }), { status: 401, headers: { "Content-Type": "application/json" } });
+
+          const prisma = getPrisma(env.DATABASE_URL);
+          const { authenticateProbe, reportResult } = await import("./services/probe-registry");
+          const probe = await authenticateProbe(prisma, token);
+          if (!probe) return new Response(JSON.stringify({ error: "Invalid or inactive probe" }), { status: 403, headers: { "Content-Type": "application/json" } });
+
+          const body: any = await request.json();
+          await reportResult(prisma, probe.id, body);
+
+          return new Response(JSON.stringify({ ok: true }), { status: 200, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } });
+        } catch (err: any) {
+          return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" } });
+        }
+      }
+
+      // POST /api/probes/heartbeat
+      if (url.pathname === "/api/probes/heartbeat" && request.method === "POST") {
+        try {
+          const token = request.headers.get("Authorization")?.replace("Bearer ", "");
+          if (!token) return new Response(JSON.stringify({ error: "Missing token" }), { status: 401, headers: { "Content-Type": "application/json" } });
+
+          const prisma = getPrisma(env.DATABASE_URL);
+          const { authenticateProbe, recordHeartbeat } = await import("./services/probe-registry");
+          const probe = await authenticateProbe(prisma, token);
+          if (!probe) return new Response(JSON.stringify({ error: "Invalid or inactive probe" }), { status: 403, headers: { "Content-Type": "application/json" } });
+
+          const sourceIp = request.headers.get("CF-Connecting-IP") || request.headers.get("X-Forwarded-For") || undefined;
+          await recordHeartbeat(prisma, probe.id, sourceIp);
+
+          return new Response(JSON.stringify({ ok: true }), { status: 200, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } });
+        } catch (err: any) {
+          return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" } });
         }
       }
 
@@ -1833,6 +1965,21 @@ export default {
           .then((m) => m.syncFallbackToDatabase(prisma, env))
           .catch((err) => console.error("[Sync] Background task failed:", err)),
       );
+
+      // Check probe heartbeats in background
+      ctx.waitUntil(
+        import("./services/probe-registry")
+          .then(async (m) => {
+            const results = await m.checkProbeHeartbeats(prisma);
+            const lostProbes = results.filter((r) => r.status === "DOWN");
+            for (const probeResult of lostProbes) {
+              console.warn(
+                `[ProbeHeartbeat] Probe ${probeResult.probeId} lost! ${probeResult.secondsSinceLastHeartbeat}s since last heartbeat.`,
+              );
+            }
+          })
+          .catch((err) => console.error("[ProbeHeartbeat] Check failed:", err)),
+      );
     }
 
     // FREE TIER CONFIG: Process 5 monitors per cron tick (1 min)
@@ -1852,6 +1999,9 @@ export default {
           WHERE ("status" IN ('UP', 'DOWN', 'MAINTENANCE'))
           AND ("nextCheck" IS NULL OR "nextCheck" <= NOW())
           AND (abs(hashtext(id)) % ${totalShards}) = ${shardId}
+          AND NOT EXISTS (
+            SELECT 1 FROM "ProbeAssignment" WHERE "monitorId" = "Monitor"."id"
+          )
           ORDER BY "nextCheck" ASC
           LIMIT ${BATCH_SIZE}
         `;

@@ -155,12 +155,12 @@ Expand what PulseGuard can actually guard.
   - Stores regional performance data and executes checks from selected origins.
 - [ ] **True Concurrent Global Ping (Paid)**
   - Implement Cloudflare Durable Objects to guarantee simultaneously fired checks from exactly 5/10/20 requested global datacenters.
-- [ ] **Private Monitoring Probes (The Internal Guard)**
-  - [ ] **Stateless Probes (Docker/WASM)**: Self-hostable worker instances that poll PulseGuard for jobs.
-  - [ ] **Cloudflare Native Deployment**: Support for deploying probes to **Cloudflare Containers** (serverless OCI) for edge-native private monitoring.
-  - [ ] **Token-Based Proxying**: Secure monitoring of services behind corporate firewalls or VPNs.
-  - [ ] **Heartbeat Config**: Alert if a probe loses connection for >X seconds.
-- [ ] **BGP Route Monitoring**
+- [x] **Private Monitoring Probes (The Internal Guard)**
+  - [x] **Stateless Probes (Docker/WASM)**: Self-hostable worker instances that poll PulseGuard for jobs.
+  - [x] **Cloudflare Native Deployment**: Support for deploying probes to **Cloudflare Containers** (serverless OCI) for edge-native private monitoring.
+  - [x] **Token-Based Proxying**: Secure monitoring of services behind corporate firewalls or VPNs.
+  - [x] **Heartbeat Config**: Alert if a probe loses connection for >X seconds.
+- [x] **BGP Route Monitoring**
   - Detect BGP leaks or route hijacking affecting user traffic routing to the monitored endpoints.
 
 ---
