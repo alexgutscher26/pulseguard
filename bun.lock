@@ -87,6 +87,17 @@
         "typescript": "catalog:",
       },
     },
+    "apps/probe": {
+      "name": "@pulseguard/probe",
+      "version": "0.1.0",
+      "dependencies": {
+        "undici": "^7.0.0",
+      },
+      "devDependencies": {
+        "@types/node": "^22.0.0",
+        "typescript": "^5.7.0",
+      },
+    },
     "apps/web": {
       "name": "web",
       "version": "0.1.0",
@@ -1142,6 +1153,8 @@
     "@pulseguard/env": ["@pulseguard/env@workspace:packages/env"],
 
     "@pulseguard/infra": ["@pulseguard/infra@workspace:packages/infra"],
+
+    "@pulseguard/probe": ["@pulseguard/probe@workspace:apps/probe"],
 
     "@pulseguard/shared": ["@pulseguard/shared@workspace:packages/shared"],
 
