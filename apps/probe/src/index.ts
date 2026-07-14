@@ -25,7 +25,8 @@ interface CheckResult {
   region: string;
 }
 
-const API_URL = process.env.PULSEGUARD_API_URL || "https://pulseguard-worker.example.com";
+const RAW_API_URL = (process.env.PULSEGUARD_API_URL || "https://pulseguard-worker.example.com").replace(/\/+$/, "");
+const API_URL = new URL(RAW_API_URL);
 const PROBE_TOKEN = process.env.PULSEGUARD_PROBE_TOKEN || "";
 const POLL_INTERVAL = parseInt(process.env.PROBE_POLL_INTERVAL || "15", 10);
 const HEARTBEAT_INTERVAL = parseInt(process.env.PROBE_HEARTBEAT_INTERVAL || "30", 10);
@@ -40,12 +41,22 @@ const AUTH_HEADERS = {
   "Content-Type": "application/json",
 };
 
+function resolvePath(path: string): string {
+  return new URL(path.replace(/^\//, ""), API_URL).href;
+}
+
 async function apiPost<T>(path: string, body?: unknown): Promise<T> {
-  const response = await fetch(`${API_URL}${path}`, {
-    method: "POST",
-    headers: AUTH_HEADERS,
-    body: body ? JSON.stringify(body) : undefined,
-  });
+  const url = resolvePath(path);
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      method: "POST",
+      headers: AUTH_HEADERS,
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  } catch (err: any) {
+    throw new Error(`fetch failed for ${url}: ${err.cause || err.message || err.code || "unknown"}`);
+  }
   if (!response.ok) {
     throw new Error(`API ${path} failed: ${response.status} ${await response.text().catch(() => "")}`);
   }
@@ -192,7 +203,7 @@ async function processJobs(jobs: ProbeJob[]): Promise<void> {
 
 async function main(): Promise<void> {
   console.log(`[Probe] Starting PulseGuard Private Probe`);
-  console.log(`[Probe] API URL: ${API_URL}`);
+  console.log(`[Probe] API URL: ${API_URL.href}`);
   console.log(`[Probe] Poll Interval: ${POLL_INTERVAL}s`);
   console.log(`[Probe] Heartbeat Interval: ${HEARTBEAT_INTERVAL}s`);
 
