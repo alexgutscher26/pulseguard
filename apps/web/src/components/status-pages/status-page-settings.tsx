@@ -241,6 +241,43 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
           {/* Localization */}
           <StatusPageI18n page={page} />
 
+          {/* Tracker Customization */}
+          <div className="bg-card/20 border border-primary/10 p-6 rounded-sm space-y-4">
+            <h3 className="text-sm font-bold font-mono uppercase text-muted-foreground flex items-center gap-2">
+              <Eye className="size-4" /> Tracker Customization
+            </h3>
+
+            <div className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
+                  Bar Type (Status Timeline)
+                </label>
+                <select
+                  name="barType"
+                  defaultValue={page.barType || "absolute"}
+                  className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
+                >
+                  <option value="absolute">Absolute (Real Data)</option>
+                  <option value="manual">Manual (Overridden Status)</option>
+                </select>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
+                  Card Type (Tracker Metrics)
+                </label>
+                <select
+                  name="cardType"
+                  defaultValue={page.cardType || "duration"}
+                  className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
+                >
+                  <option value="duration">Duration (Percent Uptime)</option>
+                  <option value="requests">Requests (Check Counts)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
           {/* Visibility & SEO */}
           <div className="bg-card/20 border border-primary/10 p-6 rounded-sm space-y-4">
             <h3 className="text-sm font-bold font-mono uppercase text-muted-foreground flex items-center gap-2">

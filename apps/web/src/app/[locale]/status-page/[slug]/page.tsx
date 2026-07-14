@@ -23,6 +23,9 @@ async function getPublicStatusPage(slug: string) {
         },
         orderBy: { sortOrder: "asc" },
       },
+      overrides: {
+        orderBy: { date: "asc" },
+      },
     },
   });
 }

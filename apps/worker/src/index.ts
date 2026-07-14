@@ -336,9 +336,10 @@ async function performInternalRequest(
       // Treat 2xx, 3xx as UP — redirects are healthy (e.g. google.com -> www.google.com)
       // Treat 429 (Too Many Requests) as UP — the server is alive and responding,
       // it's just throttling this IP. A rate-limit is NOT a real outage.
-      const isRateLimited = response.status === 429;
+      const statusNum = Number(response.status);
+      const isRateLimited = statusNum === 429;
       const isHealthyStatus =
-        response.ok || (response.status >= 300 && response.status < 400) || isRateLimited;
+        response.ok || (statusNum >= 300 && statusNum < 400) || isRateLimited;
       currentStatus = isHealthyStatus ? "UP" : "DOWN";
 
       // 3. Deep Payload/Status Validation (WASM/Rust Optimized Bridge)

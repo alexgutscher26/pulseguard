@@ -11,7 +11,7 @@ import {
   updateHistoryDays,
   getStatusPageUptimeData,
 } from "@/actions/status-pages";
-import { Monitor, Plus, Trash2, ArrowLeft, ExternalLink, History, Code2 } from "lucide-react";
+import { Monitor, Plus, Trash2, ArrowLeft, ExternalLink, History, Code2, Calendar } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -23,8 +23,9 @@ import { IncidentHistoryTab } from "./incident-history-tab";
 import { MaintenanceTimeline } from "./maintenance-timeline";
 import { UptimePercentageCard } from "./uptime-percentage-card";
 import { WidgetConfigurator } from "./widget-configurator";
+import { OverridesTab } from "./overrides-tab";
 
-type TabType = "monitors" | "settings" | "analytics" | "history" | "widget";
+type TabType = "monitors" | "settings" | "analytics" | "history" | "widget" | "overrides";
 
 export function StatusPageEditor({ page, allMonitors }: { page: any; allMonitors: any[] }) {
   const router = useRouter();
@@ -112,6 +113,7 @@ export function StatusPageEditor({ page, allMonitors }: { page: any; allMonitors
     { id: "monitors", label: "Monitors" },
     { id: "history", label: "History", icon: <History className="size-3" /> },
     { id: "widget", label: "Widget", icon: <Code2 className="size-3" /> },
+    { id: "overrides", label: "Overrides", icon: <Calendar className="size-3" /> },
     { id: "analytics", label: "Analytics" },
     { id: "settings", label: "Settings" },
   ];
@@ -300,6 +302,8 @@ export function StatusPageEditor({ page, allMonitors }: { page: any; allMonitors
           </div>
         </div>
       )}
+
+      {activeTab === "overrides" && <OverridesTab page={page} />}
 
       {activeTab === "settings" && <StatusPageSettings page={page} />}
     </div>

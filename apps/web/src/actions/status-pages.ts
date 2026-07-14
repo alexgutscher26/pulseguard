@@ -95,6 +95,8 @@ const statusPageSchema = z.object({
   logo: z.string().optional(),
   favicon: z.string().optional(),
   customCss: z.string().optional(),
+  barType: z.string().optional(),
+  cardType: z.string().optional(),
 });
 
 export async function createStatusPage(prevState: any, formData: FormData) {
@@ -123,6 +125,8 @@ export async function createStatusPage(prevState: any, formData: FormData) {
     logo: (formData.get("logo") as string) || undefined,
     favicon: (formData.get("favicon") as string) || undefined,
     customCss: (formData.get("customCss") as string) || undefined,
+    barType: (formData.get("barType") as string) || undefined,
+    cardType: (formData.get("cardType") as string) || undefined,
   };
 
   const validation = statusPageSchema.safeParse(rawData);
@@ -154,6 +158,8 @@ export async function createStatusPage(prevState: any, formData: FormData) {
         showUptime: data.showUptime ?? true,
         showResponseTime: data.showResponseTime ?? true,
         showPaused: data.showPaused ?? false,
+        barType: data.barType ?? "absolute",
+        cardType: data.cardType ?? "duration",
 
         logo: data.logo,
         favicon: data.favicon,
@@ -163,9 +169,9 @@ export async function createStatusPage(prevState: any, formData: FormData) {
 
     revalidatePath("/dashboard/pages");
     return { success: true, id: page.id };
-  } catch (e) {
+  } catch (e: any) {
     console.error("Failed to create status page:", e);
-    return { success: false, error: "Failed to create status page" };
+    return { success: false, error: `Failed to create status page: ${e.message || String(e)}` };
   }
 }
 
@@ -252,6 +258,9 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
     showResponseTime: formData.get("showResponseTime") === "on",
     showPaused: formData.get("showPaused") === "on",
 
+    barType: (formData.get("barType") as string) || undefined,
+    cardType: (formData.get("cardType") as string) || undefined,
+
     logo: (formData.get("logo") as string) || undefined,
     favicon: (formData.get("favicon") as string) || undefined,
     customCss: (formData.get("customCss") as string) || undefined,
@@ -280,6 +289,8 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
         showUptime: rawData.showUptime,
         showResponseTime: rawData.showResponseTime,
         showPaused: rawData.showPaused,
+        barType: rawData.barType,
+        cardType: rawData.cardType,
         logo: rawData.logo,
         favicon: rawData.favicon,
         customCss: rawData.customCss,
@@ -290,9 +301,9 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
     revalidatePath(`/dashboard/pages/${id}`);
     revalidatePath(`/status-page/${rawData.slug}`);
     return { success: true };
-  } catch (e) {
+  } catch (e: any) {
     console.error("Failed to update status page:", e);
-    return { success: false, error: "Update failed" };
+    return { success: false, error: `Update failed: ${e.message || String(e)}` };
   }
 }
 
@@ -734,3 +745,105 @@ export async function getStatusPageUptimeData(pageId: string, days: number = 90)
 
   return { current, previous, trend, difference };
 }
+
+/**
+ * Creates a manual override for a specific date and monitor on a status page.
+ */
+export async function createStatusPageOverride(
+  statusPageId: string,
+  monitorId: string,
+  dateStr: string,
+  status: string,
+  message?: string,
+) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session?.user) return { success: false, error: "Unauthorized" };
+
+  const page = await prisma.statusPage.findUnique({
+    where: { id: statusPageId, userId: session.user.id } as any,
+  });
+  if (!page) return { success: false, error: "Status page not found" };
+
+  const date = new Date(dateStr);
+  date.setUTCHours(0, 0, 0, 0);
+
+  try {
+    const override = await prisma.statusPageOverride.upsert({
+      where: {
+        statusPageId_monitorId_date: {
+          statusPageId,
+          monitorId,
+          date,
+        },
+      },
+      create: {
+        statusPageId,
+        monitorId,
+        date,
+        status,
+        message,
+      },
+      update: {
+        status,
+        message,
+      },
+    });
+
+    revalidatePath(`/dashboard/pages/${statusPageId}`);
+    revalidatePath(`/status-page/${page.slug}`);
+    return { success: true, override };
+  } catch (err: any) {
+    console.error("Failed to create status page override:", err);
+    return { success: false, error: "Failed to create manual override" };
+  }
+}
+
+/**
+ * Deletes a manual override.
+ */
+export async function deleteStatusPageOverride(statusPageId: string, overrideId: string) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session?.user) return { success: false, error: "Unauthorized" };
+
+  const page = await prisma.statusPage.findUnique({
+    where: { id: statusPageId, userId: session.user.id } as any,
+  });
+  if (!page) return { success: false, error: "Status page not found" };
+
+  try {
+    await prisma.statusPageOverride.delete({
+      where: { id: overrideId },
+    });
+
+    revalidatePath(`/dashboard/pages/${statusPageId}`);
+    revalidatePath(`/status-page/${page.slug}`);
+    return { success: true };
+  } catch (err: any) {
+    console.error("Failed to delete status page override:", err);
+    return { success: false, error: "Failed to delete manual override" };
+  }
+}
+
+/**
+ * Retrieves manual overrides for a status page.
+ */
+export async function getStatusPageOverrides(statusPageId: string) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session?.user) return [];
+
+  const page = await prisma.statusPage.findUnique({
+    where: { id: statusPageId, userId: session.user.id } as any,
+  });
+  if (!page) return [];
+
+  return prisma.statusPageOverride.findMany({
+    where: { statusPageId },
+    include: {
+      monitor: {
+        select: { name: true },
+      },
+    },
+    orderBy: { date: "desc" },
+  });
+}
+

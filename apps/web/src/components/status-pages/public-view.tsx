@@ -238,6 +238,9 @@ export function PublicView({ page }: { page: any }) {
               item={item}
               showUptime={page.showUptime}
               showResponseTime={page.showResponseTime}
+              barType={page.barType || "absolute"}
+              cardType={page.cardType || "duration"}
+              overrides={page.overrides || []}
             />
           ))}
 

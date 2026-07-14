@@ -135,7 +135,7 @@ export default function ManagePageClient({ manageToken }: ManagePageClientProps)
         {/* Header */}
         <div className="mb-8">
           <Link
-            href={`/status-page/${subscriber.statusPage.slug}`}
+            href={`/status-page/${subscriber.statusPage.slug}` as any}
             className="inline-flex items-center gap-2 text-primary/60 hover:text-primary text-sm mb-4 transition-colors"
           >
             <ArrowLeft className="size-4" />

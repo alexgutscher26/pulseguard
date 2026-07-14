@@ -57,6 +57,9 @@ model Monitor {
   monitorSubscriptions MonitorSubscription[]
   dailySummaries       DailyMonitorSummary[]
   insights             MonitorInsight[]
+  probeAssignments     ProbeAssignment[]
+  heartbeatPings       HeartbeatPing[]
+  statusPageOverrides  StatusPageOverride[]
 
   nextCheck            DateTime?
   lastCheck            DateTime?

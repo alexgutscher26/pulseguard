@@ -176,10 +176,10 @@ Public-facing transparency for users and internal collaboration for teams.
   - Private Pages: Password protection, SS0-based access, IP Whitelisting.
 - [ ] **OpenStatus Parity (Competitive Shield)**
   - [x] **Logical Grouping**: Implement `StatusPageGroup` model for collapsible sections (e.g. "Services", "API", "Nodes").
-  - [ ] **Tracker Customization**:
-    - [ ] **Bar Type**: Toggle between `Absolute` (real data) and `Manual` (overridden status).
-    - [ ] **Card Type**: Toggle between `Duration` (percent base) and `Requests` (count base) for trackers.
-    - [ ] **Manual Overrides**: Ability to manually set a day's status (Operational, Degraded, etc.) regardless of automated checks.
+  - [x] **Tracker Customization**:
+    - [x] **Bar Type**: Toggle between `Absolute` (real data) and `Manual` (overridden status).
+    - [x] **Card Type**: Toggle between `Duration` (percent base) and `Requests` (count base) for trackers.
+    - [x] **Manual Overrides**: Ability to manually set a day's status (Operational, Degraded, etc.) regardless of automated checks.
   - [ ] **Enriched Branding & Links**:
     - [ ] **Logo Link**: Explicit `homepageUrl` field for branding.
     - [ ] **Contact Support**: `contactUrl` field to show a "Message" icon/button on the header.
@@ -189,7 +189,7 @@ Public-facing transparency for users and internal collaboration for teams.
   - [ ] **Theme Store Integration**: Store custom brand color variables (Operational, Error, Degraded) in a `theme` JSON blob.
   - [ ] **Advanced Branding**: Support Favicon URL, Logo URL, and Footer Links (Contact, Home, Support).
   - [ ] **SEO Meta Injection**: Support `metaTitle`, `metaDescription`, and `ogImageUrl` for better social sharing.
-  - [ ] **Metrics Toggles**: Allow users to toggle between Latency, Uptime %, and Check Counts visibility per monitor.
+  - [ ] **Metrics Toggles**: Allow users to toggle between Latency, Uptime %, and Check Counts visibility per monitor.--0
   - [x] **Global Audience (i18n)**: Leverage `StatusPageI18n` for full locale switching support.
 - [ ] **Deep Aesthetic Injection**
   - Allow users to inject custom CSS/JS for fully white-labeled page rendering.

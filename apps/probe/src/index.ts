@@ -113,7 +113,8 @@ async function runCheck(job: ProbeJob): Promise<CheckResult> {
 
       await response.text();
       const latency = Math.round(performance.now() - start);
-      const isHealthy = response.ok || (response.status >= 300 && response.status < 400) || response.status === 429;
+      const statusNum = Number(response.status);
+      const isHealthy = response.ok || (statusNum >= 300 && statusNum < 400) || statusNum === 429;
 
       return {
         monitorId: job.monitorId,

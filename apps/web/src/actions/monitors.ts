@@ -651,9 +651,10 @@ export async function checkMonitor(
         const body = await response.text();
         latency = Math.round(Date.now() - start);
         // Treat 2xx, 3xx as UP. Treat 429 as UP — rate-limited means server is alive.
-        const isRateLimited = response.status === 429;
+        const statusNum = Number(response.status);
+        const isRateLimited = statusNum === 429;
         const isHealthyStatus =
-          response.ok || (response.status >= 300 && response.status < 400) || isRateLimited;
+          response.ok || (statusNum >= 300 && statusNum < 400) || isRateLimited;
         currentStatus = isHealthyStatus ? "UP" : "DOWN";
 
         if (currentStatus === "UP" && monitor.expectation) {

@@ -71,9 +71,10 @@ async function checkFromRegion(monitor: Monitor, region: string): Promise<Region
     // Treat 2xx, 3xx as UP — healthy responses
     // Treat 429 (Too Many Requests) as UP — the server is alive and responding,
     // it's just rate-limiting our IP. This is NOT a real outage.
-    const isRateLimited = response.status === 429;
+    const statusNum = Number(response.status);
+    const isRateLimited = statusNum === 429;
     const isHealthy =
-      response.ok || (response.status >= 300 && response.status < 400) || isRateLimited;
+      response.ok || (statusNum >= 300 && statusNum < 400) || isRateLimited;
 
     return {
       region,

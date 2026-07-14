@@ -15,6 +15,7 @@ model User {
   notificationChannels NotificationChannel[]
   statusPages          StatusPage[]
   incidentTemplates    IncidentTemplate[]
+  probes               Probe[]
 
   @@unique([email])
   @@map("user")

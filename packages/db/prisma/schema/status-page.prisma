@@ -31,6 +31,8 @@ model StatusPage {
 
   // History Configuration
   historyDays Int @default(90) // 30, 60, or 90 day lookback
+  barType     String @default("absolute") // "absolute" | "manual"
+  cardType    String @default("duration") // "duration" | "requests"
 
   // Relations
   userId       String
@@ -40,6 +42,7 @@ model StatusPage {
   views        StatusPageView[]
   i18nSettings StatusPageI18n[]
   subscribers  StatusPageSubscriber[]
+  overrides    StatusPageOverride[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -179,5 +182,22 @@ model MonitorSubscription {
 
   @@unique([subscriberId, monitorId])
   @@index([subscriberId])
+  @@index([monitorId])
+}
+
+model StatusPageOverride {
+  id           String   @id @default(cuid())
+  statusPageId String
+  statusPage   StatusPage @relation(fields: [statusPageId], references: [id], onDelete: Cascade)
+  monitorId    String
+  monitor      Monitor  @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  date         DateTime // The day of the override (normalized to UTC midnight)
+  status       String   // "OPERATIONAL" | "DEGRADED" | "PARTIAL_OUTAGE" | "MAJOR_OUTAGE" | "MAINTENANCE"
+  message      String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([statusPageId, monitorId, date])
+  @@index([statusPageId])
   @@index([monitorId])
 }
