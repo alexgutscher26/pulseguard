@@ -12,6 +12,7 @@ enum AlertTrigger {
   LATENCY
   SSL_EXPIRY
   DNS_WATCHDOG
+  DOMAIN_EXPIRY
 }
 
 enum ComparisonOperator {

@@ -38,6 +38,7 @@ import { performRegionalChecks, getAverageLatency } from "./services/regional-mo
 async function performCheck(
   monitor: any,
   env?: Env,
+  prisma?: any,
 ): Promise<{
   status: "UP" | "DOWN" | "MAINTENANCE";
   latency: number;
@@ -45,6 +46,7 @@ async function performCheck(
   daysRemaining?: number;
   issuer?: string;
   protocol?: string;
+  registrar?: string;
 }> {
   // If explicitly in maintenance (passed from caller), skip check
   if (monitor.status === "MAINTENANCE") {
@@ -111,6 +113,41 @@ async function performCheck(
       };
     } catch (e: any) {
       return { status: "DOWN", latency: 0, errorReason: "DNS_CHECK_FAILED" };
+    }
+  }
+
+  if (monitor.type === "DOMAIN") {
+    const { checkDomainExpiration } = await import("./services/domain-expiration");
+    try {
+      const startDom = performance.now();
+      const domainResult = await checkDomainExpiration(monitor.url);
+      const domLatency = Math.round(performance.now() - startDom);
+
+      return {
+        status: domainResult.isCritical ? "DOWN" : "UP",
+        latency: domLatency,
+        errorReason: domainResult.isCritical
+          ? `DOMAIN_${domainResult.criticalStatuses.length > 0 ? "CRITICAL_STATUS" : "EXPIRED"}`
+          : undefined,
+        daysRemaining: domainResult.daysRemaining,
+        registrar: domainResult.registrar ?? undefined,
+      };
+    } catch (e: any) {
+      return { status: "DOWN", latency: 0, errorReason: "DOMAIN_CHECK_FAILED" };
+    }
+  }
+
+  if (monitor.type === "HEARTBEAT") {
+    const { checkHeartbeat } = await import("./services/heartbeat");
+    try {
+      const result = await checkHeartbeat(prisma, monitor.id, monitor.interval || 300);
+      return {
+        status: result.status,
+        latency: result.latency,
+        errorReason: result.errorReason,
+      };
+    } catch (e: any) {
+      return { status: "DOWN", latency: 0, errorReason: "HEARTBEAT_CHECK_FAILED" };
     }
   }
 
@@ -602,11 +639,11 @@ export async function processBatch(
               regionalError,
             );
             // Fallback to single check
-            result = await performCheck(monitor, env);
+            result = await performCheck(monitor, env, prisma);
           }
         } else {
           // Standard single-region check
-          result = await performCheck(monitor, env);
+          result = await performCheck(monitor, env, prisma);
         }
 
         // 2. Multi-Vector Verification Protocol (Retry & Proxy on Failure)
@@ -619,7 +656,7 @@ export async function processBatch(
           await new Promise((resolve) => setTimeout(resolve, 1000));
 
           // Base retry from current region
-          let retryResult = await performCheck(monitor, env);
+          let retryResult = await performCheck(monitor, env, prisma);
 
           // If still DOWN locally and it's an HTTP check, try from an external proxy (Region B)
           if (
@@ -1437,6 +1474,55 @@ export default {
         }
       }
 
+      // Webhook Route: /api/heartbeat/<token> (GET or POST)
+      if (url.pathname.startsWith("/api/heartbeat/") && (request.method === "GET" || request.method === "POST")) {
+        try {
+          const token = url.pathname.split("/api/heartbeat/")[1] || "";
+
+          if (!token) {
+            return new Response(JSON.stringify({ error: "Missing heartbeat token" }), {
+              status: 400,
+              headers: { "Content-Type": "application/json" },
+            });
+          }
+
+          const prisma = getPrisma(env.DATABASE_URL);
+
+          // Look up monitor by heartbeat token
+          const monitor = await (prisma.monitor as any).findFirst({
+            where: { heartbeatToken: token, type: "HEARTBEAT" },
+            select: { id: true, name: true },
+          });
+
+          if (!monitor) {
+            return new Response(JSON.stringify({ error: "Invalid heartbeat token" }), {
+              status: 404,
+              headers: { "Content-Type": "application/json" },
+            });
+          }
+
+          const { recordPing } = await import("./services/heartbeat");
+          const sourceIp = request.headers.get("CF-Connecting-IP") || request.headers.get("X-Forwarded-For") || null;
+          const userAgent = request.headers.get("User-Agent") || null;
+
+          await recordPing(prisma, monitor.id, sourceIp, userAgent);
+
+          return new Response(JSON.stringify({ ok: true, monitor: monitor.name }), {
+            status: 200,
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            },
+          });
+        } catch (err: any) {
+          console.error(`[Heartbeat] Webhook error:`, err);
+          return new Response(JSON.stringify({ error: "Internal server error" }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+      }
+
       // API Route: /api/dns-watchdog
       if (url.pathname === "/api/dns-watchdog" && request.method === "POST") {
         try {
@@ -1447,6 +1533,33 @@ export default {
 
           const { checkDNSWatchdog } = await import("./services/dns-watchdog");
           const results = await checkDNSWatchdog(domain, expectedIPs || []);
+
+          return new Response(JSON.stringify(results), {
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods": "POST, OPTIONS",
+              "Access-Control-Allow-Headers": "Content-Type",
+            },
+          });
+        } catch (err: any) {
+          return new Response(JSON.stringify({ error: err.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+      }
+
+      // API Route: /api/domain-expiration
+      if (url.pathname === "/api/domain-expiration" && request.method === "POST") {
+        try {
+          const body: any = await request.json();
+          const { domain } = body;
+
+          if (!domain) return new Response("Missing 'domain' body param", { status: 400 });
+
+          const { checkDomainExpiration } = await import("./services/domain-expiration");
+          const results = await checkDomainExpiration(domain);
 
           return new Response(JSON.stringify(results), {
             headers: {
@@ -1593,6 +1706,7 @@ export default {
           timeout: true,
           status: true,
           name: true,
+          type: true,
           checkRegions: true,
           alertThreshold: true,
           dynamicThresholding: true,
@@ -1600,6 +1714,8 @@ export default {
           method: true,
           headers: true,
           body: true,
+          expectation: true,
+          script: true,
           // @ts-ignore
           maintenanceWindows: {
             where: {

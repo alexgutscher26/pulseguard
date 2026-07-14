@@ -17,6 +17,8 @@ enum MonitorType {
   SEQUENCE
   SSL
   DNS
+  DOMAIN
+  HEARTBEAT
 }
 
 enum MonitorStatus {
@@ -62,9 +64,21 @@ model Monitor {
   body                 String?   // Request body for POST/PUT/PATCH
   expectation          String? // JSON structure for response validation
   script               String? // JSON array of declarative steps for BROWSER monitors
+  heartbeatToken       String? @unique // Unique token for heartbeat webhook URL
 
   @@index([userId])
   @@index([nextCheck])
+}
+
+model HeartbeatPing {
+  id        String   @id @default(cuid())
+  monitorId String
+  monitor   Monitor  @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  pingedAt  DateTime @default(now())
+  sourceIp  String?
+  userAgent String?
+
+  @@index([monitorId, pingedAt(sort: Desc)])
 }
 
 model MonitorEvent {

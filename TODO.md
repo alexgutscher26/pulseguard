@@ -127,9 +127,9 @@ Expand what PulseGuard can actually guard.
   - Verify `connect()` to database ports (5432) or Redis (6379) works via lightweight TCP ping.
 - [x] **DNS Watchdog**
   - Check if domain resolves to expected IP. Detect DNS propagation anomalies.
-- [ ] **Domain Expiration Guard**
+- [x] **Domain Expiration Guard**
   - Fetch WHOIS/RDAP data. Alert on `serverHold`, `clientHold`, or `pendingDelete` statuses.
-- [ ] **Heartbeat / Cron Monitor (Push Monitoring)**
+- [x] **Heartbeat / Cron Monitor (Push Monitoring)**
   - "Inverse" monitoring. Provide a unique webhook URL. Alert if URL _not_ called within user-defined timeframe. Useful for backup job verifications.
 - [ ] **MCP (Model Context Protocol) Sentinel**
   - [ ] **JSON-RPC Ping Check**: Specialized template for monitoring MCP servers using standard JSON-RPC 2.0 pings.
