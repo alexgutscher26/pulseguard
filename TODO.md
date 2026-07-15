@@ -311,10 +311,10 @@ Enterprise-grade controls to pass strict compliance reviews.
 
 Made for developers, by developers.
 
-- [ ] **Official CLI Tool (`pulseguard-cli`)**
-  - [ ] **Monitoring as Code (MaC)**: `pulse monitors import` and `pulse monitors apply` using `pulseguard.yaml` sync (OpenStatus parity).
-  - [ ] **Live Debugging**: `pulse logs tail` and `pulse trigger <id>` for instant monitoring verification.
-  - [ ] **CI/CD Integration**: Command to wait for health checks to pass before completing a deployment step.
+- [x] **Official CLI Tool (`pulseguard-cli`)**
+  - [x] **Monitoring as Code (MaC)**: `pulse monitors import` and `pulse monitors apply` using `pulseguard.yaml` sync (OpenStatus parity).
+  - [x] **Live Debugging**: `pulse logs tail` and `pulse trigger <id>` for instant monitoring verification.
+  - [x] **CI/CD Integration**: Command to wait for health checks to pass before completing a deployment step.
 - [ ] **Terraform & Pulumi Providers**
   - Manage PulseGuard architecture purely as code (IaC) alongside the rest of the stack.
 - [ ] **Language SDKs**

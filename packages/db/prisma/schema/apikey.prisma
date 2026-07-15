@@ -1,0 +1,15 @@
+model ApiKey {
+  id          String    @id @default(cuid())
+  name        String
+  keyHash     String    @unique // SHA-256 of the raw key (never stored in plaintext)
+  prefix      String    // First 12 chars shown in UI: "pg_xxxxxxxx..."
+  scopes      String    @default("read,write") // CSV: "read", "write"
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt   DateTime?
+  lastUsedAt  DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([userId])
+  @@index([keyHash])
+}

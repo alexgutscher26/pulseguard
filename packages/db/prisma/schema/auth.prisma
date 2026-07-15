@@ -16,6 +16,7 @@ model User {
   statusPages          StatusPage[]
   incidentTemplates    IncidentTemplate[]
   probes               Probe[]
+  apiKeys              ApiKey[]
 
   @@unique([email])
   @@map("user")
