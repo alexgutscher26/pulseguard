@@ -2234,7 +2234,7 @@ export default {
       if (failedMessageIds.size > 0) {
         // Construct a filtered batch inheriting prototype methods from original batch
         activeBatch = Object.create(batch);
-        (activeBatch as any).messages = batch.messages.filter((msg) => {
+        (activeBatch as { -readonly [K in keyof MessageBatch<any>]: MessageBatch<any>[K] }).messages = batch.messages.filter((msg) => {
           const msgId = msg.id || (msg.body && msg.body.id);
           return !failedMessageIds.has(msgId);
         });

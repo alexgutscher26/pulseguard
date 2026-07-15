@@ -17,7 +17,7 @@ export async function checkPort(host: string, port: number): Promise<PortResult>
     host,
     port,
     isOpen: result.isOpen,
-    status: result.status as any,
+    status: result.status as PortResult["status"],
     latency: result.latency,
   };
 }

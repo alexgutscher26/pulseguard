@@ -220,7 +220,7 @@ export class LatencyAggregator extends DurableObject {
   /**
    * Fetch handler for HTTP requests
    */
-  async fetch(request: Request): Promise<Response> {
+  override async fetch(request: Request): Promise<Response> {
     const url = new URL(request.url);
 
     if (request.method === "POST" && url.pathname === "/record") {
@@ -262,7 +262,7 @@ export class LatencyAggregator extends DurableObject {
   /**
    * Cleanup on object destruction
    */
-  async alarm(): Promise<void> {
+  override async alarm(): Promise<void> {
     await this.flushAggregates();
   }
 }

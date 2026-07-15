@@ -401,7 +401,7 @@ For the on-call admin who is living their life.
   - Migrate heavy regex/payload parsing components inside the Worker to Rust-compiled WASM for significantly reduced CPU time.
 - [x] **Shared Core Logic Packages**
   - Extract universal `@pulseguard/core` (fetch, ping algorithms) and `@pulseguard/types` out of web/worker limits for clean DRY architecture.
-- [ ] **Strict TS & No-Any Policy**
+- [x] **Strict TS & No-Any Policy**
   - Incrementally enable highest level TS strictness and ban temporary `any` casts.
 
 ---

@@ -13,7 +13,7 @@ export class MonitorChannel extends DurableObject {
     // There is no need to manually recover or track subsets of active connections!
   }
 
-  async fetch(request: Request): Promise<Response> {
+  override async fetch(request: Request): Promise<Response> {
     const url = new URL(request.url);
 
     // 1. Handle WebSocket Upgrade
@@ -150,16 +150,16 @@ export class MonitorChannel extends DurableObject {
   // hibernate this DO and wake it ONLY when events fire, drastically reducing CPU time.
   // =========================================================================
 
-  webSocketMessage() {
+  override webSocketMessage() {
     // No incoming client messages are expected for the read-only dashboard feed.
   }
 
-  webSocketClose() {
+  override webSocketClose() {
     // Cloudflare natively drops `_ws` from `this.ctx.getWebSockets()` automatically!
     // No manual array `.delete(ws)` logic needed.
   }
 
-  webSocketError() {
+  override webSocketError() {
     // Automatically handled by the underlying DO container.
   }
 
