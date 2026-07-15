@@ -34,13 +34,13 @@ export async function verifySession(
   } catch (err: any) {
     if (
       retry &&
-      (err.message?.includes("Connection terminated unexpectedly") ||
+      (err.message?.includes("Connection terminated") ||
         err.message?.includes("is closed") ||
         err.message?.includes("not found"))
     ) {
       console.warn(`[Auth] Stale DB connection detected. Resetting Prisma and retrying...`);
       const { resetPrisma } = await import("@pulseguard/db");
-      resetPrisma(env.DATABASE_URL);
+      await resetPrisma(env.DATABASE_URL);
       return verifySession(request, env, false);
     }
     throw err;
@@ -79,13 +79,13 @@ export async function verifyMonitorAccess(
   } catch (err: any) {
     if (
       retry &&
-      (err.message?.includes("Connection terminated unexpectedly") ||
+      (err.message?.includes("Connection terminated") ||
         err.message?.includes("is closed") ||
         err.message?.includes("not found"))
     ) {
       console.warn(`[Auth Access] Stale DB connection detected. Resetting Prisma and retrying...`);
       const { resetPrisma } = await import("@pulseguard/db");
-      resetPrisma(env.DATABASE_URL);
+      await resetPrisma(env.DATABASE_URL);
       return verifyMonitorAccess(userId, monitorId, env, false);
     }
     throw err;

@@ -3,7 +3,7 @@ import { PrismaClient } from "./generated/client/index.js";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 
-export const createPrisma = (databaseUrl?: string) => {
+export function createPrisma(databaseUrl?: string) {
   const url =
     databaseUrl ||
     (typeof process !== "undefined" ? process.env.DATABASE_URL : (globalThis as any).DATABASE_URL);
@@ -34,6 +34,10 @@ export const createPrisma = (databaseUrl?: string) => {
   const pool = new Pool(poolConfig);
   pool.on("error", (err) => {
     console.error("[PG Pool Error] Unexpected error on idle client:", err.message);
+    if (err.message?.includes("Connection terminated") || err.message?.includes("closed") || err.message?.includes("terminate")) {
+      console.warn("[PG Pool Error] Stale connection detected. Proactively clearing client singleton cache.");
+      resetPrisma(url).catch(() => {});
+    }
   });
   const adapter = new PrismaPg(pool);
 
@@ -45,7 +49,7 @@ export const createPrisma = (databaseUrl?: string) => {
   });
   (client as any).$pool = pool;
   return client;
-};
+}
 
 // Global type for singleton storage
 type PrismaSingleton = {
@@ -58,7 +62,7 @@ if (!g.instances) {
   g.instances = new Map<string, PrismaClient>();
 }
 
-const getUrl = () => {
+function getUrl() {
   if (typeof process !== "undefined" && process.env?.DATABASE_URL) {
     return process.env.DATABASE_URL;
   }
@@ -66,32 +70,40 @@ const getUrl = () => {
     return (globalThis as any).DATABASE_URL;
   }
   return undefined;
-};
+}
 
-export const resetPrisma = (databaseUrl?: string) => {
+export async function resetPrisma(databaseUrl?: string) {
   if (databaseUrl) {
     if (g.instances!.has(databaseUrl)) {
       const client = g.instances!.get(databaseUrl);
       if (client) {
-        client.$disconnect().catch(() => {});
+        try {
+          await client.$disconnect();
+        } catch {}
         if ((client as any).$pool) {
-          (client as any).$pool.end().catch(() => {});
+          try {
+            await (client as any).$pool.end();
+          } catch {}
         }
       }
       g.instances!.delete(databaseUrl);
     }
   } else {
     if (g.prisma) {
-      g.prisma.$disconnect().catch(() => {});
+      try {
+        await g.prisma.$disconnect();
+      } catch {}
       if ((g.prisma as any).$pool) {
-        (g.prisma as any).$pool.end().catch(() => {});
+        try {
+          await (g.prisma as any).$pool.end();
+        } catch {}
       }
       g.prisma = undefined;
     }
   }
-};
+}
 
-export const getPrisma = (databaseUrl?: string) => {
+export function getPrisma(databaseUrl?: string) {
   if (databaseUrl) {
     if (!g.instances!.has(databaseUrl)) {
       g.instances!.set(databaseUrl, createPrisma(databaseUrl));
@@ -109,7 +121,7 @@ export const getPrisma = (databaseUrl?: string) => {
     g.prisma = createPrisma(url);
   }
   return g.prisma;
-};
+}
 
 // Proxy to allow default import to work like a PrismaClient instance
 const prismaProxy = new Proxy({} as PrismaClient, {

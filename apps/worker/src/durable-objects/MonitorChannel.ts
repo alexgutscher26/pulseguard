@@ -92,7 +92,7 @@ export class MonitorChannel extends DurableObject {
             ) {
               console.warn(`[MonitorChannel WS] Stale DB connection detected. Resetting Prisma...`);
               const { resetPrisma } = await import("@pulseguard/db");
-              resetPrisma(env.DATABASE_URL);
+              await resetPrisma(env.DATABASE_URL);
               prisma = getPrisma(env.DATABASE_URL);
               return await performHandshake(false);
             }

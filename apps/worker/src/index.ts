@@ -2117,7 +2117,7 @@ export default {
             `[Sync] Stale DB connection detected in schedule. Resetting Prisma and retrying...`,
           );
           const { resetPrisma } = await import("@pulseguard/db");
-          resetPrisma(env.DATABASE_URL);
+          await resetPrisma(env.DATABASE_URL);
           // Re-get new prisma instance
           prisma = getPrisma(env.DATABASE_URL);
           // Retry
@@ -2199,7 +2199,7 @@ export default {
     } finally {
       try {
         const { resetPrisma } = await import("@pulseguard/db");
-        resetPrisma(env.DATABASE_URL);
+        await resetPrisma(env.DATABASE_URL);
         console.log("[Sync] Cleaned up database connection pool after cron execution.");
       } catch (err) {
         console.error("Failed to reset Prisma pool in finally:", err);
