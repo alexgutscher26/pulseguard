@@ -195,10 +195,10 @@ Public-facing transparency for users and internal collaboration for teams.
   - Allow users to inject custom CSS/JS for fully white-labeled page rendering.
 - [x] **Subscription System**
   - Support Email, RSS, and Atom feeds.
-- [ ] **Embeddable SVG Status Badges (Shields)**
-  - [ ] **Dynamic SVG Rendering**: Endpoint (`/api/badge/[slug].svg`) that returns real-time status as an image for GitHub READMEs.
-  - [ ] **Customization Query Param**: `?theme=dark`, `?style=flat|outline`, and `?size=sm|lg`.
-  - [ ] **Markdown Snippet Generator**: 1-click copy for "Status: Operational" badges in the dashboard.
+- [x] **Embeddable SVG Status Badges (Shields)**
+  - [x] **Dynamic SVG Rendering**: Endpoint (`/api/badge/[slug].svg`) that returns real-time status as an image for GitHub READMEs.
+  - [x] **Customization Query Param**: `?theme=dark`, `?style=flat|outline`, and `?size=sm|lg`.
+  - [x] **Markdown Snippet Generator**: 1-click copy for "Status: Operational" badges in the dashboard.
 - [ ] **Magic-Link Authentication**
   - Allow authorized corporate viewers to access private pages via email links without passwords.
 - [ ] **SLA Customer Portal**

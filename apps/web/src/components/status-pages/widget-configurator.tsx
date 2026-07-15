@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { cn } from "@/lib/utils";
-import { Globe, Palette, Type, Save, AlertCircle, Check, Loader2 } from "lucide-react";
+import { Globe, Palette, Type, Save, AlertCircle, Check, Loader2, Copy, Code2 } from "lucide-react";
 import { updateWidgetConfig } from "@/actions/status-pages";
 import { StatusBadgePreview } from "@/components/widgets/status-badge-preview";
 import { EmbedCodeGenerator } from "@/components/widgets/embed-code-generator";
@@ -59,6 +59,40 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
     textColor: initialConfig.widgetTheme?.textColor || DEFAULT_THEME.textColor,
     borderRadius: initialConfig.widgetTheme?.borderRadius || DEFAULT_THEME.borderRadius,
   });
+
+  // Shield badge generator states
+  const [shieldStyle, setShieldStyle] = useState("flat");
+  const [shieldTheme, setShieldTheme] = useState("dark");
+  const [shieldSize, setShieldSize] = useState("sm");
+  const [copiedShieldMd, setCopiedShieldMd] = useState(false);
+  const [copiedShieldHtml, setCopiedShieldHtml] = useState(false);
+
+  const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://your-domain.com";
+  const shieldUrl = `${baseUrl}/api/badge/${pageSlug}.svg?style=${shieldStyle}&theme=${shieldTheme}&size=${shieldSize}`;
+  const statusPageUrl = `${baseUrl}/status-page/${pageSlug}`;
+  
+  const shieldMarkdown = `[![Status](${shieldUrl})](${statusPageUrl})`;
+  const shieldHtml = `<a href="${statusPageUrl}"><img src="${shieldUrl}" alt="PulseGuard Status" /></a>`;
+
+  const handleCopyShieldMd = async () => {
+    try {
+      await navigator.clipboard.writeText(shieldMarkdown);
+      setCopiedShieldMd(true);
+      setTimeout(() => setCopiedShieldMd(false), 2000);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleCopyShieldHtml = async () => {
+    try {
+      await navigator.clipboard.writeText(shieldHtml);
+      setCopiedShieldHtml(true);
+      setTimeout(() => setCopiedShieldHtml(false), 2000);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleSave = () => {
     setMessage(null);
@@ -276,6 +310,121 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
 
           {/* Embed Code */}
           <EmbedCodeGenerator slug={pageSlug} />
+
+          {/* Embeddable Status Shields (SVG Badges) */}
+          <div className="rounded-sm border border-primary/20 bg-card/40 p-6 backdrop-blur-sm space-y-6">
+            <div className="flex items-center gap-3">
+              <Code2 className="size-5 text-primary" />
+              <div>
+                <h3 className="text-sm font-bold font-mono uppercase tracking-tight text-foreground">
+                  Status Shield Badge (SVG)
+                </h3>
+                <p className="text-xs text-muted-foreground">
+                  Embed a dynamic, real-time status image in your GitHub README, documentation, or dashboard.
+                </p>
+              </div>
+            </div>
+
+            {/* Config options */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-b border-primary/10 py-4">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-mono uppercase tracking-widest text-primary/70 font-bold block">
+                  Badge Style
+                </label>
+                <select
+                  value={shieldStyle}
+                  onChange={(e) => setShieldStyle(e.target.value)}
+                  className="w-full bg-background/50 border border-primary/20 rounded-sm p-2 text-xs font-mono text-foreground focus:outline-none focus:border-primary/50"
+                >
+                  <option value="flat">Flat (Shields.io style)</option>
+                  <option value="outline">Outline (Cyberpunk Glow)</option>
+                </select>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-mono uppercase tracking-widest text-primary/70 font-bold block">
+                  Theme
+                </label>
+                <select
+                  value={shieldTheme}
+                  onChange={(e) => setShieldTheme(e.target.value)}
+                  className="w-full bg-background/50 border border-primary/20 rounded-sm p-2 text-xs font-mono text-foreground focus:outline-none focus:border-primary/50"
+                >
+                  <option value="dark">Dark Theme</option>
+                  <option value="light">Light Theme</option>
+                </select>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-mono uppercase tracking-widest text-primary/70 font-bold block">
+                  Badge Size
+                </label>
+                <select
+                  value={shieldSize}
+                  onChange={(e) => setShieldSize(e.target.value)}
+                  className="w-full bg-background/50 border border-primary/20 rounded-sm p-2 text-xs font-mono text-foreground focus:outline-none focus:border-primary/50"
+                >
+                  <option value="sm">Small (20px)</option>
+                  <option value="lg">Large (32px)</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Live Preview */}
+            <div className="space-y-2">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground font-bold block">
+                Live Preview
+              </span>
+              <div className="bg-black/40 border border-white/5 rounded-sm p-4 flex items-center justify-center min-h-[60px]">
+                <img
+                  src={`/api/badge/${pageSlug}.svg?style=${shieldStyle}&theme=${shieldTheme}&size=${shieldSize}&t=${Date.now()}`}
+                  alt="Status Badge Preview"
+                  className="max-w-full"
+                />
+              </div>
+            </div>
+
+            {/* Code snippets */}
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-primary/80 font-bold">
+                    Markdown Code (GitHub README)
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleCopyShieldMd}
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-sm border bg-primary/10 border-primary/20 text-primary hover:bg-primary/20 font-mono text-[10px] font-bold uppercase transition-all"
+                  >
+                    {copiedShieldMd ? <Check className="size-3" /> : <Copy className="size-3" />}
+                    {copiedShieldMd ? "Copied" : "Copy"}
+                  </button>
+                </div>
+                <pre className="bg-zinc-950 border border-zinc-800 rounded-sm p-3 text-xs font-mono text-zinc-300 overflow-x-auto whitespace-pre-wrap break-all">
+                  {shieldMarkdown}
+                </pre>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-primary/80 font-bold">
+                    HTML Code
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleCopyShieldHtml}
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-sm border bg-primary/10 border-primary/20 text-primary hover:bg-primary/20 font-mono text-[10px] font-bold uppercase transition-all"
+                  >
+                    {copiedShieldHtml ? <Check className="size-3" /> : <Copy className="size-3" />}
+                    {copiedShieldHtml ? "Copied" : "Copy"}
+                  </button>
+                </div>
+                <pre className="bg-zinc-950 border border-zinc-800 rounded-sm p-3 text-xs font-mono text-zinc-300 overflow-x-auto whitespace-pre-wrap break-all">
+                  {shieldHtml}
+                </pre>
+              </div>
+            </div>
+          </div>
         </>
       )}
 
