@@ -15,22 +15,22 @@ const themes = [
   {
     name: "Cyberpunk",
     value: "cyberpunk",
-    colors: { bg: "#050505", text: "#e2e8f0", primary: "#22c55e" },
+    colors: { bg: "#050505", text: "#e2e8f0", primary: "#22c55e", degraded: "#f59e0b", error: "#ef4444" },
   },
   {
     name: "Midnight",
     value: "midnight",
-    colors: { bg: "#0f172a", text: "#f8fafc", primary: "#38bdf8" },
+    colors: { bg: "#0f172a", text: "#f8fafc", primary: "#38bdf8", degraded: "#f59e0b", error: "#ef4444" },
   },
   {
     name: "Dracula",
     value: "dracula",
-    colors: { bg: "#282a36", text: "#f8f8f2", primary: "#ff79c6" },
+    colors: { bg: "#282a36", text: "#f8f8f2", primary: "#ff79c6", degraded: "#f59e0b", error: "#ef4444" },
   },
   {
     name: "Monochrome",
     value: "monochrome",
-    colors: { bg: "#ffffff", text: "#000000", primary: "#000000" },
+    colors: { bg: "#ffffff", text: "#000000", primary: "#000000", degraded: "#78716c", error: "#ef4444" },
   },
 ];
 
@@ -41,6 +41,15 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
   // Parse existing theme
   const currentTheme = (page.theme as any)?.value || "cyberpunk";
   const [selectedTheme, setSelectedTheme] = useState(currentTheme);
+
+  // Parse custom colors state
+  const [customColors, setCustomColors] = useState({
+    bg: (page.theme as any)?.colors?.bg || "#050505",
+    text: (page.theme as any)?.colors?.text || "#e2e8f0",
+    primary: (page.theme as any)?.colors?.primary || "#22c55e",
+    degraded: (page.theme as any)?.colors?.degraded || "#f59e0b",
+    error: (page.theme as any)?.colors?.error || "#ef4444",
+  });
 
   // Parse custom footer links
   const [footerLinks, setFooterLinks] = useState<{ label: string; url: string }[]>(() => {
@@ -116,6 +125,65 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
             </div>
           </div>
 
+          {/* SEO & Social Sharing */}
+          <div className="bg-card/20 border border-primary/10 p-6 rounded-sm space-y-4">
+            <h3 className="text-sm font-bold font-mono uppercase text-muted-foreground flex items-center gap-2">
+              <Search className="size-4" /> SEO & Social Sharing
+            </h3>
+
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 bg-black/30 p-3 rounded-sm border border-white/5">
+                <input
+                  type="checkbox"
+                  name="seoIndex"
+                  defaultChecked={page.seoIndex !== false}
+                  id="seoIndex"
+                  className="accent-primary size-4"
+                />
+                <label htmlFor="seoIndex" className="text-sm font-bold text-foreground">
+                  Allow Indexing by Search Engines
+                </label>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
+                  Meta Title
+                </label>
+                <input
+                  name="metaTitle"
+                  defaultValue={page.metaTitle || ""}
+                  placeholder="Custom title tag for search engines"
+                  className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
+                  Meta Description
+                </label>
+                <textarea
+                  name="metaDescription"
+                  defaultValue={page.metaDescription || ""}
+                  rows={2}
+                  placeholder="Custom meta description summary"
+                  className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
+                  OG Image URL (Social Share Preview)
+                </label>
+                <input
+                  name="ogImageUrl"
+                  defaultValue={page.ogImageUrl || ""}
+                  placeholder="https://example.com/social-card.png"
+                  className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
+                />
+              </div>
+            </div>
+          </div>
+
           {/* Access Control */}
           <div className="bg-card/20 border border-primary/10 p-6 rounded-sm space-y-4">
             <h3 className="text-sm font-bold font-mono uppercase text-muted-foreground flex items-center gap-2">
@@ -172,7 +240,11 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
             <input
               type="hidden"
               name="theme"
-              value={JSON.stringify(themes.find((t) => t.value === selectedTheme))}
+              value={JSON.stringify({
+                name: selectedTheme === "custom" ? "Custom" : themes.find((t) => t.value === selectedTheme)?.name || "Custom",
+                value: selectedTheme,
+                colors: customColors,
+              })}
             />
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
@@ -180,7 +252,16 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 <button
                   key={theme.value}
                   type="button"
-                  onClick={() => setSelectedTheme(theme.value)}
+                  onClick={() => {
+                    setSelectedTheme(theme.value);
+                    setCustomColors({
+                      bg: theme.colors.bg,
+                      text: theme.colors.text,
+                      primary: theme.colors.primary,
+                      degraded: theme.colors.degraded || "#f59e0b",
+                      error: theme.colors.error || "#ef4444",
+                    });
+                  }}
                   className={`relative p-2 rounded-sm border transition-all text-left group overflow-hidden ${
                     selectedTheme === theme.value
                       ? "border-primary ring-1 ring-primary/50"
@@ -206,6 +287,94 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                   </div>
                 </button>
               ))}
+            </div>
+
+            {/* Custom Theme Colors Picker */}
+            <div className="space-y-3 pt-4 border-t border-white/5">
+              <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
+                Custom Brand Colors
+              </label>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <div className="space-y-1">
+                  <div className="text-[9px] font-mono text-muted-foreground uppercase">Background</div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      value={customColors.bg}
+                      onChange={(e) => {
+                        setSelectedTheme("custom");
+                        setCustomColors(prev => ({ ...prev, bg: e.target.value }));
+                      }}
+                      className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
+                    />
+                    <span className="text-xs font-mono uppercase">{customColors.bg}</span>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <div className="text-[9px] font-mono text-muted-foreground uppercase">Text</div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      value={customColors.text}
+                      onChange={(e) => {
+                        setSelectedTheme("custom");
+                        setCustomColors(prev => ({ ...prev, text: e.target.value }));
+                      }}
+                      className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
+                    />
+                    <span className="text-xs font-mono uppercase">{customColors.text}</span>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <div className="text-[9px] font-mono text-muted-foreground uppercase">Operational</div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      value={customColors.primary}
+                      onChange={(e) => {
+                        setSelectedTheme("custom");
+                        setCustomColors(prev => ({ ...prev, primary: e.target.value }));
+                      }}
+                      className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
+                    />
+                    <span className="text-xs font-mono uppercase">{customColors.primary}</span>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <div className="text-[9px] font-mono text-muted-foreground uppercase">Degraded</div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      value={customColors.degraded}
+                      onChange={(e) => {
+                        setSelectedTheme("custom");
+                        setCustomColors(prev => ({ ...prev, degraded: e.target.value }));
+                      }}
+                      className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
+                    />
+                    <span className="text-xs font-mono uppercase">{customColors.degraded}</span>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <div className="text-[9px] font-mono text-muted-foreground uppercase">Outage</div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      value={customColors.error}
+                      onChange={(e) => {
+                        setSelectedTheme("custom");
+                        setCustomColors(prev => ({ ...prev, error: e.target.value }));
+                      }}
+                      className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
+                    />
+                    <span className="text-xs font-mono uppercase">{customColors.error}</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Branding */}

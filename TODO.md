@@ -186,10 +186,10 @@ Public-facing transparency for users and internal collaboration for teams.
     - [x] **Footer Navigation**: Support custom links in the footer (Terms, Privacy, Twitter).
   - [x] **Developer UX (Live Preview)**:
     - [x] **Floating Edit Button**: Add a "View and Configure" mode that adds an overlay to the public status page for real-time design editing.
-  - [ ] **Theme Store Integration**: Store custom brand color variables (Operational, Error, Degraded) in a `theme` JSON blob.
-  - [ ] **Advanced Branding**: Support Favicon URL, Logo URL, and Footer Links (Contact, Home, Support).
-  - [ ] **SEO Meta Injection**: Support `metaTitle`, `metaDescription`, and `ogImageUrl` for better social sharing.
-  - [ ] **Metrics Toggles**: Allow users to toggle between Latency, Uptime %, and Check Counts visibility per monitor.--0
+  - [x] **Theme Store Integration**: Store custom brand color variables (Operational, Error, Degraded) in a `theme` JSON blob.
+  - [x] **Advanced Branding**: Support Favicon URL, Logo URL, and Footer Links (Contact, Home, Support).
+  - [x] **SEO Meta Injection**: Support `metaTitle`, `metaDescription`, and `ogImageUrl` for better social sharing.
+  - [x] **Metrics Toggles**: Allow users to toggle between Latency, Uptime %, and Check Counts visibility per monitor.
   - [x] **Global Audience (i18n)**: Leverage `StatusPageI18n` for full locale switching support.
 - [ ] **Deep Aesthetic Injection**
   - Allow users to inject custom CSS/JS for fully white-labeled page rendering.

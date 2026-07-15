@@ -100,6 +100,9 @@ const statusPageSchema = z.object({
   homepageUrl: z.string().optional(),
   contactUrl: z.string().optional(),
   footerLinks: z.string().optional(),
+  metaTitle: z.string().optional(),
+  metaDescription: z.string().optional(),
+  ogImageUrl: z.string().optional(),
 });
 
 export async function createStatusPage(prevState: any, formData: FormData) {
@@ -133,6 +136,9 @@ export async function createStatusPage(prevState: any, formData: FormData) {
     homepageUrl: (formData.get("homepageUrl") as string) || undefined,
     contactUrl: (formData.get("contactUrl") as string) || undefined,
     footerLinks: (formData.get("footerLinks") as string) || undefined,
+    metaTitle: (formData.get("metaTitle") as string) || undefined,
+    metaDescription: (formData.get("metaDescription") as string) || undefined,
+    ogImageUrl: (formData.get("ogImageUrl") as string) || undefined,
   };
 
   const validation = statusPageSchema.safeParse(rawData);
@@ -173,6 +179,9 @@ export async function createStatusPage(prevState: any, formData: FormData) {
         homepageUrl: data.homepageUrl,
         contactUrl: data.contactUrl,
         footerLinks: data.footerLinks ? JSON.parse(data.footerLinks) : undefined,
+        metaTitle: data.metaTitle,
+        metaDescription: data.metaDescription,
+        ogImageUrl: data.ogImageUrl,
       },
     });
 
@@ -276,6 +285,9 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
     homepageUrl: (formData.get("homepageUrl") as string) || undefined,
     contactUrl: (formData.get("contactUrl") as string) || undefined,
     footerLinks: (formData.get("footerLinks") as string) || undefined,
+    metaTitle: (formData.get("metaTitle") as string) || undefined,
+    metaDescription: (formData.get("metaDescription") as string) || undefined,
+    ogImageUrl: (formData.get("ogImageUrl") as string) || undefined,
   };
 
   try {
@@ -309,6 +321,9 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
         homepageUrl: rawData.homepageUrl,
         contactUrl: rawData.contactUrl,
         footerLinks: rawData.footerLinks ? JSON.parse(rawData.footerLinks) : Prisma.JsonNull,
+        metaTitle: rawData.metaTitle,
+        metaDescription: rawData.metaDescription,
+        ogImageUrl: rawData.ogImageUrl,
       },
     });
 
@@ -860,5 +875,51 @@ export async function getStatusPageOverrides(statusPageId: string) {
     },
     orderBy: { date: "desc" },
   });
+}
+
+/**
+ * Updates settings for a specific monitor assigned to a status page.
+ */
+export async function updateStatusPageMonitorSettings(
+  statusPageId: string,
+  monitorId: string,
+  data: {
+    displayName: string | null;
+    showLatency: boolean;
+    showUptime: boolean;
+    showCheckCounts: boolean;
+  }
+) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session?.user) return { success: false, error: "Unauthorized" };
+
+  const page = await prisma.statusPage.findUnique({
+    where: { id: statusPageId, userId: session.user.id } as any,
+  });
+  if (!page) return { success: false, error: "Status page not found" };
+
+  try {
+    await prisma.statusPageMonitor.update({
+      where: {
+        statusPageId_monitorId: {
+          statusPageId,
+          monitorId,
+        },
+      },
+      data: {
+        displayName: data.displayName || null,
+        showLatency: data.showLatency,
+        showUptime: data.showUptime,
+        showCheckCounts: data.showCheckCounts,
+      },
+    });
+
+    revalidatePath(`/dashboard/pages/${statusPageId}`);
+    revalidatePath(`/status-page/${page.slug}`);
+    return { success: true };
+  } catch (err: any) {
+    console.error("Failed to update status page monitor settings:", err);
+    return { success: false, error: err.message || "Failed to update monitor settings" };
+  }
 }
 

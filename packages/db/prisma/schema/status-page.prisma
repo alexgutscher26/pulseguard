@@ -25,6 +25,9 @@ model StatusPage {
   homepageUrl      String?
   contactUrl       String?
   footerLinks      Json?
+  metaTitle        String?
+  metaDescription  String?
+  ogImageUrl       String?
 
   // Widget Configuration
   widgetEnabled        Boolean @default(false)
@@ -89,6 +92,10 @@ model StatusPageMonitor {
   displayName  String? // Override monitor name contextually
   displayGroup String? // Legacy field, might be replaced by StatusPageGroup
   sortOrder    Int     @default(0)
+
+  showLatency     Boolean  @default(true)
+  showUptime      Boolean  @default(true)
+  showCheckCounts Boolean  @default(true)
 
   createdAt DateTime @default(now())
 

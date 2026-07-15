@@ -31,12 +31,14 @@ export function PublicView({ page, isAdmin }: { page: any; isAdmin?: boolean }) 
   // Dynamic Theme Colors
   const theme = (page.theme as any) || {
     value: "cyberpunk",
-    colors: { bg: "#050505", text: "#e2e8f0", primary: "#22c55e" },
+    colors: { bg: "#050505", text: "#e2e8f0", primary: "#22c55e", degraded: "#f59e0b", error: "#ef4444" },
   };
   const customStyle = {
     "--bg-page": theme.colors.bg,
     "--text-page": theme.colors.text,
     "--primary-page": theme.colors.primary,
+    "--degraded-page": theme.colors.degraded || "#f59e0b",
+    "--error-page": theme.colors.error || "#ef4444",
   } as React.CSSProperties;
 
   return (
@@ -69,6 +71,27 @@ export function PublicView({ page, isAdmin }: { page: any; isAdmin?: boolean }) 
             .border-primary\/20 { border-color: color-mix(in srgb, var(--primary-page) 20%, transparent) !important; }
             .border-primary\/10 { border-color: color-mix(in srgb, var(--primary-page) 10%, transparent) !important; }
             
+            .text-red-500 { color: var(--error-page) !important; }
+            .bg-red-500 { background-color: var(--error-page) !important; }
+            .border-red-500\/20 { border-color: color-mix(in srgb, var(--error-page) 20%, transparent) !important; }
+            .border-red-500\/40 { border-color: color-mix(in srgb, var(--error-page) 40%, transparent) !important; }
+            .bg-red-500\/10 { background-color: color-mix(in srgb, var(--error-page) 10%, transparent) !important; }
+            .bg-red-500\/5 { background-color: color-mix(in srgb, var(--error-page) 5%, transparent) !important; }
+
+            .text-yellow-500 { color: var(--degraded-page) !important; }
+            .bg-yellow-500 { background-color: var(--degraded-page) !important; }
+            .border-yellow-500\/20 { border-color: color-mix(in srgb, var(--degraded-page) 20%, transparent) !important; }
+            .border-yellow-500\/40 { border-color: color-mix(in srgb, var(--degraded-page) 40%, transparent) !important; }
+            .bg-yellow-500\/10 { background-color: color-mix(in srgb, var(--degraded-page) 10%, transparent) !important; }
+            .bg-yellow-500\/5 { background-color: color-mix(in srgb, var(--degraded-page) 5%, transparent) !important; }
+
+            .text-amber-500 { color: var(--degraded-page) !important; }
+            .bg-amber-500 { background-color: var(--degraded-page) !important; }
+            .border-amber-500\/20 { border-color: color-mix(in srgb, var(--degraded-page) 20%, transparent) !important; }
+            .border-amber-500\/40 { border-color: color-mix(in srgb, var(--degraded-page) 40%, transparent) !important; }
+            .bg-amber-500\/10 { background-color: color-mix(in srgb, var(--degraded-page) 10%, transparent) !important; }
+            .bg-amber-500\/5 { background-color: color-mix(in srgb, var(--degraded-page) 5%, transparent) !important; }
+
             ${page.customCss || ""}
         `,
         }}

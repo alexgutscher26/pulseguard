@@ -10,8 +10,9 @@ import {
   getStatusPageMaintenance,
   updateHistoryDays,
   getStatusPageUptimeData,
+  updateStatusPageMonitorSettings,
 } from "@/actions/status-pages";
-import { Monitor, Plus, Trash2, ArrowLeft, ExternalLink, History, Code2, Calendar } from "lucide-react";
+import { Monitor, Plus, Trash2, ArrowLeft, ExternalLink, History, Code2, Calendar, Settings2, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -31,6 +32,31 @@ export function StatusPageEditor({ page, allMonitors }: { page: any; allMonitors
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabType>("monitors");
   const [isPending, setIsPending] = useState(false);
+
+  // Monitor Settings Edit state
+  const [editingMonitorId, setEditingMonitorId] = useState<string | null>(null);
+  const [editDisplayName, setEditDisplayName] = useState("");
+  const [editShowLatency, setEditShowLatency] = useState(true);
+  const [editShowUptime, setEditShowUptime] = useState(true);
+  const [editShowCheckCounts, setEditShowCheckCounts] = useState(true);
+
+  const handleUpdateMonitorSettings = async (monitorId: string) => {
+    setIsPending(true);
+    const res = await updateStatusPageMonitorSettings(page.id, monitorId, {
+      displayName: editDisplayName,
+      showLatency: editShowLatency,
+      showUptime: editShowUptime,
+      showCheckCounts: editShowCheckCounts,
+    });
+    if (res.success) {
+      toast.success("Monitor settings updated");
+      setEditingMonitorId(null);
+      router.refresh();
+    } else {
+      toast.error(res.error || "Failed to update monitor settings");
+    }
+    setIsPending(false);
+  };
 
   // History tab state
   const [historyDays, setHistoryDays] = useState(page.historyDays || 90);
@@ -173,28 +199,112 @@ export function StatusPageEditor({ page, allMonitors }: { page: any; allMonitors
               </h2>
 
               <div className="space-y-2">
-                {page.monitors.map((item: any) => (
-                  <div
-                    key={item.id}
-                    className="flex items-center justify-between p-3 bg-black/50 border border-white/10 rounded-sm"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`size-2 rounded-full ${item.monitor.status === "UP" ? "bg-green-500" : "bg-red-500"}`}
-                      />
-                      <span className="font-mono text-sm">
-                        {item.displayName || item.monitor.name}
-                      </span>
+                {page.monitors.map((item: any) => {
+                  const isEditing = editingMonitorId === item.monitorId;
+
+                  return (
+                    <div key={item.id} className="space-y-2">
+                      <div className="flex items-center justify-between p-3 bg-black/50 border border-white/10 rounded-sm">
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={`size-2 rounded-full ${item.monitor.status === "UP" ? "bg-green-500" : "bg-red-500"}`}
+                          />
+                          <span className="font-mono text-sm">
+                            {item.displayName || item.monitor.name}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => {
+                              setEditingMonitorId(item.monitorId);
+                              setEditDisplayName(item.displayName || "");
+                              setEditShowLatency(item.showLatency !== false);
+                              setEditShowUptime(item.showUptime !== false);
+                              setEditShowCheckCounts(item.showCheckCounts !== false);
+                            }}
+                            disabled={isPending}
+                            className="p-2 text-muted-foreground hover:text-foreground hover:bg-white/5 rounded-sm transition-colors"
+                            title="Monitor Settings"
+                          >
+                            <Settings2 className="size-4" />
+                          </button>
+                          <button
+                            onClick={() => handleRemove(item.monitorId)}
+                            disabled={isPending}
+                            className="p-2 text-red-500 hover:bg-red-500/10 rounded-sm transition-colors"
+                          >
+                            <Trash2 className="size-4" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {isEditing && (
+                        <div className="p-4 bg-black/75 border border-primary/20 rounded-sm space-y-4">
+                          <div className="space-y-1.5">
+                            <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
+                              Display Name Override
+                            </label>
+                            <input
+                              value={editDisplayName}
+                              onChange={(e) => setEditDisplayName(e.target.value)}
+                              placeholder={item.monitor.name}
+                              className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
+                            />
+                          </div>
+
+                          <div className="grid grid-cols-3 gap-2">
+                            <label className="flex items-center gap-2 cursor-pointer p-2 bg-white/5 hover:bg-white/10 rounded-sm">
+                              <input
+                                type="checkbox"
+                                checked={editShowLatency}
+                                onChange={(e) => setEditShowLatency(e.target.checked)}
+                                className="accent-primary size-4"
+                              />
+                              <span className="text-[10px] font-mono font-bold text-foreground">Latency</span>
+                            </label>
+
+                            <label className="flex items-center gap-2 cursor-pointer p-2 bg-white/5 hover:bg-white/10 rounded-sm">
+                              <input
+                                type="checkbox"
+                                checked={editShowUptime}
+                                onChange={(e) => setEditShowUptime(e.target.checked)}
+                                className="accent-primary size-4"
+                              />
+                              <span className="text-[10px] font-mono font-bold text-foreground">Uptime %</span>
+                            </label>
+
+                            <label className="flex items-center gap-2 cursor-pointer p-2 bg-white/5 hover:bg-white/10 rounded-sm">
+                              <input
+                                type="checkbox"
+                                checked={editShowCheckCounts}
+                                onChange={(e) => setEditShowCheckCounts(e.target.checked)}
+                                className="accent-primary size-4"
+                              />
+                              <span className="text-[10px] font-mono font-bold text-foreground">Checks</span>
+                            </label>
+                          </div>
+
+                          <div className="flex gap-2 justify-end">
+                            <button
+                              onClick={() => setEditingMonitorId(null)}
+                              className="px-3 py-1 text-xs font-mono border border-white/10 hover:bg-white/5 rounded-sm"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              onClick={() => handleUpdateMonitorSettings(item.monitorId)}
+                              disabled={isPending}
+                              className="px-3 py-1 text-xs font-mono bg-primary text-black hover:bg-primary/80 rounded-sm font-bold flex items-center gap-1"
+                            >
+                              {isPending && <Loader2 className="size-3 animate-spin" />}
+                              Save
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <button
-                      onClick={() => handleRemove(item.monitorId)}
-                      disabled={isPending}
-                      className="p-2 text-red-500 hover:bg-red-500/10 rounded-sm transition-colors"
-                    >
-                      <Trash2 className="size-4" />
-                    </button>
-                  </div>
-                ))}
+                  );
+                })}
                 {page.monitors.length === 0 && (
                   <p className="text-sm text-muted-foreground italic text-center py-4">
                     No monitors added yet. Select monitors from the right to add them.

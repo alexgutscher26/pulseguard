@@ -42,9 +42,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!page) return {};
 
   return {
-    title: page.title,
-    description: page.description,
+    title: page.metaTitle || page.title,
+    description: page.metaDescription || page.description,
     icons: page.favicon ? [{ rel: "icon", url: page.favicon }] : undefined,
+    openGraph: page.ogImageUrl ? {
+      images: [{ url: page.ogImageUrl }],
+      title: page.metaTitle || page.title,
+      description: page.metaDescription || page.description,
+    } : undefined,
     robots: {
       index: page.seoIndex ?? true,
       follow: page.seoIndex ?? true,

@@ -27,6 +27,11 @@ export function StatusPageMonitorRow({
   const { monitor } = item;
   const { lastEvent, isConnected } = useLiveMonitor(monitor.id);
 
+  // Monitor-specific metrics overrides
+  const visibleLatency = item.showLatency !== false && showResponseTime;
+  const visibleUptime = item.showUptime !== false && showUptime;
+  const visibleCheckCounts = item.showCheckCounts !== false;
+
   // Local state to handle real-time updates
   // We initialize from server-provided data, then update with WS data
   const [currentStatus, setCurrentStatus] = useState(monitor.status);
@@ -108,23 +113,26 @@ export function StatusPageMonitorRow({
             </div>
           </div>
           <div className="text-right flex items-center gap-4">
-            {showResponseTime && latestEvent && latestEvent.latency && (
+            {visibleLatency && latestEvent && latestEvent.latency && (
               <div className="flex items-center gap-1 text-[10px] text-muted-foreground font-mono">
                 <Zap className="size-3" /> {latestEvent.latency}ms
               </div>
             )}
-            {showUptime &&
-              (cardType === "duration" ? (
+            {cardType === "duration" ? (
+              visibleUptime && (
                 activeStatus === "UP" ? (
                   <span className="text-primary text-sm font-bold">{displayUptime}%</span>
                 ) : (
                   <span className="text-red-500 text-sm font-bold">{tCommon("down")}</span>
                 )
-              ) : (
+              )
+            ) : (
+              visibleCheckCounts && (
                 <span className="text-primary text-sm font-bold">
                   {barType === "manual" ? "60 days" : `${totalCount} checks`}
                 </span>
-              ))}
+              )
+            )}
           </div>
         </div>
 
