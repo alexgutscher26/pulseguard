@@ -160,7 +160,8 @@ export async function createStatusPage(prevState: any, formData: FormData) {
     if (data.customDomain && data.customDomain.trim() !== "") {
       return {
         success: false,
-        error: "Custom domains are a premium feature. Please upgrade to the Netrunner tier to configure custom domains.",
+        error:
+          "Custom domains are a premium feature. Please upgrade to the Netrunner tier to configure custom domains.",
       };
     }
 
@@ -170,7 +171,8 @@ export async function createStatusPage(prevState: any, formData: FormData) {
     if (pageCount >= 1) {
       return {
         success: false,
-        error: "Free tier accounts are limited to 1 public status page. Please upgrade to create more status pages.",
+        error:
+          "Free tier accounts are limited to 1 public status page. Please upgrade to create more status pages.",
       };
     }
   }
@@ -335,7 +337,8 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
       if (rawData.customDomain && rawData.customDomain.trim() !== "") {
         return {
           success: false,
-          error: "Custom domains are a premium feature. Please upgrade to the Netrunner tier to configure custom domains.",
+          error:
+            "Custom domains are a premium feature. Please upgrade to the Netrunner tier to configure custom domains.",
         };
       }
     }

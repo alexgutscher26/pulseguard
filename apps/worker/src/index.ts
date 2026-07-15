@@ -21,6 +21,7 @@ export interface Env {
   TOTAL_SHARDS?: number;
   DNS_CACHE?: KVNamespace;
   BROWSER?: any;
+  CHAOS_ENGINEERING?: string;
 }
 
 import { connect } from "cloudflare:sockets";
@@ -2224,16 +2225,53 @@ export default {
 
   // 2. Queue Consumer: (Preserved for Paid Plan Upgrade)
   async queue(batch: MessageBatch<any>, env: Env, ctx: ExecutionContext) {
+    let activeBatch = batch;
+
+    if (env.CHAOS_ENGINEERING === "true") {
+      // 1. Simulate batch/isolate level crash (10% chance)
+      if (Math.random() < 0.10) {
+        console.warn("[Chaos Mode] Simulating fatal worker instance crash / V8 isolate eviction!");
+        throw new Error("IsolateEvictionError: Cloudflare Worker instance killed by Chaos Engine");
+      }
+
+      // 2. Simulate message level failure (10% chance per message)
+      const failedMessageIds = new Set<string>();
+      for (const msg of batch.messages) {
+        const msgId = msg.id || (msg.body && msg.body.id) || `mock_${Math.random()}`;
+        // Systematic failure for 1 in 15 messages (e.g. msg_event_0, 15, 30...) to force DLQ escalation
+        const shouldSystematicFail = msgId.startsWith("msg_event_") && parseInt(msgId.replace("msg_event_", "")) % 15 === 0;
+        if (Math.random() < 0.10 || shouldSystematicFail) {
+          console.warn(`[Chaos Mode] Simulating message processing failure for message: ${msgId}`);
+          msg.retry();
+          failedMessageIds.add(msgId);
+        }
+      }
+
+      if (failedMessageIds.size > 0) {
+        // Construct a filtered batch inheriting prototype methods from original batch
+        activeBatch = Object.create(batch);
+        (activeBatch as any).messages = batch.messages.filter((msg) => {
+          const msgId = msg.id || (msg.body && msg.body.id);
+          return !failedMessageIds.has(msgId);
+        });
+
+        // If no messages left, return early
+        if (activeBatch.messages.length === 0) {
+          return;
+        }
+      }
+    }
+
     // Dispatch based on queue name
-    if (batch.queue === "notifications") {
+    if (activeBatch.queue === "notifications") {
       const { default: notificationHandler } = await import("./notification-handler");
-      await notificationHandler.queue(batch, env, ctx);
+      await notificationHandler.queue(activeBatch, env, ctx);
       return;
     }
 
     // Default: 'monitor-checks' queue
     const prisma = getPrisma(env.DATABASE_URL);
-    const monitors = batch.messages.map((msg) => msg.body);
+    const monitors = activeBatch.messages.map((msg) => msg.body);
 
     const { remaining } = await processBatch(monitors, prisma, env, ctx);
 
@@ -2247,7 +2285,7 @@ export default {
       const remainingIds = new Set(remaining.map((m) => m.id));
 
       // Retry specific messages
-      for (const msg of batch.messages) {
+      for (const msg of activeBatch.messages) {
         if (remainingIds.has(msg.body.id)) {
           msg.retry();
         } else {
@@ -2256,7 +2294,7 @@ export default {
       }
     } else {
       // All done
-      batch.ackAll();
+      activeBatch.ackAll();
     }
   },
 };

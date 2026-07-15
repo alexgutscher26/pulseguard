@@ -57,7 +57,8 @@ export async function createNotificationChannel(prevState: any, formData: FormDa
     if (data.type === "SMS" && userTier !== "CONSTRUCT") {
       return {
         success: false,
-        error: "SMS notifications are an enterprise feature exclusive to the Construct tier. Please upgrade to the Construct tier to configure SMS alerts.",
+        error:
+          "SMS notifications are an enterprise feature exclusive to the Construct tier. Please upgrade to the Construct tier to configure SMS alerts.",
       };
     }
 

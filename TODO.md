@@ -345,7 +345,7 @@ Preparing for sustainable revenue and scale.
   - Allowed Checks: All Free checks + **MCP Sentinel** (JSON-RPC tool validation), **Multi-Step API Sequences**, and **Database TCP Connect**.
   - Private Probes: Up to **3 active Private Probe nodes** (Docker/WASM).
   - Value: Custom branding and the "Invisible AI" layer that saves time (Adaptive Anomaly Detection, predictive warnings).
-- [X] **Tier 3: The Construct ($69/mo - Business / Team)**
+- [x] **Tier 3: The Construct ($69/mo - Business / Team)**
   - Enterprise-grade reliability without corporate bore. Agency goldmine.
   - Specs: Unlimited nodes (fair use), 10-second checks, concurrent global pulse, 1-year retention.
   - Allowed Checks: All Pro checks + **Synthetic Browser Testing** (Playwright), **Direct SQL Queries**, and **gRPC/WebSocket streams**.
@@ -382,11 +382,11 @@ For the on-call admin who is living their life.
 
 - [x] **E2E Tests (Playwright)**
   - Core flows: Sign Up -> Monitor creation -> Report viewing.
-- [ ] **Load & Stress Testing**
+- [x] **Load & Stress Testing**
   - Simulate 50,000 active monitors and 2,000 simultaneous state-change events to ensure event handlers don't queue bloat.
-- [ ] **Chaos Engineering Protocol**
+- [x] **Chaos Engineering Protocol**
   - Randomly kill edge worker instances in staging to verify DLQ and Retry mechanisms operate flawlessly without data loss.
-- [ ] **Continuous Performance CI**
+- [x] **Continuous Performance CI**
   - Run Lighthouse scoring automatically on all PRs to ensure the Dashboard does not degrade in Core Web Vitals.
 - [ ] **Visual Regression Testing**
   - Ensure UI modifications do not subtly break mobile layout rendering.

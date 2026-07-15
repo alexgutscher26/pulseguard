@@ -103,7 +103,9 @@ export default async function CustomDomainStatusPage({ params }: Props) {
   return (
     <NextIntlClientProvider messages={messages} locale={locale}>
       <>
-        <label className="sr-only" aria-label="Status Page Label">Status Page</label>
+        <label className="sr-only" aria-label="Status Page Label">
+          Status Page
+        </label>
         <PublicView page={page} />
       </>
     </NextIntlClientProvider>

@@ -475,7 +475,10 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
           {/* Target Host */}
           <div className="flex flex-col gap-2">
             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-              {monitorType === "HTTP" || monitorType === "BROWSER" || monitorType === "SSL" || monitorType === "DNS"
+              {monitorType === "HTTP" ||
+              monitorType === "BROWSER" ||
+              monitorType === "SSL" ||
+              monitorType === "DNS"
                 ? "Target URL / Domain"
                 : "Hostname / IP"}
             </label>
@@ -750,7 +753,8 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                   className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-3 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full"
                 />
                 <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-wider mt-0.5 animate-pulse">
-                  Enter comma-separated IP addresses that this domain is expected to resolve to. Leave blank to accept any resolution.
+                  Enter comma-separated IP addresses that this domain is expected to resolve to.
+                  Leave blank to accept any resolution.
                 </p>
               </div>
 

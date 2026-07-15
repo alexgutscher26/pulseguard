@@ -219,8 +219,16 @@ export async function createMonitor(prevState: any, formData: FormData) {
       name: (formData.get("name") as string) || "",
       url: (formData.get("url") as string) || undefined,
       type:
-        (formData.get("type") as "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL" | "DNS" | "MCP" | "DATABASE") ||
-        "HTTP",
+        (formData.get("type") as
+          | "HTTP"
+          | "PING"
+          | "PORT"
+          | "BROWSER"
+          | "SEQUENCE"
+          | "SSL"
+          | "DNS"
+          | "MCP"
+          | "DATABASE") || "HTTP",
       interval: Number(formData.get("interval") || 60),
       timeout: Number(formData.get("timeout") || 10),
       port: formData.get("port") ? Number(formData.get("port")) : undefined,
@@ -259,7 +267,8 @@ export async function createMonitor(prevState: any, formData: FormData) {
       if (!allowedTypes.includes(data.type)) {
         return {
           success: false,
-          error: "Only HTTP/HTTPS, SSL/TLS, and DNS monitors are allowed on the Free tier. Upgrade to Netrunner for TCP, Ping, Browser, and Sequence monitors.",
+          error:
+            "Only HTTP/HTTPS, SSL/TLS, and DNS monitors are allowed on the Free tier. Upgrade to Netrunner for TCP, Ping, Browser, and Sequence monitors.",
         };
       }
 
@@ -298,7 +307,8 @@ export async function createMonitor(prevState: any, formData: FormData) {
       if (!allowedTypes.includes(data.type)) {
         return {
           success: false,
-          error: "Synthetic Browser Testing is only allowed on the Construct (Business) tier. Please upgrade to Construct to use Browser monitors.",
+          error:
+            "Synthetic Browser Testing is only allowed on the Construct (Business) tier. Please upgrade to Construct to use Browser monitors.",
         };
       }
 
@@ -431,7 +441,16 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
     name: (formData.get("name") as string) || "",
     url: (formData.get("url") as string) || undefined,
     type:
-      (formData.get("type") as "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL" | "DNS" | "MCP" | "DATABASE") || "HTTP",
+      (formData.get("type") as
+        | "HTTP"
+        | "PING"
+        | "PORT"
+        | "BROWSER"
+        | "SEQUENCE"
+        | "SSL"
+        | "DNS"
+        | "MCP"
+        | "DATABASE") || "HTTP",
     interval: Number(formData.get("interval") || 60),
     timeout: Number(formData.get("timeout") || 10),
     port: formData.get("port") ? Number(formData.get("port")) : undefined,
@@ -469,7 +488,8 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
     if (!allowedTypes.includes(data.type)) {
       return {
         success: false,
-        error: "Only HTTP/HTTPS, SSL/TLS, and DNS monitors are allowed on the Free tier. Upgrade to Netrunner for TCP, Ping, Browser, and Sequence monitors.",
+        error:
+          "Only HTTP/HTTPS, SSL/TLS, and DNS monitors are allowed on the Free tier. Upgrade to Netrunner for TCP, Ping, Browser, and Sequence monitors.",
       };
     }
 
@@ -498,7 +518,8 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
     if (!allowedTypes.includes(data.type)) {
       return {
         success: false,
-        error: "Synthetic Browser Testing is only allowed on the Construct (Business) tier. Please upgrade to Construct to use Browser monitors.",
+        error:
+          "Synthetic Browser Testing is only allowed on the Construct (Business) tier. Please upgrade to Construct to use Browser monitors.",
       };
     }
 

@@ -11,6 +11,30 @@ jobs:
     name: CI
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: pulseguard
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/pulseguard
+      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/pulseguard
+      UPSTASH_REDIS_REST_URL: http://localhost:8079
+      UPSTASH_REDIS_REST_TOKEN: mock-token
+      BETTER_AUTH_SECRET: mock-auth-secret
+      BETTER_AUTH_URL: http://localhost:3000
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,6 +47,12 @@ jobs:
       - name: Install dependencies
         run: bun install
 
+      - name: Generate Database Client
+        run: bun run db:generate
+
+      - name: Push Database Schema
+        run: bun run db:push
+
       - name: Lint
         run: bun run check
 
@@ -31,3 +61,25 @@ jobs:
 
       - name: Build
         run: bun run build
+
+      - name: Start Next.js Production Server
+        run: bun --cwd apps/web run start &
+
+      - name: Wait for Server to be Responsive
+        run: |
+          for i in {1..30}; do
+            curl -s http://localhost:3000 > /dev/null && break
+            echo "Waiting for Next.js server to start on port 3000..."
+            sleep 2
+          done
+
+      - name: Run Lighthouse Performance CI Audits
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            http://localhost:3000/
+            http://localhost:3000/login
+            http://localhost:3000/signup
+          budgetPath: .github/lighthouse-budget.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true

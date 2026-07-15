@@ -59,6 +59,30 @@ export default {
 
     const monitorMap = new Map(monitors.map((m) => [m.id, m]));
 
+    // --- Pre-fetch LAST DOWN EVENTS FOR UP TRANSITIONS (to avoid N+1 queries) ---
+    const upNotifications = batch.messages.filter((msg) => msg.body.status === "UP");
+    const upMonitorIds = Array.from(new Set(upNotifications.map((msg) => msg.body.monitorId)));
+
+    const lastDownEventMap = new Map<string, Date>();
+    if (upMonitorIds.length > 0) {
+      const lastDownEvents = await prisma.monitorEvent.groupBy({
+        by: ["monitorId"],
+        where: {
+          monitorId: { in: upMonitorIds },
+          status: "DOWN",
+        },
+        _max: {
+          timestamp: true,
+        },
+      });
+
+      for (const group of lastDownEvents) {
+        if (group._max.timestamp) {
+          lastDownEventMap.set(group.monitorId, new Date(group._max.timestamp));
+        }
+      }
+    }
+
     // --- Pre-fetch STATUS PAGE SUBSCRIBER ALERTS ---
     const incidentMonitorIds = Array.from(
       new Set(
@@ -94,8 +118,9 @@ export default {
       }
     }
 
-    await Promise.all(
-      batch.messages.map(async (msg) => {
+    // Process notifications with controlled concurrency to prevent memory/connection issues
+    await runWithLimit(
+      batch.messages.map((msg) => async () => {
         const notification = msg.body;
 
         try {
@@ -154,18 +179,11 @@ export default {
           // Monitor Alert Data (Owner/Team)
           let downtimeDuration: string | undefined;
           if (notification.status === "UP") {
-            const lastDownEvent = await prisma.monitorEvent.findFirst({
-              where: {
-                monitorId: notification.monitorId,
-                status: "DOWN",
-                timestamp: { lt: new Date(notification.timestamp) },
-              },
-              orderBy: { timestamp: "desc" },
-            });
+            const lastDownTimestamp = lastDownEventMap.get(notification.monitorId);
 
-            if (lastDownEvent) {
+            if (lastDownTimestamp) {
               const downtime =
-                new Date(notification.timestamp).getTime() - lastDownEvent.timestamp.getTime();
+                new Date(notification.timestamp).getTime() - lastDownTimestamp.getTime();
               const minutes = Math.floor(downtime / 60000);
               const seconds = Math.floor((downtime % 60000) / 1000);
               downtimeDuration = `${minutes}m ${seconds}s`;
@@ -297,6 +315,7 @@ export default {
           msg.retry();
         }
       }),
+      50, // Process up to 50 notifications concurrently
     );
   },
 };
@@ -549,4 +568,26 @@ async function sendSlackAlert(
   if (!res.ok) {
     throw new Error("Slack Webhook failed: " + res.status + " " + res.statusText);
   }
+}
+
+/**
+ * Executes a list of asynchronous tasks with a limit on how many run concurrently.
+ */
+async function runWithLimit<T>(tasks: (() => Promise<T>)[], limit: number): Promise<T[]> {
+  const results: T[] = new Array(tasks.length);
+  let currentIndex = 0;
+
+  async function worker() {
+    while (currentIndex < tasks.length) {
+      const index = currentIndex++;
+      const task = tasks[index];
+      if (task) {
+        results[index] = await task();
+      }
+    }
+  }
+
+  const workers = Array.from({ length: Math.min(limit, tasks.length) }).map(worker);
+  await Promise.all(workers);
+  return results;
 }

@@ -60,7 +60,9 @@ export async function registerProbe(
   const userTier = user?.tier || "INITIATE";
 
   if (userTier === "INITIATE") {
-    throw new Error("Private probes are not allowed on the Free tier. Please upgrade to Netrunner to register private probes.");
+    throw new Error(
+      "Private probes are not allowed on the Free tier. Please upgrade to Netrunner to register private probes.",
+    );
   }
 
   if (userTier === "NETRUNNER") {
@@ -71,7 +73,9 @@ export async function registerProbe(
       },
     });
     if (probeCount >= 3) {
-      throw new Error("You have reached the limit of 3 private probes for the Netrunner tier. Upgrade to Construct for unlimited probes.");
+      throw new Error(
+        "You have reached the limit of 3 private probes for the Netrunner tier. Upgrade to Construct for unlimited probes.",
+      );
     }
   }
 
