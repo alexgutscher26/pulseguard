@@ -413,9 +413,9 @@ Strategies to win the indie developer market against established giants and mode
 ### ⚔️ Beating OpenStatus (Feature Differentiators)
 
 - [x] **Zero-Code Integration**: Make it effortless. 1-click setups for GitHub, Vercel, and Netlify.
-- [ ] **Built-in Incident Communication**: Automate stat4us page updates and cross-channel notifications (Slack/Discord) reducing manual panic for solo devs.
-- [ ] **Developer-Friendly Analytics**: Provide actionable insights instead of raw data. Tell them _where_ the request died.
-- [ ] **No Vendor Lock-In**: Provide a guaranteed 1-click Export/Migration tool to eliminate the fear of SaaS entrapment.
+- [x] **Built-in Incident Communication**: Automate status page updates and cross-channel notifications (Slack/Discord) reducing manual panic for solo devs.
+- [x] **Developer-Friendly Analytics**: Provide actionable insights instead of raw data. Tell them _where_ the request died.
+- [x] **No Vendor Lock-In**: Provide a guaranteed 1-click Export/Migration tool to eliminate the fear of SaaS entrapment.
 
 ### 💡 Innovative Indie Features
 

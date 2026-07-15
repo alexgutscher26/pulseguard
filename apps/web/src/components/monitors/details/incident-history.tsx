@@ -276,7 +276,7 @@ export function IncidentHistory({ monitor }: { monitor: any }) {
                     <AlertTriangle className="size-3" />
                     Error Identified
                   </span>
-                  <span className="font-bold text-red-400 text-xs break-all">
+                  <span className="font-bold text-red-400 text-xs break-all whitespace-pre-line">
                     {selectedEvent.errorReason}
                   </span>
                 </div>

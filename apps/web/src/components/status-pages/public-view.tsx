@@ -9,12 +9,23 @@ import { LanguageSwitcher } from "./language-switcher";
 import { SubscribeModal } from "./subscribe-modal";
 import { StatusPageSettings } from "./status-page-settings";
 
-export function PublicView({ page, isAdmin }: { page: any; isAdmin?: boolean }) {
+export function PublicView({
+  page,
+  isAdmin,
+  initialIncidents = [],
+}: {
+  page: any;
+  isAdmin?: boolean;
+  initialIncidents?: any[];
+}) {
   const tStatus = useTranslations("status");
   const tHeadings = useTranslations("headings");
   const tActions = useTranslations("actions");
   const tCommon = useTranslations("common");
   const format = useFormatter();
+
+  const activeIncidents = initialIncidents.filter((inc) => !inc.resolvedAt);
+  const resolvedIncidents = initialIncidents.filter((inc) => inc.resolvedAt);
 
   // Filter monitors based on visibility settings
   const visibleMonitors = page.monitors.filter((m: any) => {
@@ -279,6 +290,77 @@ export function PublicView({ page, isAdmin }: { page: any; isAdmin?: boolean }) 
           </div>
         </div>
 
+        {/* Active Incidents Container */}
+        {activeIncidents.length > 0 && (
+          <div className="mb-12 space-y-6">
+            <div className="flex items-center gap-2 pb-2 border-b border-red-500/20">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+              </span>
+              <h3 className="text-xs font-bold text-red-500 uppercase tracking-[0.2em] font-mono">
+                Active Outages & Incidents
+              </h3>
+            </div>
+
+            <div className="space-y-4">
+              {activeIncidents.map((inc) => (
+                <div
+                  key={inc.id}
+                  className="relative overflow-hidden rounded-sm border border-red-500/30 bg-red-500/[0.02] p-6 hover:bg-red-500/[0.04] transition-all duration-300"
+                >
+                  <div className="absolute top-0 left-0 w-[3px] h-full bg-red-500"></div>
+
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                    <div>
+                      <h4 className="text-base font-bold text-red-500 tracking-tight">{inc.title}</h4>
+                      <p className="text-[11px] text-red-500/60 mt-0.5 uppercase tracking-wider font-semibold">
+                        Affected System: {inc.monitor?.name}
+                      </p>
+                    </div>
+                    <span className="self-start md:self-auto px-2.5 py-0.5 rounded border border-red-500/40 text-red-500 bg-red-500/10 text-[9px] uppercase tracking-widest font-bold font-mono animate-pulse">
+                      {inc.status}
+                    </span>
+                  </div>
+
+                  {inc.description && (
+                    <p className="text-xs text-muted-foreground leading-relaxed mb-4 border-l border-primary/10 pl-3">
+                      {inc.description}
+                    </p>
+                  )}
+
+                  {/* Timeline updates */}
+                  {inc.events && inc.events.length > 0 && (
+                    <div className="space-y-3 pt-2 border-t border-red-500/10">
+                      <p className="text-[10px] font-bold text-red-500/70 uppercase tracking-widest">
+                        Timeline Updates
+                      </p>
+                      <div className="relative pl-4 border-l border-red-500/20 space-y-3">
+                        {inc.events.map((evt: any) => (
+                          <div key={evt.id} className="relative text-xs">
+                            <span className="absolute -left-[20.5px] top-1.5 size-2 rounded-full bg-red-500/40 border border-red-500"></span>
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-[10px] text-red-500/80 uppercase">
+                                {evt.type.replace("_", " ")}
+                              </span>
+                              <span className="text-[10px] text-muted-foreground opacity-60">
+                                {new Date(evt.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              </span>
+                            </div>
+                            <p className="text-muted-foreground text-[11px] mt-0.5 leading-relaxed">
+                              {evt.message}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Header - Title & Description */}
         <div className="flex flex-col items-center text-center mb-12">
           {page.description && (
@@ -316,6 +398,63 @@ export function PublicView({ page, isAdmin }: { page: any; isAdmin?: boolean }) 
               <p className="text-primary/40 font-mono text-sm uppercase tracking-widest">
                 {tCommon("no_monitors")}
               </p>
+            </div>
+          )}
+        </div>
+
+        {/* Incident History Timeline */}
+        <div className="mt-20 space-y-6">
+          <div className="flex items-center gap-2 pb-2 border-b border-primary/20">
+            <Clock className="size-4 text-primary/60" />
+            <h3 className="text-xs font-bold text-primary/60 uppercase tracking-[0.2em] font-mono">
+              Incident History (Last 7 Days)
+            </h3>
+          </div>
+
+          {resolvedIncidents.length === 0 ? (
+            <div className="p-8 border border-dashed border-primary/10 rounded-sm bg-primary/[0.01] text-center">
+              <p className="text-[11px] text-primary/50 uppercase tracking-widest font-mono">
+                No incidents reported in the last 7 days. All systems operational.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {resolvedIncidents.map((inc) => (
+                <div
+                  key={inc.id}
+                  className="relative overflow-hidden rounded-sm border border-primary/10 bg-primary/[0.01] p-5 hover:border-primary/20 transition-all duration-300"
+                >
+                  <div className="absolute top-0 left-0 w-[3px] h-full bg-primary/40"></div>
+
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3">
+                    <div>
+                      <h4 className="text-sm font-bold text-foreground tracking-tight">{inc.title}</h4>
+                      <p className="text-[10px] text-muted-foreground/60 mt-0.5 uppercase tracking-wider font-mono">
+                        Affected System: {inc.monitor?.name} &middot; Resolved on {new Date(inc.resolvedAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <span className="self-start md:self-auto px-2 py-0.5 rounded border border-primary/20 text-primary bg-primary/5 text-[9px] uppercase tracking-widest font-semibold font-mono">
+                      RESOLVED
+                    </span>
+                  </div>
+
+                  {inc.events && inc.events.length > 0 && (
+                    <div className="pl-3 border-l border-primary/10 space-y-2.5 mt-3 pt-2 border-t border-primary/5">
+                      {inc.events.map((evt: any) => (
+                        <div key={evt.id} className="text-[11px] leading-relaxed text-muted-foreground">
+                          <span className="font-bold text-[9px] text-primary/70 uppercase mr-2 tracking-wider">
+                            {evt.type.replace("_", " ")}
+                          </span>
+                          <span className="text-[9px] opacity-55 mr-2 font-mono">
+                            {new Date(evt.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                          &mdash; {evt.message}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           )}
         </div>

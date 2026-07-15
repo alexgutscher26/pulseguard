@@ -116,13 +116,30 @@ export default async function PublicStatusPage({ params }: Props) {
   const session = await auth.api.getSession({ headers: headerStore });
   const isAdmin = session?.user?.id === page.userId;
 
+  // 4. Fetch Active & Recent Incidents (Last 7 Days)
+  const monitorIds = page.monitors.map((m) => m.monitorId);
+  const incidents = await prisma.incident.findMany({
+    where: {
+      monitorId: { in: monitorIds },
+      OR: [
+        { resolvedAt: null },
+        { resolvedAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } },
+      ],
+    },
+    include: {
+      monitor: { select: { name: true } },
+      events: { orderBy: { createdAt: "desc" } },
+    },
+    orderBy: { startedAt: "desc" },
+  });
+
   return (
     <NextIntlClientProvider messages={messages} locale={locale}>
       <>
         <label className="sr-only" aria-label="Status Page Label">
           Status Page
         </label>
-        <PublicView page={page} isAdmin={isAdmin} />
+        <PublicView page={page} isAdmin={isAdmin} initialIncidents={incidents} />
       </>
     </NextIntlClientProvider>
   );

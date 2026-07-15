@@ -2,13 +2,14 @@
 
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { User, Shield, Key } from "lucide-react";
+import { User, Shield, Key, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const items = [
   { name: "General", icon: User, tab: "general" },
   { name: "Security", icon: Shield, tab: "security" },
   { name: "API Keys", icon: Key, tab: "api-keys" },
+  { name: "Migration & Export", icon: Download, tab: "migration" },
 ];
 
 /**

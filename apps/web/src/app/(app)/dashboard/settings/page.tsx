@@ -7,6 +7,7 @@ import { RegionalForm } from "@/components/settings/regional-form";
 import { DangerZone } from "@/components/settings/danger-zone";
 import { SecurityForm } from "@/components/settings/security-form";
 import { ApiKeysForm } from "@/components/settings/api-keys-form";
+import { MigrationForm } from "@/components/settings/migration-form";
 
 /**
  * Renders the settings page based on the user's session and selected tab.
@@ -47,6 +48,7 @@ export default async function SettingsPage({
         )}
         {tab === "security" && <SecurityForm />}
         {tab === "api-keys" && <ApiKeysForm />}
+        {tab === "migration" && <MigrationForm />}
       </div>
     </div>
   );
