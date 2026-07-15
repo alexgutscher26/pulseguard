@@ -36,10 +36,13 @@ export interface ProbeHeartbeatResult {
 function generateToken(): string {
   const bytes = new Uint8Array(32);
   crypto.getRandomValues(bytes);
-  return "pg_probe_" + Array.from(bytes)
-    .map((b) => b.toString(36).padStart(2, "0"))
-    .join("")
-    .slice(0, 40);
+  return (
+    "pg_probe_" +
+    Array.from(bytes)
+      .map((b) => b.toString(36).padStart(2, "0"))
+      .join("")
+      .slice(0, 40)
+  );
 }
 
 export async function registerProbe(
@@ -174,9 +177,7 @@ export async function recordHeartbeat(
   });
 }
 
-export async function checkProbeHeartbeats(
-  prisma: any,
-): Promise<ProbeHeartbeatResult[]> {
+export async function checkProbeHeartbeats(prisma: any): Promise<ProbeHeartbeatResult[]> {
   const probes = await prisma.probe.findMany({
     where: { status: { not: "DISCONNECTED" } },
     select: { id: true, lastHeartbeat: true, heartbeatInterval: true },

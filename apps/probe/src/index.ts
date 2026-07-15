@@ -25,7 +25,9 @@ interface CheckResult {
   region: string;
 }
 
-const RAW_API_URL = (process.env.PULSEGUARD_API_URL || "https://pulseguard-worker.example.com").replace(/\/+$/, "");
+const RAW_API_URL = (
+  process.env.PULSEGUARD_API_URL || "https://pulseguard-worker.example.com"
+).replace(/\/+$/, "");
 const API_URL = new URL(RAW_API_URL);
 const PROBE_TOKEN = process.env.PULSEGUARD_PROBE_TOKEN || "";
 const POLL_INTERVAL = parseInt(process.env.PROBE_POLL_INTERVAL || "15", 10);
@@ -37,7 +39,7 @@ if (!PROBE_TOKEN) {
 }
 
 const AUTH_HEADERS = {
-  "Authorization": `Bearer ${PROBE_TOKEN}`,
+  Authorization: `Bearer ${PROBE_TOKEN}`,
   "Content-Type": "application/json",
 };
 
@@ -55,10 +57,14 @@ async function apiPost<T>(path: string, body?: unknown): Promise<T> {
       body: body ? JSON.stringify(body) : undefined,
     });
   } catch (err: any) {
-    throw new Error(`fetch failed for ${url}: ${err.cause || err.message || err.code || "unknown"}`);
+    throw new Error(
+      `fetch failed for ${url}: ${err.cause || err.message || err.code || "unknown"}`,
+    );
   }
   if (!response.ok) {
-    throw new Error(`API ${path} failed: ${response.status} ${await response.text().catch(() => "")}`);
+    throw new Error(
+      `API ${path} failed: ${response.status} ${await response.text().catch(() => "")}`,
+    );
   }
   return response.json();
 }
@@ -91,7 +97,7 @@ async function runCheck(job: ProbeJob): Promise<CheckResult> {
     if (job.type === "HTTP" || job.type === "HTTPS" || job.url.startsWith("http")) {
       const headers: Record<string, string> = {
         "User-Agent": "PulseGuard-Probe/1.0",
-        "Accept": "*/*",
+        Accept: "*/*",
       };
       if (job.headers) {
         try {
@@ -117,7 +123,10 @@ async function runCheck(job: ProbeJob): Promise<CheckResult> {
       // 2xx + 3xx = healthy redirects. 429 = rate-limited (alive). 403 = IP/bot blocked (alive).
       // A 403 from Google means "I am alive and denying your bot" — NOT an outage.
       const isHealthy =
-        response.ok || (statusNum >= 300 && statusNum < 400) || statusNum === 429 || statusNum === 403;
+        response.ok ||
+        (statusNum >= 300 && statusNum < 400) ||
+        statusNum === 429 ||
+        statusNum === 403;
 
       return {
         monitorId: job.monitorId,

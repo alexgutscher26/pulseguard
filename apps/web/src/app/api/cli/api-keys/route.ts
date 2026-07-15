@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { name, expiresAt } = await req.json();
+  const { name, expiresAt } = (await req.json()) as any;
   if (!name?.trim()) return NextResponse.json({ error: "Name is required" }, { status: 400 });
 
   // Format: pg_live_<48 hex chars> (72 chars total, ~192 bits of entropy)

@@ -18,11 +18,13 @@ interface TriggerResult {
 export const triggerCmd = new Command("trigger")
   .argument("<id>", "Monitor ID to trigger")
   .description("Force an immediate health check on a monitor")
+  .option("--url <url>", "Override target URL for this check")
   .option("--json", "Output as JSON")
   .action(async (id, opts) => {
     const spinner = ora("Running check…").start();
     try {
-      const result = await api.post<TriggerResult>(`/api/cli/monitors/${id}/trigger`, {});
+      const payload = opts.url ? { url: opts.url } : {};
+      const result = await api.post<TriggerResult>(`/api/cli/monitors/${id}/trigger`, payload);
       spinner.stop();
 
       if (opts.json) {

@@ -31,7 +31,13 @@ export function PublicView({ page, isAdmin }: { page: any; isAdmin?: boolean }) 
   // Dynamic Theme Colors
   const theme = (page.theme as any) || {
     value: "cyberpunk",
-    colors: { bg: "#050505", text: "#e2e8f0", primary: "#22c55e", degraded: "#f59e0b", error: "#ef4444" },
+    colors: {
+      bg: "#050505",
+      text: "#e2e8f0",
+      primary: "#22c55e",
+      degraded: "#f59e0b",
+      error: "#ef4444",
+    },
   };
   const customStyle = {
     "--bg-page": theme.colors.bg,
@@ -372,7 +378,9 @@ export function PublicView({ page, isAdmin }: { page: any; isAdmin?: boolean }) 
           {/* Backdrop Blur Overlay */}
           <div
             className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-45 transition-opacity duration-300 ${
-              isEditSidebarOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+              isEditSidebarOpen
+                ? "opacity-100 pointer-events-auto"
+                : "opacity-0 pointer-events-none"
             }`}
             onClick={() => setIsEditSidebarOpen(false)}
           />

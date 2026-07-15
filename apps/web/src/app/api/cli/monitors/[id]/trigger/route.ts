@@ -16,17 +16,53 @@ export async function POST(req: NextRequest, { params }: Ctx) {
   if (!user) return unauthorized();
 
   const { id } = await params;
+
+  let bodyUrl: string | undefined;
+  try {
+    const body = (await req.json().catch(() => ({}))) as any;
+    if (body && typeof body === "object" && typeof body.url === "string") {
+      bodyUrl = body.url.trim();
+    }
+  } catch (_) {}
+
+  if (bodyUrl && !user.scopes.includes("write")) {
+    return NextResponse.json({ error: "Write scope required for URL override" }, { status: 403 });
+  }
+
+  if (bodyUrl) {
+    try {
+      new URL(bodyUrl);
+    } catch (_) {
+      return NextResponse.json({ error: "Invalid override URL" }, { status: 400 });
+    }
+  }
+
   const monitor = await prisma.monitor.findUnique({
     where: { id, userId: user.userId },
-    select: { id: true, name: true, url: true, type: true, timeout: true, method: true, headers: true, body: true, expectation: true },
+    select: {
+      id: true,
+      name: true,
+      url: true,
+      type: true,
+      timeout: true,
+      method: true,
+      headers: true,
+      body: true,
+      expectation: true,
+    },
   });
 
   if (!monitor) return NextResponse.json({ error: "Monitor not found" }, { status: 404 });
   if (monitor.type !== "HTTP") {
-    return NextResponse.json({
-      error: `Instant trigger only supports HTTP monitors (this is type: ${monitor.type})`,
-    }, { status: 422 });
+    return NextResponse.json(
+      {
+        error: `Instant trigger only supports HTTP monitors (this is type: ${monitor.type})`,
+      },
+      { status: 422 },
+    );
   }
+
+  const targetUrl = bodyUrl || monitor.url;
 
   const start = performance.now();
   let status: "UP" | "DOWN" = "DOWN";
@@ -39,11 +75,14 @@ export async function POST(req: NextRequest, { params }: Ctx) {
     if (monitor.headers) {
       try {
         const parsed = JSON.parse(monitor.headers);
-        if (Array.isArray(parsed)) parsed.forEach((h: any) => { if (h.key) userHeaders[h.key] = h.value; });
+        if (Array.isArray(parsed))
+          parsed.forEach((h: any) => {
+            if (h.key) userHeaders[h.key] = h.value;
+          });
       } catch (_) {}
     }
 
-    const response = await fetch(monitor.url, {
+    const response = await fetch(targetUrl, {
       method: monitor.method || "GET",
       redirect: "follow",
       headers: {
@@ -52,7 +91,9 @@ export async function POST(req: NextRequest, { params }: Ctx) {
         "Accept-Language": "en-US,en;q=0.5",
         ...userHeaders,
       },
-      body: ["POST", "PUT", "PATCH"].includes(monitor.method || "GET") ? monitor.body ?? undefined : undefined,
+      body: ["POST", "PUT", "PATCH"].includes(monitor.method || "GET")
+        ? (monitor.body ?? undefined)
+        : undefined,
       signal: AbortSignal.timeout((monitor.timeout || 10) * 1000),
     });
 
@@ -72,7 +113,8 @@ export async function POST(req: NextRequest, { params }: Ctx) {
   } catch (err: any) {
     latency = Math.round(performance.now() - start);
     if (err.name === "TimeoutError") errorReason = "TIMEOUT";
-    else if (err.message?.includes("getaddrinfo") || err.code === "ENOTFOUND") errorReason = "DNS_ERROR";
+    else if (err.message?.includes("getaddrinfo") || err.code === "ENOTFOUND")
+      errorReason = "DNS_ERROR";
     else if (err.code === "ECONNREFUSED") errorReason = "CONNECTION_REFUSED";
     else errorReason = "UNKNOWN_ERROR";
   }
@@ -84,7 +126,7 @@ export async function POST(req: NextRequest, { params }: Ctx) {
       status,
       latency,
       errorReason,
-      region: "cli-trigger",
+      region: bodyUrl ? "cli-trigger-override" : "cli-trigger",
       timestamp: new Date(),
     },
   });
@@ -92,7 +134,7 @@ export async function POST(req: NextRequest, { params }: Ctx) {
   return NextResponse.json({
     monitorId: monitor.id,
     name: monitor.name,
-    url: monitor.url,
+    url: targetUrl,
     status,
     latency,
     httpStatus,

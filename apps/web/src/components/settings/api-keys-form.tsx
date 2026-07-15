@@ -54,7 +54,9 @@ export function ApiKeysForm() {
       const res = await fetch("/api/cli/api-keys");
       const text = await res.text();
       if (!res.ok || !text) {
-        setError(`Server error (${res.status}). Try refreshing — the dev server may need a restart.`);
+        setError(
+          `Server error (${res.status}). Try refreshing — the dev server may need a restart.`,
+        );
         return;
       }
       try {
@@ -70,7 +72,9 @@ export function ApiKeysForm() {
     }
   }, []);
 
-  useEffect(() => { loadKeys(); }, [loadKeys]);
+  useEffect(() => {
+    loadKeys();
+  }, [loadKeys]);
 
   const createKey = async () => {
     if (!newKeyName.trim()) return;
@@ -119,7 +123,10 @@ export function ApiKeysForm() {
               API Keys
             </h3>
             <p className="text-xs text-primary/60 font-mono mt-0.5">
-              Authenticate the <code className="bg-primary/10 px-1 rounded">pulseguard-cli</code> and external integrations
+              Authenticate the <code className="bg-primary/10 px-1 rounded">
+                pulseguard-cli
+              </code>{" "}
+              and external integrations
             </p>
           </div>
           <button
@@ -169,7 +176,10 @@ export function ApiKeysForm() {
               <code className="flex-1 text-xs font-mono text-green-300 break-all">
                 {showRawKey ? newRawKey : "•".repeat(newRawKey.length)}
               </code>
-              <button onClick={() => setShowRawKey((v) => !v)} className="text-primary/40 hover:text-primary">
+              <button
+                onClick={() => setShowRawKey((v) => !v)}
+                className="text-primary/40 hover:text-primary"
+              >
                 {showRawKey ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
               </button>
               <CopyButton text={newRawKey} />
@@ -194,12 +204,17 @@ export function ApiKeysForm() {
               <Key className="size-8 opacity-50" />
             </div>
             <p className="font-mono text-sm uppercase tracking-widest">No API keys yet</p>
-            <p className="font-mono text-xs text-primary/30">Create one to use the CLI or integrate with CI/CD pipelines</p>
+            <p className="font-mono text-xs text-primary/30">
+              Create one to use the CLI or integrate with CI/CD pipelines
+            </p>
           </div>
         ) : (
           <div className="divide-y divide-primary/10">
             {keys.map((key) => (
-              <div key={key.id} className="flex items-center justify-between px-6 py-4 hover:bg-primary/5 transition-colors">
+              <div
+                key={key.id}
+                className="flex items-center justify-between px-6 py-4 hover:bg-primary/5 transition-colors"
+              >
                 <div className="flex flex-col gap-0.5">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-bold font-mono text-foreground">{key.name}</span>
@@ -241,7 +256,9 @@ export function ApiKeysForm() {
       <section className="border border-primary/10 p-6 bg-black/30">
         <div className="flex items-center gap-2 mb-4">
           <Terminal className="size-4 text-primary" />
-          <h4 className="text-sm font-bold text-primary font-mono uppercase tracking-wider">CLI Quickstart</h4>
+          <h4 className="text-sm font-bold text-primary font-mono uppercase tracking-wider">
+            CLI Quickstart
+          </h4>
         </div>
         <div className="space-y-3">
           {[
@@ -265,8 +282,9 @@ export function ApiKeysForm() {
       {/* Security note */}
       <section className="border border-primary/10 p-4 bg-amber-950/10 border-amber-500/20">
         <p className="text-xs text-amber-400/70 font-mono leading-relaxed">
-          <strong className="text-amber-400">Security:</strong> API keys grant full read/write access to your monitors.
-          Never commit them to version control. Use environment variables or secret managers in CI/CD.
+          <strong className="text-amber-400">Security:</strong> API keys grant full read/write
+          access to your monitors. Never commit them to version control. Use environment variables
+          or secret managers in CI/CD.
         </p>
       </section>
     </div>

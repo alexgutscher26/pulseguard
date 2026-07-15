@@ -63,10 +63,7 @@ const RESOLVERS: ResolverDef[] = [
   },
 ];
 
-async function queryResolver(
-  resolver: ResolverDef,
-  hostname: string,
-): Promise<string | null> {
+async function queryResolver(resolver: ResolverDef, hostname: string): Promise<string | null> {
   try {
     const response = await fetch(resolver.url(hostname), {
       headers: resolver.headers,
@@ -119,7 +116,9 @@ export async function checkDNSWatchdog(
 
   const failedResolvers = RESOLVERS.filter((_, i) => results[i] === null).map((r) => r.name);
   if (failedResolvers.length > 0) {
-    anomalies.push(`Resolver${failedResolvers.length > 1 ? "s" : ""} ${failedResolvers.join(", ")} failed to resolve`);
+    anomalies.push(
+      `Resolver${failedResolvers.length > 1 ? "s" : ""} ${failedResolvers.join(", ")} failed to resolve`,
+    );
   }
 
   if (allResolvedIPs.length === 0) {

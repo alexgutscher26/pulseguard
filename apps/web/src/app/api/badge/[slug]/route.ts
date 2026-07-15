@@ -2,10 +2,7 @@ import { NextRequest } from "next/server";
 import prisma from "@pulseguard/db";
 import { getOverallStatus } from "@/lib/uptime-calculator";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
   // Trim .svg suffix if it was requested (e.g. /api/badge/my-slug.svg)
@@ -37,7 +34,7 @@ export async function GET(
           "Content-Type": "image/svg+xml",
           "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
         },
-      }
+      },
     );
   }
 
@@ -74,7 +71,7 @@ export async function GET(
   const prefixText = "STATUS";
   // Prefix text length approx
   const prefixWidth = isLg ? 55 : 45;
-  const valueWidth = (statusText.length * (isLg ? 7.2 : 6.2)) + (paddingX * 2);
+  const valueWidth = statusText.length * (isLg ? 7.2 : 6.2) + paddingX * 2;
   const totalWidth = prefixWidth + valueWidth;
 
   let svgContent = "";
@@ -106,8 +103,8 @@ export async function GET(
         <circle cx="${prefixWidth + paddingX + 4}" cy="${height / 2}" r="${isLg ? 4.5 : 3.5}" fill="${color}" filter="url(#glow)" />
 
         <!-- Text -->
-        <text x="${prefixWidth / 2}" y="${(height / 2) + (isLg ? 4.5 : 3.5)}" text-anchor="middle" fill="${textColor}" font-family="monospace, monospace" font-size="${fontSize}" font-weight="bold" letter-spacing="0.5">${prefixText}</text>
-        <text x="${prefixWidth + paddingX + (isLg ? 14 : 10)}" y="${(height / 2) + (isLg ? 4.5 : 3.5)}" fill="${color}" filter="url(#glow)" font-family="monospace, monospace" font-size="${fontSize}" font-weight="bold" letter-spacing="0.5">${statusText}</text>
+        <text x="${prefixWidth / 2}" y="${height / 2 + (isLg ? 4.5 : 3.5)}" text-anchor="middle" fill="${textColor}" font-family="monospace, monospace" font-size="${fontSize}" font-weight="bold" letter-spacing="0.5">${prefixText}</text>
+        <text x="${prefixWidth + paddingX + (isLg ? 14 : 10)}" y="${height / 2 + (isLg ? 4.5 : 3.5)}" fill="${color}" filter="url(#glow)" font-family="monospace, monospace" font-size="${fontSize}" font-weight="bold" letter-spacing="0.5">${statusText}</text>
       </svg>
     `;
   } else {
@@ -125,8 +122,8 @@ export async function GET(
           <rect x="${prefixWidth}" width="${valueWidth}" height="${height}" fill="${color}" />
         </g>
         <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="${fontSize}" font-weight="bold">
-          <text x="${prefixWidth / 2}" y="${(height / 2) + (isLg ? 4.5 : 3.5)}" fill="${labelText}" text-anchor="middle">${prefixText}</text>
-          <text x="${prefixWidth + (valueWidth / 2)}" y="${(height / 2) + (isLg ? 4.5 : 3.5)}" fill="#ffffff" text-anchor="middle">${statusText}</text>
+          <text x="${prefixWidth / 2}" y="${height / 2 + (isLg ? 4.5 : 3.5)}" fill="${labelText}" text-anchor="middle">${prefixText}</text>
+          <text x="${prefixWidth + valueWidth / 2}" y="${height / 2 + (isLg ? 4.5 : 3.5)}" fill="#ffffff" text-anchor="middle">${statusText}</text>
         </g>
       </svg>
     `;

@@ -16,7 +16,9 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const baseUrl = getBaseUrl();
 
   if (!apiKey) {
-    console.error(chalk.red("✖ Not logged in. Run: ") + chalk.bold("pulse auth login --key <API_KEY>"));
+    console.error(
+      chalk.red("✖ Not logged in. Run: ") + chalk.bold("pulse auth login --key <API_KEY>"),
+    );
     process.exit(1);
   }
 
@@ -24,7 +26,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const res = await fetch(url, {
     ...options,
     headers: {
-      "Authorization": `Bearer ${apiKey}`,
+      Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
       "User-Agent": "pulseguard-cli/0.1.0",
       ...options.headers,
@@ -34,7 +36,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   if (!res.ok) {
     let msg = `HTTP ${res.status}`;
     try {
-      const data = await res.json() as { error?: string };
+      const data = (await res.json()) as { error?: string };
       msg = data.error || msg;
     } catch (_) {}
     throw new ApiError(res.status, msg);
@@ -57,7 +59,7 @@ export const api = {
     const baseUrl = getBaseUrl();
     return fetch(`${baseUrl}${path}`, {
       headers: {
-        "Authorization": `Bearer ${apiKey}`,
+        Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
         "User-Agent": "pulseguard-cli/0.1.0",
       },

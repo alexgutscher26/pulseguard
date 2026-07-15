@@ -34,41 +34,92 @@ export const waitCmd = new Command("wait")
 
     const spinner = ora(`Waiting for monitor to become UP (timeout: ${timeout}s)…`).start();
 
+    const deadline = Date.now() + timeout * 1000;
     try {
-      const url = `${baseUrl}/api/cli/monitors/${id}/wait?timeout=${timeout}&interval=${interval}`;
+      while (Date.now() < deadline) {
+        const url = `${baseUrl}/api/cli/monitors/${id}`;
+        const res = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            "User-Agent": "pulseguard-cli/0.1.0",
+          },
+        });
+
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.error || `HTTP ${res.status}`);
+        }
+
+        const data = (await res.json()) as any;
+        const monitor = data.monitor;
+
+        if (monitor.status === "UP") {
+          spinner.succeed(chalk.green(`✔ ${monitor.name} is UP`));
+          console.log(
+            chalk.dim(
+              `  Last check: ${monitor.lastCheck ? new Date(monitor.lastCheck).toLocaleString() : "unknown"}`,
+            ),
+          );
+          if (opts.json) {
+            console.log(
+              JSON.stringify(
+                {
+                  success: true,
+                  monitorId: id,
+                  name: monitor.name,
+                  status: "UP",
+                  lastCheck: monitor.lastCheck,
+                },
+                null,
+                2,
+              ),
+            );
+          }
+          process.exit(0);
+        }
+
+        // Wait for interval
+        await new Promise((resolve) => setTimeout(resolve, interval * 1000));
+      }
+
+      // Timeout reached
+      const url = `${baseUrl}/api/cli/monitors/${id}`;
       const res = await fetch(url, {
         headers: {
-          "Authorization": `Bearer ${apiKey}`,
+          Authorization: `Bearer ${apiKey}`,
           "User-Agent": "pulseguard-cli/0.1.0",
         },
-        signal: AbortSignal.timeout((timeout + 30) * 1000),
       });
+      const data = (await res.json()) as any;
+      const monitor = data.monitor;
 
-      const data = await res.json() as any;
+      spinner.fail(chalk.red(`✖ Monitor did not recover within ${timeout}s`));
+      console.log(chalk.dim(`  Monitor status: ${monitor?.status ?? "UNKNOWN"}`));
+      console.error(
+        chalk.yellow(
+          `\n  Deployment gate failed. Check your monitor at:\n  ${baseUrl}/dashboard/monitors/${id}`,
+        ),
+      );
 
       if (opts.json) {
-        spinner.stop();
-        console.log(JSON.stringify(data, null, 2));
+        console.log(
+          JSON.stringify(
+            {
+              success: false,
+              monitorId: id,
+              name: monitor?.name || "unknown",
+              status: monitor?.status || "UNKNOWN",
+              lastCheck: monitor?.lastCheck,
+            },
+            null,
+            2,
+          ),
+        );
       }
-
-      if (res.ok && data.success) {
-        spinner.succeed(chalk.green(`✔ ${data.name} is UP`));
-        console.log(chalk.dim(`  Last check: ${data.lastCheck ? new Date(data.lastCheck).toLocaleString() : "unknown"}`));
-        process.exit(0);
-      } else {
-        // 504 — timed out
-        spinner.fail(chalk.red(`✖ ${data.message}`));
-        console.log(chalk.dim(`  Monitor status: ${data.status}`));
-        console.error(chalk.yellow(`\n  Deployment gate failed. Check your monitor at:\n  ${baseUrl}/dashboard/monitors/${id}`));
-        process.exit(1);
-      }
+      process.exit(1);
     } catch (err: any) {
       spinner.fail("Wait failed");
-      if (err.name === "TimeoutError") {
-        console.error(chalk.red(`✖ Request timed out after ${timeout + 30}s`));
-      } else {
-        console.error(chalk.red(err.message));
-      }
+      console.error(chalk.red(err.message));
       process.exit(1);
     }
   });

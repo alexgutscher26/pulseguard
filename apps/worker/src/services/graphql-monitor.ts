@@ -20,7 +20,10 @@ export interface GraphQLResult {
 }
 
 function getValueByPath(obj: unknown, path: string): unknown {
-  const parts = path.replace(/^\$\.?/, "").replace(/^\./, "").split(".");
+  const parts = path
+    .replace(/^\$\.?/, "")
+    .replace(/^\./, "")
+    .split(".");
   let current: unknown = obj;
   for (const part of parts) {
     if (current === null || current === undefined) return undefined;
@@ -150,7 +153,9 @@ export async function checkGraphQL(
       errors.push("Missing 'data' field in GraphQL response");
     }
     if (hasErrors) {
-      errors.push(`GraphQL error${errorMessages.length > 1 ? "s" : ""}: ${errorMessages.join("; ")}`);
+      errors.push(
+        `GraphQL error${errorMessages.length > 1 ? "s" : ""}: ${errorMessages.join("; ")}`,
+      );
     }
 
     const assertionResults: { path: string; passed: boolean; actual: unknown }[] = [];

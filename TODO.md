@@ -319,12 +319,12 @@ Made for developers, by developers.
   - Manage PulseGuard architecture purely as code (IaC) alongside the rest of the stack.
 - [ ] **Language SDKs**
   - Publish official typed libraries for Node.js, Python, Go, and Rust.
-- [ ] **CI/CD Integrations (GitHub Actions, Vercel, Netlify)**
-  - [ ] **PulseGuard GitHub Action**: `uses: pulseguard/action@v1` to trigger synthetic tests on deploy.
-  - [ ] **Instant Trigger**: API endpoint to force-run checks immediately for CI validation (OpenStatus parity).
-  - [ ] **Deployment Gates**: Fail build/deploy if critical monitors (`ids: [...]`) fail after X retries.
-  - [ ] **PR Summaries**: Automatically comment on GitHub PRs with latency/uptime stats for transient preview environments.
-  - [ ] **Transient Monitor Management**: Automatically create/destroy monitors for ephemeral PR environments.
+- [x] **CI/CD Integrations (GitHub Actions, Vercel, Netlify)**
+  - [x] **PulseGuard GitHub Action**: `uses: pulseguard/action@v1` to trigger synthetic tests on deploy.
+  - [x] **Instant Trigger**: API endpoint to force-run checks immediately for CI validation (OpenStatus parity).
+  - [x] **Deployment Gates**: Fail build/deploy if critical monitors (`ids: [...]`) fail after X retries.
+  - [x] **PR Summaries**: Automatically comment on GitHub PRs with latency/uptime stats for transient preview environments.
+  - [x] **Transient Monitor Management**: Automatically create/destroy monitors for ephemeral PR environments.
 
 ---
 

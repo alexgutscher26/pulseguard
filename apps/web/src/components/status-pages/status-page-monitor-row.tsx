@@ -52,10 +52,12 @@ export function StatusPageMonitorRow({
   // Derive today's status in manual override mode
   const todayStr = new Date().toISOString().split("T")[0];
   const todayOverride = monitorOverrides.find(
-    (o: any) => new Date(o.date).toISOString().split("T")[0] === todayStr
+    (o: any) => new Date(o.date).toISOString().split("T")[0] === todayStr,
   );
-  const derivedStatus = todayOverride 
-    ? (["UP", "OPERATIONAL"].includes(todayOverride.status) ? "UP" : "DOWN")
+  const derivedStatus = todayOverride
+    ? ["UP", "OPERATIONAL"].includes(todayOverride.status)
+      ? "UP"
+      : "DOWN"
     : "UP";
 
   const activeStatus = barType === "manual" ? derivedStatus : currentStatus;
@@ -66,7 +68,7 @@ export function StatusPageMonitorRow({
     date.setDate(date.getDate() - (59 - i));
     const dateStr = date.toISOString().split("T")[0];
     const override = monitorOverrides.find(
-      (o: any) => new Date(o.date).toISOString().split("T")[0] === dateStr
+      (o: any) => new Date(o.date).toISOString().split("T")[0] === dateStr,
     );
     return {
       dateStr,
@@ -75,7 +77,7 @@ export function StatusPageMonitorRow({
   });
 
   const manualUpCount = manualDays.filter(
-    (d: any) => !d.override || ["UP", "OPERATIONAL"].includes(d.override.status)
+    (d: any) => !d.override || ["UP", "OPERATIONAL"].includes(d.override.status),
   ).length;
   const manualUptime = Math.round((manualUpCount / 60) * 100);
 
@@ -118,76 +120,74 @@ export function StatusPageMonitorRow({
                 <Zap className="size-3" /> {latestEvent.latency}ms
               </div>
             )}
-            {cardType === "duration" ? (
-              visibleUptime && (
-                activeStatus === "UP" ? (
+            {cardType === "duration"
+              ? visibleUptime &&
+                (activeStatus === "UP" ? (
                   <span className="text-primary text-sm font-bold">{displayUptime}%</span>
                 ) : (
                   <span className="text-red-500 text-sm font-bold">{tCommon("down")}</span>
-                )
-              )
-            ) : (
-              visibleCheckCounts && (
-                <span className="text-primary text-sm font-bold">
-                  {barType === "manual" ? "60 days" : `${totalCount} checks`}
-                </span>
-              )
-            )}
+                ))
+              : visibleCheckCounts && (
+                  <span className="text-primary text-sm font-bold">
+                    {barType === "manual" ? "60 days" : `${totalCount} checks`}
+                  </span>
+                )}
           </div>
         </div>
 
         {/* Uptime History Bars */}
         <div className="flex items-center gap-1 h-8 w-full">
-          {barType === "manual" ? (
-            manualDays.map((d: any, i) => {
-              let bgClass = "bg-primary"; // Default is green
-              let title = `${d.dateStr} - Operational`;
+          {barType === "manual"
+            ? manualDays.map((d: any, i) => {
+                let bgClass = "bg-primary"; // Default is green
+                let title = `${d.dateStr} - Operational`;
 
-              if (d.override) {
-                const status = d.override.status;
-                const message = d.override.message || "Manual Override";
-                title = `${d.dateStr} - ${status} (${message})`;
+                if (d.override) {
+                  const status = d.override.status;
+                  const message = d.override.message || "Manual Override";
+                  title = `${d.dateStr} - ${status} (${message})`;
 
-                if (status === "MAINTENANCE") bgClass = "bg-amber-500";
-                else if (status === "DEGRADED" || status === "PARTIAL_OUTAGE") bgClass = "bg-yellow-500";
-                else if (status === "MAJOR_OUTAGE" || status === "DOWN") bgClass = "bg-red-500";
-                else if (status === "PAUSED") bgClass = "bg-gray-500";
-              }
+                  if (status === "MAINTENANCE") bgClass = "bg-amber-500";
+                  else if (status === "DEGRADED" || status === "PARTIAL_OUTAGE")
+                    bgClass = "bg-yellow-500";
+                  else if (status === "MAJOR_OUTAGE" || status === "DOWN") bgClass = "bg-red-500";
+                  else if (status === "PAUSED") bgClass = "bg-gray-500";
+                }
 
-              return (
-                <div
-                  key={i}
-                  className={`flex-1 h-full rounded-full transition-all hover:opacity-80 ${bgClass}`}
-                  title={title}
-                />
-              );
-            })
-          ) : (
-            [...Array(60)].map((_, i) => {
-              // Map history. events[0] is latest.
-              // visual: left (oldest) -> right (newest)
-              // So index 0 (left) should be event[59]
-              const eventIndex = 59 - i;
-              const evt = history[eventIndex];
+                return (
+                  <div
+                    key={i}
+                    className={`flex-1 h-full rounded-full transition-all hover:opacity-80 ${bgClass}`}
+                    title={title}
+                  />
+                );
+              })
+            : [...Array(60)].map((_, i) => {
+                // Map history. events[0] is latest.
+                // visual: left (oldest) -> right (newest)
+                // So index 0 (left) should be event[59]
+                const eventIndex = 59 - i;
+                const evt = history[eventIndex];
 
-              let bgClass = "bg-primary/20"; // No data default
-              if (evt) {
-                if (evt.status === "MAINTENANCE") bgClass = "bg-amber-500";
-                else if (evt.status === "UP") bgClass = "bg-primary";
-                else bgClass = "bg-red-500";
-              }
+                let bgClass = "bg-primary/20"; // No data default
+                if (evt) {
+                  if (evt.status === "MAINTENANCE") bgClass = "bg-amber-500";
+                  else if (evt.status === "UP") bgClass = "bg-primary";
+                  else bgClass = "bg-red-500";
+                }
 
-              return (
-                <div
-                  key={i}
-                  className={`flex-1 h-full rounded-full transition-all hover:opacity-80 ${bgClass}`}
-                  title={
-                    evt ? `${new Date(evt.timestamp).toLocaleString()} - ${evt.status}` : "No Data"
-                  }
-                />
-              );
-            })
-          )}
+                return (
+                  <div
+                    key={i}
+                    className={`flex-1 h-full rounded-full transition-all hover:opacity-80 ${bgClass}`}
+                    title={
+                      evt
+                        ? `${new Date(evt.timestamp).toLocaleString()} - ${evt.status}`
+                        : "No Data"
+                    }
+                  />
+                );
+              })}
         </div>
 
         <div className="flex justify-between text-[10px] text-primary/40 uppercase tracking-widest font-mono">

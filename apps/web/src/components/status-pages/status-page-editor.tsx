@@ -12,7 +12,18 @@ import {
   getStatusPageUptimeData,
   updateStatusPageMonitorSettings,
 } from "@/actions/status-pages";
-import { Monitor, Plus, Trash2, ArrowLeft, ExternalLink, History, Code2, Calendar, Settings2, Loader2 } from "lucide-react";
+import {
+  Monitor,
+  Plus,
+  Trash2,
+  ArrowLeft,
+  ExternalLink,
+  History,
+  Code2,
+  Calendar,
+  Settings2,
+  Loader2,
+} from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -260,7 +271,9 @@ export function StatusPageEditor({ page, allMonitors }: { page: any; allMonitors
                                 onChange={(e) => setEditShowLatency(e.target.checked)}
                                 className="accent-primary size-4"
                               />
-                              <span className="text-[10px] font-mono font-bold text-foreground">Latency</span>
+                              <span className="text-[10px] font-mono font-bold text-foreground">
+                                Latency
+                              </span>
                             </label>
 
                             <label className="flex items-center gap-2 cursor-pointer p-2 bg-white/5 hover:bg-white/10 rounded-sm">
@@ -270,7 +283,9 @@ export function StatusPageEditor({ page, allMonitors }: { page: any; allMonitors
                                 onChange={(e) => setEditShowUptime(e.target.checked)}
                                 className="accent-primary size-4"
                               />
-                              <span className="text-[10px] font-mono font-bold text-foreground">Uptime %</span>
+                              <span className="text-[10px] font-mono font-bold text-foreground">
+                                Uptime %
+                              </span>
                             </label>
 
                             <label className="flex items-center gap-2 cursor-pointer p-2 bg-white/5 hover:bg-white/10 rounded-sm">
@@ -280,7 +295,9 @@ export function StatusPageEditor({ page, allMonitors }: { page: any; allMonitors
                                 onChange={(e) => setEditShowCheckCounts(e.target.checked)}
                                 className="accent-primary size-4"
                               />
-                              <span className="text-[10px] font-mono font-bold text-foreground">Checks</span>
+                              <span className="text-[10px] font-mono font-bold text-foreground">
+                                Checks
+                              </span>
                             </label>
                           </div>
 

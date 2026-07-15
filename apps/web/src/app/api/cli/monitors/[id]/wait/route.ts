@@ -24,7 +24,7 @@ export async function GET(req: NextRequest, { params }: Ctx) {
 
   const searchParams = req.nextUrl.searchParams;
   const timeoutSec = Math.min(Number(searchParams.get("timeout") || "300"), 600); // max 10 min
-  const intervalSec = Math.max(Number(searchParams.get("interval") || "15"), 5);  // min 5s
+  const intervalSec = Math.max(Number(searchParams.get("interval") || "15"), 5); // min 5s
 
   const deadline = Date.now() + timeoutSec * 1000;
 
@@ -50,7 +50,10 @@ export async function GET(req: NextRequest, { params }: Ctx) {
   }
 
   // Timed out
-  const final = await prisma.monitor.findUnique({ where: { id }, select: { status: true, lastCheck: true } });
+  const final = await prisma.monitor.findUnique({
+    where: { id },
+    select: { status: true, lastCheck: true },
+  });
   return NextResponse.json(
     {
       success: false,

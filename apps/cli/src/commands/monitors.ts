@@ -48,7 +48,9 @@ monitorsCmd
       }
 
       if (monitors.length === 0) {
-        console.log(chalk.dim("No monitors found. Create one with: pulse monitors apply -f pulseguard.yaml"));
+        console.log(
+          chalk.dim("No monitors found. Create one with: pulse monitors apply -f pulseguard.yaml"),
+        );
         return;
       }
 
@@ -71,16 +73,31 @@ monitorsCmd
         ]),
       ];
 
-      console.log(table(rows, {
-        border: {
-          topBody: "─", topJoin: "┬", topLeft: "┌", topRight: "┐",
-          bottomBody: "─", bottomJoin: "┴", bottomLeft: "└", bottomRight: "┘",
-          bodyLeft: "│", bodyRight: "│", bodyJoin: "│",
-          joinBody: "─", joinLeft: "├", joinRight: "┤", joinJoin: "┼",
-        },
-        drawHorizontalLine: (i) => i === 0 || i === 1 || i === rows.length,
-      }));
-      console.log(chalk.dim(`  ${monitors.length} monitor${monitors.length !== 1 ? "s" : ""} total`));
+      console.log(
+        table(rows, {
+          border: {
+            topBody: "─",
+            topJoin: "┬",
+            topLeft: "┌",
+            topRight: "┐",
+            bottomBody: "─",
+            bottomJoin: "┴",
+            bottomLeft: "└",
+            bottomRight: "┘",
+            bodyLeft: "│",
+            bodyRight: "│",
+            bodyJoin: "│",
+            joinBody: "─",
+            joinLeft: "├",
+            joinRight: "┤",
+            joinJoin: "┼",
+          },
+          drawHorizontalLine: (i) => i === 0 || i === 1 || i === rows.length,
+        }),
+      );
+      console.log(
+        chalk.dim(`  ${monitors.length} monitor${monitors.length !== 1 ? "s" : ""} total`),
+      );
     } catch (err) {
       spinner.fail("Failed to fetch monitors");
       if (err instanceof ApiError) console.error(chalk.red(err.message));
@@ -108,7 +125,11 @@ monitorsCmd
       console.log(chalk.dim(`  URL      : ${monitor.url}`));
       console.log(chalk.dim(`  Type     : ${monitor.type}`));
       console.log(chalk.dim(`  Interval : ${monitor.interval}s  Timeout: ${monitor.timeout}s`));
-      console.log(chalk.dim(`  Last check: ${monitor.lastCheck ? new Date(monitor.lastCheck).toLocaleString() : "never"}`));
+      console.log(
+        chalk.dim(
+          `  Last check: ${monitor.lastCheck ? new Date(monitor.lastCheck).toLocaleString() : "never"}`,
+        ),
+      );
 
       if (monitor.events?.length) {
         console.log(`\n${chalk.bold("Recent events:")}`);
@@ -160,7 +181,8 @@ monitorsCmd
     const { monitors: existing } = await api.get<{ monitors: Monitor[] }>("/api/cli/monitors");
     const existingByName = new Map(existing.map((m) => [m.name.toLowerCase(), m]));
 
-    let created = 0, updated = 0;
+    let created = 0,
+      updated = 0;
     for (const def of config.monitors) {
       const name = def.name;
       const existing = existingByName.get(name?.toLowerCase());
@@ -217,7 +239,10 @@ monitorsCmd
         })),
       });
 
-      writeFileSync(opts.output, `# PulseGuard Monitoring as Code\n# Generated: ${new Date().toISOString()}\n\n${yamlContent}`);
+      writeFileSync(
+        opts.output,
+        `# PulseGuard Monitoring as Code\n# Generated: ${new Date().toISOString()}\n\n${yamlContent}`,
+      );
       console.log(chalk.green(`✔ Exported ${monitors.length} monitors to ${opts.output}`));
     } catch (err) {
       spinner.fail("Failed to export monitors");

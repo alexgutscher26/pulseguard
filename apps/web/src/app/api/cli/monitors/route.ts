@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Write scope required" }, { status: 403 });
   }
 
-  const body = await req.json();
+  const body = (await req.json()) as any;
   const {
     name,
     url,

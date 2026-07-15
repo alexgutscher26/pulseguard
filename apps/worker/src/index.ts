@@ -107,9 +107,7 @@ async function performCheck(
       return {
         status: isHealthy ? "UP" : "DOWN",
         latency: dnsLatency,
-        errorReason: isHealthy
-          ? undefined
-          : `DNS_ANOMALY: ${dnsResult.anomalies.join("; ")}`,
+        errorReason: isHealthy ? undefined : `DNS_ANOMALY: ${dnsResult.anomalies.join("; ")}`,
       };
     } catch (e: any) {
       return { status: "DOWN", latency: 0, errorReason: "DNS_CHECK_FAILED" };
@@ -824,7 +822,7 @@ export async function processBatch(
                     // problem, NOT a confirmed target outage. Treat as inconclusive → keep UP.
                     console.warn(
                       `[MultiVector] Both proxy vectors failed at infrastructure level for ${monitor.name}. ` +
-                      `Cannot confirm DOWN without reliable external verification. Treating as UP (false-positive prevention).`,
+                        `Cannot confirm DOWN without reliable external verification. Treating as UP (false-positive prevention).`,
                     );
                     retryResult.status = "UP";
                     retryResult.errorReason = undefined;
@@ -1616,7 +1614,10 @@ export default {
       }
 
       // Webhook Route: /api/heartbeat/<token> (GET or POST)
-      if (url.pathname.startsWith("/api/heartbeat/") && (request.method === "GET" || request.method === "POST")) {
+      if (
+        url.pathname.startsWith("/api/heartbeat/") &&
+        (request.method === "GET" || request.method === "POST")
+      ) {
         try {
           const token = url.pathname.split("/api/heartbeat/")[1] || "";
 
@@ -1643,7 +1644,10 @@ export default {
           }
 
           const { recordPing } = await import("./services/heartbeat");
-          const sourceIp = request.headers.get("CF-Connecting-IP") || request.headers.get("X-Forwarded-For") || null;
+          const sourceIp =
+            request.headers.get("CF-Connecting-IP") ||
+            request.headers.get("X-Forwarded-For") ||
+            null;
           const userAgent = request.headers.get("User-Agent") || null;
 
           await recordPing(prisma, monitor.id, sourceIp, userAgent);
@@ -1809,7 +1813,8 @@ export default {
           const body: any = await request.json();
           const { connectionUrl, query, expectation } = body;
 
-          if (!connectionUrl) return new Response("Missing 'connectionUrl' body param", { status: 400 });
+          if (!connectionUrl)
+            return new Response("Missing 'connectionUrl' body param", { status: 400 });
 
           const { checkDatabase } = await import("./services/database-monitor");
           const results = await checkDatabase(connectionUrl, query, expectation);
@@ -1839,7 +1844,8 @@ export default {
           if (!targetUrl) return new Response("Missing 'url' body param", { status: 400 });
 
           const { checkBGPTRoute } = await import("./services/bgp-monitor");
-          const expectation = expectedAsn || expectedPrefix ? { expectedAsn, expectedPrefix } : undefined;
+          const expectation =
+            expectedAsn || expectedPrefix ? { expectedAsn, expectedPrefix } : undefined;
           const results = await checkBGPTRoute(targetUrl, expectation);
 
           return new Response(JSON.stringify(results), {
@@ -1895,20 +1901,40 @@ export default {
         try {
           const session = await verifySession(request, env);
           if (!session?.userId) {
-            return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { "Content-Type": "application/json" } });
+            return new Response(JSON.stringify({ error: "Unauthorized" }), {
+              status: 401,
+              headers: { "Content-Type": "application/json" },
+            });
           }
 
           const body: any = await request.json();
           const { name, platform, region, heartbeatInterval } = body;
-          if (!name) return new Response(JSON.stringify({ error: "Missing 'name'" }), { status: 400, headers: { "Content-Type": "application/json" } });
+          if (!name)
+            return new Response(JSON.stringify({ error: "Missing 'name'" }), {
+              status: 400,
+              headers: { "Content-Type": "application/json" },
+            });
 
           const prisma = getPrisma(env.DATABASE_URL);
           const { registerProbe } = await import("./services/probe-registry");
-          const probe = await registerProbe(prisma, session.userId, name, platform, region, heartbeatInterval);
+          const probe = await registerProbe(
+            prisma,
+            session.userId,
+            name,
+            platform,
+            region,
+            heartbeatInterval,
+          );
 
-          return new Response(JSON.stringify(probe), { status: 201, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } });
+          return new Response(JSON.stringify(probe), {
+            status: 201,
+            headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+          });
         } catch (err: any) {
-          return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" } });
+          return new Response(JSON.stringify({ error: err.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
         }
       }
 
@@ -1916,19 +1942,33 @@ export default {
       if (url.pathname === "/api/probes/poll" && request.method === "POST") {
         try {
           const token = request.headers.get("Authorization")?.replace("Bearer ", "");
-          if (!token) return new Response(JSON.stringify({ error: "Missing token" }), { status: 401, headers: { "Content-Type": "application/json" } });
+          if (!token)
+            return new Response(JSON.stringify({ error: "Missing token" }), {
+              status: 401,
+              headers: { "Content-Type": "application/json" },
+            });
 
           const prisma = getPrisma(env.DATABASE_URL);
           const { authenticateProbe, pollJobs } = await import("./services/probe-registry");
           const probe = await authenticateProbe(prisma, token);
-          if (!probe) return new Response(JSON.stringify({ error: "Invalid or inactive probe" }), { status: 403, headers: { "Content-Type": "application/json" } });
+          if (!probe)
+            return new Response(JSON.stringify({ error: "Invalid or inactive probe" }), {
+              status: 403,
+              headers: { "Content-Type": "application/json" },
+            });
 
           const body: any = await request.json().catch(() => ({}));
           const jobs = await pollJobs(prisma, probe.id, body.maxJobs || 10);
 
-          return new Response(JSON.stringify({ probeId: probe.id, jobs }), { status: 200, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } });
+          return new Response(JSON.stringify({ probeId: probe.id, jobs }), {
+            status: 200,
+            headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+          });
         } catch (err: any) {
-          return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" } });
+          return new Response(JSON.stringify({ error: err.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
         }
       }
 
@@ -1936,19 +1976,33 @@ export default {
       if (url.pathname === "/api/probes/result" && request.method === "POST") {
         try {
           const token = request.headers.get("Authorization")?.replace("Bearer ", "");
-          if (!token) return new Response(JSON.stringify({ error: "Missing token" }), { status: 401, headers: { "Content-Type": "application/json" } });
+          if (!token)
+            return new Response(JSON.stringify({ error: "Missing token" }), {
+              status: 401,
+              headers: { "Content-Type": "application/json" },
+            });
 
           const prisma = getPrisma(env.DATABASE_URL);
           const { authenticateProbe, reportResult } = await import("./services/probe-registry");
           const probe = await authenticateProbe(prisma, token);
-          if (!probe) return new Response(JSON.stringify({ error: "Invalid or inactive probe" }), { status: 403, headers: { "Content-Type": "application/json" } });
+          if (!probe)
+            return new Response(JSON.stringify({ error: "Invalid or inactive probe" }), {
+              status: 403,
+              headers: { "Content-Type": "application/json" },
+            });
 
           const body: any = await request.json();
           await reportResult(prisma, probe.id, body);
 
-          return new Response(JSON.stringify({ ok: true }), { status: 200, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } });
+          return new Response(JSON.stringify({ ok: true }), {
+            status: 200,
+            headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+          });
         } catch (err: any) {
-          return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" } });
+          return new Response(JSON.stringify({ error: err.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
         }
       }
 
@@ -1956,19 +2010,36 @@ export default {
       if (url.pathname === "/api/probes/heartbeat" && request.method === "POST") {
         try {
           const token = request.headers.get("Authorization")?.replace("Bearer ", "");
-          if (!token) return new Response(JSON.stringify({ error: "Missing token" }), { status: 401, headers: { "Content-Type": "application/json" } });
+          if (!token)
+            return new Response(JSON.stringify({ error: "Missing token" }), {
+              status: 401,
+              headers: { "Content-Type": "application/json" },
+            });
 
           const prisma = getPrisma(env.DATABASE_URL);
           const { authenticateProbe, recordHeartbeat } = await import("./services/probe-registry");
           const probe = await authenticateProbe(prisma, token);
-          if (!probe) return new Response(JSON.stringify({ error: "Invalid or inactive probe" }), { status: 403, headers: { "Content-Type": "application/json" } });
+          if (!probe)
+            return new Response(JSON.stringify({ error: "Invalid or inactive probe" }), {
+              status: 403,
+              headers: { "Content-Type": "application/json" },
+            });
 
-          const sourceIp = request.headers.get("CF-Connecting-IP") || request.headers.get("X-Forwarded-For") || undefined;
+          const sourceIp =
+            request.headers.get("CF-Connecting-IP") ||
+            request.headers.get("X-Forwarded-For") ||
+            undefined;
           await recordHeartbeat(prisma, probe.id, sourceIp);
 
-          return new Response(JSON.stringify({ ok: true }), { status: 200, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } });
+          return new Response(JSON.stringify({ ok: true }), {
+            status: 200,
+            headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+          });
         } catch (err: any) {
-          return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" } });
+          return new Response(JSON.stringify({ error: err.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
         }
       }
 

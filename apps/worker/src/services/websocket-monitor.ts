@@ -1,6 +1,9 @@
 interface WebSocketEventTarget {
   close(): void;
-  addEventListener(type: "open" | "message" | "error" | "close", listener: (...args: any[]) => void): void;
+  addEventListener(
+    type: "open" | "message" | "error" | "close",
+    listener: (...args: any[]) => void,
+  ): void;
 }
 
 export interface WebSocketAssertion {
@@ -52,7 +55,9 @@ export async function checkWebSocket(
     const finish = (result: WebSocketResult) => {
       if (closed) return;
       closed = true;
-      try { ws.close(); } catch {}
+      try {
+        ws.close();
+      } catch {}
       resolve(result);
     };
 
@@ -108,9 +113,8 @@ export async function checkWebSocket(
           errorReason: errors.length > 0 ? errors.join("; ") : undefined,
           messagesReceived,
           listenDuration: listenSeconds,
-          firstMessageLatency: firstMessageLatency !== null
-            ? Math.round(firstMessageLatency - connectedAt)
-            : null,
+          firstMessageLatency:
+            firstMessageLatency !== null ? Math.round(firstMessageLatency - connectedAt) : null,
           lastMessageContent,
         });
       }, listenSeconds * 1000);
@@ -156,9 +160,8 @@ export async function checkWebSocket(
           errorReason: errors.length > 0 ? errors.join("; ") : undefined,
           messagesReceived,
           listenDuration: (performance.now() - start) / 1000,
-          firstMessageLatency: firstMessageLatency !== null
-            ? Math.round(firstMessageLatency - start)
-            : null,
+          firstMessageLatency:
+            firstMessageLatency !== null ? Math.round(firstMessageLatency - start) : null,
           lastMessageContent,
         });
       }

@@ -1,0 +1,38 @@
+name: "PulseGuard Deployment Gates"
+description: "Trigger synthetic checks, wait for recovery, and post PR metrics summaries"
+inputs:
+  api-key:
+    description: "PulseGuard API key"
+    required: true
+  api-url:
+    description: "PulseGuard Base API URL"
+    required: false
+    default: "https://pulseguard.io"
+  monitor-ids:
+    description: "Comma-separated list of monitor IDs to run deployment gates on"
+    required: false
+  url:
+    description: "Override target URL for transient/preview testing"
+    required: false
+  transient:
+    description: "Automatically create and destroy a transient monitor for the URL (true/false)"
+    required: false
+    default: "false"
+  transient-name:
+    description: "Name of the transient monitor if created"
+    required: false
+  github-token:
+    description: "GitHub token (e.g. secrets.GITHUB_TOKEN) for posting PR comments"
+    required: false
+  wait-timeout:
+    description: "Maximum time to wait for monitors to be UP (seconds)"
+    required: false
+    default: "300"
+  wait-interval:
+    description: "Polling interval between status checks (seconds)"
+    required: false
+    default: "15"
+runs:
+  using: "node20"
+  main: "main.js"
+  post: "cleanup.js"

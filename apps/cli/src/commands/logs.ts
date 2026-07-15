@@ -43,7 +43,7 @@ logsCmd
     try {
       // Initial fetch: show last N events
       const { name, events } = await api.get<{ name: string; events: Event[] }>(
-        `/api/cli/monitors/${id}/events?limit=${lines}`
+        `/api/cli/monitors/${id}/events?limit=${lines}`,
       );
 
       console.log(chalk.bold(`\n  Tailing logs for: ${name}`));
@@ -54,15 +54,14 @@ logsCmd
       }
 
       // Track the newest event we've seen
-      let lastTimestamp = events.length > 0
-        ? events[events.length - 1].timestamp
-        : new Date().toISOString();
+      let lastTimestamp =
+        events.length > 0 ? events[events.length - 1].timestamp : new Date().toISOString();
 
       // Poll for new events
       const poll = async () => {
         try {
           const { events: newEvents } = await api.get<{ events: Event[] }>(
-            `/api/cli/monitors/${id}/events?limit=50&since=${encodeURIComponent(lastTimestamp)}`
+            `/api/cli/monitors/${id}/events?limit=50&since=${encodeURIComponent(lastTimestamp)}`,
           );
           for (const e of newEvents) {
             console.log(formatEvent(e));

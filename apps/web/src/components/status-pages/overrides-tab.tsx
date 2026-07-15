@@ -7,18 +7,52 @@ import {
   getStatusPageOverrides,
 } from "@/actions/status-pages";
 import { toast } from "sonner";
-import { Loader2, Plus, Trash2, Calendar, AlertTriangle, ShieldAlert, CheckCircle2, Clock } from "lucide-react";
+import {
+  Loader2,
+  Plus,
+  Trash2,
+  Calendar,
+  AlertTriangle,
+  ShieldAlert,
+  CheckCircle2,
+  Clock,
+} from "lucide-react";
 
 interface OverridesTabProps {
   page: any;
 }
 
 const statusOptions = [
-  { value: "OPERATIONAL", label: "Operational", color: "text-primary border-primary/20 bg-primary/10", icon: CheckCircle2 },
-  { value: "DEGRADED", label: "Degraded Performance", color: "text-yellow-500 border-yellow-500/20 bg-yellow-500/10", icon: AlertTriangle },
-  { value: "PARTIAL_OUTAGE", label: "Partial Outage", color: "text-amber-500 border-amber-500/20 bg-amber-500/10", icon: AlertTriangle },
-  { value: "MAJOR_OUTAGE", label: "Major Outage", color: "text-red-500 border-red-500/20 bg-red-500/10", icon: ShieldAlert },
-  { value: "MAINTENANCE", label: "Under Maintenance", color: "text-orange-500 border-orange-500/20 bg-orange-500/10", icon: Clock },
+  {
+    value: "OPERATIONAL",
+    label: "Operational",
+    color: "text-primary border-primary/20 bg-primary/10",
+    icon: CheckCircle2,
+  },
+  {
+    value: "DEGRADED",
+    label: "Degraded Performance",
+    color: "text-yellow-500 border-yellow-500/20 bg-yellow-500/10",
+    icon: AlertTriangle,
+  },
+  {
+    value: "PARTIAL_OUTAGE",
+    label: "Partial Outage",
+    color: "text-amber-500 border-amber-500/20 bg-amber-500/10",
+    icon: AlertTriangle,
+  },
+  {
+    value: "MAJOR_OUTAGE",
+    label: "Major Outage",
+    color: "text-red-500 border-red-500/20 bg-red-500/10",
+    icon: ShieldAlert,
+  },
+  {
+    value: "MAINTENANCE",
+    label: "Under Maintenance",
+    color: "text-orange-500 border-orange-500/20 bg-orange-500/10",
+    icon: Clock,
+  },
 ];
 
 export function OverridesTab({ page }: OverridesTabProps) {
@@ -221,12 +255,17 @@ export function OverridesTab({ page }: OverridesTabProps) {
                         {new Date(override.date).toLocaleDateString(undefined, { timeZone: "UTC" })}
                       </td>
                       <td className="py-4 pr-3">
-                        <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[9px] font-bold uppercase tracking-wide ${opt?.color || ""}`}>
+                        <span
+                          className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[9px] font-bold uppercase tracking-wide ${opt?.color || ""}`}
+                        >
                           <Icon className="size-3" />
                           {opt?.label || override.status}
                         </span>
                       </td>
-                      <td className="py-4 pr-3 text-muted-foreground max-w-[200px] truncate" title={override.message}>
+                      <td
+                        className="py-4 pr-3 text-muted-foreground max-w-[200px] truncate"
+                        title={override.message}
+                      >
                         {override.message || <span className="italic opacity-50">No message</span>}
                       </td>
                       <td className="py-4 text-right">

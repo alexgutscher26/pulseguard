@@ -3,7 +3,19 @@
 import { useActionState, useEffect, useState } from "react";
 import { updateStatusPage } from "@/actions/status-pages";
 import { toast } from "sonner";
-import { Loader2, Palette, Globe, Shield, Search, Eye, FileCode, Mail, Link, Trash, Code2 } from "lucide-react";
+import {
+  Loader2,
+  Palette,
+  Globe,
+  Shield,
+  Search,
+  Eye,
+  FileCode,
+  Mail,
+  Link,
+  Trash,
+  Code2,
+} from "lucide-react";
 import { StatusPageI18n } from "./status-page-i18n";
 
 interface StatusPageSettingsProps {
@@ -15,22 +27,46 @@ const themes = [
   {
     name: "Cyberpunk",
     value: "cyberpunk",
-    colors: { bg: "#050505", text: "#e2e8f0", primary: "#22c55e", degraded: "#f59e0b", error: "#ef4444" },
+    colors: {
+      bg: "#050505",
+      text: "#e2e8f0",
+      primary: "#22c55e",
+      degraded: "#f59e0b",
+      error: "#ef4444",
+    },
   },
   {
     name: "Midnight",
     value: "midnight",
-    colors: { bg: "#0f172a", text: "#f8fafc", primary: "#38bdf8", degraded: "#f59e0b", error: "#ef4444" },
+    colors: {
+      bg: "#0f172a",
+      text: "#f8fafc",
+      primary: "#38bdf8",
+      degraded: "#f59e0b",
+      error: "#ef4444",
+    },
   },
   {
     name: "Dracula",
     value: "dracula",
-    colors: { bg: "#282a36", text: "#f8f8f2", primary: "#ff79c6", degraded: "#f59e0b", error: "#ef4444" },
+    colors: {
+      bg: "#282a36",
+      text: "#f8f8f2",
+      primary: "#ff79c6",
+      degraded: "#f59e0b",
+      error: "#ef4444",
+    },
   },
   {
     name: "Monochrome",
     value: "monochrome",
-    colors: { bg: "#ffffff", text: "#000000", primary: "#000000", degraded: "#78716c", error: "#ef4444" },
+    colors: {
+      bg: "#ffffff",
+      text: "#000000",
+      primary: "#000000",
+      degraded: "#78716c",
+      error: "#ef4444",
+    },
   },
 ];
 
@@ -241,7 +277,10 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
               type="hidden"
               name="theme"
               value={JSON.stringify({
-                name: selectedTheme === "custom" ? "Custom" : themes.find((t) => t.value === selectedTheme)?.name || "Custom",
+                name:
+                  selectedTheme === "custom"
+                    ? "Custom"
+                    : themes.find((t) => t.value === selectedTheme)?.name || "Custom",
                 value: selectedTheme,
                 colors: customColors,
               })}
@@ -296,14 +335,16 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
               </label>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 <div className="space-y-1">
-                  <div className="text-[9px] font-mono text-muted-foreground uppercase">Background</div>
+                  <div className="text-[9px] font-mono text-muted-foreground uppercase">
+                    Background
+                  </div>
                   <div className="flex items-center gap-2">
                     <input
                       type="color"
                       value={customColors.bg}
                       onChange={(e) => {
                         setSelectedTheme("custom");
-                        setCustomColors(prev => ({ ...prev, bg: e.target.value }));
+                        setCustomColors((prev) => ({ ...prev, bg: e.target.value }));
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />
@@ -319,7 +360,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                       value={customColors.text}
                       onChange={(e) => {
                         setSelectedTheme("custom");
-                        setCustomColors(prev => ({ ...prev, text: e.target.value }));
+                        setCustomColors((prev) => ({ ...prev, text: e.target.value }));
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />
@@ -328,14 +369,16 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 </div>
 
                 <div className="space-y-1">
-                  <div className="text-[9px] font-mono text-muted-foreground uppercase">Operational</div>
+                  <div className="text-[9px] font-mono text-muted-foreground uppercase">
+                    Operational
+                  </div>
                   <div className="flex items-center gap-2">
                     <input
                       type="color"
                       value={customColors.primary}
                       onChange={(e) => {
                         setSelectedTheme("custom");
-                        setCustomColors(prev => ({ ...prev, primary: e.target.value }));
+                        setCustomColors((prev) => ({ ...prev, primary: e.target.value }));
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />
@@ -344,14 +387,16 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 </div>
 
                 <div className="space-y-1">
-                  <div className="text-[9px] font-mono text-muted-foreground uppercase">Degraded</div>
+                  <div className="text-[9px] font-mono text-muted-foreground uppercase">
+                    Degraded
+                  </div>
                   <div className="flex items-center gap-2">
                     <input
                       type="color"
                       value={customColors.degraded}
                       onChange={(e) => {
                         setSelectedTheme("custom");
-                        setCustomColors(prev => ({ ...prev, degraded: e.target.value }));
+                        setCustomColors((prev) => ({ ...prev, degraded: e.target.value }));
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />
@@ -367,7 +412,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                       value={customColors.error}
                       onChange={(e) => {
                         setSelectedTheme("custom");
-                        setCustomColors(prev => ({ ...prev, error: e.target.value }));
+                        setCustomColors((prev) => ({ ...prev, error: e.target.value }));
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />
@@ -379,11 +424,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
 
             {/* Branding */}
             <div className="space-y-4 pt-4 border-t border-white/5">
-              <input
-                type="hidden"
-                name="footerLinks"
-                value={JSON.stringify(footerLinks)}
-              />
+              <input type="hidden" name="footerLinks" value={JSON.stringify(footerLinks)} />
 
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">

@@ -24,7 +24,8 @@ function parseDbUrl(url: string): { dbType: string; host: string; port: number }
     const u = new URL(url);
     const dbType = u.protocol.replace(":", "");
     const host = u.hostname;
-    const port = parseInt(u.port, 10) || (dbType === "postgresql" ? 5432 : dbType === "mysql" ? 3306 : 27017);
+    const port =
+      parseInt(u.port, 10) || (dbType === "postgresql" ? 5432 : dbType === "mysql" ? 3306 : 27017);
     return { dbType, host, port };
   } catch {
     // Fallback: treat as host:port string
@@ -37,7 +38,11 @@ function parseDbUrl(url: string): { dbType: string; host: string; port: number }
   }
 }
 
-async function checkTcpConnectivity(host: string, port: number, timeoutMs: number): Promise<{ ok: boolean; latency: number; error?: string }> {
+async function checkTcpConnectivity(
+  host: string,
+  port: number,
+  timeoutMs: number,
+): Promise<{ ok: boolean; latency: number; error?: string }> {
   const start = performance.now();
   try {
     const socket = connect({ hostname: host, port });

@@ -15,7 +15,10 @@ authCmd
     let baseUrl = opts.url as string | undefined;
 
     if (!apiKey) {
-      console.log(chalk.dim("Generate an API key at: ") + chalk.cyan("https://pulseguard.io/dashboard/settings?tab=api-keys"));
+      console.log(
+        chalk.dim("Generate an API key at: ") +
+          chalk.cyan("https://pulseguard.io/dashboard/settings?tab=api-keys"),
+      );
       console.error(chalk.red("✖ --key is required"));
       process.exit(1);
     }
@@ -48,7 +51,9 @@ authCmd
   .action(async () => {
     const config = getConfig();
     if (!config.apiKey) {
-      console.log(chalk.yellow("Not logged in. Run: ") + chalk.bold("pulse auth login --key <API_KEY>"));
+      console.log(
+        chalk.yellow("Not logged in. Run: ") + chalk.bold("pulse auth login --key <API_KEY>"),
+      );
       return;
     }
     console.log(chalk.green("✔ Logged in"));

@@ -52,10 +52,13 @@ export async function PUT(req: NextRequest, { params }: Ctx) {
   }
 
   const { id } = await params;
-  const existing = await prisma.monitor.findUnique({ where: { id, userId: user.userId }, select: { id: true } });
+  const existing = await prisma.monitor.findUnique({
+    where: { id, userId: user.userId },
+    select: { id: true },
+  });
   if (!existing) return NextResponse.json({ error: "Monitor not found" }, { status: 404 });
 
-  const body = await req.json();
+  const body = (await req.json()) as any;
   const updateData: Record<string, any> = {};
 
   if (body.name !== undefined) updateData.name = body.name;
@@ -87,7 +90,10 @@ export async function DELETE(req: NextRequest, { params }: Ctx) {
   }
 
   const { id } = await params;
-  const existing = await prisma.monitor.findUnique({ where: { id, userId: user.userId }, select: { id: true } });
+  const existing = await prisma.monitor.findUnique({
+    where: { id, userId: user.userId },
+    select: { id: true },
+  });
   if (!existing) return NextResponse.json({ error: "Monitor not found" }, { status: 404 });
 
   await prisma.monitor.delete({ where: { id } });

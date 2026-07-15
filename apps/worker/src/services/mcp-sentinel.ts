@@ -56,10 +56,7 @@ function getValueByPath(obj: unknown, path: string): unknown {
   return current;
 }
 
-function runAssertion(
-  actual: unknown,
-  assertion: MCPAssertion,
-): boolean {
+function runAssertion(actual: unknown, assertion: MCPAssertion): boolean {
   const op = assertion.operator || "exists";
   const val = assertion.value;
 
@@ -202,7 +199,9 @@ export async function checkMCP(
   }
 
   // Extract tool info
-  const { count: toolCount, names: tools } = hasResult ? extractTools(data.result) : { count: 0, names: [] };
+  const { count: toolCount, names: tools } = hasResult
+    ? extractTools(data.result)
+    : { count: 0, names: [] };
 
   // Run deep property assertions
   const assertionResults: { path: string; passed: boolean; actual: unknown }[] = [];

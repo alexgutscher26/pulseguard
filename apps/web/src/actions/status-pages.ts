@@ -893,7 +893,7 @@ export async function updateStatusPageMonitorSettings(
     showLatency: boolean;
     showUptime: boolean;
     showCheckCounts: boolean;
-  }
+  },
 ) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) return { success: false, error: "Unauthorized" };
@@ -927,4 +927,3 @@ export async function updateStatusPageMonitorSettings(
     return { success: false, error: err.message || "Failed to update monitor settings" };
   }
 }
-

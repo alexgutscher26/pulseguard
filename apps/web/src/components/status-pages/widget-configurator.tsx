@@ -67,10 +67,11 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
   const [copiedShieldMd, setCopiedShieldMd] = useState(false);
   const [copiedShieldHtml, setCopiedShieldHtml] = useState(false);
 
-  const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://your-domain.com";
+  const baseUrl =
+    typeof window !== "undefined" ? window.location.origin : "https://your-domain.com";
   const shieldUrl = `${baseUrl}/api/badge/${pageSlug}.svg?style=${shieldStyle}&theme=${shieldTheme}&size=${shieldSize}`;
   const statusPageUrl = `${baseUrl}/status-page/${pageSlug}`;
-  
+
   const shieldMarkdown = `[![Status](${shieldUrl})](${statusPageUrl})`;
   const shieldHtml = `<a href="${statusPageUrl}"><img src="${shieldUrl}" alt="PulseGuard Status" /></a>`;
 
@@ -320,7 +321,8 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
                   Status Shield Badge (SVG)
                 </h3>
                 <p className="text-xs text-muted-foreground">
-                  Embed a dynamic, real-time status image in your GitHub README, documentation, or dashboard.
+                  Embed a dynamic, real-time status image in your GitHub README, documentation, or
+                  dashboard.
                 </p>
               </div>
             </div>
