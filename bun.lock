@@ -110,6 +110,10 @@
     "apps/probe": {
       "name": "@pulseguard/probe",
       "version": "0.1.0",
+      "dependencies": {
+        "@pulseguard/core": "workspace:*",
+        "@pulseguard/types": "workspace:*",
+      },
       "devDependencies": {
         "@types/node": "^22.0.0",
         "typescript": "^5.7.0",
@@ -192,8 +196,10 @@
       "version": "0.1.0",
       "dependencies": {
         "@cloudflare/puppeteer": "^0.0.9",
+        "@pulseguard/core": "workspace:*",
         "@pulseguard/db": "workspace:*",
         "@pulseguard/email": "workspace:*",
+        "@pulseguard/types": "workspace:*",
         "@upstash/redis": "^1.37.0",
       },
       "devDependencies": {
@@ -237,6 +243,16 @@
     "packages/config": {
       "name": "@pulseguard/config",
       "version": "0.0.0",
+    },
+    "packages/core": {
+      "name": "@pulseguard/core",
+      "version": "0.1.0",
+      "dependencies": {
+        "@pulseguard/types": "workspace:*",
+      },
+      "devDependencies": {
+        "typescript": "catalog:",
+      },
     },
     "packages/db": {
       "name": "@pulseguard/db",
@@ -310,6 +326,13 @@
       "version": "0.1.0",
       "devDependencies": {
         "@pulseguard/config": "workspace:*",
+        "typescript": "catalog:",
+      },
+    },
+    "packages/types": {
+      "name": "@pulseguard/types",
+      "version": "0.1.0",
+      "devDependencies": {
         "typescript": "catalog:",
       },
     },
@@ -1163,6 +1186,8 @@
 
     "@pulseguard/config": ["@pulseguard/config@workspace:packages/config"],
 
+    "@pulseguard/core": ["@pulseguard/core@workspace:packages/core"],
+
     "@pulseguard/db": ["@pulseguard/db@workspace:packages/db"],
 
     "@pulseguard/email": ["@pulseguard/email@workspace:packages/email"],
@@ -1174,6 +1199,8 @@
     "@pulseguard/probe": ["@pulseguard/probe@workspace:apps/probe"],
 
     "@pulseguard/shared": ["@pulseguard/shared@workspace:packages/shared"],
+
+    "@pulseguard/types": ["@pulseguard/types@workspace:packages/types"],
 
     "@pulseguard/worker": ["@pulseguard/worker@workspace:apps/worker"],
 

@@ -1,28 +1,9 @@
-interface ProbeJob {
-  id: string;
-  monitorId: string;
-  url: string;
-  type: string;
-  timeout: number;
-  method?: string;
-  headers?: string;
-  body?: string;
-  expectation?: string;
-  script?: string;
-}
+import { checkHttpUniversal, checkPortUniversal } from "@pulseguard/core";
+import type { ProbeJob, CheckResult } from "@pulseguard/types";
 
 interface PollResponse {
   probeId: string;
   jobs: ProbeJob[];
-}
-
-interface CheckResult {
-  monitorId: string;
-  status: "UP" | "DOWN";
-  latency: number;
-  errorReason?: string;
-  timestamp: string;
-  region: string;
 }
 
 const RAW_API_URL = (
@@ -95,44 +76,18 @@ async function runCheck(job: ProbeJob): Promise<CheckResult> {
 
   try {
     if (job.type === "HTTP" || job.type === "HTTPS" || job.url.startsWith("http")) {
-      const headers: Record<string, string> = {
-        "User-Agent": "PulseGuard-Probe/1.0",
-        Accept: "*/*",
-      };
-      if (job.headers) {
-        try {
-          const parsed = JSON.parse(job.headers);
-          if (Array.isArray(parsed)) {
-            for (const h of parsed) {
-              if (h.key) headers[h.key] = h.value;
-            }
-          }
-        } catch {}
-      }
-
-      const response = await fetch(job.url, {
-        method: job.method || "GET",
-        headers,
-        body: ["POST", "PUT", "PATCH"].includes(job.method || "GET") ? job.body : undefined,
-        signal: AbortSignal.timeout((job.timeout || 10) * 1000),
+      const checkResult = await checkHttpUniversal(job.url, {
+        method: job.method,
+        headers: job.headers,
+        body: job.body,
+        timeoutSeconds: job.timeout,
       });
-
-      await response.text();
-      const latency = Math.round(performance.now() - start);
-      const statusNum = Number(response.status);
-      // 2xx + 3xx = healthy redirects. 429 = rate-limited (alive). 403 = IP/bot blocked (alive).
-      // A 403 from Google means "I am alive and denying your bot" — NOT an outage.
-      const isHealthy =
-        response.ok ||
-        (statusNum >= 300 && statusNum < 400) ||
-        statusNum === 429 ||
-        statusNum === 403;
 
       return {
         monitorId: job.monitorId,
-        status: isHealthy ? "UP" : "DOWN",
-        latency,
-        errorReason: isHealthy ? undefined : `HTTP_${response.status}`,
+        status: checkResult.status,
+        latency: checkResult.latency,
+        errorReason: checkResult.errorReason,
         timestamp,
         region,
       };
@@ -140,39 +95,35 @@ async function runCheck(job: ProbeJob): Promise<CheckResult> {
 
     if (job.type === "PING" || job.url.startsWith("ping://")) {
       const hostname = job.url.replace("ping://", "");
-      const { connect } = await import("net");
-      const latency = await new Promise<number>((resolve, reject) => {
-        const s = connect({ host: hostname, port: 80 });
-        const startConn = performance.now();
-        s.on("connect", () => {
-          const lat = Math.round(performance.now() - startConn);
-          s.end();
-          resolve(lat);
-        });
-        s.on("error", (err) => reject(err));
-        setTimeout(() => reject(new Error("Timeout")), (job.timeout || 10) * 1000);
-      });
+      const checkResult = await checkPortUniversal(hostname, 80, (job.timeout || 10) * 1000);
 
-      return { monitorId: job.monitorId, status: "UP", latency, timestamp, region };
+      return {
+        monitorId: job.monitorId,
+        status: checkResult.isOpen ? "UP" : "DOWN",
+        latency: checkResult.latency,
+        errorReason: checkResult.errorReason,
+        timestamp,
+        region,
+      };
     }
 
     if (job.type === "PORT" || job.url.startsWith("tcp://")) {
       const part = job.url.replace("tcp://", "");
       const [hostname, port] = part.split(":");
-      const { connect } = await import("net");
-      const latency = await new Promise<number>((resolve, reject) => {
-        const s = connect({ host: hostname, port: parseInt(port || "80") });
-        const startConn = performance.now();
-        s.on("connect", () => {
-          const lat = Math.round(performance.now() - startConn);
-          s.end();
-          resolve(lat);
-        });
-        s.on("error", (err) => reject(err));
-        setTimeout(() => reject(new Error("Timeout")), (job.timeout || 10) * 1000);
-      });
+      const checkResult = await checkPortUniversal(
+        hostname,
+        parseInt(port || "80", 10),
+        (job.timeout || 10) * 1000,
+      );
 
-      return { monitorId: job.monitorId, status: "UP", latency, timestamp, region };
+      return {
+        monitorId: job.monitorId,
+        status: checkResult.isOpen ? "UP" : "DOWN",
+        latency: checkResult.latency,
+        errorReason: checkResult.errorReason,
+        timestamp,
+        region,
+      };
     }
 
     return {

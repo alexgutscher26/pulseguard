@@ -10,7 +10,10 @@
     "start": "bun src/index.ts",
     "docker:build": "docker build -t pulseguard-probe ."
   },
-  "dependencies": {},
+  "dependencies": {
+    "@pulseguard/core": "workspace:*",
+    "@pulseguard/types": "workspace:*"
+  },
   "devDependencies": {
     "@types/node": "^22.0.0",
     "typescript": "^5.7.0"

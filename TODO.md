@@ -399,7 +399,7 @@ For the on-call admin who is living their life.
   - Optimize Turborepo / NX configurations for faster incremental builds and stricter dependency boundaries between `app/` and `packages/`.
 - [x] **WebAssembly (WASM) Parsers**
   - Migrate heavy regex/payload parsing components inside the Worker to Rust-compiled WASM for significantly reduced CPU time.
-- [ ] **Shared Core Logic Packages**
+- [x] **Shared Core Logic Packages**
   - Extract universal `@pulseguard/core` (fetch, ping algorithms) and `@pulseguard/types` out of web/worker limits for clean DRY architecture.
 - [ ] **Strict TS & No-Any Policy**
   - Incrementally enable highest level TS strictness and ban temporary `any` casts.

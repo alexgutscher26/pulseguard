@@ -24,7 +24,8 @@ export interface Env {
   CHAOS_ENGINEERING?: string;
 }
 
-import { connect } from "cloudflare:sockets";
+import { checkHttpUniversal, checkPortUniversal } from "@pulseguard/core";
+import type { MonitorStatus } from "@pulseguard/types";
 import { performRegionalChecks, getAverageLatency } from "./services/regional-monitor";
 
 // Helper: Perform a single check without DB side effects
@@ -289,79 +290,54 @@ async function performInternalRequest(
   monitor: any,
   urlStr: string,
   extraHeaders?: Record<string, string>,
-): Promise<{ status: "UP" | "DOWN" | "MAINTENANCE"; latency: number; errorReason?: string }> {
+): Promise<{ status: MonitorStatus; latency: number; errorReason?: string }> {
   const start = performance.now();
-  let currentStatus: "UP" | "DOWN" | "MAINTENANCE" = "DOWN";
+  let currentStatus: MonitorStatus = "DOWN";
   let latency = 0;
   let errorReason: string | undefined = undefined;
 
   try {
     if (urlStr.startsWith("http://") || urlStr.startsWith("https://")) {
-      const method = monitor.method || "GET";
-      const userHeaders: Record<string, string> = {};
-
+      const headersObj: Record<string, string> = {};
       if (monitor.headers) {
         try {
           const parsed = JSON.parse(monitor.headers);
           if (Array.isArray(parsed)) {
             parsed.forEach((h: { key: string; value: string }) => {
-              if (h.key) userHeaders[h.key] = h.value;
+              if (h.key) headersObj[h.key] = h.value;
             });
+          } else if (typeof parsed === "object") {
+            Object.assign(headersObj, parsed);
           }
-        } catch (e) {
-          console.error("Failed to parse monitor headers:", e);
-        }
+        } catch {}
+      }
+      if (extraHeaders) {
+        Object.assign(headersObj, extraHeaders);
       }
 
-      const startFetch = performance.now();
-      const response = await fetch(urlStr, {
-        method,
-        redirect: "follow",
-        headers: {
-          // Use a descriptive bot UA — avoids empty UA blocks but identifies the monitor
-          "User-Agent": "Mozilla/5.0 (compatible; PulseGuard/1.0; +https://pulseguard.io/bot)",
-          Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-          "Accept-Language": "en-US,en;q=0.5",
-          ...userHeaders,
-          ...extraHeaders,
-        },
-        body: ["POST", "PUT", "PATCH"].includes(method) ? monitor.body : undefined,
-        signal: AbortSignal.timeout((monitor.timeout || 10) * 1000),
+      const checkResult = await checkHttpUniversal(urlStr, {
+        method: monitor.method,
+        headers: headersObj,
+        body: monitor.body,
+        timeoutSeconds: monitor.timeout,
       });
 
-      const body = await response.text();
-      latency = Math.round(performance.now() - startFetch);
-
-      // Treat 2xx, 3xx as UP — redirects are healthy (e.g. google.com -> www.google.com)
-      // Treat 429 (Too Many Requests) as UP — the server is alive and responding,
-      // it's just throttling this IP. A rate-limit is NOT a real outage.
-      // Treat 403 (Forbidden) as UP — the server is online and responding. It's blocking
-      // our monitoring IP / bot UA (very common for Google, Cloudflare-protected sites, etc.)
-      // A 403 means "I am alive and I understand your request" — not a service outage.
-      const statusNum = Number(response.status);
-      const isRateLimited = statusNum === 429;
-      const isIPBlocked = statusNum === 403;
-      const isHealthyStatus =
-        response.ok || (statusNum >= 300 && statusNum < 400) || isRateLimited || isIPBlocked;
-      currentStatus = isHealthyStatus ? "UP" : "DOWN";
-
-      if (isIPBlocked) {
-        // Log the block so operators can see it, but don't flag as DOWN
-        console.log(
-          `[Check] ${urlStr} returned 403 — server is alive but blocking monitoring IP. Reporting UP.`,
-        );
-      }
+      currentStatus = checkResult.status;
+      latency = checkResult.latency;
+      errorReason = checkResult.errorReason;
 
       // 3. Deep Payload/Status Validation (WASM/Rust Optimized Bridge)
       if (currentStatus === "UP" && monitor.expectation) {
         const { validatePayload } = await import("./lib/payload-parser");
-        const validation = validatePayload(body, response.status, monitor.expectation);
+        const validation = validatePayload(
+          checkResult.bodyText,
+          checkResult.statusCode || 200,
+          monitor.expectation,
+        );
         if (!validation.success) {
           currentStatus = "DOWN";
-          errorReason = validation.errorMessage || `HTTP_${response.status}`;
+          errorReason = validation.errorMessage || `HTTP_${checkResult.statusCode || 200}`;
         }
-      } else if (!isHealthyStatus) {
-        errorReason = `HTTP_${response.status}`;
       }
     } else if (urlStr.startsWith("tcp://")) {
       // Parse tcp://hostname:port
@@ -370,24 +346,32 @@ async function performInternalRequest(
 
       if (!hostname || !port) throw new Error("Invalid TCP URL format");
 
-      const socket = connect({
+      const checkResult = await checkPortUniversal(
         hostname,
-        port: parseInt(port),
-      });
+        parseInt(port, 10),
+        (monitor.timeout || 10) * 1000,
+      );
 
-      // Wait for connection
-      await socket.opened;
-      await socket.close();
-      currentStatus = "UP";
+      if (checkResult.isOpen) {
+        currentStatus = "UP";
+      } else {
+        currentStatus = "DOWN";
+        errorReason = checkResult.errorReason || "PORT_CLOSED";
+      }
     } else if (urlStr.startsWith("ping://")) {
       const hostname = urlStr.replace("ping://", "");
-      const socket = connect({
+      const checkResult = await checkPortUniversal(
         hostname,
-        port: 80,
-      });
-      await socket.opened;
-      await socket.close();
-      currentStatus = "UP";
+        80,
+        (monitor.timeout || 10) * 1000,
+      );
+
+      if (checkResult.isOpen) {
+        currentStatus = "UP";
+      } else {
+        currentStatus = "DOWN";
+        errorReason = checkResult.errorReason || "PING_FAILED";
+      }
     } else {
       // Fallback or unknown
       throw new Error("Unknown protocol");
