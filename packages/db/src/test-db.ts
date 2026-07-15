@@ -1,4 +1,4 @@
-import prisma from "./index.ts";
+import prisma from "./index.js";
 
 async function main() {
   console.log("Searching for monitor cmn46mt9r000104jia4ga6ko1...");

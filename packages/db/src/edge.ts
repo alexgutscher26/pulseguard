@@ -27,7 +27,7 @@ export const createPrisma = (databaseUrl?: string) => {
     connectionTimeoutMillis: 30_000,
   };
 
-  if (isSsl) {
+  if (isSsl || url.includes("supabase") || url.includes("neon.tech")) {
     poolConfig.ssl = { rejectUnauthorized: false };
   }
 

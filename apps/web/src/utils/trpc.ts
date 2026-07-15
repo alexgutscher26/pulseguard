@@ -1,4 +1,4 @@
-import type { AppRouter } from "@pulseguard/api/routers/index";
+import type { AppRouter } from "@pulseguard/api";
 
 import { QueryCache, QueryClient } from "@tanstack/react-query";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";

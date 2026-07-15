@@ -10,6 +10,7 @@ import {
   TriangleAlert,
   X,
   Globe,
+  Blocks,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
@@ -20,6 +21,7 @@ const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Monitors", href: "/dashboard/monitors", icon: Monitor },
   { name: "Status Pages", href: "/dashboard/pages", icon: Globe },
+  { name: "Integrations", href: "/dashboard/integrations", icon: Blocks },
   { name: "Incidents", href: "/dashboard/incidents", icon: TriangleAlert },
   { name: "Alerts", href: "/dashboard/alerts", icon: Bell },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
