@@ -36,7 +36,7 @@ interface MonitorFormProps {
     id: string;
     name: string;
     url: string;
-    type: "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL";
+    type: "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL" | "DNS";
     interval: number;
     timeout: number;
     checkRegions?: string | null;
@@ -60,10 +60,11 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
     | "BROWSER"
     | "SEQUENCE"
     | "SSL"
+    | "DNS"
     | null;
 
   // Parse initial values
-  let initialType: "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL" =
+  let initialType: "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL" | "DNS" =
     monitor?.type || typeParam || "HTTP";
   let initialUrl = monitor?.url || "";
   let initialPort = "";
@@ -90,7 +91,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
   }
 
   const [monitorType, setMonitorType] = useState<
-    "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL"
+    "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL" | "DNS"
   >(initialType);
   const [selectedRegions, setSelectedRegions] = useState<string[]>(initialRegions);
   const [threshold, setThreshold] = useState(monitor?.alertThreshold || 1);
@@ -148,6 +149,20 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
       }
     }
     return [];
+  });
+
+  const [expectedIPs, setExpectedIPs] = useState<string>(() => {
+    if (monitor?.expectation) {
+      try {
+        const parsed = JSON.parse(monitor.expectation);
+        if (Array.isArray(parsed.expectedIPs)) {
+          return parsed.expectedIPs.join(", ");
+        }
+      } catch (e) {
+        console.error("Failed to parse expectedIPs:", e);
+      }
+    }
+    return "";
   });
 
   // Browser Steps State
@@ -420,6 +435,25 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                 <ShieldCheck className="size-5" />
                 <span className="text-[11px] font-bold uppercase tracking-wider">SSL/TLS</span>
               </label>
+
+              <label
+                className={`flex flex-col items-center justify-center gap-2.5 p-4 rounded-xl border transition-all cursor-pointer ${
+                  monitorType === "DNS"
+                    ? "border-primary bg-primary/5 text-foreground shadow-[0_2px_8px_rgba(0,0,0,0.02)]"
+                    : "border-border bg-card text-muted-foreground hover:bg-accent/40 hover:text-foreground"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="type"
+                  value="DNS"
+                  className="sr-only"
+                  checked={monitorType === "DNS"}
+                  onChange={() => setMonitorType("DNS")}
+                />
+                <Server className="size-5" />
+                <span className="text-[11px] font-bold uppercase tracking-wider">DNS</span>
+              </label>
             </div>
           </div>
 
@@ -441,7 +475,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
           {/* Target Host */}
           <div className="flex flex-col gap-2">
             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-              {monitorType === "HTTP" || monitorType === "BROWSER" || monitorType === "SSL"
+              {monitorType === "HTTP" || monitorType === "BROWSER" || monitorType === "SSL" || monitorType === "DNS"
                 ? "Target URL / Domain"
                 : "Hostname / IP"}
             </label>
@@ -455,7 +489,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                 placeholder={
                   monitorType === "HTTP" || monitorType === "BROWSER"
                     ? "https://example.com"
-                    : monitorType === "SSL"
+                    : monitorType === "SSL" || monitorType === "DNS"
                       ? "example.com or https://example.com"
                       : "192.168.1.1 or example.com"
                 }
@@ -696,6 +730,40 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                       operator: a.operator,
                       value: a.value,
                     })),
+                })}
+              />
+            </div>
+          )}
+
+          {/* DNS Advanced Config */}
+          {monitorType === "DNS" && (
+            <div className="flex flex-col gap-5 border-l border-border pl-6 py-1 animate-in fade-in slide-in-from-left-4 duration-300">
+              <div className="flex flex-col gap-2">
+                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                  Expected IP Addresses (Optional)
+                </label>
+                <input
+                  type="text"
+                  value={expectedIPs}
+                  onChange={(e) => setExpectedIPs(e.target.value)}
+                  placeholder="e.g. 1.1.1.1, 8.8.8.8"
+                  className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-3 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full"
+                />
+                <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-wider mt-0.5 animate-pulse">
+                  Enter comma-separated IP addresses that this domain is expected to resolve to. Leave blank to accept any resolution.
+                </p>
+              </div>
+
+              <input
+                type="hidden"
+                name="expectation"
+                value={JSON.stringify({
+                  expectedIPs: expectedIPs
+                    ? expectedIPs
+                        .split(",")
+                        .map((ip) => ip.trim())
+                        .filter(Boolean)
+                    : [],
                 })}
               />
             </div>

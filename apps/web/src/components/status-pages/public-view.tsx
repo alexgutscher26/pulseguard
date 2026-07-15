@@ -344,15 +344,17 @@ export function PublicView({ page, isAdmin }: { page: any; isAdmin?: boolean }) 
             <p className="text-[10px] text-primary/30 uppercase tracking-[0.2em]">
               {tCommon("system_status")}
             </p>
-            <p className="text-xs text-primary/50">
-              {tCommon("powered_by")}{" "}
-              <a
-                href="https://pulseguard.com"
-                className="text-primary font-bold hover:underline decoration-dotted underline-offset-4"
-              >
-                PulseGuard
-              </a>
-            </p>
+            {(!page.user || page.user.tier === "INITIATE") && (
+              <p className="text-xs text-primary/50">
+                {tCommon("powered_by")}{" "}
+                <a
+                  href="https://pulseguard.com"
+                  className="text-primary font-bold hover:underline decoration-dotted underline-offset-4"
+                >
+                  PulseGuard
+                </a>
+              </p>
+            )}
           </div>
         </div>
       </div>

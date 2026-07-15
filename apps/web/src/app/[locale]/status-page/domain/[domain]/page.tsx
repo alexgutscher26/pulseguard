@@ -13,6 +13,7 @@ async function getPageByDomain(domain: string) {
   return prisma.statusPage.findUnique({
     where: { customDomain: domain },
     include: {
+      user: { select: { tier: true } },
       monitors: {
         include: {
           monitor: {
@@ -40,7 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: page.title,
-    description: page.description,
+    description: page.description || undefined,
     icons: page.favicon ? [{ rel: "icon", url: page.favicon }] : undefined,
     robots: {
       index: page.seoIndex ?? true,
@@ -101,7 +102,10 @@ export default async function CustomDomainStatusPage({ params }: Props) {
 
   return (
     <NextIntlClientProvider messages={messages} locale={locale}>
-      <PublicView page={page} />
+      <>
+        <label className="sr-only" aria-label="Status Page Label">Status Page</label>
+        <PublicView page={page} />
+      </>
     </NextIntlClientProvider>
   );
 }

@@ -14,6 +14,7 @@ async function getPublicStatusPage(slug: string) {
   return prisma.statusPage.findUnique({
     where: { slug: slug },
     include: {
+      user: { select: { tier: true } },
       monitors: {
         include: {
           monitor: {
@@ -43,13 +44,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: page.metaTitle || page.title,
-    description: page.metaDescription || page.description,
+    description: page.metaDescription || page.description || undefined,
     icons: page.favicon ? [{ rel: "icon", url: page.favicon }] : undefined,
     openGraph: page.ogImageUrl
       ? {
           images: [{ url: page.ogImageUrl }],
           title: page.metaTitle || page.title,
-          description: page.metaDescription || page.description,
+          description: page.metaDescription || page.description || undefined,
         }
       : undefined,
     robots: {
@@ -117,7 +118,10 @@ export default async function PublicStatusPage({ params }: Props) {
 
   return (
     <NextIntlClientProvider messages={messages} locale={locale}>
-      <PublicView page={page} isAdmin={isAdmin} />
+      <>
+        <label className="sr-only" aria-label="Status Page Label">Status Page</label>
+        <PublicView page={page} isAdmin={isAdmin} />
+      </>
     </NextIntlClientProvider>
   );
 }

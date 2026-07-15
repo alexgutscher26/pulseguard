@@ -334,18 +334,18 @@ Preparing for sustainable revenue and scale.
 
 ### 💳 Pricing Strategy & Tiers (Focus: Margin over Volume)
 
-- [ ] **Tier 1: The Initiate (Free / Hobbyist)**
+- [x] **Tier 1: The Initiate (Free / Hobbyist)**
   - Gateway tier for indie hackers. Better than competitors to capture market share.
   - Specs: 50 nodes, 3-min checks, single-region, 3-day retention.
   - Allowed Checks: HTTP/HTTPS, SSL/TLS, basic DNS.
   - Value: Faster checks (3m vs 5m) gets them to install on day 1. "Powered by PulseGuard" status pages act as referral engines.
-- [ ] **Tier 2: The Netrunner ($14/mo - Pro / Indie Founder)**
+- [x] **Tier 2: The Netrunner ($14/mo - Pro / Indie Founder)**
   - For solo founders who don't want to look unprofessional and hate false alarms.
   - Specs: 200 nodes, 30-second checks, multi-region verification, custom domains, 30-day retention.
   - Allowed Checks: All Free checks + **MCP Sentinel** (JSON-RPC tool validation), **Multi-Step API Sequences**, and **Database TCP Connect**.
   - Private Probes: Up to **3 active Private Probe nodes** (Docker/WASM).
   - Value: Custom branding and the "Invisible AI" layer that saves time (Adaptive Anomaly Detection, predictive warnings).
-- [ ] **Tier 3: The Construct ($69/mo - Business / Team)**
+- [X] **Tier 3: The Construct ($69/mo - Business / Team)**
   - Enterprise-grade reliability without corporate bore. Agency goldmine.
   - Specs: Unlimited nodes (fair use), 10-second checks, concurrent global pulse, 1-year retention.
   - Allowed Checks: All Pro checks + **Synthetic Browser Testing** (Playwright), **Direct SQL Queries**, and **gRPC/WebSocket streams**.

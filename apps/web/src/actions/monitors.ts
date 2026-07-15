@@ -34,8 +34,8 @@ enum Severity {
 // Conditional validation schema
 const baseSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  type: z.enum(["HTTP", "PING", "PORT", "BROWSER", "SEQUENCE", "SSL"]),
-  interval: z.coerce.number().min(30),
+  type: z.enum(["HTTP", "PING", "PORT", "BROWSER", "SEQUENCE", "SSL", "DNS", "MCP", "DATABASE"]),
+  interval: z.coerce.number().min(10),
   timeout: z.coerce.number().min(1),
   url: z.string().optional(), // For HTTP/Ping
   // For Port:
@@ -219,7 +219,7 @@ export async function createMonitor(prevState: any, formData: FormData) {
       name: (formData.get("name") as string) || "",
       url: (formData.get("url") as string) || undefined,
       type:
-        (formData.get("type") as "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL") ||
+        (formData.get("type") as "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL" | "DNS" | "MCP" | "DATABASE") ||
         "HTTP",
       interval: Number(formData.get("interval") || 60),
       timeout: Number(formData.get("timeout") || 10),
@@ -246,6 +246,101 @@ export async function createMonitor(prevState: any, formData: FormData) {
     }
 
     const data = validation.data;
+
+    // Enforce pricing tier limits
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { tier: true },
+    });
+    const userTier = user?.tier || "INITIATE";
+
+    if (userTier === "INITIATE") {
+      const allowedTypes = ["HTTP", "SSL", "DNS"];
+      if (!allowedTypes.includes(data.type)) {
+        return {
+          success: false,
+          error: "Only HTTP/HTTPS, SSL/TLS, and DNS monitors are allowed on the Free tier. Upgrade to Netrunner for TCP, Ping, Browser, and Sequence monitors.",
+        };
+      }
+
+      if (data.interval < 180) {
+        return {
+          success: false,
+          error: "Minimum check interval for the Free tier is 3 minutes (180 seconds).",
+        };
+      }
+
+      if (data.checkRegions) {
+        try {
+          const regions = JSON.parse(data.checkRegions);
+          if (Array.isArray(regions) && regions.length > 1) {
+            return {
+              success: false,
+              error: "Free tier monitors are limited to a single check region.",
+            };
+          }
+        } catch (e) {
+          // JSON parsing issue
+        }
+      }
+
+      const monitorCount = await prisma.monitor.count({
+        where: { userId: session.user.id },
+      });
+      if (monitorCount >= 50) {
+        return {
+          success: false,
+          error: "You have reached the maximum limit of 50 monitors for the Free tier.",
+        };
+      }
+    } else if (userTier === "NETRUNNER") {
+      const allowedTypes = ["HTTP", "SSL", "DNS", "MCP", "SEQUENCE", "PORT", "DATABASE", "PING"];
+      if (!allowedTypes.includes(data.type)) {
+        return {
+          success: false,
+          error: "Synthetic Browser Testing is only allowed on the Construct (Business) tier. Please upgrade to Construct to use Browser monitors.",
+        };
+      }
+
+      if (data.interval < 30) {
+        return {
+          success: false,
+          error: "Minimum check interval for the Netrunner tier is 30 seconds.",
+        };
+      }
+
+      if (data.checkRegions) {
+        try {
+          const regions = JSON.parse(data.checkRegions);
+          if (Array.isArray(regions) && regions.length > 3) {
+            return {
+              success: false,
+              error: "Netrunner tier is limited to at most 3 check regions.",
+            };
+          }
+        } catch (e) {
+          // JSON parsing issue
+        }
+      }
+
+      const monitorCount = await prisma.monitor.count({
+        where: { userId: session.user.id },
+      });
+      if (monitorCount >= 200) {
+        return {
+          success: false,
+          error: "You have reached the maximum limit of 200 monitors for the Netrunner tier.",
+        };
+      }
+    } else if (userTier === "CONSTRUCT") {
+      if (data.interval < 10) {
+        return {
+          success: false,
+          error: "Minimum check interval for the Construct tier is 10 seconds.",
+        };
+      }
+    }
+
     let finalUrl = data.url || "";
 
     if (data.type === "PING") {
@@ -336,7 +431,7 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
     name: (formData.get("name") as string) || "",
     url: (formData.get("url") as string) || undefined,
     type:
-      (formData.get("type") as "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL") || "HTTP",
+      (formData.get("type") as "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL" | "DNS" | "MCP" | "DATABASE") || "HTTP",
     interval: Number(formData.get("interval") || 60),
     timeout: Number(formData.get("timeout") || 10),
     port: formData.get("port") ? Number(formData.get("port")) : undefined,
@@ -361,6 +456,81 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
   }
 
   const data = validation.data;
+
+  // Enforce pricing tier limits
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { tier: true },
+  });
+  const userTier = user?.tier || "INITIATE";
+
+  if (userTier === "INITIATE") {
+    const allowedTypes = ["HTTP", "SSL", "DNS"];
+    if (!allowedTypes.includes(data.type)) {
+      return {
+        success: false,
+        error: "Only HTTP/HTTPS, SSL/TLS, and DNS monitors are allowed on the Free tier. Upgrade to Netrunner for TCP, Ping, Browser, and Sequence monitors.",
+      };
+    }
+
+    if (data.interval < 180) {
+      return {
+        success: false,
+        error: "Minimum check interval for the Free tier is 3 minutes (180 seconds).",
+      };
+    }
+
+    if (data.checkRegions) {
+      try {
+        const regions = JSON.parse(data.checkRegions);
+        if (Array.isArray(regions) && regions.length > 1) {
+          return {
+            success: false,
+            error: "Free tier monitors are limited to a single check region.",
+          };
+        }
+      } catch (e) {
+        // JSON parsing issue
+      }
+    }
+  } else if (userTier === "NETRUNNER") {
+    const allowedTypes = ["HTTP", "SSL", "DNS", "MCP", "SEQUENCE", "PORT", "DATABASE", "PING"];
+    if (!allowedTypes.includes(data.type)) {
+      return {
+        success: false,
+        error: "Synthetic Browser Testing is only allowed on the Construct (Business) tier. Please upgrade to Construct to use Browser monitors.",
+      };
+    }
+
+    if (data.interval < 30) {
+      return {
+        success: false,
+        error: "Minimum check interval for the Netrunner tier is 30 seconds.",
+      };
+    }
+
+    if (data.checkRegions) {
+      try {
+        const regions = JSON.parse(data.checkRegions);
+        if (Array.isArray(regions) && regions.length > 3) {
+          return {
+            success: false,
+            error: "Netrunner tier is limited to at most 3 check regions.",
+          };
+        }
+      } catch (e) {
+        // JSON parsing issue
+      }
+    }
+  } else if (userTier === "CONSTRUCT") {
+    if (data.interval < 10) {
+      return {
+        success: false,
+        error: "Minimum check interval for the Construct tier is 10 seconds.",
+      };
+    }
+  }
+
   let finalUrl = data.url || "";
 
   if (data.type === "PING") {

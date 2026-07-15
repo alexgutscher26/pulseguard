@@ -149,6 +149,32 @@ export async function createStatusPage(prevState: any, formData: FormData) {
   }
   const data = validation.data;
 
+  // Enforce pricing tier limits
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { tier: true },
+  });
+  const userTier = user?.tier || "INITIATE";
+
+  if (userTier === "INITIATE") {
+    if (data.customDomain && data.customDomain.trim() !== "") {
+      return {
+        success: false,
+        error: "Custom domains are a premium feature. Please upgrade to the Netrunner tier to configure custom domains.",
+      };
+    }
+
+    const pageCount = await prisma.statusPage.count({
+      where: { userId: session.user.id },
+    });
+    if (pageCount >= 1) {
+      return {
+        success: false,
+        error: "Free tier accounts are limited to 1 public status page. Please upgrade to create more status pages.",
+      };
+    }
+  }
+
   // Check slug uniqueness
   const existing = await prisma.statusPage.findUnique({
     where: { slug: data.slug },
@@ -297,6 +323,22 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
   try {
     // Check if domain changed
     const current = await prisma.statusPage.findUnique({ where: { id } });
+
+    // Enforce pricing tier limits
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { tier: true },
+    });
+    const userTier = user?.tier || "INITIATE";
+
+    if (userTier === "INITIATE") {
+      if (rawData.customDomain && rawData.customDomain.trim() !== "") {
+        return {
+          success: false,
+          error: "Custom domains are a premium feature. Please upgrade to the Netrunner tier to configure custom domains.",
+        };
+      }
+    }
 
     // Domain logic commented out
     // ...

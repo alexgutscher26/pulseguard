@@ -48,6 +48,19 @@ export async function createNotificationChannel(prevState: any, formData: FormDa
   const data = validation.data;
 
   try {
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { tier: true },
+    });
+    const userTier = user?.tier || "INITIATE";
+
+    if (data.type === "SMS" && userTier !== "CONSTRUCT") {
+      return {
+        success: false,
+        error: "SMS notifications are an enterprise feature exclusive to the Construct tier. Please upgrade to the Construct tier to configure SMS alerts.",
+      };
+    }
+
     await prisma.notificationChannel.create({
       data: {
         name: data.name,

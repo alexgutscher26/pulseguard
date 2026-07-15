@@ -1,4 +1,5 @@
 "use client";
+// Safe layout comment trigger for UX audit
 
 import { useState, useEffect, useCallback } from "react";
 import { Key, Plus, Trash2, Copy, Check, Eye, EyeOff, Terminal } from "lucide-react";

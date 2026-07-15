@@ -298,18 +298,70 @@ async function summarizeDailyEvents(prisma: any): Promise<void> {
  * Cleanup raw MonitorEvent rows older than 7 days.
  */
 async function cleanupRawMonitorEvents(prisma: any): Promise<void> {
-  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-
-  // We assume summarization ran for '8 days ago'.
-  // So '7 days ago' and older is safe to delete.
-  const result = await prisma.monitorEvent.deleteMany({
+  // 1. INITIATE tier: 3 days log retention
+  const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
+  const resultInitiate = await prisma.monitorEvent.deleteMany({
     where: {
-      timestamp: { lt: sevenDaysAgo },
+      timestamp: { lt: threeDaysAgo },
+      monitor: {
+        user: {
+          tier: "INITIATE",
+        },
+      },
     },
   });
 
-  if (result.count > 0) {
-    console.log(`[Cleanup] Deleted ${result.count} raw monitor events > 7 days old`);
+  // 2. NETRUNNER tier: 30 days log retention
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  const resultNetrunner = await prisma.monitorEvent.deleteMany({
+    where: {
+      timestamp: { lt: thirtyDaysAgo },
+      monitor: {
+        user: {
+          tier: "NETRUNNER",
+        },
+      },
+    },
+  });
+
+  // 3. CONSTRUCT tier: 365 days log retention
+  const oneYearAgo = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000);
+  const resultConstruct = await prisma.monitorEvent.deleteMany({
+    where: {
+      timestamp: { lt: oneYearAgo },
+      monitor: {
+        user: {
+          tier: "CONSTRUCT",
+        },
+      },
+    },
+  });
+
+  // 4. Default / Fallback: delete events older than 7 days if user is not in one of the specific tiers
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const resultFallback = await prisma.monitorEvent.deleteMany({
+    where: {
+      timestamp: { lt: sevenDaysAgo },
+      monitor: {
+        user: {
+          tier: {
+            notIn: ["INITIATE", "NETRUNNER", "CONSTRUCT"],
+          },
+        },
+      },
+    },
+  });
+
+  const totalDeleted =
+    (resultInitiate?.count || 0) +
+    (resultNetrunner?.count || 0) +
+    (resultConstruct?.count || 0) +
+    (resultFallback?.count || 0);
+
+  if (totalDeleted > 0) {
+    console.log(
+      `[Cleanup] Deleted ${totalDeleted} raw monitor events (Initiate: ${resultInitiate?.count || 0}, Netrunner: ${resultNetrunner?.count || 0}, Construct: ${resultConstruct?.count || 0}, Fallback: ${resultFallback?.count || 0})`,
+    );
   }
 }
 
