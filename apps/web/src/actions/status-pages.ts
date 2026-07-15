@@ -97,6 +97,9 @@ const statusPageSchema = z.object({
   customCss: z.string().optional(),
   barType: z.string().optional(),
   cardType: z.string().optional(),
+  homepageUrl: z.string().optional(),
+  contactUrl: z.string().optional(),
+  footerLinks: z.string().optional(),
 });
 
 export async function createStatusPage(prevState: any, formData: FormData) {
@@ -127,6 +130,9 @@ export async function createStatusPage(prevState: any, formData: FormData) {
     customCss: (formData.get("customCss") as string) || undefined,
     barType: (formData.get("barType") as string) || undefined,
     cardType: (formData.get("cardType") as string) || undefined,
+    homepageUrl: (formData.get("homepageUrl") as string) || undefined,
+    contactUrl: (formData.get("contactUrl") as string) || undefined,
+    footerLinks: (formData.get("footerLinks") as string) || undefined,
   };
 
   const validation = statusPageSchema.safeParse(rawData);
@@ -164,6 +170,9 @@ export async function createStatusPage(prevState: any, formData: FormData) {
         logo: data.logo,
         favicon: data.favicon,
         customCss: data.customCss,
+        homepageUrl: data.homepageUrl,
+        contactUrl: data.contactUrl,
+        footerLinks: data.footerLinks ? JSON.parse(data.footerLinks) : undefined,
       },
     });
 
@@ -264,6 +273,9 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
     logo: (formData.get("logo") as string) || undefined,
     favicon: (formData.get("favicon") as string) || undefined,
     customCss: (formData.get("customCss") as string) || undefined,
+    homepageUrl: (formData.get("homepageUrl") as string) || undefined,
+    contactUrl: (formData.get("contactUrl") as string) || undefined,
+    footerLinks: (formData.get("footerLinks") as string) || undefined,
   };
 
   try {
@@ -294,6 +306,9 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
         logo: rawData.logo,
         favicon: rawData.favicon,
         customCss: rawData.customCss,
+        homepageUrl: rawData.homepageUrl,
+        contactUrl: rawData.contactUrl,
+        footerLinks: rawData.footerLinks ? JSON.parse(rawData.footerLinks) : Prisma.JsonNull,
       },
     });
 

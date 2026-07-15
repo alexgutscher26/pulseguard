@@ -180,12 +180,12 @@ Public-facing transparency for users and internal collaboration for teams.
     - [x] **Bar Type**: Toggle between `Absolute` (real data) and `Manual` (overridden status).
     - [x] **Card Type**: Toggle between `Duration` (percent base) and `Requests` (count base) for trackers.
     - [x] **Manual Overrides**: Ability to manually set a day's status (Operational, Degraded, etc.) regardless of automated checks.
-  - [ ] **Enriched Branding & Links**:
-    - [ ] **Logo Link**: Explicit `homepageUrl` field for branding.
-    - [ ] **Contact Support**: `contactUrl` field to show a "Message" icon/button on the header.
-    - [ ] **Footer Navigation**: Support custom links in the footer (Terms, Privacy, Twitter).
-  - [ ] **Developer UX (Live Preview)**:
-    - [ ] **Floating Edit Button**: Add a "View and Configure" mode that adds an overlay to the public status page for real-time design editing.
+  - [x] **Enriched Branding & Links**:
+    - [x] **Logo Link**: Explicit `homepageUrl` field for branding.
+    - [x] **Contact Support**: `contactUrl` field to show a "Message" icon/button on the header.
+    - [x] **Footer Navigation**: Support custom links in the footer (Terms, Privacy, Twitter).
+  - [x] **Developer UX (Live Preview)**:
+    - [x] **Floating Edit Button**: Add a "View and Configure" mode that adds an overlay to the public status page for real-time design editing.
   - [ ] **Theme Store Integration**: Store custom brand color variables (Operational, Error, Degraded) in a `theme` JSON blob.
   - [ ] **Advanced Branding**: Support Favicon URL, Logo URL, and Footer Links (Contact, Home, Support).
   - [ ] **SEO Meta Injection**: Support `metaTitle`, `metaDescription`, and `ogImageUrl` for better social sharing.

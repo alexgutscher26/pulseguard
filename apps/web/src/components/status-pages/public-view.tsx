@@ -1,14 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle, AlertTriangle, Clock, Zap, WifiOff } from "lucide-react";
+import { CheckCircle, AlertTriangle, Clock, Zap, WifiOff, Mail, Sliders, X } from "lucide-react";
 import { StatusPageMonitorRow } from "./status-page-monitor-row";
 import { AnalyticsTracker } from "./analytics-tracker";
 import { useTranslations, useFormatter } from "next-intl";
 import { LanguageSwitcher } from "./language-switcher";
 import { SubscribeModal } from "./subscribe-modal";
+import { StatusPageSettings } from "./status-page-settings";
 
-export function PublicView({ page }: { page: any }) {
+export function PublicView({ page, isAdmin }: { page: any; isAdmin?: boolean }) {
   const tStatus = useTranslations("status");
   const tHeadings = useTranslations("headings");
   const tActions = useTranslations("actions");
@@ -25,6 +26,7 @@ export function PublicView({ page }: { page: any }) {
 
   // Subscribe modal state
   const [isSubscribeModalOpen, setIsSubscribeModalOpen] = useState(false);
+  const [isEditSidebarOpen, setIsEditSidebarOpen] = useState(false);
 
   // Dynamic Theme Colors
   const theme = (page.theme as any) || {
@@ -80,21 +82,43 @@ export function PublicView({ page }: { page: any }) {
       <div className="relative z-10 max-w-4xl mx-auto px-4 py-8 md:py-12">
         {/* Navbar */}
         <div className="flex items-center justify-between py-6 mb-8 border-b border-primary/10">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            {page.logo ? (
-              <img
-                src={page.logo}
-                alt={page.title}
-                className="size-10 rounded-md object-cover border border-primary/20 shadow-[0_0_15px_-3px_rgba(34,197,94,0.3)]"
-              />
-            ) : (
-              <div className="size-10 rounded-md bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-xl shadow-[0_0_15px_-3px_rgba(34,197,94,0.3)]">
-                {page.title.charAt(0).toUpperCase()}
-              </div>
-            )}
-            <span className="font-bold tracking-tight hidden md:block">{page.title}</span>
-          </div>
+          {/* Logo & Title */}
+          {page.homepageUrl ? (
+            <a
+              href={page.homepageUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+            >
+              {page.logo ? (
+                <img
+                  src={page.logo}
+                  alt={page.title}
+                  className="size-10 rounded-md object-cover border border-primary/20 shadow-[0_0_15px_-3px_rgba(34,197,94,0.3)]"
+                />
+              ) : (
+                <div className="size-10 rounded-md bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-xl shadow-[0_0_15px_-3px_rgba(34,197,94,0.3)]">
+                  {page.title.charAt(0).toUpperCase()}
+                </div>
+              )}
+              <span className="font-bold tracking-tight hidden md:block">{page.title}</span>
+            </a>
+          ) : (
+            <div className="flex items-center gap-3">
+              {page.logo ? (
+                <img
+                  src={page.logo}
+                  alt={page.title}
+                  className="size-10 rounded-md object-cover border border-primary/20 shadow-[0_0_15px_-3px_rgba(34,197,94,0.3)]"
+                />
+              ) : (
+                <div className="size-10 rounded-md bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-xl shadow-[0_0_15px_-3px_rgba(34,197,94,0.3)]">
+                  {page.title.charAt(0).toUpperCase()}
+                </div>
+              )}
+              <span className="font-bold tracking-tight hidden md:block">{page.title}</span>
+            </div>
+          )}
 
           {/* Nav Links */}
           <div className="flex items-center gap-1 md:gap-2">
@@ -119,12 +143,26 @@ export function PublicView({ page }: { page: any }) {
           </div>
 
           {/* Actions */}
-          <button
-            onClick={() => setIsSubscribeModalOpen(true)}
-            className="px-4 py-2 rounded-md border border-primary/20 hover:bg-primary/10 hover:border-primary/40 text-xs font-bold uppercase tracking-wider transition-all shadow-[0_4px_10px_-4px_rgba(0,0,0,0.5)] active:translate-y-0.5"
-          >
-            {tActions("get_updates")}
-          </button>
+          <div className="flex items-center gap-2">
+            {page.contactUrl && (
+              <a
+                href={page.contactUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-md border border-primary/20 hover:bg-primary/10 hover:border-primary/40 text-primary transition-all flex items-center justify-center shadow-[0_4px_10px_-4px_rgba(0,0,0,0.5)] active:translate-y-0.5"
+                title="Contact Support"
+              >
+                <Mail className="size-4" />
+              </a>
+            )}
+
+            <button
+              onClick={() => setIsSubscribeModalOpen(true)}
+              className="px-4 py-2 rounded-md border border-primary/20 hover:bg-primary/10 hover:border-primary/40 text-xs font-bold uppercase tracking-wider transition-all shadow-[0_4px_10px_-4px_rgba(0,0,0,0.5)] active:translate-y-0.5"
+            >
+              {tActions("get_updates")}
+            </button>
+          </div>
 
           {/* Subscribe Modal */}
           <SubscribeModal
@@ -255,6 +293,22 @@ export function PublicView({ page }: { page: any }) {
 
         {/* Footer */}
         <div className="mt-24 pt-8 border-t border-primary/10 flex flex-col items-center gap-4 text-center">
+          {page.footerLinks && Array.isArray(page.footerLinks) && page.footerLinks.length > 0 && (
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-primary/60 mb-2">
+              {page.footerLinks.map((link: any, idx: number) => (
+                <a
+                  key={idx}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition-colors hover:underline decoration-dotted underline-offset-4"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          )}
+
           <LanguageSwitcher />
 
           <div className="flex flex-col items-center gap-1">
@@ -273,6 +327,64 @@ export function PublicView({ page }: { page: any }) {
           </div>
         </div>
       </div>
+
+      {/* Floating Admin Edit Button */}
+      {isAdmin && (
+        <button
+          onClick={() => setIsEditSidebarOpen(true)}
+          className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 rounded-full bg-primary/20 hover:bg-primary/30 backdrop-blur-md border border-primary/30 text-primary font-mono text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-[0_0_20px_rgba(34,197,94,0.3)] hover:scale-105 active:scale-95 animate-fade-in"
+        >
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+          </span>
+          <Sliders className="size-4" />
+          <span>Edit Design</span>
+        </button>
+      )}
+
+      {/* Real-time Config Sidebar Overlay */}
+      {isAdmin && (
+        <>
+          {/* Backdrop Blur Overlay */}
+          <div
+            className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-45 transition-opacity duration-300 ${
+              isEditSidebarOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+            }`}
+            onClick={() => setIsEditSidebarOpen(false)}
+          />
+
+          {/* Sidebar Drawer */}
+          <div
+            className={`fixed right-0 top-0 bottom-0 w-full max-w-lg bg-black/95 backdrop-blur-lg border-l border-primary/20 shadow-[0_0_50px_rgba(0,0,0,0.8)] z-50 transition-transform duration-500 ease-out transform ${
+              isEditSidebarOpen ? "translate-x-0" : "translate-x-full"
+            }`}
+          >
+            {/* Sidebar Header */}
+            <div className="flex items-center justify-between p-6 border-b border-primary/10 bg-black/40">
+              <div className="space-y-1">
+                <h3 className="text-md font-bold font-mono tracking-tight text-primary uppercase">
+                  Configure Status Page
+                </h3>
+                <p className="text-[10px] text-primary/50 uppercase tracking-widest font-mono">
+                  Real-time design & branding preview
+                </p>
+              </div>
+              <button
+                onClick={() => setIsEditSidebarOpen(false)}
+                className="p-1.5 rounded-sm border border-primary/10 hover:border-primary/30 hover:bg-primary/5 text-primary/60 hover:text-primary transition-all"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+
+            {/* Sidebar Body */}
+            <div className="p-6 overflow-y-auto h-[calc(100vh-80px)] custom-scrollbar">
+              <StatusPageSettings page={page} />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

@@ -22,6 +22,9 @@ model StatusPage {
   showResponseTime Boolean @default(true)
   showPaused       Boolean @default(false)
   customCss        String?
+  homepageUrl      String?
+  contactUrl       String?
+  footerLinks      Json?
 
   // Widget Configuration
   widgetEnabled        Boolean @default(false)

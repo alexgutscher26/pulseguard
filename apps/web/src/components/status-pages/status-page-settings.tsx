@@ -3,7 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { updateStatusPage } from "@/actions/status-pages";
 import { toast } from "sonner";
-import { Loader2, Palette, Globe, Shield, Search, Eye, FileCode } from "lucide-react";
+import { Loader2, Palette, Globe, Shield, Search, Eye, FileCode, Mail, Link, Trash } from "lucide-react";
 import { StatusPageI18n } from "./status-page-i18n";
 
 interface StatusPageSettingsProps {
@@ -41,6 +41,15 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
   // Parse existing theme
   const currentTheme = (page.theme as any)?.value || "cyberpunk";
   const [selectedTheme, setSelectedTheme] = useState(currentTheme);
+
+  // Parse custom footer links
+  const [footerLinks, setFooterLinks] = useState<{ label: string; url: string }[]>(() => {
+    try {
+      return Array.isArray(page.footerLinks) ? page.footerLinks : [];
+    } catch {
+      return [];
+    }
+  });
 
   useEffect(() => {
     if (state.success) toast.success("Settings updated");
@@ -201,6 +210,12 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
 
             {/* Branding */}
             <div className="space-y-4 pt-4 border-t border-white/5">
+              <input
+                type="hidden"
+                name="footerLinks"
+                value={JSON.stringify(footerLinks)}
+              />
+
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
                   Logo URL
@@ -223,6 +238,87 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
                 />
               </div>
+
+              {/* Homepage Link */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono flex items-center gap-1.5">
+                  <Link className="size-3" /> Logo Link (Homepage URL)
+                </label>
+                <input
+                  name="homepageUrl"
+                  defaultValue={page.homepageUrl || ""}
+                  placeholder="https://yourcompany.com"
+                  className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
+                />
+              </div>
+
+              {/* Support URL */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono flex items-center gap-1.5">
+                  <Mail className="size-3" /> Contact Support URL
+                </label>
+                <input
+                  name="contactUrl"
+                  defaultValue={page.contactUrl || ""}
+                  placeholder="https://support.yourcompany.com or mailto:support@company.com"
+                  className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
+                />
+              </div>
+
+              {/* Footer Links Manager */}
+              <div className="space-y-2 pt-2 border-t border-white/5">
+                <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono flex items-center gap-1.5">
+                  Custom Footer Links
+                </label>
+                <div className="space-y-2">
+                  {footerLinks.map((link, idx) => (
+                    <div key={idx} className="flex gap-2 items-center">
+                      <input
+                        placeholder="Label (e.g. Terms)"
+                        value={link.label}
+                        onChange={(e) => {
+                          const updated = [...footerLinks];
+                          updated[idx].label = e.target.value;
+                          setFooterLinks(updated);
+                        }}
+                        className="w-1/3 bg-black/50 border border-white/10 p-1.5 rounded-sm text-xs font-mono focus:border-primary/50 outline-none transition-colors"
+                      />
+                      <input
+                        placeholder="URL (https://...)"
+                        value={link.url}
+                        onChange={(e) => {
+                          const updated = [...footerLinks];
+                          updated[idx].url = e.target.value;
+                          setFooterLinks(updated);
+                        }}
+                        className="flex-1 bg-black/50 border border-white/10 p-1.5 rounded-sm text-xs font-mono focus:border-primary/50 outline-none transition-colors"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = footerLinks.filter((_, i) => i !== idx);
+                          setFooterLinks(updated);
+                        }}
+                        className="p-1.5 text-red-500 hover:bg-red-500/10 rounded-sm border border-red-500/20 transition-all flex items-center justify-center"
+                        title="Remove link"
+                      >
+                        <Trash className="size-3.5" />
+                      </button>
+                    </div>
+                  ))}
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFooterLinks([...footerLinks, { label: "", url: "" }]);
+                    }}
+                    className="w-full py-1.5 border border-dashed border-primary/20 hover:border-primary/40 hover:bg-primary/5 text-[10px] font-mono font-bold text-primary uppercase rounded-sm transition-all"
+                  >
+                    + Add Footer Link
+                  </button>
+                </div>
+              </div>
+
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono flex items-center gap-2">
                   <FileCode className="size-3" /> Custom CSS

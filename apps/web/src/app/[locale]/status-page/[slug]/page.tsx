@@ -8,6 +8,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { getI18nOverrides } from "@/actions/i18n";
 import set from "lodash.set";
+import { auth } from "@pulseguard/auth";
 
 async function getPublicStatusPage(slug: string) {
   return prisma.statusPage.findUnique({
@@ -104,9 +105,12 @@ export default async function PublicStatusPage({ params }: Props) {
     });
   }
 
+  const session = await auth.api.getSession({ headers: headerStore });
+  const isAdmin = session?.user?.id === page.userId;
+
   return (
     <NextIntlClientProvider messages={messages} locale={locale}>
-      <PublicView page={page} />
+      <PublicView page={page} isAdmin={isAdmin} />
     </NextIntlClientProvider>
   );
 }
