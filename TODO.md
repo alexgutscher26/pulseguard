@@ -191,7 +191,7 @@ Public-facing transparency for users and internal collaboration for teams.
   - [x] **SEO Meta Injection**: Support `metaTitle`, `metaDescription`, and `ogImageUrl` for better social sharing.
   - [x] **Metrics Toggles**: Allow users to toggle between Latency, Uptime %, and Check Counts visibility per monitor.
   - [x] **Global Audience (i18n)**: Leverage `StatusPageI18n` for full locale switching support.
-- [ ] **Deep Aesthetic Injection**
+- [x] **Deep Aesthetic Injection**
   - Allow users to inject custom CSS/JS for fully white-labeled page rendering.
 - [x] **Subscription System**
   - Support Email, RSS, and Atom feeds.

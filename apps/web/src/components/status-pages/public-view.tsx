@@ -408,6 +408,13 @@ export function PublicView({ page, isAdmin }: { page: any; isAdmin?: boolean }) 
           </div>
         </>
       )}
+      {page.customJs && (
+        <script
+          dangerouslySetInnerHTML={{
+            __html: page.customJs,
+          }}
+        />
+      )}
     </div>
   );
 }

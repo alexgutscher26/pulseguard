@@ -3,7 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { updateStatusPage } from "@/actions/status-pages";
 import { toast } from "sonner";
-import { Loader2, Palette, Globe, Shield, Search, Eye, FileCode, Mail, Link, Trash } from "lucide-react";
+import { Loader2, Palette, Globe, Shield, Search, Eye, FileCode, Mail, Link, Trash, Code2 } from "lucide-react";
 import { StatusPageI18n } from "./status-page-i18n";
 
 interface StatusPageSettingsProps {
@@ -499,6 +499,22 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                   placeholder=".body { ... }"
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
                 />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono flex items-center gap-2">
+                  <Code2 className="size-3" /> Custom Javascript (JS)
+                </label>
+                <textarea
+                  name="customJs"
+                  defaultValue={page.customJs || ""}
+                  rows={3}
+                  placeholder="console.log('Custom JS Loaded');"
+                  className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
+                />
+                <p className="text-[9px] text-muted-foreground font-mono">
+                  Injected before the closing body tag. Do not include &lt;script&gt; tags.
+                </p>
               </div>
             </div>
           </div>

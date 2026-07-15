@@ -22,6 +22,7 @@ model StatusPage {
   showResponseTime Boolean @default(true)
   showPaused       Boolean @default(false)
   customCss        String?
+  customJs         String?
   homepageUrl      String?
   contactUrl       String?
   footerLinks      Json?
