@@ -114,7 +114,10 @@ async function runCheck(job: ProbeJob): Promise<CheckResult> {
       await response.text();
       const latency = Math.round(performance.now() - start);
       const statusNum = Number(response.status);
-      const isHealthy = response.ok || (statusNum >= 300 && statusNum < 400) || statusNum === 429;
+      // 2xx + 3xx = healthy redirects. 429 = rate-limited (alive). 403 = IP/bot blocked (alive).
+      // A 403 from Google means "I am alive and denying your bot" — NOT an outage.
+      const isHealthy =
+        response.ok || (statusNum >= 300 && statusNum < 400) || statusNum === 429 || statusNum === 403;
 
       return {
         monitorId: job.monitorId,

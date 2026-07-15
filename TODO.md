@@ -274,7 +274,7 @@ Turn raw logs into operational intelligence.
   - Calculate exact uptime (99.95%, 99.99%) per timeframe.
 - [x] **Monthly PDF Summary Reports**
   - Auto-generate branded, styled PDFs for managerial review.
-- [ ] **Performance Regression Analysis**
+- [x] **Performance Regression Analysis**
   - "Your API is 15% slower this week compared to last week."
 - [ ] **Grafana Integration**
   - Publish an official Grafana Data Source plugin pointing to PulseGuard APIs.

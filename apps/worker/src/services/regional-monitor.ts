@@ -71,10 +71,13 @@ async function checkFromRegion(monitor: Monitor, region: string): Promise<Region
     // Treat 2xx, 3xx as UP — healthy responses
     // Treat 429 (Too Many Requests) as UP — the server is alive and responding,
     // it's just rate-limiting our IP. This is NOT a real outage.
+    // Treat 403 (Forbidden) as UP — server is alive but blocking our monitoring IP/UA.
+    // Very common for Google, CDN-protected sites. A 403 is NOT a service outage.
     const statusNum = Number(response.status);
     const isRateLimited = statusNum === 429;
+    const isIPBlocked = statusNum === 403;
     const isHealthy =
-      response.ok || (statusNum >= 300 && statusNum < 400) || isRateLimited;
+      response.ok || (statusNum >= 300 && statusNum < 400) || isRateLimited || isIPBlocked;
 
     return {
       region,
@@ -122,10 +125,13 @@ export async function performRegionalChecks(monitor: Monitor): Promise<RegionalC
     return [result];
   }
 
-  // CLOUDFLARE FREE PLAN: Hard cap at 10 regions.
-  // Each region = 1 fetch subrequest. Free plan allows ~50 per invocation total.
-  // With retries, multi-vector, and DB writes, we must stay well under that.
-  const MAX_REGIONS = 10;
+  // CLOUDFLARE FREE PLAN: Hard cap at 3 regions maximum.
+  // Each region = 1 fetch subrequest. Cloudflare Free allows 50 subrequests per invocation.
+  // A single check invocation also does: DB reads, DB writes, multi-vector retries (3 more fetches),
+  // proxy mesh calls, latency aggregator DO calls, and processes multiple monitors at once.
+  // Running 10 regions = 10 fetches + all overhead = consistently blows the 50 subrequest budget.
+  // 3 regions is the safe sweet spot: meaningful multi-region signal, stays well within budget.
+  const MAX_REGIONS = 3;
   if (regions.length > MAX_REGIONS) {
     console.warn(
       `[Regional] Monitor has ${regions.length} regions but capping to ${MAX_REGIONS} to avoid exceeding Cloudflare subrequest limits.`,
@@ -133,12 +139,12 @@ export async function performRegionalChecks(monitor: Monitor): Promise<RegionalC
     regions = regions.slice(0, MAX_REGIONS);
   }
 
-  // Run regions sequentially in small batches with a short delay between batches.
-  // This avoids burst-firing 10 identical requests at the same target IP simultaneously,
-  // which triggers rate-limiting (HTTP 429) from sites like Google.
+  // Run regions sequentially with a delay between each.
+  // Even small parallel bursts to the same target (google.com) from the same Cloudflare
+  // edge IP trigger HTTP 429 rate-limiting — running them sequentially avoids this entirely.
   const results: RegionalCheckResult[] = [];
-  const BATCH_SIZE = 3;
-  const BATCH_DELAY_MS = 200; // Small delay between batches to spread load
+  const BATCH_SIZE = 2;
+  const BATCH_DELAY_MS = 400; // Enough spread to avoid rate-limiting on sensitive sites
 
   for (let i = 0; i < regions.length; i += BATCH_SIZE) {
     if (i > 0) {

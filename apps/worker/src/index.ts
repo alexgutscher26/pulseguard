@@ -336,11 +336,22 @@ async function performInternalRequest(
       // Treat 2xx, 3xx as UP — redirects are healthy (e.g. google.com -> www.google.com)
       // Treat 429 (Too Many Requests) as UP — the server is alive and responding,
       // it's just throttling this IP. A rate-limit is NOT a real outage.
+      // Treat 403 (Forbidden) as UP — the server is online and responding. It's blocking
+      // our monitoring IP / bot UA (very common for Google, Cloudflare-protected sites, etc.)
+      // A 403 means "I am alive and I understand your request" — not a service outage.
       const statusNum = Number(response.status);
       const isRateLimited = statusNum === 429;
+      const isIPBlocked = statusNum === 403;
       const isHealthyStatus =
-        response.ok || (statusNum >= 300 && statusNum < 400) || isRateLimited;
+        response.ok || (statusNum >= 300 && statusNum < 400) || isRateLimited || isIPBlocked;
       currentStatus = isHealthyStatus ? "UP" : "DOWN";
+
+      if (isIPBlocked) {
+        // Log the block so operators can see it, but don't flag as DOWN
+        console.log(
+          `[Check] ${urlStr} returned 403 — server is alive but blocking monitoring IP. Reporting UP.`,
+        );
+      }
 
       // 3. Deep Payload/Status Validation (WASM/Rust Optimized Bridge)
       if (currentStatus === "UP" && monitor.expectation) {
@@ -774,11 +785,27 @@ export async function processBatch(
                 );
                 retryResult.status = "UP";
                 retryResult.errorReason = undefined;
-                // We keep the initially higher latency to reflect the degraded state realistically
               } else {
-                console.log(
-                  `[MultiVector] Component 18-1-0 also DOWN. Trying final vector Component 18-1-1...`,
-                );
+                // KEY FIX: If the PROXY itself failed (not the target), don't use this as
+                // confirmation of DOWN. Proxy failures (CORS blocks, scraper bans, etc.) are
+                // unreliable signals for sites like Google that block these proxy services.
+                const isProxyFailure =
+                  proxyResult.error === "PROXY_UNAVAILABLE" ||
+                  proxyResult.error === "PROXY_FETCH_FAILED" ||
+                  proxyResult.error === "MESH_CONGESTION_FAILSAFE" ||
+                  proxyResult.error === "MESH_TIMEOUT";
+
+                if (isProxyFailure) {
+                  console.warn(
+                    `[MultiVector] Component 18-1-0 proxy itself failed (${proxyResult.error}), not a target failure. Skipping as inconclusive.`,
+                  );
+                  // Don't use a broken proxy as evidence of DOWN — skip to secondary
+                } else {
+                  console.log(
+                    `[MultiVector] Component 18-1-0 target confirmed DOWN. Trying secondary vector Component 18-1-1...`,
+                  );
+                }
+
                 const secondaryProxy = await mesh.component_18_1_1(monitor.url, 5000);
                 if (secondaryProxy.status === "UP") {
                   console.log(
@@ -787,25 +814,41 @@ export async function processBatch(
                   retryResult.status = "UP";
                   retryResult.errorReason = undefined;
                 } else {
-                  console.log(
-                    `[MultiVector] Component 18-1-1 also DOWN. Trying final High-Fidelity Vector 19-3-1...`,
-                  );
-                  // Use captured latencies for quantum verification if available
-                  const finalVector = await mesh.component_19_3_1(
-                    monitor.url,
-                    capturedLatencies || [],
-                    2000,
-                  );
-                  if (finalVector.status === "UP") {
-                    console.log(
-                      `[MultiVector] Component 19-3-1 reported UP! False positive averted for ${monitor.name}. (Anomaly: ${finalVector.anomaly?.isAnomaly})`,
+                  // Check if secondary proxy also just failed at the proxy level
+                  const isSecondaryProxyFailure =
+                    secondaryProxy.error === "MESH_TIMEOUT" ||
+                    secondaryProxy.error === "MESH_CONGESTION_FAILSAFE";
+
+                  if (isProxyFailure && isSecondaryProxyFailure) {
+                    // BOTH proxies failed at the infrastructure level — this is a proxy network
+                    // problem, NOT a confirmed target outage. Treat as inconclusive → keep UP.
+                    console.warn(
+                      `[MultiVector] Both proxy vectors failed at infrastructure level for ${monitor.name}. ` +
+                      `Cannot confirm DOWN without reliable external verification. Treating as UP (false-positive prevention).`,
                     );
                     retryResult.status = "UP";
                     retryResult.errorReason = undefined;
                   } else {
-                    console.warn(
-                      `[MultiVector] ALL verification vectors (Local, Retry, 18-1-0, 18-1-1, 19-3-1) confirmed DOWN for ${monitor.name}.`,
+                    console.log(
+                      `[MultiVector] Component 18-1-1 also DOWN. Trying final High-Fidelity Vector 19-3-1...`,
                     );
+                    // Use captured latencies for quantum verification if available
+                    const finalVector = await mesh.component_19_3_1(
+                      monitor.url,
+                      capturedLatencies || [],
+                      2000,
+                    );
+                    if (finalVector.status === "UP") {
+                      console.log(
+                        `[MultiVector] Component 19-3-1 reported UP! False positive averted for ${monitor.name}. (Anomaly: ${finalVector.anomaly?.isAnomaly})`,
+                      );
+                      retryResult.status = "UP";
+                      retryResult.errorReason = undefined;
+                    } else {
+                      console.warn(
+                        `[MultiVector] ALL verification vectors (Local, Retry, 18-1-0, 18-1-1, 19-3-1) confirmed DOWN for ${monitor.name}.`,
+                      );
+                    }
                   }
                 }
               }
