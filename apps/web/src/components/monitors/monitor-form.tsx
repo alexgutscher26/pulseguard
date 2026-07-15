@@ -17,6 +17,7 @@ import {
   ArrowUp,
   ArrowDown,
   ShieldCheck,
+  Heart,
 } from "lucide-react";
 import Link from "next/link";
 import { createMonitor, updateMonitor } from "@/actions/monitors";
@@ -36,7 +37,7 @@ interface MonitorFormProps {
     id: string;
     name: string;
     url: string;
-    type: "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL" | "DNS";
+    type: "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL" | "DNS" | "HEARTBEAT";
     interval: number;
     timeout: number;
     checkRegions?: string | null;
@@ -48,6 +49,7 @@ interface MonitorFormProps {
     body?: string | null;
     script?: string | null;
     expectation?: string | null;
+    heartbeatToken?: string | null;
   };
 }
 
@@ -61,10 +63,11 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
     | "SEQUENCE"
     | "SSL"
     | "DNS"
+    | "HEARTBEAT"
     | null;
 
   // Parse initial values
-  let initialType: "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL" | "DNS" =
+  let initialType: "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL" | "DNS" | "HEARTBEAT" =
     monitor?.type || typeParam || "HTTP";
   let initialUrl = monitor?.url || "";
   let initialPort = "";
@@ -87,11 +90,13 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
       const [host, port] = trimmed.split(":");
       initialUrl = host;
       initialPort = port;
+    } else if (monitor.type === "HEARTBEAT" && initialUrl.startsWith("heartbeat://")) {
+      initialUrl = "";
     }
   }
 
   const [monitorType, setMonitorType] = useState<
-    "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL" | "DNS"
+    "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL" | "DNS" | "HEARTBEAT"
   >(initialType);
   const [selectedRegions, setSelectedRegions] = useState<string[]>(initialRegions);
   const [threshold, setThreshold] = useState(monitor?.alertThreshold || 1);
@@ -321,7 +326,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
               Monitor Type
             </label>
-            <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
               <label
                 className={`flex flex-col items-center justify-center gap-2.5 p-4 rounded-xl border transition-all cursor-pointer ${
                   monitorType === "HTTP"
@@ -454,6 +459,25 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                 <Server className="size-5" />
                 <span className="text-[11px] font-bold uppercase tracking-wider">DNS</span>
               </label>
+
+              <label
+                className={`flex flex-col items-center justify-center gap-2.5 p-4 rounded-xl border transition-all cursor-pointer ${
+                  monitorType === "HEARTBEAT"
+                    ? "border-primary bg-primary/5 text-foreground shadow-[0_2px_8px_rgba(0,0,0,0.02)]"
+                    : "border-border bg-card text-muted-foreground hover:bg-accent/40 hover:text-foreground"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="type"
+                  value="HEARTBEAT"
+                  className="sr-only"
+                  checked={monitorType === "HEARTBEAT"}
+                  onChange={() => setMonitorType("HEARTBEAT")}
+                />
+                <Heart className="size-5" />
+                <span className="text-[11px] font-bold uppercase tracking-wider">Heartbeat</span>
+              </label>
             </div>
           </div>
 
@@ -473,46 +497,102 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
           </div>
 
           {/* Target Host */}
-          <div className="flex flex-col gap-2">
-            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-              {monitorType === "HTTP" ||
-              monitorType === "BROWSER" ||
-              monitorType === "SSL" ||
-              monitorType === "DNS"
-                ? "Target URL / Domain"
-                : "Hostname / IP"}
-            </label>
-            <div className="flex gap-4">
-              <input
-                name="url"
-                required
-                defaultValue={initialUrl}
-                className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-3 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full"
-                type="text"
-                placeholder={
-                  monitorType === "HTTP" || monitorType === "BROWSER"
-                    ? "https://example.com"
-                    : monitorType === "SSL" || monitorType === "DNS"
-                      ? "example.com or https://example.com"
-                      : "192.168.1.1 or example.com"
-                }
-              />
-              {monitorType === "PORT" && (
-                <div className="w-32">
-                  <input
-                    name="port"
-                    required
-                    defaultValue={initialPort}
-                    className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-3 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full"
-                    type="number"
-                    placeholder="8080"
-                    min="1"
-                    max="65535"
-                  />
+          {monitorType !== "HEARTBEAT" ? (
+            <div className="flex flex-col gap-2">
+              <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                {monitorType === "HTTP" ||
+                monitorType === "BROWSER" ||
+                monitorType === "SSL" ||
+                monitorType === "DNS"
+                  ? "Target URL / Domain"
+                  : "Hostname / IP"}
+              </label>
+              <div className="flex gap-4">
+                <input
+                  name="url"
+                  required
+                  defaultValue={initialUrl}
+                  className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-3 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full"
+                  type="text"
+                  placeholder={
+                    monitorType === "HTTP" || monitorType === "BROWSER"
+                      ? "https://example.com"
+                      : monitorType === "SSL" || monitorType === "DNS"
+                        ? "example.com or https://example.com"
+                        : "192.168.1.1 or example.com"
+                  }
+                />
+                {monitorType === "PORT" && (
+                  <div className="w-32">
+                    <input
+                      name="port"
+                      required
+                      defaultValue={initialPort}
+                      className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-3 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full"
+                      type="number"
+                      placeholder="8080"
+                      min="1"
+                      max="65535"
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <>
+              <input type="hidden" name="url" value={monitor?.url || "heartbeat://placeholder"} />
+              
+              {monitor ? (
+                <div className="flex flex-col gap-2 rounded-xl border border-primary/20 bg-primary/5 p-5 relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-1.5 h-full bg-primary animate-pulse"></div>
+                  <label className="text-[10px] font-bold text-primary uppercase tracking-wider">
+                    Heartbeat Webhook URL
+                  </label>
+                  <div className="flex gap-2 items-center mt-1">
+                    <input
+                      type="text"
+                      readOnly
+                      value={
+                        typeof window !== "undefined"
+                          ? `${window.location.origin}/api/heartbeat/${monitor.heartbeatToken}`
+                          : `/api/heartbeat/${monitor.heartbeatToken}`
+                      }
+                      className="bg-zinc-950 border border-primary/10 text-xs font-mono rounded-lg p-3 text-foreground focus:outline-none transition-all w-full select-all"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const url = typeof window !== "undefined"
+                          ? `${window.location.origin}/api/heartbeat/${monitor.heartbeatToken}`
+                          : `/api/heartbeat/${monitor.heartbeatToken}`;
+                        navigator.clipboard.writeText(url);
+                        toast.success("Webhook URL copied to clipboard");
+                      }}
+                      className="min-h-[44px] px-4 rounded-lg border border-primary/20 bg-primary/10 hover:bg-primary/20 text-primary font-mono text-[10px] uppercase tracking-wider flex items-center justify-center transition-colors font-bold whitespace-nowrap"
+                    >
+                      Copy URL
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground leading-normal mt-2.5">
+                    💡 Send a GET or POST request to this URL from your script or cron job at least once every check interval.
+                  </p>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2 rounded-xl border border-dashed border-primary/20 bg-primary/5 p-5 relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-1.5 h-full bg-primary/20"></div>
+                  <label className="text-[10px] font-bold text-primary uppercase tracking-wider">
+                    Heartbeat Webhook URL
+                  </label>
+                  <p className="text-xs text-primary/80 leading-relaxed font-mono">
+                    Your unique heartbeat webhook URL will be generated immediately once you create this monitor.
+                  </p>
+                  <p className="text-[10px] text-muted-foreground leading-normal mt-1.5">
+                    💡 You will be able to view and copy the webhook URL from the monitor dashboard or settings view.
+                  </p>
                 </div>
               )}
-            </div>
-          </div>
+            </>
+          )}
 
           {/* HTTP Advanced Config */}
           {monitorType === "HTTP" && (
@@ -1275,31 +1355,37 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
           )}
 
           {/* Region Selector */}
-          <RegionSelector selectedRegions={selectedRegions} onChange={setSelectedRegions} />
+          {monitorType !== "HEARTBEAT" ? (
+            <>
+              <RegionSelector selectedRegions={selectedRegions} onChange={setSelectedRegions} />
 
-          {/* Alert Threshold */}
-          {selectedRegions.length > 0 && (
-            <div className="flex flex-col gap-2.5 p-5 border border-border bg-accent/30 rounded-xl">
-              <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                Alert Threshold
-              </label>
-              <div className="flex items-center gap-4">
-                <input
-                  name="alertThreshold"
-                  type="number"
-                  min="1"
-                  max={selectedRegions.length}
-                  value={threshold}
-                  onChange={(e) => setThreshold(parseInt(e.target.value) || 1)}
-                  className="bg-card border border-border focus:border-primary/20 text-xs font-bold rounded-lg p-2 w-20 text-center text-foreground focus:outline-none"
-                />
-                <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider leading-relaxed">
-                  Only alert when at least{" "}
-                  <span className="text-foreground font-extrabold">{threshold}</span> regions are
-                  down
-                </p>
-              </div>
-            </div>
+              {/* Alert Threshold */}
+              {selectedRegions.length > 0 && (
+                <div className="flex flex-col gap-2.5 p-5 border border-border bg-accent/30 rounded-xl">
+                  <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                    Alert Threshold
+                  </label>
+                  <div className="flex items-center gap-4">
+                    <input
+                      name="alertThreshold"
+                      type="number"
+                      min="1"
+                      max={selectedRegions.length}
+                      value={threshold}
+                      onChange={(e) => setThreshold(parseInt(e.target.value) || 1)}
+                      className="bg-card border border-border focus:border-primary/20 text-xs font-bold rounded-lg p-2 w-20 text-center text-foreground focus:outline-none"
+                    />
+                    <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider leading-relaxed">
+                      Only alert when at least{" "}
+                      <span className="text-foreground font-extrabold">{threshold}</span> regions are
+                      down
+                    </p>
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <input type="hidden" name="checkRegions" value="[]" />
           )}
 
           <div className="grid grid-cols-2 gap-4">

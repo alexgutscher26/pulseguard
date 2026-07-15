@@ -419,7 +419,7 @@ Strategies to win the indie developer market against established giants and mode
 
 ### 💡 Innovative Indie Features
 
-- [ ] **Automated Health Checks for Side Projects**: Specialized cron-job and heartbeat monitoring for the dormant projects that pay the bills.
+- [x] **Automated Health Checks for Side Projects**: Specialized cron-job and heartbeat monitoring for the dormant projects that pay the bills.
 - [ ] **Status Page as a Marketing Tool**: Integrate changelogs, feature request boards, and feedback loops directly into the status page.
 - [ ] **Lightweight & Fast**: Highly optimized performance to respect the minimal bandwidth and compute resources of indie stacks.
 - [ ] **Privacy-First Intelligence**: Emphasize transparency for developers protective of their uptime metrics.

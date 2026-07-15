@@ -40,9 +40,21 @@ export async function recordPing(
     },
   });
 
+  const monitor = await prisma.monitor.findUnique({
+    where: { id: monitorId },
+    select: { interval: true },
+  });
+
+  const interval = monitor?.interval || 60;
+  const nextCheck = new Date(Date.now() + (interval * GRACE_MULTIPLIER) * 1000);
+
   await prisma.monitor.update({
     where: { id: monitorId },
-    data: { status: "UP", lastCheck: new Date() },
+    data: {
+      status: "UP",
+      lastCheck: new Date(),
+      nextCheck,
+    },
   });
 
   return ping;

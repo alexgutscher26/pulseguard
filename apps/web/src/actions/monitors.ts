@@ -34,7 +34,18 @@ enum Severity {
 // Conditional validation schema
 const baseSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  type: z.enum(["HTTP", "PING", "PORT", "BROWSER", "SEQUENCE", "SSL", "DNS", "MCP", "DATABASE"]),
+  type: z.enum([
+    "HTTP",
+    "PING",
+    "PORT",
+    "BROWSER",
+    "SEQUENCE",
+    "SSL",
+    "DNS",
+    "MCP",
+    "DATABASE",
+    "HEARTBEAT",
+  ]),
   interval: z.coerce.number().min(10),
   timeout: z.coerce.number().min(1),
   url: z.string().optional(), // For HTTP/Ping
@@ -228,7 +239,8 @@ export async function createMonitor(prevState: any, formData: FormData) {
           | "SSL"
           | "DNS"
           | "MCP"
-          | "DATABASE") || "HTTP",
+          | "DATABASE"
+          | "HEARTBEAT") || "HTTP",
       interval: Number(formData.get("interval") || 60),
       timeout: Number(formData.get("timeout") || 10),
       port: formData.get("port") ? Number(formData.get("port")) : undefined,
@@ -263,12 +275,12 @@ export async function createMonitor(prevState: any, formData: FormData) {
     const userTier = user?.tier || "INITIATE";
 
     if (userTier === "INITIATE") {
-      const allowedTypes = ["HTTP", "SSL", "DNS"];
+      const allowedTypes = ["HTTP", "SSL", "DNS", "HEARTBEAT"];
       if (!allowedTypes.includes(data.type)) {
         return {
           success: false,
           error:
-            "Only HTTP/HTTPS, SSL/TLS, and DNS monitors are allowed on the Free tier. Upgrade to Netrunner for TCP, Ping, Browser, and Sequence monitors.",
+            "Only HTTP/HTTPS, SSL/TLS, DNS, and Heartbeat monitors are allowed on the Free tier. Upgrade to Netrunner for TCP, Ping, Browser, and Sequence monitors.",
         };
       }
 
@@ -303,7 +315,7 @@ export async function createMonitor(prevState: any, formData: FormData) {
         };
       }
     } else if (userTier === "NETRUNNER") {
-      const allowedTypes = ["HTTP", "SSL", "DNS", "MCP", "SEQUENCE", "PORT", "DATABASE", "PING"];
+      const allowedTypes = ["HTTP", "SSL", "DNS", "MCP", "SEQUENCE", "PORT", "DATABASE", "PING", "HEARTBEAT"];
       if (!allowedTypes.includes(data.type)) {
         return {
           success: false,
@@ -352,11 +364,16 @@ export async function createMonitor(prevState: any, formData: FormData) {
     }
 
     let finalUrl = data.url || "";
+    let heartbeatToken = undefined;
 
     if (data.type === "PING") {
       finalUrl = `ping://${data.url}`;
     } else if (data.type === "PORT") {
       finalUrl = `tcp://${data.url}:${data.port}`;
+    } else if (data.type === "HEARTBEAT") {
+      const crypto = await import("crypto");
+      heartbeatToken = crypto.randomBytes(24).toString("hex");
+      finalUrl = `heartbeat://${heartbeatToken}`;
     }
 
     // Create monitor
@@ -377,6 +394,7 @@ export async function createMonitor(prevState: any, formData: FormData) {
         body: data.body,
         script: data.script,
         expectation: data.expectation,
+        heartbeatToken: heartbeatToken,
       },
     });
 
@@ -450,7 +468,8 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
         | "SSL"
         | "DNS"
         | "MCP"
-        | "DATABASE") || "HTTP",
+        | "DATABASE"
+        | "HEARTBEAT") || "HTTP",
     interval: Number(formData.get("interval") || 60),
     timeout: Number(formData.get("timeout") || 10),
     port: formData.get("port") ? Number(formData.get("port")) : undefined,
@@ -484,12 +503,12 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
   const userTier = user?.tier || "INITIATE";
 
   if (userTier === "INITIATE") {
-    const allowedTypes = ["HTTP", "SSL", "DNS"];
+    const allowedTypes = ["HTTP", "SSL", "DNS", "HEARTBEAT"];
     if (!allowedTypes.includes(data.type)) {
       return {
         success: false,
         error:
-          "Only HTTP/HTTPS, SSL/TLS, and DNS monitors are allowed on the Free tier. Upgrade to Netrunner for TCP, Ping, Browser, and Sequence monitors.",
+          "Only HTTP/HTTPS, SSL/TLS, DNS, and Heartbeat monitors are allowed on the Free tier. Upgrade to Netrunner for TCP, Ping, Browser, and Sequence monitors.",
       };
     }
 
@@ -514,7 +533,7 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
       }
     }
   } else if (userTier === "NETRUNNER") {
-    const allowedTypes = ["HTTP", "SSL", "DNS", "MCP", "SEQUENCE", "PORT", "DATABASE", "PING"];
+    const allowedTypes = ["HTTP", "SSL", "DNS", "MCP", "SEQUENCE", "PORT", "DATABASE", "PING", "HEARTBEAT"];
     if (!allowedTypes.includes(data.type)) {
       return {
         success: false,
@@ -553,11 +572,25 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
   }
 
   let finalUrl = data.url || "";
+  let heartbeatToken = undefined;
 
   if (data.type === "PING") {
     finalUrl = `ping://${data.url}`;
   } else if (data.type === "PORT") {
     finalUrl = `tcp://${data.url}:${data.port}`;
+  } else if (data.type === "HEARTBEAT") {
+    // Find current monitor to see if it already has a token
+    const current = await prisma.monitor.findUnique({
+      where: { id, userId: session.user.id },
+      select: { heartbeatToken: true },
+    });
+    if (current?.heartbeatToken) {
+      heartbeatToken = current.heartbeatToken;
+    } else {
+      const crypto = await import("crypto");
+      heartbeatToken = crypto.randomBytes(24).toString("hex");
+    }
+    finalUrl = `heartbeat://${heartbeatToken}`;
   }
 
   try {
@@ -581,6 +614,7 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
         body: data.body,
         script: data.script,
         expectation: data.expectation,
+        heartbeatToken: heartbeatToken,
       },
     });
 

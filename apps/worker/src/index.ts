@@ -2097,6 +2097,7 @@ export default {
         const targetIds: { id: string }[] = await prisma.$queryRaw`
           SELECT id FROM "Monitor"
           WHERE ("status" IN ('UP', 'DOWN', 'MAINTENANCE'))
+          AND NOT ("type" = 'HEARTBEAT' AND "status" = 'DOWN')
           AND ("nextCheck" IS NULL OR "nextCheck" <= NOW())
           AND (abs(hashtext(id)) % ${totalShards}) = ${shardId}
           AND NOT EXISTS (

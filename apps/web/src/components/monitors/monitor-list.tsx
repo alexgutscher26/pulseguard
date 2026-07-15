@@ -174,7 +174,7 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                           {monitor.name}
                         </span>
                         <span className="text-[10px] text-primary/50 mt-0.5 font-sans break-all">
-                          {monitor.url}
+                          {monitor.type === "HEARTBEAT" ? "Heartbeat Monitor" : monitor.url}
                         </span>
                       </div>
                     </td>

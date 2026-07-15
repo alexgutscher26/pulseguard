@@ -80,9 +80,25 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
                 </span>
               )}
             </div>
-            <p className="text-primary/60 text-xs font-mono">
-              TARGET_ENDPOINT: <code className="text-foreground">{monitor.url}</code>
-            </p>
+            {monitor.type === "HEARTBEAT" ? (
+              <div className="flex flex-col gap-1.5 mt-1">
+                <p className="text-primary/60 text-xs font-mono">
+                  HEARTBEAT_WEBHOOK_URL:{" "}
+                  <code className="text-foreground select-all bg-zinc-950 px-2 py-1 border border-primary/10 rounded-sm">
+                    {typeof window !== "undefined"
+                      ? `${window.location.origin}/api/heartbeat/${monitor.heartbeatToken}`
+                      : `/api/heartbeat/${monitor.heartbeatToken}`}
+                  </code>
+                </p>
+                <p className="text-[10px] text-muted-foreground leading-normal max-w-md">
+                  💡 Send a GET or POST request to this URL from your server cron job to report healthy heartbeat checks.
+                </p>
+              </div>
+            ) : (
+              <p className="text-primary/60 text-xs font-mono">
+                TARGET_ENDPOINT: <code className="text-foreground">{monitor.url}</code>
+              </p>
+            )}
             {monitor.runbookUrl && (
               <a
                 href={monitor.runbookUrl}
