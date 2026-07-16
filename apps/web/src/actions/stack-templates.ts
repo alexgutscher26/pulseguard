@@ -48,7 +48,12 @@ export async function applyTemplate(
     return {
       success: false,
       created: [],
-      errors: [{ name: template.name, reason: `Monitor limit reached (${limits.maxMonitors}). Upgrade your plan to create more.` }],
+      errors: [
+        {
+          name: template.name,
+          reason: `Monitor limit reached (${limits.maxMonitors}). Upgrade your plan to create more.`,
+        },
+      ],
     };
   }
 
@@ -58,7 +63,21 @@ export async function applyTemplate(
   const allowedTypes: Record<string, string[]> = {
     INITIATE: ["HTTP", "SSL", "DNS", "HEARTBEAT"],
     NETRUNNER: ["HTTP", "PING", "PORT", "SEQUENCE", "SSL", "DNS", "HEARTBEAT", "MCP", "DATABASE"],
-    CONSTRUCT: ["HTTP", "PING", "PORT", "BROWSER", "SEQUENCE", "SSL", "DNS", "HEARTBEAT", "MCP", "GRAPHQL", "WEBSOCKET", "DATABASE", "BGP"],
+    CONSTRUCT: [
+      "HTTP",
+      "PING",
+      "PORT",
+      "BROWSER",
+      "SEQUENCE",
+      "SSL",
+      "DNS",
+      "HEARTBEAT",
+      "MCP",
+      "GRAPHQL",
+      "WEBSOCKET",
+      "DATABASE",
+      "BGP",
+    ],
   };
 
   const userAllowedTypes = allowedTypes[tier] ?? allowedTypes.INITIATE;
@@ -68,7 +87,10 @@ export async function applyTemplate(
   for (const preset of monitorsToCreate) {
     try {
       if (!userAllowedTypes.includes(preset.type)) {
-        errors.push({ name: preset.name, reason: `Monitor type "${preset.type}" is not available on your ${tier} plan. Upgrade to unlock.` });
+        errors.push({
+          name: preset.name,
+          reason: `Monitor type "${preset.type}" is not available on your ${tier} plan. Upgrade to unlock.`,
+        });
         continue;
       }
 

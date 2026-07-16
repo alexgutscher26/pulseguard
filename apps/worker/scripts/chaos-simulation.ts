@@ -21,7 +21,7 @@ mock.module("@pulseguard/email", () => ({
   sendStatusUpdate: async () => {},
 }));
 
-globalThis.fetch = async () => ({ ok: true, text: async () => "ok" } as Response);
+globalThis.fetch = async () => ({ ok: true, text: async () => "ok" }) as Response;
 
 // Import worker default queue handler AFTER mocking modules
 import worker from "../src/index";
@@ -78,10 +78,12 @@ async function runChaosSimulation() {
   // Process until all messages are resolved (either PROCESSED or DLQ)
   while (queueStore.some((m) => m.status === "PENDING")) {
     const pendingMessages = queueStore.filter((m) => m.status === "PENDING");
-    
+
     // Cloudflare batches messages (max size 10)
     const currentBatchMessages = pendingMessages.slice(0, 10);
-    console.log(`[Round ${round}] Processing batch of ${currentBatchMessages.length} messages (Remaining pending: ${pendingMessages.length})`);
+    console.log(
+      `[Round ${round}] Processing batch of ${currentBatchMessages.length} messages (Remaining pending: ${pendingMessages.length})`,
+    );
 
     // Track acks and retries for this batch execution
     const batchRetries = new Set<string>();
@@ -126,8 +128,10 @@ async function runChaosSimulation() {
         if (batchRetries.has(qm.id)) {
           messageFailures++;
           qm.retryCount++;
-          console.log(`  └─ ⚠️ Message ${qm.id} retry requested (Count: ${qm.retryCount}/${MAX_RETRIES})`);
-          
+          console.log(
+            `  └─ ⚠️ Message ${qm.id} retry requested (Count: ${qm.retryCount}/${MAX_RETRIES})`,
+          );
+
           if (qm.retryCount > MAX_RETRIES) {
             qm.status = "DLQ";
             console.log(`     🚨 Message ${qm.id} EXCEEDED retry limits. Escalating to DLQ!`);
@@ -140,14 +144,20 @@ async function runChaosSimulation() {
       // Simulate V8 Isolate Crash / entire execution failing
       if (err.message.includes("IsolateEvictionError")) {
         isolateCrashes++;
-        console.log("  💥 Worker Isolate Crashed! Entire batch failed. Retrying all messages in batch...");
-        
+        console.log(
+          "  💥 Worker Isolate Crashed! Entire batch failed. Retrying all messages in batch...",
+        );
+
         for (const qm of currentBatchMessages) {
           qm.retryCount++;
-          console.log(`     └─ message ${qm.id} retry count incremented (${qm.retryCount}/${MAX_RETRIES})`);
+          console.log(
+            `     └─ message ${qm.id} retry count incremented (${qm.retryCount}/${MAX_RETRIES})`,
+          );
           if (qm.retryCount > MAX_RETRIES) {
             qm.status = "DLQ";
-            console.log(`     🚨 Message ${qm.id} EXCEEDED retry limits on crash. Escalating to DLQ!`);
+            console.log(
+              `     🚨 Message ${qm.id} EXCEEDED retry limits on crash. Escalating to DLQ!`,
+            );
           }
         }
       } else {
@@ -176,7 +186,7 @@ async function runChaosSimulation() {
   console.log(`Message-Level Failures:   ${messageFailures}`);
   console.log(`-----------------------------------------`);
   console.log(`Silent Data Loss:         ${dataLoss} messages`);
-  
+
   if (dataLoss === 0) {
     console.log("✅ SUCCESS: Chaos verification passed! 100% data durability guaranteed.");
   } else {

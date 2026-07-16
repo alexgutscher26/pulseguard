@@ -17,7 +17,13 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import {
   fetchVercelProjects,
@@ -179,13 +185,17 @@ export function IntegrationsManager() {
                   <path d="M57.5 0L115 100H0L57.5 0Z" />
                 </svg>
               </div>
-              <Badge variant="outline" className="text-white border-white/20 bg-white/5 text-[10px]">
+              <Badge
+                variant="outline"
+                className="text-white border-white/20 bg-white/5 text-[10px]"
+              >
                 1-Click setup
               </Badge>
             </div>
             <CardTitle className="text-sm font-bold">Vercel Integration</CardTitle>
             <CardDescription className="text-[11px] leading-relaxed">
-              Auto-sync and import Vercel projects and production domains straight into your active monitors list.
+              Auto-sync and import Vercel projects and production domains straight into your active
+              monitors list.
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-2">
@@ -206,17 +216,24 @@ export function IntegrationsManager() {
             <div className="flex items-center justify-between">
               <div className="size-10 rounded-xl bg-[#00AD9F]/5 border border-[#00AD9F]/10 flex items-center justify-center">
                 <svg className="size-5 fill-[#00F5D4]" viewBox="0 0 512 512">
-                  <path d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z" opacity=".2"/>
-                  <path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm-53 381.7l-90.7-90.7 22.6-22.6 68.1 68.1 143.7-143.7 22.6 22.6-166.3 166.3z"/>
+                  <path
+                    d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z"
+                    opacity=".2"
+                  />
+                  <path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm-53 381.7l-90.7-90.7 22.6-22.6 68.1 68.1 143.7-143.7 22.6 22.6-166.3 166.3z" />
                 </svg>
               </div>
-              <Badge variant="outline" className="text-[#00F5D4] border-[#00AD9F]/20 bg-[#00AD9F]/5 text-[10px]">
+              <Badge
+                variant="outline"
+                className="text-[#00F5D4] border-[#00AD9F]/20 bg-[#00AD9F]/5 text-[10px]"
+              >
                 1-Click setup
               </Badge>
             </div>
             <CardTitle className="text-sm font-bold">Netlify Integration</CardTitle>
             <CardDescription className="text-[11px] leading-relaxed">
-              Auto-discover Netlify static deployment sites, custom proxy configs, and subdomains automatically.
+              Auto-discover Netlify static deployment sites, custom proxy configs, and subdomains
+              automatically.
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-2">
@@ -238,13 +255,17 @@ export function IntegrationsManager() {
               <div className="size-10 rounded-xl bg-[#4078c0]/5 border border-[#4078c0]/10 flex items-center justify-center">
                 <Github className="size-5 text-white" />
               </div>
-              <Badge variant="outline" className="text-[#4078c0] border-[#4078c0]/20 bg-[#4078c0]/5 text-[10px]">
+              <Badge
+                variant="outline"
+                className="text-[#4078c0] border-[#4078c0]/20 bg-[#4078c0]/5 text-[10px]"
+              >
                 1-Click setup
               </Badge>
             </div>
             <CardTitle className="text-sm font-bold">GitHub Pages & Repos</CardTitle>
             <CardDescription className="text-[11px] leading-relaxed">
-              Link codebases directly and deploy HTTP or raw PING check targets for documentation and landing projects.
+              Link codebases directly and deploy HTTP or raw PING check targets for documentation
+              and landing projects.
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-2">
@@ -292,19 +313,25 @@ export function IntegrationsManager() {
                           />
                           Use Demo Simulation Mode
                         </label>
-                        <Badge variant="outline" className="text-primary border-primary/20 bg-primary/5 text-[9px]">
+                        <Badge
+                          variant="outline"
+                          className="text-primary border-primary/20 bg-primary/5 text-[9px]"
+                        >
                           Instant
                         </Badge>
                       </div>
                       <p className="text-[10px] text-muted-foreground leading-relaxed">
-                        Don't have an API key handy? Enable this checkbox to load virtual repositories/projects instantly and test the zero-code import flow.
+                        Don't have an API key handy? Enable this checkbox to load virtual
+                        repositories/projects instantly and test the zero-code import flow.
                       </p>
                     </div>
 
                     {/* Live Credentials Input */}
                     {!useDemo && (
                       <div className="space-y-2">
-                        <label className="text-xs font-bold text-foreground">API Access Token</label>
+                        <label className="text-xs font-bold text-foreground">
+                          API Access Token
+                        </label>
                         <Input
                           type="password"
                           placeholder={providerMeta[activeProvider].tokenPlaceholder}
@@ -354,7 +381,9 @@ export function IntegrationsManager() {
                             className="flex items-center justify-between p-3 hover:bg-accent/40 cursor-pointer transition-colors"
                           >
                             <div className="flex flex-col gap-0.5">
-                              <span className="text-xs font-semibold text-foreground">{res.name}</span>
+                              <span className="text-xs font-semibold text-foreground">
+                                {res.name}
+                              </span>
                               <span className="text-[10px] text-muted-foreground flex items-center gap-1">
                                 <LinkIcon className="size-3 shrink-0" />
                                 {res.url}

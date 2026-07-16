@@ -35,11 +35,17 @@ export async function getLeaderboard(limit = 50): Promise<LeaderboardEntry[]> {
     agg.monitors.add(s.monitor.id);
   }
 
-  const candidates: { userId: string; totalUp: number; totalDown: number; monitorCount: number }[] = [];
+  const candidates: { userId: string; totalUp: number; totalDown: number; monitorCount: number }[] =
+    [];
   for (const [userId, agg] of aggMap) {
     const totalChecks = agg.totalUp + agg.totalDown;
     if (totalChecks > 100) {
-      candidates.push({ userId, totalUp: agg.totalUp, totalDown: agg.totalDown, monitorCount: agg.monitors.size });
+      candidates.push({
+        userId,
+        totalUp: agg.totalUp,
+        totalDown: agg.totalDown,
+        monitorCount: agg.monitors.size,
+      });
     }
   }
 
@@ -47,7 +53,7 @@ export async function getLeaderboard(limit = 50): Promise<LeaderboardEntry[]> {
     const aUptime = a.totalUp + a.totalDown > 0 ? a.totalUp / (a.totalUp + a.totalDown) : 0;
     const bUptime = b.totalUp + b.totalDown > 0 ? b.totalUp / (b.totalUp + b.totalDown) : 0;
     if (bUptime !== aUptime) return bUptime - aUptime;
-    return (b.totalUp + b.totalDown) - (a.totalUp + a.totalDown);
+    return b.totalUp + b.totalDown - (a.totalUp + a.totalDown);
   });
 
   const topUserIds = candidates.slice(0, limit).map((c) => c.userId);

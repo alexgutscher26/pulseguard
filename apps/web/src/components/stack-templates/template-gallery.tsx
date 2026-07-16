@@ -21,7 +21,12 @@ import {
   Heart,
   Radio,
 } from "lucide-react";
-import { stackTemplates, getTemplateById, type StackTemplate, type StackMonitorPreset } from "@pulseguard/shared/stack-templates";
+import {
+  stackTemplates,
+  getTemplateById,
+  type StackTemplate,
+  type StackMonitorPreset,
+} from "@pulseguard/shared/stack-templates";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -117,13 +122,7 @@ function TemplateCard({
   );
 }
 
-function DifficultyFilter({
-  value,
-  onChange,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-}) {
+function DifficultyFilter({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   const options = [
     { label: "All", value: "all" },
     { label: "Beginner", value: "beginner" },
@@ -243,10 +242,7 @@ function TemplateDetailModal({
               {template.monitors.map((monitor, idx) => {
                 const TypeIcon = monitorTypeIcons[monitor.type] || Globe;
                 return (
-                  <div
-                    key={idx}
-                    className="border border-primary/10 bg-black/30 p-4"
-                  >
+                  <div key={idx} className="border border-primary/10 bg-black/30 p-4">
                     <div className="flex items-center gap-2 mb-3">
                       <div className="p-1 bg-primary/10 border border-primary/20">
                         <TypeIcon className="size-3 text-primary" />
@@ -318,7 +314,8 @@ function TemplateDetailModal({
                 ) : (
                   <>
                     <Layers className="size-3" />
-                    Create {template.monitors.length} Monitor{template.monitors.length > 1 ? "s" : ""}
+                    Create {template.monitors.length} Monitor
+                    {template.monitors.length > 1 ? "s" : ""}
                   </>
                 )}
               </button>
@@ -403,9 +400,10 @@ export function TemplateGallery() {
   const [difficulty, setDifficulty] = useState("all");
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
 
-  const filtered = difficulty === "all"
-    ? stackTemplates
-    : stackTemplates.filter((t) => t.difficulty === difficulty);
+  const filtered =
+    difficulty === "all"
+      ? stackTemplates
+      : stackTemplates.filter((t) => t.difficulty === difficulty);
 
   const selected = selectedTemplate ? getTemplateById(selectedTemplate) : null;
 
@@ -434,10 +432,7 @@ export function TemplateGallery() {
       </div>
 
       {selected && (
-        <TemplateDetailModal
-          template={selected}
-          onClose={() => setSelectedTemplate(null)}
-        />
+        <TemplateDetailModal template={selected} onClose={() => setSelectedTemplate(null)} />
       )}
     </div>
   );

@@ -14,11 +14,15 @@ function RankIcon({ rank }: { rank: number }) {
 
 function UptimeBadge({ pct }: { pct: number }) {
   const color =
-    pct >= 99.99 ? "text-green-500 bg-green-500/10 border-green-500/20" :
-    pct >= 99.9 ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/20" :
-    pct >= 99.0 ? "text-lime-500 bg-lime-500/10 border-lime-500/20" :
-    pct >= 95.0 ? "text-yellow-500 bg-yellow-500/10 border-yellow-500/20" :
-    "text-orange-500 bg-orange-500/10 border-orange-500/20";
+    pct >= 99.99
+      ? "text-green-500 bg-green-500/10 border-green-500/20"
+      : pct >= 99.9
+        ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/20"
+        : pct >= 99.0
+          ? "text-lime-500 bg-lime-500/10 border-lime-500/20"
+          : pct >= 95.0
+            ? "text-yellow-500 bg-yellow-500/10 border-yellow-500/20"
+            : "text-orange-500 bg-orange-500/10 border-orange-500/20";
 
   return (
     <span className={`text-[10px] font-bold font-mono px-2 py-0.5 border ${color}`}>
@@ -35,7 +39,9 @@ function TierBadge({ tier }: { tier: string }) {
   };
 
   return (
-    <span className={`text-[9px] font-bold font-mono uppercase tracking-widest px-1.5 py-0.5 border ${colors[tier] || colors.INITIATE}`}>
+    <span
+      className={`text-[9px] font-bold font-mono uppercase tracking-widest px-1.5 py-0.5 border ${colors[tier] || colors.INITIATE}`}
+    >
       {tier}
     </span>
   );
@@ -65,8 +71,8 @@ export function HallOfFameClient({ initialEntries }: { initialEntries: Leaderboa
           Uptime Performers
         </h1>
         <p className="text-muted-foreground text-sm leading-relaxed max-w-xl">
-          The indie hackers and teams running the most reliable infrastructure on PulseGuard.
-          Ranked by weighted SLA across all monitors. Opt in from your settings to claim your spot.
+          The indie hackers and teams running the most reliable infrastructure on PulseGuard. Ranked
+          by weighted SLA across all monitors. Opt in from your settings to claim your spot.
         </p>
       </div>
 
@@ -146,11 +152,7 @@ export function HallOfFameClient({ initialEntries }: { initialEntries: Leaderboa
 
               <div className="size-9 rounded-full border border-border bg-muted overflow-hidden shrink-0 flex items-center justify-center">
                 {entry.image ? (
-                  <img
-                    src={entry.image}
-                    alt={entry.name}
-                    className="size-full object-cover"
-                  />
+                  <img src={entry.image} alt={entry.name} className="size-full object-cover" />
                 ) : (
                   <span className="text-xs font-bold font-mono text-muted-foreground">
                     {entry.name.charAt(0).toUpperCase()}
@@ -185,10 +187,14 @@ export function HallOfFameClient({ initialEntries }: { initialEntries: Leaderboa
                   <UptimeBadge pct={entry.uptimePct} />
                 </div>
                 <div className="text-[10px] font-mono text-muted-foreground">
-                  <span className="text-foreground font-semibold">{entry.monitorCount}</span> monitors
+                  <span className="text-foreground font-semibold">{entry.monitorCount}</span>{" "}
+                  monitors
                 </div>
                 <div className="text-[10px] font-mono text-muted-foreground">
-                  <span className="text-foreground font-semibold">{entry.totalChecks.toLocaleString()}</span> checks
+                  <span className="text-foreground font-semibold">
+                    {entry.totalChecks.toLocaleString()}
+                  </span>{" "}
+                  checks
                 </div>
               </div>
 
@@ -206,7 +212,9 @@ export function HallOfFameClient({ initialEntries }: { initialEntries: Leaderboa
       {/* CTA — Opt In */}
       <div className="border border-dashed border-primary/20 bg-primary/[0.02] p-6 text-center">
         <Shield className="size-5 mx-auto mb-2 text-primary" />
-        <p className="text-sm font-semibold text-foreground mb-1">Want your spot on the leaderboard?</p>
+        <p className="text-sm font-semibold text-foreground mb-1">
+          Want your spot on the leaderboard?
+        </p>
         <p className="text-[11px] text-muted-foreground font-mono max-w-md mx-auto mb-4">
           Enable "Show on Leaderboard" in your privacy settings. Your monitors' uptime will be
           aggregated and ranked against the community. Only users with 100+ checks qualify.

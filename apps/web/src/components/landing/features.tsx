@@ -227,9 +227,24 @@ export default function Features() {
                 </div>
                 {/* Z's floating */}
                 <div className="flex gap-2">
-                  <span className="text-xs font-mono text-primary/40 animate-bounce" style={{ animationDelay: "0ms" }}>z</span>
-                  <span className="text-xs font-mono text-primary/50 animate-bounce" style={{ animationDelay: "200ms" }}>z</span>
-                  <span className="text-xs font-mono text-primary/60 animate-bounce" style={{ animationDelay: "400ms" }}>z</span>
+                  <span
+                    className="text-xs font-mono text-primary/40 animate-bounce"
+                    style={{ animationDelay: "0ms" }}
+                  >
+                    z
+                  </span>
+                  <span
+                    className="text-xs font-mono text-primary/50 animate-bounce"
+                    style={{ animationDelay: "200ms" }}
+                  >
+                    z
+                  </span>
+                  <span
+                    className="text-xs font-mono text-primary/60 animate-bounce"
+                    style={{ animationDelay: "400ms" }}
+                  >
+                    z
+                  </span>
                 </div>
                 {/* Badge */}
                 <div className="px-2 py-0.5 bg-primary/10 border border-primary/20 text-primary text-[8px] font-bold font-mono uppercase tracking-widest">
@@ -240,9 +255,7 @@ export default function Features() {
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-base font-bold text-foreground tracking-tight">
-                  Sleep Mode
-                </h3>
+                <h3 className="text-base font-bold text-foreground tracking-tight">Sleep Mode</h3>
                 <ArrowUpRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">

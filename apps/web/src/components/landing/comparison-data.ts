@@ -25,7 +25,8 @@ export const competitors: CompetitorInfo[] = [
     id: "betteruptime",
     name: "Better Uptime",
     url: "https://betteruptime.com",
-    description: "Modern competitor with solid UX, but free tier still limited to 5-minute intervals.",
+    description:
+      "Modern competitor with solid UX, but free tier still limited to 5-minute intervals.",
   },
   {
     id: "openstatus",
@@ -189,7 +190,8 @@ export type DowntimeScenario = {
 export const downtimeScenarios: DowntimeScenario[] = [
   {
     name: "Partial Outage",
-    description: "A single server crashes during a deployment. Takes 8 minutes to identify and roll back.",
+    description:
+      "A single server crashes during a deployment. Takes 8 minutes to identify and roll back.",
     downtimeStart: 0,
     recoveryStart: 8,
     competitorLabel: "Competitor (5min check)",
@@ -199,7 +201,8 @@ export const downtimeScenarios: DowntimeScenario[] = [
   },
   {
     name: "DNS Propagation Delay",
-    description: "DNS record changes take effect gradually. A 12-minute window where traffic hits stale records.",
+    description:
+      "DNS record changes take effect gradually. A 12-minute window where traffic hits stale records.",
     downtimeStart: 0,
     recoveryStart: 12,
     competitorLabel: "Competitor (5min check)",

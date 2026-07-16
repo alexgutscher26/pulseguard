@@ -6,7 +6,14 @@ export const metadata: Metadata = {
   title: "Free Roast My Stack Analyzer | PulseGuard",
   description:
     "Get roasted by PulseGuard: analyze your stack for slow TTFB, weak SSL, missing DNS records, and more. Free instant audit.",
-  keywords: ["website analyzer", "stack audit", "performance checker", "TTFB", "SSL health", "DNS check"],
+  keywords: [
+    "website analyzer",
+    "stack audit",
+    "performance checker",
+    "TTFB",
+    "SSL health",
+    "DNS check",
+  ],
 };
 
 export default function RoastMyStackPage() {

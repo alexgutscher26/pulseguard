@@ -315,7 +315,17 @@ export async function createMonitor(prevState: any, formData: FormData) {
         };
       }
     } else if (userTier === "NETRUNNER") {
-      const allowedTypes = ["HTTP", "SSL", "DNS", "MCP", "SEQUENCE", "PORT", "DATABASE", "PING", "HEARTBEAT"];
+      const allowedTypes = [
+        "HTTP",
+        "SSL",
+        "DNS",
+        "MCP",
+        "SEQUENCE",
+        "PORT",
+        "DATABASE",
+        "PING",
+        "HEARTBEAT",
+      ];
       if (!allowedTypes.includes(data.type)) {
         return {
           success: false,
@@ -533,7 +543,17 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
       }
     }
   } else if (userTier === "NETRUNNER") {
-    const allowedTypes = ["HTTP", "SSL", "DNS", "MCP", "SEQUENCE", "PORT", "DATABASE", "PING", "HEARTBEAT"];
+    const allowedTypes = [
+      "HTTP",
+      "SSL",
+      "DNS",
+      "MCP",
+      "SEQUENCE",
+      "PORT",
+      "DATABASE",
+      "PING",
+      "HEARTBEAT",
+    ];
     if (!allowedTypes.includes(data.type)) {
       return {
         success: false,

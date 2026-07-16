@@ -79,10 +79,7 @@ function DowntimeTimeline({ scenario }: { scenario: (typeof downtimeScenarios)[0
             {/* Background minutes */}
             <div className="absolute inset-0 flex">
               {Array.from({ length: Math.ceil(totalMinutes) }, (_, i) => (
-                <div
-                  key={i}
-                  className="flex-1 border-l border-border/20 first:border-l-0 relative"
-                >
+                <div key={i} className="flex-1 border-l border-border/20 first:border-l-0 relative">
                   {i % 2 === 0 && (
                     <span className="absolute -top-4 left-0 text-[8px] font-mono text-muted-foreground/50">
                       {i}m
@@ -175,7 +172,9 @@ function DowntimeTimeline({ scenario }: { scenario: (typeof downtimeScenarios)[0
             </div>
             <div className="flex items-center gap-1.5">
               <div className="size-2.5 bg-primary/30 border border-primary/40" />
-              <span className="text-[9px] font-mono text-muted-foreground">Detected early by PulseGuard</span>
+              <span className="text-[9px] font-mono text-muted-foreground">
+                Detected early by PulseGuard
+              </span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="size-2.5 rounded-full bg-red-500" />
@@ -241,10 +240,12 @@ export function IntervalComparison() {
         ))}
       </div>
       <p className="text-[10px] text-muted-foreground font-mono mt-1 leading-relaxed">
-        PulseGuard gives you <span className="text-primary font-bold">3-minute checks for free</span>{" "}
-        — that&apos;s <span className="text-primary font-bold">40% faster</span> than the industry
-        standard 5-minute tier. Over 24 hours, you get <span className="text-primary font-bold">480
-        checks</span> vs the standard <span className="text-red-500/80 font-bold">288</span>.
+        PulseGuard gives you{" "}
+        <span className="text-primary font-bold">3-minute checks for free</span> — that&apos;s{" "}
+        <span className="text-primary font-bold">40% faster</span> than the industry standard
+        5-minute tier. Over 24 hours, you get{" "}
+        <span className="text-primary font-bold">480 checks</span> vs the standard{" "}
+        <span className="text-red-500/80 font-bold">288</span>.
       </p>
     </div>
   );
@@ -289,9 +290,8 @@ export function DowntimeComparison() {
 export function FeatureComparisonTable() {
   const [view, setView] = useState<"all" | "battle">("battle");
 
-  const filtered = view === "battle"
-    ? featureComparisons.filter((f) => f.isBattle)
-    : featureComparisons;
+  const filtered =
+    view === "battle" ? featureComparisons.filter((f) => f.isBattle) : featureComparisons;
 
   return (
     <div className="flex flex-col gap-4">
@@ -359,7 +359,8 @@ export function FeatureComparisonTable() {
                 return (
                   <span
                     className={`${
-                      val.toLowerCase().includes("paid") && !val.toLowerCase().includes("pulseguard")
+                      val.toLowerCase().includes("paid") &&
+                      !val.toLowerCase().includes("pulseguard")
                         ? "text-yellow-500/80"
                         : val.toLowerCase().includes("pulseguard")
                           ? "text-primary font-bold"
@@ -445,9 +446,7 @@ export function TimeSavingCalculator() {
           <span className="text-[9px] font-mono text-primary/70 uppercase tracking-wider">
             You Gain
           </span>
-          <p className="text-3xl font-bold font-mono text-primary mt-1">
-            +{extraPercent}%
-          </p>
+          <p className="text-3xl font-bold font-mono text-primary mt-1">+{extraPercent}%</p>
           <span className="text-[10px] font-mono text-primary/60">
             more visibility ({extraChecks} extra checks/day)
           </span>
@@ -456,7 +455,10 @@ export function TimeSavingCalculator() {
 
       <div className="border border-border/50 bg-black/20 p-4">
         <label className="text-[10px] font-mono text-muted-foreground">
-          Adjust monitors: <span className="text-primary font-bold">{Math.round(dailyChecks / 480 * 50)} monitors</span>
+          Adjust monitors:{" "}
+          <span className="text-primary font-bold">
+            {Math.round((dailyChecks / 480) * 50)} monitors
+          </span>
         </label>
         <input
           type="range"
@@ -474,12 +476,14 @@ export function TimeSavingCalculator() {
       </div>
 
       <p className="text-[10px] text-muted-foreground font-mono leading-relaxed">
-        With PulseGuard&apos;s <span className="text-primary font-bold">3-minute free interval</span>,
-        you get <span className="text-primary font-bold">{extraPercent}% more data points</span> compared
-        to the industry 5-minute standard. That&apos;s <span className="text-primary font-bold">{extraChecks}</span>{" "}
-        extra opportunities to detect failure per day — translating to{" "}
-        <span className="text-primary font-bold">~2 minutes faster</span> mean time to detection on every
-        incident. Over a year on a single monitor, that&apos;s over{" "}
+        With PulseGuard&apos;s{" "}
+        <span className="text-primary font-bold">3-minute free interval</span>, you get{" "}
+        <span className="text-primary font-bold">{extraPercent}% more data points</span> compared to
+        the industry 5-minute standard. That&apos;s{" "}
+        <span className="text-primary font-bold">{extraChecks}</span> extra opportunities to detect
+        failure per day — translating to{" "}
+        <span className="text-primary font-bold">~2 minutes faster</span> mean time to detection on
+        every incident. Over a year on a single monitor, that&apos;s over{" "}
         <span className="text-primary font-bold">12 hours</span> of downtime you won&apos;t have to
         explain to your customers.
       </p>

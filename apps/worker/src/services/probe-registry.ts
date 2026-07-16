@@ -214,9 +214,7 @@ export async function reportResultsBatch(
     where: { id: { in: monitorIds } },
     select: { id: true, interval: true },
   });
-  const intervalMap = new Map<string, number>(
-    monitors.map((m: any) => [m.id, m.interval || 60])
-  );
+  const intervalMap = new Map<string, number>(monitors.map((m: any) => [m.id, m.interval || 60]));
 
   // 3. Update monitor status concurrently (keep only the latest result per monitorId to avoid write contention)
   const latestResultsMap = new Map<string, ProbeResult>();
@@ -238,7 +236,7 @@ export async function reportResultsBatch(
           nextCheck: new Date(Date.now() + interval * 1000),
         },
       });
-    })
+    }),
   );
 }
 

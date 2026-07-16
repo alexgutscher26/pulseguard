@@ -360,11 +360,7 @@ async function performInternalRequest(
       }
     } else if (urlStr.startsWith("ping://")) {
       const hostname = urlStr.replace("ping://", "");
-      const checkResult = await checkPortUniversal(
-        hostname,
-        80,
-        (monitor.timeout || 10) * 1000,
-      );
+      const checkResult = await checkPortUniversal(hostname, 80, (monitor.timeout || 10) * 1000);
 
       if (checkResult.isOpen) {
         currentStatus = "UP";
@@ -1968,7 +1964,8 @@ export default {
             });
 
           const prisma = getPrisma(env.DATABASE_URL);
-          const { authenticateProbe, reportResult, reportResultsBatch } = await import("./services/probe-registry");
+          const { authenticateProbe, reportResult, reportResultsBatch } =
+            await import("./services/probe-registry");
           const probe = await authenticateProbe(prisma, token);
           if (!probe)
             return new Response(JSON.stringify({ error: "Invalid or inactive probe" }), {
@@ -2236,7 +2233,7 @@ export default {
 
     if (env.CHAOS_ENGINEERING === "true") {
       // 1. Simulate batch/isolate level crash (10% chance)
-      if (Math.random() < 0.10) {
+      if (Math.random() < 0.1) {
         console.warn("[Chaos Mode] Simulating fatal worker instance crash / V8 isolate eviction!");
         throw new Error("IsolateEvictionError: Cloudflare Worker instance killed by Chaos Engine");
       }
@@ -2246,8 +2243,9 @@ export default {
       for (const msg of batch.messages) {
         const msgId = msg.id || (msg.body && msg.body.id) || `mock_${Math.random()}`;
         // Systematic failure for 1 in 15 messages (e.g. msg_event_0, 15, 30...) to force DLQ escalation
-        const shouldSystematicFail = msgId.startsWith("msg_event_") && parseInt(msgId.replace("msg_event_", "")) % 15 === 0;
-        if (Math.random() < 0.10 || shouldSystematicFail) {
+        const shouldSystematicFail =
+          msgId.startsWith("msg_event_") && parseInt(msgId.replace("msg_event_", "")) % 15 === 0;
+        if (Math.random() < 0.1 || shouldSystematicFail) {
           console.warn(`[Chaos Mode] Simulating message processing failure for message: ${msgId}`);
           msg.retry();
           failedMessageIds.add(msgId);
@@ -2257,7 +2255,9 @@ export default {
       if (failedMessageIds.size > 0) {
         // Construct a filtered batch inheriting prototype methods from original batch
         activeBatch = Object.create(batch);
-        (activeBatch as { -readonly [K in keyof MessageBatch<any>]: MessageBatch<any>[K] }).messages = batch.messages.filter((msg) => {
+        (
+          activeBatch as { -readonly [K in keyof MessageBatch<any>]: MessageBatch<any>[K] }
+        ).messages = batch.messages.filter((msg) => {
           const msgId = msg.id || (msg.body && msg.body.id);
           return !failedMessageIds.has(msgId);
         });

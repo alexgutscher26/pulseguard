@@ -225,9 +225,24 @@ export async function fetchGitHubRepos(
     return {
       success: true,
       data: [
-        { id: "g1", name: "pulseguard-agent-kit", url: "github.com/alexgutscher26/pulseguard", type: "PING" },
-        { id: "g2", name: "react-cyberpunk-ui", url: "github.com/alexgutscher26/react-cyberpunk-ui", type: "PING" },
-        { id: "g3", name: "pain-point-miner", url: "github.com/alexgutscher26/pain-point-miner", type: "PING" },
+        {
+          id: "g1",
+          name: "pulseguard-agent-kit",
+          url: "github.com/alexgutscher26/pulseguard",
+          type: "PING",
+        },
+        {
+          id: "g2",
+          name: "react-cyberpunk-ui",
+          url: "github.com/alexgutscher26/react-cyberpunk-ui",
+          type: "PING",
+        },
+        {
+          id: "g3",
+          name: "pain-point-miner",
+          url: "github.com/alexgutscher26/pain-point-miner",
+          type: "PING",
+        },
       ],
     };
   }

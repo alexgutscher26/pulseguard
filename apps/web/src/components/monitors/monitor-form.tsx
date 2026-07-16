@@ -541,7 +541,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
           ) : (
             <>
               <input type="hidden" name="url" value={monitor?.url || "heartbeat://placeholder"} />
-              
+
               {monitor ? (
                 <div className="flex flex-col gap-2 rounded-xl border border-primary/20 bg-primary/5 p-5 relative overflow-hidden">
                   <div className="absolute top-0 left-0 w-1.5 h-full bg-primary animate-pulse"></div>
@@ -562,9 +562,10 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                     <button
                       type="button"
                       onClick={() => {
-                        const url = typeof window !== "undefined"
-                          ? `${window.location.origin}/api/heartbeat/${monitor.heartbeatToken}`
-                          : `/api/heartbeat/${monitor.heartbeatToken}`;
+                        const url =
+                          typeof window !== "undefined"
+                            ? `${window.location.origin}/api/heartbeat/${monitor.heartbeatToken}`
+                            : `/api/heartbeat/${monitor.heartbeatToken}`;
                         navigator.clipboard.writeText(url);
                         toast.success("Webhook URL copied to clipboard");
                       }}
@@ -574,7 +575,8 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                     </button>
                   </div>
                   <p className="text-[10px] text-muted-foreground leading-normal mt-2.5">
-                    💡 Send a GET or POST request to this URL from your script or cron job at least once every check interval.
+                    💡 Send a GET or POST request to this URL from your script or cron job at least
+                    once every check interval.
                   </p>
                 </div>
               ) : (
@@ -584,10 +586,12 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                     Heartbeat Webhook URL
                   </label>
                   <p className="text-xs text-primary/80 leading-relaxed font-mono">
-                    Your unique heartbeat webhook URL will be generated immediately once you create this monitor.
+                    Your unique heartbeat webhook URL will be generated immediately once you create
+                    this monitor.
                   </p>
                   <p className="text-[10px] text-muted-foreground leading-normal mt-1.5">
-                    💡 You will be able to view and copy the webhook URL from the monitor dashboard or settings view.
+                    💡 You will be able to view and copy the webhook URL from the monitor dashboard
+                    or settings view.
                   </p>
                 </div>
               )}
@@ -1377,8 +1381,8 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
                     />
                     <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider leading-relaxed">
                       Only alert when at least{" "}
-                      <span className="text-foreground font-extrabold">{threshold}</span> regions are
-                      down
+                      <span className="text-foreground font-extrabold">{threshold}</span> regions
+                      are down
                     </p>
                   </div>
                 </div>

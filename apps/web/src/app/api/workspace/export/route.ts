@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
         if (urlStr.includes("://")) {
           const urlObj = new URL(urlStr);
           host = urlObj.hostname;
-          port = urlObj.port ? parseInt(urlObj.port) : (urlObj.protocol === "https:" ? 443 : 80);
+          port = urlObj.port ? parseInt(urlObj.port) : urlObj.protocol === "https:" ? 443 : 80;
         } else if (urlStr.includes(":")) {
           const parts = urlStr.split(":");
           host = parts[0];

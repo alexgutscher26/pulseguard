@@ -49,8 +49,18 @@ const ICON_MAP = {
 
 const OVERALL_LABELS = [
   { max: 30, label: "Yikes", color: "text-red-500", bg: "bg-red-500/10 border-red-500/30" },
-  { max: 50, label: "Needs Work", color: "text-orange-500", bg: "bg-orange-500/10 border-orange-500/30" },
-  { max: 70, label: "Decent", color: "text-yellow-500", bg: "bg-yellow-500/10 border-yellow-500/30" },
+  {
+    max: 50,
+    label: "Needs Work",
+    color: "text-orange-500",
+    bg: "bg-orange-500/10 border-orange-500/30",
+  },
+  {
+    max: 70,
+    label: "Decent",
+    color: "text-yellow-500",
+    bg: "bg-yellow-500/10 border-yellow-500/30",
+  },
   { max: 90, label: "Solid", color: "text-lime-500", bg: "bg-lime-500/10 border-lime-500/30" },
   { max: 100, label: "S-tier", color: "text-green-500", bg: "bg-green-500/10 border-green-500/30" },
 ];
@@ -67,7 +77,15 @@ function ScoreGauge({ score }: { score: number }) {
   return (
     <div className="flex flex-col items-center gap-1">
       <svg width="100" height="100" className="-rotate-90">
-        <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" strokeWidth="6" className="text-muted/20" />
+        <circle
+          cx="50"
+          cy="50"
+          r="42"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="6"
+          className="text-muted/20"
+        />
         <circle
           cx="50"
           cy="50"
@@ -83,7 +101,9 @@ function ScoreGauge({ score }: { score: number }) {
         />
       </svg>
       <span className={`text-2xl font-extrabold font-mono ${label.color}`}>{score}</span>
-      <span className={`text-[9px] font-bold font-mono uppercase tracking-widest px-2 py-0.5 border ${label.bg} ${label.color}`}>
+      <span
+        className={`text-[9px] font-bold font-mono uppercase tracking-widest px-2 py-0.5 border ${label.bg} ${label.color}`}
+      >
         {label.label}
       </span>
     </div>
@@ -96,7 +116,11 @@ export function RoastMyStack() {
   const [report, setReport] = useState<RoastReport | null>(null);
 
   const normalizeUrl = (input: string) => {
-    let cleaned = input.trim().replace(/^https?:\/\//, "").replace(/\/.*$/, "").toLowerCase();
+    let cleaned = input
+      .trim()
+      .replace(/^https?:\/\//, "")
+      .replace(/\/.*$/, "")
+      .toLowerCase();
     return cleaned;
   };
 
@@ -275,7 +299,10 @@ export function RoastMyStack() {
     try {
       const hRes = await fetch(`https://${domain}`, { method: "GET", mode: "no-cors" });
       const headers = hRes.headers;
-      const hasSecurityHeaders = headers.get("strict-transport-security") || headers.get("x-frame-options") || headers.get("content-security-policy");
+      const hasSecurityHeaders =
+        headers.get("strict-transport-security") ||
+        headers.get("x-frame-options") ||
+        headers.get("content-security-policy");
       if (hasSecurityHeaders) {
         checks.push({
           name: "headers",
@@ -344,7 +371,11 @@ export function RoastMyStack() {
             className="pl-9 font-mono text-sm h-11"
           />
         </div>
-        <Button onClick={runChecks} disabled={loading} className="h-11 px-5 gap-1.5 text-xs font-bold uppercase tracking-wider">
+        <Button
+          onClick={runChecks}
+          disabled={loading}
+          className="h-11 px-5 gap-1.5 text-xs font-bold uppercase tracking-wider"
+        >
           {loading ? <Loader2 className="size-4 animate-spin" /> : <Flame className="size-4" />}
           {loading ? "Roasting..." : "Roast It"}
         </Button>
@@ -386,7 +417,9 @@ export function RoastMyStack() {
                       <Icon className="size-4 mt-0.5 text-muted-foreground shrink-0" />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2">
-                          <span className="text-xs font-semibold text-foreground">{check.label}</span>
+                          <span className="text-xs font-semibold text-foreground">
+                            {check.label}
+                          </span>
                           {check.status === "pass" ? (
                             <CheckCircle2 className="size-3.5 text-green-500 shrink-0" />
                           ) : check.status === "warn" ? (
@@ -396,9 +429,13 @@ export function RoastMyStack() {
                           )}
                         </div>
                         <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-[10px] font-mono text-muted-foreground">{check.value}</span>
+                          <span className="text-[10px] font-mono text-muted-foreground">
+                            {check.value}
+                          </span>
                           <span className="text-[9px] text-muted-foreground/60">·</span>
-                          <span className="text-[10px] text-muted-foreground/70 truncate">{check.detail}</span>
+                          <span className="text-[10px] text-muted-foreground/70 truncate">
+                            {check.detail}
+                          </span>
                         </div>
                       </div>
                     </CardContent>

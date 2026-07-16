@@ -38,17 +38,16 @@ export async function getPrivacyReport(): Promise<PrivacyReport> {
 
   const userId = session.user.id;
 
-  const [monitorCount, eventCount, incidentCount, statusPageCount] =
-    await Promise.all([
-      prisma.monitor.count({ where: { userId } }),
-      prisma.monitorEvent.count({
-        where: { monitor: { userId } },
-      }),
-      prisma.incident.count({
-        where: { monitor: { userId } },
-      }),
-      prisma.statusPage.count({ where: { userId } }),
-    ]);
+  const [monitorCount, eventCount, incidentCount, statusPageCount] = await Promise.all([
+    prisma.monitor.count({ where: { userId } }),
+    prisma.monitorEvent.count({
+      where: { monitor: { userId } },
+    }),
+    prisma.incident.count({
+      where: { monitor: { userId } },
+    }),
+    prisma.statusPage.count({ where: { userId } }),
+  ]);
 
   const anonymizeAnalytics = true;
 

@@ -41,16 +41,16 @@ export async function runAnomalyScan(prisma: PrismaClient) {
     }
   }
 
-  console.log(`[AnomalyScan] Complete. Found ${anomaliesFound} anomalies across ${monitorIds.length} monitors.`);
+  console.log(
+    `[AnomalyScan] Complete. Found ${anomaliesFound} anomalies across ${monitorIds.length} monitors.`,
+  );
   return { monitorsScanned: monitorIds.length, anomaliesFound };
 }
 
 async function getMonitorsWithRecentData(prisma: PrismaClient, now: Date): Promise<string[]> {
   const cutoff = new Date(now.getTime() - RECENT_WINDOW_MINUTES * 60 * 1000);
 
-  const result = await prisma.$queryRaw<
-    { monitorId: string }[]
-  >`
+  const result = await prisma.$queryRaw<{ monitorId: string }[]>`
     SELECT me."monitorId"
     FROM "MonitorEvent" me
     JOIN "Monitor" m ON m."id" = me."monitorId"
@@ -86,9 +86,12 @@ async function scanMonitor(prisma: PrismaClient, monitorId: string, now: Date): 
     const threshold = baseline.mean + Z_SCORE_THRESHOLD * baseline.stdDev;
     if (event.latency <= threshold) continue;
 
-    const zScore = baseline.stdDev > 0
-      ? (event.latency - baseline.mean) / baseline.stdDev
-      : event.latency > baseline.mean * 2 ? 99 : 0;
+    const zScore =
+      baseline.stdDev > 0
+        ? (event.latency - baseline.mean) / baseline.stdDev
+        : event.latency > baseline.mean * 2
+          ? 99
+          : 0;
 
     // Check if we already have a recent anomaly insight for this monitor
     const existingInsight = await prisma.monitorInsight.findFirst({
@@ -102,8 +105,10 @@ async function scanMonitor(prisma: PrismaClient, monitorId: string, now: Date): 
 
     if (existingInsight) continue;
 
-    const severity = zScore > 5 ? "CRITICAL" as any : "WARNING" as any;
-    const dayName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][eventDate.getDay()];
+    const severity = zScore > 5 ? ("CRITICAL" as any) : ("WARNING" as any);
+    const dayName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][
+      eventDate.getDay()
+    ];
     const hour = eventDate.getHours();
 
     await prisma.monitorInsight.create({
@@ -129,7 +134,7 @@ async function scanMonitor(prisma: PrismaClient, monitorId: string, now: Date): 
     anomalies++;
     console.log(
       `[AnomalyScan] ANOMALY monitor=${monitorId} latency=${event.latency}ms ` +
-      `baseline=${Math.round(baseline.mean)}ms threshold=${Math.round(threshold)}ms z=${zScore.toFixed(1)}`
+        `baseline=${Math.round(baseline.mean)}ms threshold=${Math.round(threshold)}ms z=${zScore.toFixed(1)}`,
     );
   }
 

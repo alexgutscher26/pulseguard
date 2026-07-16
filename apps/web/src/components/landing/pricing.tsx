@@ -142,7 +142,9 @@ export default function Pricing() {
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span className="text-primary font-semibold">✓ Real alerts only — if we call, it&apos;s real</span>
+                  <span className="text-primary font-semibold">
+                    ✓ Real alerts only — if we call, it&apos;s real
+                  </span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />

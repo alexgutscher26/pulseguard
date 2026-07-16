@@ -144,7 +144,7 @@ export function diagnoseStatus(status: number, target: string): string {
 export async function checkPortUniversal(
   host: string,
   port: number,
-  timeoutMs = 3000
+  timeoutMs = 3000,
 ): Promise<{ isOpen: boolean; latency: number; status: string; errorReason?: string }> {
   const start = Date.now();
   const targetStr = `${host}:${port}`;
@@ -157,7 +157,12 @@ export async function checkPortUniversal(
       await fetch(`${protocol}://${host}`, { method: "HEAD", signal });
       return { isOpen: true, latency: Date.now() - start, status: "OPEN" };
     } catch (e: any) {
-      return { isOpen: false, latency: 0, status: "CLOSED", errorReason: diagnoseError(e, targetStr) };
+      return {
+        isOpen: false,
+        latency: 0,
+        status: "CLOSED",
+        errorReason: diagnoseError(e, targetStr),
+      };
     }
   }
 
@@ -188,7 +193,12 @@ export async function checkPortUniversal(
         socket.on("error", (err: any) => {
           clearTimeout(timer);
           socket.destroy();
-          resolve({ isOpen: false, latency: 0, status: "CLOSED", errorReason: diagnoseError(err, targetStr) });
+          resolve({
+            isOpen: false,
+            latency: 0,
+            status: "CLOSED",
+            errorReason: diagnoseError(err, targetStr),
+          });
         });
       });
     }
@@ -202,9 +212,9 @@ export async function checkPortUniversal(
     const { connect } = await import("cloudflare:sockets");
     if (typeof connect === "function") {
       const socket = connect({ hostname: host, port });
-      
+
       const timeoutPromise = new Promise<void>((_, reject) =>
-        setTimeout(() => reject(new Error("Timeout")), timeoutMs)
+        setTimeout(() => reject(new Error("Timeout")), timeoutMs),
       );
 
       await Promise.race([socket.opened, timeoutPromise]);
@@ -235,13 +245,18 @@ export async function checkHttpUniversal(
     headers?: string | Record<string, string>;
     body?: string;
     timeoutSeconds?: number;
-  }
-): Promise<{ status: MonitorStatus; latency: number; errorReason?: string; bodyText: string; statusCode?: number }> {
+  },
+): Promise<{
+  status: MonitorStatus;
+  latency: number;
+  errorReason?: string;
+  bodyText: string;
+  statusCode?: number;
+}> {
   const start = Date.now();
   const method = config.method || "GET";
   const timeoutMs = (config.timeoutSeconds || 10) * 1000;
   const userHeaders: Record<string, string> = {};
-
 
   if (config.headers) {
     if (typeof config.headers === "string") {

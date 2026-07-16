@@ -34,8 +34,14 @@ export function createPrisma(databaseUrl?: string) {
   const pool = new Pool(poolConfig);
   pool.on("error", (err) => {
     console.error("[PG Pool Error] Unexpected error on idle client:", err.message);
-    if (err.message?.includes("Connection terminated") || err.message?.includes("closed") || err.message?.includes("terminate")) {
-      console.warn("[PG Pool Error] Stale connection detected. Proactively clearing client singleton cache.");
+    if (
+      err.message?.includes("Connection terminated") ||
+      err.message?.includes("closed") ||
+      err.message?.includes("terminate")
+    ) {
+      console.warn(
+        "[PG Pool Error] Stale connection detected. Proactively clearing client singleton cache.",
+      );
       resetPrisma(url).catch(() => {});
     }
   });

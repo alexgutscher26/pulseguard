@@ -91,7 +91,8 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
                   </code>
                 </p>
                 <p className="text-[10px] text-muted-foreground leading-normal max-w-md">
-                  💡 Send a GET or POST request to this URL from your server cron job to report healthy heartbeat checks.
+                  💡 Send a GET or POST request to this URL from your server cron job to report
+                  healthy heartbeat checks.
                 </p>
               </div>
             ) : (

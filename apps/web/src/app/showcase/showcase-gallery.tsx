@@ -96,22 +96,31 @@ function PreviewMockup({ entry }: { entry: ShowcaseEntry }) {
       {/* Header */}
       <div
         className="px-3 py-2 flex items-center justify-between border-b"
-        style={{ borderColor: `${entry.themeColors.primary}20`, backgroundColor: `${entry.themeColors.bg}` }}
+        style={{
+          borderColor: `${entry.themeColors.primary}20`,
+          backgroundColor: `${entry.themeColors.bg}`,
+        }}
       >
         <div className="flex items-center gap-2">
-          <div className="size-1.5 rounded-full" style={{ backgroundColor: entry.themeColors.primary }} />
-          <span style={{ color: entry.themeColors.text }}>
-            {entry.name}
-          </span>
+          <div
+            className="size-1.5 rounded-full"
+            style={{ backgroundColor: entry.themeColors.primary }}
+          />
+          <span style={{ color: entry.themeColors.text }}>{entry.name}</span>
         </div>
         <StatusBadge status={entry.preview.status} />
       </div>
       {/* Monitors */}
-      <div className="px-3 py-2 flex flex-col gap-1.5" style={{ backgroundColor: entry.themeColors.bg }}>
+      <div
+        className="px-3 py-2 flex flex-col gap-1.5"
+        style={{ backgroundColor: entry.themeColors.bg }}
+      >
         {monitors.map((_, i) => (
           <div key={i} className="flex items-center justify-between">
             <span style={{ color: `${entry.themeColors.text}99` }}>
-              {["API Gateway", "Auth Service", "Database", "Cache Layer", "CDN Edge", "WebSocket"][i] || `Service ${i + 1}`}
+              {["API Gateway", "Auth Service", "Database", "Cache Layer", "CDN Edge", "WebSocket"][
+                i
+              ] || `Service ${i + 1}`}
             </span>
             <span className="flex items-center gap-1">
               <div
@@ -123,9 +132,7 @@ function PreviewMockup({ entry }: { entry: ShowcaseEntry }) {
                       : entry.themeColors.primary,
                 }}
               />
-              <span style={{ color: entry.themeColors.text }}>
-                {entry.preview.uptime}
-              </span>
+              <span style={{ color: entry.themeColors.text }}>{entry.preview.uptime}</span>
             </span>
           </div>
         ))}
@@ -214,7 +221,10 @@ export function ShowcaseGallery() {
                 </div>
                 <span
                   className="text-[9px] font-mono px-1.5 py-0.5 border"
-                  style={{ borderColor: `${entry.themeColors.primary}40`, color: entry.themeColors.primary }}
+                  style={{
+                    borderColor: `${entry.themeColors.primary}40`,
+                    color: entry.themeColors.primary,
+                  }}
                 >
                   {entry.theme}
                 </span>

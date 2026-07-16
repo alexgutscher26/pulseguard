@@ -46,7 +46,7 @@ export async function recordPing(
   });
 
   const interval = monitor?.interval || 60;
-  const nextCheck = new Date(Date.now() + (interval * GRACE_MULTIPLIER) * 1000);
+  const nextCheck = new Date(Date.now() + interval * GRACE_MULTIPLIER * 1000);
 
   await prisma.monitor.update({
     where: { id: monitorId },

@@ -48,7 +48,9 @@ export const stackTemplates: StackTemplate[] = [
         type: "HTTP",
         url: "https://example.com/api/health",
         method: "GET",
-        expectation: JSON.stringify({ json_assertions: [{ path: "status", operator: "==", value: "ok" }] }),
+        expectation: JSON.stringify({
+          json_assertions: [{ path: "status", operator: "==", value: "ok" }],
+        }),
         interval: 60,
         timeout: 10,
       },
@@ -138,7 +140,9 @@ export const stackTemplates: StackTemplate[] = [
         type: "HTTP",
         url: "https://api.store.example.com/checkout/health",
         method: "GET",
-        expectation: JSON.stringify({ json_assertions: [{ path: "status", operator: "==", value: "healthy" }] }),
+        expectation: JSON.stringify({
+          json_assertions: [{ path: "status", operator: "==", value: "healthy" }],
+        }),
         interval: 60,
         timeout: 15,
       },
@@ -174,7 +178,9 @@ export const stackTemplates: StackTemplate[] = [
         type: "HTTP",
         url: "https://api.example.com/health",
         method: "GET",
-        expectation: JSON.stringify({ json_assertions: [{ path: "status", operator: "==", value: "ok" }] }),
+        expectation: JSON.stringify({
+          json_assertions: [{ path: "status", operator: "==", value: "ok" }],
+        }),
         interval: 60,
         timeout: 10,
       },
@@ -312,7 +318,9 @@ export const stackTemplates: StackTemplate[] = [
         type: "HTTP",
         url: "https://api.example.com/billing/health",
         method: "GET",
-        expectation: JSON.stringify({ json_assertions: [{ path: "status", operator: "==", value: "up" }] }),
+        expectation: JSON.stringify({
+          json_assertions: [{ path: "status", operator: "==", value: "up" }],
+        }),
         interval: 60,
         timeout: 10,
       },
@@ -356,7 +364,9 @@ export const stackTemplates: StackTemplate[] = [
         type: "HTTP",
         url: "https://api.example.com/health",
         method: "GET",
-        expectation: JSON.stringify({ json_assertions: [{ path: "uptime", operator: "==", value: "ok" }] }),
+        expectation: JSON.stringify({
+          json_assertions: [{ path: "uptime", operator: "==", value: "ok" }],
+        }),
         interval: 60,
         timeout: 10,
       },
@@ -391,8 +401,6 @@ export function getTemplateById(id: string): StackTemplate | undefined {
   return stackTemplates.find((t) => t.id === id);
 }
 
-export function getTemplatesByDifficulty(
-  difficulty: StackTemplate["difficulty"],
-): StackTemplate[] {
+export function getTemplatesByDifficulty(difficulty: StackTemplate["difficulty"]): StackTemplate[] {
   return stackTemplates.filter((t) => t.difficulty === difficulty);
 }

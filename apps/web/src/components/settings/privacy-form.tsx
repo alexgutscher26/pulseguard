@@ -129,20 +129,30 @@ export function PrivacyForm() {
         <div className="p-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="border border-primary/10 bg-black/30 p-3">
-              <span className="text-[10px] font-mono text-primary/50 uppercase tracking-wider">Account</span>
+              <span className="text-[10px] font-mono text-primary/50 uppercase tracking-wider">
+                Account
+              </span>
               <p className="text-sm font-mono text-foreground mt-1 truncate">{report.userName}</p>
             </div>
             <div className="border border-primary/10 bg-black/30 p-3">
-              <span className="text-[10px] font-mono text-primary/50 uppercase tracking-wider">Email</span>
+              <span className="text-[10px] font-mono text-primary/50 uppercase tracking-wider">
+                Email
+              </span>
               <p className="text-sm font-mono text-foreground mt-1 truncate">{report.userEmail}</p>
             </div>
             <div className="border border-primary/10 bg-black/30 p-3">
-              <span className="text-[10px] font-mono text-primary/50 uppercase tracking-wider">Tier</span>
+              <span className="text-[10px] font-mono text-primary/50 uppercase tracking-wider">
+                Tier
+              </span>
               <p className="text-sm font-mono text-foreground mt-1">{report.tier}</p>
             </div>
             <div className="border border-primary/10 bg-black/30 p-3">
-              <span className="text-[10px] font-mono text-primary/50 uppercase tracking-wider">Created</span>
-              <p className="text-sm font-mono text-foreground mt-1">{new Date(report.accountCreated).toLocaleDateString()}</p>
+              <span className="text-[10px] font-mono text-primary/50 uppercase tracking-wider">
+                Created
+              </span>
+              <p className="text-sm font-mono text-foreground mt-1">
+                {new Date(report.accountCreated).toLocaleDateString()}
+              </p>
             </div>
           </div>
         </div>
@@ -159,8 +169,8 @@ export function PrivacyForm() {
             </h3>
           </div>
           <p className="text-xs text-primary/60 font-mono mt-1">
-            {report.totalMonitors} monitors &bull; {report.totalEvents.toLocaleString()} events &bull;{" "}
-            {report.totalIncidents} incidents &bull; {report.totalStatusPages} status pages
+            {report.totalMonitors} monitors &bull; {report.totalEvents.toLocaleString()} events
+            &bull; {report.totalIncidents} incidents &bull; {report.totalStatusPages} status pages
           </p>
         </div>
         <div className="p-6">
@@ -168,20 +178,39 @@ export function PrivacyForm() {
             <table className="w-full text-xs font-mono">
               <thead>
                 <tr className="border-b border-primary/10">
-                  <th className="text-left py-2 px-2 text-primary/50 uppercase tracking-wider font-bold text-[10px]">Category</th>
-                  <th className="text-left py-2 px-2 text-primary/50 uppercase tracking-wider font-bold text-[10px]">Description</th>
-                  <th className="text-left py-2 px-2 text-primary/50 uppercase tracking-wider font-bold text-[10px]">Retention</th>
-                  <th className="text-left py-2 px-2 text-primary/50 uppercase tracking-wider font-bold text-[10px]">Purpose</th>
-                  <th className="text-center py-2 px-2 text-primary/50 uppercase tracking-wider font-bold text-[10px]">Control</th>
+                  <th className="text-left py-2 px-2 text-primary/50 uppercase tracking-wider font-bold text-[10px]">
+                    Category
+                  </th>
+                  <th className="text-left py-2 px-2 text-primary/50 uppercase tracking-wider font-bold text-[10px]">
+                    Description
+                  </th>
+                  <th className="text-left py-2 px-2 text-primary/50 uppercase tracking-wider font-bold text-[10px]">
+                    Retention
+                  </th>
+                  <th className="text-left py-2 px-2 text-primary/50 uppercase tracking-wider font-bold text-[10px]">
+                    Purpose
+                  </th>
+                  <th className="text-center py-2 px-2 text-primary/50 uppercase tracking-wider font-bold text-[10px]">
+                    Control
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {report.dataInventory.map((item) => (
-                  <tr key={item.category} className="border-b border-primary/5 hover:bg-primary/[0.02] transition-colors">
-                    <td className="py-2.5 px-2 text-foreground font-bold text-[11px]">{item.category}</td>
-                    <td className="py-2.5 px-2 text-primary/70 text-[10px] max-w-[200px] leading-relaxed">{item.description}</td>
+                  <tr
+                    key={item.category}
+                    className="border-b border-primary/5 hover:bg-primary/[0.02] transition-colors"
+                  >
+                    <td className="py-2.5 px-2 text-foreground font-bold text-[11px]">
+                      {item.category}
+                    </td>
+                    <td className="py-2.5 px-2 text-primary/70 text-[10px] max-w-[200px] leading-relaxed">
+                      {item.description}
+                    </td>
                     <td className="py-2.5 px-2 text-primary/70 text-[10px]">{item.retention}</td>
-                    <td className="py-2.5 px-2 text-primary/70 text-[10px] max-w-[160px] leading-relaxed">{item.purpose}</td>
+                    <td className="py-2.5 px-2 text-primary/70 text-[10px] max-w-[160px] leading-relaxed">
+                      {item.purpose}
+                    </td>
                     <td className="py-2.5 px-2 text-center">
                       {item.canAnonymize ? (
                         <span className="text-[10px] font-bold px-2 py-0.5 bg-primary/10 text-primary border border-primary/20">
@@ -281,17 +310,21 @@ export function PrivacyForm() {
             <div className="border border-primary/10 bg-black/30 p-4 flex gap-3">
               <CheckCircle2 className="size-4 text-primary shrink-0 mt-0.5" />
               <div>
-                <span className="text-xs font-bold font-mono text-foreground block">Data Minimization</span>
+                <span className="text-xs font-bold font-mono text-foreground block">
+                  Data Minimization
+                </span>
                 <span className="text-[10px] text-primary/60 font-mono leading-relaxed">
-                  PulseGuard collects only the data necessary to perform monitoring and alerting.
-                  No superfluous tracking, telemetry, or behavioral analytics.
+                  PulseGuard collects only the data necessary to perform monitoring and alerting. No
+                  superfluous tracking, telemetry, or behavioral analytics.
                 </span>
               </div>
             </div>
             <div className="border border-primary/10 bg-black/30 p-4 flex gap-3">
               <CheckCircle2 className="size-4 text-primary shrink-0 mt-0.5" />
               <div>
-                <span className="text-xs font-bold font-mono text-foreground block">Purpose Limitation</span>
+                <span className="text-xs font-bold font-mono text-foreground block">
+                  Purpose Limitation
+                </span>
                 <span className="text-[10px] text-primary/60 font-mono leading-relaxed">
                   Data is used exclusively for the purpose it was collected: monitoring your
                   services. Your uptime metrics are never sold, shared, or used for advertising.
@@ -301,7 +334,9 @@ export function PrivacyForm() {
             <div className="border border-primary/10 bg-black/30 p-4 flex gap-3">
               <CheckCircle2 className="size-4 text-primary shrink-0 mt-0.5" />
               <div>
-                <span className="text-xs font-bold font-mono text-foreground block">Data Portability</span>
+                <span className="text-xs font-bold font-mono text-foreground block">
+                  Data Portability
+                </span>
                 <span className="text-[10px] text-primary/60 font-mono leading-relaxed">
                   Export your data at any time in open JSON format. We provide zero-vendor-lock-in
                   guarantees with multi-format migration tools.
@@ -311,7 +346,9 @@ export function PrivacyForm() {
             <div className="border border-primary/10 bg-black/30 p-4 flex gap-3">
               <CheckCircle2 className="size-4 text-primary shrink-0 mt-0.5" />
               <div>
-                <span className="text-xs font-bold font-mono text-foreground block">Right to Deletion</span>
+                <span className="text-xs font-bold font-mono text-foreground block">
+                  Right to Deletion
+                </span>
                 <span className="text-[10px] text-primary/60 font-mono leading-relaxed">
                   Delete your account and all associated data at any time from the General settings
                   tab. Data is permanently purged with no residual copies.
@@ -342,12 +379,10 @@ function LeaderboardSection() {
       <div className="p-6">
         <div className="border border-primary/10 p-4 bg-black/30">
           <div className="flex flex-col gap-1">
-            <span className="text-sm font-bold font-mono text-foreground">
-              Hall of Fame
-            </span>
+            <span className="text-sm font-bold font-mono text-foreground">Hall of Fame</span>
             <span className="text-[10px] text-primary/60 font-mono leading-relaxed max-w-lg">
-              The PulseGuard Hall of Fame ranks all users by weighted SLA across their monitors.
-              You are automatically included — no opt-in required. Visit the{" "}
+              The PulseGuard Hall of Fame ranks all users by weighted SLA across their monitors. You
+              are automatically included — no opt-in required. Visit the{" "}
               <a href="/hall-of-fame" className="text-primary underline underline-offset-2">
                 Hall of Fame
               </a>{" "}

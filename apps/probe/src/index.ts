@@ -178,10 +178,7 @@ async function processJobs(jobs: ProbeJob[]): Promise<void> {
     }
   }
 
-  const workers = Array.from(
-    { length: Math.min(concurrencyLimit, jobs.length) },
-    () => worker(),
-  );
+  const workers = Array.from({ length: Math.min(concurrencyLimit, jobs.length) }, () => worker());
   await Promise.all(workers);
 
   await reportResultsBatch(results);

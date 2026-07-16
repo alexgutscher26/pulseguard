@@ -313,7 +313,9 @@ export function PublicView({
 
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                     <div>
-                      <h4 className="text-base font-bold text-red-500 tracking-tight">{inc.title}</h4>
+                      <h4 className="text-base font-bold text-red-500 tracking-tight">
+                        {inc.title}
+                      </h4>
                       <p className="text-[11px] text-red-500/60 mt-0.5 uppercase tracking-wider font-semibold">
                         Affected System: {inc.monitor?.name}
                       </p>
@@ -344,7 +346,10 @@ export function PublicView({
                                 {evt.type.replace("_", " ")}
                               </span>
                               <span className="text-[10px] text-muted-foreground opacity-60">
-                                {new Date(evt.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                {new Date(evt.createdAt).toLocaleTimeString([], {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
                               </span>
                             </div>
                             <p className="text-muted-foreground text-[11px] mt-0.5 leading-relaxed">
@@ -428,9 +433,12 @@ export function PublicView({
 
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3">
                     <div>
-                      <h4 className="text-sm font-bold text-foreground tracking-tight">{inc.title}</h4>
+                      <h4 className="text-sm font-bold text-foreground tracking-tight">
+                        {inc.title}
+                      </h4>
                       <p className="text-[10px] text-muted-foreground/60 mt-0.5 uppercase tracking-wider font-mono">
-                        Affected System: {inc.monitor?.name} &middot; Resolved on {new Date(inc.resolvedAt).toLocaleDateString()}
+                        Affected System: {inc.monitor?.name} &middot; Resolved on{" "}
+                        {new Date(inc.resolvedAt).toLocaleDateString()}
                       </p>
                     </div>
                     <span className="self-start md:self-auto px-2 py-0.5 rounded border border-primary/20 text-primary bg-primary/5 text-[9px] uppercase tracking-widest font-semibold font-mono">
@@ -441,12 +449,18 @@ export function PublicView({
                   {inc.events && inc.events.length > 0 && (
                     <div className="pl-3 border-l border-primary/10 space-y-2.5 mt-3 pt-2 border-t border-primary/5">
                       {inc.events.map((evt: any) => (
-                        <div key={evt.id} className="text-[11px] leading-relaxed text-muted-foreground">
+                        <div
+                          key={evt.id}
+                          className="text-[11px] leading-relaxed text-muted-foreground"
+                        >
                           <span className="font-bold text-[9px] text-primary/70 uppercase mr-2 tracking-wider">
                             {evt.type.replace("_", " ")}
                           </span>
                           <span className="text-[9px] opacity-55 mr-2 font-mono">
-                            {new Date(evt.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            {new Date(evt.createdAt).toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
                           </span>
                           &mdash; {evt.message}
                         </div>

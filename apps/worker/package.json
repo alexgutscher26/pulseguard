@@ -12,9 +12,9 @@
   "dependencies": {
     "@cloudflare/puppeteer": "^0.0.9",
     "@pulseguard/core": "workspace:*",
-    "@pulseguard/types": "workspace:*",
     "@pulseguard/db": "workspace:*",
     "@pulseguard/email": "workspace:*",
+    "@pulseguard/types": "workspace:*",
     "@upstash/redis": "^1.37.0"
   },
   "devDependencies": {

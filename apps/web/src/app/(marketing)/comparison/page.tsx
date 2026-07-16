@@ -40,8 +40,8 @@ export default function ComparisonPage() {
           <p className="text-muted-foreground text-sm leading-relaxed max-w-xl">
             The monitoring industry has settled on a 5-minute free tier as &ldquo;standard.&rdquo;
             We think that&apos;s a relic. PulseGuard gives you{" "}
-            <span className="text-foreground font-bold">3-minute checks for free</span> — 40%
-            faster detection, 67% more data points, and less downtime you have to explain to your
+            <span className="text-foreground font-bold">3-minute checks for free</span> — 40% faster
+            detection, 67% more data points, and less downtime you have to explain to your
             customers.
           </p>
           <div className="flex gap-4 pt-2">
