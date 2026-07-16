@@ -154,7 +154,7 @@ export default function LandingHeader() {
           {[
             { name: "Features", href: "/#features" },
             { name: "Pricing", href: "/#pricing" },
-            { name: "Docs", href: "/#docs" },
+            { name: "Docs", href: "https://pulse-41cf5b0d.mintlify.site/introduction" },
           ].map((item) => (
             <Link
               key={item.name}

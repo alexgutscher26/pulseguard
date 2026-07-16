@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
   Zap,
   Search,
@@ -14,24 +13,109 @@ import {
   AlertTriangle,
   Code2,
   Maximize2,
-  ArrowRight,
   Eye,
   Loader2,
   FileCode,
   Regex,
+  HelpCircle,
+  Globe,
+  FileText,
 } from "lucide-react";
 import { toast } from "sonner";
 import { GlitchText } from "@/components/ui/effects/glitch-text";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { PRODUCT_CONFIG } from "@pulseguard/shared";
 
 const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";
 
-interface Match {
-  index: number;
-  length: number;
-}
+const MOCK_SITES: Record<string, string> = {
+  "google.com": `<!DOCTYPE html>
+<html>
+<head>
+  <title>Google</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+  <div id="viewport">
+    <div id="search-box">
+      <input type="text" name="q" value="" />
+      <button type="submit">Search</button>
+    </div>
+    <div class="footer">
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+    </div>
+  </div>
+</body>
+</html>`,
+  "github.com": `<!DOCTYPE html>
+<html>
+<head>
+  <title>GitHub: Let's build from here · GitHub</title>
+  <meta name="description" content="GitHub is where over 100 million developers shape the future of software, together.">
+</head>
+<body>
+  <header>
+    <a href="/login">Sign in</a>
+    <a href="/signup">Sign up</a>
+  </header>
+  <main>
+    <h1>Build software better, together</h1>
+    <p>Join the world's largest developer platform.</p>
+  </main>
+</body>
+</html>`,
+  "pulseguard.com": `<!DOCTYPE html>
+<html>
+<head>
+  <title>PulseGuard | Global Infrastructure Monitoring & Telemetry</title>
+  <meta name="status" content="operational">
+</head>
+<body>
+  <h1>Detect downtime before your users do</h1>
+  <p>60-second checks from over 50 global edge regions.</p>
+</body>
+</html>`,
+};
+
+const PRESETS = [
+  {
+    label: "HTML Title",
+    pattern: "<title>(.*?)</title>",
+    description: "Matches website HTML <title> tag",
+  },
+  {
+    label: "JSON Status",
+    pattern: '"status"\\s*:\\s*"(.*?)"',
+    description: "Matches JSON status response fields",
+  },
+  { label: "HTML Headings", pattern: "<h1>(.*?)</h1>", description: "Finds first-level headings" },
+  {
+    label: "Viewport Meta",
+    pattern: '<meta name="viewport" content=".*">',
+    description: "Verifies mobile responsiveness tag",
+  },
+  {
+    label: "Email Finder",
+    pattern: "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}",
+    description: "Finds general email format strings",
+  },
+];
+
+const CHEATSHEET = [
+  { token: ".", desc: "Any character except newline" },
+  { token: "*", desc: "0 or more times (greedy)" },
+  { token: "+", desc: "1 or more times (greedy)" },
+  { token: "?", desc: "0 or 1 time (optional)" },
+  { token: "(.*?)", desc: "Capture group (lazy/non-greedy)" },
+  { token: "\\d", desc: "Any digit [0-9]" },
+  { token: "\\w", desc: "Word character [a-zA-Z0-9_]" },
+  { token: "\\s", desc: "Whitespace character" },
+  { token: "^ / $", desc: "Start / End of line" },
+];
 
 interface AuditResult {
   url: string;
@@ -43,9 +127,60 @@ interface AuditResult {
   status: number;
 }
 
+function getHighlightedHtml(text: string, patternString: string) {
+  if (!patternString) {
+    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  try {
+    const regex = new RegExp(patternString, "gi");
+    let match;
+    const matches: { start: number; end: number }[] = [];
+
+    while ((match = regex.exec(text)) !== null) {
+      if (match.index === regex.lastIndex) {
+        regex.lastIndex++;
+      }
+      matches.push({ start: match.index, end: match.index + match[0].length });
+      if (!regex.global) break;
+    }
+
+    if (matches.length === 0) {
+      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    let result = "";
+    let lastIndex = 0;
+
+    for (const { start, end } of matches) {
+      if (start < lastIndex) continue;
+
+      const before = text.substring(lastIndex, start);
+      result += before.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+      const matchedText = text.substring(start, end);
+      const escapedMatch = matchedText
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+      result += `<mark class="bg-yellow-500/30 text-yellow-500 border border-yellow-500/20 rounded px-0.5 font-bold animate-pulse">${escapedMatch}</mark>`;
+
+      lastIndex = end;
+    }
+
+    const after = text.substring(lastIndex);
+    result += after.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+    return result;
+  } catch (e) {
+    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+}
+
 export function PayloadTester() {
   const router = useRouter();
+  const [targetMode, setTargetMode] = useState<"url" | "custom">("url");
   const [url, setUrl] = useState("");
+  const [customHtml, setCustomHtml] = useState("");
   const [pattern, setPattern] = useState("");
   const [isAuditing, setIsAuditing] = useState(false);
   const [result, setResult] = useState<AuditResult | null>(null);
@@ -53,6 +188,7 @@ export function PayloadTester() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isIntegrityActive, setIsIntegrityActive] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [isOfflineSimulated, setIsOfflineSimulated] = useState(false);
 
   const auditSteps = [
     "Injecting request probe...",
@@ -64,18 +200,62 @@ export function PayloadTester() {
 
   const handleAudit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!url || !pattern) {
-      toast.error("Endpoint and Pattern sequence required");
+    if (targetMode === "url" && !url) {
+      toast.error("Target URL required");
+      return;
+    }
+    if (targetMode === "custom" && !customHtml) {
+      toast.error("Raw HTML payload required");
+      return;
+    }
+    if (!pattern) {
+      toast.error("Regex sequence required");
       return;
     }
 
     setIsAuditing(true);
     setResult(null);
+    setIsOfflineSimulated(false);
 
     // Terminal steps simulation
     for (let i = 0; i < auditSteps.length; i++) {
       setActiveStep(i);
-      await new Promise((r) => setTimeout(r, 400 + Math.random() * 400));
+      await new Promise((r) => setTimeout(r, 150 + Math.random() * 150));
+    }
+
+    if (targetMode === "custom") {
+      try {
+        const regex = new RegExp(pattern, "gi");
+        const matches = customHtml.match(regex) || [];
+        setResult({
+          url: "Custom Payload Input",
+          payload: customHtml,
+          matchCount: matches.length,
+          success: matches.length > 0,
+          byteSize: new Blob([customHtml]).size,
+          status: 200,
+        });
+
+        if (matches.length > 0) {
+          toast.success(`Positive Match Detected: ${matches.length} occurrences`);
+        } else {
+          toast.warning("Pattern match failure. No occurrences detected.");
+        }
+      } catch (err: any) {
+        setResult({
+          url: "Custom Payload Input",
+          payload: customHtml,
+          matchCount: 0,
+          success: false,
+          errorMessage: err.message || "Invalid regular expression pattern",
+          byteSize: new Blob([customHtml]).size,
+          status: 400,
+        });
+        toast.error(`Invalid Pattern Structure: ${err.message}`);
+      } finally {
+        setIsAuditing(false);
+      }
+      return;
     }
 
     try {
@@ -85,7 +265,7 @@ export function PayloadTester() {
         body: JSON.stringify({ url, pattern }),
       });
 
-      if (!res.ok) throw new Error("Sentinel probe failed");
+      if (!res.ok) throw new Error("Sentinel probe connection failed");
       const data = (await res.json()) as AuditResult;
       setResult(data);
 
@@ -97,7 +277,52 @@ export function PayloadTester() {
         toast.warning("Pattern match failure. No occurrences detected.");
       }
     } catch (err) {
-      toast.error("Network interface error. Ensure local worker is active.");
+      // Offline fallback simulation
+      const domainName = url
+        .toLowerCase()
+        .replace(/https?:\/\/(www\.)?/, "")
+        .split("/")[0];
+      const mockHtml =
+        MOCK_SITES[domainName] ||
+        `<!DOCTYPE html>
+<html>
+<head>
+  <title>Mocked Site for ${url}</title>
+</head>
+<body>
+  <h1>Offline simulation for ${url}</h1>
+  <p>The Sentinel local worker is offline, so this mockup payload was dynamically compiled client-side.</p>
+  <div class="content-body">
+    <p>Operational status is normal. Safe checks latency averages 45ms.</p>
+  </div>
+</body>
+</html>`;
+
+      try {
+        const regex = new RegExp(pattern, "gi");
+        const matches = mockHtml.match(regex) || [];
+        setResult({
+          url,
+          payload: mockHtml,
+          matchCount: matches.length,
+          success: matches.length > 0,
+          byteSize: new Blob([mockHtml]).size,
+          status: 200,
+        });
+        setIsOfflineSimulated(true);
+        toast.warning("Sentinel offline. Fallback simulation active.");
+      } catch (regexErr: any) {
+        setResult({
+          url,
+          payload: mockHtml,
+          matchCount: 0,
+          success: false,
+          errorMessage: regexErr.message || "Invalid regular expression pattern",
+          byteSize: new Blob([mockHtml]).size,
+          status: 400,
+        });
+        toast.error(`Invalid Pattern Structure: ${regexErr.message}`);
+      }
     } finally {
       setIsAuditing(false);
     }
@@ -105,60 +330,158 @@ export function PayloadTester() {
 
   return (
     <div className="space-y-6">
-      <Card className="border-primary/20 bg-card/40 backdrop-blur-xl relative overflow-hidden group">
-        <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-        <CardHeader>
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-primary/20 rounded-lg shrink-0">
-              <Regex className="w-5 h-5 text-primary" />
-            </div>
-            <div className="space-y-1">
-              <CardTitle className="font-mono uppercase tracking-tighter italic text-lg leading-none">
-                Payload Pulse Analyzer
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-4">
+          <Card className="border-primary/20 bg-card/40 backdrop-blur-xl relative overflow-hidden group">
+            <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-primary/20 rounded-lg shrink-0">
+                  <Regex className="w-5 h-5 text-primary" />
+                </div>
+                <div className="space-y-1">
+                  <CardTitle className="font-mono uppercase tracking-tighter italic text-lg leading-none">
+                    Payload Pulse Analyzer
+                  </CardTitle>
+                  <CardDescription className="font-mono text-[10px] opacity-60 uppercase tracking-widest italic">
+                    Live Regex Sentinel for HTML Expectation Checks
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex bg-muted/60 p-1 border border-primary/20 rounded-lg max-w-xs mb-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTargetMode("url");
+                    setResult(null);
+                  }}
+                  className={cn(
+                    "flex-1 py-1.5 px-3 rounded text-xs font-mono font-bold uppercase transition-all tracking-wider flex items-center justify-center gap-1.5 cursor-pointer",
+                    targetMode === "url"
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  <Globe className="size-3.5" /> URL Scan
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTargetMode("custom");
+                    setResult(null);
+                  }}
+                  className={cn(
+                    "flex-1 py-1.5 px-3 rounded text-xs font-mono font-bold uppercase transition-all tracking-wider flex items-center justify-center gap-1.5 cursor-pointer",
+                    targetMode === "custom"
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  <FileText className="size-3.5" /> Custom Text
+                </button>
+              </div>
+
+              <form onSubmit={handleAudit} className="space-y-4">
+                {targetMode === "url" ? (
+                  <div className="relative group/url">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40 group-focus-within/url:text-primary transition-colors" />
+                    <Input
+                      placeholder="TARGET_ENDPOINT (URL, e.g. google.com)"
+                      className="pl-10 bg-background/50 border-primary/20 font-mono text-sm focus-visible:ring-primary/40"
+                      value={url}
+                      onChange={(e) => setUrl(e.target.value)}
+                    />
+                  </div>
+                ) : (
+                  <div className="relative group/custom">
+                    <textarea
+                      placeholder="PASTE YOUR RAW PAYLOAD / HTML HERE..."
+                      rows={5}
+                      className="w-full p-4 pl-10 rounded-lg bg-background/50 border border-primary/20 font-mono text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:border-transparent transition-all scrollbar-thin text-foreground placeholder:text-muted-foreground/40"
+                      value={customHtml}
+                      onChange={(e) => setCustomHtml(e.target.value)}
+                    />
+                    <FileText className="absolute left-3 top-4 w-4 h-4 text-primary/40" />
+                  </div>
+                )}
+
+                <div className="space-y-2">
+                  <div className="relative group/pattern">
+                    <Code2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40 group-focus-within/pattern:text-primary transition-colors" />
+                    <Input
+                      placeholder="REGEX_SEQUENCE (e.g. <title>.*</title>)"
+                      className="pl-10 bg-background/50 border-primary/20 font-mono text-sm focus-visible:ring-primary/40"
+                      value={pattern}
+                      onChange={(e) => setPattern(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="flex flex-wrap gap-1.5 items-center pt-1.5">
+                    <span className="text-[10px] text-muted-foreground/60 font-mono uppercase tracking-wider mr-1">
+                      Presets:
+                    </span>
+                    {PRESETS.map((preset) => (
+                      <button
+                        key={preset.label}
+                        type="button"
+                        onClick={() => {
+                          setPattern(preset.pattern);
+                          toast.info(`Applied pattern: ${preset.label}`);
+                        }}
+                        className="px-2 py-0.5 text-[9px] font-mono border border-primary/10 hover:border-primary bg-primary/5 text-muted-foreground hover:text-primary transition-all rounded cursor-pointer"
+                        title={preset.description}
+                      >
+                        {preset.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <Button
+                  type="submit"
+                  className="w-full h-12 uppercase font-mono font-bold italic tracking-tight"
+                  disabled={isAuditing}
+                >
+                  {isAuditing ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Zap className="mr-2 h-4 w-4" />
+                  )}
+                  {isAuditing ? "Processing Buffer..." : "Execute Regex Audit"}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="lg:col-span-1">
+          <Card className="border-primary/20 bg-card/20 backdrop-blur-xl h-full flex flex-col justify-between">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-xs uppercase font-mono text-primary/70 tracking-widest flex items-center gap-1.5">
+                <HelpCircle className="size-4 text-primary" /> Regex Cheatsheet
               </CardTitle>
-              <CardDescription className="font-mono text-[10px] opacity-60 uppercase tracking-widest italic">
-                Live Regex Sentinel for HTML Expectation Checks
+              <CardDescription className="text-[9px] font-mono uppercase">
+                Common monitor pattern components
               </CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleAudit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="relative group/url">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40 group-focus-within/url:text-primary transition-colors" />
-                <Input
-                  placeholder="TARGET_ENDPOINT (URL)"
-                  className="pl-10 bg-background/50 border-primary/20 font-mono text-sm focus-visible:ring-primary/40"
-                  value={url}
-                  onChange={(e) => setUrl(e.target.value)}
-                />
-              </div>
-              <div className="relative group/pattern">
-                <Code2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40 group-focus-within/pattern:text-primary transition-colors" />
-                <Input
-                  placeholder="REGEX_SEQUENCE (e.g. <title>.*</title>)"
-                  className="pl-10 bg-background/50 border-primary/20 font-mono text-sm focus-visible:ring-primary/40"
-                  value={pattern}
-                  onChange={(e) => setPattern(e.target.value)}
-                />
-              </div>
-            </div>
-            <Button
-              type="submit"
-              className="w-full h-12 uppercase font-mono font-bold italic tracking-tight"
-              disabled={isAuditing}
-            >
-              {isAuditing ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Zap className="mr-2 h-4 w-4" />
-              )}
-              {isAuditing ? "Processing Buffer..." : "Execute Regex Audit"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+            </CardHeader>
+            <CardContent className="grid grid-cols-1 gap-2 flex-1 pt-2">
+              {CHEATSHEET.map((item) => (
+                <div
+                  key={item.token}
+                  className="flex items-center gap-3 p-2 bg-black/10 border border-primary/5 rounded font-mono text-[10px] hover:border-primary/10 transition-colors"
+                >
+                  <span className="text-primary font-bold bg-primary/5 border border-primary/20 rounded px-1.5 py-0.5 shrink-0 min-w-[50px] text-center">
+                    {item.token}
+                  </span>
+                  <span className="text-muted-foreground">{item.desc}</span>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
 
       <AnimatePresence mode="wait">
         {isAuditing && (
@@ -184,7 +507,7 @@ export function PayloadTester() {
                 className="text-primary font-mono text-xl uppercase tracking-tighter"
               />
               <div className="text-[10px] font-mono text-primary/40 uppercase tracking-[0.2em]">
-                {url}
+                {targetMode === "url" ? url : "Custom Text Buffer"}
               </div>
             </div>
           </motion.div>
@@ -267,18 +590,35 @@ export function PayloadTester() {
                     ))}
                   </div>
 
-                  <div className="pt-4">
-                    <Button
-                      className="w-full h-10 bg-primary hover:bg-primary/90 text-primary-foreground font-mono font-bold uppercase text-[10px] tracking-widest"
-                      onClick={() => {
-                        router.push(
-                          `/dashboard/monitors/new?url=${encodeURIComponent(url)}&type=HTTP`,
-                        );
-                      }}
-                    >
-                      Save Expectation Monitor
-                    </Button>
-                  </div>
+                  {targetMode === "url" ? (
+                    <div className="pt-4">
+                      <Button
+                        className="w-full h-10 bg-primary hover:bg-primary/90 text-primary-foreground font-mono font-bold uppercase text-[10px] tracking-widest"
+                        onClick={() => {
+                          router.push(
+                            `/dashboard/monitors/new?url=${encodeURIComponent(
+                              url,
+                            )}&type=HTTP&pattern=${encodeURIComponent(pattern)}`,
+                          );
+                        }}
+                      >
+                        Save Expectation Monitor
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="pt-4">
+                      <Button
+                        variant="outline"
+                        className="w-full h-10 border-primary/20 hover:border-primary/40 text-primary font-mono font-bold uppercase text-[10px] tracking-widest"
+                        onClick={() => {
+                          navigator.clipboard.writeText(result.payload);
+                          toast.success("Payload text copied to clipboard");
+                        }}
+                      >
+                        Copy Payload Text
+                      </Button>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
@@ -296,83 +636,97 @@ export function PayloadTester() {
 
             {/* Payload Viewer */}
             <div className="lg:col-span-2">
-              <Card className="h-full border-primary/20 bg-card shadow-2xl overflow-hidden flex flex-col">
-                <div className="bg-muted p-3 flex items-center justify-between border-b border-primary/10">
-                  <div className="flex items-center gap-2">
-                    <Terminal className="w-4 h-4 text-primary" />
-                    <span className="text-xs font-mono text-primary font-bold uppercase tracking-widest">
-                      Live Payload Buffer
-                    </span>
-                  </div>
-                  <div className="flex gap-1.5">
-                    <div className="w-2 h-2 rounded-full bg-red-500/50" />
-                    <div className="w-2 h-2 rounded-full bg-yellow-500/50" />
-                    <div className="w-2 h-2 rounded-full bg-primary/50" />
-                  </div>
-                </div>
-                <div
-                  className={cn(
-                    "flex-1 p-6 font-mono text-xs overflow-auto relative custom-scrollbar transition-all duration-500 bg-muted/20",
-                    isIntegrityActive ? "text-primary brightness-125" : "text-muted-foreground",
-                  )}
-                >
-                  {isIntegrityActive && (
-                    <div className="absolute top-2 right-2 flex items-center gap-1.5 animate-pulse">
-                      <ShieldCheck className="w-3 h-3 text-primary" />
-                      <span className="text-[8px] uppercase font-bold tracking-widest">
-                        WASM VERIFIED
+              <Card className="h-full border-primary/20 bg-card shadow-2xl overflow-hidden flex flex-col justify-between">
+                <div className="flex flex-col flex-1">
+                  <div className="bg-muted p-3 flex items-center justify-between border-b border-primary/10">
+                    <div className="flex items-center gap-2">
+                      <Terminal className="w-4 h-4 text-primary" />
+                      <span className="text-xs font-mono text-primary font-bold uppercase tracking-widest">
+                        Live Payload Buffer
                       </span>
                     </div>
-                  )}
-                  <div className="absolute top-6 left-2 bottom-6 w-px bg-primary/10" />
-                  <pre className="whitespace-pre-wrap break-all leading-relaxed pl-4">
-                    {result.payload}
-                  </pre>
-                  {/* Match Actions */}
-                  <div className="mt-8 pt-4 border-t border-primary/10">
-                    <div className="text-[10px] uppercase tracking-widest text-primary/40 font-bold mb-4 italic">
-                      {isIntegrityActive
-                        ? "// HIGH INTEGRITY STREAM VERIFIED (WASM)"
-                        : "// End of Stream Extraction"}
+                    <div className="flex items-center gap-3">
+                      {isOfflineSimulated && (
+                        <span className="text-[8px] uppercase font-bold tracking-widest text-yellow-500 bg-yellow-500/10 px-2 py-0.5 border border-yellow-500/20 rounded">
+                          Simulated
+                        </span>
+                      )}
+                      <div className="flex gap-1.5">
+                        <div className="w-2 h-2 rounded-full bg-red-500/50" />
+                        <div className="w-2 h-2 rounded-full bg-yellow-500/50" />
+                        <div className="w-2 h-2 rounded-full bg-primary/50" />
+                      </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <Button
-                        variant="outline"
-                        className="h-8 text-[10px] uppercase font-mono tracking-widest border-primary/20 hover:border-primary/40"
-                        onClick={() => setIsFullscreen(true)}
-                      >
-                        <Maximize2 className="mr-2 w-3 h-3" /> Full Screen Inspect
-                      </Button>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "h-8 text-[10px] uppercase font-mono tracking-widest transition-all",
-                          isIntegrityActive
-                            ? "bg-primary text-primary-foreground border-primary"
-                            : "border-primary/20 hover:border-primary/40",
-                        )}
-                        disabled={isVerifying}
-                        onClick={async () => {
-                          if (isIntegrityActive) {
-                            setIsIntegrityActive(false);
-                            return;
-                          }
-                          setIsVerifying(true);
-                          toast.info("Initializing WASM integrity buffer...");
-                          await new Promise((r) => setTimeout(r, 1500));
-                          setIsIntegrityActive(true);
-                          setIsVerifying(false);
-                          toast.success("High Integrity Protocol Active");
-                        }}
-                      >
-                        {isVerifying ? (
-                          <Loader2 className="mr-2 w-3 h-3 animate-spin" />
-                        ) : (
-                          <Eye className="mr-2 w-3 h-3" />
-                        )}
-                        {isVerifying ? "Compiling WASM..." : "High Integrity Mode (WASM)"}
-                      </Button>
-                    </div>
+                  </div>
+                  <div
+                    className={cn(
+                      "p-6 font-mono text-xs overflow-auto relative custom-scrollbar bg-muted/20 min-h-[300px] max-h-[500px]",
+                      isIntegrityActive
+                        ? "text-primary brightness-125 font-semibold"
+                        : "text-muted-foreground",
+                    )}
+                  >
+                    {isIntegrityActive && (
+                      <div className="absolute top-2 right-2 flex items-center gap-1.5 animate-pulse text-primary bg-primary/10 border border-primary/20 rounded px-2 py-0.5">
+                        <ShieldCheck className="w-3 h-3" />
+                        <span className="text-[8px] uppercase font-bold tracking-widest">
+                          WASM VERIFIED
+                        </span>
+                      </div>
+                    )}
+                    <div className="absolute top-6 left-2 bottom-6 w-px bg-primary/10" />
+                    <pre
+                      className="whitespace-pre-wrap break-all leading-relaxed pl-4"
+                      dangerouslySetInnerHTML={{
+                        __html: getHighlightedHtml(result.payload, pattern),
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div className="p-4 border-t border-primary/10 bg-muted/10 flex items-center justify-between gap-4 flex-wrap">
+                  <div className="text-[10px] uppercase tracking-widest text-primary/40 font-bold italic">
+                    {isIntegrityActive
+                      ? "// HIGH INTEGRITY STREAM VERIFIED (WASM)"
+                      : "// End of Stream Extraction"}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      className="h-8 text-[10px] uppercase font-mono tracking-widest border-primary/20 hover:border-primary/40"
+                      onClick={() => setIsFullscreen(true)}
+                    >
+                      <Maximize2 className="mr-2 w-3 h-3" /> Full Screen Inspect
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "h-8 text-[10px] uppercase font-mono tracking-widest transition-all",
+                        isIntegrityActive
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "border-primary/20 hover:border-primary/40",
+                      )}
+                      disabled={isVerifying}
+                      onClick={async () => {
+                        if (isIntegrityActive) {
+                          setIsIntegrityActive(false);
+                          return;
+                        }
+                        setIsVerifying(true);
+                        toast.info("Initializing WASM integrity buffer...");
+                        await new Promise((r) => setTimeout(r, 1500));
+                        setIsIntegrityActive(true);
+                        setIsVerifying(false);
+                        toast.success("High Integrity Protocol Active");
+                      }}
+                    >
+                      {isVerifying ? (
+                        <Loader2 className="mr-2 w-3 h-3 animate-spin" />
+                      ) : (
+                        <Eye className="mr-2 w-3 h-3" />
+                      )}
+                      {isVerifying ? "Compiling WASM..." : "High Integrity Mode (WASM)"}
+                    </Button>
                   </div>
                 </div>
               </Card>
@@ -387,7 +741,7 @@ export function PayloadTester() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-background/95 backdrop-blur-xl flex flex-col p-4 md:p-8"
+            className="fixed inset-0 z-50 bg-background/97 backdrop-blur-xl flex flex-col p-4 md:p-8"
           >
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center gap-4">
@@ -398,14 +752,19 @@ export function PayloadTester() {
               </div>
               <Button
                 variant="ghost"
-                className="text-primary hover:bg-primary/10"
+                className="text-primary hover:bg-primary/10 border border-primary/20"
                 onClick={() => setIsFullscreen(false)}
               >
                 [ESC] CLOSE
               </Button>
             </div>
-            <div className="flex-1 bg-muted border border-primary/20 rounded-xl p-8 overflow-auto font-mono text-xs leading-loose custom-scrollbar">
-              <pre className="text-foreground whitespace-pre-wrap break-all">{result.payload}</pre>
+            <div className="flex-1 bg-muted/40 border border-primary/20 rounded-xl p-8 overflow-auto font-mono text-xs leading-loose custom-scrollbar">
+              <pre
+                className="text-foreground whitespace-pre-wrap break-all pl-4"
+                dangerouslySetInnerHTML={{
+                  __html: getHighlightedHtml(result.payload, pattern),
+                }}
+              />
             </div>
           </motion.div>
         )}

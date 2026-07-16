@@ -57,7 +57,7 @@ export default function LandingFooter() {
                 Hall of Fame
               </Link>
               <Link
-                href="/docs"
+                href={"https://pulse-41cf5b0d.mintlify.site/introduction" as any}
                 className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
               >
                 Docs
