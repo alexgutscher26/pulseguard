@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle, AlertTriangle, Clock, Zap, WifiOff, Mail, Sliders, X } from "lucide-react";
+import { CheckCircle, AlertTriangle, Clock, Zap, WifiOff, Mail, Sliders, X, Sparkles } from "lucide-react";
 import { StatusPageMonitorRow } from "./status-page-monitor-row";
 import { AnalyticsTracker } from "./analytics-tracker";
 import { useTranslations, useFormatter } from "next-intl";
@@ -120,6 +120,20 @@ export function PublicView({
       <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-size-[100%_2px,3px_100%] pointer-events-none z-50 opacity-20"></div>
 
       <div className="relative z-10 max-w-4xl mx-auto px-4 py-8 md:py-12">
+        {page.isDemo && (
+          <div className="bg-primary/5 border border-primary/20 p-4 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-bold uppercase tracking-wider text-primary rounded-sm shadow-[0_0_15px_-5px_rgba(var(--primary-page),0.3)]">
+            <div className="flex items-center gap-2">
+              <Sparkles className="size-4 animate-pulse" />
+              <span>PulseGuard Interactive Theme Demo ({theme.value})</span>
+            </div>
+            <a
+              href="/showcase"
+              className="px-3 py-1 bg-primary text-black hover:opacity-90 transition-opacity whitespace-nowrap"
+            >
+              Back to Showcase
+            </a>
+          </div>
+        )}
         {/* Navbar */}
         <div className="flex items-center justify-between py-6 mb-8 border-b border-primary/10">
           {/* Logo & Title */}

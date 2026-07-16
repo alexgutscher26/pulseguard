@@ -9,6 +9,7 @@ import { getMessages } from "next-intl/server";
 import { getI18nOverrides } from "@/actions/i18n";
 import set from "lodash.set";
 import { auth } from "@pulseguard/auth";
+import { getMockStatusPage } from "@/components/status-pages/mock-data";
 
 async function getPublicStatusPage(slug: string) {
   return prisma.statusPage.findUnique({
@@ -38,7 +39,8 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const page = await getPublicStatusPage(slug);
+  const mock = getMockStatusPage(slug);
+  const page = mock ? mock.page : await getPublicStatusPage(slug);
 
   if (!page) return {};
 
@@ -62,6 +64,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PublicStatusPage({ params }: Props) {
   const { slug, locale } = await params;
+  const mock = getMockStatusPage(slug);
+
+  if (mock) {
+    const { page, incidents } = mock;
+    const baseMessages = await getMessages({ locale });
+    return (
+      <NextIntlClientProvider messages={baseMessages} locale={locale}>
+        <>
+          <label className="sr-only" aria-label="Status Page Label">
+            Status Page
+          </label>
+          <PublicView page={page} isAdmin={false} initialIncidents={incidents} />
+        </>
+      </NextIntlClientProvider>
+    );
+  }
+
   const page = await getPublicStatusPage(slug);
 
   if (!page) {
