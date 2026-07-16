@@ -15,7 +15,6 @@ console.log("🔧 Initializing BetterAuth with config:", {
 const safeDbUrl = env.DATABASE_URL || "postgresql://dummy:dummy@localhost:5432/dummy";
 const safeAuthUrl = env.BETTER_AUTH_URL || "http://localhost:3000";
 
-// Use getPrisma() to get a real Prisma instance instead of the proxy
 const prisma = getPrisma(safeDbUrl);
 
 export const auth = betterAuth({
@@ -65,11 +64,8 @@ export const auth = betterAuth({
     env.CORS_ORIGIN,
     process.env.NEXT_PUBLIC_APP_URL ?? "",
     "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "mybettertapp://",
     "exp://",
-    "https://pulseguard-org.vercel.app/",
-    "https://pulseguard.com",
+    "https://pulseguard-org.vercel.app/"
   ],
   emailAndPassword: {
     enabled: true,

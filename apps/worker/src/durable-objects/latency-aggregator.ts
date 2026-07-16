@@ -224,7 +224,7 @@ export class LatencyAggregator extends DurableObject {
     const url = new URL(request.url);
 
     if (request.method === "POST" && url.pathname === "/record") {
-      const data: LatencyRecord = await request.json();
+      const data = await request.json() as LatencyRecord;
       await this.recordLatency(data);
       return new Response(JSON.stringify({ success: true }), {
         headers: { "Content-Type": "application/json" },

@@ -6,7 +6,7 @@ At **PulseGuard**, we treat the security of our **Operational Intelligence Node*
 
 ---
 
-## 🛡️ Supported Versions
+## Supported Versions
 
 As a continuously deployed SaaS platform, we only actively protect and maintain the latest deployed versions.
 
@@ -18,7 +18,7 @@ As a continuously deployed SaaS platform, we only actively protect and maintain 
 
 ---
 
-## 🛑 Reporting a Vulnerability
+## Reporting a Vulnerability
 
 If you've identified a vulnerability within the PulseGuard infrastructure, we ask that you act in good faith and report it to us privately before making any public disclosure.
 
@@ -39,8 +39,9 @@ To protect sensitive disclosures, please encrypt your payload using our public P
 
 ```text
 Key Fingerprint: F01F B94B 7137 896D 7204  2757 702A FB2A EB67 BCF1
-[Download Public Key](apps/web/public/pgp-key.txt)
 ```
+
+[Download Public Key](https://pulseguard.com/pgp-key.txt)
 
 ### 3. Response SLA
 
@@ -57,7 +58,7 @@ We are committed to rapid response. You can expect:
 
 ---
 
-## 🤝 Safe Harbor
+## Safe Harbor
 
 When conducting vulnerability research in accordance with this policy, we consider your actions authorized. We will not pursue legal action against you or ask law enforcement to investigate you if you act in good faith and follow these guidelines:
 
@@ -67,13 +68,37 @@ When conducting vulnerability research in accordance with this policy, we consid
 
 ---
 
-## 🧩 Security Practices & Supply Chain
+## Security Practices & Supply Chain
 
-We strictly adhere to the **OWASP Top 10 (2025)** and deeply respect the supply chain.
+We strictly adhere to the **OWASP Top 10 (2026)** and deeply respect the supply chain.
 
-- **Zero Trust & Edge Limits**: All health-check requests originate in isolated V8 isolates (Cloudflare Workers) preventing lateral network movement.
+### Application Security
+
+- **Zero Trust & Edge Limits**: All health-check requests originate in isolated V8 isolates (Cloudflare Workers), preventing lateral network movement.
 - **Least Privilege Database**: Connection poolers enforce Row-Level Security (RLS) policies by default.
 - **MFA Enforced**: Multi-factor authentication is mandatory for all core repositories and production infrastructure access.
-- **Dependency Auditing**: We heavily rely on automated `bun` lockfile scanning and dependency tracking to detect immediate zero-day vulnerabilities in upstream libraries (NPM/GitHub).
+- **Static Analysis**: We use `oxlint` with 143 security-aware lint rules to catch dangerous patterns (`no-eval`, `no-implied-eval`, `no-debugger`, `no-floating-promises`, etc.) at build time.
+- **Type Safety**: Full TypeScript strict mode with `zod` runtime validation on all API boundaries via tRPC.
 
-_For systemic and architectural detail, consult [ARCHITECTURE.md](./ARCHITECTURE.md)._
+### Automated Scanning
+
+| Scan | Tool | Cadence | Trigger |
+| :--- | :--- | :-----: | :------ |
+| **Dependency vulnerabilities** | Mend (WhiteSource) | On push | Fails CI on any LOW+ severity |
+| **Filesystem vulnerability scan** | Trivy | Weekly + on push/PR to `main` | Fails on CRITICAL/HIGH |
+| **Secrets & hardcoded credentials** | Custom Python scanner | On demand | Flags OWASP A04 violations |
+| **Dependency auditing** | `bun` lockfile scanning | On install | Blocks known-zero-day packages |
+| **HTTP security headers** | Cloudflare Worker | On demand | Grades A+ through F per endpoint |
+
+### Infrastructure
+
+- **Container Hardening**: Multi-stage Docker builds (Bun build → Node 22 Alpine runtime) minimize the production image footprint. Non-root `USER` directive enforcement is tracked for future releases.
+- **CI/CD Pipeline**: Every push to `main`/`develop` runs lint, type-check, build, and Lighthouse performance audits with security budgets.
+
+### Data Protection
+
+- **Encryption in Transit**: All traffic is served over TLS 1.3 with HSTS enforcement.
+- **Encryption at Rest**: Database volumes are encrypted using AES-256.
+- **API Security**: All API routes are behind tRPC with input validation, rate limiting, and session authentication via `better-auth`.
+
+_For architectural details, consult [ARCHITECTURE.md](./ARCHITECTURE.md)._

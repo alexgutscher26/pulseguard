@@ -2,375 +2,259 @@
 
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![Cloudflare Workers](https://img.shields.io/badge/Cloudflare_Workers-edge-F38020?style=flat-square&logo=cloudflare)](https://workers.cloudflare.com/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?style=flat-square&logo=prisma)](https://www.prisma.io/)
+[![tRPC](https://img.shields.io/badge/tRPC-11-2596BE?style=flat-square&logo=trpc)](https://trpc.io/)
+[![Bun](https://img.shields.io/badge/Bun-1.3-f9f9f9?style=flat-square&logo=bun)](https://bun.sh/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
-> **An Enterprise-Grade Operational Intelligence Node for Modern Infrastructure.**
+> Edge-native operational intelligence platform for modern infrastructure.
 
-PulseGuard is a next-generation, edge-native website monitoring and uptime platform designed for developers who demand high reliability, microsecond accuracy, and professional monitoring with a cyberpunk-inspired interface.
-
-Built using the **Better-T-Stack** (Next.js, tRPC, Tailwind, TypeScript), PulseGuard executes global latency probes and health checks across Cloudflare's edge network, broadcasting telemetry in real-time through WebSockets.
+PulseGuard is a serverless monitoring platform that runs on Cloudflare's edge network. It supports 16 monitor types, real-time WebSocket updates, private on-premise probes, public status pages, and multi-channel alerting — all behind a single Next.js dashboard.
 
 ---
 
-## ⚡ Key Capabilities
+## Features
 
-### 🛡️ Advanced Monitoring
+### Monitoring
 
-- **Multi-Protocol Probes**:
-  - **HTTP/HTTPS**: URL availability, custom headers, status-code validation, and precise TTFB/latency tracking.
-  - **Ping/ICMP**: Network-level reachability, packet loss, and round-trip routing latency.
-  - **Port/TCP**: Host service availability verification on specific ports (e.g., SSH, SMTP, custom APIs).
-- **Multi-Region Probing**: Check service uptime from multiple geographic vantage points concurrently.
-- **Intelligent Routing**: Latency probing and historical traffic patterns advise region selection.
-- **Double-Check Protocol**: Automatic mitigation of false-positives via instant secondary verification loops.
-- **Adaptive Check Intervals**: Support for polling frequencies ranging from 30 seconds down to 24 hours.
+- **16 monitor types**: HTTP/HTTPS, PING, TCP Port, SSL/TLS, DNS record, Domain expiration, Browser (Puppeteer), Heartbeat, MCP, GraphQL, WebSocket, Database, BGP, SEQUENCE (multi-step browser scripts), PING, PORT
+- **Multi-region probes**: Check from 50+ geographic locations across 7 continents
+- **Adaptive intervals**: 30s to 24h per monitor
+- **Double-check protocol**: Auto-retry from alternate vantage points before declaring downtime
+- **Private probes**: Docker-based on-premise agents for internal network monitoring
+- **WASM-accelerated payload validation**: Rust-compiled WebAssembly for regex + JSONPath response assertions
 
-### 🔔 Intelligent Alerting
+### Alerting & Incidents
 
-- **Omnichannel Notifications**:
-  - **Email**: Transactional, responsive HTML notifications with auto-dark mode.
-  - **Slack**: Rich payloads with interactive quick-action buttons.
-  - **Discord**: Embed-structured webhook logs with color-coded severity.
-- **Suppression & Rate-Limiting**: Intelligently throttles alerts during outages to prevent notification fatigue.
-- **Flapping Detection**: Suppresses alerts when network noise triggers rapid state transitions.
+- **Multi-channel notifications**: Email (React Email), Slack (interactive blocks), Discord (embedded embeds), Webhook, Telegram, SMS
+- **Incident lifecycle**: `Investigating` → `Identified` → `Monitoring` → `Resolved` with full event audit trail
+- **Post-mortems**: Root cause analysis documents with timeline, action items, and severity tracking
+- **Regional isolation**: Track localized failures without global false-positives
+- **Flapping detection & rate-limiting**: Suppresses noise during unstable periods
 
-### 📋 Incident Management
+### Status Pages
 
-- **Automated Incidents**: Instantly tracks outages, generates incidents, and schedules notifications.
-- **Lifecycle Tracking**: Moves monitors through standardized phases: `Investigating` ➔ `Identified` ➔ `Monitoring` ➔ `Resolved`.
-- **Regional Isolation**: Tracks and reports localized failures without marking the entire global service down.
-- **Audited History**: Paged telemetry trails detailing chronological failure states and status logs.
+- Public status pages with custom domains and password protection
+- SEO indexing, custom CSS/JS, favicon, and OG images
+- Subscriber management with email verification and per-monitor subscriptions
+- Maintenance window scheduling
+- Manual status overrides per day
+- Multi-language support (i18n)
 
-### 🔮 Cyberpunk UI/UX
+### Dashboard & Tools
 
-- **Real-time Synchronization**: Live updates delivered instantly using Cloudflare Durable Objects over WebSockets.
-- **Dynamic Visualizations**:
-  - Neon-line charts tracking historical latency trends.
-  - Latency heatmaps modeled after contribution graphs.
-  - Real-time glow-based status indicators.
-- **Unified Command Palette (`Cmd/Ctrl + K`)**: Keyboard-driven app traversal and monitor actions.
-- **Pro Keyboard Shortcuts**: Full control with vim-like navigation (`j`/`k`), global filter (`/`), and rapid create (`c`).
-- **Multi-Theme Hub**: Matrix Green, Cyberpunk Pink, and Blade Runner Orange.
-- **Edge Accents**: Retrowave audio cues, custom scanlines, and digital glitch animations.
+- Real-time WebSocket updates via Cloudflare Durable Objects
+- Latency heatmaps, uptime charts, and response-time graphs
+- Command palette (Cmd/Ctrl+K) for keyboard-driven navigation
+- **10+ free diagnostic tools**: SSL checker, DNS sentinel, port checker, HTTP security header analyzer, global latency probe, payload regex tester, IP subnet calculator, visual diff, cron sentinel, "roast my stack"
 
-### 🔒 Resiliency & Enterprise Security
+### CLI (`pulse`)
 
-- **Better-Auth Authentication**: Session tracking, secure device registration, and native Two-Factor Authentication (2FA).
-- **Smart Circuit Breaker**: Auto-escalates check intervals for chronically down endpoints to preserve edge CPU time.
-- **Dead Letter Queues (DLQ)**: Retains failed monitor jobs for manual debugging.
-- **Performance Batches**: Grouped processing limits CPU footprint and handles burst throughput efficiently.
+Monitoring as Code, CI/CD integration, and live debugging:
+
+```bash
+pulse auth login          # Authenticate with API key
+pulse monitors apply      # YAML-based monitor sync
+pulse trigger <id>        # Force immediate check
+pulse logs <id>           # Tail events in real-time
+pulse wait <id>           # CI/CD gate — blocks until UP or timeout
+```
+
+### API & SDK
+
+- **tRPC v11**: End-to-end type safety from database to React components
+- **REST endpoints**: Worker HTTP API for on-demand checks, DNS audit, SSL checks, etc.
+- **WebSocket gateway**: Real-time monitor state via Durable Objects
+- **API keys**: Scoped, hashed, with expiry
 
 ---
 
-## 🏗️ Architecture
-
-PulseGuard is designed to be **serverless, edge-native, and zero-latency**.
-
-### System Topology
+## Architecture
 
 ```mermaid
 graph TD
-    subgraph Client Layer [Client Applications]
-        Web[Next.js Dashboard - apps/web]
-        App[Expo Mobile App - apps/native]
+    subgraph Clients
+        Web[Next.js Dashboard]
+        App[Expo Mobile]
+        CLI[pulse CLI]
     end
 
-    subgraph API & Gateway Layer [tRPC & WebSockets]
-        tRPC[tRPC Server - packages/api]
-        DO[Cloudflare Durable Objects]
+    subgraph Cloudflare[Cloudflare Edge]
+        Worker[Monitor Worker]
+        Next[Web Worker / OpenNext]
+        DO[Durable Objects]
+        Q[Queues]
     end
 
-    subgraph Monitoring Engine [Cloudflare Edge Network]
-        Cron[Cloudflare Cron Triggers]
-        Queue[Cloudflare Queues]
-        Worker[Edge Worker - apps/worker]
+    subgraph Storage
+        DB[(PostgreSQL)]
+        Redis[(Upstash Redis)]
     end
 
-    subgraph Storage & Services [Storage & Notifications]
-        DB[(PostgreSQL Database)]
-        Resend[Resend Email Delivery]
-        Hooks[Slack/Discord Webhooks]
+    subgraph Probes
+        Probe[Docker Probe]
     end
 
-    %% Connections
-    Web -->|tRPC Queries & Mutations| tRPC
-    App -->|tRPC Queries & Mutations| tRPC
-    tRPC -->|Prisma Client| DB
-
-    Web <-->|WebSocket Feeds| DO
-    App <-->|WebSocket Feeds| DO
-
-    Cron -->|Cron Job Schedules| Queue
-    Queue -->|Job Dispatch| Worker
-    Worker -->|Execute Probes| Target[Target Endpoints]
-
-    Worker -->|Write Telemetry| DB
-    Worker -->|Broadcast State Changes| DO
-    Worker -->|Send Alerts| Resend
-    Worker -->|Trigger Webhooks| Hooks
-
-    style Web fill:#0f172a,stroke:#38bdf8,stroke-width:2px,color:#fff
-    style App fill:#0f172a,stroke:#38bdf8,stroke-width:2px,color:#fff
-    style DO fill:#1e1b4b,stroke:#a855f7,stroke-width:2px,color:#fff
-    style Worker fill:#1e293b,stroke:#10b981,stroke-width:2px,color:#fff
-    style DB fill:#022c22,stroke:#059669,stroke-width:2px,color:#fff
+    Web -->|tRPC| Next
+    App -->|tRPC| Next
+    CLI -->|API| Worker
+    Next -->|Prisma| DB
+    Worker -->|Cron + Queue| Q
+    Q -->|Dispatch| Worker
+    Worker -->|Checks| Target[Target Endpoints]
+    Worker -->|Telemetry| DB
+    Worker -->|Fallback| Redis
+    Worker -->|WS Broadcast| DO
+    DO -->|Real-time| Web
+    DO -->|Real-time| App
+    Probe -->|Poll + Report| Worker
 ```
 
-### Telemetry Execution Flow
-
-```mermaid
-sequenceDiagram
-    autonumber
-    participant Cron as Cloudflare Cron Trigger
-    participant Queue as Cloudflare Queue
-    participant Worker as Cloudflare Edge Worker
-    participant Target as Target Endpoint
-    participant DB as PostgreSQL (Prisma)
-    participant DO as Durable Object (WS)
-    participant Web as Next.js Web Dashboard
-
-    Cron->>Queue: Push scheduled monitor checks
-    Queue->>Worker: Dispatch check tasks to Edge locations
-    Worker->>Target: Probe Endpoint (HTTP/TCP/Ping)
-    Target-->>Worker: Return latency & status code
-    alt Failure Detected (Double-Check Protocol)
-        Worker->>Target: Retry probe to verify failure
-    end
-    Worker->>DB: Write check execution results & update status
-    opt State Change (Up/Down)
-        Worker->>DB: Create/resolve Incident & log Event
-        Worker->>Worker: Trigger Notification Engine (Email/Slack/Discord)
-    end
-    Worker->>DO: Broadcast real-time status update
-    DO->>Web: Send real-time state change via WebSockets
-```
+[Full architecture details →](./ARCHITECTURE.md)
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-### Frontend & Mobile
+**Frontend**: Next.js 16 (App Router), React 19, Tailwind CSS v4, shadcn/ui, Framer Motion, Recharts, TanStack React Query
 
-- **Next.js 16** (App Router): Server Components & server-actions.
-- **React 19**: Concurrent rendering architecture.
-- **React Native & Expo**: Cross-platform native mobile clients.
-- **Tailwind CSS v4**: High-performance CSS utility system.
-- **Shadcn/UI & Radix**: Keyboard-accessible design primitives.
-- **Recharts**: Low-latency SVG visualization library.
+**Edge**: Cloudflare Workers, Durable Objects, Queues, KV, Cron Triggers, OpenNext
 
-### Edge Backend & API
+**Backend**: tRPC v11, Zod, Prisma ORM, PostgreSQL (Supabase/Neon), Upstash Redis
 
-- **Cloudflare Workers**: High-density serverless edge computing.
-- **Cloudflare Queues**: Reliable job buffering and asynchronous task scheduling.
-- **Cloudflare Durable Objects**: State persistence for global real-time WebSockets.
-- **tRPC (v11)**: End-to-end type safety without schema generators.
-- **Zod**: Declarative data validation and parsing.
+**Auth**: better-auth (email/password, sessions, API keys, Expo integration)
 
-### Database & Security
+**Mobile**: Expo SDK 54, React Native, expo-router
 
-- **PostgreSQL**: Transaction-safe relational database.
-- **Prisma ORM**: Modern database access layer with migration engine.
-- **Better-Auth**: Complete authentication framework with Multi-Factor (MFA) capabilities.
+**Infrastructure**: Turborepo, Bun 1.3, Docker, WASM (Rust + wasm-bindgen)
 
 ---
 
-## 📁 Monorepo Structure
+## Monorepo Structure
 
-PulseGuard manages all components within a Turborepo monorepo structured as follows:
-
-```yaml
+```
 pulseguard/
 ├── apps/
-│   ├── web/             # Dashboard application (Next.js 16)
-│   │   ├── src/app/     # Routing, Layouts & Server Actions
-│   │   ├── components/  # Modular React visual components
-│   │   └── wrangler.jsonc # Next.js OpenNext Cloudflare deployment config
-│   ├── worker/          # Edge check execution engine (Cloudflare Worker)
-│   │   ├── src/         # Probe logic, Queue handlers, and Durable Objects
-│   │   └── wrangler.jsonc # Edge Worker infrastructure config
-│   └── native/          # Mobile application (Expo Router)
+│   ├── web/              # Next.js dashboard + status pages + tools
+│   ├── worker/           # Cloudflare Worker monitoring engine
+│   ├── cli/              # pulse CLI (Monitoring as Code)
+│   ├── native/           # Expo mobile app
+│   ├── probe/            # Docker-based private probe
+│   └── e2e/              # Playwright end-to-end tests
 ├── packages/
-│   ├── db/              # Database schema definition, migrations, and Client exports
-│   │   └── prisma/      # Schema file and SQL migration scripts
-│   ├── api/             # Type-safe tRPC Router registry and schemas
-│   ├── auth/            # Better-Auth integration and security middleware
-│   ├── email/           # HTML and template rendering pipeline (React Email)
-│   ├── config/          # Centralized Shared TypeScript and Build configurations
-│   ├── env/             # Runtime environment validation schema using Zod
-│   ├── infra/           # Infrastructure-as-code scripts (Cloudflare provisioning)
-│   └── shared/          # Universal helper functions and common types
+│   ├── api/              # tRPC router definitions
+│   ├── auth/             # better-auth configuration
+│   ├── config/           # Shared tsconfig
+│   ├── core/             # Universal check primitives (HTTP, TCP)
+│   ├── db/               # Prisma schema + client
+│   ├── email/            # React Email templates (Resend)
+│   ├── env/              # T3 env validation (Zod)
+│   ├── infra/            # Cloudflare deployment (Alchemy)
+│   ├── shared/           # Regions, limits, stack templates
+│   ├── types/            # Shared TypeScript types
+│   └── wasm-parser/      # Rust WASM payload validator
 ```
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
-- [Bun](https://bun.sh/) (v1.3.0 or later recommended)
-- [Node.js](https://nodejs.org/) (v20+ recommended)
-- A PostgreSQL instance (Local Docker container, Neon, or Supabase)
+- [Bun](https://bun.sh/) 1.3+
+- [Node.js](https://nodejs.org/) 20+
+- PostgreSQL instance (local Docker, [Neon](https://neon.tech/), or [Supabase](https://supabase.com/))
 
-### Installation
-
-1. **Clone the repository:**
-
-   ```bash
-   git clone https://github.com/your-username/pulseguard.git
-   cd pulseguard
-   ```
-
-2. **Install monorepo dependencies:**
-
-   ```bash
-   bun install
-   ```
-
-3. **Configure Environment Variables:**
-
-   Create a `.env` file in the project root (and local directories where required). Refer to the schema tables below.
-
-   ```bash
-   cp .env.example .env
-   ```
-
-### Database Initialization
-
-Generate the Prisma Client and sync the schema with your PostgreSQL database:
+### Setup
 
 ```bash
+git clone https://github.com/your-username/pulseguard.git
+cd pulseguard
+bun install
+cp .env.example .env
+# Edit .env with your database URL and auth secret
 bun run db:push
-```
-
-### Running Locally
-
-To run the entire stack (Next.js web client, background workers, and Expo server) in development mode:
-
-```bash
 bun run dev
 ```
 
-- **Web UI Dashboard**: `http://localhost:3000`
-- **Prisma Studio**: `bun run db:studio` (Runs at `http://localhost:5555`)
+- Dashboard: `http://localhost:3000`
+- Prisma Studio: `bun run db:studio` → `http://localhost:5555`
+
+### Environment Variables
+
+See `packages/env/src/` for Zod-validated schemas. Key variables:
+
+| Variable | Required | Description |
+| :------- | :------- | :---------- |
+| `DATABASE_URL` | Yes | PostgreSQL connection string |
+| `BETTER_AUTH_SECRET` | Yes | Session signing key (min 32 chars) |
+| `BETTER_AUTH_URL` | Yes | Auth base URL |
+| `NEXT_PUBLIC_APP_URL` | Yes | Public app URL |
+| `CORS_ORIGIN` | Yes | Allowed CORS origin |
+| `RESEND_API_KEY` | No | Email delivery |
+| `UPSTASH_REDIS_REST_URL` | No | Redis fallback |
+| `OPENAI_API_KEY` | No | Anomaly detection |
 
 ---
 
-## ⚙️ Configuration Reference
+## Scripts
 
-### Global Server Variables (`packages/env/src/server.ts`)
-
-| Environment Variable       | Description                                                                 | Required | Default / Format                        |
-| :------------------------- | :-------------------------------------------------------------------------- | :------- | :-------------------------------------- |
-| `DATABASE_URL`             | Primary PostgreSQL database connection string.                              | Yes      | `postgresql://...`                      |
-| `BETTER_AUTH_SECRET`       | Cryptographic key used to sign session cookies (min 32 chars).              | Yes      | High-entropy string                     |
-| `BETTER_AUTH_URL`          | Canonical URL of the server-side authentication endpoint.                   | Yes      | `http://localhost:3000`                 |
-| `CORS_ORIGIN`              | Allowed origin for inbound resource requests.                               | Yes      | `http://localhost:3000`                 |
-| `NEXT_PUBLIC_APP_URL`      | Public-facing app URL (available client side).                              | Yes      | `http://localhost:3000`                 |
-| `RESEND_API_KEY`           | Access token for email notification routing.                                | No       | `re_...`                                |
-| `OPENAI_API_KEY`           | Optional key to compute smart probing and regional latency heuristics.      | No       | `sk-...`                                |
-| `SLACK_SIGNING_SECRET`     | Secret to verify authenticity of Slack notifications & interactive buttons. | No       | Hex string                              |
-| `UPSTASH_REDIS_REST_URL`   | Redis URL used for connection pooling fallback and cache pooling.           | No       | `https://...`                           |
-| `UPSTASH_REDIS_REST_TOKEN` | Authentication token for Upstash Redis serverless REST interface.           | No       | JWT token                               |
-| `NODE_ENV`                 | Running runtime lifecycle environment configuration.                        | No       | `development` \| `production` \| `test` |
-
----
-
-## 🎮 CLI Script Registry
-
-| Command               | Targets          | Description                                                        |
-| :-------------------- | :--------------- | :----------------------------------------------------------------- |
-| `bun run dev`         | Monorepo         | Boot up all apps in parallel hot-reload development mode           |
-| `bun run dev:web`     | `apps/web`       | Run only the Next.js frontend web dashboard                        |
-| `bun run dev:worker`  | `apps/worker`    | Spin up the monitoring Cloudflare Worker locally (using Miniflare) |
-| `bun run dev:native`  | `apps/native`    | Launch the Metro bundler for the React Native/Expo app             |
-| `bun run build`       | Monorepo         | Compile all code packages and deployable projects for production   |
-| `bun run check`       | Monorepo         | Fast-check lint errors and auto-format (via Oxlint & Oxfmt)        |
-| `bun run check-types` | Monorepo         | Type-check all workspace modules and apps via TypeScript           |
-| `bun run db:push`     | `packages/db`    | Force synchronisation of Prisma Schema schema updates to DB        |
-| `bun run db:migrate`  | `packages/db`    | Run standard production database migrations                        |
-| `bun run db:studio`   | `packages/db`    | Open local browser dashboard for direct database management        |
-| `bun run db:generate` | `packages/db`    | Recompile TypeScript bindings for the Prisma client                |
-| `bun run deploy`      | `packages/infra` | Provision and deploy the Web and Worker stack to Cloudflare        |
-| `bun run destroy`     | `packages/infra` | Tear down provisioned deployment resources                         |
+| Command | Description |
+| :------ | :---------- |
+| `bun run dev` | Start all apps in dev mode |
+| `bun run dev:web` | Next.js dashboard only |
+| `bun run dev:worker` | Cloudflare Worker (Miniflare) |
+| `bun run dev:native` | Expo Metro bundler |
+| `bun run build` | Build all packages |
+| `bun run check` | Lint + format (oxlint + oxfmt) |
+| `bun run check-types` | TypeScript type check |
+| `bun run db:push` | Sync Prisma schema to DB |
+| `bun run db:migrate` | Run production migration |
+| `bun run db:studio` | Open Prisma Studio |
+| `bun run db:generate` | Recompile Prisma client |
+| `bun run deploy` | Deploy to Cloudflare |
+| `bun run destroy` | Tear down Cloudflare stack |
 
 ---
 
-## 🚀 Production Deployment
+## Deployment
 
-PulseGuard is configured to compile and run directly on **Cloudflare's serverless infrastructure**.
+PulseGuard deploys to Cloudflare's serverless platform:
 
-### Web App Deployment
-
-1. Next.js is configured via **OpenNext** (`open-next.config.ts`) to output Cloudflare Pages assets.
-2. Deploy directly via `wrangler` or connect your Git Repository to Cloudflare Pages for automated CI/CD builds.
-
-### Worker Deployment
-
-Deploy the global probe worker, bindings, and CRON triggers directly:
+- **Web**: Next.js compiled via OpenNext → Cloudflare Pages
+- **Worker**: Cloudflare Worker with Cron Triggers, Queues, and Durable Objects
+- **Probe**: Docker image (`pulseguard-probe`) for customer infrastructure
 
 ```bash
-bun run deploy
+npx wrangler login       # Authenticate with Cloudflare
+bun run deploy           # Deploy web + worker
 ```
 
-> [!IMPORTANT]
-> Verify your Cloudflare Wrangler credentials are authenticated (`npx wrangler login`) and that bindings matching your configuration exist on your account before running a deployment.
+See `packages/infra/` for Alchemy-based deployment configuration.
 
 ---
 
-## 🗺️ Roadmap
+## Roadmap
 
-### In Progress
-
-- [ ] Public status pages with custom DNS mapping.
-- [ ] Advanced check options (SSL certificate expiration warnings, DNS records, endpoint heartbeats).
-- [ ] Role-Based Access Control (RBAC) and team invite hierarchies.
-- [ ] Push notifications for the native mobile application.
-
-### Planned
-
-- [ ] Response body regex validation and content assurance checks.
-- [ ] Automated domain registration and domain expiration tracking.
-- [ ] Outage incident post-mortem templates.
-- [ ] Custom Terraform / OpenTofu Provider for infrastructure-as-code monitor orchestration.
-- [ ] CLI utility (`pulseguard-cli`) for monitor automation.
-- [ ] SLA report exports (PDF / JSON metrics).
-
-_See [TODO.md](TODO.md) for detailed task lists and feature backlog details._
+- [ ] Team management and RBAC
+- [ ] Native mobile push notifications
+- [ ] Terraform/OpenTofu provider for Monitoring as Code
+- [ ] SLA report exports (PDF, JSON)
+- [ ] PagerDuty and Opsgenie integrations
+- [ ] Synthetic transaction scripting (multi-step browser flows)
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
-Contributions are welcome! Please follow these guidelines:
-
-1. Fork the repository.
-2. Branch out from `main` (`git checkout -b feature/awesome-feature`).
-3. Maintain existing formatting and type standards. Run checks:
-   ```bash
-   bun run check
-   bun run check-types
-   ```
-4. Commit your changes cleanly.
-5. Submit a detailed Pull Request.
+1. Fork and branch from `main`
+2. Run `bun run check && bun run check-types` before committing
+3. Submit a detailed pull request
 
 ---
 
-## 📄 License
+## License
 
-Distributed under the MIT License. See [LICENSE](LICENSE) for more details.
-
----
-
-## 💖 Acknowledgments
-
-PulseGuard stands on the shoulders of these stellar modern libraries and platforms:
-
-- [Next.js](https://nextjs.org/)
-- [Cloudflare Workers](https://workers.cloudflare.com/)
-- [Prisma](https://www.prisma.io/)
-- [tRPC](https://trpc.io/)
-- [Better-Auth](https://better-auth.com/)
-- [Shadcn/UI](https://ui.shadcn.com/)
+MIT — see [LICENSE](LICENSE)

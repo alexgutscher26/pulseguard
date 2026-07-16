@@ -120,7 +120,7 @@ async function fetchBGPViewIP(ip: string): Promise<BGPViewIPResponse | null> {
       signal: AbortSignal.timeout(10000),
     });
     if (!response.ok) return null;
-    return response.json();
+    return response.json() as Promise<BGPViewIPResponse | null>;
   } catch {
     return null;
   }
@@ -133,7 +133,7 @@ async function fetchBGPViewPrefix(prefix: string): Promise<BGPViewPrefixResponse
       signal: AbortSignal.timeout(10000),
     });
     if (!response.ok) return null;
-    return response.json();
+    return response.json() as Promise<BGPViewPrefixResponse | null>;
   } catch {
     return null;
   }

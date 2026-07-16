@@ -157,7 +157,7 @@ export async function checkMCP(
 
   let data: JsonRpcResponse;
   try {
-    data = await response.json();
+    data = await response.json() as JsonRpcResponse;
   } catch {
     return {
       domain,
