@@ -21,18 +21,38 @@ export function PrivacyForm() {
   const [loading, setLoading] = useState(true);
   const [anonymizing, setAnonymizing] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [leaderboardBio, setLeaderboardBio] = useState("");
+  const [savingLeaderboard, setSavingLeaderboard] = useState(false);
 
   const fetchReport = useCallback(async () => {
     try {
       const { getPrivacyReport } = await import("@/actions/privacy");
       const data = await getPrivacyReport();
       setReport(data);
+      setShowLeaderboard(data.showOnLeaderboard);
+      setLeaderboardBio(data.leaderboardBio);
     } catch {
       toast.error("Failed to load privacy report");
     } finally {
       setLoading(false);
     }
   }, []);
+
+  const handleSaveLeaderboard = async () => {
+    setSavingLeaderboard(true);
+    try {
+      const { updateLeaderboardPrivacy } = await import("@/actions/privacy");
+      const result = await updateLeaderboardPrivacy(showLeaderboard, leaderboardBio);
+      if (result.success) {
+        toast.success("Leaderboard privacy settings saved");
+      }
+    } catch {
+      toast.error("Failed to save leaderboard settings");
+    } finally {
+      setSavingLeaderboard(false);
+    }
+  };
 
   useEffect(() => {
     fetchReport();
@@ -289,8 +309,6 @@ export function PrivacyForm() {
               {exporting ? "Exporting..." : "Export JSON"}
             </button>
           </div>
-
-          <LeaderboardSection />
         </div>
       </section>
 
@@ -359,12 +377,33 @@ export function PrivacyForm() {
         </div>
       </section>
 
-      <LeaderboardSection />
+      <LeaderboardSection
+        show={showLeaderboard}
+        onChangeShow={setShowLeaderboard}
+        bio={leaderboardBio}
+        onChangeBio={setLeaderboardBio}
+        onSave={handleSaveLeaderboard}
+        saving={savingLeaderboard}
+      />
     </div>
   );
 }
 
-function LeaderboardSection() {
+function LeaderboardSection({
+  show,
+  onChangeShow,
+  bio,
+  onChangeBio,
+  onSave,
+  saving,
+}: {
+  show: boolean;
+  onChangeShow: (val: boolean) => void;
+  bio: string;
+  onChangeBio: (val: string) => void;
+  onSave: () => void;
+  saving: boolean;
+}) {
   return (
     <section className="bg-black/40 border border-primary/20 relative overflow-hidden backdrop-blur-sm hover:border-primary/40 transition-all">
       <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-primary/30"></div>
@@ -376,19 +415,74 @@ function LeaderboardSection() {
           </h3>
         </div>
       </div>
-      <div className="p-6">
-        <div className="border border-primary/10 p-4 bg-black/30">
+      <div className="p-6 space-y-4">
+        {/* Toggle Switch */}
+        <div className="flex items-center justify-between border border-primary/10 p-4 bg-black/30">
           <div className="flex flex-col gap-1">
-            <span className="text-sm font-bold font-mono text-foreground">Hall of Fame</span>
+            <span className="text-sm font-bold font-mono text-foreground">
+              Show on Leaderboard (Opt-In)
+            </span>
             <span className="text-[10px] text-primary/60 font-mono leading-relaxed max-w-lg">
-              The PulseGuard Hall of Fame ranks all users by weighted SLA across their monitors. You
-              are automatically included — no opt-in required. Visit the{" "}
-              <a href="/hall-of-fame" className="text-primary underline underline-offset-2">
-                Hall of Fame
-              </a>{" "}
-              to see where you stand.
+              Toggle this setting to feature your name, avatar, and monitor uptime percentage on the
+              public Hall of Fame. Enabling this is required to participate.
             </span>
           </div>
+          <button
+            type="button"
+            onClick={() => onChangeShow(!show)}
+            className={`relative inline-flex h-6 w-11 items-center rounded-sm transition-colors ${
+              show ? "bg-primary" : "bg-primary/20"
+            }`}
+          >
+            <span
+              className={`inline-block size-5 rounded-sm bg-black border border-primary/30 transition-transform ${
+                show ? "translate-x-[22px]" : "translate-x-[2px]"
+              }`}
+            />
+          </button>
+        </div>
+
+        {/* Bio Text Input */}
+        {show && (
+          <div className="border border-primary/10 p-4 bg-black/30 space-y-3">
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold font-mono text-foreground uppercase tracking-wide">
+                Leaderboard Biography
+              </label>
+              <span className="text-[9px] text-primary/40 font-mono">
+                A brief description about you or your stack. Shown next to your ranking on the Hall
+                of Fame.
+              </span>
+            </div>
+            <textarea
+              placeholder="e.g. Indie developer monitoring 10 side-projects with PulseGuard..."
+              rows={2}
+              maxLength={150}
+              className="w-full p-3 rounded-lg bg-background/50 border border-primary/20 font-mono text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary text-foreground placeholder:text-muted-foreground/30"
+              value={bio}
+              onChange={(e) => onChangeBio(e.target.value)}
+            />
+            <div className="text-[9px] font-mono text-right text-muted-foreground/40">
+              {bio.length}/150 characters
+            </div>
+          </div>
+        )}
+
+        {/* Save Button */}
+        <div className="flex justify-end pt-2">
+          <button
+            type="button"
+            onClick={onSave}
+            disabled={saving}
+            className="h-9 px-6 bg-primary hover:bg-primary/90 text-primary-foreground font-mono font-bold uppercase text-[10px] tracking-widest transition-colors flex items-center justify-center rounded cursor-pointer disabled:opacity-50"
+          >
+            {saving ? (
+              <Loader2 className="size-3 animate-spin mr-2" />
+            ) : (
+              <CheckCircle2 className="size-3 mr-2" />
+            )}
+            {saving ? "Saving..." : "Save Settings"}
+          </button>
         </div>
       </div>
     </section>

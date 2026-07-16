@@ -16,6 +16,13 @@ export interface LeaderboardEntry {
 }
 
 export async function getLeaderboard(limit = 50): Promise<LeaderboardEntry[]> {
+  const privacySettings = await prisma.userPrivacy.findMany({
+    where: { showOnLeaderboard: true },
+    select: { userId: true, leaderboardBio: true },
+  });
+  const allowedUserIds = new Set(privacySettings.map((p) => p.userId));
+  const bioMap = new Map(privacySettings.map((p) => [p.userId, p.leaderboardBio]));
+
   const summaries = await prisma.dailyMonitorSummary.findMany({
     select: {
       checksUp: true,
@@ -28,6 +35,7 @@ export async function getLeaderboard(limit = 50): Promise<LeaderboardEntry[]> {
 
   for (const s of summaries) {
     const uid = s.monitor.userId;
+    if (!allowedUserIds.has(uid)) continue; // Filter out users who haven't opted in!
     if (!aggMap.has(uid)) aggMap.set(uid, { totalUp: 0, totalDown: 0, monitors: new Set() });
     const agg = aggMap.get(uid)!;
     agg.totalUp += s.checksUp;
@@ -84,7 +92,7 @@ export async function getLeaderboard(limit = 50): Promise<LeaderboardEntry[]> {
       userId: c.userId,
       name: user.name,
       image: user.image,
-      bio: null,
+      bio: bioMap.get(c.userId) ?? null,
       uptimePct: Math.round(uptimePct * 100) / 100,
       totalChecks,
       monitorCount: c.monitorCount,

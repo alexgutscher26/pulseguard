@@ -25,6 +25,8 @@ export type PrivacyReport = {
   totalStatusPages: number;
   dataInventory: DataInventory[];
   anonymizeAnalytics: boolean;
+  showOnLeaderboard: boolean;
+  leaderboardBio: string;
 };
 
 export async function getPrivacyReport(): Promise<PrivacyReport> {
@@ -49,7 +51,22 @@ export async function getPrivacyReport(): Promise<PrivacyReport> {
     prisma.statusPage.count({ where: { userId } }),
   ]);
 
-  const anonymizeAnalytics = true;
+  let privacy = await prisma.userPrivacy.findUnique({
+    where: { userId },
+  });
+
+  if (!privacy) {
+    privacy = await prisma.userPrivacy.create({
+      data: {
+        userId,
+        anonymizeAnalytics: true,
+        showOnLeaderboard: false,
+        leaderboardBio: "",
+      },
+    });
+  }
+
+  const anonymizeAnalytics = privacy.anonymizeAnalytics;
 
   const dataInventory: DataInventory[] = [
     {
@@ -146,11 +163,53 @@ export async function getPrivacyReport(): Promise<PrivacyReport> {
     totalStatusPages: statusPageCount,
     dataInventory,
     anonymizeAnalytics,
+    showOnLeaderboard: privacy.showOnLeaderboard,
+    leaderboardBio: privacy.leaderboardBio ?? "",
   };
 }
 
 export async function updateAnalyticsAnonymization(anonymize: boolean) {
-  return { success: true, anonymized: anonymize };
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) {
+    throw new Error("Unauthorized");
+  }
+
+  const userId = session.user.id;
+
+  const privacy = await prisma.userPrivacy.upsert({
+    where: { userId },
+    update: { anonymizeAnalytics: anonymize },
+    create: { userId, anonymizeAnalytics: anonymize },
+  });
+
+  return { success: true, anonymized: privacy.anonymizeAnalytics };
+}
+
+export async function updateLeaderboardPrivacy(show: boolean, bio: string) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) {
+    throw new Error("Unauthorized");
+  }
+
+  const userId = session.user.id;
+
+  const privacy = await prisma.userPrivacy.upsert({
+    where: { userId },
+    update: { showOnLeaderboard: show, leaderboardBio: bio },
+    create: { userId, showOnLeaderboard: show, leaderboardBio: bio },
+  });
+
+  return {
+    success: true,
+    showOnLeaderboard: privacy.showOnLeaderboard,
+    leaderboardBio: privacy.leaderboardBio ?? "",
+  };
 }
 
 export async function exportPersonalData() {
