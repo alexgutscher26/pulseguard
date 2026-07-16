@@ -7,12 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ShieldCheck,
-  ShieldAlert,
   Loader2,
   Lock,
   ArrowRight,
   CheckCircle2,
-  XCircle,
   Calendar,
   Server,
   FileKey,
