@@ -55,7 +55,7 @@ const showcaseEntries: ShowcaseEntry[] = [
     slug: "quantum-mesh",
     tagline: "Distributed computing network",
     theme: "Custom",
-    themeColors: { primary: "#a855f7", bg: "#09090b", text: "#fafafa" },
+    themeColors: { primary: "#06b6d4", bg: "#09090b", text: "#fafafa" },
     preview: { status: "operational", uptime: "99.95%", monitors: 20 },
   },
   {

@@ -29,7 +29,7 @@ function UptimeBadge({ pct }: { pct: number }) {
 
 function TierBadge({ tier }: { tier: string }) {
   const colors: Record<string, string> = {
-    CONSTRUCT: "text-purple-500 bg-purple-500/10 border-purple-500/20",
+    CONSTRUCT: "text-cyan-500 bg-cyan-500/10 border-cyan-500/20",
     NETRUNNER: "text-primary bg-primary/10 border-primary/20",
     INITIATE: "text-muted-foreground bg-muted/20 border-muted/30",
   };
