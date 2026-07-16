@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Check, Moon } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { PRODUCT_CONFIG } from "@pulseguard/shared";
 
 export default function Pricing() {
   const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
@@ -83,6 +84,10 @@ export default function Pricing() {
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
+                  <span>{PRODUCT_CONFIG.FREE_CHECKS_LIMIT.toLocaleString()} free checks/mo</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check className="size-4 text-primary shrink-0" />
                   <span>60-Second Heartbeat checks</span>
                 </li>
                 <li className="flex items-center gap-3">
@@ -143,7 +148,7 @@ export default function Pricing() {
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
                   <span className="text-primary font-semibold">
-                    ✓ Real alerts only — if we call, it&apos;s real
+                    Real alerts only — if we call, it&apos;s real
                   </span>
                 </li>
                 <li className="flex items-center gap-3">

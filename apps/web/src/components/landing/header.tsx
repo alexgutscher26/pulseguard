@@ -154,10 +154,6 @@ export default function LandingHeader() {
           {[
             { name: "Features", href: "/#features" },
             { name: "Pricing", href: "/#pricing" },
-            { name: "Showcase", href: "/showcase" },
-            { name: "Hall of Fame", href: "/hall-of-fame" },
-            { name: "Blog", href: "/blog" },
-            { name: "Comparison", href: "/comparison" },
             { name: "Docs", href: "/#docs" },
           ].map((item) => (
             <Link
