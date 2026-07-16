@@ -83,7 +83,7 @@ export default function Pricing() {
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>3-Minute Heartbeat checks</span>
+                  <span>60-Second Heartbeat checks</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />

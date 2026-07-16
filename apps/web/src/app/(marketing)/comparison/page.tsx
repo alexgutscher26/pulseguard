@@ -11,11 +11,11 @@ import {
 export const metadata: Metadata = {
   title: "PulseGuard vs Competitors — Better Monitoring, Faster Checks",
   description:
-    "See how PulseGuard beats UptimeRobot, Better Uptime, and OpenStatus. 3-minute free checks vs the industry 5-minute standard. Faster detection means less downtime.",
+    "See how PulseGuard beats UptimeRobot, Better Uptime, and OpenStatus. 1-minute free checks vs the industry 5-minute standard. Faster detection means less downtime.",
   openGraph: {
     title: "PulseGuard vs Competitors — Better Monitoring, Faster Checks",
     description:
-      "3-minute free checks vs the industry 5-minute standard. 40% faster detection, 67% more checks per day.",
+      "1-minute free checks vs the industry 5-minute standard. 400% faster detection, 5x more checks per day.",
   },
 };
 
@@ -40,8 +40,8 @@ export default function ComparisonPage() {
           <p className="text-muted-foreground text-sm leading-relaxed max-w-xl">
             The monitoring industry has settled on a 5-minute free tier as &ldquo;standard.&rdquo;
             We think that&apos;s a relic. PulseGuard gives you{" "}
-            <span className="text-foreground font-bold">3-minute checks for free</span> — 40% faster
-            detection, 67% more data points, and less downtime you have to explain to your
+            <span className="text-foreground font-bold">1-minute checks for free</span> — 400%
+            faster detection, 5x more data points, and less downtime you have to explain to your
             customers.
           </p>
           <div className="flex gap-4 pt-2">
@@ -69,10 +69,10 @@ export default function ComparisonPage() {
               <span>The Interval Gap</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground mb-4">
-              See the difference 120 seconds makes
+              See the difference 240 seconds makes
             </h2>
             <p className="text-muted-foreground text-sm leading-relaxed mb-10">
-              Scroll through the check intervals side by side. PulseGuard&apos;s free 3-minute
+              Scroll through the check intervals side by side. PulseGuard&apos;s free 1-minute
               interval means you detect problems before your competitors even run their first check.
             </p>
           </div>
@@ -92,7 +92,7 @@ export default function ComparisonPage() {
             </h2>
             <p className="text-muted-foreground text-sm leading-relaxed mb-10">
               When your server goes down, every second counts. See how PulseGuard&apos;s faster
-              check interval catches failures up to 2 minutes earlier than the competition.
+              check interval catches failures up to 4 minutes earlier than the competition.
             </p>
           </div>
           <DowntimeComparison />
@@ -145,7 +145,7 @@ export default function ComparisonPage() {
             Stop Settling for 5 Minutes
           </div>
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-4 leading-[1.15]">
-            Get 3-minute checks.
+            Get 1-minute checks.
             <br />
             <span className="text-primary">Free. Forever.</span>
           </h2>

@@ -46,7 +46,7 @@ export async function importThirdPartyMonitors(projects: IntegrationProject[]) {
     });
 
     const maxMonitors = userTier === "INITIATE" ? 50 : userTier === "NETRUNNER" ? 200 : 9999;
-    const defaultInterval = userTier === "INITIATE" ? 180 : 60;
+    const defaultInterval = 60;
     const defaultRegions = JSON.stringify(["us-east"]);
 
     if (existingCount + projects.length > maxMonitors) {

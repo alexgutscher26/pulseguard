@@ -22,12 +22,14 @@ const values = [
   {
     icon: Shield,
     title: "Zero False Positives",
-    description: "Multi-node verification ensures alerts are real. No noise, no wasted midnight callouts.",
+    description:
+      "Multi-node verification ensures alerts are real. No noise, no wasted midnight callouts.",
   },
   {
     icon: Bell,
     title: "Alert with Precision",
-    description: "Route alerts to Slack, PagerDuty, email, or webhooks. Granular thresholds per monitor.",
+    description:
+      "Route alerts to Slack, PagerDuty, email, or webhooks. Granular thresholds per monitor.",
   },
   {
     icon: Globe,
@@ -37,7 +39,8 @@ const values = [
   {
     icon: Cpu,
     title: "Engineered for Scale",
-    description: "From side projects to enterprise fleets. Our architecture scales horizontally with your needs.",
+    description:
+      "From side projects to enterprise fleets. Our architecture scales horizontally with your needs.",
   },
   {
     icon: Activity,
@@ -48,7 +51,10 @@ const values = [
 
 const stats = [
   { label: "Global Nodes", value: `${AVAILABLE_REGIONS.length}+` },
-  { label: "Free Checks / Mo", value: `${(PRODUCT_CONFIG.FREE_CHECKS_LIMIT / 1000).toLocaleString()}k` },
+  {
+    label: "Free Checks / Mo",
+    value: `${(PRODUCT_CONFIG.FREE_CHECKS_LIMIT / 1000).toLocaleString()}k`,
+  },
   { label: "Check Interval", value: `${PRODUCT_CONFIG.DEFAULT_CHECK_INTERVAL_SECONDS}s` },
   { label: "Latency Goal", value: `<${PRODUCT_CONFIG.LATENCY_GOAL_MS}ms` },
 ];
@@ -142,10 +148,7 @@ export default function AboutPage() {
             {values.map((value) => {
               const Icon = value.icon;
               return (
-                <div
-                  key={value.title}
-                  className="bg-card p-8 flex flex-col gap-4"
-                >
+                <div key={value.title} className="bg-card p-8 flex flex-col gap-4">
                   <div className="size-10 rounded-lg border border-border bg-background flex items-center justify-center">
                     <Icon className="size-4 text-primary" />
                   </div>
@@ -173,7 +176,8 @@ export default function AboutPage() {
             Ready to monitor the right way?
           </h2>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-lg mx-auto mb-8">
-            {PRODUCT_CONFIG.FREE_CHECKS_LIMIT.toLocaleString()} free checks per month. No credit card required. No time limit.
+            {PRODUCT_CONFIG.FREE_CHECKS_LIMIT.toLocaleString()} free checks per month. No credit
+            card required. No time limit.
           </p>
           <Link
             href="/signup"

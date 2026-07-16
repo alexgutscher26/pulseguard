@@ -3,7 +3,8 @@ import LegalPage from "@/components/legal-page";
 
 export const metadata: Metadata = {
   title: "Terms of Service | PulseGuard",
-  description: "PulseGuard Terms of Service — the terms governing your use of our uptime monitoring service.",
+  description:
+    "PulseGuard Terms of Service — the terms governing your use of our uptime monitoring service.",
   openGraph: {
     title: "Terms of Service | PulseGuard",
     description: "The terms governing your use of PulseGuard.",

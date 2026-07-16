@@ -241,10 +241,10 @@ export function IntervalComparison() {
       </div>
       <p className="text-[10px] text-muted-foreground font-mono mt-1 leading-relaxed">
         PulseGuard gives you{" "}
-        <span className="text-primary font-bold">3-minute checks for free</span> — that&apos;s{" "}
-        <span className="text-primary font-bold">40% faster</span> than the industry standard
+        <span className="text-primary font-bold">1-minute checks for free</span> — that&apos;s{" "}
+        <span className="text-primary font-bold">400% faster</span> than the industry standard
         5-minute tier. Over 24 hours, you get{" "}
-        <span className="text-primary font-bold">480 checks</span> vs the standard{" "}
+        <span className="text-primary font-bold">1440 checks</span> vs the standard{" "}
         <span className="text-red-500/80 font-bold">288</span>.
       </p>
     </div>
@@ -408,8 +408,8 @@ export function FeatureComparisonTable() {
 }
 
 export function TimeSavingCalculator() {
-  const [dailyChecks, setDailyChecks] = useState(480);
-  const competitorChecks = Math.round((dailyChecks / 180) * 300);
+  const [dailyChecks, setDailyChecks] = useState(1440);
+  const competitorChecks = Math.round((dailyChecks / 300) * 60);
   const extraChecks = dailyChecks - competitorChecks;
   const extraPercent = Math.round((extraChecks / competitorChecks) * 100);
 
@@ -423,14 +423,14 @@ export function TimeSavingCalculator() {
       <div className="flex items-center gap-2 mb-1">
         <Zap className="size-4 text-primary" />
         <span className="text-xs font-bold font-mono text-foreground uppercase tracking-wider">
-          The Math: Why 3 Minutes Beats 5
+          The Math: Why 1 Minute Beats 5
         </span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="border border-border/50 bg-black/20 p-4">
           <span className="text-[9px] font-mono text-primary/70 uppercase tracking-wider">
-            PulseGuard Free (3min)
+            PulseGuard Free (1min)
           </span>
           <p className="text-3xl font-bold font-mono text-primary mt-1">{dailyChecks}</p>
           <span className="text-[10px] font-mono text-muted-foreground">checks per day</span>
@@ -457,13 +457,13 @@ export function TimeSavingCalculator() {
         <label className="text-[10px] font-mono text-muted-foreground">
           Adjust monitors:{" "}
           <span className="text-primary font-bold">
-            {Math.round((dailyChecks / 480) * 50)} monitors
+            {Math.round((dailyChecks / 1440) * 50)} monitors
           </span>
         </label>
         <input
           type="range"
-          min="96"
-          max="960"
+          min="288"
+          max="2880"
           value={dailyChecks}
           onChange={handleSliderChange}
           className="w-full mt-2 accent-primary h-1.5 bg-border/50 rounded-none appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:size-4 [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-black [&::-webkit-slider-thumb]:rounded-none"
@@ -477,14 +477,14 @@ export function TimeSavingCalculator() {
 
       <p className="text-[10px] text-muted-foreground font-mono leading-relaxed">
         With PulseGuard&apos;s{" "}
-        <span className="text-primary font-bold">3-minute free interval</span>, you get{" "}
+        <span className="text-primary font-bold">1-minute free interval</span>, you get{" "}
         <span className="text-primary font-bold">{extraPercent}% more data points</span> compared to
         the industry 5-minute standard. That&apos;s{" "}
         <span className="text-primary font-bold">{extraChecks}</span> extra opportunities to detect
         failure per day — translating to{" "}
         <span className="text-primary font-bold">~2 minutes faster</span> mean time to detection on
         every incident. Over a year on a single monitor, that&apos;s over{" "}
-        <span className="text-primary font-bold">12 hours</span> of downtime you won&apos;t have to
+        <span className="text-primary font-bold">24 hours</span> of downtime you won&apos;t have to
         explain to your customers.
       </p>
     </div>

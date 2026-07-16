@@ -284,10 +284,10 @@ export async function createMonitor(prevState: any, formData: FormData) {
         };
       }
 
-      if (data.interval < 180) {
+      if (data.interval < 60) {
         return {
           success: false,
-          error: "Minimum check interval for the Free tier is 3 minutes (180 seconds).",
+          error: "Minimum check interval for the Free tier is 1 minute (60 seconds).",
         };
       }
 
@@ -522,10 +522,10 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
       };
     }
 
-    if (data.interval < 180) {
+    if (data.interval < 60) {
       return {
         success: false,
-        error: "Minimum check interval for the Free tier is 3 minutes (180 seconds).",
+        error: "Minimum check interval for the Free tier is 1 minute (60 seconds).",
       };
     }
 

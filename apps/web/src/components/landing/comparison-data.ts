@@ -39,7 +39,7 @@ export const competitors: CompetitorInfo[] = [
 export const featureComparisons: CompetitorFeature[] = [
   {
     name: "Free Tier Check Interval",
-    pulseguard: "3 minutes",
+    pulseguard: "1 minute",
     competitor1: "5 minutes",
     competitor2: "5 minutes",
     competitor3: "1 minute",
@@ -168,7 +168,7 @@ export const featureComparisons: CompetitorFeature[] = [
 ];
 
 export const intervalComparison = {
-  pulseguard: { label: "PulseGuard Free", interval: 180, color: "bg-primary" },
+  pulseguard: { label: "PulseGuard Free", interval: 60, color: "bg-primary" },
   competitors: [
     { label: "UptimeRobot", interval: 300, color: "bg-red-500/60" },
     { label: "Better Uptime", interval: 300, color: "bg-yellow-500/60" },

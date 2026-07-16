@@ -34,7 +34,7 @@ export async function applyTemplate(
   const tier = (user.tier ?? "INITIATE") as "INITIATE" | "NETRUNNER" | "CONSTRUCT";
 
   const tierLimits: Record<string, { maxMonitors: number; minInterval: number }> = {
-    INITIATE: { maxMonitors: 50, minInterval: 180 },
+    INITIATE: { maxMonitors: 50, minInterval: 60 },
     NETRUNNER: { maxMonitors: 200, minInterval: 30 },
     CONSTRUCT: { maxMonitors: 9999, minInterval: 10 },
   };

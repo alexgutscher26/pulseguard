@@ -411,7 +411,7 @@ export function IntegrationsManager() {
                     <div className="flex items-center gap-2 justify-between text-[11px] text-muted-foreground bg-accent/10 p-3 border border-border rounded-xl">
                       <span className="flex items-center gap-1">
                         <AlertTriangle className="size-3.5 text-yellow-500" />
-                        Monitors will check in every 3 minutes (Initiate Tier limit).
+                        Monitors will check in every 60 seconds (Initiate Tier limit).
                       </span>
                     </div>
 

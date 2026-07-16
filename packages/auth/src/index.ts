@@ -65,7 +65,7 @@ export const auth = betterAuth({
     process.env.NEXT_PUBLIC_APP_URL ?? "",
     "http://localhost:3000",
     "exp://",
-    "https://pulseguard-org.vercel.app/"
+    "https://pulseguard-org.vercel.app/",
   ],
   emailAndPassword: {
     enabled: true,

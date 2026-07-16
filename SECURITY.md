@@ -82,13 +82,13 @@ We strictly adhere to the **OWASP Top 10 (2026)** and deeply respect the supply 
 
 ### Automated Scanning
 
-| Scan | Tool | Cadence | Trigger |
-| :--- | :--- | :-----: | :------ |
-| **Dependency vulnerabilities** | Mend (WhiteSource) | On push | Fails CI on any LOW+ severity |
-| **Filesystem vulnerability scan** | Trivy | Weekly + on push/PR to `main` | Fails on CRITICAL/HIGH |
-| **Secrets & hardcoded credentials** | Custom Python scanner | On demand | Flags OWASP A04 violations |
-| **Dependency auditing** | `bun` lockfile scanning | On install | Blocks known-zero-day packages |
-| **HTTP security headers** | Cloudflare Worker | On demand | Grades A+ through F per endpoint |
+| Scan                                | Tool                    |            Cadence            | Trigger                          |
+| :---------------------------------- | :---------------------- | :---------------------------: | :------------------------------- |
+| **Dependency vulnerabilities**      | Mend (WhiteSource)      |            On push            | Fails CI on any LOW+ severity    |
+| **Filesystem vulnerability scan**   | Trivy                   | Weekly + on push/PR to `main` | Fails on CRITICAL/HIGH           |
+| **Secrets & hardcoded credentials** | Custom Python scanner   |           On demand           | Flags OWASP A04 violations       |
+| **Dependency auditing**             | `bun` lockfile scanning |          On install           | Blocks known-zero-day packages   |
+| **HTTP security headers**           | Cloudflare Worker       |           On demand           | Grades A+ through F per endpoint |
 
 ### Infrastructure
 

@@ -86,13 +86,13 @@ pulseguard/
 
 **Route structure**:
 
-| Group | Routes | Access |
-|-------|--------|--------|
-| `(marketing)` | `/`, `/features/*`, `/comparison/*` | Public |
-| `(app)` | `/dashboard/*`, `/monitors/*`, `/incidents/*`, `/alerts/*`, `/settings/*`, `/pages/*` | Authenticated |
-| `[locale]` | `/status-page/[slug]`, `/subscribe/*` | Public |
-| Top-level | `/login`, `/signup`, `/hall-of-fame`, `/showcase`, `/tools/*` | Mixed |
-| `api/` | `auth/*`, `monitors/*`, `feeds/*`, `badge/*`, `webhooks/*`, `workspace/*`, `uploadthing/*` | Mixed |
+| Group         | Routes                                                                                     | Access        |
+| ------------- | ------------------------------------------------------------------------------------------ | ------------- |
+| `(marketing)` | `/`, `/features/*`, `/comparison/*`                                                        | Public        |
+| `(app)`       | `/dashboard/*`, `/monitors/*`, `/incidents/*`, `/alerts/*`, `/settings/*`, `/pages/*`      | Authenticated |
+| `[locale]`    | `/status-page/[slug]`, `/subscribe/*`                                                      | Public        |
+| Top-level     | `/login`, `/signup`, `/hall-of-fame`, `/showcase`, `/tools/*`                              | Mixed         |
+| `api/`        | `auth/*`, `monitors/*`, `feeds/*`, `badge/*`, `webhooks/*`, `workspace/*`, `uploadthing/*` | Mixed         |
 
 ### Worker (`apps/worker`)
 
@@ -100,6 +100,7 @@ pulseguard/
 **Entry**: `index.ts` with three handlers (`fetch`, `scheduled`, `queue`)
 
 **scheduled (cron)** — the core monitoring loop:
+
 - Every minute: fetches due monitors (shard-aware via `SHARD_ID`/`TOTAL_SHARDS`)
 - Processes up to `BATCH_SIZE` (5 on free tier) per tick
 - Each check runs through a multi-vector protocol:
@@ -111,6 +112,7 @@ pulseguard/
 - Status changes trigger notification dispatch
 
 **fetch (HTTP API)** — on-demand endpoints:
+
 - `POST /api/check-now` — immediate check with auth
 - `POST /api/broadcast` — push event to MonitorChannel DO
 - Audit endpoints: `dns-audit`, `payload-audit`, `security-headers`, `ssl-check`, `port-check`, `dns-watchdog`, `domain-expiration`, `mcp-check`, `graphql-check`, `websocket-check`, `database-check`, `bgp-check`, `global-latency`
@@ -118,6 +120,7 @@ pulseguard/
 - `GET /ws/monitors/:id` — WebSocket upgrade (proxied to MonitorChannel DO)
 
 **Durable Objects**:
+
 - `LatencyAggregator` — aggregates latency p50/p95/p99 at 1m/5m/1h granularity
 - `MonitorChannel` — WebSocket fan-out for real-time dashboard updates
 
@@ -129,6 +132,7 @@ pulseguard/
 **Purpose**: On-premise monitoring for private networks
 
 **Architecture**: Poll-based
+
 1. Registers with worker (`POST /api/probes/register`)
 2. Polls for assignments (`POST /api/probes/poll`)
 3. Executes local checks via `@pulseguard/core` (`checkHttpUniversal`, `checkPortUniversal`)
@@ -141,6 +145,7 @@ pulseguard/
 **Library**: commander, chalk, ora, table, yaml
 
 **Commands**:
+
 - `auth login/logout/status` — API key management
 - `monitors list/get/apply/import` — YAML-based Monitoring as Code
 - `trigger <id>` — force immediate check
@@ -283,27 +288,27 @@ For each monitor (up to BATCH_SIZE):
 
 ## Key Design Decisions
 
-| Decision | Rationale |
-|----------|-----------|
-| **Dual Worker architecture** | Separates UI/auth (Next.js via OpenNext) from the monitoring engine — allows independent scaling, deployment, and failure isolation |
+| Decision                          | Rationale                                                                                                                                                 |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Dual Worker architecture**      | Separates UI/auth (Next.js via OpenNext) from the monitoring engine — allows independent scaling, deployment, and failure isolation                       |
 | **Durable Objects for real-time** | MonitorChannel DO provides WebSocket fan-out without managing a pub/sub server; LatencyAggregator avoids write amplification from per-region latency data |
-| **Probe poll model (not push)** | Probes behind NAT/firewalls can initiate outbound connections; no inbound port required |
-| **Redis fallback queue** | If Postgres is unreachable, check results queue in Upstash Redis and replay when DB recovers — ensures no data loss during brief outages |
-| **Shard-ready from day one** | `SHARD_ID`/`TOTAL_SHARDS` + SQL modulo lets the monitoring worker scale horizontally by splitting the monitor table |
-| **Multi-vector verification** | A single failed check doesn't trigger an alert — the proxy mesh confirms from 3+ geographic POVs before declaring a down state |
-| **WASM payload validation** | Rust-compiled WASM for regex + JSONPath assertions on HTTP response bodies — 10-100x faster than JS equivalents |
-| **16 monitor types** | Covers the full observability spectrum from simple HTTP pings to BGP route inspection and browser sequence scripts |
-| **tRPC + TanStack Query** | End-to-end type safety from DB schema through API to React components; automatic cache invalidation and optimistic updates |
+| **Probe poll model (not push)**   | Probes behind NAT/firewalls can initiate outbound connections; no inbound port required                                                                   |
+| **Redis fallback queue**          | If Postgres is unreachable, check results queue in Upstash Redis and replay when DB recovers — ensures no data loss during brief outages                  |
+| **Shard-ready from day one**      | `SHARD_ID`/`TOTAL_SHARDS` + SQL modulo lets the monitoring worker scale horizontally by splitting the monitor table                                       |
+| **Multi-vector verification**     | A single failed check doesn't trigger an alert — the proxy mesh confirms from 3+ geographic POVs before declaring a down state                            |
+| **WASM payload validation**       | Rust-compiled WASM for regex + JSONPath assertions on HTTP response bodies — 10-100x faster than JS equivalents                                           |
+| **16 monitor types**              | Covers the full observability spectrum from simple HTTP pings to BGP route inspection and browser sequence scripts                                        |
+| **tRPC + TanStack Query**         | End-to-end type safety from DB schema through API to React components; automatic cache invalidation and optimistic updates                                |
 
 ---
 
 ## Scaling Model
 
-| Tier | Workers | Monitors/Worker | Queue | Probes |
-|------|---------|-----------------|-------|--------|
-| Free | 1 | 5 per tick | No | No |
-| Pro  | 1 | 50 per tick | Yes | Up to 3 |
-| Enterprise | N (sharded) | Unlimited | Yes | Unlimited |
+| Tier       | Workers     | Monitors/Worker | Queue | Probes    |
+| ---------- | ----------- | --------------- | ----- | --------- |
+| Free       | 1           | 5 per tick      | No    | No        |
+| Pro        | 1           | 50 per tick     | Yes   | Up to 3   |
+| Enterprise | N (sharded) | Unlimited       | Yes   | Unlimited |
 
 ---
 

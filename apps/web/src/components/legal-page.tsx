@@ -20,10 +20,20 @@ interface LegalPageProps {
 }
 
 function slugify(text: string) {
-  return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 }
 
-export default function LegalPage({ title, badge, description, lastUpdated, sections, otherPage }: LegalPageProps) {
+export default function LegalPage({
+  title,
+  badge,
+  description,
+  lastUpdated,
+  sections,
+  otherPage,
+}: LegalPageProps) {
   return (
     <div className="flex flex-col">
       <section className="py-28 md:py-36 bg-background relative overflow-hidden border-b border-border">
@@ -36,9 +46,7 @@ export default function LegalPage({ title, badge, description, lastUpdated, sect
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-foreground max-w-3xl leading-[1.1]">
             {title}
           </h1>
-          <p className="text-muted-foreground text-sm leading-relaxed max-w-xl">
-            {description}
-          </p>
+          <p className="text-muted-foreground text-sm leading-relaxed max-w-xl">{description}</p>
           <p className="text-muted-foreground/50 text-[11px] font-mono">
             Last updated: {lastUpdated}
           </p>
@@ -66,7 +74,11 @@ export default function LegalPage({ title, badge, description, lastUpdated, sect
 
           <div className="flex-1 min-w-0 divide-y divide-border">
             {sections.map((section, i) => (
-              <section key={section.title} id={slugify(section.title)} className="py-10 first:pt-0 last:pb-0 scroll-mt-32">
+              <section
+                key={section.title}
+                id={slugify(section.title)}
+                className="py-10 first:pt-0 last:pb-0 scroll-mt-32"
+              >
                 <div className="flex items-start gap-4">
                   <span className="hidden sm:inline-flex mt-0.5 size-7 shrink-0 items-center justify-center rounded-md border border-border bg-card text-[11px] font-bold text-muted-foreground/60 font-mono">
                     {String(i + 1).padStart(2, "0")}

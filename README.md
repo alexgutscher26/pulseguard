@@ -186,36 +186,36 @@ bun run dev
 
 See `packages/env/src/` for Zod-validated schemas. Key variables:
 
-| Variable | Required | Description |
-| :------- | :------- | :---------- |
-| `DATABASE_URL` | Yes | PostgreSQL connection string |
-| `BETTER_AUTH_SECRET` | Yes | Session signing key (min 32 chars) |
-| `BETTER_AUTH_URL` | Yes | Auth base URL |
-| `NEXT_PUBLIC_APP_URL` | Yes | Public app URL |
-| `CORS_ORIGIN` | Yes | Allowed CORS origin |
-| `RESEND_API_KEY` | No | Email delivery |
-| `UPSTASH_REDIS_REST_URL` | No | Redis fallback |
-| `OPENAI_API_KEY` | No | Anomaly detection |
+| Variable                 | Required | Description                        |
+| :----------------------- | :------- | :--------------------------------- |
+| `DATABASE_URL`           | Yes      | PostgreSQL connection string       |
+| `BETTER_AUTH_SECRET`     | Yes      | Session signing key (min 32 chars) |
+| `BETTER_AUTH_URL`        | Yes      | Auth base URL                      |
+| `NEXT_PUBLIC_APP_URL`    | Yes      | Public app URL                     |
+| `CORS_ORIGIN`            | Yes      | Allowed CORS origin                |
+| `RESEND_API_KEY`         | No       | Email delivery                     |
+| `UPSTASH_REDIS_REST_URL` | No       | Redis fallback                     |
+| `OPENAI_API_KEY`         | No       | Anomaly detection                  |
 
 ---
 
 ## Scripts
 
-| Command | Description |
-| :------ | :---------- |
-| `bun run dev` | Start all apps in dev mode |
-| `bun run dev:web` | Next.js dashboard only |
-| `bun run dev:worker` | Cloudflare Worker (Miniflare) |
-| `bun run dev:native` | Expo Metro bundler |
-| `bun run build` | Build all packages |
-| `bun run check` | Lint + format (oxlint + oxfmt) |
-| `bun run check-types` | TypeScript type check |
-| `bun run db:push` | Sync Prisma schema to DB |
-| `bun run db:migrate` | Run production migration |
-| `bun run db:studio` | Open Prisma Studio |
-| `bun run db:generate` | Recompile Prisma client |
-| `bun run deploy` | Deploy to Cloudflare |
-| `bun run destroy` | Tear down Cloudflare stack |
+| Command               | Description                    |
+| :-------------------- | :----------------------------- |
+| `bun run dev`         | Start all apps in dev mode     |
+| `bun run dev:web`     | Next.js dashboard only         |
+| `bun run dev:worker`  | Cloudflare Worker (Miniflare)  |
+| `bun run dev:native`  | Expo Metro bundler             |
+| `bun run build`       | Build all packages             |
+| `bun run check`       | Lint + format (oxlint + oxfmt) |
+| `bun run check-types` | TypeScript type check          |
+| `bun run db:push`     | Sync Prisma schema to DB       |
+| `bun run db:migrate`  | Run production migration       |
+| `bun run db:studio`   | Open Prisma Studio             |
+| `bun run db:generate` | Recompile Prisma client        |
+| `bun run deploy`      | Deploy to Cloudflare           |
+| `bun run destroy`     | Tear down Cloudflare stack     |
 
 ---
 
