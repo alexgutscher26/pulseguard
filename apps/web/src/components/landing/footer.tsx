@@ -72,22 +72,16 @@ export default function LandingFooter() {
             </span>
             <div className="flex flex-col gap-2.5">
               <Link
-                href="#"
+                href={"/about" as any}
                 className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
               >
                 About
               </Link>
               <Link
-                href="#"
+                href={"/blog" as any}
                 className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
               >
                 Blog
-              </Link>
-              <Link
-                href="#"
-                className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
-              >
-                Careers
               </Link>
             </div>
           </div>
@@ -99,13 +93,13 @@ export default function LandingFooter() {
             </span>
             <div className="flex flex-col gap-2.5">
               <Link
-                href="#"
+                href="/privacy"
                 className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
               >
                 Privacy Policy
               </Link>
               <Link
-                href="#"
+                href="/terms"
                 className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
               >
                 Terms of Service
@@ -120,10 +114,10 @@ export default function LandingFooter() {
             © {new Date().getFullYear()} PulseGuard. All rights reserved.
           </span>
           <div className="flex items-center gap-4 text-muted-foreground">
-            <Link href="#" className="hover:text-foreground transition-all">
+            <Link href="https://x.com/snackforcode" className="hover:text-foreground transition-all">
               <Twitter className="size-[17px]" />
             </Link>
-            <Link href="#" className="hover:text-foreground transition-all">
+            <Link href="https://github.com/alexgutscher26/pulseguard" className="hover:text-foreground transition-all">
               <Github className="size-[17px]" />
             </Link>
           </div>
