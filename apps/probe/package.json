@@ -6,9 +6,9 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "bun --watch src/index.ts",
-    "build": "tsc",
-    "start": "bun src/index.ts",
-    "docker:build": "docker build -t pulseguard-probe ."
+    "build": "bun build src/index.ts --outfile dist/index.js --target node",
+    "start": "node dist/index.js",
+    "docker:build": "docker build -f Dockerfile -t pulseguard-probe ../.."
   },
   "dependencies": {
     "@pulseguard/core": "workspace:*",

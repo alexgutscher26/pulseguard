@@ -6,6 +6,7 @@ import { DashboardStats, type DashboardStatsData } from "@/components/dashboard/
 import { MonitorsTable } from "@/components/dashboard/monitors-table";
 import { MonitorsGrid } from "@/components/dashboard/monitors-grid";
 import { AIInsights, type MonitorInsight } from "@/components/dashboard/ai-insights";
+import { PrivacyBanner } from "@/components/dashboard/privacy-banner";
 import { useMonitors, useDashboardStats } from "@/hooks/use-monitors";
 import { LayoutGrid, List, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -64,6 +65,7 @@ export default function Dashboard({
   return (
     <div className="flex flex-col gap-6">
       <AIInsights insights={initialInsights} />
+      <PrivacyBanner />
       <DashboardStats stats={stats} />
 
       {/* View Mode Selector bar */}

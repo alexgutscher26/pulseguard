@@ -1968,7 +1968,7 @@ export default {
             });
 
           const prisma = getPrisma(env.DATABASE_URL);
-          const { authenticateProbe, reportResult } = await import("./services/probe-registry");
+          const { authenticateProbe, reportResult, reportResultsBatch } = await import("./services/probe-registry");
           const probe = await authenticateProbe(prisma, token);
           if (!probe)
             return new Response(JSON.stringify({ error: "Invalid or inactive probe" }), {
@@ -1977,7 +1977,11 @@ export default {
             });
 
           const body: any = await request.json();
-          await reportResult(prisma, probe.id, body);
+          if (Array.isArray(body)) {
+            await reportResultsBatch(prisma, probe.id, body);
+          } else {
+            await reportResult(prisma, probe.id, body);
+          }
 
           return new Response(JSON.stringify({ ok: true }), {
             status: 200,
@@ -2049,6 +2053,24 @@ export default {
   // 1. Cron: Find pending checks and run them (Free Tier Batch Mode)
   async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
     console.log(`Cron triggered: ${event.cron}`);
+
+    // --- ANOMALY SCANNER: Run on 5-minute or hourly triggers ---
+    if (event.cron === "*/5 * * * *" || event.cron === "0 * * * *") {
+      ctx.waitUntil(
+        (async () => {
+          try {
+            const scanPrisma = getPrisma(env.DATABASE_URL);
+            const { runAnomalyScan } = await import("./services/anomaly-scanner");
+            await runAnomalyScan(scanPrisma);
+            const { resetPrisma } = await import("@pulseguard/db");
+            await resetPrisma(env.DATABASE_URL);
+          } catch (err) {
+            console.error("[AnomalyScan] Scheduled run failed:", err);
+          }
+        })(),
+      );
+    }
+
     let prisma = getPrisma(env.DATABASE_URL);
 
     // --- DATABASE SYNC: Restore data from Redis fallback if DB is healthy ---

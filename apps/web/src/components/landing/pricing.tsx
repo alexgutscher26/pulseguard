@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Check } from "lucide-react";
+import { Check, Moon } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -108,17 +108,18 @@ export default function Pricing() {
             </div>
           </div>
 
-          {/* Tier 2: The Netrunner */}
+          {/* Tier 2: The Netrunner — "The Sleep Plan" */}
           <div className="bg-card border-2 border-primary/40 rounded-2xl flex flex-col relative shadow-[0_12px_40px_rgba(0,0,0,0.04)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.45)] transform md:-translate-y-2 hover:border-primary transition-all duration-300">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-wider px-3.5 py-1 rounded-full shadow-sm">
-              Most Popular
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-wider px-3.5 py-1 rounded-full shadow-sm flex items-center gap-1.5">
+              <Moon className="size-3" />
+              The Sleep Plan
             </div>
 
             <div className="p-8 border-b border-primary/20 bg-primary/5 rounded-t-2xl">
               <h3 className="text-primary font-bold text-lg uppercase tracking-wider">
                 The Netrunner
               </h3>
-              <p className="text-xs text-primary/70 mt-1">Ideal for growing SaaS & power users.</p>
+              <p className="text-xs text-primary/70 mt-1">Solo devs who value their sleep.</p>
               <div className="mt-6 flex items-baseline gap-1">
                 <span className="text-4xl font-extrabold tracking-tight text-foreground">
                   {billing === "yearly" ? "$140" : "$14"}
@@ -138,6 +139,10 @@ export default function Pricing() {
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
                   <span className="text-foreground font-semibold">30-Second Heartbeat checks</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check className="size-4 text-primary shrink-0" />
+                  <span className="text-primary font-semibold">✓ Real alerts only — if we call, it&apos;s real</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />

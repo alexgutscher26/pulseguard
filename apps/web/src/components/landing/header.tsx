@@ -14,6 +14,7 @@ import {
   Sun,
   Moon,
   Monitor,
+  Flame,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { motion, AnimatePresence } from "framer-motion";
@@ -126,6 +127,11 @@ export default function LandingHeader() {
                         href: "/tools/visual-diff",
                         icon: <Activity className="h-4 w-4" />,
                       },
+                      {
+                        name: "Roast My Stack",
+                        href: "/tools/roast-my-stack",
+                        icon: <Flame className="h-4 w-4" />,
+                      },
                     ].map((tool) => (
                       <Link
                         key={tool.name}
@@ -146,9 +152,11 @@ export default function LandingHeader() {
           </div>
 
           {[
-            { name: "Protocol", href: "/#protocol" },
             { name: "Features", href: "/#features" },
             { name: "Pricing", href: "/#pricing" },
+            { name: "Showcase", href: "/showcase" },
+            { name: "Hall of Fame", href: "/hall-of-fame" },
+            { name: "Comparison", href: "/comparison" },
             { name: "Docs", href: "/#docs" },
           ].map((item) => (
             <Link

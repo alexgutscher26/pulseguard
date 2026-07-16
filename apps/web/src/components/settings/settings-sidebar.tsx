@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { User, Shield, Key, Download } from "lucide-react";
+import { User, Shield, Key, Download, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const items = [
@@ -10,6 +10,7 @@ const items = [
   { name: "Security", icon: Shield, tab: "security" },
   { name: "API Keys", icon: Key, tab: "api-keys" },
   { name: "Migration & Export", icon: Download, tab: "migration" },
+  { name: "Privacy", icon: Eye, tab: "privacy" },
 ];
 
 /**

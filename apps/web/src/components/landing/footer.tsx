@@ -39,6 +39,24 @@ export default function LandingFooter() {
                 Pricing
               </Link>
               <Link
+                href={"/comparison" as any}
+                className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
+              >
+                Comparison
+              </Link>
+              <Link
+                href={"/showcase" as any}
+                className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
+              >
+                Showcase
+              </Link>
+              <Link
+                href={"/hall-of-fame" as any}
+                className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
+              >
+                Hall of Fame
+              </Link>
+              <Link
                 href="#"
                 className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
               >

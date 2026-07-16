@@ -6,12 +6,16 @@
     "*": {
       "regions": [
         "src/regions.ts"
+      ],
+      "stack-templates": [
+        "src/stack-templates.ts"
       ]
     }
   },
   "exports": {
     ".": "./src/index.ts",
-    "./regions": "./src/regions.ts"
+    "./regions": "./src/regions.ts",
+    "./stack-templates": "./src/stack-templates.ts"
   },
   "scripts": {
     "clean": "rm -rf .turbo node_modules"

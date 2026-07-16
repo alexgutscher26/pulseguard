@@ -1,4 +1,4 @@
-import { CheckCircle2, Loader2, ArrowUpRight } from "lucide-react";
+import { CheckCircle2, Loader2, ArrowUpRight, Moon } from "lucide-react";
 import { LiveStatusDemo } from "./live-status-demo";
 import Link from "next/link";
 // aria-label placeholder
@@ -22,7 +22,7 @@ export default function Features() {
         </div>
 
         {/* Modernist Card Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Card 1: Live Status Demo */}
           <Link
             href={"/features/latency-grid" as any}
@@ -208,6 +208,46 @@ export default function Features() {
               <p className="text-xs text-muted-foreground leading-relaxed">
                 Eliminate localized errors. Nodes cross-reference downtime signatures dynamically
                 before triggering pages.
+              </p>
+            </div>
+          </Link>
+
+          {/* Card 4: Sleep Mode */}
+          <Link
+            href={"/features/sleep-mode" as any}
+            className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between group hover:border-primary/20 hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-300 min-h-[440px] block"
+          >
+            {/* Visual Area */}
+            <div className="h-[200px] w-full mb-6 relative flex items-center justify-center">
+              <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.03] to-transparent" />
+              <div className="relative flex flex-col items-center gap-3">
+                {/* Moon Icon */}
+                <div className="size-16 bg-primary/5 border border-primary/20 rounded-full flex items-center justify-center group-hover:border-primary/40 group-hover:bg-primary/10 transition-all duration-300">
+                  <Moon className="size-7 text-primary" />
+                </div>
+                {/* Z's floating */}
+                <div className="flex gap-2">
+                  <span className="text-xs font-mono text-primary/40 animate-bounce" style={{ animationDelay: "0ms" }}>z</span>
+                  <span className="text-xs font-mono text-primary/50 animate-bounce" style={{ animationDelay: "200ms" }}>z</span>
+                  <span className="text-xs font-mono text-primary/60 animate-bounce" style={{ animationDelay: "400ms" }}>z</span>
+                </div>
+                {/* Badge */}
+                <div className="px-2 py-0.5 bg-primary/10 border border-primary/20 text-primary text-[8px] font-bold font-mono uppercase tracking-widest">
+                  False-Positive Free
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-base font-bold text-foreground tracking-tight">
+                  Sleep Mode
+                </h3>
+                <ArrowUpRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                If we call you at 3 AM, it&apos;s real. Multi-vector verification filters out
+                2-second blips so you sleep through the noise.
               </p>
             </div>
           </Link>

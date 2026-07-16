@@ -18,6 +18,7 @@ model User {
   incidentTemplates    IncidentTemplate[]
   probes               Probe[]
   apiKeys              ApiKey[]
+  privacy              UserPrivacy?
 
   @@unique([email])
   @@map("user")

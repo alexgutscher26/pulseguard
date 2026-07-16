@@ -422,7 +422,7 @@ Strategies to win the indie developer market against established giants and mode
 - [x] **Automated Health Checks for Side Projects**: Specialized cron-job and heartbeat monitoring for the dormant projects that pay the bills.
 - [ ] **Status Page as a Marketing Tool**: Integrate changelogs, feature request boards, and feedback loops directly into the status page.
 - [ ] **Lightweight & Fast**: Highly optimized performance to respect the minimal bandwidth and compute resources of indie stacks.
-- [ ] **Privacy-First Intelligence**: Emphasize transparency for developers protective of their uptime metrics.
+- [x] **Privacy-First Intelligence**: Emphasize transparency for developers protective of their uptime metrics.
 
 ### 📊 Competitive Comparison (PulseGuard vs OpenStatus)
 
@@ -446,20 +446,20 @@ Strategies to win the indie developer market against established giants and mode
 
 Because the Free Tier is limited (50 monitors/3m), we market **Quality, Aesthetics, and Intelligence.** We are the premium tool with a generous trial.
 
-- [ ] **"The Stack" Templates (Community Marketing)**
-  - Create one-click templates (e.g. "The Perfect Next.js Monitoring Setup"). Don't sell "monitoring", sell "1-click peace of mind for your specific stack."
-  - Share these templates organically on Dev.to, r/NextJS, and r/Supabase.
-- [ ] **"Better Than Industry Standard" Comparisons**
-  - Explicitly attack the standard 5-minute Free Tier of competitors.
-  - "5 minutes is too long. PulseGuard gives you 3-minute checks for free." Show visual timelines to prove the point.
-- [ ] **The "Ugly Status Page" Nudge (Gentle Shaming)**
+- [x] **"The Stack" Templates (Community Marketing)**
+  - [x] Create one-click templates (e.g. "The Perfect Next.js Monitoring Setup"). Don't sell "monitoring", sell "1-click peace of mind for your specific stack."
+  - [x] Share these templates organically on Dev.to, r/NextJS, and r/Supabase.
+- [x] **"Better Than Industry Standard" Comparisons**
+  - [x] Explicitly attack the standard 5-minute Free Tier of competitors.
+  - [x] "5 minutes is too long. PulseGuard gives you 3-minute checks for free." Show visual timelines to prove the point.
+- [x] **The "Ugly Status Page" Nudge (Gentle Shaming)**
   - Intentionally clearly brand the free status pages. Then inside the app: "Your page is getting traffic! Upgrade so your customers don't see our ads."
-- [ ] **Market "Sleep Mode" (The AI Feature Hook)**
-  - Solo devs hate waking up at 3 AM for false alarms. Sell the $14 Netrunner plan as "The Sleep Plan."
-  - "PulseGuard filters out 2-second blips. If we call you, it's real."
-- [ ] **Guerrilla Operations**
-  - Build a showcase directory of beautifully designed "Cyberpunk" Pro status pages (users love showing off).
-  - "Roast My Stack" threads: Ask users for URLs, run manual checks, and reply with custom PulseGuard reports showing TTFB and error rates.
+- [x] **Market "Sleep Mode" (The AI Feature Hook)**
+  - [x] Solo devs hate waking up at 3 AM for false alarms. Sell the $14 Netrunner plan as "The Sleep Plan."
+  - [x] "PulseGuard filters out 2-second blips. If we call you, it's real."
+- [x] **Guerrilla Operations**
+  - [x] Build a showcase directory of beautifully designed "Cyberpunk" Pro status pages (users love showing off).
+  - [x] "Roast My Stack" threads: Ask users for URLs, run manual checks, and reply with custom PulseGuard reports showing TTFB and error rates.
 
 ---
 
@@ -469,10 +469,10 @@ Bolt on AI in highly focused, deterministic places without adding hallucination 
 
 ### 🤖 Invisible AI & Implementation
 
-- [ ] **Simple Baseline Anomaly Logic (No ML needed yet)**
-  - Ingest checks into a `monitor_checks` table with (ts, region, status, latency_ms, http_code).
-  - Run a CRON job (every 5-10m) checking the last X hours for the same weekday. Compute average + standard deviation.
-  - Trigger "Anomaly Warning" if `current_latency > avg_latency + 3*std_latency`.
+- [x] **Simple Baseline Anomaly Logic (No ML needed yet)**
+  - [x] Ingest checks into a `monitor_checks` table with (ts, region, status, latency_ms, http_code).
+  - [x] Run a CRON job (every 5-10m) checking the last X hours for the same weekday. Compute average + standard deviation.
+  - [x] Trigger "Anomaly Warning" if `current_latency > avg_latency + 3*std_latency`.
 - [ ] **LLM Helpers - Incident Summarization**
   - Trigger ONLY on incident transitions (down > X mins).
   - Send the last 20 checks + deploy timestamps to an LLM.
@@ -534,8 +534,8 @@ Encourage better infrastructure practices through gentle positive reinforcement.
   - Unlock badges like "Iron Clad" (100% Uptime for 30 days) or "Quick Draw" (Resolved an incident in under 5 minutes).
 - [ ] **Weekly Infrastructure Health Score**
   - Gamified summary emails visually comparing this week's stability and average response time to last week's.
-- [ ] **Community Leaderboards / "Powered By" Hall of Fame**
-  - Feature indie-hackers with top-tier SLAs in marketing showcases.
+- [x] **Community Leaderboards / "Powered By" Hall of Fame**
+  - [x] Feature indie-hackers with top-tier SLAs in marketing showcases.
 
 ---
 

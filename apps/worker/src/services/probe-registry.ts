@@ -188,6 +188,60 @@ export async function reportResult(
   });
 }
 
+export async function reportResultsBatch(
+  prisma: any,
+  probeId: string,
+  results: ProbeResult[],
+): Promise<void> {
+  if (results.length === 0) return;
+
+  // 1. Bulk insert events using createMany
+  await prisma.monitorEvent.createMany({
+    data: results.map((result) => ({
+      monitorId: result.monitorId,
+      status: result.status,
+      latency: result.latency,
+      errorReason: result.errorReason || null,
+      region: result.region || `probe:${probeId}`,
+      probeId,
+      timestamp: result.timestamp ? new Date(result.timestamp) : new Date(),
+    })),
+  });
+
+  // 2. Fetch intervals of the monitors in batch
+  const monitorIds = Array.from(new Set(results.map((r) => r.monitorId)));
+  const monitors = await prisma.monitor.findMany({
+    where: { id: { in: monitorIds } },
+    select: { id: true, interval: true },
+  });
+  const intervalMap = new Map<string, number>(
+    monitors.map((m: any) => [m.id, m.interval || 60])
+  );
+
+  // 3. Update monitor status concurrently (keep only the latest result per monitorId to avoid write contention)
+  const latestResultsMap = new Map<string, ProbeResult>();
+  for (const r of results) {
+    const existing = latestResultsMap.get(r.monitorId);
+    if (!existing || new Date(r.timestamp) > new Date(existing.timestamp)) {
+      latestResultsMap.set(r.monitorId, r);
+    }
+  }
+
+  await Promise.all(
+    Array.from(latestResultsMap.values()).map((result) => {
+      const interval = intervalMap.get(result.monitorId) || 60;
+      return prisma.monitor.update({
+        where: { id: result.monitorId },
+        data: {
+          status: result.status,
+          lastCheck: new Date(),
+          nextCheck: new Date(Date.now() + interval * 1000),
+        },
+      });
+    })
+  );
+}
+
 export async function recordHeartbeat(
   prisma: any,
   probeId: string,

@@ -146,23 +146,45 @@ async function runCheck(job: ProbeJob): Promise<CheckResult> {
   }
 }
 
-async function reportResult(result: CheckResult): Promise<void> {
+async function reportResultsBatch(results: CheckResult[]): Promise<void> {
+  if (results.length === 0) return;
   try {
-    await apiPost("/api/probes/result", result);
-    console.log(`[Result] ${result.monitorId}: ${result.status} (${result.latency}ms)`);
+    await apiPost("/api/probes/result", results);
+    console.log(`[Result] Successfully reported batch of ${results.length} result(s).`);
   } catch (err: any) {
-    console.error(`[Result] Failed to report ${result.monitorId}: ${err.message}`);
+    console.error(`[Result] Failed to report batch of ${results.length} results: ${err.message}`);
   }
 }
 
 async function processJobs(jobs: ProbeJob[]): Promise<void> {
   if (jobs.length === 0) return;
-  console.log(`[Jobs] Processing ${jobs.length} monitor(s)`);
+  console.log(`[Jobs] Processing ${jobs.length} monitor(s) concurrently`);
 
-  for (const job of jobs) {
-    const result = await runCheck(job);
-    await reportResult(result);
+  const concurrencyLimit = parseInt(process.env.PROBE_CONCURRENCY || "5", 10);
+  const results: CheckResult[] = [];
+  let index = 0;
+
+  async function worker() {
+    while (index < jobs.length) {
+      const currentIndex = index++;
+      if (currentIndex >= jobs.length) break;
+      const job = jobs[currentIndex];
+      try {
+        const result = await runCheck(job);
+        results.push(result);
+      } catch (err: any) {
+        console.error(`[Jobs] Error running check for monitor ${job.monitorId}:`, err);
+      }
+    }
   }
+
+  const workers = Array.from(
+    { length: Math.min(concurrencyLimit, jobs.length) },
+    () => worker(),
+  );
+  await Promise.all(workers);
+
+  await reportResultsBatch(results);
 }
 
 async function main(): Promise<void> {
