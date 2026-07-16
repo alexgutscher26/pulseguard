@@ -57,10 +57,10 @@ export default function LandingFooter() {
                 Hall of Fame
               </Link>
               <Link
-                href="#"
+                href="/docs"
                 className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
               >
-                API Docs
+                Docs
               </Link>
             </div>
           </div>

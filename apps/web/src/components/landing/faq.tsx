@@ -1,26 +1,43 @@
 import { ChevronDown } from "lucide-react";
+import { PRODUCT_CONFIG, AVAILABLE_REGIONS } from "@pulseguard/shared";
 
 export default function FAQ() {
   const faqs = [
     {
-      q: "How fast are the checks performed?",
-      a: "Our verification sequences execute every 60 seconds from over 12 concurrent global zones using headless agents to guarantee maximum accuracy.",
+      q: "How fast are the checks performed, and are there interval limits per tier?",
+      a: `Verification checks execute natively at the edge. The check frequency depends on your subscription tier: the Initiate (Free) tier supports intervals down to 60 seconds, the Netrunner plan supports down to 30 seconds, and the Construct (Enterprise) plan supports high-frequency telemetry checks down to 10 seconds. Checks are distributed across our ${AVAILABLE_REGIONS.length}+ concurrent global edge regions using sandboxed headless agents.`,
     },
     {
-      q: "Can I cancel my subscription anytime?",
-      a: "Yes. Cancel instantly with no data lock-in. You will retain access to your telemetry and dashboards until the end of your billing cycle.",
+      q: "What is multi-region consensus verification, and how does it prevent false alerts?",
+      a: "Outages on the Internet are often localized due to routing anomalies or regional network drops. When a PulseGuard edge probe detects that your monitor is DOWN, it does not immediately trigger an alert. Instead, it queries other global zones to establish a 2/3 consensus. If multiple nodes confirm the target is unreachable, it escalates to an incident. This voting system completely eliminates false positives caused by regional CDN drops or localized route flapping.",
     },
     {
-      q: "Do you handle SSL expiry events?",
-      a: "Absolutely. The SSL Module automatically scans for expiration dates, ciphers, and mistrust issues, alerting you 30 days in advance.",
+      q: "How do private probes monitor internal infrastructure behind firewalls?",
+      a: "Our lightweight dockerized probes run internally on your own secure private subnets. Instead of requiring you to open incoming firewall ports or set up public DNS records, the private probe establishes a secure outbound WebSocket control channel to our edge Durable Objects. The probe securely polls jobs, executes them locally, and pushes metrics back to PulseGuard, ensuring zero inbound security risks.",
     },
     {
-      q: "What happens on monitor limit breach?",
-      a: "Our system throws a soft warning at 90% capacity. Checking continues uninterrupted for existing nodes, but you must upgrade your tier to add new monitors.",
+      q: "What notification channels are supported for dispatches?",
+      a: "Alerts can be routed dynamically based on severity thresholds. We support instant dispatches to Slack, Discord webhooks, Microsoft Teams, and email. For team alerting rotation, the Construct plan integrates directly with pager services like PagerDuty or custom webhook endpoints to execute automated disaster recovery actions.",
     },
     {
-      q: "Is my infrastructure data secure?",
-      a: "Yes, all telemetry data is stored securely. The PulseGuard agent runs on secure outbound-only endpoints and requires zero inbound port forwarding.",
+      q: "What are the exact capabilities and limits of the Initiate (Free) plan?",
+      a: `The Initiate plan is designed for side projects and indie developers. It includes 50 active monitors, 60-second checks, 1 public status page, and up to ${PRODUCT_CONFIG.FREE_CHECKS_LIMIT.toLocaleString()} free checks per month. It requires no credit card and supports HTTP, SSL/TLS, DNS, and Heartbeat checks with 3 days of log retention.`,
+    },
+    {
+      q: "Can I monitor protocols other than standard web pages?",
+      a: "Yes. PulseGuard supports comprehensive system checks including HTTP/HTTPS, SSL/TLS certificate handshakes, DNS records (A, MX, TXT, CAA), TCP port reachability, ICMP PING, and multi-step browser sequence simulations. Note that advanced protocols like TCP/Ping and browser sequences require upgrading to a paid tier (Netrunner or higher).",
+    },
+    {
+      q: "How does the SSL/TLS monitoring module work?",
+      a: "The SSL monitoring module proactively connects to your secure endpoints to verify the entire certificate chain. It checks the certificate authority trust, key strength compliance, subject alternative names (SANs), certificate transparency logs, and revocation status via OCSP stapling. You will receive warning alerts 30 days prior to expiration to prevent unexpected certificate lapses.",
+    },
+    {
+      q: "Can I customize the look of my public status pages?",
+      a: "Absolutely. PulseGuard supports custom themes, status grid layouts, and white-labeling. You can map public pages to your own custom domain, configure responsive grid widgets, and select themes (such as Matrix Green, Cyberpunk Pink, or Terminal Dark). Paid plans allow you to completely remove PulseGuard branding.",
+    },
+    {
+      q: "How secure is my telemetry data, and what is your log retention policy?",
+      a: `All client settings, credentials, and telemetry headers are encrypted at rest and in transit. Raw event logs and latency metrics are retained depending on your tier: 3 days for the Initiate tier, 30 days for the Netrunner tier, and up to 1 full year for the Construct tier. High-tier plans also support full automated data exports to external storage objects without vendor lock-in.`,
     },
   ];
 

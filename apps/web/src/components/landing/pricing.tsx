@@ -68,10 +68,13 @@ export default function Pricing() {
               <p className="text-xs text-muted-foreground mt-1">
                 Perfect for indie developers & side projects.
               </p>
-              <div className="mt-6 flex items-baseline gap-1">
-                <span className="text-4xl font-extrabold tracking-tight text-foreground">$0</span>
-                <span className="text-muted-foreground text-xs font-medium">
-                  /{billing === "yearly" ? "yr" : "mo"}
+              <div className="mt-6 flex flex-col gap-1.5 h-[52px] justify-center">
+                <div className="flex items-baseline gap-1">
+                  <span className="text-4xl font-extrabold tracking-tight text-foreground">$0</span>
+                  <span className="text-muted-foreground text-xs font-medium">/mo</span>
+                </div>
+                <span className="text-[10px] text-muted-foreground/60 font-mono font-bold uppercase tracking-wider">
+                  Free Forever
                 </span>
               </div>
             </div>
@@ -125,13 +128,23 @@ export default function Pricing() {
                 The Netrunner
               </h3>
               <p className="text-xs text-primary/70 mt-1">Solo devs who value their sleep.</p>
-              <div className="mt-6 flex items-baseline gap-1">
-                <span className="text-4xl font-extrabold tracking-tight text-foreground">
-                  {billing === "yearly" ? "$140" : "$14"}
-                </span>
-                <span className="text-muted-foreground text-xs font-medium">
-                  /{billing === "yearly" ? "yr" : "mo"}
-                </span>
+              <div className="mt-6 flex flex-col gap-1.5 h-[52px] justify-center">
+                <div className="flex items-baseline gap-2">
+                  {billing === "yearly" && (
+                    <span className="text-sm line-through text-muted-foreground/50 font-mono">
+                      $14
+                    </span>
+                  )}
+                  <span className="text-4xl font-extrabold tracking-tight text-foreground">
+                    {billing === "yearly" ? "$11.66" : "$14"}
+                  </span>
+                  <span className="text-muted-foreground text-xs font-medium">/mo</span>
+                </div>
+                {billing === "yearly" && (
+                  <span className="text-[10px] text-primary/80 font-mono font-bold uppercase tracking-wider">
+                    Billed annually ($140) — Save $28
+                  </span>
+                )}
               </div>
             </div>
 
@@ -191,13 +204,23 @@ export default function Pricing() {
               <p className="text-xs text-muted-foreground mt-1">
                 Enterprise reliability for professional teams.
               </p>
-              <div className="mt-6 flex items-baseline gap-1">
-                <span className="text-4xl font-extrabold tracking-tight text-foreground">
-                  {billing === "yearly" ? "$690" : "$69"}
-                </span>
-                <span className="text-muted-foreground text-xs font-medium">
-                  /{billing === "yearly" ? "yr" : "mo"}
-                </span>
+              <div className="mt-6 flex flex-col gap-1.5 h-[52px] justify-center">
+                <div className="flex items-baseline gap-2">
+                  {billing === "yearly" && (
+                    <span className="text-sm line-through text-muted-foreground/50 font-mono">
+                      $69
+                    </span>
+                  )}
+                  <span className="text-4xl font-extrabold tracking-tight text-foreground">
+                    {billing === "yearly" ? "$57.50" : "$69"}
+                  </span>
+                  <span className="text-muted-foreground text-xs font-medium">/mo</span>
+                </div>
+                {billing === "yearly" && (
+                  <span className="text-[10px] text-muted-foreground/60 font-mono font-bold uppercase tracking-wider">
+                    Billed annually ($690) — Save $138
+                  </span>
+                )}
               </div>
             </div>
 
@@ -240,6 +263,21 @@ export default function Pricing() {
                 Contact Enterprise
               </Link>
             </div>
+          </div>
+        </div>
+
+        {/* Trust Badges Footer */}
+        <div className="mt-16 flex flex-col sm:flex-row items-center justify-center gap-6 text-center text-xs text-muted-foreground border-t border-border/50 pt-10">
+          <div className="flex items-center gap-2">
+            <span className="text-primary font-bold">✓</span> 14-day free trial on paid plans
+          </div>
+          <div className="hidden sm:block text-muted-foreground/30">•</div>
+          <div className="flex items-center gap-2">
+            <span className="text-primary font-bold">✓</span> No credit card required to start
+          </div>
+          <div className="hidden sm:block text-muted-foreground/30">•</div>
+          <div className="flex items-center gap-2">
+            <span className="text-primary font-bold">✓</span> Instant setup in less than 2 minutes
           </div>
         </div>
       </div>
