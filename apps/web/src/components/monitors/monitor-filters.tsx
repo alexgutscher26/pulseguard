@@ -84,12 +84,14 @@ export function MonitorFilters({
         {/* ACTIONS */}
         <div className="flex items-center gap-2">
           <DropdownMenu>
-            <DropdownMenuTrigger className={cn(
-              "flex items-center gap-2 px-3 py-1.5 border text-[10px] uppercase font-bold transition-all font-mono rounded-sm outline-none cursor-pointer",
-              selectedTag 
-                ? "border-primary/50 text-primary bg-primary/10" 
-                : "border-primary/10 text-primary/60 hover:text-primary hover:border-primary/30"
-            )}>
+            <DropdownMenuTrigger
+              className={cn(
+                "flex items-center gap-2 px-3 py-1.5 border text-[10px] uppercase font-bold transition-all font-mono rounded-sm outline-none cursor-pointer",
+                selectedTag
+                  ? "border-primary/50 text-primary bg-primary/10"
+                  : "border-primary/10 text-primary/60 hover:text-primary hover:border-primary/30",
+              )}
+            >
               <Filter className="size-3" />
               {selectedTag ? `Tag: ${selectedTag}` : "Tags"}
             </DropdownMenuTrigger>
@@ -124,7 +126,7 @@ export function MonitorFilters({
                       onClick={() => setSelectedTag(tag === selectedTag ? null : tag)}
                       className={cn(
                         "focus:bg-primary/10 cursor-pointer uppercase",
-                        tag === selectedTag ? "bg-primary/10 text-primary font-bold" : ""
+                        tag === selectedTag ? "bg-primary/10 text-primary font-bold" : "",
                       )}
                     >
                       {tag}

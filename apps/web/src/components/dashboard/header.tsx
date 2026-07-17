@@ -104,13 +104,17 @@ export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = 
           </nav>
 
           {/* Active Health Status Badge */}
-          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-0.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[9px] font-bold rounded-full select-none shrink-0 font-mono tracking-tight">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
-            </span>
-            <span>SYSTEM HEALTHY</span>
-          </div>
+          <a
+            href="http://localhost:3000/status-page/f34f34f"
+            className="hidden sm:block shrink-0 active:scale-95 transition-transform"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="http://localhost:3000/api/badge/f34f34f.svg?style=flat&theme=dark&size=sm"
+              alt="PulseGuard Status"
+            />
+          </a>
         </div>
       </div>
 
