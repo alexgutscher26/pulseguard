@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { FileText, Clock, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import NewsletterForm from "@/components/blog/newsletter-form";
+
 
 export const metadata: Metadata = {
   title: "Blog | PulseGuard",
@@ -116,8 +116,9 @@ export default function BlogPage() {
         <div className="max-w-5xl mx-auto px-6 md:px-12">
           <div className="grid md:grid-cols-2 gap-px bg-border rounded-xl overflow-hidden">
             {posts.map((post) => (
-              <article
+              <Link
                 key={post.slug}
+                href={`/blog/${post.slug}` as any}
                 className="bg-card p-7 md:p-9 flex flex-col gap-4 group cursor-pointer"
               >
                 <div className="flex items-center gap-3">
@@ -144,13 +145,12 @@ export default function BlogPage() {
                     Read <ArrowRight className="size-3" />
                   </span>
                 </div>
-              </article>
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
-      <NewsletterForm />
     </div>
   );
 }
