@@ -51,15 +51,15 @@ export default function Post() {
         <li>Incident timeline showing updates as they happen</li>
       </ul>
       <p>
-        We&apos;ve optimized for the worst-case scenario — during an outage, your users need
-        answers fast. Every design decision was made with that in mind.
+        We&apos;ve optimized for the worst-case scenario — during an outage, your users need answers
+        fast. Every design decision was made with that in mind.
       </p>
 
       <h2>Custom domains and branding</h2>
       <p>
-        Your status page lives at <code>status.yourdomain.com</code>, not on a subdomain you don&apos;t control.
-        Bring your own logo, colors, and favicon. It should feel like a natural part of your
-        product — because it is.
+        Your status page lives at <code>status.yourdomain.com</code>, not on a subdomain you
+        don&apos;t control. Bring your own logo, colors, and favicon. It should feel like a natural
+        part of your product — because it is.
       </p>
 
       <h2>The Showcase</h2>

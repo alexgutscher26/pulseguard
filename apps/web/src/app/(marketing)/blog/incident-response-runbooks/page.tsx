@@ -52,9 +52,7 @@ export default function Post() {
       </ul>
 
       <h2>Common runbook mistakes</h2>
-      <p>
-        The worst runbooks share the same flaws. Avoid these patterns:
-      </p>
+      <p>The worst runbooks share the same flaws. Avoid these patterns:</p>
       <ul>
         <li>
           <strong>Out of date:</strong> A runbook referencing a server that was decommissioned six

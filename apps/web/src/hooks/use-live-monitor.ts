@@ -25,44 +25,47 @@ export function useLiveMonitor(monitorId: string) {
 
     if (monitorId.startsWith("demo-")) {
       setIsConnected(true);
-      const interval = setInterval(() => {
-        if (!active) return;
-        let baseLatency = 20;
-        let status: "UP" | "DOWN" | "MAINTENANCE" = "UP";
+      const interval = setInterval(
+        () => {
+          if (!active) return;
+          let baseLatency = 20;
+          let status: "UP" | "DOWN" | "MAINTENANCE" = "UP";
 
-        if (monitorId.includes("cyber")) {
-          baseLatency = 10;
-        } else if (monitorId.includes("neon")) {
-          baseLatency = 45;
-        } else if (monitorId.includes("void")) {
-          baseLatency = 90;
-          if (monitorId.endsWith("-6")) {
-            status = "MAINTENANCE";
-            baseLatency = 0;
+          if (monitorId.includes("cyber")) {
+            baseLatency = 10;
+          } else if (monitorId.includes("neon")) {
+            baseLatency = 45;
+          } else if (monitorId.includes("void")) {
+            baseLatency = 90;
+            if (monitorId.endsWith("-6")) {
+              status = "MAINTENANCE";
+              baseLatency = 0;
+            }
+          } else if (monitorId.includes("mono")) {
+            baseLatency = 20;
+          } else if (monitorId.includes("quantum")) {
+            baseLatency = 50;
+          } else if (monitorId.includes("datastream")) {
+            baseLatency = 25;
+            if (monitorId.endsWith("-6")) {
+              status = "DOWN";
+              baseLatency = 0;
+            }
           }
-        } else if (monitorId.includes("mono")) {
-          baseLatency = 20;
-        } else if (monitorId.includes("quantum")) {
-          baseLatency = 50;
-        } else if (monitorId.includes("datastream")) {
-          baseLatency = 25;
-          if (monitorId.endsWith("-6")) {
-            status = "DOWN";
-            baseLatency = 0;
-          }
-        }
 
-        const latency = status === "UP" ? Math.floor(baseLatency + (Math.random() - 0.5) * 8) : 0;
+          const latency = status === "UP" ? Math.floor(baseLatency + (Math.random() - 0.5) * 8) : 0;
 
-        setLastEvent({
-          type: "check_result",
-          monitorId,
-          status,
-          latency,
-          region: ["US-East", "US-West", "EU-West", "Asia"][Math.floor(Math.random() * 4)],
-          timestamp: Date.now(),
-        });
-      }, 4000 + Math.random() * 3000);
+          setLastEvent({
+            type: "check_result",
+            monitorId,
+            status,
+            latency,
+            region: ["US-East", "US-West", "EU-West", "Asia"][Math.floor(Math.random() * 4)],
+            timestamp: Date.now(),
+          });
+        },
+        4000 + Math.random() * 3000,
+      );
 
       return () => {
         active = false;

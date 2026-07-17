@@ -46,9 +46,7 @@ export default function Post() {
         <li>Eroded user trust</li>
         <li>SEO ranking penalties from search crawlers hitting errors</li>
       </ul>
-      <p>
-        Now multiply that by 5. That&apos;s the gap the industry has been accepting as normal.
-      </p>
+      <p>Now multiply that by 5. That&apos;s the gap the industry has been accepting as normal.</p>
 
       <h2>How we made it work</h2>
       <p>
@@ -58,8 +56,8 @@ export default function Post() {
       </p>
       <p>
         Each check consumes minimal resources — a single HTTP request, a TLS handshake, or a DNS
-        lookup. By routing checks intelligently and batching results, we keep costs manageable
-        while delivering intervals that were previously reserved for enterprise plans.
+        lookup. By routing checks intelligently and batching results, we keep costs manageable while
+        delivering intervals that were previously reserved for enterprise plans.
       </p>
 
       <h2>The bottom line</h2>

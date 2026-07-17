@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { FileText, Clock, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-
 export const metadata: Metadata = {
   title: "Blog | PulseGuard",
   description:
@@ -150,7 +149,6 @@ export default function BlogPage() {
           </div>
         </div>
       </section>
-
     </div>
   );
 }

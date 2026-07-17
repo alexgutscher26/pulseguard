@@ -27,10 +27,10 @@ export default function Post() {
 
       <h2>How most tools handle verification</h2>
       <p>
-        The standard approach is a single-node check. One server in one region fires an HTTP request.
-        If it times out or gets a non-200 response, an alert fires. The problem: that single server
-        might have a network blip, a DNS resolution failure, or even just a high load spike that
-        causes a false timeout.
+        The standard approach is a single-node check. One server in one region fires an HTTP
+        request. If it times out or gets a non-200 response, an alert fires. The problem: that
+        single server might have a network blip, a DNS resolution failure, or even just a high load
+        spike that causes a false timeout.
       </p>
       <p>
         Some tools add a "retry" mechanism — check again in 30 seconds. This helps marginally, but
@@ -38,7 +38,10 @@ export default function Post() {
       </p>
 
       <h2>Our multi-node verification pipeline</h2>
-      <p>PulseGuard takes a different approach. When a check fails, we don&apos;t alert immediately. Instead:</p>
+      <p>
+        PulseGuard takes a different approach. When a check fails, we don&apos;t alert immediately.
+        Instead:
+      </p>
       <ul>
         <li>
           <strong>Step 1:</strong> The originating node reports a failure and marks the monitor as

@@ -24,8 +24,8 @@ export default function Post() {
       <h2>Architecture overview</h2>
       <p>
         At a high level, the system has three layers: <strong>scheduler</strong>,{" "}
-        <strong>check nodes</strong>, and <strong>verifier</strong>. The scheduler assigns checks
-        to nodes, nodes execute them and report results, and the verifier resolves failures using
+        <strong>check nodes</strong>, and <strong>verifier</strong>. The scheduler assigns checks to
+        nodes, nodes execute them and report results, and the verifier resolves failures using
         multi-node consensus.
       </p>
       <p>
@@ -37,8 +37,8 @@ export default function Post() {
       <h2>Check nodes</h2>
       <p>
         Each check node is a lightweight container running a minimal Rust-based agent. The agent
-        maintains a persistent connection to the scheduler, receives check assignments, executes them
-        via HTTP, DNS, or TCP probes, and reports results back through the message bus.
+        maintains a persistent connection to the scheduler, receives check assignments, executes
+        them via HTTP, DNS, or TCP probes, and reports results back through the message bus.
       </p>
       <p>
         Nodes are stateless and ephemeral. They can be added or removed without any coordination.
@@ -53,8 +53,8 @@ export default function Post() {
         node failures gracefully by reassigning orphaned checks within seconds.
       </p>
       <p>
-        We use a Raft-based consensus layer to ensure scheduler state is consistent across
-        replicas. If the primary scheduler fails, a replica takes over with zero data loss.
+        We use a Raft-based consensus layer to ensure scheduler state is consistent across replicas.
+        If the primary scheduler fails, a replica takes over with zero data loss.
       </p>
 
       <h2>Verification and alerting</h2>

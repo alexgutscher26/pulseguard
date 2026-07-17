@@ -1,7 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle, AlertTriangle, Clock, Zap, WifiOff, Mail, Sliders, X, Sparkles } from "lucide-react";
+import {
+  CheckCircle,
+  AlertTriangle,
+  Clock,
+  Zap,
+  WifiOff,
+  Mail,
+  Sliders,
+  X,
+  Sparkles,
+} from "lucide-react";
 import { StatusPageMonitorRow } from "./status-page-monitor-row";
 import { AnalyticsTracker } from "./analytics-tracker";
 import { useTranslations, useFormatter } from "next-intl";

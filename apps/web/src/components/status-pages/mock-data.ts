@@ -63,7 +63,7 @@ function generateMockEvents(
   monitorId: string,
   targetStatus: "UP" | "DOWN" | "MAINTENANCE",
   uptimePct: number = 0.99,
-  avgLatency: number = 25
+  avgLatency: number = 25,
 ): MockEvent[] {
   const events: MockEvent[] = [];
   const now = Date.now();
@@ -90,7 +90,7 @@ function generateMockEvents(
 
 export function getMockStatusPage(slug: string): { page: MockStatusPage; incidents: any[] } | null {
   const now = Date.now();
-  
+
   if (slug === "cyberpulse-api") {
     const monitorsData: { name: string; latency: number; uptime: number }[] = [
       { name: "API Gateway", latency: 8, uptime: 0.9998 },
@@ -152,7 +152,8 @@ export function getMockStatusPage(slug: string): { page: MockStatusPage; inciden
           { label: "Matrix Status", url: "#" },
         ],
         metaTitle: "CyberPulse API Status | PulseGuard Demo",
-        metaDescription: "Interactive Cyberpunk status page showing high-frequency trading infrastructure status.",
+        metaDescription:
+          "Interactive Cyberpunk status page showing high-frequency trading infrastructure status.",
       },
       incidents: [],
     };
@@ -221,7 +222,12 @@ export function getMockStatusPage(slug: string): { page: MockStatusPage; inciden
   }
 
   if (slug === "void-games") {
-    const monitorsData: { name: string; latency: number; uptime: number; targetStatus: "UP" | "DOWN" | "MAINTENANCE" }[] = [
+    const monitorsData: {
+      name: string;
+      latency: number;
+      uptime: number;
+      targetStatus: "UP" | "DOWN" | "MAINTENANCE";
+    }[] = [
       { name: "API Gateway", latency: 95, uptime: 0.985, targetStatus: "UP" },
       { name: "Auth Service", latency: 105, uptime: 0.985, targetStatus: "UP" },
       { name: "Database", latency: 85, uptime: 0.999, targetStatus: "UP" },
@@ -280,13 +286,15 @@ export function getMockStatusPage(slug: string): { page: MockStatusPage; inciden
         homepageUrl: "https://pulseguard.com",
         contactUrl: "https://pulseguard.com/support",
         metaTitle: "Void Games Status | PulseGuard Demo",
-        metaDescription: "Interactive Dracula-themed status page for Void Games multiplayer server network.",
+        metaDescription:
+          "Interactive Dracula-themed status page for Void Games multiplayer server network.",
       },
       incidents: [
         {
           id: "demo-incident-void-1",
           title: "Scheduled Matchmaker Maintenance",
-          description: "We are running essential maintenance to upgrade database tables on the matchmaking service to prepare for the upcoming tournament patch.",
+          description:
+            "We are running essential maintenance to upgrade database tables on the matchmaking service to prepare for the upcoming tournament patch.",
           status: "scheduled_maintenance",
           startedAt: new Date(now - 30 * 60 * 1000),
           resolvedAt: null,
@@ -361,7 +369,9 @@ export function getMockStatusPage(slug: string): { page: MockStatusPage; inciden
   }
 
   if (slug === "quantum-mesh") {
-    const monitorsData: { name: string; latency: number; uptime: number }[] = Array.from({ length: 20 }).map((_, idx) => ({
+    const monitorsData: { name: string; latency: number; uptime: number }[] = Array.from({
+      length: 20,
+    }).map((_, idx) => ({
       name: `Compute Node QM-${100 + idx}`,
       latency: Math.floor(25 + Math.random() * 40),
       uptime: 0.999 + Math.random() * 0.001,
@@ -414,7 +424,12 @@ export function getMockStatusPage(slug: string): { page: MockStatusPage; inciden
   }
 
   if (slug === "datastream-cdn") {
-    const monitorsData: { name: string; latency: number; uptime: number; targetStatus: "UP" | "DOWN" | "MAINTENANCE" }[] = [
+    const monitorsData: {
+      name: string;
+      latency: number;
+      uptime: number;
+      targetStatus: "UP" | "DOWN" | "MAINTENANCE";
+    }[] = [
       { name: "API Gateway", latency: 25, uptime: 0.985, targetStatus: "UP" },
       { name: "Auth Service", latency: 32, uptime: 0.98, targetStatus: "UP" },
       { name: "Database", latency: 18, uptime: 0.99, targetStatus: "UP" },
@@ -468,13 +483,15 @@ export function getMockStatusPage(slug: string): { page: MockStatusPage; inciden
         homepageUrl: "https://pulseguard.com",
         contactUrl: "https://pulseguard.com/support",
         metaTitle: "DataStream CDN Status | PulseGuard Demo",
-        metaDescription: "Interactive custom theme status page for content delivery network during outage.",
+        metaDescription:
+          "Interactive custom theme status page for content delivery network during outage.",
       },
       incidents: [
         {
           id: "demo-incident-datastream-1",
           title: "Major Origin Connectivity Failure",
-          description: "Our primary origin server cluster is experiencing connectivity disruption. CDN edge servers are failing to fetch cache misses, resulting in 502 Bad Gateway responses on several paths. We are actively routing traffic to hot standby servers.",
+          description:
+            "Our primary origin server cluster is experiencing connectivity disruption. CDN edge servers are failing to fetch cache misses, resulting in 502 Bad Gateway responses on several paths. We are actively routing traffic to hot standby servers.",
           status: "major_outage",
           startedAt: new Date(now - 15 * 60 * 1000),
           resolvedAt: null,
@@ -484,13 +501,15 @@ export function getMockStatusPage(slug: string): { page: MockStatusPage; inciden
               id: "demo-ie-datastream-1-1",
               type: "investigating",
               createdAt: new Date(now - 15 * 60 * 1000),
-              message: "Investigating packet loss on origin route. Edge nodes reporting connection timeout.",
+              message:
+                "Investigating packet loss on origin route. Edge nodes reporting connection timeout.",
             },
             {
               id: "demo-ie-datastream-1-2",
               type: "identified",
               createdAt: new Date(now - 8 * 60 * 1000),
-              message: "Disrupted link identified between transit provider and US-West datacenter. Commencing emergency fallback routes.",
+              message:
+                "Disrupted link identified between transit provider and US-West datacenter. Commencing emergency fallback routes.",
             },
           ],
         },
