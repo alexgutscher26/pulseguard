@@ -15,12 +15,23 @@ export function MonitorManager({ initialMonitors }: MonitorManagerProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [sort, setSort] = useState("name");
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
   const getUptime = (events: any[]) => {
     if (!events || events.length === 0) return 0;
     const up = events.filter((e) => e.status === "UP").length;
     return Math.round((up / events.length) * 100);
   };
+
+  const availableTags = useMemo(() => {
+    const tags = new Set<string>();
+    monitors.forEach((monitor) => {
+      if (monitor.tags) {
+        monitor.tags.forEach((t: string) => tags.add(t));
+      }
+    });
+    return Array.from(tags).sort();
+  }, [monitors]);
 
   const filteredMonitors = useMemo(() => {
     const filtered = monitors.filter((monitor) => {
@@ -30,7 +41,9 @@ export function MonitorManager({ initialMonitors }: MonitorManagerProps) {
 
       const matchesStatus = statusFilter === "ALL" || monitor.status === statusFilter;
 
-      return matchesSearch && matchesStatus;
+      const matchesTag = !selectedTag || (monitor.tags && monitor.tags.includes(selectedTag));
+
+      return matchesSearch && matchesStatus && matchesTag;
     });
 
     return [...filtered].sort((a, b) => {
@@ -39,7 +52,7 @@ export function MonitorManager({ initialMonitors }: MonitorManagerProps) {
       if (sort === "uptime") return getUptime(b.events) - getUptime(a.events);
       return 0;
     });
-  }, [monitors, searchQuery, statusFilter, sort]);
+  }, [monitors, searchQuery, statusFilter, sort, selectedTag]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -51,6 +64,9 @@ export function MonitorManager({ initialMonitors }: MonitorManagerProps) {
         setStatusFilter={setStatusFilter}
         sort={sort}
         setSort={setSort}
+        availableTags={availableTags}
+        selectedTag={selectedTag}
+        setSelectedTag={setSelectedTag}
       />
       <MonitorList monitors={filteredMonitors} />
     </div>

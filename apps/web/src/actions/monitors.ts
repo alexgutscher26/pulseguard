@@ -62,6 +62,7 @@ const baseSchema = z.object({
   body: z.string().optional(),
   script: z.string().optional(),
   expectation: z.string().optional(),
+  tags: z.array(z.string()).optional(),
 });
 
 const monitorSchema = baseSchema.superRefine((data, ctx) => {
@@ -253,6 +254,12 @@ export async function createMonitor(prevState: any, formData: FormData) {
       body: (formData.get("body") as string) || undefined,
       script: (formData.get("script") as string) || undefined,
       expectation: (formData.get("expectation") as string) || undefined,
+      tags: formData.get("tags")
+        ? (formData.get("tags") as string)
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean)
+        : [],
     };
 
     console.log("Creating monitor with data:", rawData);
@@ -405,6 +412,7 @@ export async function createMonitor(prevState: any, formData: FormData) {
         script: data.script,
         expectation: data.expectation,
         heartbeatToken: heartbeatToken,
+        tags: data.tags,
       },
     });
 
@@ -492,6 +500,12 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
     body: (formData.get("body") as string) || undefined,
     script: (formData.get("script") as string) || undefined,
     expectation: (formData.get("expectation") as string) || undefined,
+    tags: formData.get("tags")
+      ? (formData.get("tags") as string)
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean)
+      : [],
   };
 
   console.log("Updating monitor with data:", rawData);
@@ -635,6 +649,7 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
         script: data.script,
         expectation: data.expectation,
         heartbeatToken: heartbeatToken,
+        tags: data.tags,
       },
     });
 
@@ -1509,4 +1524,25 @@ export async function getSessionToken() {
     cookieStore.get("__Secure-better-auth.session_token")?.value ||
     null;
   return token;
+}
+
+export async function deleteMonitor(id: string) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) return { success: false, error: "Unauthorized" };
+
+  try {
+    await prisma.monitor.delete({
+      where: { id, userId: session.user.id },
+    });
+
+    revalidatePath("/dashboard/monitors");
+    revalidatePath("/dashboard");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete monitor", error);
+    return { success: false, error: "Failed to delete monitor" };
+  }
 }

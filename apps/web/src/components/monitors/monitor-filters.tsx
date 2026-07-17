@@ -20,6 +20,9 @@ interface MonitorFiltersProps {
   setStatusFilter: (s: string) => void;
   sort: string;
   setSort: (s: string) => void;
+  availableTags: string[];
+  selectedTag: string | null;
+  setSelectedTag: (tag: string | null) => void;
 }
 
 export function MonitorFilters({
@@ -29,6 +32,9 @@ export function MonitorFilters({
   setStatusFilter,
   sort,
   setSort,
+  availableTags,
+  selectedTag,
+  setSelectedTag,
 }: MonitorFiltersProps) {
   const tabs = [
     { label: "All", value: "ALL" },
@@ -77,9 +83,57 @@ export function MonitorFilters({
 
         {/* ACTIONS */}
         <div className="flex items-center gap-2">
-          <button className="flex items-center gap-2 px-3 py-1.5 text-primary/60 hover:text-primary border border-primary/10 hover:border-primary/30 text-[10px] uppercase font-bold transition-all font-mono rounded-sm cursor-pointer">
-            <Filter className="size-3" /> Tags
-          </button>
+          <DropdownMenu>
+            <DropdownMenuTrigger className={cn(
+              "flex items-center gap-2 px-3 py-1.5 border text-[10px] uppercase font-bold transition-all font-mono rounded-sm outline-none cursor-pointer",
+              selectedTag 
+                ? "border-primary/50 text-primary bg-primary/10" 
+                : "border-primary/10 text-primary/60 hover:text-primary hover:border-primary/30"
+            )}>
+              <Filter className="size-3" />
+              {selectedTag ? `Tag: ${selectedTag}` : "Tags"}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="w-48 bg-black/95 border-primary/20 text-primary font-mono text-xs backdrop-blur-md"
+            >
+              <DropdownMenuGroup>
+                <DropdownMenuLabel className="uppercase tracking-widest text-primary/50 text-[10px]">
+                  Filter by Tag
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-primary/10" />
+                {selectedTag && (
+                  <>
+                    <DropdownMenuItem
+                      onClick={() => setSelectedTag(null)}
+                      className="focus:bg-primary/10 cursor-pointer text-red-500 focus:text-red-500"
+                    >
+                      Clear Filter
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator className="bg-primary/10" />
+                  </>
+                )}
+                {availableTags.length === 0 ? (
+                  <div className="px-2 py-3 text-center text-[10px] text-primary/40 uppercase tracking-wider">
+                    No tags defined
+                  </div>
+                ) : (
+                  availableTags.map((tag) => (
+                    <DropdownMenuItem
+                      key={tag}
+                      onClick={() => setSelectedTag(tag === selectedTag ? null : tag)}
+                      className={cn(
+                        "focus:bg-primary/10 cursor-pointer uppercase",
+                        tag === selectedTag ? "bg-primary/10 text-primary font-bold" : ""
+                      )}
+                    >
+                      {tag}
+                    </DropdownMenuItem>
+                  ))
+                )}
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-2 px-3 py-1.5 text-primary/60 hover:text-primary border border-primary/10 hover:border-primary/30 text-[10px] uppercase font-bold transition-all font-mono rounded-sm outline-none cursor-pointer">
               <ArrowUpDown className="size-3" />

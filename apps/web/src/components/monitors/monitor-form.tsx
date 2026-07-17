@@ -50,6 +50,7 @@ interface MonitorFormProps {
     script?: string | null;
     expectation?: string | null;
     heartbeatToken?: string | null;
+    tags?: string[];
   };
 }
 
@@ -493,6 +494,20 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
               className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-3 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full"
               type="text"
               placeholder={monitorType === "HTTP" ? "e.g. Production API" : "e.g. Game Server"}
+            />
+          </div>
+
+          {/* Tags */}
+          <div className="flex flex-col gap-2">
+            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+              Tags (Comma separated)
+            </label>
+            <input
+              name="tags"
+              defaultValue={monitor?.tags?.join(", ")}
+              className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-3 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full font-mono"
+              type="text"
+              placeholder="e.g. production, api, web"
             />
           </div>
 

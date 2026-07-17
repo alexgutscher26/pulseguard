@@ -1,8 +1,25 @@
 "use client";
 
-import { MoreHorizontal, Zap, WifiOff, ChevronLeft, ChevronRight } from "lucide-react";
+import { MoreHorizontal, Zap, WifiOff, ChevronLeft, ChevronRight, ExternalLink, Settings, Play, Pause, Trash2, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { toggleMonitor, checkMonitor, deleteMonitor } from "@/actions/monitors";
+import { toast } from "sonner";
 
 /**
  * Renders a status bar with a background color based on the provided status.
@@ -42,6 +59,79 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+  const [isChecking, setIsChecking] = useState<Record<string, boolean>>({});
+  const [isToggling, setIsToggling] = useState<Record<string, boolean>>({});
+  const [deleteMonitorId, setDeleteMonitorId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const monitorToDelete = deleteMonitorId ? monitors.find((m) => m.id === deleteMonitorId) : null;
+
+  const handleCheckNow = async (e: React.MouseEvent, monitorId: string, name: string) => {
+    e.stopPropagation();
+    setIsChecking((prev) => ({ ...prev, [monitorId]: true }));
+    const toastId = toast.loading(`Triggering check for ${name}...`);
+    try {
+      const res = await checkMonitor(monitorId, {
+        checkRegions: ["Dashboard Manual Action"],
+        reason: "User manually requested check",
+      });
+      if (res.success) {
+        toast.success(`Check completed for ${name}`, { id: toastId });
+      } else {
+        toast.error(res.error || `Failed to trigger check for ${name}`, { id: toastId });
+      }
+    } catch (err: any) {
+      toast.error(err.message || "An error occurred", { id: toastId });
+    } finally {
+      setIsChecking((prev) => ({ ...prev, [monitorId]: false }));
+    }
+  };
+
+  const handleToggle = async (e: React.MouseEvent, monitorId: string, name: string, currentStatus: string) => {
+    e.stopPropagation();
+    setIsToggling((prev) => ({ ...prev, [monitorId]: true }));
+    const nextEnabled = currentStatus === "PAUSED";
+    const toastId = toast.loading(`${nextEnabled ? "Resuming" : "Pausing"} ${name}...`);
+    try {
+      const res = await toggleMonitor(monitorId, nextEnabled);
+      if (res.success) {
+        toast.success(`${name} ${nextEnabled ? "resumed" : "paused"} successfully`, { id: toastId });
+      } else {
+        toast.error(res.error || `Failed to toggle ${name}`, { id: toastId });
+      }
+    } catch (err: any) {
+      toast.error(err.message || "An error occurred", { id: toastId });
+    } finally {
+      setIsToggling((prev) => ({ ...prev, [monitorId]: false }));
+    }
+  };
+
+  const handleDeleteClick = (e: React.MouseEvent, monitorId: string) => {
+    e.stopPropagation();
+    setDeleteMonitorId(monitorId);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteMonitorId) return;
+    setIsDeleting(true);
+    const monitor = monitors.find((m) => m.id === deleteMonitorId);
+    const name = monitor?.name || "Monitor";
+    const toastId = toast.loading(`Deleting ${name}...`);
+    try {
+      const res = await deleteMonitor(deleteMonitorId);
+      if (res.success) {
+        toast.success(`${name} deleted successfully`, { id: toastId });
+        setDeleteMonitorId(null);
+      } else {
+        toast.error(res.error || `Failed to delete ${name}`, { id: toastId });
+      }
+    } catch (err: any) {
+      toast.error(err.message || "An error occurred", { id: toastId });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const totalPages = Math.ceil(monitors.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentMonitors = monitors.slice(startIndex, startIndex + itemsPerPage);
@@ -64,7 +154,8 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
   };
 
   return (
-    <div className="border border-primary/20 bg-card/40 relative overflow-hidden shadow-lg backdrop-blur-sm">
+    <>
+      <div className="border border-primary/20 bg-card/40 relative overflow-hidden shadow-lg backdrop-blur-sm">
       {/* Decor corners */}
       <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-primary/50 pointer-events-none"></div>
       <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-primary/50 pointer-events-none"></div>
@@ -176,6 +267,18 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                         <span className="text-[10px] text-primary/50 mt-0.5 font-sans break-all">
                           {monitor.type === "HEARTBEAT" ? "Heartbeat Monitor" : monitor.url}
                         </span>
+                        {monitor.tags && monitor.tags.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-1.5">
+                            {monitor.tags.map((tag: string) => (
+                              <span
+                                key={tag}
+                                className="px-1.5 py-0.5 text-[9px] font-mono tracking-wider bg-primary/5 border border-primary/25 text-primary/60 rounded-xs uppercase"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </td>
                     <td className={`p-4 ${monitor.status === "PAUSED" ? "opacity-50" : ""}`}>
@@ -213,9 +316,72 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                       )}
                     </td>
                     <td className="p-4 text-right">
-                      <button className="p-2 hover:bg-primary/20 text-primary/50 hover:text-primary transition-colors rounded-sm">
-                        <MoreHorizontal className="size-4" />
-                      </button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger
+                          onClick={(e) => e.stopPropagation()}
+                          className="p-2 hover:bg-primary/20 text-primary/50 hover:text-primary transition-colors rounded-sm cursor-pointer outline-none"
+                        >
+                          <MoreHorizontal className="size-4" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="rounded-none border-primary/20 bg-background/95 backdrop-blur-md min-w-[140px] font-mono">
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              router.push(`/dashboard/monitors/${monitor.id}`);
+                            }}
+                            className="cursor-pointer"
+                          >
+                            <ExternalLink className="size-3.5 mr-2" />
+                            View Details
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              router.push(`/dashboard/monitors/${monitor.id}/settings`);
+                            }}
+                            className="cursor-pointer"
+                          >
+                            <Settings className="size-3.5 mr-2" />
+                            Edit Settings
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator className="bg-primary/10" />
+                          <DropdownMenuItem
+                            onClick={(e) => handleCheckNow(e, monitor.id, monitor.name)}
+                            disabled={monitor.status === "PAUSED" || isChecking[monitor.id]}
+                            className="cursor-pointer"
+                          >
+                            {isChecking[monitor.id] ? (
+                              <Loader2 className="size-3.5 mr-2 animate-spin text-primary" />
+                            ) : (
+                              <Play className="size-3.5 mr-2 text-primary" />
+                            )}
+                            Run Check
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={(e) => handleToggle(e, monitor.id, monitor.name, monitor.status)}
+                            disabled={isToggling[monitor.id]}
+                            className="cursor-pointer"
+                          >
+                            {isToggling[monitor.id] ? (
+                              <Loader2 className="size-3.5 mr-2 animate-spin text-primary" />
+                            ) : monitor.status === "PAUSED" ? (
+                              <Play className="size-3.5 mr-2 text-primary" />
+                            ) : (
+                              <Pause className="size-3.5 mr-2 text-yellow-500" />
+                            )}
+                            {monitor.status === "PAUSED" ? "Resume" : "Pause"}
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator className="bg-primary/10" />
+                          <DropdownMenuItem
+                            onClick={(e) => handleDeleteClick(e, monitor.id)}
+                            variant="destructive"
+                            className="cursor-pointer text-red-500 focus:bg-red-500/10 focus:text-red-500"
+                          >
+                            <Trash2 className="size-3.5 mr-2" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </td>
                   </tr>
                 );
@@ -247,6 +413,36 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
           </button>
         </div>
       </div>
-    </div>
+      </div>
+
+      <Dialog open={deleteMonitorId !== null} onOpenChange={(open) => !open && setDeleteMonitorId(null)}>
+        <DialogContent className="rounded-none border-primary/20 bg-card/95 backdrop-blur-md max-w-md font-mono text-foreground">
+          <DialogHeader>
+            <DialogTitle className="text-sm font-bold text-red-500 uppercase tracking-widest flex items-center gap-2">
+              <Trash2 className="size-4" /> Decommission Target
+            </DialogTitle>
+            <DialogDescription className="text-xs text-primary/60 mt-2 font-mono">
+              Are you sure you want to permanently delete monitor <span className="text-foreground font-bold">{monitorToDelete?.name}</span>? This action is irreversible and will erase all telemetry history.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="mt-4 gap-2 sm:gap-0">
+            <button
+              onClick={() => setDeleteMonitorId(null)}
+              className="px-3 py-2 border border-primary/20 text-primary/60 hover:text-primary hover:border-primary/50 text-[10px] uppercase font-bold tracking-wider transition-all rounded-sm cursor-pointer"
+            >
+              Abort Mission
+            </button>
+            <button
+              onClick={handleDeleteConfirm}
+              disabled={isDeleting}
+              className="px-3 py-2 bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-500/20 hover:border-red-500 text-[10px] uppercase font-bold tracking-wider transition-all rounded-sm flex items-center gap-1 cursor-pointer disabled:opacity-50"
+            >
+              {isDeleting ? <Loader2 className="size-3 animate-spin" /> : null}
+              Confirm Destruction
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

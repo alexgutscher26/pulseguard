@@ -63,6 +63,7 @@ model Monitor {
 
   nextCheck            DateTime?
   lastCheck            DateTime?
+  tags                 String[]  @default([])
   checkRegions         String? // JSON array of region codes: ["us-east", "eu-west", "ap-south"]
   alertThreshold       Int       @default(1)
   dynamicThresholding  Boolean   @default(false)
