@@ -500,9 +500,11 @@ export async function connectNetlifyWithToken(token: string) {
  * Fetches repositories from GitHub.
  */
 export async function fetchGitHubRepos(
-  token: string,
+  token?: string,
 ): Promise<{ success: boolean; data?: ExternalResource[]; error?: string }> {
-  if (!token || token.toLowerCase().trim() === "mock" || token.toLowerCase().trim() === "demo") {
+  const tokenToUse = token || "db";
+
+  if (tokenToUse.toLowerCase().trim() === "mock" || tokenToUse.toLowerCase().trim() === "demo") {
     return {
       success: true,
       data: [
@@ -528,11 +530,35 @@ export async function fetchGitHubRepos(
     };
   }
 
+  let finalToken = tokenToUse;
+
+  // Read from database
+  if (tokenToUse === "db") {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session?.user) {
+      return { success: false, error: "Unauthorized" };
+    }
+
+    const integration = await prisma.userIntegration.findFirst({
+      where: { userId: session.user.id, provider: "github" },
+    });
+
+    if (!integration) {
+      return { success: true, data: [] }; // No integration configured yet
+    }
+
+    finalToken = integration.accessToken;
+  }
+
   try {
     const res = await fetch("https://api.github.com/user/repos?per_page=100&sort=updated", {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${finalToken}`,
         Accept: "application/vnd.github.v3+json",
+        "User-Agent": "PulseGuard",
       },
     });
 
@@ -557,6 +583,76 @@ export async function fetchGitHubRepos(
     return { success: true, data };
   } catch (err: any) {
     return { success: false, error: err.message || "Failed to fetch from GitHub" };
+  }
+}
+
+/**
+ * Verifies a GitHub API token and saves the integration persistently in the database.
+ */
+export async function connectGitHubWithToken(token: string) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  if (!token) {
+    return { success: false, error: "Token is required" };
+  }
+
+  try {
+    // 1. Verify GitHub account details
+    const userRes = await fetch("https://api.github.com/user", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/vnd.github.v3+json",
+        "User-Agent": "PulseGuard",
+      },
+    });
+
+    if (!userRes.ok) {
+      return { success: false, error: "Invalid GitHub API token. Please check your token and try again." };
+    }
+
+    const userData = (await userRes.json()) as any;
+    const name = userData.name || userData.login || "GitHub Account";
+    const slug = userData.login || "github";
+
+    // 2. Save GitHub integration
+    await prisma.userIntegration.upsert({
+      where: {
+        userId_provider_teamId: {
+          userId: session.user.id,
+          provider: "github",
+          teamId: "personal",
+        },
+      },
+      update: {
+        accessToken: token,
+        teamName: name,
+        teamSlug: slug,
+      },
+      create: {
+        userId: session.user.id,
+        provider: "github",
+        accessToken: token,
+        teamId: "personal",
+        teamName: name,
+        teamSlug: slug,
+      },
+    });
+
+    revalidatePath("/dashboard/integrations");
+
+    return {
+      success: true,
+      name,
+    };
+  } catch (err: any) {
+    console.error("GitHub token integration error:", err);
+    return { success: false, error: err.message || "An unexpected error occurred." };
   }
 }
 

@@ -1,23 +1,12 @@
 import prisma from "./index.js";
 
 async function main() {
-  console.log("Searching for monitor cmn46mt9r000104jia4ga6ko1...");
+  console.log("Running DB connection diagnostics...");
   try {
-    const monitor = await prisma.monitor.findUnique({
-      where: { id: "cmn46mt9r000104jia4ga6ko1" },
-      include: {
-        events: { take: 1 },
-        maintenanceWindows: true,
-      },
-    });
-
-    if (monitor) {
-      console.log("✅ Success! Found monitor:", monitor.name);
-      console.log("Status:", monitor.status);
-      console.log("Maintenance Windows count:", monitor.maintenanceWindows.length);
-    } else {
-      console.log("❌ Monitor NOT FOUND in DB.");
-    }
+    const connStats = await prisma.$queryRawUnsafe("SELECT count(*), state FROM pg_stat_activity GROUP BY state;");
+    const maxConns = await prisma.$queryRawUnsafe("SHOW max_connections;");
+    console.log("Current Connection Stats:", connStats);
+    console.log("Max Connections Limit:", maxConns);
   } catch (error) {
     console.error("❌ CRITICAL DB ERROR:", error);
   } finally {

@@ -35,6 +35,7 @@ import {
   getVercelOAuthUrl,
   connectVercelWithToken,
   connectNetlifyWithToken,
+  connectGitHubWithToken,
   type ExternalResource,
 } from "@/actions/integrations";
 
@@ -91,14 +92,15 @@ export function IntegrationsManager() {
         setUseDemo(false);
         setHasSavedToken(true);
       } else {
-        // If Vercel or Netlify is active and we have a persistent integration connected in the DB,
+        // If Vercel, Netlify, or GitHub is active and we have a persistent integration connected in the DB,
         // we default token to "db" so we fetch from the DB.
         const hasDbConfig = connectedIntegrations.some((ci) => ci.provider === activeProvider);
-        if ((activeProvider === "vercel" || activeProvider === "netlify") && hasDbConfig) {
+        const isDbProvider = activeProvider === "vercel" || activeProvider === "netlify" || activeProvider === "github";
+        if (isDbProvider && hasDbConfig) {
           setToken("db");
           setUseDemo(false);
           setHasSavedToken(false);
-        } else if (activeProvider === "vercel" || activeProvider === "netlify") {
+        } else if (isDbProvider) {
           setToken("");
           setUseDemo(false);
           setHasSavedToken(false);
@@ -188,6 +190,29 @@ export function IntegrationsManager() {
     }
   };
 
+  const handleGitHubConnectWithToken = async () => {
+    if (!token || token === "db") {
+      toast.error("Please enter a valid GitHub API token");
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await connectGitHubWithToken(token);
+      if (res.success && res.name) {
+        toast.success(`Successfully connected GitHub account "${res.name}"!`);
+        setToken("db"); // set to db to fetch repos using db integrations
+        setUseDemo(false);
+        await loadIntegrations();
+      } else {
+        toast.error(res.error || "Failed to verify or connect GitHub token");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to connect token");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleVercelConnectOAuth = async () => {
     setLoading(true);
     try {
@@ -237,7 +262,9 @@ export function IntegrationsManager() {
   const handleConnectClick = (provider: Provider) => {
     setActiveProvider(provider);
     setToken("");
-    setUseDemo(provider !== "vercel" && provider !== "netlify");
+    setUseDemo(
+      provider !== "vercel" && provider !== "netlify" && provider !== "github"
+    );
     setResources([]);
     setSelectedIds(new Set());
   };
@@ -464,12 +491,21 @@ export function IntegrationsManager() {
               <div className="size-10 rounded-xl bg-[#4078c0]/5 border border-[#4078c0]/10 flex items-center justify-center">
                 <Github className="size-5 text-white" />
               </div>
-              <Badge
-                variant="outline"
-                className="text-[#4078c0] border-[#4078c0]/20 bg-[#4078c0]/5 text-[10px]"
-              >
-                1-Click setup
-              </Badge>
+              {connectedIntegrations.some((ci) => ci.provider === "github") ? (
+                <Badge
+                  variant="outline"
+                  className="text-emerald-500 border-emerald-500/20 bg-emerald-500/5 text-[10px]"
+                >
+                  Active
+                </Badge>
+              ) : (
+                <Badge
+                  variant="outline"
+                  className="text-[#4078c0] border-[#4078c0]/20 bg-[#4078c0]/5 text-[10px]"
+                >
+                  1-Click setup
+                </Badge>
+              )}
             </div>
             <CardTitle className="text-sm font-bold">GitHub Pages & Repos</CardTitle>
             <CardDescription className="text-[11px] leading-relaxed">
@@ -480,10 +516,23 @@ export function IntegrationsManager() {
           <CardContent className="pt-2">
             <Button
               onClick={() => handleConnectClick("github")}
-              className="w-full bg-accent hover:bg-accent/80 text-foreground text-xs font-semibold rounded-xl border border-border flex items-center justify-center gap-2"
+              className={`w-full text-xs font-semibold rounded-xl border flex items-center justify-center gap-2 ${
+                connectedIntegrations.some((ci) => ci.provider === "github")
+                  ? "bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border-emerald-500/20"
+                  : "bg-accent hover:bg-accent/80 text-foreground border-border"
+              }`}
             >
-              Connect GitHub
-              <ArrowRight className="size-3.5" />
+              {connectedIntegrations.some((ci) => ci.provider === "github") ? (
+                <>
+                  <Check className="size-3.5 text-emerald-500" />
+                  Connected
+                </>
+              ) : (
+                <>
+                  Connect GitHub
+                  <ArrowRight className="size-3.5" />
+                </>
+              )}
             </Button>
           </CardContent>
         </Card>
@@ -699,52 +748,89 @@ export function IntegrationsManager() {
                       </div>
                     )}
 
-                    {/* Fallback legacy API token inputs for other providers (GitHub) */}
-                    {!useDemo && activeProvider !== "vercel" && activeProvider !== "netlify" && (
-                      <div className="space-y-2">
-                        <div className="flex justify-between items-center">
+                    {/* GitHub Specific Live Token Integration Flow */}
+                    {!useDemo && activeProvider === "github" && (
+                      <div className="space-y-4">
+                        {connectedIntegrations.some((ci) => ci.provider === "github") && (
+                          /* Connected Scopes */
+                          <div className="space-y-2">
+                            <label className="text-xs font-bold text-foreground">Connected GitHub Account</label>
+                            <div className="divide-y divide-border border border-border rounded-xl bg-accent/20 max-h-[160px] overflow-y-auto">
+                              {connectedIntegrations
+                                .filter((ci) => ci.provider === "github")
+                                .map((ci) => (
+                                  <div key={ci.id} className="flex justify-between items-center p-3 text-xs">
+                                    <div className="flex flex-col gap-0.5">
+                                      <span className="font-semibold text-foreground">{ci.teamName}</span>
+                                      <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                                        <Badge variant="outline" className="text-[8px] px-1 scale-90 border-[#4078c0]/20 text-[#4078c0] bg-[#4078c0]/5">
+                                          {ci.teamSlug}
+                                        </Badge>
+                                      </span>
+                                    </div>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => handleVercelDisconnect(ci.id)}
+                                      className="text-red-500 hover:text-red-400 hover:bg-red-500/10 text-[10px] h-7 px-2.5 rounded-lg border border-red-500/10"
+                                    >
+                                      Disconnect
+                                    </Button>
+                                  </div>
+                                ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Direct Token Input for Connecting */}
+                        <div className="space-y-3 p-4 rounded-xl border border-border bg-accent/10">
                           <label className="text-xs font-bold text-foreground">
-                            API Access Token
+                            {connectedIntegrations.some((ci) => ci.provider === "github")
+                              ? "Connect Another Account / Token"
+                              : "GitHub Personal Access Token"}
                           </label>
-                          {hasSavedToken && (
-                            <button
-                              type="button"
-                              onClick={handleClearToken}
-                              className="text-[10px] text-destructive hover:underline cursor-pointer"
+                          <p className="text-[10px] text-muted-foreground leading-relaxed">
+                            Create a Personal Access Token (PAT) with `repo` scope in your GitHub Developer Settings and paste it below. PulseGuard will persistently link your repository targets to your database account.
+                          </p>
+                          <div className="flex gap-2">
+                            <Input
+                              type="password"
+                              placeholder="Enter GitHub PAT (ghp_...)"
+                              value={token === "db" ? "" : token}
+                              onChange={(e) => setToken(e.target.value)}
+                              className="bg-accent/40 border-border text-foreground text-xs rounded-xl focus-visible:ring-primary/50"
+                            />
+                            <Button
+                              onClick={handleGitHubConnectWithToken}
+                              disabled={loading || !token || token === "db"}
+                              className="bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-semibold px-4 rounded-xl flex items-center gap-1.5 shrink-0"
                             >
-                              Clear Saved Token
-                            </button>
-                          )}
-                        </div>
-                        <Input
-                          type="password"
-                          placeholder={providerMeta[activeProvider].tokenPlaceholder}
-                          value={token}
-                          onChange={(e) => setToken(e.target.value)}
-                          className="bg-accent/40 border-border text-foreground text-xs rounded-xl focus-visible:ring-primary/50"
-                        />
-                        <div className="flex items-center justify-between pt-1">
-                          <a
-                            href={providerMeta[activeProvider].docsLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[10px] text-primary hover:underline flex items-center gap-1.5"
-                          >
-                            Where do I get my access token?
-                            <ExternalLink className="size-3" />
-                          </a>
-                          {hasSavedToken && (
-                            <span className="text-[10px] text-emerald-500 flex items-center gap-1">
-                              <Check className="size-3" /> Saved Locally
-                            </span>
-                          )}
+                              {loading ? (
+                                <>
+                                  <Loader2 className="size-3.5 animate-spin" />
+                                  Connecting...
+                                </>
+                              ) : (
+                                "Connect"
+                              )}
+                            </Button>
+                          </div>
+                          <div className="pt-1">
+                            <a
+                              href="https://github.com/settings/tokens/new?scopes=repo"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[10px] text-[#4078c0] hover:underline flex items-center gap-1.5"
+                            >
+                              Where do I get my access token?
+                              <ExternalLink className="size-3" />
+                            </a>
+                          </div>
                         </div>
                       </div>
                     )}
 
-                    {(useDemo || 
-                      (activeProvider !== "vercel" && activeProvider !== "netlify") || 
-                      connectedIntegrations.some((ci) => ci.provider === activeProvider)) && (
+                    {(useDemo || connectedIntegrations.some((ci) => ci.provider === activeProvider)) && (
                       <Button
                         onClick={handleFetchResources}
                         disabled={loading}

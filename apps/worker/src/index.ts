@@ -2129,12 +2129,13 @@ export default {
       } catch (err: any) {
         if (
           retry &&
-          (err.message?.includes("Connection terminated unexpectedly") ||
+          (err.message?.includes("Connection terminated") ||
             err.message?.includes("is closed") ||
-            err.message?.includes("not found"))
+            err.message?.includes("not found") ||
+            err.message?.includes("timeout"))
         ) {
           console.warn(
-            `[Sync] Stale DB connection detected in schedule. Resetting Prisma and retrying...`,
+            `[Sync] Stale DB connection or timeout detected in schedule. Resetting Prisma and retrying...`,
           );
           const { resetPrisma } = await import("@pulseguard/db");
           await resetPrisma(env.DATABASE_URL);

@@ -22,8 +22,8 @@ export function createPrisma(databaseUrl?: string) {
     max: 5,
     // Release idle connections quickly in a serverless environment
     idleTimeoutMillis: 10_000,
-    // Increase to 30s as default to handle cold-starts/latency spikes better
-    connectionTimeoutMillis: 30_000,
+    // Set to 5s to fail-fast and allow app retry/recovery strategies
+    connectionTimeoutMillis: 5_000,
   };
 
   if (isSsl || url.includes("supabase") || url.includes("neon.tech")) {
