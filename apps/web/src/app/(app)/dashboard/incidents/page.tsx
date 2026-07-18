@@ -5,7 +5,7 @@ import { IncidentTable } from "@/components/incidents/incident-table";
 import { IncidentTemplateManager } from "@/components/incidents/incident-template-manager";
 import { CreateIncidentModal } from "@/components/incidents/create-incident-modal";
 import { getUserPreferences } from "@/actions/user";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { LayoutTemplate } from "lucide-react";
 
@@ -40,6 +40,7 @@ export default async function IncidentsPage() {
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
+              <DialogTitle className="sr-only">Incident Templates</DialogTitle>
               <IncidentTemplateManager templates={templates} />
             </DialogContent>
           </Dialog>
