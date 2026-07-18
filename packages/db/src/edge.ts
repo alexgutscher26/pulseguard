@@ -18,9 +18,8 @@ export function createPrisma(databaseUrl?: string) {
 
   const poolConfig: any = {
     connectionString: cleanUrl,
-    // Set max: 1 for edge workers to prevent stale connections from being reused in the pool.
-    // Since worker isolates run single-threaded, they only need 1 connection.
-    max: 1,
+    // Increased to 5 to avoid pool starvation on concurrent requests in wrangler dev/production isolates.
+    max: 5,
     // Release idle connections quickly in a serverless environment
     idleTimeoutMillis: 10_000,
     // Increase to 30s as default to handle cold-starts/latency spikes better

@@ -19,6 +19,7 @@ model User {
   probes               Probe[]
   apiKeys              ApiKey[]
   privacy              UserPrivacy?
+  integrations         UserIntegration[]
 
   @@unique([email])
   @@map("user")

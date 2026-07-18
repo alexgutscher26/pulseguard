@@ -1,0 +1,17 @@
+model UserIntegration {
+  id              String   @id @default(cuid())
+  provider        String   // "vercel"
+  accessToken     String
+  configurationId String?  // Vercel installation configuration ID
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  teamId          String   @default("personal") // "personal" or Vercel Team ID
+  teamName        String?  // Vercel Team Name
+  teamSlug        String?  // Vercel Team Slug
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([userId, provider, teamId])
+  @@index([userId])
+  @@map("user_integration")
+}

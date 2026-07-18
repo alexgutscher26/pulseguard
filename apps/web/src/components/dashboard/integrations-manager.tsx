@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Github,
   Cloud,
@@ -30,6 +30,10 @@ import {
   fetchNetlifySites,
   fetchGitHubRepos,
   importThirdPartyMonitors,
+  getConnectedIntegrations,
+  disconnectIntegration,
+  getVercelOAuthUrl,
+  connectVercelWithToken,
   type ExternalResource,
 } from "@/actions/integrations";
 
@@ -37,6 +41,7 @@ type Provider = "vercel" | "netlify" | "github";
 
 export function IntegrationsManager() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [activeProvider, setActiveProvider] = useState<Provider | null>(null);
   const [token, setToken] = useState("");
   const [useDemo, setUseDemo] = useState(true);
@@ -44,6 +49,135 @@ export function IntegrationsManager() {
   const [resources, setResources] = useState<ExternalResource[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [importing, setImporting] = useState(false);
+  const [hasSavedToken, setHasSavedToken] = useState(false);
+  const [connectedIntegrations, setConnectedIntegrations] = useState<any[]>([]);
+
+  const loadIntegrations = async () => {
+    try {
+      const res = await getConnectedIntegrations();
+      if (res.success && res.data) {
+        setConnectedIntegrations(res.data);
+      }
+    } catch (err) {
+      console.error("Failed to load integrations", err);
+    }
+  };
+
+  useEffect(() => {
+    loadIntegrations();
+  }, []);
+
+  useEffect(() => {
+    const success = searchParams.get("success");
+    const error = searchParams.get("error");
+    const details = searchParams.get("details");
+
+    if (success === "vercel_connected") {
+      toast.success("Successfully connected Vercel scope!");
+      router.replace("/dashboard/integrations");
+      loadIntegrations();
+    } else if (error) {
+      toast.error(`Integration failed: ${error} ${details ? `(${details})` : ""}`);
+      router.replace("/dashboard/integrations");
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (activeProvider) {
+      const savedToken = localStorage.getItem(`pulseguard_token_${activeProvider}`);
+      if (savedToken) {
+        setToken(savedToken);
+        setUseDemo(false);
+        setHasSavedToken(true);
+      } else {
+        // If Vercel is active and we have a persistent Vercel integration connected in the DB,
+        // we default token to "db" so we fetch from the DB.
+        if (activeProvider === "vercel" && connectedIntegrations.some((ci) => ci.provider === "vercel")) {
+          setToken("db");
+          setUseDemo(false);
+          setHasSavedToken(false);
+        } else if (activeProvider === "vercel") {
+          setToken("");
+          setUseDemo(false);
+          setHasSavedToken(false);
+        } else {
+          setToken("");
+          setUseDemo(true);
+          setHasSavedToken(false);
+        }
+      }
+    }
+  }, [activeProvider, connectedIntegrations]);
+
+  const handleClearToken = () => {
+    if (activeProvider) {
+      localStorage.removeItem(`pulseguard_token_${activeProvider}`);
+      setToken("");
+      setUseDemo(true);
+      setHasSavedToken(false);
+      toast.success("Saved credentials cleared successfully");
+    }
+  };
+
+  const handleVercelDisconnect = async (id: string) => {
+    setLoading(true);
+    try {
+      const res = await disconnectIntegration(id);
+      if (res.success) {
+        toast.success("Disconnected Vercel scope successfully");
+        await loadIntegrations();
+      } else {
+        toast.error(res.error || "Failed to disconnect integration");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to disconnect integration");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVercelConnectWithToken = async () => {
+    if (!token || token === "db") {
+      toast.error("Please enter a valid Vercel API token");
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await connectVercelWithToken(token);
+      if (res.success && res.personalName) {
+        toast.success(
+          `Successfully connected personal scope "${res.personalName}"${
+            res.teamsCount && res.teamsCount > 0 ? ` and ${res.teamsCount} team scopes!` : "!"
+          }`
+        );
+        setToken("db"); // set to db to fetch projects using db integrations
+        setUseDemo(false);
+        await loadIntegrations();
+      } else {
+        toast.error(res.error || "Failed to verify or connect Vercel token");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to connect token");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVercelConnectOAuth = async () => {
+    setLoading(true);
+    try {
+      const res = await getVercelOAuthUrl();
+      if (res.success && res.url) {
+        window.location.href = res.url;
+      } else {
+        toast.error(res.error || "Failed to initiate Vercel OAuth");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "An error occurred initiating Vercel OAuth");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const providerMeta = {
     vercel: {
@@ -78,7 +212,7 @@ export function IntegrationsManager() {
   const handleConnectClick = (provider: Provider) => {
     setActiveProvider(provider);
     setToken("");
-    setUseDemo(true);
+    setUseDemo(provider !== "vercel");
     setResources([]);
     setSelectedIds(new Set());
   };
@@ -96,7 +230,7 @@ export function IntegrationsManager() {
     try {
       let result;
       if (activeProvider === "vercel") {
-        result = await fetchVercelProjects(tokenToUse);
+        result = await fetchVercelProjects(tokenToUse, useDemo);
       } else if (activeProvider === "netlify") {
         result = await fetchNetlifySites(tokenToUse);
       } else {
@@ -108,6 +242,12 @@ export function IntegrationsManager() {
         // Default select all projects
         setSelectedIds(new Set(result.data.map((r) => r.id)));
         toast.success(`Successfully loaded ${result.data.length} projects!`);
+
+        // Save the valid token in localStorage
+        if (!useDemo && token && token !== "db" && activeProvider) {
+          localStorage.setItem(`pulseguard_token_${activeProvider}`, token);
+          setHasSavedToken(true);
+        }
       } else {
         toast.error(result.error || "Failed to load projects");
       }
@@ -185,12 +325,21 @@ export function IntegrationsManager() {
                   <path d="M57.5 0L115 100H0L57.5 0Z" />
                 </svg>
               </div>
-              <Badge
-                variant="outline"
-                className="text-white border-white/20 bg-white/5 text-[10px]"
-              >
-                1-Click setup
-              </Badge>
+              {connectedIntegrations.some((ci) => ci.provider === "vercel") ? (
+                <Badge
+                  variant="outline"
+                  className="text-emerald-500 border-emerald-500/20 bg-emerald-500/5 text-[10px]"
+                >
+                  Active ({connectedIntegrations.filter((ci) => ci.provider === "vercel").length})
+                </Badge>
+              ) : (
+                <Badge
+                  variant="outline"
+                  className="text-white border-white/20 bg-white/5 text-[10px]"
+                >
+                  1-Click setup
+                </Badge>
+              )}
             </div>
             <CardTitle className="text-sm font-bold">Vercel Integration</CardTitle>
             <CardDescription className="text-[11px] leading-relaxed">
@@ -201,10 +350,23 @@ export function IntegrationsManager() {
           <CardContent className="pt-2">
             <Button
               onClick={() => handleConnectClick("vercel")}
-              className="w-full bg-accent hover:bg-accent/80 text-foreground text-xs font-semibold rounded-xl border border-border flex items-center justify-center gap-2"
+              className={`w-full text-xs font-semibold rounded-xl border flex items-center justify-center gap-2 ${
+                connectedIntegrations.some((ci) => ci.provider === "vercel")
+                  ? "bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border-emerald-500/20"
+                  : "bg-accent hover:bg-accent/80 text-foreground border-border"
+              }`}
             >
-              Connect Vercel
-              <ArrowRight className="size-3.5" />
+              {connectedIntegrations.some((ci) => ci.provider === "vercel") ? (
+                <>
+                  <Check className="size-3.5 text-emerald-500" />
+                  Connected
+                </>
+              ) : (
+                <>
+                  Connect Vercel
+                  <ArrowRight className="size-3.5" />
+                </>
+              )}
             </Button>
           </CardContent>
         </Card>
@@ -326,12 +488,105 @@ export function IntegrationsManager() {
                       </p>
                     </div>
 
-                    {/* Live Credentials Input */}
-                    {!useDemo && (
+                    {/* Vercel Specific Live Token Integration Flow */}
+                    {!useDemo && activeProvider === "vercel" && (
+                      <div className="space-y-4">
+                        {connectedIntegrations.some((ci) => ci.provider === "vercel") && (
+                          /* Connected Scopes */
+                          <div className="space-y-2">
+                            <label className="text-xs font-bold text-foreground">Connected Vercel Scopes</label>
+                            <div className="divide-y divide-border border border-border rounded-xl bg-accent/20 max-h-[160px] overflow-y-auto">
+                              {connectedIntegrations
+                                .filter((ci) => ci.provider === "vercel")
+                                .map((ci) => (
+                                  <div key={ci.id} className="flex justify-between items-center p-3 text-xs">
+                                    <div className="flex flex-col gap-0.5">
+                                      <span className="font-semibold text-foreground">{ci.teamName}</span>
+                                      <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                                        <Badge variant="outline" className="text-[8px] px-1 scale-90 border-primary/20 text-primary bg-primary/5">
+                                          {ci.teamSlug}
+                                        </Badge>
+                                      </span>
+                                    </div>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => handleVercelDisconnect(ci.id)}
+                                      className="text-red-500 hover:text-red-400 hover:bg-red-500/10 text-[10px] h-7 px-2.5 rounded-lg border border-red-500/10"
+                                    >
+                                      Disconnect
+                                    </Button>
+                                  </div>
+                                ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Direct Token Input for Connecting */}
+                        <div className="space-y-3 p-4 rounded-xl border border-border bg-accent/10">
+                          <label className="text-xs font-bold text-foreground">
+                            {connectedIntegrations.some((ci) => ci.provider === "vercel")
+                              ? "Connect Another Account / Token"
+                              : "Vercel Personal Access Token"}
+                          </label>
+                          <p className="text-[10px] text-muted-foreground leading-relaxed">
+                            Create a token in your Vercel Account Settings and paste it below. PulseGuard will persistently link your personal account and all accessible teams to your database account.
+                          </p>
+                          <div className="flex gap-2">
+                            <Input
+                              type="password"
+                              placeholder="Enter Vercel Access Token (sec_...)"
+                              value={token === "db" ? "" : token}
+                              onChange={(e) => setToken(e.target.value)}
+                              className="bg-accent/40 border-border text-foreground text-xs rounded-xl focus-visible:ring-primary/50"
+                            />
+                            <Button
+                              onClick={handleVercelConnectWithToken}
+                              disabled={loading || !token || token === "db"}
+                              className="bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-semibold px-4 rounded-xl flex items-center gap-1.5 shrink-0"
+                            >
+                              {loading ? (
+                                <>
+                                  <Loader2 className="size-3.5 animate-spin" />
+                                  Connecting...
+                                </>
+                              ) : (
+                                "Connect"
+                              )}
+                            </Button>
+                          </div>
+                          <div className="pt-1">
+                            <a
+                              href="https://vercel.com/account/tokens"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[10px] text-primary hover:underline flex items-center gap-1.5"
+                            >
+                              Where do I get my access token?
+                              <ExternalLink className="size-3" />
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Fallback legacy API token inputs for other providers (Netlify, GitHub) */}
+                    {!useDemo && activeProvider !== "vercel" && (
                       <div className="space-y-2">
-                        <label className="text-xs font-bold text-foreground">
-                          API Access Token
-                        </label>
+                        <div className="flex justify-between items-center">
+                          <label className="text-xs font-bold text-foreground">
+                            API Access Token
+                          </label>
+                          {hasSavedToken && (
+                            <button
+                              type="button"
+                              onClick={handleClearToken}
+                              className="text-[10px] text-destructive hover:underline cursor-pointer"
+                            >
+                              Clear Saved Token
+                            </button>
+                          )}
+                        </div>
                         <Input
                           type="password"
                           placeholder={providerMeta[activeProvider].tokenPlaceholder}
@@ -349,24 +604,31 @@ export function IntegrationsManager() {
                             Where do I get my access token?
                             <ExternalLink className="size-3" />
                           </a>
+                          {hasSavedToken && (
+                            <span className="text-[10px] text-emerald-500 flex items-center gap-1">
+                              <Check className="size-3" /> Saved Locally
+                            </span>
+                          )}
                         </div>
                       </div>
                     )}
 
-                    <Button
-                      onClick={handleFetchResources}
-                      disabled={loading}
-                      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold py-2 rounded-xl flex items-center justify-center gap-2"
-                    >
-                      {loading ? (
-                        <>
-                          <Loader2 className="size-3.5 animate-spin" />
-                          Authenticating...
-                        </>
-                      ) : (
-                        "Fetch Projects & Deployments"
-                      )}
-                    </Button>
+                    {(useDemo || activeProvider !== "vercel" || connectedIntegrations.some((ci) => ci.provider === "vercel")) && (
+                      <Button
+                        onClick={handleFetchResources}
+                        disabled={loading}
+                        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold py-2 rounded-xl flex items-center justify-center gap-2"
+                      >
+                        {loading ? (
+                          <>
+                            <Loader2 className="size-3.5 animate-spin" />
+                            Authenticating...
+                          </>
+                        ) : (
+                          "Fetch Projects & Deployments"
+                        )}
+                      </Button>
+                    )}
                   </div>
                 ) : (
                   /* Resource Selection Checklist Mode */

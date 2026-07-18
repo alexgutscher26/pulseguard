@@ -121,45 +121,234 @@ export async function importThirdPartyMonitors(projects: IntegrationProject[]) {
  * Fetches project deployments from Vercel.
  */
 export async function fetchVercelProjects(
-  token: string,
+  token?: string,
+  useDemo?: boolean,
 ): Promise<{ success: boolean; data?: ExternalResource[]; error?: string }> {
   // Handle mock credentials
-  if (!token || token.toLowerCase().trim() === "mock" || token.toLowerCase().trim() === "demo") {
+  if (useDemo || !token || token.toLowerCase().trim() === "mock" || token.toLowerCase().trim() === "demo") {
     return {
       success: true,
       data: [
-        { id: "v1", name: "pulseguard-landing", url: "pulseguard.io", type: "HTTP" },
-        { id: "v2", name: "nextjs-dashboard-prod", url: "dashboard.pulseguard.io", type: "HTTP" },
-        { id: "v3", name: "indie-maker-blog", url: "blog.maker.io", type: "HTTP" },
-        { id: "v4", name: "saas-api-service", url: "api.my-saas.com", type: "HTTP" },
+        { id: "v1", name: "[personal] pulseguard-landing", url: "pulseguard.io", type: "HTTP" },
+        { id: "v2", name: "[personal] nextjs-dashboard-prod", url: "dashboard.pulseguard.io", type: "HTTP" },
+        { id: "v3", name: "[acme-corp] acme-main-website", url: "acme.com", type: "HTTP" },
+        { id: "v4", name: "[acme-corp] saas-api-service", url: "api.acme.com", type: "HTTP" },
       ],
     };
   }
 
-  try {
-    const res = await fetch("https://api.vercel.com/v9/projects", {
-      headers: {
+  // If token is explicitly provided (fallback/legacy flow), fetch using it:
+  if (token && token.toLowerCase().trim() !== "db") {
+    try {
+      const headers = {
         Authorization: `Bearer ${token}`,
-      },
+      };
+
+      // 1. Fetch personal projects
+      const personalProjectsPromise = fetch("https://api.vercel.com/v9/projects?limit=100", { headers })
+        .then(async (res) => {
+          if (!res.ok) {
+            const text = await res.text();
+            throw new Error(`Personal projects error (${res.status}): ${text}`);
+          }
+          return res.json() as Promise<{ projects: any[] }>;
+        })
+        .catch((err) => {
+          console.error("Error fetching Vercel personal projects:", err);
+          return { projects: [] };
+        });
+
+      // 2. Fetch teams list
+      const teamsPromise = fetch("https://api.vercel.com/v2/teams", { headers })
+        .then(async (res) => {
+          if (!res.ok) {
+            // If we can't read teams, maybe token doesn't have permissions or user has no teams.
+            return { teams: [] };
+          }
+          return res.json() as Promise<{ teams: any[] }>;
+        })
+        .catch((err) => {
+          console.error("Error fetching Vercel teams:", err);
+          return { teams: [] };
+        });
+
+      const [personalResult, teamsResult] = await Promise.all([
+        personalProjectsPromise,
+        teamsPromise,
+      ]);
+
+      const allProjects: Array<{ project: any; scope: { type: "personal" | "team"; slug: string; name: string } }> = [];
+
+      // Add personal projects to our list
+      if (personalResult.projects) {
+        for (const p of personalResult.projects) {
+          allProjects.push({
+            project: p,
+            scope: { type: "personal", slug: "personal", name: "Personal" },
+          });
+        }
+      }
+
+      // 3. Concurrently fetch team projects
+      const teams = teamsResult.teams || [];
+      if (teams.length > 0) {
+        const teamProjectsPromises = teams.map((team) =>
+          fetch(`https://api.vercel.com/v9/projects?teamId=${team.id}&limit=100`, { headers })
+            .then(async (res) => {
+              if (!res.ok) {
+                const text = await res.text();
+                console.warn(`Failed to fetch projects for team ${team.slug} (${res.status}): ${text}`);
+                return [];
+              }
+              const data = (await res.json()) as any;
+              return (data.projects || []).map((p: any) => ({
+                project: p,
+                scope: { type: "team" as const, slug: team.slug, name: team.name },
+              }));
+            })
+            .catch((err) => {
+              console.error(`Error fetching projects for team ${team.slug}:`, err);
+              return [];
+            })
+        );
+
+        const teamResults = await Promise.all(teamProjectsPromises);
+        for (const teamProjects of teamResults) {
+          allProjects.push(...teamProjects);
+        }
+      }
+
+      // 4. Map and de-duplicate or structure aliases
+      const data: ExternalResource[] = [];
+      const seenUrls = new Set<string>();
+
+      for (const { project, scope } of allProjects) {
+        const aliases = project.targets?.production?.alias || [];
+        const prefix = scope.type === "team" ? `[${scope.slug}] ` : "[personal] ";
+
+        if (aliases.length === 0) {
+          const latestAlias = project.latestDeployments?.[0]?.alias?.[0] || `${project.name}.vercel.app`;
+          const key = `${latestAlias}`.toLowerCase();
+          if (!seenUrls.has(key)) {
+            seenUrls.add(key);
+            data.push({
+              id: `${project.id}-default`,
+              name: `${prefix}${project.name}`,
+              url: latestAlias,
+              type: "HTTP" as const,
+            });
+          }
+        } else {
+          aliases.forEach((alias: string, index: number) => {
+            const key = `${alias}`.toLowerCase();
+            if (!seenUrls.has(key)) {
+              seenUrls.add(key);
+              data.push({
+                id: `${project.id}-${index}`,
+                name: aliases.length > 1 ? `${prefix}${project.name} (${alias})` : `${prefix}${project.name}`,
+                url: alias,
+                type: "HTTP" as const,
+              });
+            }
+          });
+        }
+      }
+
+      return { success: true, data };
+    } catch (err: any) {
+      return { success: false, error: err.message || "Failed to fetch from Vercel" };
+    }
+  }
+
+  // Fetch using the persistent integrations stored in DB
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  try {
+    const integrations = await prisma.userIntegration.findMany({
+      where: { userId: session.user.id, provider: "vercel" },
     });
 
-    if (!res.ok) {
-      const errorText = await res.text();
-      return { success: false, error: `Vercel API returned status ${res.status}: ${errorText}` };
+    if (integrations.length === 0) {
+      return { success: true, data: [] }; // No connections yet
     }
 
-    const json = (await res.json()) as any;
-    const projects = json.projects || [];
-    const data = projects.map((p: any) => {
-      // Find a production target domain or default to name.vercel.app
-      const domain = p.targets?.production?.alias?.[0] || `${p.name}.vercel.app`;
-      return {
-        id: p.id,
-        name: p.name,
-        url: domain,
-        type: "HTTP" as const,
+    const allProjects: Array<{ project: any; scope: { type: "personal" | "team"; slug: string; name: string } }> = [];
+
+    for (const integration of integrations) {
+      const headers = {
+        Authorization: `Bearer ${integration.accessToken}`,
       };
-    });
+
+      const isPersonal = integration.teamId === "personal";
+      const url = isPersonal
+        ? "https://api.vercel.com/v9/projects?limit=100"
+        : `https://api.vercel.com/v9/projects?teamId=${integration.teamId}&limit=100`;
+
+      try {
+        const res = await fetch(url, { headers });
+        if (!res.ok) {
+          const text = await res.text();
+          console.error(`Failed to fetch projects for Vercel integration ${integration.id} (${res.status}): ${text}`);
+          continue;
+        }
+        const data = (await res.json()) as any;
+        const scopeSlug = isPersonal ? "personal" : (integration.teamSlug || "team");
+        const scopeName = isPersonal ? "Personal" : (integration.teamName || "Team");
+
+        if (data.projects) {
+          for (const p of data.projects) {
+            allProjects.push({
+              project: p,
+              scope: { type: isPersonal ? "personal" : "team", slug: scopeSlug, name: scopeName },
+            });
+          }
+        }
+      } catch (err) {
+        console.error(`Error fetching projects for integration ${integration.id}:`, err);
+      }
+    }
+
+    // Map and de-duplicate or structure aliases
+    const data: ExternalResource[] = [];
+    const seenUrls = new Set<string>();
+
+    for (const { project, scope } of allProjects) {
+      const aliases = project.targets?.production?.alias || [];
+      const prefix = scope.type === "team" ? `[${scope.slug}] ` : "[personal] ";
+
+      if (aliases.length === 0) {
+        const latestAlias = project.latestDeployments?.[0]?.alias?.[0] || `${project.name}.vercel.app`;
+        const key = `${latestAlias}`.toLowerCase();
+        if (!seenUrls.has(key)) {
+          seenUrls.add(key);
+          data.push({
+            id: `${project.id}-default`,
+            name: `${prefix}${project.name}`,
+            url: latestAlias,
+            type: "HTTP" as const,
+          });
+        }
+      } else {
+        aliases.forEach((alias: string, index: number) => {
+          const key = `${alias}`.toLowerCase();
+          if (!seenUrls.has(key)) {
+            seenUrls.add(key);
+            data.push({
+              id: `${project.id}-${index}`,
+              name: aliases.length > 1 ? `${prefix}${project.name} (${alias})` : `${prefix}${project.name}`,
+              url: alias,
+              type: "HTTP" as const,
+            });
+          }
+        });
+      }
+    }
 
     return { success: true, data };
   } catch (err: any) {
@@ -276,5 +465,216 @@ export async function fetchGitHubRepos(
     return { success: true, data };
   } catch (err: any) {
     return { success: false, error: err.message || "Failed to fetch from GitHub" };
+  }
+}
+
+/**
+ * Retrieves all stored third-party integrations for the user.
+ */
+export async function getConnectedIntegrations() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  try {
+    const integrations = await prisma.userIntegration.findMany({
+      where: { userId: session.user.id },
+      select: {
+        id: true,
+        provider: true,
+        teamId: true,
+        teamName: true,
+        teamSlug: true,
+        createdAt: true,
+      },
+    });
+
+    return { success: true, data: integrations };
+  } catch (err: any) {
+    console.error("Failed to fetch connected integrations:", err);
+    return { success: false, error: err.message || "Failed to retrieve integrations" };
+  }
+}
+
+/**
+ * Disconnects/deletes a persistent integration.
+ */
+export async function disconnectIntegration(integrationId: string) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  try {
+    // Verify ownership
+    const integration = await prisma.userIntegration.findFirst({
+      where: { id: integrationId, userId: session.user.id },
+    });
+
+    if (!integration) {
+      return { success: false, error: "Integration not found or access denied" };
+    }
+
+    await prisma.userIntegration.delete({
+      where: { id: integrationId },
+    });
+
+    revalidatePath("/dashboard/integrations");
+
+    return { success: true };
+  } catch (err: any) {
+    console.error("Failed to disconnect integration:", err);
+    return { success: false, error: err.message || "Failed to disconnect integration" };
+  }
+}
+
+/**
+ * Generates the Vercel OAuth authorization URL for the logged-in user.
+ */
+export async function getVercelOAuthUrl() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  const clientId = process.env.VERCEL_CLIENT_ID;
+  const redirectUri = process.env.VERCEL_REDIRECT_URI;
+
+  if (!clientId || !redirectUri) {
+    return {
+      success: false,
+      error: "Vercel OAuth integration credentials are not configured on the server. Please check VERCEL_CLIENT_ID and VERCEL_REDIRECT_URI environment variables.",
+    };
+  }
+
+  // We pass the userId as state to authenticate on redirect callback and mitigate CSRF
+  const state = session.user.id;
+  const url = `https://vercel.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(
+    redirectUri,
+  )}&state=${state}&response_type=code`;
+
+  return { success: true, url };
+}
+
+/**
+ * Verifies a Vercel API token and saves integrations for the user's personal scope
+ * and all accessible teams persistently in the database.
+ */
+export async function connectVercelWithToken(token: string) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  if (!token) {
+    return { success: false, error: "Token is required" };
+  }
+
+  try {
+    // 1. Verify personal account details
+    const userRes = await fetch("https://api.vercel.com/v2/user", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!userRes.ok) {
+      return { success: false, error: "Invalid Vercel API token. Please check your token and try again." };
+    }
+
+    const userData = (await userRes.json()) as any;
+    const userObj = userData.user || userData;
+    const personalName = userObj.name || userObj.username || "Personal Account";
+    const personalSlug = userObj.username || "personal";
+
+    // 2. Save personal integration
+    await prisma.userIntegration.upsert({
+      where: {
+        userId_provider_teamId: {
+          userId: session.user.id,
+          provider: "vercel",
+          teamId: "personal",
+        },
+      },
+      update: {
+        accessToken: token,
+        teamName: personalName,
+        teamSlug: personalSlug,
+      },
+      create: {
+        userId: session.user.id,
+        provider: "vercel",
+        accessToken: token,
+        teamId: "personal",
+        teamName: personalName,
+        teamSlug: personalSlug,
+      },
+    });
+
+    let teamsCount = 0;
+
+    // 3. Fetch and save team integrations
+    try {
+      const teamsRes = await fetch("https://api.vercel.com/v2/teams", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (teamsRes.ok) {
+        const teamsData = (await teamsRes.json()) as any;
+        const teamsList = teamsData.teams || [];
+
+        for (const team of teamsList) {
+          if (team.id) {
+            await prisma.userIntegration.upsert({
+              where: {
+                userId_provider_teamId: {
+                  userId: session.user.id,
+                  provider: "vercel",
+                  teamId: team.id,
+                },
+              },
+              update: {
+                accessToken: token,
+                teamName: team.name || team.slug,
+                teamSlug: team.slug,
+              },
+              create: {
+                userId: session.user.id,
+                provider: "vercel",
+                accessToken: token,
+                teamId: team.id,
+                teamName: team.name || team.slug,
+                teamSlug: team.slug,
+              },
+            });
+            teamsCount++;
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Failed to fetch teams during Vercel token verification:", err);
+    }
+
+    revalidatePath("/dashboard/integrations");
+
+    return {
+      success: true,
+      teamsCount,
+      personalName,
+    };
+  } catch (err: any) {
+    console.error("Vercel token integration error:", err);
+    return { success: false, error: err.message || "An unexpected error occurred." };
   }
 }
