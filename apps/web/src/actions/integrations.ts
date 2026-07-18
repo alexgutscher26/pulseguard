@@ -360,9 +360,12 @@ export async function fetchVercelProjects(
  * Fetches sites deployed on Netlify.
  */
 export async function fetchNetlifySites(
-  token: string,
+  token?: string,
 ): Promise<{ success: boolean; data?: ExternalResource[]; error?: string }> {
-  if (!token || token.toLowerCase().trim() === "mock" || token.toLowerCase().trim() === "demo") {
+  const tokenToUse = token || "db";
+
+  // Handle mock credentials
+  if (tokenToUse.toLowerCase().trim() === "mock" || tokenToUse.toLowerCase().trim() === "demo") {
     return {
       success: true,
       data: [
@@ -373,10 +376,33 @@ export async function fetchNetlifySites(
     };
   }
 
+  let finalToken = tokenToUse;
+
+  // Read from database
+  if (tokenToUse === "db") {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session?.user) {
+      return { success: false, error: "Unauthorized" };
+    }
+
+    const integration = await prisma.userIntegration.findFirst({
+      where: { userId: session.user.id, provider: "netlify" },
+    });
+
+    if (!integration) {
+      return { success: true, data: [] }; // No integration configured yet
+    }
+
+    finalToken = integration.accessToken;
+  }
+
   try {
     const res = await fetch("https://api.netlify.com/api/v1/sites", {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${finalToken}`,
       },
     });
 
@@ -401,6 +427,72 @@ export async function fetchNetlifySites(
     return { success: true, data };
   } catch (err: any) {
     return { success: false, error: err.message || "Failed to fetch from Netlify" };
+  }
+}
+
+/**
+ * Verifies a Netlify API token and saves the integration persistently in the database.
+ */
+export async function connectNetlifyWithToken(token: string) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  if (!token) {
+    return { success: false, error: "Token is required" };
+  }
+
+  try {
+    // 1. Verify Netlify account details
+    const userRes = await fetch("https://api.netlify.com/api/v1/user", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!userRes.ok) {
+      return { success: false, error: "Invalid Netlify API token. Please check your token and try again." };
+    }
+
+    const userData = (await userRes.json()) as any;
+    const name = userData.full_name || userData.email || "Netlify Account";
+    const slug = userData.email ? userData.email.split("@")[0] : "netlify";
+
+    // 2. Save Netlify integration
+    await prisma.userIntegration.upsert({
+      where: {
+        userId_provider_teamId: {
+          userId: session.user.id,
+          provider: "netlify",
+          teamId: "personal",
+        },
+      },
+      update: {
+        accessToken: token,
+        teamName: name,
+        teamSlug: slug,
+      },
+      create: {
+        userId: session.user.id,
+        provider: "netlify",
+        accessToken: token,
+        teamId: "personal",
+        teamName: name,
+        teamSlug: slug,
+      },
+    });
+
+    revalidatePath("/dashboard/integrations");
+
+    return {
+      success: true,
+      name,
+    };
+  } catch (err: any) {
+    console.error("Netlify token integration error:", err);
+    return { success: false, error: err.message || "An unexpected error occurred." };
   }
 }
 

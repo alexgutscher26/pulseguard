@@ -34,6 +34,7 @@ import {
   disconnectIntegration,
   getVercelOAuthUrl,
   connectVercelWithToken,
+  connectNetlifyWithToken,
   type ExternalResource,
 } from "@/actions/integrations";
 
@@ -90,13 +91,14 @@ export function IntegrationsManager() {
         setUseDemo(false);
         setHasSavedToken(true);
       } else {
-        // If Vercel is active and we have a persistent Vercel integration connected in the DB,
+        // If Vercel or Netlify is active and we have a persistent integration connected in the DB,
         // we default token to "db" so we fetch from the DB.
-        if (activeProvider === "vercel" && connectedIntegrations.some((ci) => ci.provider === "vercel")) {
+        const hasDbConfig = connectedIntegrations.some((ci) => ci.provider === activeProvider);
+        if ((activeProvider === "vercel" || activeProvider === "netlify") && hasDbConfig) {
           setToken("db");
           setUseDemo(false);
           setHasSavedToken(false);
-        } else if (activeProvider === "vercel") {
+        } else if (activeProvider === "vercel" || activeProvider === "netlify") {
           setToken("");
           setUseDemo(false);
           setHasSavedToken(false);
@@ -163,6 +165,29 @@ export function IntegrationsManager() {
     }
   };
 
+  const handleNetlifyConnectWithToken = async () => {
+    if (!token || token === "db") {
+      toast.error("Please enter a valid Netlify API token");
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await connectNetlifyWithToken(token);
+      if (res.success && res.name) {
+        toast.success(`Successfully connected Netlify account "${res.name}"!`);
+        setToken("db"); // set to db to fetch sites using db integrations
+        setUseDemo(false);
+        await loadIntegrations();
+      } else {
+        toast.error(res.error || "Failed to verify or connect Netlify token");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to connect token");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleVercelConnectOAuth = async () => {
     setLoading(true);
     try {
@@ -212,7 +237,7 @@ export function IntegrationsManager() {
   const handleConnectClick = (provider: Provider) => {
     setActiveProvider(provider);
     setToken("");
-    setUseDemo(provider !== "vercel");
+    setUseDemo(provider !== "vercel" && provider !== "netlify");
     setResources([]);
     setSelectedIds(new Set());
   };
@@ -385,12 +410,21 @@ export function IntegrationsManager() {
                   <path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm-53 381.7l-90.7-90.7 22.6-22.6 68.1 68.1 143.7-143.7 22.6 22.6-166.3 166.3z" />
                 </svg>
               </div>
-              <Badge
-                variant="outline"
-                className="text-[#00F5D4] border-[#00AD9F]/20 bg-[#00AD9F]/5 text-[10px]"
-              >
-                1-Click setup
-              </Badge>
+              {connectedIntegrations.some((ci) => ci.provider === "netlify") ? (
+                <Badge
+                  variant="outline"
+                  className="text-emerald-500 border-emerald-500/20 bg-emerald-500/5 text-[10px]"
+                >
+                  Active
+                </Badge>
+              ) : (
+                <Badge
+                  variant="outline"
+                  className="text-[#00F5D4] border-[#00AD9F]/20 bg-[#00AD9F]/5 text-[10px]"
+                >
+                  1-Click setup
+                </Badge>
+              )}
             </div>
             <CardTitle className="text-sm font-bold">Netlify Integration</CardTitle>
             <CardDescription className="text-[11px] leading-relaxed">
@@ -401,10 +435,23 @@ export function IntegrationsManager() {
           <CardContent className="pt-2">
             <Button
               onClick={() => handleConnectClick("netlify")}
-              className="w-full bg-accent hover:bg-accent/80 text-foreground text-xs font-semibold rounded-xl border border-border flex items-center justify-center gap-2"
+              className={`w-full text-xs font-semibold rounded-xl border flex items-center justify-center gap-2 ${
+                connectedIntegrations.some((ci) => ci.provider === "netlify")
+                  ? "bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border-emerald-500/20"
+                  : "bg-accent hover:bg-accent/80 text-foreground border-border"
+              }`}
             >
-              Connect Netlify
-              <ArrowRight className="size-3.5" />
+              {connectedIntegrations.some((ci) => ci.provider === "netlify") ? (
+                <>
+                  <Check className="size-3.5 text-emerald-500" />
+                  Connected
+                </>
+              ) : (
+                <>
+                  Connect Netlify
+                  <ArrowRight className="size-3.5" />
+                </>
+              )}
             </Button>
           </CardContent>
         </Card>
@@ -570,8 +617,90 @@ export function IntegrationsManager() {
                       </div>
                     )}
 
-                    {/* Fallback legacy API token inputs for other providers (Netlify, GitHub) */}
-                    {!useDemo && activeProvider !== "vercel" && (
+                    {/* Netlify Specific Live Token Integration Flow */}
+                    {!useDemo && activeProvider === "netlify" && (
+                      <div className="space-y-4">
+                        {connectedIntegrations.some((ci) => ci.provider === "netlify") && (
+                          /* Connected Scopes */
+                          <div className="space-y-2">
+                            <label className="text-xs font-bold text-foreground">Connected Netlify Account</label>
+                            <div className="divide-y divide-border border border-border rounded-xl bg-accent/20 max-h-[160px] overflow-y-auto">
+                              {connectedIntegrations
+                                .filter((ci) => ci.provider === "netlify")
+                                .map((ci) => (
+                                  <div key={ci.id} className="flex justify-between items-center p-3 text-xs">
+                                    <div className="flex flex-col gap-0.5">
+                                      <span className="font-semibold text-foreground">{ci.teamName}</span>
+                                      <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                                        <Badge variant="outline" className="text-[8px] px-1 scale-90 border-primary/20 text-primary bg-primary/5">
+                                          {ci.teamSlug}
+                                        </Badge>
+                                      </span>
+                                    </div>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => handleVercelDisconnect(ci.id)}
+                                      className="text-red-500 hover:text-red-400 hover:bg-red-500/10 text-[10px] h-7 px-2.5 rounded-lg border border-red-500/10"
+                                    >
+                                      Disconnect
+                                    </Button>
+                                  </div>
+                                ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Direct Token Input for Connecting */}
+                        <div className="space-y-3 p-4 rounded-xl border border-border bg-accent/10">
+                          <label className="text-xs font-bold text-foreground">
+                            {connectedIntegrations.some((ci) => ci.provider === "netlify")
+                              ? "Connect Another Account / Token"
+                              : "Netlify Personal Access Token"}
+                          </label>
+                          <p className="text-[10px] text-muted-foreground leading-relaxed">
+                            Create a Personal Access Token in your Netlify User Settings and paste it below. PulseGuard will persistently link your site index to your database account.
+                          </p>
+                          <div className="flex gap-2">
+                            <Input
+                              type="password"
+                              placeholder="Enter Netlify Personal Access Token"
+                              value={token === "db" ? "" : token}
+                              onChange={(e) => setToken(e.target.value)}
+                              className="bg-accent/40 border-border text-foreground text-xs rounded-xl focus-visible:ring-primary/50"
+                            />
+                            <Button
+                              onClick={handleNetlifyConnectWithToken}
+                              disabled={loading || !token || token === "db"}
+                              className="bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-semibold px-4 rounded-xl flex items-center gap-1.5 shrink-0"
+                            >
+                              {loading ? (
+                                <>
+                                  <Loader2 className="size-3.5 animate-spin" />
+                                  Connecting...
+                                </>
+                              ) : (
+                                "Connect"
+                              )}
+                            </Button>
+                          </div>
+                          <div className="pt-1">
+                            <a
+                              href="https://app.netlify.com/user/settings/applications#personal-access-tokens"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[10px] text-[#00F5D4] hover:underline flex items-center gap-1.5"
+                            >
+                              Where do I get my access token?
+                              <ExternalLink className="size-3" />
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Fallback legacy API token inputs for other providers (GitHub) */}
+                    {!useDemo && activeProvider !== "vercel" && activeProvider !== "netlify" && (
                       <div className="space-y-2">
                         <div className="flex justify-between items-center">
                           <label className="text-xs font-bold text-foreground">
@@ -613,7 +742,9 @@ export function IntegrationsManager() {
                       </div>
                     )}
 
-                    {(useDemo || activeProvider !== "vercel" || connectedIntegrations.some((ci) => ci.provider === "vercel")) && (
+                    {(useDemo || 
+                      (activeProvider !== "vercel" && activeProvider !== "netlify") || 
+                      connectedIntegrations.some((ci) => ci.provider === activeProvider)) && (
                       <Button
                         onClick={handleFetchResources}
                         disabled={loading}
