@@ -4,7 +4,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import "../index.css";
 import Providers from "@/components/providers";
-import { Scanlines } from "@/components/ui/effects/scanlines";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -77,10 +76,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Providers>
-          <Scanlines />
-          {children}
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

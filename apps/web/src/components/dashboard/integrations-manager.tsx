@@ -95,7 +95,10 @@ export function IntegrationsManager() {
         // If Vercel, Netlify, or GitHub is active and we have a persistent integration connected in the DB,
         // we default token to "db" so we fetch from the DB.
         const hasDbConfig = connectedIntegrations.some((ci) => ci.provider === activeProvider);
-        const isDbProvider = activeProvider === "vercel" || activeProvider === "netlify" || activeProvider === "github";
+        const isDbProvider =
+          activeProvider === "vercel" ||
+          activeProvider === "netlify" ||
+          activeProvider === "github";
         if (isDbProvider && hasDbConfig) {
           setToken("db");
           setUseDemo(false);
@@ -152,7 +155,7 @@ export function IntegrationsManager() {
         toast.success(
           `Successfully connected personal scope "${res.personalName}"${
             res.teamsCount && res.teamsCount > 0 ? ` and ${res.teamsCount} team scopes!` : "!"
-          }`
+          }`,
         );
         setToken("db"); // set to db to fetch projects using db integrations
         setUseDemo(false);
@@ -262,9 +265,7 @@ export function IntegrationsManager() {
   const handleConnectClick = (provider: Provider) => {
     setActiveProvider(provider);
     setToken("");
-    setUseDemo(
-      provider !== "vercel" && provider !== "netlify" && provider !== "github"
-    );
+    setUseDemo(provider !== "vercel" && provider !== "netlify" && provider !== "github");
     setResources([]);
     setSelectedIds(new Set());
   };
@@ -590,16 +591,26 @@ export function IntegrationsManager() {
                         {connectedIntegrations.some((ci) => ci.provider === "vercel") && (
                           /* Connected Scopes */
                           <div className="space-y-2">
-                            <label className="text-xs font-bold text-foreground">Connected Vercel Scopes</label>
+                            <label className="text-xs font-bold text-foreground">
+                              Connected Vercel Scopes
+                            </label>
                             <div className="divide-y divide-border border border-border rounded-xl bg-accent/20 max-h-[160px] overflow-y-auto">
                               {connectedIntegrations
                                 .filter((ci) => ci.provider === "vercel")
                                 .map((ci) => (
-                                  <div key={ci.id} className="flex justify-between items-center p-3 text-xs">
+                                  <div
+                                    key={ci.id}
+                                    className="flex justify-between items-center p-3 text-xs"
+                                  >
                                     <div className="flex flex-col gap-0.5">
-                                      <span className="font-semibold text-foreground">{ci.teamName}</span>
+                                      <span className="font-semibold text-foreground">
+                                        {ci.teamName}
+                                      </span>
                                       <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                                        <Badge variant="outline" className="text-[8px] px-1 scale-90 border-primary/20 text-primary bg-primary/5">
+                                        <Badge
+                                          variant="outline"
+                                          className="text-[8px] px-1 scale-90 border-primary/20 text-primary bg-primary/5"
+                                        >
                                           {ci.teamSlug}
                                         </Badge>
                                       </span>
@@ -626,7 +637,9 @@ export function IntegrationsManager() {
                               : "Vercel Personal Access Token"}
                           </label>
                           <p className="text-[10px] text-muted-foreground leading-relaxed">
-                            Create a token in your Vercel Account Settings and paste it below. PulseGuard will persistently link your personal account and all accessible teams to your database account.
+                            Create a token in your Vercel Account Settings and paste it below.
+                            PulseGuard will persistently link your personal account and all
+                            accessible teams to your database account.
                           </p>
                           <div className="flex gap-2">
                             <Input
@@ -672,16 +685,26 @@ export function IntegrationsManager() {
                         {connectedIntegrations.some((ci) => ci.provider === "netlify") && (
                           /* Connected Scopes */
                           <div className="space-y-2">
-                            <label className="text-xs font-bold text-foreground">Connected Netlify Account</label>
+                            <label className="text-xs font-bold text-foreground">
+                              Connected Netlify Account
+                            </label>
                             <div className="divide-y divide-border border border-border rounded-xl bg-accent/20 max-h-[160px] overflow-y-auto">
                               {connectedIntegrations
                                 .filter((ci) => ci.provider === "netlify")
                                 .map((ci) => (
-                                  <div key={ci.id} className="flex justify-between items-center p-3 text-xs">
+                                  <div
+                                    key={ci.id}
+                                    className="flex justify-between items-center p-3 text-xs"
+                                  >
                                     <div className="flex flex-col gap-0.5">
-                                      <span className="font-semibold text-foreground">{ci.teamName}</span>
+                                      <span className="font-semibold text-foreground">
+                                        {ci.teamName}
+                                      </span>
                                       <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                                        <Badge variant="outline" className="text-[8px] px-1 scale-90 border-primary/20 text-primary bg-primary/5">
+                                        <Badge
+                                          variant="outline"
+                                          className="text-[8px] px-1 scale-90 border-primary/20 text-primary bg-primary/5"
+                                        >
                                           {ci.teamSlug}
                                         </Badge>
                                       </span>
@@ -708,7 +731,9 @@ export function IntegrationsManager() {
                               : "Netlify Personal Access Token"}
                           </label>
                           <p className="text-[10px] text-muted-foreground leading-relaxed">
-                            Create a Personal Access Token in your Netlify User Settings and paste it below. PulseGuard will persistently link your site index to your database account.
+                            Create a Personal Access Token in your Netlify User Settings and paste
+                            it below. PulseGuard will persistently link your site index to your
+                            database account.
                           </p>
                           <div className="flex gap-2">
                             <Input
@@ -754,16 +779,26 @@ export function IntegrationsManager() {
                         {connectedIntegrations.some((ci) => ci.provider === "github") && (
                           /* Connected Scopes */
                           <div className="space-y-2">
-                            <label className="text-xs font-bold text-foreground">Connected GitHub Account</label>
+                            <label className="text-xs font-bold text-foreground">
+                              Connected GitHub Account
+                            </label>
                             <div className="divide-y divide-border border border-border rounded-xl bg-accent/20 max-h-[160px] overflow-y-auto">
                               {connectedIntegrations
                                 .filter((ci) => ci.provider === "github")
                                 .map((ci) => (
-                                  <div key={ci.id} className="flex justify-between items-center p-3 text-xs">
+                                  <div
+                                    key={ci.id}
+                                    className="flex justify-between items-center p-3 text-xs"
+                                  >
                                     <div className="flex flex-col gap-0.5">
-                                      <span className="font-semibold text-foreground">{ci.teamName}</span>
+                                      <span className="font-semibold text-foreground">
+                                        {ci.teamName}
+                                      </span>
                                       <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                                        <Badge variant="outline" className="text-[8px] px-1 scale-90 border-[#4078c0]/20 text-[#4078c0] bg-[#4078c0]/5">
+                                        <Badge
+                                          variant="outline"
+                                          className="text-[8px] px-1 scale-90 border-[#4078c0]/20 text-[#4078c0] bg-[#4078c0]/5"
+                                        >
                                           {ci.teamSlug}
                                         </Badge>
                                       </span>
@@ -790,7 +825,9 @@ export function IntegrationsManager() {
                               : "GitHub Personal Access Token"}
                           </label>
                           <p className="text-[10px] text-muted-foreground leading-relaxed">
-                            Create a Personal Access Token (PAT) with `repo` scope in your GitHub Developer Settings and paste it below. PulseGuard will persistently link your repository targets to your database account.
+                            Create a Personal Access Token (PAT) with `repo` scope in your GitHub
+                            Developer Settings and paste it below. PulseGuard will persistently link
+                            your repository targets to your database account.
                           </p>
                           <div className="flex gap-2">
                             <Input
@@ -830,7 +867,8 @@ export function IntegrationsManager() {
                       </div>
                     )}
 
-                    {(useDemo || connectedIntegrations.some((ci) => ci.provider === activeProvider)) && (
+                    {(useDemo ||
+                      connectedIntegrations.some((ci) => ci.provider === activeProvider)) && (
                       <Button
                         onClick={handleFetchResources}
                         disabled={loading}

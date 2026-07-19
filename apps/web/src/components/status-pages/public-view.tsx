@@ -53,11 +53,11 @@ export function PublicView({
   const theme = (page.theme as any) || {
     value: "cyberpunk",
     colors: {
-      bg: "#050505",
-      text: "#e2e8f0",
-      primary: "#22c55e",
+      bg: "#0f0e13",
+      text: "#edeef0",
+      primary: "#e15639",
       degraded: "#f59e0b",
-      error: "#ef4444",
+      error: "#f87171",
     },
   };
   const customStyle = {
@@ -124,10 +124,8 @@ export function PublicView({
         }}
       />
 
-      {/* Background Grid FX */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#111_1px,transparent_1px),linear-gradient(to_bottom,#111_1px,transparent_1px)] bg-size-[4rem_4rem] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-20 pointer-events-none z-0"></div>
-      {/* CRT Scanline FX */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-size-[100%_2px,3px_100%] pointer-events-none z-50 opacity-20"></div>
+      {/* Background Dots FX */}
+      <div className="absolute inset-0 bg-[radial-gradient(#ffffff08_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none z-0"></div>
 
       <div className="relative z-10 max-w-4xl mx-auto px-4 py-8 md:py-12">
         {page.isDemo && (
@@ -247,12 +245,9 @@ export function PublicView({
               : "bg-[rgba(239,68,68,0.03)] border-red-500/20 hover:border-red-500/40 hover:bg-[rgba(239,68,68,0.06)]"
           }`}
         >
-          {/* Scanline overlay for banner specifically */}
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(0,0,0,0.03),rgba(0,0,0,0.01),rgba(0,0,0,0.03))] bg-size-[100%_3px,3px_100%] pointer-events-none z-10"></div>
-
           {/* Glow Effect */}
           <div
-            className={`absolute -top-24 -left-24 size-48 rounded-full blur-[100px] opacity-20 pointer-events-none ${allUp ? "bg-primary" : "bg-red-500"}`}
+            className={`absolute -top-24 -left-24 size-48 rounded-full blur-[100px] opacity-10 pointer-events-none ${allUp ? "bg-primary" : "bg-red-500"}`}
           ></div>
 
           <div className="relative z-20 flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">
@@ -260,8 +255,8 @@ export function PublicView({
             <div
               className={`size-20 md:size-24 rounded-full flex items-center justify-center border transition-all duration-500 relative group-hover:scale-105 ${
                 allUp
-                  ? "border-primary/30 text-primary bg-primary/5 shadow-[0_0_40px_-10px_rgba(34,197,94,0.3)]"
-                  : "border-red-500/30 text-red-500 bg-red-500/5 shadow-[0_0_40px_-10px_rgba(239,68,68,0.3)] animate-pulse"
+                  ? "border-primary/30 text-primary bg-primary/5 shadow-sm"
+                  : "border-red-500/30 text-red-500 bg-red-500/5 shadow-sm animate-pulse"
               }`}
             >
               {/* Inner Ring */}

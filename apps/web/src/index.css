@@ -65,108 +65,114 @@
 }
 
 .matrix {
-  /* Explicit Matrix Mode (Same as Dark) */
-  --background: #050505;
-  --foreground: #e0e0e0;
-  --card: #0a0a0a;
-  --card-foreground: #e0e0e0;
-  --popover: #0a0a0a;
-  --popover-foreground: #e0e0e0;
-  --primary: #39ff14;
-  --primary-foreground: #000000;
-  --secondary: #1a1a1a;
-  --secondary-foreground: #39ff14;
-  --muted: #111111;
-  --muted-foreground: #666666;
-  --accent: #111111;
-  --accent-foreground: #39ff14;
-  --destructive: #ff3333;
-  --border: #333333;
-  --input: #222222;
-  --ring: #39ff14;
-  --sidebar: #050505;
-  --sidebar-foreground: #e0e0e0;
-  --sidebar-primary: #39ff14;
-  --sidebar-primary-foreground: #000000;
-  --sidebar-accent: #111111;
-  --sidebar-accent-foreground: #39ff14;
-  --sidebar-border: #333333;
-  --sidebar-ring: #39ff14;
+  /* Sentry Slate (Deep Slate/Charcoal Technical Dark Mode) */
+  --background: #0f0e13;
+  --foreground: #edeef0;
+  --card: #181620;
+  --card-foreground: #edeef0;
+  --popover: #181620;
+  --popover-foreground: #edeef0;
+
+  /* Sentry Orange/Red Accent */
+  --primary: #e15639;
+  --primary-foreground: #ffffff;
+
+  --secondary: #272532;
+  --secondary-foreground: #edeef0;
+
+  --muted: #201e28;
+  --muted-foreground: #9a97a3;
+
+  --accent: #272532;
+  --accent-foreground: #edeef0;
+
+  --destructive: #f87171;
+  --border: #2a2736;
+  --input: #2a2736;
+  --ring: #e15639;
+
+  --sidebar: #0f0e13;
+  --sidebar-foreground: #edeef0;
+  --sidebar-primary: #e15639;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #272532;
+  --sidebar-accent-foreground: #edeef0;
+  --sidebar-border: #2a2736;
+  --sidebar-ring: #e15639;
 }
 
 .cyberpunk {
-  /* Cyberpunk 2077 Mode */
-  --background: #020005; /* Deep Dark Black */
-  --foreground: #e0e0e0;
-  --card: #0e0014;
-  --card-foreground: #e0e0e0;
-  --popover: #0e0014;
-  --popover-foreground: #e0e0e0;
+  /* Loops Dark (Sleek Clean Dark Mode with warm orange accent) */
+  --background: #0c0c0d;
+  --foreground: #f4f4f5;
+  --card: #121214;
+  --card-foreground: #f4f4f5;
+  --popover: #121214;
+  --popover-foreground: #f4f4f5;
 
-  /* Primary Neon Pink */
-  --primary: #fa2a55;
-  --primary-foreground: #000000;
+  /* Loops Warm Orange */
+  --primary: #ff5a1f;
+  --primary-foreground: #ffffff;
 
-  /* Secondary Cyan */
-  --secondary: #00f0ff;
-  --secondary-foreground: #000000;
+  --secondary: #1e1e20;
+  --secondary-foreground: #f4f4f5;
 
-  --muted: #1a0b1e;
-  --muted-foreground: #9d5bb5;
+  --muted: #121214;
+  --muted-foreground: #a1a1aa;
 
-  --accent: #2d0036;
-  --accent-foreground: #ff00ff;
+  --accent: #1e1e20;
+  --accent-foreground: #f4f4f5;
 
-  --destructive: #ff003c;
-  --border: #4a0052;
-  --input: #2a0030;
-  --ring: #fa2a55;
+  --destructive: #ef4444;
+  --border: #1f1f23;
+  --input: #1f1f23;
+  --ring: #ff5a1f;
 
-  --sidebar: #020005;
-  --sidebar-foreground: #e0e0e0;
-  --sidebar-primary: #fa2a55;
-  --sidebar-primary-foreground: #000000;
-  --sidebar-accent: #2d0036;
-  --sidebar-accent-foreground: #ff00ff;
-  --sidebar-border: #4a0052;
-  --sidebar-ring: #fa2a55;
+  --sidebar: #0c0c0d;
+  --sidebar-foreground: #f4f4f5;
+  --sidebar-primary: #ff5a1f;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1e1e20;
+  --sidebar-accent-foreground: #f4f4f5;
+  --sidebar-border: #1f1f23;
+  --sidebar-ring: #ff5a1f;
 }
 
 .blade {
-  /* Blade Runner 2049 Mode (Orange/Sepia) */
-  --background: #0a0a0a;
-  --foreground: #d4d4d4;
-  --card: #141414;
-  --card-foreground: #d4d4d4;
-  --popover: #141414;
-  --popover-foreground: #d4d4d4;
+  /* Loops Light (Clean warm light mode) */
+  --background: #f9f9fb;
+  --foreground: #121212;
+  --card: #ffffff;
+  --card-foreground: #121212;
+  --popover: #ffffff;
+  --popover-foreground: #121212;
 
-  /* Primary Industrial Orange */
-  --primary: #ff9900;
-  --primary-foreground: #000000;
+  /* Loops Warm Orange */
+  --primary: #ff5a1f;
+  --primary-foreground: #ffffff;
 
-  --secondary: #1f2937;
-  --secondary-foreground: #ff9900;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #121212;
 
-  --muted: #1c1917;
-  --muted-foreground: #a8a29e;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
 
-  --accent: #292524;
-  --accent-foreground: #ff9900;
+  --accent: #f4f4f5;
+  --accent-foreground: #121212;
 
-  --destructive: #dc2626;
-  --border: #44403c;
-  --input: #292524;
-  --ring: #ff9900;
+  --destructive: #ef4444;
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+  --ring: #ff5a1f;
 
-  --sidebar: #0a0a0a;
-  --sidebar-foreground: #d4d4d4;
-  --sidebar-primary: #ff9900;
-  --sidebar-primary-foreground: #000000;
-  --sidebar-accent: #292524;
-  --sidebar-accent-foreground: #ff9900;
-  --sidebar-border: #44403c;
-  --sidebar-ring: #ff9900;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #121212;
+  --sidebar-primary: #ff5a1f;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f4f4f5;
+  --sidebar-accent-foreground: #121212;
+  --sidebar-border: #e4e4e7;
+  --sidebar-ring: #ff5a1f;
 }
 @theme inline {
   --font-sans: var(--font-geist-sans), sans-serif;
@@ -279,39 +285,15 @@
   }
 }
 
-/* Custom Utilities for Retro-Tech */
-@layer utilities {
-  .text-glow {
-    text-shadow:
-      0 0 10px rgba(57, 255, 20, 0.5),
-      0 0 20px rgba(57, 255, 20, 0.3);
-  }
-  .border-glow {
-    box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
-  }
-
-  .scanlines {
-    background: linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0),
-      rgba(255, 255, 255, 0) 50%,
-      rgba(0, 0, 0, 0.1) 50%,
-      rgba(0, 0, 0, 0.1)
-    );
-    background-size: 100% 4px;
-    pointer-events: none;
-  }
-
-  /* Brutalist Scrollbar */
-  ::-webkit-scrollbar {
-    width: 10px;
-    background: #050505;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: #333;
-    border: 1px solid #050505;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #39ff14;
-  }
+/* Modernist Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
 }

@@ -46,13 +46,13 @@ export function ModeToggle() {
       />
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme("matrix")}>
-          <Monitor className="mr-2 h-4 w-4 text-[#39ff14]" /> Matrix
+          <Monitor className="mr-2 h-4 w-4 text-[#e15639]" /> Sentry Slate
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("cyberpunk")}>
-          <Zap className="mr-2 h-4 w-4 text-[#ff00ff]" /> Cyberpunk
+          <Moon className="mr-2 h-4 w-4 text-[#ff5a1f]" /> Loops Dark
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("blade")}>
-          <Disc className="mr-2 h-4 w-4 text-[#ff9900]" /> Blade Runner
+          <Sun className="mr-2 h-4 w-4 text-[#ff5a1f]" /> Loops Light
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("system")}>
           <Laptop className="mr-2 h-4 w-4" /> System

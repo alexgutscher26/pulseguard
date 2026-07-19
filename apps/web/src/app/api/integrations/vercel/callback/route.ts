@@ -10,7 +10,9 @@ export async function GET(req: NextRequest) {
   const error = searchParams.get("error");
 
   if (error) {
-    return NextResponse.redirect(new URL("/dashboard/integrations?error=vercel_auth_failed", req.url));
+    return NextResponse.redirect(
+      new URL("/dashboard/integrations?error=vercel_auth_failed", req.url),
+    );
   }
 
   if (!code) {
@@ -25,7 +27,9 @@ export async function GET(req: NextRequest) {
 
   // If state was provided, check it to mitigate CSRF
   if (state && state !== session.user.id) {
-    return NextResponse.redirect(new URL("/dashboard/integrations?error=csrf_validation_failed", req.url));
+    return NextResponse.redirect(
+      new URL("/dashboard/integrations?error=csrf_validation_failed", req.url),
+    );
   }
 
   const clientId = process.env.VERCEL_CLIENT_ID;
@@ -34,7 +38,9 @@ export async function GET(req: NextRequest) {
 
   if (!clientId || !clientSecret || !redirectUri) {
     console.error("Vercel OAuth credentials missing in environment");
-    return NextResponse.redirect(new URL("/dashboard/integrations?error=vercel_credentials_missing", req.url));
+    return NextResponse.redirect(
+      new URL("/dashboard/integrations?error=vercel_credentials_missing", req.url),
+    );
   }
 
   try {
@@ -54,7 +60,10 @@ export async function GET(req: NextRequest) {
       const errorText = await tokenResponse.text();
       console.error("Vercel token exchange failed:", errorText);
       return NextResponse.redirect(
-        new URL(`/dashboard/integrations?error=vercel_exchange_failed&details=${encodeURIComponent(errorText)}`, req.url)
+        new URL(
+          `/dashboard/integrations?error=vercel_exchange_failed&details=${encodeURIComponent(errorText)}`,
+          req.url,
+        ),
       );
     }
 
@@ -66,7 +75,7 @@ export async function GET(req: NextRequest) {
     if (!accessToken) {
       console.error("Vercel response did not return access_token:", data);
       return NextResponse.redirect(
-        new URL("/dashboard/integrations?error=vercel_invalid_token", req.url)
+        new URL("/dashboard/integrations?error=vercel_invalid_token", req.url),
       );
     }
 
@@ -129,7 +138,9 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    return NextResponse.redirect(new URL("/dashboard/integrations?success=vercel_connected", req.url));
+    return NextResponse.redirect(
+      new URL("/dashboard/integrations?success=vercel_connected", req.url),
+    );
   } catch (err) {
     console.error("Vercel OAuth Exception:", err);
     return NextResponse.redirect(new URL("/dashboard/integrations?error=internal_error", req.url));

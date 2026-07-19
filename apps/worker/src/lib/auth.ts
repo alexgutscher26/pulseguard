@@ -39,7 +39,9 @@ export async function verifySession(
         err.message?.includes("not found") ||
         err.message?.includes("timeout"))
     ) {
-      console.warn(`[Auth] DB connection error or timeout detected. Resetting Prisma and retrying...`);
+      console.warn(
+        `[Auth] DB connection error or timeout detected. Resetting Prisma and retrying...`,
+      );
       const { resetPrisma } = await import("@pulseguard/db");
       await resetPrisma(env.DATABASE_URL);
       return verifySession(request, env, false);
@@ -85,7 +87,9 @@ export async function verifyMonitorAccess(
         err.message?.includes("not found") ||
         err.message?.includes("timeout"))
     ) {
-      console.warn(`[Auth Access] DB connection error or timeout detected. Resetting Prisma and retrying...`);
+      console.warn(
+        `[Auth Access] DB connection error or timeout detected. Resetting Prisma and retrying...`,
+      );
       const { resetPrisma } = await import("@pulseguard/db");
       await resetPrisma(env.DATABASE_URL);
       return verifyMonitorAccess(userId, monitorId, env, false);

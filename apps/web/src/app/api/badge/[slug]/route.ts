@@ -85,26 +85,17 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     svgContent = `
       <svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="${height}" viewBox="0 0 ${totalWidth} ${height}">
-        <defs>
-          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="2" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-        </defs>
         <rect width="${totalWidth}" height="${height}" rx="${isLg ? 6 : 4}" fill="${bgFill}" fill-opacity="${bgOpacity}" stroke="${color}" stroke-opacity="${borderOpacity}" stroke-width="1.5" />
         
         <!-- Vertical separator line -->
         <line x1="${prefixWidth}" y1="0" x2="${prefixWidth}" y2="${height}" stroke="${color}" stroke-opacity="0.15" stroke-width="1" />
 
         <!-- Status indicator dot -->
-        <circle cx="${prefixWidth + paddingX + 4}" cy="${height / 2}" r="${isLg ? 4.5 : 3.5}" fill="${color}" filter="url(#glow)" />
+        <circle cx="${prefixWidth + paddingX + 4}" cy="${height / 2}" r="${isLg ? 4.5 : 3.5}" fill="${color}" />
 
         <!-- Text -->
         <text x="${prefixWidth / 2}" y="${height / 2 + (isLg ? 4.5 : 3.5)}" text-anchor="middle" fill="${textColor}" font-family="monospace, monospace" font-size="${fontSize}" font-weight="bold" letter-spacing="0.5">${prefixText}</text>
-        <text x="${prefixWidth + paddingX + (isLg ? 14 : 10)}" y="${height / 2 + (isLg ? 4.5 : 3.5)}" fill="${color}" filter="url(#glow)" font-family="monospace, monospace" font-size="${fontSize}" font-weight="bold" letter-spacing="0.5">${statusText}</text>
+        <text x="${prefixWidth + paddingX + (isLg ? 14 : 10)}" y="${height / 2 + (isLg ? 4.5 : 3.5)}" fill="${color}" font-family="monospace, monospace" font-size="${fontSize}" font-weight="bold" letter-spacing="0.5">${statusText}</text>
       </svg>
     `;
   } else {

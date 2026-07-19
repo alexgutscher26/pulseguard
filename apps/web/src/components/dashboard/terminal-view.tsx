@@ -371,77 +371,47 @@ export function TerminalView() {
           __html: `
         .crt-screen {
           position: fixed;
-          background-color: #030704;
-          color: #22c55e;
-          font-family: 'Courier New', Courier, monospace;
-        }
-        .crt-screen::after {
-          content: " ";
-          display: block;
-          position: absolute;
-          top: 0; left: 0; bottom: 0; right: 0;
-          background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.18) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-          background-size: 100% 3px, 3px 100%;
-          pointer-events: none;
-          z-index: 100;
-        }
-        .crt-screen::before {
-          content: "";
-          position: absolute;
-          top: 0; left: 0; right: 0; bottom: 0;
-          background: radial-gradient(circle, transparent 70%, rgba(0, 0, 0, 0.4) 100%);
-          pointer-events: none;
-          z-index: 99;
+          background-color: #0c0c0d;
+          color: #f4f4f5;
+          font-family: var(--font-mono), monospace;
         }
         .terminal-log-glow-success {
-          color: #4ade80;
-          text-shadow: 0 0 5px rgba(74, 222, 128, 0.5);
+          color: #22c55e;
         }
         .terminal-log-glow-error {
-          color: #f87171;
-          text-shadow: 0 0 5px rgba(248, 113, 113, 0.5);
+          color: #ef4444;
         }
         .terminal-log-glow-info {
-          color: #60a5fa;
-          text-shadow: 0 0 5px rgba(96, 165, 250, 0.5);
+          color: #3b82f6;
         }
         .terminal-log-glow-input {
           color: #ffffff;
-          text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
         }
         .terminal-log-glow-stream {
-          color: #eab308;
-          text-shadow: 0 0 5px rgba(234, 179, 8, 0.5);
-        }
-        .crt-blink {
-          animation: blink 1s step-end infinite;
-        }
-        @keyframes blink {
-          from, to { border-color: transparent }
-          50% { border-color: currentColor }
+          color: #ff5a1f;
         }
       `,
         }}
       />
 
       {/* Header Overlay Toolbar */}
-      <div className="flex justify-between items-center border-b border-green-500/20 pb-4 mb-4 relative z-10 shrink-0">
+      <div className="flex justify-between items-center border-b border-zinc-850 pb-4 mb-4 relative z-10 shrink-0">
         <div className="flex items-center gap-2">
-          <Terminal className="size-4.5 text-green-500 animate-pulse" />
-          <span className="font-extrabold uppercase tracking-widest text-[10px] text-green-500/80">
-            Secure Console Terminal Matrix
+          <Terminal className="size-4.5 text-zinc-400" />
+          <span className="font-extrabold uppercase tracking-widest text-[10px] text-zinc-400">
+            System Console Terminal
           </span>
         </div>
         <button
           onClick={() => setTerminalMode(false)}
-          className="p-1 hover:bg-green-500/10 border border-green-500/20 text-green-500 hover:text-green-400 transition-colors rounded-sm cursor-pointer"
+          className="p-1 hover:bg-zinc-800 border border-zinc-750 text-zinc-400 hover:text-zinc-200 transition-colors rounded-sm cursor-pointer"
         >
           <X className="size-4" />
         </button>
       </div>
 
       {/* Output Console Log LogStream */}
-      <div className="flex-1 overflow-y-auto pr-2 space-y-2 relative z-10 scrollbar-thin scrollbar-thumb-green-500/20">
+      <div className="flex-1 overflow-y-auto pr-2 space-y-2 relative z-10 scrollbar-thin scrollbar-thumb-zinc-800">
         {history.map((line, i) => {
           const glowClass =
             line.type === "success"
@@ -461,7 +431,7 @@ export function TerminalView() {
               className={`whitespace-pre-wrap leading-relaxed tracking-tight ${glowClass}`}
             >
               {line.type !== "info" && line.type !== "input" && (
-                <span className="text-green-500/40 text-[9px] mr-2 select-none">
+                <span className="text-zinc-600 text-[9px] mr-2 select-none">
                   [{line.timestamp}]
                 </span>
               )}
@@ -473,11 +443,9 @@ export function TerminalView() {
       </div>
 
       {/* Input Line prompt */}
-      <div className="flex items-center gap-2 border-t border-green-500/20 pt-4 mt-4 relative z-10 shrink-0">
-        <ArrowRight className="size-3 text-green-500 shrink-0" />
-        <span className="font-bold text-green-500/80 tracking-tight shrink-0">
-          PG_operator@pulseguard:~$
-        </span>
+      <div className="flex items-center gap-2 border-t border-zinc-855 pt-4 mt-4 relative z-10 shrink-0">
+        <ArrowRight className="size-3 text-zinc-400 shrink-0" />
+        <span className="font-bold text-zinc-400 tracking-tight shrink-0">guest@pulseguard:~$</span>
         <div className="flex-1 relative flex items-center">
           <input
             ref={inputRef}
@@ -485,22 +453,14 @@ export function TerminalView() {
             value={inputVal}
             onChange={(e) => setInputVal(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="w-full bg-transparent border-none outline-none focus:ring-0 text-white font-mono placeholder-green-900 caret-transparent"
-            placeholder="Type 'help' for node instructions..."
+            className="w-full bg-transparent border-none outline-none focus:ring-0 text-white font-mono placeholder-zinc-700"
+            placeholder="Type 'help' for instructions..."
             autoComplete="off"
             autoCapitalize="off"
             spellCheck={false}
           />
-          {/* Custom Blinking Monospace Cursor */}
-          <div
-            className="absolute pointer-events-none border-l-[6px] border-white h-4 crt-blink"
-            style={{
-              left: `${inputVal.length * 7.2}px`, // Simple approximation of Courier character width
-              transform: "translateY(1px)",
-            }}
-          />
         </div>
-        <div className="flex items-center gap-1 text-green-500/40 text-[9px] select-none shrink-0 font-sans">
+        <div className="flex items-center gap-1 text-zinc-600 text-[9px] select-none shrink-0 font-sans">
           <span>ENTER TO EXECUTE</span>
           <CornerDownLeft className="size-2.5" />
         </div>

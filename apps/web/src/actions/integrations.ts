@@ -125,12 +125,22 @@ export async function fetchVercelProjects(
   useDemo?: boolean,
 ): Promise<{ success: boolean; data?: ExternalResource[]; error?: string }> {
   // Handle mock credentials
-  if (useDemo || !token || token.toLowerCase().trim() === "mock" || token.toLowerCase().trim() === "demo") {
+  if (
+    useDemo ||
+    !token ||
+    token.toLowerCase().trim() === "mock" ||
+    token.toLowerCase().trim() === "demo"
+  ) {
     return {
       success: true,
       data: [
         { id: "v1", name: "[personal] pulseguard-landing", url: "pulseguard.io", type: "HTTP" },
-        { id: "v2", name: "[personal] nextjs-dashboard-prod", url: "dashboard.pulseguard.io", type: "HTTP" },
+        {
+          id: "v2",
+          name: "[personal] nextjs-dashboard-prod",
+          url: "dashboard.pulseguard.io",
+          type: "HTTP",
+        },
         { id: "v3", name: "[acme-corp] acme-main-website", url: "acme.com", type: "HTTP" },
         { id: "v4", name: "[acme-corp] saas-api-service", url: "api.acme.com", type: "HTTP" },
       ],
@@ -145,7 +155,9 @@ export async function fetchVercelProjects(
       };
 
       // 1. Fetch personal projects
-      const personalProjectsPromise = fetch("https://api.vercel.com/v9/projects?limit=100", { headers })
+      const personalProjectsPromise = fetch("https://api.vercel.com/v9/projects?limit=100", {
+        headers,
+      })
         .then(async (res) => {
           if (!res.ok) {
             const text = await res.text();
@@ -177,7 +189,10 @@ export async function fetchVercelProjects(
         teamsPromise,
       ]);
 
-      const allProjects: Array<{ project: any; scope: { type: "personal" | "team"; slug: string; name: string } }> = [];
+      const allProjects: Array<{
+        project: any;
+        scope: { type: "personal" | "team"; slug: string; name: string };
+      }> = [];
 
       // Add personal projects to our list
       if (personalResult.projects) {
@@ -197,7 +212,9 @@ export async function fetchVercelProjects(
             .then(async (res) => {
               if (!res.ok) {
                 const text = await res.text();
-                console.warn(`Failed to fetch projects for team ${team.slug} (${res.status}): ${text}`);
+                console.warn(
+                  `Failed to fetch projects for team ${team.slug} (${res.status}): ${text}`,
+                );
                 return [];
               }
               const data = (await res.json()) as any;
@@ -209,7 +226,7 @@ export async function fetchVercelProjects(
             .catch((err) => {
               console.error(`Error fetching projects for team ${team.slug}:`, err);
               return [];
-            })
+            }),
         );
 
         const teamResults = await Promise.all(teamProjectsPromises);
@@ -227,7 +244,8 @@ export async function fetchVercelProjects(
         const prefix = scope.type === "team" ? `[${scope.slug}] ` : "[personal] ";
 
         if (aliases.length === 0) {
-          const latestAlias = project.latestDeployments?.[0]?.alias?.[0] || `${project.name}.vercel.app`;
+          const latestAlias =
+            project.latestDeployments?.[0]?.alias?.[0] || `${project.name}.vercel.app`;
           const key = `${latestAlias}`.toLowerCase();
           if (!seenUrls.has(key)) {
             seenUrls.add(key);
@@ -245,7 +263,10 @@ export async function fetchVercelProjects(
               seenUrls.add(key);
               data.push({
                 id: `${project.id}-${index}`,
-                name: aliases.length > 1 ? `${prefix}${project.name} (${alias})` : `${prefix}${project.name}`,
+                name:
+                  aliases.length > 1
+                    ? `${prefix}${project.name} (${alias})`
+                    : `${prefix}${project.name}`,
                 url: alias,
                 type: "HTTP" as const,
               });
@@ -278,7 +299,10 @@ export async function fetchVercelProjects(
       return { success: true, data: [] }; // No connections yet
     }
 
-    const allProjects: Array<{ project: any; scope: { type: "personal" | "team"; slug: string; name: string } }> = [];
+    const allProjects: Array<{
+      project: any;
+      scope: { type: "personal" | "team"; slug: string; name: string };
+    }> = [];
 
     for (const integration of integrations) {
       const headers = {
@@ -294,12 +318,14 @@ export async function fetchVercelProjects(
         const res = await fetch(url, { headers });
         if (!res.ok) {
           const text = await res.text();
-          console.error(`Failed to fetch projects for Vercel integration ${integration.id} (${res.status}): ${text}`);
+          console.error(
+            `Failed to fetch projects for Vercel integration ${integration.id} (${res.status}): ${text}`,
+          );
           continue;
         }
         const data = (await res.json()) as any;
-        const scopeSlug = isPersonal ? "personal" : (integration.teamSlug || "team");
-        const scopeName = isPersonal ? "Personal" : (integration.teamName || "Team");
+        const scopeSlug = isPersonal ? "personal" : integration.teamSlug || "team";
+        const scopeName = isPersonal ? "Personal" : integration.teamName || "Team";
 
         if (data.projects) {
           for (const p of data.projects) {
@@ -323,7 +349,8 @@ export async function fetchVercelProjects(
       const prefix = scope.type === "team" ? `[${scope.slug}] ` : "[personal] ";
 
       if (aliases.length === 0) {
-        const latestAlias = project.latestDeployments?.[0]?.alias?.[0] || `${project.name}.vercel.app`;
+        const latestAlias =
+          project.latestDeployments?.[0]?.alias?.[0] || `${project.name}.vercel.app`;
         const key = `${latestAlias}`.toLowerCase();
         if (!seenUrls.has(key)) {
           seenUrls.add(key);
@@ -341,7 +368,10 @@ export async function fetchVercelProjects(
             seenUrls.add(key);
             data.push({
               id: `${project.id}-${index}`,
-              name: aliases.length > 1 ? `${prefix}${project.name} (${alias})` : `${prefix}${project.name}`,
+              name:
+                aliases.length > 1
+                  ? `${prefix}${project.name} (${alias})`
+                  : `${prefix}${project.name}`,
               url: alias,
               type: "HTTP" as const,
             });
@@ -453,7 +483,10 @@ export async function connectNetlifyWithToken(token: string) {
     });
 
     if (!userRes.ok) {
-      return { success: false, error: "Invalid Netlify API token. Please check your token and try again." };
+      return {
+        success: false,
+        error: "Invalid Netlify API token. Please check your token and try again.",
+      };
     }
 
     const userData = (await userRes.json()) as any;
@@ -613,7 +646,10 @@ export async function connectGitHubWithToken(token: string) {
     });
 
     if (!userRes.ok) {
-      return { success: false, error: "Invalid GitHub API token. Please check your token and try again." };
+      return {
+        success: false,
+        error: "Invalid GitHub API token. Please check your token and try again.",
+      };
     }
 
     const userData = (await userRes.json()) as any;
@@ -741,7 +777,8 @@ export async function getVercelOAuthUrl() {
   if (!clientId || !redirectUri) {
     return {
       success: false,
-      error: "Vercel OAuth integration credentials are not configured on the server. Please check VERCEL_CLIENT_ID and VERCEL_REDIRECT_URI environment variables.",
+      error:
+        "Vercel OAuth integration credentials are not configured on the server. Please check VERCEL_CLIENT_ID and VERCEL_REDIRECT_URI environment variables.",
     };
   }
 
@@ -778,7 +815,10 @@ export async function connectVercelWithToken(token: string) {
     });
 
     if (!userRes.ok) {
-      return { success: false, error: "Invalid Vercel API token. Please check your token and try again." };
+      return {
+        success: false,
+        error: "Invalid Vercel API token. Please check your token and try again.",
+      };
     }
 
     const userData = (await userRes.json()) as any;

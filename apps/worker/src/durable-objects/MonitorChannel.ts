@@ -91,7 +91,9 @@ export class MonitorChannel extends DurableObject {
                 err.message?.includes("not found") ||
                 err.message?.includes("timeout"))
             ) {
-              console.warn(`[MonitorChannel WS] Stale DB connection or timeout detected. Resetting Prisma...`);
+              console.warn(
+                `[MonitorChannel WS] Stale DB connection or timeout detected. Resetting Prisma...`,
+              );
               const { resetPrisma } = await import("@pulseguard/db");
               await resetPrisma(env.DATABASE_URL);
               prisma = getPrisma(env.DATABASE_URL);

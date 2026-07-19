@@ -192,7 +192,6 @@ export function ResponseTimeChart({ data, isLoading, className }: ResponseTimeCh
                 strokeWidth={3}
                 fillOpacity={1}
                 fill="url(#latencyGradient)"
-                style={{ filter: "url(#neon-glow)" }}
                 isAnimationActive={true}
               />
             </AreaChart>

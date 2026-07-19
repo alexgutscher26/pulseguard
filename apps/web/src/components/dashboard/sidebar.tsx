@@ -31,9 +31,6 @@ export function Sidebar() {
 
   return (
     <aside className="hidden md:flex w-64 shrink-0 border-r border-border bg-background/40 backdrop-blur-xl flex-col justify-between p-4 h-full relative overflow-hidden font-sans">
-      {/* Scanline pattern for tech/hud texture */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0),rgba(255,255,255,0)_50%,rgba(0,0,0,0.12)_50%,rgba(0,0,0,0.12))] bg-[size:100%_4px] pointer-events-none opacity-20" />
-
       <div className="flex flex-col gap-8 relative z-10 px-1 py-2">
         {/* Logo/Brand with dynamic pulse telemetry */}
         <div className="flex items-center gap-3 relative">
@@ -67,19 +64,19 @@ export function Sidebar() {
                 className={cn(
                   "flex items-center gap-3.5 px-3.5 py-3 rounded-none border-l-2 transition-all duration-300 group text-xs font-bold tracking-wider uppercase relative overflow-hidden",
                   isActive
-                    ? "border-emerald-400 bg-emerald-500/5 text-foreground"
+                    ? "border-primary bg-primary/5 text-foreground"
                     : "border-transparent text-muted-foreground hover:text-foreground hover:bg-card/30 hover:border-border/60",
                 )}
               >
                 {isActive && (
-                  <div className="absolute inset-y-0 left-0 w-[40px] bg-gradient-to-r from-emerald-500/10 to-transparent pointer-events-none" />
+                  <div className="absolute inset-y-0 left-0 w-[40px] bg-gradient-to-r from-primary/10 to-transparent pointer-events-none" />
                 )}
 
                 <item.icon
                   className={cn(
                     "size-4.5 transition-all duration-300",
                     isActive
-                      ? "text-emerald-400 scale-110"
+                      ? "text-primary scale-110"
                       : "text-muted-foreground group-hover:text-foreground group-hover:scale-105",
                   )}
                 />
@@ -88,7 +85,7 @@ export function Sidebar() {
                 </span>
 
                 {isActive && (
-                  <span className="ml-auto font-mono text-[9px] text-emerald-400/60 bg-emerald-500/10 px-1.5 py-0.5 border border-emerald-500/20">
+                  <span className="ml-auto font-mono text-[9px] text-primary/70 bg-primary/10 px-1.5 py-0.5 border border-primary/20">
                     ACTIVE
                   </span>
                 )}

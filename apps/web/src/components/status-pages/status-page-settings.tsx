@@ -25,35 +25,35 @@ interface StatusPageSettingsProps {
 const initialState = { success: false, error: "" };
 const themes = [
   {
-    name: "Cyberpunk",
+    name: "Sentry Dark",
     value: "cyberpunk",
     colors: {
-      bg: "#050505",
-      text: "#e2e8f0",
-      primary: "#22c55e",
+      bg: "#0f0e13",
+      text: "#edeef0",
+      primary: "#e15639",
       degraded: "#f59e0b",
-      error: "#ef4444",
+      error: "#f87171",
     },
   },
   {
-    name: "Midnight",
+    name: "Loops Dark",
     value: "midnight",
     colors: {
-      bg: "#0f172a",
-      text: "#f8fafc",
-      primary: "#38bdf8",
-      degraded: "#f59e0b",
+      bg: "#0b0b0c",
+      text: "#f4f4f5",
+      primary: "#ff5a1f",
+      degraded: "#eab308",
       error: "#ef4444",
     },
   },
   {
-    name: "Dracula",
+    name: "Loops Light",
     value: "dracula",
     colors: {
-      bg: "#282a36",
-      text: "#f8f8f2",
-      primary: "#ff79c6",
-      degraded: "#f59e0b",
+      bg: "#f9f9fb",
+      text: "#09090b",
+      primary: "#ff5a1f",
+      degraded: "#eab308",
       error: "#ef4444",
     },
   },
@@ -62,8 +62,8 @@ const themes = [
     value: "monochrome",
     colors: {
       bg: "#ffffff",
-      text: "#000000",
-      primary: "#000000",
+      text: "#09090b",
+      primary: "#09090b",
       degraded: "#78716c",
       error: "#ef4444",
     },
@@ -80,11 +80,11 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
 
   // Parse custom colors state
   const [customColors, setCustomColors] = useState({
-    bg: (page.theme as any)?.colors?.bg || "#050505",
-    text: (page.theme as any)?.colors?.text || "#e2e8f0",
-    primary: (page.theme as any)?.colors?.primary || "#22c55e",
+    bg: (page.theme as any)?.colors?.bg || "#0f0e13",
+    text: (page.theme as any)?.colors?.text || "#edeef0",
+    primary: (page.theme as any)?.colors?.primary || "#e15639",
     degraded: (page.theme as any)?.colors?.degraded || "#f59e0b",
-    error: (page.theme as any)?.colors?.error || "#ef4444",
+    error: (page.theme as any)?.colors?.error || "#f87171",
   });
 
   // Parse custom footer links
