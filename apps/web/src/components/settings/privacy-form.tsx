@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import type { PrivacyReport } from "@/actions/privacy";
+import { cn } from "@/lib/utils";
 
 export function PrivacyForm() {
   const [report, setReport] = useState<PrivacyReport | null>(null);
@@ -65,7 +66,15 @@ export function PrivacyForm() {
       const { updateAnalyticsAnonymization } = await import("@/actions/privacy");
       const result = await updateAnalyticsAnonymization(!report.anonymizeAnalytics);
       if (result.success) {
-        setReport({ ...report, anonymizeAnalytics: result.anonymized });
+        setReport({
+          ...report,
+          anonymizeAnalytics: result.anonymized,
+          dataInventory: report.dataInventory.map((item) =>
+            item.category === "Status Page Analytics"
+              ? { ...item, anonymized: result.anonymized }
+              : item,
+          ),
+        });
         toast.success(
           result.anonymized
             ? "Status page analytics anonymization enabled"
@@ -233,9 +242,22 @@ export function PrivacyForm() {
                     </td>
                     <td className="py-2.5 px-2 text-center">
                       {item.canAnonymize ? (
-                        <span className="text-[10px] font-bold px-2 py-0.5 bg-primary/10 text-primary border border-primary/20">
+                        <button
+                          onClick={handleToggleAnonymization}
+                          disabled={anonymizing}
+                          className={cn(
+                            "text-[10px] font-bold px-2 py-0.5 rounded-sm border transition-all duration-200 outline-none focus:ring-1 focus:ring-primary/40",
+                            item.anonymized
+                              ? "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 hover:border-primary/40"
+                              : "bg-transparent text-primary/40 border-primary/10 hover:bg-primary/10 hover:text-primary hover:border-primary/25",
+                            anonymizing ? "opacity-50 cursor-not-allowed" : "cursor-pointer",
+                          )}
+                        >
+                          {anonymizing ? (
+                            <Loader2 className="size-2.5 animate-spin inline mr-1" />
+                          ) : null}
                           {item.anonymized ? "ANONYMIZED" : "RAW"}
-                        </span>
+                        </button>
                       ) : (
                         <span className="text-[10px] text-primary/30">N/A</span>
                       )}
@@ -273,14 +295,16 @@ export function PrivacyForm() {
             <button
               onClick={handleToggleAnonymization}
               disabled={anonymizing}
-              className={`relative inline-flex h-6 w-11 items-center rounded-sm transition-colors ${
-                report.anonymizeAnalytics ? "bg-primary" : "bg-primary/20"
-              } disabled:opacity-50`}
+              className={cn(
+                "relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 outline-none focus:ring-1 focus:ring-primary/40 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer",
+                report.anonymizeAnalytics ? "bg-primary" : "bg-zinc-700 dark:bg-zinc-800",
+              )}
             >
               <span
-                className={`inline-block size-5 rounded-sm bg-black border border-primary/30 transition-transform ${
-                  report.anonymizeAnalytics ? "translate-x-[22px]" : "translate-x-[2px]"
-                }`}
+                className={cn(
+                  "inline-block size-4 rounded-full bg-white shadow-sm transition-transform duration-200",
+                  report.anonymizeAnalytics ? "translate-x-[24px]" : "translate-x-[4px]",
+                )}
               />
             </button>
           </div>
@@ -430,14 +454,16 @@ function LeaderboardSection({
           <button
             type="button"
             onClick={() => onChangeShow(!show)}
-            className={`relative inline-flex h-6 w-11 items-center rounded-sm transition-colors ${
-              show ? "bg-primary" : "bg-primary/20"
-            }`}
+            className={cn(
+              "relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 outline-none focus:ring-1 focus:ring-primary/40 cursor-pointer",
+              show ? "bg-primary" : "bg-zinc-700 dark:bg-zinc-800",
+            )}
           >
             <span
-              className={`inline-block size-5 rounded-sm bg-black border border-primary/30 transition-transform ${
-                show ? "translate-x-[22px]" : "translate-x-[2px]"
-              }`}
+              className={cn(
+                "inline-block size-4 rounded-full bg-white shadow-sm transition-transform duration-200",
+                show ? "translate-x-[24px]" : "translate-x-[4px]",
+              )}
             />
           </button>
         </div>
