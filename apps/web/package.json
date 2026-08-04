@@ -64,6 +64,7 @@
     "@cloudflare/workers-types": "catalog:",
     "@opennextjs/cloudflare": "^0.6.6",
     "@pulseguard/config": "workspace:*",
+    "@size-limit/preset-app": "^13.0.3",
     "@tailwindcss/postcss": "^4.1.10",
     "@tanstack/react-query-devtools": "^5.91.1",
     "@types/lodash.set": "^4.3.9",
@@ -73,6 +74,7 @@
     "@types/three": "^0.184.1",
     "alchemy": "catalog:",
     "howler": "^2.2.4",
+    "size-limit": "^13.0.3",
     "tailwindcss": "^4.1.10",
     "typescript": "catalog:",
     "wrangler": "^4.54.0"

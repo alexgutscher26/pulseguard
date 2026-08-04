@@ -583,9 +583,9 @@
 - [ ] Add `vitest` for unit tests
 - [ ] Add Storybook for component library documentation
 - [ ] Implement conventional commits enforcement via `commitlint`
-- [ ] Add `size-limit` check to prevent bundle size regressions
-- [ ] Add `depcheck` to CI to catch unused dependencies automatically
-- [ ] Clean up `node_modules` hoisting issues in the Turborepo workspace
+- [x] Add `size-limit` check to prevent bundle size regressions
+- [x] Add `depcheck` to CI to catch unused dependencies automatically
+- [x] Clean up `node_modules` hoisting issues in the Turborepo workspace
 
 ---
 
