@@ -27,6 +27,7 @@
   },
   "type": "module",
   "scripts": {
+    "postinstall": "bun run db:generate",
     "predev": "node scripts/sync-env.js",
     "dev": "turbo dev --filter=!@pulseguard/infra --filter=!@pulseguard/probe",
     "build": "turbo build",
