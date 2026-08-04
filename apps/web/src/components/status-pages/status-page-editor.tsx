@@ -23,6 +23,7 @@ import {
   Calendar,
   Settings2,
   Loader2,
+  Trophy,
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -36,8 +37,9 @@ import { MaintenanceTimeline } from "./maintenance-timeline";
 import { UptimePercentageCard } from "./uptime-percentage-card";
 import { WidgetConfigurator } from "./widget-configurator";
 import { OverridesTab } from "./overrides-tab";
+import { ShowcaseSubmitPanel } from "./showcase-submit-panel";
 
-type TabType = "monitors" | "settings" | "analytics" | "history" | "widget" | "overrides";
+type TabType = "monitors" | "settings" | "analytics" | "history" | "widget" | "overrides" | "showcase";
 
 export function StatusPageEditor({ page, allMonitors }: { page: any; allMonitors: any[] }) {
   const router = useRouter();
@@ -153,6 +155,7 @@ export function StatusPageEditor({ page, allMonitors }: { page: any; allMonitors
     { id: "overrides", label: "Overrides", icon: <Calendar className="size-3" /> },
     { id: "analytics", label: "Analytics" },
     { id: "settings", label: "Settings" },
+    { id: "showcase", label: "Showcase", icon: <Trophy className="size-3 text-yellow-500" /> },
   ];
 
   return (
@@ -433,6 +436,14 @@ export function StatusPageEditor({ page, allMonitors }: { page: any; allMonitors
       {activeTab === "overrides" && <OverridesTab page={page} />}
 
       {activeTab === "settings" && <StatusPageSettings page={page} />}
+
+      {activeTab === "showcase" && (
+        <ShowcaseSubmitPanel
+          pageSlug={page.slug}
+          defaultOptedIn={page.user?.privacy?.showOnLeaderboard ?? false}
+          defaultBio={page.user?.privacy?.leaderboardBio ?? ""}
+        />
+      )}
     </div>
   );
 }

@@ -1,0 +1,54 @@
+{{- if .Values.probe.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "pulseguard.fullname" . }}-probe
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "pulseguard.labels" . | nindent 4 }}
+    app.kubernetes.io/component: probe
+spec:
+  replicas: {{ .Values.probe.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "pulseguard.probe.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "pulseguard.probe.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "pulseguard.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.probe.podSecurityContext | nindent 8 }}
+      containers:
+        - name: probe
+          image: "{{ .Values.probe.image.repository }}:{{ include "pulseguard.probe.imageTag" . }}"
+          imagePullPolicy: {{ .Values.probe.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.probe.securityContext | nindent 12 }}
+          env:
+            - name: WORKER_URL
+              value: {{ .Values.probe.config.workerUrl | quote }}
+            - name: PROBE_REGION
+              value: {{ .Values.probe.config.region | quote }}
+            - name: PROBE_ID
+              value: {{ .Values.probe.config.probeId | quote }}
+            - name: PROBE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "pulseguard.fullname" . }}-secrets
+                  key: PROBE_SECRET
+                  optional: true
+          resources:
+            {{- toYaml .Values.probe.resources | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
+{{- end }}

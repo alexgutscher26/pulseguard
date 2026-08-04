@@ -1,0 +1,24 @@
+1. PulseGuard has been deployed! 🚀
+
+2. Get the application URL:
+{{- if .Values.ingress.enabled }}
+{{- range $host := .Values.ingress.hosts }}
+  https://{{ $host.host }}
+{{- end }}
+{{- else if contains "NodePort" .Values.web.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "pulseguard.fullname" . }}-web)
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "ClusterIP" .Values.web.service.type }}
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "pulseguard.fullname" . }}-web 3000:3000
+  echo "Visit http://127.0.0.1:3000"
+{{- end }}
+
+3. Run database migrations (first-time only):
+   kubectl exec -it deployment/{{ include "pulseguard.fullname" . }}-web -n {{ .Release.Namespace }} -- bun run db:migrate
+
+4. View logs:
+   kubectl logs -f deployment/{{ include "pulseguard.fullname" . }}-web -n {{ .Release.Namespace }}
+
+5. Check pod status:
+   kubectl get pods -n {{ .Release.Namespace }} -l app.kubernetes.io/instance={{ .Release.Name }}

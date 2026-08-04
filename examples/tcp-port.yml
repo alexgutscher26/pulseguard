@@ -1,0 +1,44 @@
+# TCP port reachability monitors.
+#
+# Use when you need to verify raw TCP connectivity
+# (databases, SSH, SMTP, custom protocols).
+#
+# Apply with:
+#   pulse monitors apply tcp-port.yml
+
+monitors:
+  - name: postgres-primary
+    type: TCP
+    host: db.example.com
+    port: 5432
+    interval: 60
+    timeout: 5
+    alerts:
+      - pagerduty-on-call
+    tags:
+      - database
+      - postgres
+
+  - name: redis-cache
+    type: TCP
+    host: redis.example.com
+    port: 6379
+    interval: 60
+    timeout: 5
+    alerts:
+      - slack-ops
+    tags:
+      - cache
+      - redis
+
+  - name: smtp-relay
+    type: TCP
+    host: smtp.example.com
+    port: 587
+    interval: 300
+    timeout: 10
+    alerts:
+      - default-email
+    tags:
+      - email
+      - smtp

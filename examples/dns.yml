@@ -1,0 +1,61 @@
+# DNS record validation monitors.
+#
+# Alerts when the actual DNS answer differs from the expected value.
+# Useful for detecting hijacks, misconfigured CDN flips, or zone drift.
+#
+# Apply with:
+#   pulse monitors apply dns.yml
+
+monitors:
+  # ── A record (IPv4 resolution) ───────────────────────────────────────────────
+  - name: example-com-a-record
+    type: DNS
+    hostname: example.com
+    record_type: A
+    expected_value: "203.0.113.10"
+    nameserver: "1.1.1.1"    # optional: force a specific resolver
+    interval: 300
+    alerts:
+      - slack-ops
+    tags:
+      - dns
+
+  # ── CNAME (CDN / load balancer target) ──────────────────────────────────────
+  - name: www-example-com-cname
+    type: DNS
+    hostname: www.example.com
+    record_type: CNAME
+    expected_value: "example.com.cdn.cloudflare.net"
+    interval: 300
+    alerts:
+      - slack-ops
+    tags:
+      - dns
+      - cdn
+
+  # ── MX record (email routing) ────────────────────────────────────────────────
+  - name: example-com-mx
+    type: DNS
+    hostname: example.com
+    record_type: MX
+    expected_value: "10 mail.example.com"
+    interval: 3600
+    alerts:
+      - default-email
+    tags:
+      - dns
+      - email
+
+  # ── TXT / SPF record ─────────────────────────────────────────────────────────
+  - name: example-com-spf
+    type: DNS
+    hostname: example.com
+    record_type: TXT
+    expected_value: "v=spf1 include:_spf.google.com ~all"
+    interval: 3600
+    alerts:
+      - default-email
+    tags:
+      - dns
+      - email
+      - spf

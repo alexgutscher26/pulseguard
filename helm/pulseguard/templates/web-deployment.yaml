@@ -1,0 +1,77 @@
+{{- if .Values.web.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "pulseguard.fullname" . }}-web
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "pulseguard.labels" . | nindent 4 }}
+    app.kubernetes.io/component: web
+spec:
+  {{- if not .Values.web.autoscaling.enabled }}
+  replicas: {{ .Values.web.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "pulseguard.web.selectorLabels" . | nindent 6 }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      annotations:
+        # Force pod restart when secrets change
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- with .Values.web.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "pulseguard.web.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "pulseguard.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.web.podSecurityContext | nindent 8 }}
+      containers:
+        - name: web
+          image: "{{ .Values.web.image.repository }}:{{ include "pulseguard.web.imageTag" . }}"
+          imagePullPolicy: {{ .Values.web.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.web.securityContext | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          envFrom:
+            - secretRef:
+                name: {{ include "pulseguard.fullname" . }}-secrets
+          livenessProbe:
+            {{- toYaml .Values.web.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.web.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.web.resources | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
+      {{- with .Values.web.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.web.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.web.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

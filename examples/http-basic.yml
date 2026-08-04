@@ -1,0 +1,22 @@
+# Basic HTTP/HTTPS uptime monitor
+#
+# Checks that your homepage returns 200 every 60 seconds
+# from three geographic regions.
+#
+# Apply with:
+#   pulse monitors apply http-basic.yml
+
+monitors:
+  - name: my-app-homepage
+    type: HTTPS
+    url: https://example.com
+    interval: 60
+    regions:
+      - us-east
+      - eu-west
+      - ap-southeast
+    alerts:
+      - default-email
+    tags:
+      - web
+      - homepage

@@ -1,0 +1,51 @@
+# Heartbeat / dead man's switch monitors.
+#
+# Your cron job or background task must ping the heartbeat URL
+# within the `grace_period`. If it misses, PulseGuard alerts.
+#
+# Ping URL format:
+#   https://app.pulseguard.dev/api/heartbeat/<monitor-id>
+#   (found in monitor details after first apply)
+#
+# Example cron integration:
+#   0 * * * * /usr/bin/my-job.sh && curl -s https://app.pulseguard.dev/api/heartbeat/my-backup-job
+#
+# Apply with:
+#   pulse monitors apply heartbeat.yml
+
+monitors:
+  # ── Hourly database backup job ───────────────────────────────────────────────
+  - name: db-backup-hourly
+    type: HEARTBEAT
+    interval: 3600         # expected ping every 3600 seconds
+    grace_period: 300      # allow 5-minute grace before alerting
+    alerts:
+      - pagerduty-on-call
+      - slack-ops
+    tags:
+      - cron
+      - backup
+      - database
+
+  # ── Daily report email sender ────────────────────────────────────────────────
+  - name: daily-report-email
+    type: HEARTBEAT
+    interval: 86400        # expected once per day
+    grace_period: 900      # 15-minute grace
+    alerts:
+      - default-email
+    tags:
+      - cron
+      - email
+
+  # ── Payment reconciliation job (every 15 minutes) ───────────────────────────
+  - name: payment-reconciliation
+    type: HEARTBEAT
+    interval: 900
+    grace_period: 120
+    alerts:
+      - pagerduty-on-call
+    tags:
+      - payments
+      - cron
+      - critical

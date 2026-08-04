@@ -1,0 +1,81 @@
+name: ✨ Feature Request
+description: Suggest a new feature or enhancement — for discussion, use GitHub Discussions instead.
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature! Before filing here, please check [GitHub Discussions → Ideas](https://github.com/alexgutscher26/pulseguard/discussions/categories/ideas) to see if it's already being discussed.
+
+        Feature requests filed as issues are for **well-defined, actionable** improvements. For exploratory ideas, use Discussions.
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      options:
+        - label: I have searched [existing issues](https://github.com/alexgutscher26/pulseguard/issues) and [Discussions](https://github.com/alexgutscher26/pulseguard/discussions) — this is not a duplicate.
+          required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected Area
+      options:
+        - Dashboard (web)
+        - Cloudflare Worker (monitoring engine)
+        - CLI (pulse)
+        - Mobile (Expo)
+        - Private Probe (Docker)
+        - Status Page
+        - Alerting / Notifications
+        - Authentication
+        - API / tRPC
+        - New Monitor Type
+        - Infrastructure / Deployment
+        - Developer Experience
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this feature solve? Describe the pain point.
+      placeholder: "As a [type of user], I find it frustrating that [problem]..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the solution you'd like to see.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: What workarounds or alternative solutions have you tried or considered?
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority (your perspective)
+      options:
+        - Nice to have
+        - Would significantly improve my workflow
+        - Blocking me from using PulseGuard
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Mockups, links to similar features in other tools, or any other context.

@@ -1,0 +1,64 @@
+name: 📖 Documentation Issue
+description: Report missing, incorrect, or confusing documentation.
+title: "[Docs]: "
+labels: ["documentation", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Good documentation makes PulseGuard accessible to everyone. Thank you for helping us improve it!
+
+  - type: dropdown
+    id: doc_type
+    attributes:
+      label: Documentation Area
+      options:
+        - README.md
+        - ARCHITECTURE.md
+        - CONTRIBUTING.md
+        - apps/web README
+        - apps/worker README
+        - apps/cli README
+        - apps/native README
+        - packages/* README
+        - Code comments / JSDoc
+        - Environment variable reference
+        - Deployment guide
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: issue_type
+    attributes:
+      label: Issue Type
+      options:
+        - Information is missing
+        - Information is incorrect or outdated
+        - Information is confusing or unclear
+        - Broken link or code example
+        - Translation needed
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe what's wrong and where it appears (link to the file/section if possible).
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested Fix
+      description: If you have a correction or improvement in mind, share it here. You're also welcome to open a PR directly!
+
+  - type: checkboxes
+    id: pr_willing
+    attributes:
+      label: Contribution
+      options:
+        - label: I am willing to open a PR to fix this.

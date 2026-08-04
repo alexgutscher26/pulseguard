@@ -1,0 +1,90 @@
+# Production API monitoring suite.
+#
+# Groups all public-facing API monitors in one file.
+# Use tags to filter in the dashboard and alerts.
+#
+# Apply with:
+#   pulse monitors apply api-suite.yml
+
+monitors:
+  # ── Core endpoints ───────────────────────────────────────────────────────────
+  - name: api-health
+    type: HTTPS
+    url: https://api.example.com/health
+    interval: 30
+    assertions:
+      - type: status_code
+        value: "200"
+      - type: json_path
+        expression: "$.status"
+        value: "ok"
+      - type: response_time
+        operator: less_than
+        value: "500"
+    alerts: [slack-engineering, pagerduty-on-call]
+    tags: [api, core, critical]
+
+  - name: api-version
+    type: HTTPS
+    url: https://api.example.com/version
+    interval: 300
+    assertions:
+      - type: status_code
+        value: "200"
+    alerts: [default-email]
+    tags: [api, core]
+
+  # ── Auth flow ────────────────────────────────────────────────────────────────
+  - name: api-auth-login
+    type: HTTPS
+    url: https://api.example.com/auth/session
+    method: GET
+    interval: 60
+    assertions:
+      - type: status_code
+        value: "200"
+      - type: response_time
+        operator: less_than
+        value: "1000"
+    alerts: [pagerduty-on-call]
+    tags: [api, auth, critical]
+
+  # ── Payment service ──────────────────────────────────────────────────────────
+  - name: api-payments-health
+    type: HTTPS
+    url: https://api.example.com/payments/health
+    interval: 60
+    headers:
+      Authorization: "Bearer {{secret.INTERNAL_TOKEN}}"
+    assertions:
+      - type: status_code
+        value: "200"
+    alerts: [pagerduty-on-call, slack-payments]
+    tags: [api, payments, critical]
+
+  # ── WebSocket gateway ────────────────────────────────────────────────────────
+  - name: ws-gateway
+    type: WEBSOCKET
+    url: wss://ws.example.com
+    interval: 60
+    message: '{"type":"ping"}'
+    expected_response: '{"type":"pong"}'
+    timeout: 5
+    alerts: [slack-engineering]
+    tags: [api, websocket]
+
+  # ── GraphQL API ──────────────────────────────────────────────────────────────
+  - name: graphql-api
+    type: GRAPHQL
+    url: https://api.example.com/graphql
+    query: |
+      query HealthCheck {
+        __typename
+      }
+    interval: 120
+    assertions:
+      - type: json_path
+        expression: "$.data.__typename"
+        value: "Query"
+    alerts: [slack-engineering]
+    tags: [api, graphql]

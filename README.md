@@ -62,6 +62,8 @@ pulse logs <id>           # Tail events in real-time
 pulse wait <id>           # CI/CD gate — blocks until UP or timeout
 ```
 
+See the [`examples/`](./examples/) directory for ready-to-use Monitoring as Code YAML files.
+
 ### API & SDK
 
 - **tRPC v11**: End-to-end type safety from database to React components
@@ -173,14 +175,28 @@ pulseguard/
 git clone https://github.com/your-username/pulseguard.git
 cd pulseguard
 bun install
+```
+
+**Start infrastructure services** (PostgreSQL, Redis, MailHog):
+
+```bash
+docker compose up -d
+```
+
+**Configure environment and migrate schema:**
+
+```bash
 cp .env.example .env
-# Edit .env with your database URL and auth secret
+# Edit .env — DATABASE_URL and BETTER_AUTH_SECRET are required
 bun run db:push
 bun run dev
 ```
 
 - Dashboard: `http://localhost:3000`
+- MailHog (email preview): `http://localhost:8025`
 - Prisma Studio: `bun run db:studio` → `http://localhost:5555`
+
+See [`docker-compose.yml`](./docker-compose.yml) for the full service configuration.
 
 ### Environment Variables
 
@@ -247,11 +263,32 @@ See `packages/infra/` for Alchemy-based deployment configuration.
 
 ---
 
+## Self-Hosted
+
+Run PulseGuard on your own infrastructure:
+
+| Guide | Description |
+|---|---|
+| [Single-server Docker Compose](./docs/self-hosted.md) | Full stack on one Linux server with Caddy HTTPS |
+| [Kubernetes (Helm)](./helm/pulseguard/) | Production-grade cluster deployment |
+
+```bash
+# Docker Compose (single server)
+docker compose -f docker-compose.prod.yml up -d
+
+# Kubernetes (Helm)
+helm install pulseguard ./helm/pulseguard \
+  --namespace pulseguard --create-namespace \
+  --set secrets.databaseUrl="postgresql://..." \
+  --set secrets.betterAuthSecret="..." \
+  --set ingress.hosts[0].host="pulseguard.yourdomain.com"
+```
+
+---
+
 ## Contributing
 
-1. Fork and branch from `main`
-2. Run `bun run check && bun run check-types` before committing
-3. Submit a detailed pull request
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for the full contributor guide — code, docs, translations, and PR process.
 
 ---
 

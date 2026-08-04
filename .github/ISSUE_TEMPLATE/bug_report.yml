@@ -1,0 +1,111 @@
+name: 🐛 Bug Report
+description: Report a reproducible bug in PulseGuard
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug report. Please fill in as much detail as possible to help us reproduce and fix the issue quickly.
+
+        > 🔒 **Security vulnerability?** Please **do not** open a public issue. See [SECURITY.md](../SECURITY.md) instead.
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: Please confirm the following before submitting.
+      options:
+        - label: I have searched existing [issues](https://github.com/alexgutscher26/pulseguard/issues) and this is not a duplicate.
+          required: true
+        - label: I am using the latest version of PulseGuard.
+          required: true
+        - label: I have read the [documentation](https://github.com/alexgutscher26/pulseguard/blob/main/README.md).
+          required: false
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected Area
+      description: Which part of PulseGuard is affected?
+      options:
+        - Dashboard (web)
+        - Cloudflare Worker (monitoring engine)
+        - CLI (pulse)
+        - Mobile (Expo)
+        - Private Probe (Docker)
+        - Status Page
+        - Alerting / Notifications
+        - Authentication
+        - API / tRPC
+        - Database / Migrations
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: "When I do X, Y happens instead of Z."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Provide exact steps to reproduce the behavior.
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Observe '...'
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Please fill in your environment details.
+      value: |
+        - OS:
+        - Bun version (`bun --version`):
+        - Node version (`node --version`):
+        - PulseGuard version / commit hash:
+        - Browser (if applicable):
+        - Cloudflare Worker (yes/no):
+        - Private probe (yes/no):
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs / Screenshots
+      description: Paste any relevant error messages, stack traces, or screenshots. This will be rendered as code automatically.
+      render: shell
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other context, links to related issues, or workarounds you've found.

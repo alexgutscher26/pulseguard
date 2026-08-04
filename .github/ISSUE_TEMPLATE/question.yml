@@ -1,0 +1,58 @@
+name: ❓ Question
+description: Ask a question about PulseGuard — prefer GitHub Discussions for general questions.
+title: "[Question]: "
+labels: ["question"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > 💬 **Prefer [GitHub Discussions → Q&A](https://github.com/alexgutscher26/pulseguard/discussions/categories/q-a)** for general questions — you'll get faster responses there and help others who have the same question.
+
+        Use this issue form for **specific, reproducible questions** about how PulseGuard behaves (e.g., "why does X happen when I do Y?").
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Before You Ask
+      options:
+        - label: I have read the [README](https://github.com/alexgutscher26/pulseguard/blob/main/README.md) and [ARCHITECTURE.md](https://github.com/alexgutscher26/pulseguard/blob/main/ARCHITECTURE.md).
+          required: true
+        - label: I have searched [existing issues](https://github.com/alexgutscher26/pulseguard/issues) and [Discussions](https://github.com/alexgutscher26/pulseguard/discussions).
+          required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Topic Area
+      options:
+        - Setup / Installation
+        - Environment Variables / Configuration
+        - Monitor Types
+        - Alerting / Notifications
+        - Status Pages
+        - Private Probe
+        - CLI (pulse)
+        - Mobile App
+        - API / tRPC
+        - Deployment (Cloudflare)
+        - Database / Prisma
+        - Authentication
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: Ask your question as clearly as possible. Include what you've already tried.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Any relevant configuration, environment info, or code snippets that help explain your situation.
+      render: shell

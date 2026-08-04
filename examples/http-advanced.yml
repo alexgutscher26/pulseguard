@@ -1,0 +1,80 @@
+# Advanced HTTP monitor with assertions, custom headers,
+# per-monitor timeout, and alert escalation.
+#
+# Apply with:
+#   pulse monitors apply http-advanced.yml
+
+monitors:
+  # ── Public API health endpoint ──────────────────────────────────────────────
+  - name: api-health
+    type: HTTPS
+    url: https://api.example.com/health
+    method: GET
+    interval: 30
+    timeout: 10          # seconds; default 30
+    follow_redirects: true
+    regions:
+      - us-east
+      - eu-west
+      - ap-southeast
+      - sa-east
+    headers:
+      Accept: application/json
+      X-Probe-Source: pulseguard
+    assertions:
+      - type: status_code
+        value: "200"
+      - type: json_path
+        expression: "$.status"
+        value: "ok"
+      - type: response_time
+        operator: less_than
+        value: "2000"      # ms
+    alerts:
+      - slack-engineering
+      - pagerduty-on-call
+    tags:
+      - api
+      - critical
+
+  # ── Authenticated admin endpoint ────────────────────────────────────────────
+  - name: admin-dashboard
+    type: HTTPS
+    url: https://admin.example.com/api/status
+    method: GET
+    interval: 120
+    timeout: 15
+    headers:
+      Authorization: "Bearer {{secret.ADMIN_TOKEN}}"
+    assertions:
+      - type: status_code
+        value: "200"
+      - type: body_contains
+        value: '"authenticated":true'
+    alerts:
+      - default-email
+    tags:
+      - admin
+      - internal
+
+  # ── POST endpoint ────────────────────────────────────────────────────────────
+  - name: checkout-api
+    type: HTTPS
+    url: https://api.example.com/v1/ping
+    method: POST
+    interval: 60
+    body: '{"probe":true}'
+    headers:
+      Content-Type: application/json
+      Authorization: "Bearer {{secret.API_KEY}}"
+    assertions:
+      - type: status_code
+        value: "200"
+      - type: response_time
+        operator: less_than
+        value: "1500"
+    alerts:
+      - slack-engineering
+    tags:
+      - api
+      - checkout

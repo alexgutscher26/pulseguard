@@ -1,0 +1,55 @@
+# CI/CD deployment gate using `pulse wait`.
+#
+# This is not a monitor definition — it's a CI workflow snippet
+# showing how to integrate PulseGuard into a deployment pipeline.
+#
+# Pattern:
+#   1. Deploy your app
+#   2. Run `pulse wait <monitor-id>` to block until the monitor is UP
+#   3. Continue pipeline or roll back on timeout
+#
+# ─── GitHub Actions example ──────────────────────────────────────────────────
+#
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Deploy to production
+#         run: bun run deploy
+#
+#       - name: Install pulse CLI
+#         run: npm install -g @pulseguard/cli
+#
+#       - name: Wait for health check to pass
+#         env:
+#           PULSEGUARD_API_KEY: ${{ secrets.PULSEGUARD_API_KEY }}
+#         run: |
+#           pulse auth login --key "$PULSEGUARD_API_KEY"
+#           pulse wait api-health --timeout 120 --interval 5
+#           # Exits 0 when monitor is UP, exits 1 on timeout
+#
+# ─── Monitor definition for the gate target ──────────────────────────────────
+
+monitors:
+  - name: api-health
+    type: HTTPS
+    url: https://api.example.com/health
+    interval: 30
+    assertions:
+      - type: status_code
+        value: "200"
+      - type: json_path
+        expression: "$.status"
+        value: "ok"
+    alerts: [slack-engineering]
+    tags: [api, ci-gate]
+
+  - name: web-homepage
+    type: HTTPS
+    url: https://example.com
+    interval: 30
+    assertions:
+      - type: status_code
+        value: "200"
+    alerts: [slack-engineering]
+    tags: [web, ci-gate]

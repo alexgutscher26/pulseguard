@@ -1,0 +1,17 @@
+apiVersion: v2
+name: pulseguard
+description: Edge-native monitoring platform — Helm chart for Kubernetes self-hosted deployment
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - monitoring
+  - uptime
+  - status-page
+  - observability
+home: https://github.com/alexgutscher26/pulseguard
+sources:
+  - https://github.com/alexgutscher26/pulseguard
+maintainers:
+  - name: PulseGuard Contributors
+    url: https://github.com/alexgutscher26/pulseguard

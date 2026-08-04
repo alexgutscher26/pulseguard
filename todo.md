@@ -630,20 +630,19 @@
 
 ## 🌐 P15 — Open Source & Community
 
-- [ ] Set up GitHub Discussions for feature requests and community help
-- [ ] Create `CONTRIBUTING.md` with clear guidelines (code, docs, translations)
-- [ ] Add `CODE_OF_CONDUCT.md`
-- [ ] Set up issue templates: Bug Report, Feature Request, Documentation, Question
-- [ ] Add PR template with checklist (tests, docs, types, lint)
-- [ ] Create `examples/` directory with common Monitoring as Code YAML examples
-- [ ] Add `docker-compose.yml` for full local development stack
-- [ ] Build self-hosted installation guide (single-server Docker Compose)
-- [ ] Create Helm chart for Kubernetes self-hosted deployment
-- [ ] Add `CHANGELOG.md` and set up automated release notes via GitHub Actions
+- [x] Set up GitHub Discussions for feature requests and community help
+- [x] Create `CONTRIBUTING.md` with clear guidelines (code, docs, translations)
+- [x] Add `CODE_OF_CONDUCT.md`
+- [x] Set up issue templates: Bug Report, Feature Request, Documentation, Question
+- [x] Add PR template with checklist (tests, docs, types, lint)
+- [x] Create `examples/` directory with common Monitoring as Code YAML examples
+- [x] Add `docker-compose.yml` for full local development stack
+- [x] Build self-hosted installation guide (single-server Docker Compose)
+- [x] Create Helm chart for Kubernetes self-hosted deployment
+- [x] Add `CHANGELOG.md` and set up automated release notes via GitHub Actions
 - [ ] Create public roadmap (GitHub Project or Linear public board)
-- [ ] Set up Hall of Fame / Showcase automatic submission from the UI
-- [ ] Add "Powered by PulseGuard" badge for open-source status page users
-- [ ] Run hackathon / bounty program for community-contributed monitor types
+- [x] Set up Hall of Fame / Showcase automatic submission from the UI
+- [x] Add "Powered by PulseGuard" badge for open-source status page users
 - [ ] Build official Discord community server
 
 ---

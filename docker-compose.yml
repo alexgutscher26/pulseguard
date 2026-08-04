@@ -1,0 +1,108 @@
+# PulseGuard — Full Local Development Stack
+#
+# Starts all infrastructure services needed to run PulseGuard locally.
+# The application itself is run separately via `bun run dev`.
+#
+# Usage:
+#   docker compose up -d              # start all services
+#   docker compose up -d postgres     # start a single service
+#   docker compose logs -f postgres   # tail logs
+#   docker compose down               # stop all (keeps volumes)
+#   docker compose down -v            # stop all + delete volumes
+#
+# After starting services, copy .env.example → .env and fill in:
+#   DATABASE_URL=postgresql://pulseguard:pulseguard@localhost:5432/pulseguard
+#   DIRECT_URL=postgresql://pulseguard:pulseguard@localhost:5432/pulseguard
+#   BETTER_AUTH_URL=http://localhost:3000
+#   BETTER_AUTH_SECRET=local-dev-secret-at-least-32-chars-long
+#   NEXT_PUBLIC_APP_URL=http://localhost:3000
+#   CORS_ORIGIN=http://localhost:3000
+
+services:
+  # ── PostgreSQL ───────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: pulseguard-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: pulseguard
+      POSTGRES_PASSWORD: pulseguard
+      POSTGRES_DB: pulseguard
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pulseguard -d pulseguard"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── Redis (via Upstash-compatible local server) ───────────────────────────────
+  # Used as a connection-pool resilience fallback in the Worker.
+  # In local dev the Worker is mocked by Miniflare, so Redis is optional
+  # but included for parity with production.
+  redis:
+    image: redis:7-alpine
+    container_name: pulseguard-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # ── MailHog (local SMTP + web UI for email previews) ─────────────────────────
+  # Captures all outbound email in development — no real emails are sent.
+  # Web UI: http://localhost:8025
+  # SMTP:   localhost:1025
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: pulseguard-mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Web UI
+    environment:
+      MH_STORAGE: maildir
+      MH_MAILDIR_PATH: /maildir
+    volumes:
+      - mailhog_data:/maildir
+
+  # ── Prisma Studio ─────────────────────────────────────────────────────────────
+  # Run manually with: bun run db:studio
+  # (Not included here — Studio uses a local binary, not a container)
+
+  # ── Private Probe (Docker-based on-premise agent) ────────────────────────────
+  # Optional: uncomment to run a local probe that reports to your Worker.
+  # Replace WORKER_URL with http://localhost:8787 when using Miniflare.
+  #
+  # probe:
+  #   build:
+  #     context: .
+  #     dockerfile: apps/probe/Dockerfile
+  #   container_name: pulseguard-probe
+  #   restart: unless-stopped
+  #   environment:
+  #     WORKER_URL: "http://host.docker.internal:8787"
+  #     PROBE_SECRET: "local-dev-probe-secret"
+  #     PROBE_REGION: "local"
+  #     PROBE_ID: "local-probe-01"
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
+
+volumes:
+  postgres_data:
+    name: pulseguard_postgres_data
+  redis_data:
+    name: pulseguard_redis_data
+  mailhog_data:
+    name: pulseguard_mailhog_data
