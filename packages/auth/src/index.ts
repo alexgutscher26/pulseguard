@@ -9,7 +9,7 @@ console.log("🔧 Initializing BetterAuth with config:", {
   hasSecret: !!env.BETTER_AUTH_SECRET,
   baseURL: env.BETTER_AUTH_URL,
   corsOrigin: env.CORS_ORIGIN,
-  appUrl: process.env.NEXT_PUBLIC_APP_URL,
+  appUrl: env.NEXT_PUBLIC_APP_URL,
 });
 
 const safeDbUrl = env.DATABASE_URL || "postgresql://dummy:dummy@localhost:5432/dummy";
@@ -62,7 +62,7 @@ export const auth = betterAuth({
 
   trustedOrigins: [
     env.CORS_ORIGIN,
-    process.env.NEXT_PUBLIC_APP_URL ?? "",
+    env.NEXT_PUBLIC_APP_URL,
     "http://localhost:3000",
     "exp://",
     "https://pulseguard-org.vercel.app/",

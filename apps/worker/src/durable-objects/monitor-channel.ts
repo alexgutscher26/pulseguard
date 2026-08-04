@@ -126,7 +126,7 @@ export class MonitorChannel extends DurableObject {
       return new Response(null, {
         status: 101,
         // @ts-ignore - Cloudflare types nuance
-        webSocket: client,
+        webSocket: client as WebSocket,
       });
     }
 

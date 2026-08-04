@@ -21,6 +21,7 @@ model StatusPage {
   showUptime       Boolean @default(true)
   showResponseTime Boolean @default(true)
   showPaused       Boolean @default(false)
+  showInShowcase   Boolean @default(false) // Opt in to the public community showcase
   customCss        String?
   customJs         String?
   homepageUrl      String?

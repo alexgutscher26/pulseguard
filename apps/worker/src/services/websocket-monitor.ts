@@ -17,7 +17,7 @@ export interface WebSocketResult {
   url: string;
   status: "UP" | "DOWN";
   latency: number;
-  errorReason?: string;
+  errorReason?: string | undefined;
   messagesReceived: number;
   listenDuration: number;
   firstMessageLatency: number | null;

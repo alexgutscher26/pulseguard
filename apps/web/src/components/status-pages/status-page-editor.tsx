@@ -39,7 +39,14 @@ import { WidgetConfigurator } from "./widget-configurator";
 import { OverridesTab } from "./overrides-tab";
 import { ShowcaseSubmitPanel } from "./showcase-submit-panel";
 
-type TabType = "monitors" | "settings" | "analytics" | "history" | "widget" | "overrides" | "showcase";
+type TabType =
+  | "monitors"
+  | "settings"
+  | "analytics"
+  | "history"
+  | "widget"
+  | "overrides"
+  | "showcase";
 
 export function StatusPageEditor({ page, allMonitors }: { page: any; allMonitors: any[] }) {
   const router = useRouter();

@@ -4,6 +4,7 @@ import prisma from "@pulseguard/db";
 import { revalidatePath } from "next/cache";
 import { randomBytes } from "crypto";
 import { sendSubscriptionConfirm } from "@pulseguard/email";
+import { env } from "@pulseguard/env/server";
 
 // Generate a secure random token
 function generateToken(): string {
@@ -12,7 +13,7 @@ function generateToken(): string {
 
 // Get base URL from environment
 function getBaseUrl(): string {
-  return process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  return env.NEXT_PUBLIC_APP_URL;
 }
 
 interface SubscriptionResult {

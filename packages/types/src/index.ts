@@ -34,7 +34,7 @@ export interface CheckResult {
   monitorId: string;
   status: MonitorStatus;
   latency: number;
-  errorReason?: string;
+  errorReason?: string | undefined;
   timestamp: string;
   region: string;
   probeId?: string;

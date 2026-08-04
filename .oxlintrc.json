@@ -105,7 +105,20 @@
     "unicorn/no-useless-length-check": "warn",
     "unicorn/no-useless-spread": "warn",
     "unicorn/prefer-set-size": "warn",
-    "unicorn/prefer-string-starts-ends-with": "warn"
+    "unicorn/prefer-string-starts-ends-with": "warn",
+    "unicorn/no-for-loop": "warn",
+    "unicorn/prefer-includes": "warn",
+    "unicorn/prefer-ternary": "warn",
+    "unicorn/throw-new-error": "warn",
+    "unicorn/no-array-for-each": "warn",
+    "unicorn/prefer-array-flat": "warn",
+    "unicorn/prefer-array-index-of": "warn",
+    "unicorn/prefer-number-properties": "warn",
+    "unicorn/prefer-string-replace-all": "warn",
+    "unicorn/prefer-array-some": "warn",
+    "unicorn/prefer-at": "warn",
+    "unicorn/error-message": "warn",
+    "unicorn/no-object-as-default-parameter": "warn"
   },
   "settings": {
     "jsx-a11y": {

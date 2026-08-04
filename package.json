@@ -28,6 +28,7 @@
   "type": "module",
   "scripts": {
     "postinstall": "bun run db:generate",
+    "prepare": "husky",
     "predev": "node scripts/sync-env.js",
     "dev": "turbo dev --filter=!@pulseguard/infra --filter=!@pulseguard/probe",
     "build": "turbo build",
@@ -41,7 +42,14 @@
     "db:migrate": "turbo -F @pulseguard/db db:migrate",
     "deploy": "turbo -F @pulseguard/infra deploy",
     "destroy": "turbo -F @pulseguard/infra destroy",
-    "check": "oxlint && oxfmt --write"
+    "check": "oxlint && oxfmt --write",
+    "check-names": "bun scripts/check-filenames.js",
+    "check-deps": "turbo depcheck",
+    "check-publint": "turbo publint",
+    "check-size": "turbo size-limit",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "publish-packages": "changeset publish"
   },
   "dependencies": {
     "@pulseguard/env": "workspace:*",
@@ -51,13 +59,18 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.31.1",
     "@cloudflare/workers-types": "catalog:",
+    "@commitlint/cli": "^21.2.1",
+    "@commitlint/config-conventional": "^21.2.0",
     "@pulseguard/config": "workspace:*",
     "@types/bun": "^1.3.14",
     "@types/node": "^22.13.14",
     "depcheck": "^1.4.7",
+    "husky": "^9.1.7",
     "oxfmt": "^0.19.0",
     "oxlint": "^1.34.0",
+    "publint": "^0.3.23",
     "turbo": "^2.9.14",
     "typescript": "catalog:"
   },

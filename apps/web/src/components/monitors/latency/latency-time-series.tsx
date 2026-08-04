@@ -12,7 +12,7 @@ import {
   Legend,
 } from "recharts";
 import { format } from "date-fns";
-import type { LatencyDataPoint } from "./hooks/useLatencyData";
+import type { LatencyDataPoint } from "./hooks/use-latency-data";
 
 interface LatencyTimeSeriesProps {
   data: LatencyDataPoint[];

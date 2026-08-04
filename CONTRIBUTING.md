@@ -29,14 +29,14 @@ By participating in this project you agree to abide by our [Code of Conduct](./C
 
 ## Ways to Contribute
 
-| Contribution | Where |
-|---|---|
-| 🐛 Bug reports | [Bug Report template](https://github.com/alexgutscher26/pulseguard/issues/new?template=bug_report.yml) |
+| Contribution        | Where                                                                                                   |
+| ------------------- | ------------------------------------------------------------------------------------------------------- |
+| 🐛 Bug reports      | [Bug Report template](https://github.com/alexgutscher26/pulseguard/issues/new?template=bug_report.yml)  |
 | ✨ Feature requests | [GitHub Discussions → Ideas](https://github.com/alexgutscher26/pulseguard/discussions/categories/ideas) |
-| 📖 Documentation | Open a PR against `main` — see [Documentation Guidelines](#documentation-guidelines) |
-| 🌐 Translations | See [Translation Guidelines](#translation-guidelines) |
-| 💬 Community help | [GitHub Discussions → Q&A](https://github.com/alexgutscher26/pulseguard/discussions/categories/q-a) |
-| 🔒 Security issues | See [SECURITY.md](./SECURITY.md) — **do not** open a public issue |
+| 📖 Documentation    | Open a PR against `main` — see [Documentation Guidelines](#documentation-guidelines)                    |
+| 🌐 Translations     | See [Translation Guidelines](#translation-guidelines)                                                   |
+| 💬 Community help   | [GitHub Discussions → Q&A](https://github.com/alexgutscher26/pulseguard/discussions/categories/q-a)     |
+| 🔒 Security issues  | See [SECURITY.md](./SECURITY.md) — **do not** open a public issue                                       |
 
 ---
 
@@ -81,13 +81,13 @@ bun run dev
 
 ### Branch Naming
 
-| Type | Pattern | Example |
-|---|---|---|
-| Feature | `feat/<short-description>` | `feat/slack-alert-threading` |
-| Bug fix | `fix/<short-description>` | `fix/ssl-expiry-overflow` |
-| Documentation | `docs/<short-description>` | `docs/probe-setup-guide` |
-| Translation | `i18n/<locale>` | `i18n/pt-br` |
-| Chore | `chore/<short-description>` | `chore/upgrade-prisma-6` |
+| Type          | Pattern                     | Example                      |
+| ------------- | --------------------------- | ---------------------------- |
+| Feature       | `feat/<short-description>`  | `feat/slack-alert-threading` |
+| Bug fix       | `fix/<short-description>`   | `fix/ssl-expiry-overflow`    |
+| Documentation | `docs/<short-description>`  | `docs/probe-setup-guide`     |
+| Translation   | `i18n/<locale>`             | `i18n/pt-br`                 |
+| Chore         | `chore/<short-description>` | `chore/upgrade-prisma-6`     |
 
 Always branch from `main`:
 
@@ -176,6 +176,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 **Scopes** (monorepo packages): `web`, `worker`, `cli`, `native`, `probe`, `api`, `db`, `email`, `wasm-parser`, `shared`
 
 Examples:
+
 ```
 feat(worker): add BGP monitor type
 fix(web): resolve hydration mismatch on status page
@@ -188,13 +189,13 @@ docs(cli): update pulse wait examples
 
 Good docs are as valuable as good code. PulseGuard documentation lives in:
 
-| Location | Purpose |
-|---|---|
-| `README.md` | High-level overview, quick-start |
-| `ARCHITECTURE.md` | System design decisions |
-| `apps/*/README.md` | App-specific setup |
-| `packages/*/README.md` | Package API reference |
-| Code comments | Non-obvious logic only |
+| Location               | Purpose                          |
+| ---------------------- | -------------------------------- |
+| `README.md`            | High-level overview, quick-start |
+| `ARCHITECTURE.md`      | System design decisions          |
+| `apps/*/README.md`     | App-specific setup               |
+| `packages/*/README.md` | Package API reference            |
+| Code comments          | Non-obvious logic only           |
 
 ### Writing Standards
 

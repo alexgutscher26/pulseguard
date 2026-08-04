@@ -37,7 +37,9 @@ function CodeBlock({ code, label }: { code: string; label: string }) {
   const { copied, copy } = useCopy();
   return (
     <div className="space-y-1">
-      <p className="text-[9px] font-mono text-muted-foreground/70 uppercase tracking-wider">{label}</p>
+      <p className="text-[9px] font-mono text-muted-foreground/70 uppercase tracking-wider">
+        {label}
+      </p>
       <div className="relative group">
         <pre className="bg-black/60 border border-white/10 rounded-sm p-3 pr-10 text-[10px] font-mono text-muted-foreground overflow-x-auto whitespace-pre-wrap break-all leading-relaxed">
           {code}
@@ -82,9 +84,7 @@ export function ShowcaseSubmitPanel({
         await updateLeaderboardPrivacy(next, bio);
         setOptedIn(next);
         toast.success(
-          next
-            ? "You're now listed on the Hall of Fame!"
-            : "Removed from Hall of Fame.",
+          next ? "You're now listed on the Hall of Fame!" : "Removed from Hall of Fame.",
         );
       } catch {
         toast.error("Failed to update Hall of Fame settings.");
@@ -105,9 +105,7 @@ export function ShowcaseSubmitPanel({
 
   // Badge embed strings
   const appUrl =
-    typeof window !== "undefined"
-      ? window.location.origin
-      : "https://app.pulseguard.dev";
+    typeof window !== "undefined" ? window.location.origin : "https://app.pulseguard.dev";
 
   const badgeUrl = `${appUrl}/api/badge/powered-by?theme=dark&style=flat&size=sm`;
   const statusBadgeUrl = `${appUrl}/api/badge/${pageSlug}?theme=dark&style=flat`;
@@ -244,9 +242,17 @@ export function ShowcaseSubmitPanel({
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={`${badgeUrl}`} alt="Powered by PulseGuard" className="h-5" />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={`${badgeUrl}&style=outline`} alt="Powered by PulseGuard outline" className="h-5" />
+                <img
+                  src={`${badgeUrl}&style=outline`}
+                  alt="Powered by PulseGuard outline"
+                  className="h-5"
+                />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={`${badgeUrl}&size=lg`} alt="Powered by PulseGuard large" className="h-8" />
+                <img
+                  src={`${badgeUrl}&size=lg`}
+                  alt="Powered by PulseGuard large"
+                  className="h-8"
+                />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={`${statusBadgeUrl}`} alt="Status" className="h-5" />
               </div>
@@ -266,9 +272,15 @@ export function ShowcaseSubmitPanel({
                 Customise via URL params
               </p>
               <div className="grid grid-cols-3 gap-2 text-[9px] font-mono text-muted-foreground">
-                <span><span className="text-primary">theme</span>=dark|light</span>
-                <span><span className="text-primary">style</span>=flat|outline</span>
-                <span><span className="text-primary">size</span>=sm|lg</span>
+                <span>
+                  <span className="text-primary">theme</span>=dark|light
+                </span>
+                <span>
+                  <span className="text-primary">style</span>=flat|outline
+                </span>
+                <span>
+                  <span className="text-primary">size</span>=sm|lg
+                </span>
               </div>
             </div>
           </div>

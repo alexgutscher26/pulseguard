@@ -59,8 +59,8 @@ export function createPrisma(databaseUrl?: string) {
 
 // Global type for singleton storage
 type PrismaSingleton = {
-  prisma?: PrismaClient;
-  instances?: Map<string, PrismaClient>;
+  prisma?: PrismaClient | undefined;
+  instances?: Map<string, PrismaClient> | undefined;
 };
 
 const g = globalThis as unknown as PrismaSingleton;

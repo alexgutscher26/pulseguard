@@ -11,7 +11,7 @@ monitors:
     url: https://api.example.com/health
     method: GET
     interval: 30
-    timeout: 10          # seconds; default 30
+    timeout: 10 # seconds; default 30
     follow_redirects: true
     regions:
       - us-east
@@ -29,7 +29,7 @@ monitors:
         value: "ok"
       - type: response_time
         operator: less_than
-        value: "2000"      # ms
+        value: "2000" # ms
     alerts:
       - slack-engineering
       - pagerduty-on-call

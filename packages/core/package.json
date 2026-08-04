@@ -2,13 +2,19 @@
   "name": "@pulseguard/core",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "exports": {
     ".": "./src/index.ts"
+  },
+  "scripts": {
+    "depcheck": "depcheck",
+    "publint": "publint"
   },
   "dependencies": {
     "@pulseguard/types": "workspace:*"
   },
   "devDependencies": {
+    "@pulseguard/config": "workspace:*",
     "typescript": "catalog:"
   }
 }

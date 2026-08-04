@@ -1,6 +1,6 @@
 "use client";
 
-import { COLOR_SCALES, type MetricType } from "./hooks/useHeatmapScale";
+import { COLOR_SCALES, type MetricType } from "./hooks/use-heatmap-scale";
 
 interface HeatmapLegendProps {
   metricType: MetricType;

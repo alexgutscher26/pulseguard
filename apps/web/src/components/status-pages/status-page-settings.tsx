@@ -181,6 +181,31 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 </label>
               </div>
 
+              <div className="flex items-center gap-3 bg-black/30 p-3 rounded-sm border border-white/5">
+                <input
+                  type="checkbox"
+                  name="showInShowcase"
+                  defaultChecked={page.showInShowcase === true}
+                  id="showInShowcase"
+                  className="accent-primary size-4"
+                />
+                <div>
+                  <label
+                    htmlFor="showInShowcase"
+                    className="text-sm font-bold text-foreground block"
+                  >
+                    Feature in Community Showcase
+                  </label>
+                  <p className="text-[10px] text-muted-foreground font-mono mt-0.5">
+                    Display this page in the public{" "}
+                    <a href="/showcase" className="text-primary hover:underline">
+                      showcase gallery
+                    </a>
+                    . Only available for public (non-password-protected) pages.
+                  </p>
+                </div>
+              </div>
+
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
                   Meta Title

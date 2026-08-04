@@ -66,8 +66,8 @@ services:
     container_name: pulseguard-mailhog
     restart: unless-stopped
     ports:
-      - "1025:1025"   # SMTP
-      - "8025:8025"   # Web UI
+      - "1025:1025" # SMTP
+      - "8025:8025" # Web UI
     environment:
       MH_STORAGE: maildir
       MH_MAILDIR_PATH: /maildir

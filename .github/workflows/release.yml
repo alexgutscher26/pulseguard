@@ -8,7 +8,7 @@ on:
       - "v[0-9]+.[0-9]+.[0-9]+-*"
 
 permissions:
-  contents: write   # required to create GitHub Releases and push CHANGELOG
+  contents: write # required to create GitHub Releases and push CHANGELOG
 
 jobs:
   release:
@@ -145,6 +145,6 @@ jobs:
           prerelease: ${{ contains(steps.version.outputs.tag, '-') }}
           files: |
             helm-artifacts/*.tgz
-          generate_release_notes: false   # we use git-cliff, not GitHub's generator
+          generate_release_notes: false # we use git-cliff, not GitHub's generator
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

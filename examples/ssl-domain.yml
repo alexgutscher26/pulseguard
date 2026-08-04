@@ -12,8 +12,8 @@ monitors:
     type: SSL
     hostname: example.com
     port: 443
-    interval: 3600        # check once per hour
-    warn_days: 30         # alert when < 30 days remaining
+    interval: 3600 # check once per hour
+    warn_days: 30 # alert when < 30 days remaining
     alerts:
       - default-email
       - slack-ops
@@ -37,8 +37,8 @@ monitors:
   - name: example-com-domain
     type: DOMAIN
     hostname: example.com
-    interval: 86400       # once per day is sufficient
-    warn_days: 60         # alert 60 days before expiry
+    interval: 86400 # once per day is sufficient
+    warn_days: 60 # alert 60 days before expiry
     alerts:
       - default-email
     tags:

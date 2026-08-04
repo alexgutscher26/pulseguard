@@ -1,0 +1,31 @@
+{
+  "ignores": [
+    "@pulseguard/config",
+    "@types/bun",
+    "@types/node",
+    "@types/react",
+    "@types/react-dom",
+    "typescript",
+    "cloudflare:email",
+    "cloudflare:sockets",
+    "cloudflare:workers",
+    "prisma",
+    "@prisma/client",
+    "@prisma/client-runtime-utils",
+    "tw-animate-css",
+    "@tailwindcss/postcss",
+    "shadcn",
+    "alchemy",
+    "size-limit",
+    "@size-limit/preset-app",
+    "@size-limit/file",
+    "@size-limit/time",
+    "@chromatic-com/storybook",
+    "@storybook/addon-a11y",
+    "@storybook/addon-docs",
+    "@storybook/addon-mcp",
+    "@storybook/addon-vitest",
+    "@storybook/nextjs-vite"
+  ],
+  "ignorePatterns": ["dist", ".next", ".open-next", ".expo", ".wrangler", "src/generated", "*.d.ts"]
+}

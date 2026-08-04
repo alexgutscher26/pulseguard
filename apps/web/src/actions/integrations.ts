@@ -4,6 +4,7 @@ import prisma from "@pulseguard/db";
 import { auth } from "@pulseguard/auth";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { env } from "@pulseguard/env/server";
 
 export interface IntegrationProject {
   name: string;
@@ -771,8 +772,8 @@ export async function getVercelOAuthUrl() {
     return { success: false, error: "Unauthorized" };
   }
 
-  const clientId = process.env.VERCEL_CLIENT_ID;
-  const redirectUri = process.env.VERCEL_REDIRECT_URI;
+  const clientId = env.VERCEL_CLIENT_ID;
+  const redirectUri = env.VERCEL_REDIRECT_URI;
 
   if (!clientId || !redirectUri) {
     return {

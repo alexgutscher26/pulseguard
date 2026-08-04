@@ -5,6 +5,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { auth } from "@pulseguard/auth";
 import { headers, cookies } from "next/headers";
+import { env } from "@pulseguard/env/server";
 
 /**
  * Adds a custom domain to a Vercel project via their API.
@@ -17,24 +18,24 @@ import { headers, cookies } from "next/headers";
  * @returns An object indicating the success status and verification of the domain.
  */
 async function addDomainToVercel(domain: string) {
-  if (!process.env.VERCEL_API_TOKEN || !process.env.VERCEL_PROJECT_ID) {
+  if (!env.VERCEL_API_TOKEN || !env.VERCEL_PROJECT_ID) {
     console.warn("Vercel API keys missing. Skipping domain addition.");
     return { success: true, verified: false, needsConfig: true }; // Soft fail for now
   }
 
   try {
-    const url = `https://api.vercel.com/v10/projects/${process.env.VERCEL_PROJECT_ID}/domains?teamId=${process.env.VERCEL_TEAM_ID}`;
+    const url = `https://api.vercel.com/v10/projects/${env.VERCEL_PROJECT_ID}/domains?teamId=${env.VERCEL_TEAM_ID}`;
     const res = await fetch(url, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${process.env.VERCEL_API_TOKEN}`,
+        Authorization: `Bearer ${env.VERCEL_API_TOKEN}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ name: domain }),
     });
 
     if (!res.ok) {
-      const error = (await res.json()) as any;
+      const error = (await res.json()) as { code?: string; message?: string };
       if (error.code === "domain_already_in_use") {
         console.log("Domain already exists in Vercel project");
         return { success: true, verified: true };
@@ -43,7 +44,7 @@ async function addDomainToVercel(domain: string) {
       return { success: false, error: error.message || "Unknown Vercel Error" };
     }
 
-    const data = (await res.json()) as any;
+    const data = (await res.json()) as { verified: boolean };
     return { success: true, verified: data.verified };
   } catch (error) {
     console.error("Vercel Domain Add Failed:", error);
@@ -55,14 +56,14 @@ async function addDomainToVercel(domain: string) {
  * Removes a domain from Vercel project.
  */
 async function removeDomainFromVercel(domain: string) {
-  if (!process.env.VERCEL_API_TOKEN || !process.env.VERCEL_PROJECT_ID) return;
+  if (!env.VERCEL_API_TOKEN || !env.VERCEL_PROJECT_ID) return;
 
   try {
     await fetch(
-      `https://api.vercel.com/v9/projects/${process.env.VERCEL_PROJECT_ID}/domains/${domain}?teamId=${process.env.VERCEL_TEAM_ID}`,
+      `https://api.vercel.com/v9/projects/${env.VERCEL_PROJECT_ID}/domains/${domain}?teamId=${env.VERCEL_TEAM_ID}`,
       {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${process.env.VERCEL_API_TOKEN}` },
+        headers: { Authorization: `Bearer ${env.VERCEL_API_TOKEN}` },
       },
     );
   } catch (e) {
@@ -271,6 +272,13 @@ export async function getStatusPage(id: string) {
         orderBy: { sortOrder: "asc" },
       },
       i18nSettings: true,
+      user: {
+        select: {
+          privacy: {
+            select: { showOnLeaderboard: true, leaderboardBio: true },
+          },
+        },
+      },
     },
   });
 }
@@ -306,6 +314,7 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
     showUptime: formData.get("showUptime") === "on",
     showResponseTime: formData.get("showResponseTime") === "on",
     showPaused: formData.get("showPaused") === "on",
+    showInShowcase: formData.get("showInShowcase") === "on",
 
     barType: (formData.get("barType") as string) || undefined,
     cardType: (formData.get("cardType") as string) || undefined,
@@ -362,6 +371,7 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
         showUptime: rawData.showUptime,
         showResponseTime: rawData.showResponseTime,
         showPaused: rawData.showPaused,
+        showInShowcase: rawData.showInShowcase,
         barType: rawData.barType,
         cardType: rawData.cardType,
         logo: rawData.logo,
@@ -477,7 +487,7 @@ export async function verifyStatusPagePassword(pageId: string, password: string)
     // Expire in 24 hours
     cookieStore.set(`status-page-token-${page.id}`, "authenticated", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: env.NODE_ENV === "production",
       maxAge: 60 * 60 * 24,
     });
     return { success: true };

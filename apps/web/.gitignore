@@ -60,3 +60,6 @@ dev-dist
 .open-next
 
 wrangler.jsonc
+
+*storybook.log
+storybook-static

@@ -2,6 +2,7 @@
   "name": "@pulseguard/shared",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "typesVersions": {
     "*": {
       "regions": [
@@ -18,7 +19,9 @@
     "./stack-templates": "./src/stack-templates.ts"
   },
   "scripts": {
-    "clean": "rm -rf .turbo node_modules"
+    "clean": "rm -rf .turbo node_modules",
+    "depcheck": "depcheck",
+    "publint": "publint"
   },
   "devDependencies": {
     "@pulseguard/config": "workspace:*",

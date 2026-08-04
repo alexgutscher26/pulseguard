@@ -2,8 +2,8 @@
 
 import { useMemo } from "react";
 import { format } from "date-fns";
-import { useHeatmapScale, type MetricType } from "./hooks/useHeatmapScale";
-import type { LatencyHeatmapData } from "./hooks/useLatencyData";
+import { useHeatmapScale, type MetricType } from "./hooks/use-heatmap-scale";
+import type { LatencyHeatmapData } from "./hooks/use-latency-data";
 import { cn } from "@/lib/utils";
 import { AVAILABLE_REGIONS } from "@pulseguard/shared";
 

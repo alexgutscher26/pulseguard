@@ -5,8 +5,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, TrendingUp, Clock, CheckCircle } from "lucide-react";
-import { LatencyTimeSeries } from "./LatencyTimeSeries";
-import type { RegionData } from "./hooks/useLatencyData";
+import { LatencyTimeSeries } from "./latency-time-series";
+import type { RegionData } from "./hooks/use-latency-data";
 
 interface RegionalDetailModalProps {
   monitorId: string;

@@ -4,7 +4,7 @@ export interface FallbackEvent {
   monitorId: string;
   status: string;
   latency: number;
-  errorReason?: string;
+  errorReason?: string | undefined;
   timestamp: string;
 }
 

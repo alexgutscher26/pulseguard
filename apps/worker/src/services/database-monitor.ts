@@ -11,7 +11,7 @@ export interface DatabaseResult {
   url: string;
   status: "UP" | "DOWN";
   latency: number;
-  errorReason?: string;
+  errorReason?: string | undefined;
   dbType: string;
   queryExecuted: boolean;
   executionTimeMs: number;

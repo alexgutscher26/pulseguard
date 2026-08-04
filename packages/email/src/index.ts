@@ -1,11 +1,12 @@
 import { Resend } from "resend";
 import React from "react";
+import { env } from "@pulseguard/env/server";
 
 let resendClient: Resend | null = null;
 
 export function getResendClient(apiKey?: string): Resend {
   if (!resendClient) {
-    const key = apiKey || process.env.RESEND_API_KEY;
+    const key = apiKey ?? env.RESEND_API_KEY;
     if (!key) {
       throw new Error("RESEND_API_KEY is not set");
     }
@@ -21,10 +22,10 @@ export interface MonitorAlertData {
   status: "UP" | "DOWN";
   previousStatus: "UP" | "DOWN";
   timestamp: string;
-  reason?: string;
-  downtimeDuration?: string;
-  failedRegions?: string[];
-  runbookUrl?: string;
+  reason?: string | undefined;
+  downtimeDuration?: string | undefined;
+  failedRegions?: string[] | undefined;
+  runbookUrl?: string | undefined;
 }
 
 export interface WelcomeEmailData {
@@ -254,7 +255,7 @@ export async function sendStatusUpdate(
 
 export async function renderMonthlyReportToBuffer(stats: any): Promise<Buffer> {
   const { renderToStream } = await import("@react-pdf/renderer");
-  const { MonthlyReportDocument } = await import("./templates/MonthlyReport");
+  const { MonthlyReportDocument } = await import("./templates/monthly-report");
   const stream = await renderToStream(React.createElement(MonthlyReportDocument, { stats }) as any);
   const chunks: Uint8Array[] = [];
   // @ts-ignore - ReadableStream iteration

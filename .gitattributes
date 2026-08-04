@@ -1,0 +1,3 @@
+# Keep lockfiles LF-normalized so bun never sees the lock as "dirty" across platforms
+bun.lock text eol=lf
+bun.lockb text eol=lf

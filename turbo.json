@@ -26,6 +26,9 @@
     "VERCEL_CLIENT_SECRET",
     "VERCEL_REDIRECT_URI"
   ],
+  "remoteCache": {
+    "enabled": true
+  },
   "tasks": {
     "build": {
       "dependsOn": ["^build", "@pulseguard/db#db:generate"],
@@ -43,6 +46,24 @@
     "check-types": {
       "dependsOn": ["^check-types"],
       "outputs": []
+    },
+    "size-limit": {
+      "dependsOn": ["^build", "build"],
+      "outputs": []
+    },
+    "depcheck": {
+      "outputs": []
+    },
+    "publint": {
+      "outputs": []
+    },
+    "build-storybook": {
+      "dependsOn": ["^build"],
+      "outputs": ["storybook-static/**"]
+    },
+    "storybook": {
+      "cache": false,
+      "persistent": true
     },
     "dev": {
       "cache": false,

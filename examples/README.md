@@ -22,17 +22,17 @@ pulse monitors diff monitors.yml
 
 ## Files
 
-| File | Description |
-|---|---|
-| [`http-basic.yml`](./http-basic.yml) | Simple HTTP uptime check |
+| File                                       | Description                                         |
+| ------------------------------------------ | --------------------------------------------------- |
+| [`http-basic.yml`](./http-basic.yml)       | Simple HTTP uptime check                            |
 | [`http-advanced.yml`](./http-advanced.yml) | HTTP with assertions, headers, and regional routing |
-| [`ssl-domain.yml`](./ssl-domain.yml) | SSL/TLS certificate + domain expiry monitoring |
-| [`tcp-port.yml`](./tcp-port.yml) | TCP port reachability |
-| [`dns.yml`](./dns.yml) | DNS record validation |
-| [`heartbeat.yml`](./heartbeat.yml) | Cron-job heartbeat / dead man's switch |
-| [`keyword.yml`](./keyword.yml) | HTTP with keyword assertion (contains/not-contains) |
-| [`api-suite.yml`](./api-suite.yml) | Production API suite with grouped monitors |
-| [`ci-gate.yml`](./ci-gate.yml) | CI/CD deployment gate using `pulse wait` |
+| [`ssl-domain.yml`](./ssl-domain.yml)       | SSL/TLS certificate + domain expiry monitoring      |
+| [`tcp-port.yml`](./tcp-port.yml)           | TCP port reachability                               |
+| [`dns.yml`](./dns.yml)                     | DNS record validation                               |
+| [`heartbeat.yml`](./heartbeat.yml)         | Cron-job heartbeat / dead man's switch              |
+| [`keyword.yml`](./keyword.yml)             | HTTP with keyword assertion (contains/not-contains) |
+| [`api-suite.yml`](./api-suite.yml)         | Production API suite with grouped monitors          |
+| [`ci-gate.yml`](./ci-gate.yml)             | CI/CD deployment gate using `pulse wait`            |
 
 ---
 

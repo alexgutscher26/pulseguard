@@ -17,7 +17,7 @@ web:
   image:
     repository: ghcr.io/alexgutscher26/pulseguard-web
     pullPolicy: IfNotPresent
-    tag: ""  # defaults to .Chart.AppVersion
+    tag: "" # defaults to .Chart.AppVersion
 
   service:
     type: ClusterIP
@@ -81,7 +81,7 @@ probe:
     # URL of your PulseGuard Worker (Cloudflare)
     workerUrl: "https://worker.yourdomain.com"
     region: "k8s-cluster"
-    probeId: ""  # auto-generated if empty
+    probeId: "" # auto-generated if empty
 
   resources:
     requests:
@@ -104,7 +104,7 @@ probe:
 # ── Ingress ───────────────────────────────────────────────────────────────────
 ingress:
   enabled: true
-  className: "nginx"   # or "traefik", "gce", etc.
+  className: "nginx" # or "traefik", "gce", etc.
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
@@ -124,12 +124,12 @@ ingress:
 # For production, prefer an external secret manager (e.g. ExternalSecrets, Vault).
 secrets:
   # Required
-  databaseUrl: ""             # postgresql://user:pass@host:5432/db
-  directUrl: ""               # same or direct (non-pooled) connection
-  betterAuthSecret: ""        # min 32 random chars
-  betterAuthUrl: ""           # https://pulseguard.yourdomain.com
-  nextPublicAppUrl: ""        # same as betterAuthUrl
-  corsOrigin: ""              # same as betterAuthUrl
+  databaseUrl: "" # postgresql://user:pass@host:5432/db
+  directUrl: "" # same or direct (non-pooled) connection
+  betterAuthSecret: "" # min 32 random chars
+  betterAuthUrl: "" # https://pulseguard.yourdomain.com
+  nextPublicAppUrl: "" # same as betterAuthUrl
+  corsOrigin: "" # same as betterAuthUrl
 
   # Optional — leave empty to disable
   resendApiKey: ""
@@ -141,20 +141,20 @@ secrets:
   slackSigningSecret: ""
   googleClientId: ""
   googleClientSecret: ""
-  probeSecret: ""             # shared secret between probe and worker
+  probeSecret: "" # shared secret between probe and worker
 
 # ── PostgreSQL (Bitnami subchart) ─────────────────────────────────────────────
 postgresql:
-  enabled: true   # set false to use an external database
+  enabled: true # set false to use an external database
   auth:
     username: pulseguard
-    password: changeme   # override in production
+    password: changeme # override in production
     database: pulseguard
   primary:
     persistence:
       enabled: true
       size: 20Gi
-      storageClass: ""    # leave empty for cluster default
+      storageClass: "" # leave empty for cluster default
     resources:
       requests:
         cpu: 250m
@@ -163,7 +163,7 @@ postgresql:
         cpu: 1000m
         memory: 1Gi
   metrics:
-    enabled: false   # set true to expose Prometheus metrics
+    enabled: false # set true to expose Prometheus metrics
 
 # External database — used when postgresql.enabled=false
 externalDatabase:
@@ -177,10 +177,10 @@ externalDatabase:
 
 # ── Redis (Bitnami subchart) ──────────────────────────────────────────────────
 redis:
-  enabled: true   # set false to use Upstash or external Redis
+  enabled: true # set false to use Upstash or external Redis
   auth:
     enabled: true
-    password: changeme   # override in production
+    password: changeme # override in production
   master:
     persistence:
       enabled: true
@@ -215,7 +215,7 @@ podDisruptionBudget:
 
 # ── Network Policy ────────────────────────────────────────────────────────────
 networkPolicy:
-  enabled: false   # set true to restrict pod-to-pod traffic
+  enabled: false # set true to restrict pod-to-pod traffic
 
 # ── Monitoring (Prometheus ServiceMonitor) ────────────────────────────────────
 metrics:

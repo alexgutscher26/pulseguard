@@ -8,7 +8,7 @@ export interface GraphQLResult {
   domain: string;
   status: "UP" | "DOWN";
   latency: number;
-  errorReason?: string;
+  errorReason?: string | undefined;
   operation: string;
   hasData: boolean;
   hasErrors: boolean;

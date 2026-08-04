@@ -24,6 +24,7 @@
 ## 🚀 P1 — High Priority Features
 
 ### 👥 Team Management & RBAC (Official Roadmap Item)
+
 - [ ] Design `Team` / `Organization` model in Prisma schema
 - [ ] Add `Role` enum: `OWNER`, `ADMIN`, `MEMBER`, `VIEWER`, `BILLING`
 - [ ] Implement per-resource permission checks in tRPC routers (monitors, alerts, status pages)
@@ -35,6 +36,7 @@
 - [ ] Add team billing: aggregate usage across all members
 
 ### 📱 Mobile Push Notifications (Official Roadmap Item)
+
 - [ ] Integrate Expo Push Notification service (`expo-notifications`)
 - [ ] Store device push tokens in a new `PushToken` Prisma model
 - [ ] Link push tokens to `User` with device metadata (platform, version)
@@ -46,6 +48,7 @@
 - [ ] Test on both iOS (APNS) and Android (FCM) via Expo infrastructure
 
 ### 📄 SLA Report Exports (Official Roadmap Item)
+
 - [ ] Design SLA report data model (uptime%, incident count, MTTR, MTTD per monitor)
 - [ ] Build PDF export using `@react-pdf/renderer` or `jspdf`
 - [ ] Build JSON export endpoint (`/api/reports/sla?from=&to=&monitorId=`)
@@ -55,6 +58,7 @@
 - [ ] Support custom date ranges, monitor filters, and grouping by status page
 
 ### 🔗 PagerDuty & Opsgenie Integrations (Official Roadmap Item)
+
 - [ ] Add `PAGERDUTY` and `OPSGENIE` to `NotificationChannel` type enum
 - [ ] Implement PagerDuty Events API v2 notification sender in `notification-handler.ts`
 - [ ] Implement Opsgenie Alert API notification sender
@@ -64,6 +68,7 @@
 - [ ] Add PagerDuty Webhooks → PulseGuard inbound integration (sync PD incident state back)
 
 ### 🌐 Terraform / OpenTofu Provider (Official Roadmap Item)
+
 - [ ] Design Terraform resource schema for `pulseguard_monitor`, `pulseguard_status_page`, `pulseguard_alert_rule`
 - [ ] Scaffold Terraform provider using `hashicorp/terraform-plugin-framework` (Go)
 - [ ] Implement CRUD operations for each resource via the PulseGuard REST API
@@ -77,6 +82,7 @@
 ## ⚙️ P2 — Core Platform Improvements
 
 ### 🔍 Monitoring Engine (Worker)
+
 - [ ] Add `GRPC` monitor type for gRPC health check protocol
 - [ ] Add `SMTP` monitor type (EHLO handshake + optional AUTH test)
 - [ ] Add `FTP` / `SFTP` monitor type for file server availability
@@ -118,6 +124,7 @@
 - [ ] Add domain blacklist monitoring (check domain against known spam/malware lists)
 
 ### 📊 Latency & Analytics
+
 - [ ] Add p99.9 percentile to `LatencyAggregate` model and aggregation logic
 - [ ] Implement anomaly detection via ARIMA or STL decomposition (complement OpenAI)
 - [ ] Add "Apdex score" calculation per monitor (satisfied/tolerating/frustrated)
@@ -137,6 +144,7 @@
 - [ ] Implement widget types: uptime gauge, latency sparkline, incident count, SLO burn rate
 
 ### 🔔 Alerting & Incidents
+
 - [ ] Add alert escalation policies (if not acknowledged in N minutes, escalate to next contact)
 - [ ] Implement on-call scheduling (rotation groups, business hours, overrides)
 - [ ] Add alert grouping: consolidate multiple monitor alerts into one notification
@@ -162,6 +170,7 @@
 - [ ] Implement flap detection with hysteresis (configurable stable-period before recovery alert)
 
 ### 📄 Status Pages
+
 - [ ] Add custom domain SSL auto-provisioning via Cloudflare's ACME
 - [ ] Add metric display widgets: response time graph, uptime percentage bar
 - [ ] Add historical uptime table (last 90 days per monitor row)
@@ -191,6 +200,7 @@
 ## 🧩 P3 — Developer Experience & Integrations
 
 ### 🖥️ CLI (`pulse`)
+
 - [ ] Add `pulse monitors create` — interactive wizard to create a monitor from CLI
 - [ ] Add `pulse monitors delete <id>` — delete a monitor from CLI
 - [ ] Add `pulse monitors pause <id>` / `resume <id>` — toggle monitor active state
@@ -214,6 +224,7 @@
 - [ ] Add GitHub Action: `pulseguard/action-wait` wrapping `pulse wait`
 
 ### 🔌 Integrations & Webhooks
+
 - [ ] Add Datadog webhook integration (forward events to Datadog Events API)
 - [ ] Add New Relic integration (forward alerts to NR Alerts)
 - [ ] Add Grafana integration (push metrics via Prometheus remote write)
@@ -234,6 +245,7 @@
 - [ ] Implement `EventBridge` / `SNS` forwarding for AWS-native customers
 
 ### 🛠️ Developer Tools (Free Tools Section)
+
 - [ ] Add `JWT Decoder` tool: paste a JWT, decode header/payload, validate signature
 - [ ] Add `Base64 Encoder/Decoder` tool
 - [ ] Add `YAML ↔ JSON Converter` tool
@@ -260,6 +272,7 @@
 ## 🗄️ P4 — Data Model & Backend
 
 ### Prisma Schema
+
 - [ ] Add `Team` model with `members: TeamMember[]`, `plan`, `billingEmail`
 - [ ] Add `TeamMember` model with `userId`, `teamId`, `role`, `invitedAt`, `acceptedAt`
 - [ ] Add `Invitation` model for pending team invites (token, expiresAt, role)
@@ -288,6 +301,7 @@
 - [ ] Add `checkCount` materialized counter on `Monitor` to avoid expensive COUNT queries
 
 ### tRPC API (`packages/api`)
+
 - [ ] Add `monitor.duplicate` procedure (clone a monitor)
 - [ ] Add `monitor.bulkPause` / `monitor.bulkResume` procedures
 - [ ] Add `monitor.bulkDelete` procedure
@@ -314,6 +328,7 @@
 ## 🎨 P5 — UI / UX Improvements
 
 ### Dashboard
+
 - [ ] Add "Overview" widgets: total monitors, up/down counts, active incidents, avg uptime %
 - [ ] Implement drag-and-drop widget layout (React DnD or dnd-kit)
 - [ ] Add "Quick Add Monitor" modal accessible from the dashboard header
@@ -340,6 +355,7 @@
 - [ ] Implement breadcrumbs on all nested pages
 
 ### Monitor Detail Page
+
 - [ ] Add tabbed layout: Overview, Events, Incidents, Alerts, Settings
 - [ ] Show timing breakdown chart (DNS / TLS / TTFB / Transfer per check)
 - [ ] Add response body preview (last check response, truncated with expand)
@@ -354,6 +370,7 @@
 - [ ] Add "Export Events" CSV button on the events tab
 
 ### Incidents
+
 - [ ] Add Kanban view for incidents (Investigating / Identified / Monitoring / Resolved columns)
 - [ ] Add incident priority/severity badge with color coding
 - [ ] Add `@mention` support in incident comments (notify team members)
@@ -365,6 +382,7 @@
 - [ ] Add incident export to PDF
 
 ### Settings
+
 - [ ] Add `/settings/billing` page with current plan, usage meters, upgrade CTA
 - [ ] Add `/settings/team` page (P1 item — UI side)
 - [ ] Add `/settings/audit-log` page with searchable/filterable audit trail
@@ -379,6 +397,7 @@
 - [ ] Add date format preference (ISO, US, EU)
 
 ### Onboarding & Marketing
+
 - [ ] Build interactive onboarding checklist (create monitor → set alert → share status page)
 - [ ] Add product demo mode with pre-seeded data (no signup required to explore)
 - [ ] Improve landing page hero with animated monitor status visualization
@@ -445,6 +464,7 @@
 ## ⚡ P8 — Performance & Infrastructure
 
 ### Cloudflare / Worker
+
 - [ ] Implement worker sharding (`SHARD_ID` / `TOTAL_SHARDS`) configuration automation
 - [ ] Add Cloudflare R2 bucket for storing screenshots, reports, and log archives
 - [ ] Set up Cloudflare D1 as an edge-local SQLite fallback for probe assignments
@@ -457,6 +477,7 @@
 - [ ] Profile and optimize cron handler cold start time
 
 ### Database
+
 - [ ] Add read replicas (Neon read replicas or Supabase) for analytics queries
 - [ ] Implement DB query result caching with Upstash Redis for dashboard endpoints
 - [ ] Add database index audit: review all slow queries in `pg_stat_statements`
@@ -467,6 +488,7 @@
 - [ ] Add Prisma query logging in development with slow query detection
 
 ### Web Performance
+
 - [ ] Run Lighthouse CI in GitHub Actions and enforce performance budget (LCP < 2.5s)
 - [ ] Optimize largest contentful paint on the landing page
 - [ ] Add `next/image` optimization for all images (lazy loading, WebP/AVIF)
@@ -479,6 +501,7 @@
 - [ ] Add service worker for offline fallback on the dashboard
 
 ### CI/CD
+
 - [ ] Add Playwright E2E tests in `.github/workflows` on every PR
 - [ ] Add visual regression testing with Percy or Chromatic
 - [ ] Set up preview deployments for every PR via Cloudflare Pages preview
@@ -495,6 +518,7 @@
 ## 🧪 P9 — Testing
 
 ### Unit / Integration Tests
+
 - [ ] Write unit tests for all worker service files (`services/*.ts`)
 - [ ] Write unit tests for `notification-handler.ts` for all channel types
 - [ ] Write unit tests for all tRPC router procedures (mock Prisma client)
@@ -507,6 +531,7 @@
 - [ ] Write integration tests for incident creation → notification dispatch flow
 
 ### E2E Tests (Playwright — `apps/e2e`)
+
 - [ ] Add E2E test: user signup → email verify → login
 - [ ] Add E2E test: create HTTP monitor → verify it appears in list
 - [ ] Add E2E test: trigger check → verify event recorded
@@ -570,19 +595,19 @@
 - [ ] Standardize error handling across all worker services (use a common `AppError` class)
 - [ ] Add JSDoc comments to all exported functions in `packages/core`
 - [ ] Replace magic strings with typed enums/constants across the codebase
-- [ ] Consolidate all environment variable access through `packages/env` (no raw `process.env` access)
-- [ ] Add stricter oxlint rules (unicorn, sonarjs equivalents)
-- [ ] Enable stricter TypeScript: `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`
-- [ ] Remove all `any` type assertions and replace with proper types
-- [ ] Audit and update all outdated dependencies (especially Expo SDK bump)
-- [ ] Remove unused packages from all `package.json` files
-- [ ] Add `publint` checks to all shared packages
-- [ ] Set up `changesets` for package versioning in the monorepo
-- [ ] Add Turborepo remote caching (Vercel Remote Cache or self-hosted)
-- [ ] Standardize file naming conventions (kebab-case for files, PascalCase for components)
+- [x] Consolidate all environment variable access through `packages/env` (no raw `process.env` access)
+- [x] Add stricter oxlint rules (unicorn, sonarjs equivalents)
+- [x] Enable stricter TypeScript: `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`
+- [x] Remove all `any` type assertions and replace with proper types
+- [x] Audit and update all outdated dependencies (especially Expo SDK bump)
+- [x] Remove unused packages from all `package.json` files
+- [x] Add `publint` checks to all shared packages
+- [x] Set up `changesets` for package versioning in the monorepo
+- [x] Add Turborepo remote caching (Vercel Remote Cache or self-hosted)
+- [x] Standardize file naming conventions (kebab-case for files, PascalCase for components)
 - [ ] Add `vitest` for unit tests
-- [ ] Add Storybook for component library documentation
-- [ ] Implement conventional commits enforcement via `commitlint`
+- [x] Add Storybook for component library documentation
+- [x] Implement conventional commits enforcement via `commitlint`
 - [x] Add `size-limit` check to prevent bundle size regressions
 - [x] Add `depcheck` to CI to catch unused dependencies automatically
 - [x] Clean up `node_modules` hoisting issues in the Turborepo workspace

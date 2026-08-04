@@ -10,7 +10,7 @@ export interface RegionalCheckResult {
   status: "UP" | "DOWN";
   latency: number;
   timestamp: Date;
-  errorReason?: string;
+  errorReason?: string | undefined;
 }
 
 export interface Monitor {
@@ -59,7 +59,7 @@ async function checkFromRegion(monitor: Monitor, region: string): Promise<Region
         "Accept-Language": "en-US,en;q=0.5",
         ...userHeaders,
       },
-      body: ["POST", "PUT", "PATCH"].includes(method) ? monitor.body : undefined,
+      body: ["POST", "PUT", "PATCH"].includes(method) ? (monitor.body ?? null) : null,
       signal: AbortSignal.timeout(timeout * 1000),
     });
 

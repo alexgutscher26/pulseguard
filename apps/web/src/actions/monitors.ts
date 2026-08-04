@@ -816,7 +816,7 @@ export async function checkMonitor(
 
   try {
     if (monitor.type === "BROWSER" || monitor.type === "SEQUENCE" || monitor.type === "SSL") {
-      const workerUrl = process.env.PULSEGUARD_WORKER_URL || "http://localhost:8787";
+      const workerUrl = env.PULSEGUARD_WORKER_URL;
       const cookieHeader = (await headers()).get("Cookie");
 
       const response = await fetch(`${workerUrl}/api/check-now`, {
@@ -832,7 +832,7 @@ export async function checkMonitor(
       latency = Date.now() - start;
 
       if (response.ok) {
-        const result = (await response.json()) as any;
+        const result = (await response.json()) as { status: string; latency: number; errorReason?: string };
         currentStatus = result.status;
         latency = result.latency;
         errorReason = result.errorReason;
@@ -1076,7 +1076,7 @@ export async function checkMonitor(
 
     // Broadcast live event to worker
     try {
-      const workerUrl = process.env.PULSEGUARD_WORKER_URL || "http://localhost:8787";
+      const workerUrl = env.PULSEGUARD_WORKER_URL;
       await fetch(`${workerUrl}/api/broadcast`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

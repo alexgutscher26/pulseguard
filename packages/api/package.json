@@ -1,21 +1,22 @@
 {
   "name": "@pulseguard/api",
+  "version": "0.0.0",
   "type": "module",
   "exports": {
     ".": {
       "default": "./src/index.ts"
-    }
+    },
+    "./routers": "./src/routers/index.ts",
+    "./routers/index": "./src/routers/index.ts"
   },
-  "scripts": {},
+  "scripts": {
+    "depcheck": "depcheck",
+    "publint": "publint"
+  },
   "dependencies": {
     "@pulseguard/auth": "workspace:*",
-    "@pulseguard/db": "workspace:*",
-    "@pulseguard/env": "workspace:*",
-    "@trpc/client": "catalog:",
     "@trpc/server": "catalog:",
-    "dotenv": "catalog:",
-    "next": "catalog:",
-    "zod": "catalog:"
+    "next": "catalog:"
   },
   "devDependencies": {
     "@pulseguard/config": "workspace:*",

@@ -8,12 +8,12 @@ export interface MCPCheckResult {
   domain: string;
   status: "UP" | "DOWN";
   latency: number;
-  errorReason?: string;
+  errorReason?: string | undefined;
   jsonrpcVersion: string | null;
   hasResult: boolean;
   hasError: boolean;
-  errorCode?: number;
-  errorMessage?: string;
+  errorCode?: number | undefined;
+  errorMessage?: string | undefined;
   toolCount: number;
   tools: string[];
   assertionsPassed: number;

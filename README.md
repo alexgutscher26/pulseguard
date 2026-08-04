@@ -267,10 +267,10 @@ See `packages/infra/` for Alchemy-based deployment configuration.
 
 Run PulseGuard on your own infrastructure:
 
-| Guide | Description |
-|---|---|
+| Guide                                                 | Description                                     |
+| ----------------------------------------------------- | ----------------------------------------------- |
 | [Single-server Docker Compose](./docs/self-hosted.md) | Full stack on one Linux server with Caddy HTTPS |
-| [Kubernetes (Helm)](./helm/pulseguard/) | Production-grade cluster deployment |
+| [Kubernetes (Helm)](./helm/pulseguard/)               | Production-grade cluster deployment             |
 
 ```bash
 # Docker Compose (single server)

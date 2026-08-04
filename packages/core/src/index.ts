@@ -249,9 +249,9 @@ export async function checkHttpUniversal(
 ): Promise<{
   status: MonitorStatus;
   latency: number;
-  errorReason?: string;
+  errorReason?: string | undefined;
   bodyText: string;
-  statusCode?: number;
+  statusCode?: number | undefined;
 }> {
   const start = Date.now();
   const method = config.method || "GET";
@@ -284,7 +284,7 @@ export async function checkHttpUniversal(
         Accept: "*/*",
         ...userHeaders,
       },
-      body: ["POST", "PUT", "PATCH"].includes(method) ? config.body : undefined,
+      body: ["POST", "PUT", "PATCH"].includes(method) ? (config.body ?? null) : null,
       signal: AbortSignal.timeout(timeoutMs),
     });
 

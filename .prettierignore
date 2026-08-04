@@ -1,0 +1,3 @@
+# Files containing template expressions that oxfmt's YAML parser cannot handle.
+helm/pulseguard/templates/
+.github/workflows/

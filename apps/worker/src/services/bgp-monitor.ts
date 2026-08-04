@@ -23,7 +23,7 @@ export interface BGPRouteResult {
   resolvedIp: string | null;
   status: "UP" | "DOWN";
   latency: number;
-  errorReason?: string;
+  errorReason?: string | undefined;
   route: BGPRouteInfo | null;
   multipleOrigins: boolean;
   originCount: number;

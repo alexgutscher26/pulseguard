@@ -1,72 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { ExternalLink, ArrowUpRight, Moon, Globe, Sparkles, Shield, Activity } from "lucide-react";
+import { ExternalLink, ArrowUpRight, Globe, Sparkles, Shield, Activity } from "lucide-react";
 import Link from "next/link";
-
-type ShowcaseEntry = {
-  name: string;
-  slug: string;
-  tagline: string;
-  theme: string;
-  themeColors: { primary: string; bg: string; text: string };
-  preview: {
-    status: "operational" | "degraded" | "outage";
-    uptime: string;
-    monitors: number;
-  };
-};
-
-const showcaseEntries: ShowcaseEntry[] = [
-  {
-    name: "CyberPulse API",
-    slug: "cyberpulse-api",
-    tagline: "High-frequency trading infrastructure",
-    theme: "Cyberpunk",
-    themeColors: { primary: "#22c55e", bg: "#050505", text: "#e2e8f0" },
-    preview: { status: "operational", uptime: "99.97%", monitors: 12 },
-  },
-  {
-    name: "NeonStack Cloud",
-    slug: "neonstack-cloud",
-    tagline: "Edge computing platform",
-    theme: "Midnight",
-    themeColors: { primary: "#38bdf8", bg: "#0f172a", text: "#f8fafc" },
-    preview: { status: "operational", uptime: "99.99%", monitors: 8 },
-  },
-  {
-    name: "Void Games",
-    slug: "void-games",
-    tagline: "Multiplayer game server status",
-    theme: "Dracula",
-    themeColors: { primary: "#ff79c6", bg: "#282a36", text: "#f8f8f2" },
-    preview: { status: "degraded", uptime: "98.50%", monitors: 15 },
-  },
-  {
-    name: "Monochrome SaaS",
-    slug: "monochrome-saas",
-    tagline: "Enterprise analytics dashboard",
-    theme: "Monochrome",
-    themeColors: { primary: "#000000", bg: "#ffffff", text: "#000000" },
-    preview: { status: "operational", uptime: "100%", monitors: 6 },
-  },
-  {
-    name: "Quantum Mesh",
-    slug: "quantum-mesh",
-    tagline: "Distributed computing network",
-    theme: "Custom",
-    themeColors: { primary: "#06b6d4", bg: "#09090b", text: "#fafafa" },
-    preview: { status: "operational", uptime: "99.95%", monitors: 20 },
-  },
-  {
-    name: "DataStream CDN",
-    slug: "datastream-cdn",
-    tagline: "Global content delivery",
-    theme: "Custom",
-    themeColors: { primary: "#f97316", bg: "#0c0a09", text: "#fefce8" },
-    preview: { status: "outage", uptime: "96.80%", monitors: 10 },
-  },
-];
+import type { ShowcaseEntry } from "@/actions/showcase";
 
 function StatusBadge({ status }: { status: ShowcaseEntry["preview"]["status"] }) {
   const colors = {
@@ -86,7 +23,15 @@ function StatusBadge({ status }: { status: ShowcaseEntry["preview"]["status"] })
 }
 
 function PreviewMockup({ entry }: { entry: ShowcaseEntry }) {
-  const monitors = Array.from({ length: Math.min(entry.preview.monitors, 6) });
+  const monitors = Array.from({ length: Math.min(entry.preview.monitors || 3, 6) });
+  const serviceNames = [
+    "API Gateway",
+    "Auth Service",
+    "Database",
+    "Cache Layer",
+    "CDN Edge",
+    "WebSocket",
+  ];
 
   return (
     <div
@@ -110,6 +55,7 @@ function PreviewMockup({ entry }: { entry: ShowcaseEntry }) {
         </div>
         <StatusBadge status={entry.preview.status} />
       </div>
+
       {/* Monitors */}
       <div
         className="px-3 py-2 flex flex-col gap-1.5"
@@ -118,9 +64,7 @@ function PreviewMockup({ entry }: { entry: ShowcaseEntry }) {
         {monitors.map((_, i) => (
           <div key={i} className="flex items-center justify-between">
             <span style={{ color: `${entry.themeColors.text}99` }}>
-              {["API Gateway", "Auth Service", "Database", "Cache Layer", "CDN Edge", "WebSocket"][
-                i
-              ] || `Service ${i + 1}`}
+              {serviceNames[i] || `Service ${i + 1}`}
             </span>
             <span className="flex items-center gap-1">
               <div
@@ -137,6 +81,7 @@ function PreviewMockup({ entry }: { entry: ShowcaseEntry }) {
           </div>
         ))}
       </div>
+
       {/* Footer */}
       <div
         className="px-3 py-1.5 border-t text-center text-[8px]"
@@ -152,15 +97,13 @@ function PreviewMockup({ entry }: { entry: ShowcaseEntry }) {
   );
 }
 
-export function ShowcaseGallery() {
+export function ShowcaseGallery({ initialEntries }: { initialEntries: ShowcaseEntry[] }) {
   const [filterTheme, setFilterTheme] = useState<string>("all");
 
   const themes = ["all", "Cyberpunk", "Midnight", "Dracula", "Monochrome", "Custom"];
 
   const filtered =
-    filterTheme === "all"
-      ? showcaseEntries
-      : showcaseEntries.filter((e) => e.theme === filterTheme);
+    filterTheme === "all" ? initialEntries : initialEntries.filter((e) => e.theme === filterTheme);
 
   return (
     <div className="flex flex-col gap-8">
@@ -201,61 +144,81 @@ export function ShowcaseGallery() {
       </div>
 
       {/* Gallery Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filtered.map((entry) => (
-          <div
-            key={entry.slug}
-            className="group bg-card border border-border hover:border-primary/20 transition-all duration-300 flex flex-col"
+      {filtered.length === 0 ? (
+        <div className="border border-dashed border-border p-16 text-center">
+          <Sparkles className="size-8 mx-auto mb-3 text-muted-foreground/30" />
+          <p className="text-sm text-muted-foreground font-mono mb-1">
+            {filterTheme === "all"
+              ? "No status pages in the showcase yet."
+              : `No "${filterTheme}" theme pages in the showcase yet.`}
+          </p>
+          <p className="text-[10px] text-muted-foreground/60 font-mono mb-4">
+            Be the first — enable "Feature in Community Showcase" in your status page settings.
+          </p>
+          <Link
+            href="/dashboard/pages"
+            className="inline-flex items-center gap-1.5 h-9 px-5 bg-primary text-primary-foreground font-bold text-[10px] uppercase tracking-wider rounded-sm border border-primary hover:bg-primary/90 transition-all font-mono"
           >
-            {/* Preview */}
-            <div className="p-4 border-b border-border/50">
-              <PreviewMockup entry={entry} />
-            </div>
+            Go to Status Pages <ArrowUpRight className="size-3" />
+          </Link>
+        </div>
+      ) : (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filtered.map((entry) => (
+            <div
+              key={entry.slug}
+              className="group bg-card border border-border hover:border-primary/20 transition-all duration-300 flex flex-col"
+            >
+              {/* Preview */}
+              <div className="p-4 border-b border-border/50">
+                <PreviewMockup entry={entry} />
+              </div>
 
-            {/* Info */}
-            <div className="p-4 flex flex-col gap-3 flex-1">
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="text-sm font-bold text-foreground font-mono">{entry.name}</h3>
-                  <p className="text-[10px] text-muted-foreground font-mono">{entry.tagline}</p>
+              {/* Info */}
+              <div className="p-4 flex flex-col gap-3 flex-1">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className="text-sm font-bold text-foreground font-mono">{entry.name}</h3>
+                    <p className="text-[10px] text-muted-foreground font-mono">{entry.tagline}</p>
+                  </div>
+                  <span
+                    className="text-[9px] font-mono px-1.5 py-0.5 border"
+                    style={{
+                      borderColor: `${entry.themeColors.primary}40`,
+                      color: entry.themeColors.primary,
+                    }}
+                  >
+                    {entry.theme}
+                  </span>
                 </div>
-                <span
-                  className="text-[9px] font-mono px-1.5 py-0.5 border"
-                  style={{
-                    borderColor: `${entry.themeColors.primary}40`,
-                    color: entry.themeColors.primary,
-                  }}
+
+                <div className="flex items-center gap-3 mt-auto">
+                  <div className="flex items-center gap-1">
+                    <Globe className="size-3 text-muted-foreground" />
+                    <span className="text-[10px] font-mono text-muted-foreground">
+                      {entry.preview.monitors} monitors
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Activity className="size-3 text-muted-foreground" />
+                    <span className="text-[10px] font-mono text-muted-foreground">
+                      {entry.preview.uptime}
+                    </span>
+                  </div>
+                </div>
+
+                <a
+                  href={`/status-page/${entry.slug}`}
+                  className="w-full mt-1 border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary text-[10px] font-bold font-mono uppercase tracking-wider py-2 flex items-center justify-center gap-1.5 transition-all"
                 >
-                  {entry.theme}
-                </span>
+                  <ExternalLink className="size-3" />
+                  View Status Page
+                </a>
               </div>
-
-              <div className="flex items-center gap-3 mt-auto">
-                <div className="flex items-center gap-1">
-                  <Globe className="size-3 text-muted-foreground" />
-                  <span className="text-[10px] font-mono text-muted-foreground">
-                    {entry.preview.monitors} monitors
-                  </span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Activity className="size-3 text-muted-foreground" />
-                  <span className="text-[10px] font-mono text-muted-foreground">
-                    {entry.preview.uptime}
-                  </span>
-                </div>
-              </div>
-
-              <a
-                href={`/status-page/${entry.slug}`}
-                className="w-full mt-1 border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary text-[10px] font-bold font-mono uppercase tracking-wider py-2 flex items-center justify-center gap-1.5 transition-all"
-              >
-                <ExternalLink className="size-3" />
-                View Status Page
-              </a>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* CTA */}
       <div className="border border-dashed border-primary/20 bg-primary/[0.02] p-8 text-center">
@@ -266,14 +229,14 @@ export function ShowcaseGallery() {
           </span>
         </div>
         <p className="text-[11px] text-muted-foreground font-mono max-w-md mx-auto mb-4">
-          Upgrade to the Netrunner plan to unlock custom themes, white-labeling, and cyberpunk
-          aesthetics. Then share your page with us on Twitter or GitHub.
+          Open your status page editor → Settings → enable "Feature in Community Showcase". Your
+          page appears here instantly after saving.
         </p>
         <Link
-          href="/signup?plan=netrunner"
+          href="/dashboard/pages"
           className="inline-flex items-center gap-1.5 h-9 px-5 bg-primary text-primary-foreground font-bold text-[10px] uppercase tracking-wider rounded-sm border border-primary hover:bg-primary/90 transition-all font-mono"
         >
-          Get Netrunner <ArrowUpRight className="size-3" />
+          Manage Status Pages <ArrowUpRight className="size-3" />
         </Link>
       </div>
     </div>

@@ -4,12 +4,12 @@ import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle, TrendingUp } from "lucide-react";
-import { HeatmapControls, type TimeRange } from "./HeatmapControls";
-import { HeatmapGrid } from "./HeatmapGrid";
-import { HeatmapLegend } from "./HeatmapLegend";
-import { RegionalDetailModal } from "./RegionalDetailModal";
-import { useLatencyData } from "./hooks/useLatencyData";
-import type { MetricType } from "./hooks/useHeatmapScale";
+import { HeatmapControls, type TimeRange } from "./heatmap-controls";
+import { HeatmapGrid } from "./heatmap-grid";
+import { HeatmapLegend } from "./heatmap-legend";
+import { RegionalDetailModal } from "./regional-detail-modal";
+import { useLatencyData } from "./hooks/use-latency-data";
+import type { MetricType } from "./hooks/use-heatmap-scale";
 
 interface LatencyHeatmapProps {
   monitorId: string;

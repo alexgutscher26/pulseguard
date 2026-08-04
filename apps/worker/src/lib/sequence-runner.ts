@@ -107,7 +107,7 @@ export async function performSequenceCheck(
         response = await fetch(stepUrl, {
           method: step.method.toUpperCase(),
           headers: stepHeaders,
-          body: stepBody,
+          body: stepBody ?? null,
           signal: controller.signal,
         });
       } catch (err: any) {

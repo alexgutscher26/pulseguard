@@ -32,16 +32,16 @@
 
 ## Prerequisites
 
-| Requirement | Minimum | Recommended |
-|---|---|---|
-| OS | Ubuntu 22.04 / Debian 12 | Ubuntu 24.04 LTS |
-| CPU | 2 vCPU | 4 vCPU |
-| RAM | 2 GB | 4 GB |
-| Disk | 20 GB SSD | 40 GB SSD |
-| Docker | 24+ | latest |
-| Docker Compose | v2.20+ | latest |
-| Domain | Required | Required |
-| Cloudflare account | Required (Workers) | Required |
+| Requirement        | Minimum                  | Recommended      |
+| ------------------ | ------------------------ | ---------------- |
+| OS                 | Ubuntu 22.04 / Debian 12 | Ubuntu 24.04 LTS |
+| CPU                | 2 vCPU                   | 4 vCPU           |
+| RAM                | 2 GB                     | 4 GB             |
+| Disk               | 20 GB SSD                | 40 GB SSD        |
+| Docker             | 24+                      | latest           |
+| Docker Compose     | v2.20+                   | latest           |
+| Domain             | Required                 | Required         |
+| Cloudflare account | Required (Workers)       | Required         |
 
 ### Install Docker
 
@@ -70,14 +70,14 @@ nano .env.production
 
 ### Required Variables
 
-| Variable | Example | Notes |
-|---|---|---|
-| `DATABASE_URL` | `postgresql://pg:secret@postgres:5432/pulseguard` | Internal Docker hostname `postgres` |
-| `DIRECT_URL` | same as above | Used for migrations |
-| `BETTER_AUTH_SECRET` | `$(openssl rand -hex 32)` | Generate with `openssl rand -hex 32` |
-| `BETTER_AUTH_URL` | `https://pulseguard.yourdomain.com` | Your public domain |
-| `NEXT_PUBLIC_APP_URL` | `https://pulseguard.yourdomain.com` | Must match `BETTER_AUTH_URL` |
-| `CORS_ORIGIN` | `https://pulseguard.yourdomain.com` | Same domain |
+| Variable              | Example                                           | Notes                                |
+| --------------------- | ------------------------------------------------- | ------------------------------------ |
+| `DATABASE_URL`        | `postgresql://pg:secret@postgres:5432/pulseguard` | Internal Docker hostname `postgres`  |
+| `DIRECT_URL`          | same as above                                     | Used for migrations                  |
+| `BETTER_AUTH_SECRET`  | `$(openssl rand -hex 32)`                         | Generate with `openssl rand -hex 32` |
+| `BETTER_AUTH_URL`     | `https://pulseguard.yourdomain.com`               | Your public domain                   |
+| `NEXT_PUBLIC_APP_URL` | `https://pulseguard.yourdomain.com`               | Must match `BETTER_AUTH_URL`         |
+| `CORS_ORIGIN`         | `https://pulseguard.yourdomain.com`               | Same domain                          |
 
 Generate secrets:
 
@@ -221,9 +221,9 @@ Replace `pulseguard.yourdomain.com` with your actual domain.
 
 Point your domain to the server IP before starting:
 
-| Record | Host | Value | TTL |
-|---|---|---|---|
-| A | `pulseguard` | `<your-server-ip>` | 300 |
+| Record | Host         | Value              | TTL |
+| ------ | ------------ | ------------------ | --- |
+| A      | `pulseguard` | `<your-server-ip>` | 300 |
 
 Wait for DNS to propagate (`dig pulseguard.yourdomain.com`).
 
@@ -324,12 +324,12 @@ sudo ufw enable
 
 ## Troubleshooting
 
-| Symptom | Likely Cause | Fix |
-|---|---|---|
-| Caddy certificate error | DNS not yet propagated | Wait 5–10 min, then `docker restart pulseguard-caddy` |
-| Database connection refused | Wrong `DATABASE_URL` hostname | Use `postgres` (Docker hostname), not `localhost` |
-| Auth redirect loop | `BETTER_AUTH_URL` mismatch | Must exactly match the browser-visible domain |
-| Worker can't reach dashboard | Firewall or CORS | Check `CORS_ORIGIN` matches Worker origin |
+| Symptom                      | Likely Cause                  | Fix                                                   |
+| ---------------------------- | ----------------------------- | ----------------------------------------------------- |
+| Caddy certificate error      | DNS not yet propagated        | Wait 5–10 min, then `docker restart pulseguard-caddy` |
+| Database connection refused  | Wrong `DATABASE_URL` hostname | Use `postgres` (Docker hostname), not `localhost`     |
+| Auth redirect loop           | `BETTER_AUTH_URL` mismatch    | Must exactly match the browser-visible domain         |
+| Worker can't reach dashboard | Firewall or CORS              | Check `CORS_ORIGIN` matches Worker origin             |
 
 ---
 

@@ -1,7 +1,7 @@
 import { getPrisma } from "@pulseguard/db";
 import type { ExecutionContext } from "@cloudflare/workers-types";
 export { LatencyAggregator } from "./durable-objects/latency-aggregator";
-export { MonitorChannel } from "./durable-objects/MonitorChannel";
+export { MonitorChannel } from "./durable-objects/monitor-channel";
 import { ProxyMesh, QuantumAnomalyDetector } from "./services/mesh";
 import { InsightService, InsightType, InsightSeverity } from "./lib/insight-service";
 import { verifySession, verifyMonitorAccess } from "./lib/auth";
@@ -44,11 +44,11 @@ async function performCheck(
 ): Promise<{
   status: "UP" | "DOWN" | "MAINTENANCE";
   latency: number;
-  errorReason?: string;
-  daysRemaining?: number;
-  issuer?: string;
-  protocol?: string;
-  registrar?: string;
+  errorReason?: string | undefined;
+  daysRemaining?: number | undefined;
+  issuer?: string | undefined;
+  protocol?: string | undefined;
+  registrar?: string | undefined;
 }> {
   // If explicitly in maintenance (passed from caller), skip check
   if (monitor.status === "MAINTENANCE") {
@@ -290,7 +290,7 @@ async function performInternalRequest(
   monitor: any,
   urlStr: string,
   extraHeaders?: Record<string, string>,
-): Promise<{ status: MonitorStatus; latency: number; errorReason?: string }> {
+): Promise<{ status: MonitorStatus; latency: number; errorReason?: string | undefined }> {
   const start = performance.now();
   let currentStatus: MonitorStatus = "DOWN";
   let latency = 0;
@@ -763,7 +763,7 @@ export async function processBatch(
                   `[MultiVector] Component 18-1-0 reported UP! False positive averted for ${monitor.name}. Mesh Load: OK.`,
                 );
                 retryResult.status = "UP";
-                retryResult.errorReason = undefined;
+                delete retryResult.errorReason;
               } else {
                 // KEY FIX: If the PROXY itself failed (not the target), don't use this as
                 // confirmation of DOWN. Proxy failures (CORS blocks, scraper bans, etc.) are
@@ -791,7 +791,7 @@ export async function processBatch(
                     `[MultiVector] Component 18-1-1 reported UP! False positive averted for ${monitor.name}.`,
                   );
                   retryResult.status = "UP";
-                  retryResult.errorReason = undefined;
+                  delete retryResult.errorReason;
                 } else {
                   // Check if secondary proxy also just failed at the proxy level
                   const isSecondaryProxyFailure =
@@ -806,7 +806,7 @@ export async function processBatch(
                         `Cannot confirm DOWN without reliable external verification. Treating as UP (false-positive prevention).`,
                     );
                     retryResult.status = "UP";
-                    retryResult.errorReason = undefined;
+                    delete retryResult.errorReason;
                   } else {
                     console.log(
                       `[MultiVector] Component 18-1-1 also DOWN. Trying final High-Fidelity Vector 19-3-1...`,
@@ -822,7 +822,7 @@ export async function processBatch(
                         `[MultiVector] Component 19-3-1 reported UP! False positive averted for ${monitor.name}. (Anomaly: ${finalVector.anomaly?.isAnomaly})`,
                       );
                       retryResult.status = "UP";
-                      retryResult.errorReason = undefined;
+                      delete retryResult.errorReason;
                     } else {
                       console.warn(
                         `[MultiVector] ALL verification vectors (Local, Retry, 18-1-0, 18-1-1, 19-3-1) confirmed DOWN for ${monitor.name}.`,

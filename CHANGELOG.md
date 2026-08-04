@@ -12,6 +12,7 @@ Release notes are generated automatically from [Conventional Commits](https://ww
 ## [Unreleased]
 
 ### Added
+
 - Self-hosted installation guide (`docs/self-hosted.md`)
 - Helm chart for Kubernetes deployment (`helm/pulseguard/`)
 - `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, and GitHub issue templates

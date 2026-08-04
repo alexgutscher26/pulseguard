@@ -17,6 +17,17 @@ export const env = createEnv({
     VERCEL_CLIENT_ID: z.string().min(1).optional(),
     VERCEL_CLIENT_SECRET: z.string().min(1).optional(),
     VERCEL_REDIRECT_URI: z.string().min(1).optional(),
+    // Vercel domain management API
+    VERCEL_API_TOKEN: z.string().min(1).optional(),
+    VERCEL_PROJECT_ID: z.string().min(1).optional(),
+    VERCEL_TEAM_ID: z.string().min(1).optional(),
+    // Server-side worker URL (used by web actions to proxy check-now requests)
+    PULSEGUARD_WORKER_URL: z.string().url().default("http://localhost:8787"),
+    // Analytics hashing salt
+    ANALYTICS_SALT: z.string().min(1).default("pulseguard-analytics-salt"),
+    // Discord OAuth integration
+    DISCORD_CLIENT_ID: z.string().min(1).optional(),
+    DISCORD_CLIENT_SECRET: z.string().min(1).optional(),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,

@@ -34,6 +34,10 @@ jobs:
       BETTER_AUTH_SECRET: mock-auth-secret
       BETTER_AUTH_URL: http://localhost:3000
       NEXT_PUBLIC_APP_URL: http://localhost:3000
+      # Turborepo remote cache (Vercel). Steps fall back to local-only
+      # caching when these secrets aren't configured.
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
     steps:
       - name: Checkout
@@ -45,7 +49,7 @@ jobs:
           bun-version: latest
 
       - name: Install dependencies
-        run: bun install
+        run: bun install --frozen-lockfile
 
       - name: Generate Database Client
         run: bun run db:generate
@@ -56,11 +60,30 @@ jobs:
       - name: Lint
         run: bun run check
 
+      - name: File Naming Conventions
+        # Source files must use kebab-case (see scripts/check-filenames.js).
+        run: bun run check-names
+
       - name: Type Check
         run: bun run check-types
 
       - name: Build
         run: bun run build
+
+      - name: Storybook Build
+        # Verifies the component library compiles under Storybook.
+        run: bun run build-storybook
+
+      - name: Size Limit (default: web)
+        # Prevents bundle size regressions. Only apps that define a `size-limit`
+        # script are measured (currently only apps/web).
+        run: bun run check-size
+
+      - name: Depcheck
+        # Catches unused / missing dependencies. npm_scripts are resolved per
+        # workspace; apps/native (Expo/Metro) and apps/worker (huge Cloudflare
+        # monolith + workerd bindings) are intentionally excluded.
+        run: bun run check-deps
 
       - name: Start Next.js Production Server
         run: bun --cwd apps/web run start &
@@ -83,3 +106,24 @@ jobs:
           budgetPath: .github/lighthouse-budget.json
           uploadArtifacts: true
           temporaryPublicStorage: true
+
+  commitlint:
+    name: Conventional Commits
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Validate PR commit messages
+        run: bunx --no-install commitlint --from "${{ github.event.pull_request.base.sha }}" --to "${{ github.event.pull_request.head.sha }}"

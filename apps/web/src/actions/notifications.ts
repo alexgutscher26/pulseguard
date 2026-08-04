@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@pulseguard/auth";
 import { headers } from "next/headers";
 import { sendMonitorAlert } from "@pulseguard/email";
+import { env } from "@pulseguard/env/server";
 
 const channelSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -162,7 +163,7 @@ export async function sendTestNotification(id: string) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           username: "PulseGuard Sentinel",
-          avatar_url: `${process.env.NEXT_PUBLIC_APP_URL}/icon.png`, // Optional: Add app icon if available
+          avatar_url: `${env.NEXT_PUBLIC_APP_URL}/icon.png`, // Optional: Add app icon if available
           embeds: [
             {
               title: "🔴 Test Alert: System Down",
@@ -227,7 +228,7 @@ export async function sendTestNotification(id: string) {
                 {
                   type: "button",
                   text: { type: "plain_text", text: "View Dashboard" },
-                  url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`,
+                  url: `${env.NEXT_PUBLIC_APP_URL}/dashboard`,
                   style: "danger",
                 },
               ],

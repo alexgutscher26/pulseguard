@@ -17,8 +17,8 @@ monitors:
   # ── Hourly database backup job ───────────────────────────────────────────────
   - name: db-backup-hourly
     type: HEARTBEAT
-    interval: 3600         # expected ping every 3600 seconds
-    grace_period: 300      # allow 5-minute grace before alerting
+    interval: 3600 # expected ping every 3600 seconds
+    grace_period: 300 # allow 5-minute grace before alerting
     alerts:
       - pagerduty-on-call
       - slack-ops
@@ -30,8 +30,8 @@ monitors:
   # ── Daily report email sender ────────────────────────────────────────────────
   - name: daily-report-email
     type: HEARTBEAT
-    interval: 86400        # expected once per day
-    grace_period: 900      # 15-minute grace
+    interval: 86400 # expected once per day
+    grace_period: 900 # 15-minute grace
     alerts:
       - default-email
     tags:
