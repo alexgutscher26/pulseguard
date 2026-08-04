@@ -4,6 +4,8 @@ import LandingFooter from "@/components/landing/footer";
 import { HallOfFameClient } from "./hall-of-fame-client";
 import { getLeaderboard } from "@/actions/leaderboard";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Community Hall of Fame | PulseGuard",
   description:
