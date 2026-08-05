@@ -285,6 +285,24 @@
   }
 }
 
+/* Skip offscreen layout/render for below-the-fold landing sections so the
+   hero paints sooner (improves LCP). */
+.content-visibility-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 700px;
+}
+
+@keyframes heroBadge {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Modernist Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

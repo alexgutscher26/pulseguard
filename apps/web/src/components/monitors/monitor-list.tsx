@@ -14,7 +14,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -154,6 +154,12 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
   const totalPages = Math.ceil(monitors.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentMonitors = monitors.slice(startIndex, startIndex + itemsPerPage);
+
+  useEffect(() => {
+    for (const monitor of currentMonitors) {
+      router.prefetch(`/dashboard/monitors/${monitor.id}`);
+    }
+  }, [currentMonitors, router]);
 
   const getUptime = (events: any[]) => {
     if (!events || events.length === 0) return 0;

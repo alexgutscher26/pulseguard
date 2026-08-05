@@ -11,7 +11,7 @@ export default function Pricing() {
 
   return (
     <section
-      className="py-28 bg-background relative overflow-hidden border-b border-border"
+      className="py-28 bg-background relative overflow-hidden content-visibility-auto"
       id="pricing"
     >
       <div className="max-w-5xl mx-auto px-6 md:px-12 relative z-20">

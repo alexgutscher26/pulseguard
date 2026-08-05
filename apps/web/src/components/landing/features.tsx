@@ -5,7 +5,10 @@ import Link from "next/link";
 
 export default function Features() {
   return (
-    <section className="py-28 bg-background relative overflow-hidden" id="features">
+    <section
+      className="py-28 bg-background relative overflow-hidden content-visibility-auto"
+      id="features"
+    >
       <div className="max-w-5xl mx-auto px-6 md:px-12 relative z-20">
         {/* Header */}
         <div className="max-w-2xl mb-20">

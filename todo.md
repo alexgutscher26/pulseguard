@@ -489,14 +489,14 @@
 
 ### Web Performance
 
-- [ ] Run Lighthouse CI in GitHub Actions and enforce performance budget (LCP < 2.5s)
-- [ ] Optimize largest contentful paint on the landing page
-- [ ] Add `next/image` optimization for all images (lazy loading, WebP/AVIF)
+- [X] Run Lighthouse CI in GitHub Actions and enforce performance budget (LCP < 2.5s)
+- [X] Optimize largest contentful paint on the landing page
+- [X] Add `next/image` optimization for all images (lazy loading, WebP/AVIF)
 - [ ] Implement route-based code splitting for all dashboard routes
-- [ ] Add `<Suspense>` boundaries around all data-fetching components
-- [ ] Audit and remove unused dependencies from `apps/web/package.json`
-- [ ] Enable Turbopack for faster local dev builds
-- [ ] Add `prefetch` links for likely next navigations (monitors list → detail)
+- [X] Add `<Suspense>` boundaries around all data-fetching components
+- [x] Audit and remove unused dependencies from `apps/web/package.json`
+- [x] Enable Turbopack for faster local dev builds
+- [x] Add `prefetch` links for likely next navigations (monitors list → detail)
 - [ ] Profile React render cycles with React DevTools and fix unnecessary re-renders
 - [ ] Add service worker for offline fallback on the dashboard
 

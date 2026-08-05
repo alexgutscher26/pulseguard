@@ -14,7 +14,14 @@ import dynamic from "next/dynamic";
 
 const ResponseTimeChart = dynamic(
   () => import("@/components/charts/response-time-chart").then((mod) => mod.ResponseTimeChart),
-  { ssr: false },
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-[300px] flex items-center justify-center">
+        <div className="size-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+      </div>
+    ),
+  },
 );
 import { SlaReportView } from "@/components/monitors/details/sla-report-view";
 import { ChevronLeft, Play, Loader2, Settings, Download } from "lucide-react";

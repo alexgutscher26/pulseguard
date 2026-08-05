@@ -22,6 +22,7 @@ import {
 import { toast } from "sonner";
 import { GlitchText } from "@/components/ui/effects/glitch-text";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
@@ -267,23 +268,14 @@ export function VisualDiffComparator() {
                     onTouchMove={handleMouseMove}
                   >
                     {/* After Image */}
-                    <img
-                      src={imgB}
-                      alt="Point B"
-                      className="absolute inset-0 h-full w-full object-cover"
-                    />
+                    <Image src={imgB} alt="Point B" fill sizes="100vw" className="object-cover" />
 
                     {/* Before Image (Clipped) */}
                     <div
                       className="absolute inset-0 h-full w-full overflow-hidden border-r-2 border-primary z-10"
                       style={{ width: `${sliderPos}%` }}
                     >
-                      <img
-                        src={imgA}
-                        alt="Point A"
-                        className="absolute inset-0 h-full w-full object-cover"
-                        style={{ width: `${100 / (sliderPos / 100)}%` }} // Keeps aspect
-                      />
+                      <Image src={imgA} alt="Point A" fill sizes="100vw" className="object-cover" />
                       <div className="absolute top-4 left-4 z-20">
                         <Badge className="bg-primary/80 backdrop-blur-sm italic uppercase tracking-tighter">
                           Reference
@@ -312,18 +304,22 @@ export function VisualDiffComparator() {
 
                 {viewMode === "heatmap" && (
                   <div className="relative aspect-video w-full bg-black group overflow-hidden">
-                    <img
+                    <Image
                       src={imgA}
                       alt="Reference snapshot preview"
-                      className="absolute inset-0 h-full w-full object-cover opacity-30 grayscale"
+                      fill
+                      sizes="100vw"
+                      className="object-cover opacity-30 grayscale"
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
                       {/* Simulated Heatmap Mask */}
                       <div className="absolute inset-0 mix-blend-screen overflow-hidden">
-                        <img
+                        <Image
                           src={imgB}
                           alt="Mutation target preview"
-                          className="h-full w-full object-cover opacity-50 sepia-[1] hue-rotate-[320deg] animate-pulse"
+                          fill
+                          sizes="100vw"
+                          className="object-cover opacity-50 sepia-[1] hue-rotate-[320deg] animate-pulse"
                         />
                       </div>
                     </div>
@@ -344,10 +340,12 @@ export function VisualDiffComparator() {
                 {viewMode === "side" && (
                   <div className="grid grid-cols-2 gap-px bg-primary/20 aspect-video">
                     <div className="relative overflow-hidden group">
-                      <img
+                      <Image
                         src={imgA}
                         alt="Reference snapshot comparison side-by-side"
-                        className="h-full w-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                        fill
+                        sizes="50vw"
+                        className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
                         title="Reference"
                       />
                       <div className="absolute bottom-4 left-4">
@@ -357,10 +355,12 @@ export function VisualDiffComparator() {
                       </div>
                     </div>
                     <div className="relative overflow-hidden group">
-                      <img
+                      <Image
                         src={imgB}
                         alt="Mutation target comparison side-by-side"
-                        className="h-full w-full object-cover border-l border-primary/30"
+                        fill
+                        sizes="50vw"
+                        className="object-cover border-l border-primary/30"
                         title="Mutation"
                       />
                       <div className="absolute bottom-4 left-4">

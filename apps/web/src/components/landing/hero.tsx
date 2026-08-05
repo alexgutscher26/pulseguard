@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Globe, Shield, Activity, Clock, CheckCircle } from "lucide-react";
-import { AVAILABLE_REGIONS, PRODUCT_CONFIG } from "@pulseguard/shared";
+import { ArrowRight, Activity } from "lucide-react";
+import { AVAILABLE_REGIONS } from "@pulseguard/shared";
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 
 export default function Hero() {
   const [inputUrl, setInputUrl] = useState("");
@@ -81,18 +80,13 @@ export default function Hero() {
 
       <div className="max-w-5xl mx-auto px-6 md:px-12 relative z-20 w-full text-center flex flex-col items-center">
         {/* Animated Pill Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 mb-8 text-[11px] font-bold tracking-wider text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-400/10 border border-emerald-500/20 dark:border-emerald-400/20 px-3.5 py-1.5 rounded-full uppercase shadow-[0_0_12px_rgba(16,185,129,0.05)] dark:shadow-[0_0_12px_rgba(52,211,153,0.15)]"
-        >
+        <div className="animate-[heroBadge_0.5s_ease-out] inline-flex items-center gap-2 mb-8 text-[11px] font-bold tracking-wider text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-400/10 border border-emerald-500/20 dark:border-emerald-400/20 px-3.5 py-1.5 rounded-full uppercase shadow-[0_0_12px_rgba(16,185,129,0.05)] dark:shadow-[0_0_12px_rgba(52,211,153,0.15)]">
           <span className="relative flex size-1.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full size-1.5 bg-emerald-500 dark:bg-emerald-400"></span>
           </span>
           <span>Mesh network monitoring deployed</span>
-        </motion.div>
+        </div>
 
         {/* Header */}
         <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-[1.05] mb-8 text-balance text-foreground max-w-4xl">

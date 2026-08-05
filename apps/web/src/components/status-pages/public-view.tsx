@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { StatusPageMonitorRow } from "./status-page-monitor-row";
 import { AnalyticsTracker } from "./analytics-tracker";
+import Image from "next/image";
 import { useTranslations, useFormatter } from "next-intl";
 import { LanguageSwitcher } from "./language-switcher";
 import { SubscribeModal } from "./subscribe-modal";
@@ -153,11 +154,15 @@ export function PublicView({
               className="flex items-center gap-3 hover:opacity-80 transition-opacity"
             >
               {page.logo ? (
-                <img
-                  src={page.logo}
-                  alt={page.title}
-                  className="size-10 rounded-md object-cover border border-primary/20 shadow-[0_0_15px_-3px_rgba(34,197,94,0.3)]"
-                />
+                <div className="relative size-10 shrink-0">
+                  <Image
+                    src={page.logo}
+                    alt={page.title}
+                    fill
+                    sizes="40px"
+                    className="rounded-md object-cover border border-primary/20 shadow-[0_0_15px_-3px_rgba(34,197,94,0.3)]"
+                  />
+                </div>
               ) : (
                 <div className="size-10 rounded-md bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-xl shadow-[0_0_15px_-3px_rgba(34,197,94,0.3)]">
                   {page.title.charAt(0).toUpperCase()}
@@ -168,11 +173,15 @@ export function PublicView({
           ) : (
             <div className="flex items-center gap-3">
               {page.logo ? (
-                <img
-                  src={page.logo}
-                  alt={page.title}
-                  className="size-10 rounded-md object-cover border border-primary/20 shadow-[0_0_15px_-3px_rgba(34,197,94,0.3)]"
-                />
+                <div className="relative size-10 shrink-0">
+                  <Image
+                    src={page.logo}
+                    alt={page.title}
+                    fill
+                    sizes="40px"
+                    className="rounded-md object-cover border border-primary/20 shadow-[0_0_15px_-3px_rgba(34,197,94,0.3)]"
+                  />
+                </div>
               ) : (
                 <div className="size-10 rounded-md bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-xl shadow-[0_0_15px_-3px_rgba(34,197,94,0.3)]">
                   {page.title.charAt(0).toUpperCase()}

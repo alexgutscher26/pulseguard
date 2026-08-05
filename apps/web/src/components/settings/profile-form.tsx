@@ -3,6 +3,7 @@
 import { Camera, Loader2 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { useUploadThing } from "@/lib/uploadthing";
+import Image from "next/image";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -102,10 +103,12 @@ export function ProfileForm() {
       <div className="p-6 flex flex-col gap-6">
         <div className="flex items-center gap-6">
           <div className="relative group/avatar cursor-pointer">
-            <div className="size-20 bg-black border-2 border-primary/20 p-1 relative">
-              <img
+            <div className="relative size-20 bg-black border-2 border-primary/20 p-1">
+              <Image
                 alt="Avatar"
-                className="w-full h-full object-cover opacity-80 group-hover/avatar:opacity-100 transition-opacity"
+                fill
+                sizes="80px"
+                className="object-cover opacity-80 group-hover/avatar:opacity-100 transition-opacity"
                 src={
                   optimisticImage ||
                   session?.user?.image ||

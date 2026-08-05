@@ -2,7 +2,9 @@
 
 import { Search, Plus, LogOut, User, Settings, Menu, Terminal } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { ModeToggle } from "@/components/mode-toggle";
 import { useHaptic } from "@/hooks/use-haptic";
@@ -23,6 +25,7 @@ export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = 
   const router = useRouter();
   const { trigger } = useHaptic();
   const { isTerminalMode, toggleTerminalMode } = useTerminalStore();
+  const [avatarError, setAvatarError] = useState(false);
 
   const getBreadcrumbs = () => {
     const paths = pathname.split("/").filter(Boolean);
@@ -111,7 +114,7 @@ export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = 
             rel="noopener noreferrer"
           >
             <img
-              src="http://localhost:3000/api/badge/f34f34f.svg?style=flat&theme=dark&size=sm"
+              src="/api/badge/f34f34f.svg?style=flat&theme=dark&size=sm"
               alt="PulseGuard Status"
             />
           </a>
@@ -192,15 +195,15 @@ export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = 
                 </p>
               </div>
               {/* Avatar */}
-              <div className="size-9 rounded-full overflow-hidden border border-border bg-gradient-to-br from-primary/10 to-primary/5 hover:border-primary/30 hover:scale-105 active:scale-95 transition-all shrink-0 flex items-center justify-center shadow-sm">
-                {session?.user?.image ? (
-                  <img
-                    className="w-full h-full object-cover transition-opacity duration-300"
+              <div className="relative size-9 rounded-full overflow-hidden border border-border bg-gradient-to-br from-primary/10 to-primary/5 hover:border-primary/30 hover:scale-105 active:scale-95 transition-all shrink-0 flex items-center justify-center shadow-sm">
+                {session?.user?.image && !avatarError ? (
+                  <Image
+                    className="object-cover transition-opacity duration-300"
                     alt="User profile"
                     src={session.user.image}
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                    }}
+                    fill
+                    sizes="36px"
+                    onError={() => setAvatarError(true)}
                   />
                 ) : (
                   <span className="text-[11px] font-bold text-primary font-mono tracking-wider">

@@ -42,7 +42,10 @@ export default function FAQ() {
   ];
 
   return (
-    <section className="py-28 bg-background relative overflow-hidden" id="faq">
+    <section
+      className="py-28 bg-background relative overflow-hidden content-visibility-auto"
+      id="faq"
+    >
       <div className="max-w-3xl mx-auto px-6">
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-16">

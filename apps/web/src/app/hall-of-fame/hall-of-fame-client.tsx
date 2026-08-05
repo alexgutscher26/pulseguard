@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Trophy, Medal, Crown, ExternalLink, Shield, Activity, Users, Zap } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import type { LeaderboardEntry } from "@/actions/leaderboard";
 
@@ -150,9 +151,15 @@ export function HallOfFameClient({ initialEntries }: { initialEntries: Leaderboa
                 <RankIcon rank={entry.rank} />
               </div>
 
-              <div className="size-9 rounded-full border border-border bg-muted overflow-hidden shrink-0 flex items-center justify-center">
+              <div className="relative size-9 rounded-full border border-border bg-muted overflow-hidden shrink-0 flex items-center justify-center">
                 {entry.image ? (
-                  <img src={entry.image} alt={entry.name} className="size-full object-cover" />
+                  <Image
+                    src={entry.image}
+                    alt={entry.name}
+                    fill
+                    className="object-cover"
+                    sizes="36px"
+                  />
                 ) : (
                   <span className="text-xs font-bold font-mono text-muted-foreground">
                     {entry.name.charAt(0).toUpperCase()}
