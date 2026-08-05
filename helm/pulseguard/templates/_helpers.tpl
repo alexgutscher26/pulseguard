@@ -87,3 +87,25 @@ Image tag helper — falls back to Chart.AppVersion.
 {{- define "pulseguard.probe.imageTag" -}}
 {{- .Values.probe.image.tag | default .Chart.AppVersion }}
 {{- end }}
+
+{{/*
+PostgreSQL service host when the bundled subchart is enabled, empty otherwise.
+*/}}
+{{- define "pulseguard.postgresql.host" -}}
+{{- if .Values.postgresql.enabled }}{{ printf "%s-postgresql" (include "pulseguard.fullname" .) }}{{- end }}
+{{- end }}
+
+{{/*
+Database connection string. An explicit secrets.databaseUrl wins; otherwise the
+value is derived from the bundled PostgreSQL subchart (used for both
+DATABASE_URL and DIRECT_URL).
+*/}}
+{{- define "pulseguard.databaseUrl" -}}
+{{- if .Values.secrets.databaseUrl }}
+{{- .Values.secrets.databaseUrl }}
+{{- else if .Values.postgresql.enabled }}
+{{- printf "postgresql://%s:%s@%s-postgresql:5432/%s" .Values.postgresql.auth.username .Values.postgresql.auth.password (include "pulseguard.fullname" .) .Values.postgresql.auth.database }}
+{{- else }}
+{{- "" }}
+{{- end }}
+{{- end }}

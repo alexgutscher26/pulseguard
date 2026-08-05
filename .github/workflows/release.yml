@@ -133,6 +133,9 @@ jobs:
           VERSION="${{ steps.version.outputs.version }}"
           sed -i "s/^appVersion:.*/appVersion: \"$VERSION\"/" helm/pulseguard/Chart.yaml
           sed -i "s/^version:.*/version: $VERSION/" helm/pulseguard/Chart.yaml
+          # Resolve subchart dependencies (bitnami/postgresql) before packaging
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm dependency build helm/pulseguard
           helm package helm/pulseguard --destination helm-artifacts/
 
       # ── Create GitHub Release ────────────────────────────────────────────────

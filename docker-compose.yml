@@ -89,10 +89,9 @@ services:
   #   container_name: pulseguard-probe
   #   restart: unless-stopped
   #   environment:
-  #     WORKER_URL: "http://host.docker.internal:8787"
-  #     PROBE_SECRET: "local-dev-probe-secret"
+  #     PULSEGUARD_API_URL: "http://host.docker.internal:8787"
+  #     PULSEGUARD_PROBE_TOKEN: "local-dev-probe-secret"
   #     PROBE_REGION: "local"
-  #     PROBE_ID: "local-probe-01"
   #   depends_on:
   #     postgres:
   #       condition: service_healthy

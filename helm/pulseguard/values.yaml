@@ -79,9 +79,8 @@ probe:
 
   config:
     # URL of your PulseGuard Worker (Cloudflare)
-    workerUrl: "https://worker.yourdomain.com"
+    apiUrl: "https://worker.yourdomain.com"
     region: "k8s-cluster"
-    probeId: "" # auto-generated if empty
 
   resources:
     requests:
@@ -124,8 +123,8 @@ ingress:
 # For production, prefer an external secret manager (e.g. ExternalSecrets, Vault).
 secrets:
   # Required
-  databaseUrl: "" # postgresql://user:pass@host:5432/db
-  directUrl: "" # same or direct (non-pooled) connection
+  databaseUrl: "" # postgresql://user:pass@host:5432/db — auto-derived from the bundled subchart if empty
+  directUrl: "" # same or direct (non-pooled) connection — auto-derived if empty
   betterAuthSecret: "" # min 32 random chars
   betterAuthUrl: "" # https://pulseguard.yourdomain.com
   nextPublicAppUrl: "" # same as betterAuthUrl
@@ -141,7 +140,7 @@ secrets:
   slackSigningSecret: ""
   googleClientId: ""
   googleClientSecret: ""
-  probeSecret: "" # shared secret between probe and worker
+  probeSecret: "" # shared token the probe uses to authenticate with your Worker
 
 # ── PostgreSQL (Bitnami subchart) ─────────────────────────────────────────────
 postgresql:
@@ -172,32 +171,6 @@ externalDatabase:
   database: pulseguard
   username: pulseguard
   # Reference an existing Kubernetes Secret instead of hardcoding:
-  existingSecret: ""
-  existingSecretPasswordKey: "password"
-
-# ── Redis (Bitnami subchart) ──────────────────────────────────────────────────
-redis:
-  enabled: true # set false to use Upstash or external Redis
-  auth:
-    enabled: true
-    password: changeme # override in production
-  master:
-    persistence:
-      enabled: true
-      size: 5Gi
-    resources:
-      requests:
-        cpu: 100m
-        memory: 128Mi
-      limits:
-        cpu: 500m
-        memory: 256Mi
-
-# External Redis — used when redis.enabled=false
-externalRedis:
-  # If using Upstash, leave host empty and set secrets.upstashRedisRestUrl
-  host: ""
-  port: 6379
   existingSecret: ""
   existingSecretPasswordKey: "password"
 

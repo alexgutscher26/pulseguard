@@ -106,17 +106,23 @@ git rebase upstream/main
 
 ### Running Checks
 
-All of the following must pass before opening a PR:
+All of the following must pass before opening a PR. These are exactly the gates CI runs on every push and pull request (see `.github/workflows/ci.yml`):
 
 ```bash
-bun run check          # oxlint + oxfmt
-bun run check-types    # TypeScript
+bun run check          # oxlint + oxfmt (formatting is auto-applied with --write)
+bun run check-types    # TypeScript across all workspaces
+bun run build          # production build for all apps
+bun run check-names    # kebab-case source file naming (scripts/check-filenames.js)
+bun run check-size     # bundle size limits (apps/web)
+bun run check-deps     # depcheck: catches unused/missing dependencies
+bun run build-storybook  # verifies Storybook compiles
 ```
 
-If you added or modified any E2E flows:
+Lint and type-check individually while iterating:
 
 ```bash
-bun run test           # runs Playwright suite in apps/e2e
+bunx oxlint <path>     # lint a single file/folder
+bun --cwd apps/web run check-types   # type-check only the web app
 ```
 
 ---
@@ -173,7 +179,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 **Types**: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`, `ci`
 
-**Scopes** (monorepo packages): `web`, `worker`, `cli`, `native`, `probe`, `api`, `db`, `email`, `wasm-parser`, `shared`
+**Scopes** (workspace packages): `web`, `worker`, `cli`, `native`, `probe`, `e2e`, `api`, `auth`, `db`, `email`, `env`, `types`, `shared`, `config`, `infra`, `wasm-parser`
 
 Examples:
 
@@ -182,6 +188,45 @@ feat(worker): add BGP monitor type
 fix(web): resolve hydration mismatch on status page
 docs(cli): update pulse wait examples
 ```
+
+---
+
+## Testing Requirements
+
+Tests are required for new behavior. Bug fixes should include a regression test when a reasonable one exists. The test stack:
+
+| Layer       | Tool                                   | Location          | Run with                                  |
+| ----------- | -------------------------------------- | ----------------- | ----------------------------------------- |
+| Unit / integration | Vitest (Storybook browser tests) | `apps/web` (vitest configured; `*.stories.tsx` + component tests) | `bun --cwd apps/web vitest run` |
+| E2E         | Playwright                             | `apps/e2e/tests/` | `bun --cwd apps/e2e test`                 |
+
+### Rules
+
+- Test **behavior, not implementation** — assert on observable output and side effects.
+- E2E tests must be **hermetic**: no network calls to real services, seed the database instead.
+- Never assert on exact timestamps, latency, or other timing-dependent values in tests.
+- New worker services and tRPC routers should ship with unit tests; see the P9 backlog in `todo.md` for the target coverage map.
+- If you add a new monitor type or notification channel, cover the success and failure paths.
+
+### E2E
+
+```bash
+bun --cwd apps/e2e test          # headless run
+bun --cwd apps/e2e test --ui     # interactive UI
+bun --cwd apps/e2e test --debug  # step-through debugging
+```
+
+E2E tests need the web app and database running locally — see [Getting Started](#getting-started).
+
+### Storybook Component Tests
+
+`apps/web` uses Vitest with `@storybook/addon-vitest` for component-level browser tests. To run:
+
+```bash
+bun --cwd apps/web vitest run
+```
+
+Interactive mode: `bunx vitest` from `apps/web`. Component tests live alongside stories as `.stories.tsx` files with `play` functions.
 
 ---
 
@@ -229,8 +274,8 @@ PulseGuard status pages support multiple locales via the `i18n` system in `apps/
 
 ### Updating an Existing Locale
 
-1. Run `bun run i18n:diff` to see untranslated keys.
-2. Fill in any missing keys and open a PR.
+1. Compare `apps/web/messages/<locale>.json` against `apps/web/messages/en.json` and fill in any keys that are missing.
+2. Open a PR with the updated file.
 
 ### Translation Principles
 
@@ -250,9 +295,22 @@ Before opening a PR, confirm:
 - [ ] Branch is based on the latest `main`
 - [ ] `bun run check` passes (no lint/format errors)
 - [ ] `bun run check-types` passes
-- [ ] New features have unit or integration tests where applicable
+- [ ] `bun run build` passes
+- [ ] `bun run check-names`, `bun run check-deps`, and `bun run check-size` pass
+- [ ] All commit messages follow Conventional Commits (validated by CI)
+- [ ] New features have unit or integration tests where applicable (see [Testing Requirements](#testing-requirements))
 - [ ] Documentation is updated (README, JSDoc, etc.)
 - [ ] No secrets, credentials, or `.env` values are committed
+
+### Release Notes
+
+PulseGuard uses [changesets](https://github.com/changesets/changesets). If your PR changes published packages (`packages/*`), add a changeset:
+
+```bash
+bun run changeset
+```
+
+Describe the change as a `patch` (bug fix) or `minor` (new feature). Breaking changes require `major`. Changesets are consumed by the automated release workflow — PRs without them will not trigger a release.
 
 ### PR Description
 

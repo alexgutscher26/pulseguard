@@ -564,9 +564,9 @@
 - [ ] Add inline code examples to all API documentation
 - [ ] Build interactive API explorer (Scalar or Swagger UI at `/docs/api`)
 - [ ] Write self-hosting guide (Docker Compose full stack)
-- [ ] Add Helm chart for Kubernetes self-hosted deployment
+- [x] Add Helm chart for Kubernetes self-hosted deployment
 - [ ] Create video tutorials: "Set up your first monitor", "Configure alerts", "Status page setup"
-- [ ] Write contributing guide with code style, testing requirements, and PR process
+- [x] Write contributing guide with code style, testing requirements, and PR process
 
 ---
 

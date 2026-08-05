@@ -15,3 +15,10 @@ sources:
 maintainers:
   - name: PulseGuard Contributors
     url: https://github.com/alexgutscher26/pulseguard
+dependencies:
+  # Bundled PostgreSQL for a batteries-included install.
+  # Set postgresql.enabled=false to use an external database instead.
+  - name: postgresql
+    version: "16.6.0"
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.enabled

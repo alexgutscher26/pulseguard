@@ -14,6 +14,9 @@ spec:
       {{- include "pulseguard.probe.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      annotations:
+        # Force pod restart when secrets change
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
       labels:
         {{- include "pulseguard.probe.selectorLabels" . | nindent 8 }}
     spec:
@@ -31,18 +34,16 @@ spec:
           securityContext:
             {{- toYaml .Values.probe.securityContext | nindent 12 }}
           env:
-            - name: WORKER_URL
-              value: {{ .Values.probe.config.workerUrl | quote }}
-            - name: PROBE_REGION
-              value: {{ .Values.probe.config.region | quote }}
-            - name: PROBE_ID
-              value: {{ .Values.probe.config.probeId | quote }}
-            - name: PROBE_SECRET
+            - name: PULSEGUARD_API_URL
+              value: {{ .Values.probe.config.apiUrl | quote }}
+            - name: PULSEGUARD_PROBE_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: {{ include "pulseguard.fullname" . }}-secrets
-                  key: PROBE_SECRET
+                  key: PULSEGUARD_PROBE_TOKEN
                   optional: true
+            - name: PROBE_REGION
+              value: {{ .Values.probe.config.region | quote }}
           resources:
             {{- toYaml .Values.probe.resources | nindent 12 }}
           volumeMounts:
