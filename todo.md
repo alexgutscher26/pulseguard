@@ -408,8 +408,8 @@
 - [ ] Add integration directory page listing all supported notification channels
 - [ ] Build changelog page (public release notes with dates and categories)
 - [ ] Add cookie consent banner (GDPR compliance)
-- [ ] Add blog infrastructure (MDX-based, with SEO-optimized posts)
-- [ ] Write 10 SEO-targeted blog posts (uptime monitoring, SLA calculations, etc.)
+- [x] Add blog infrastructure (MDX-based, with SEO-optimized posts)
+- [x] Write 10 SEO-targeted blog posts (uptime monitoring, SLA calculations, etc.)
 
 ---
 

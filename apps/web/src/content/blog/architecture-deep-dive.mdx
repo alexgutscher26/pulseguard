@@ -1,0 +1,42 @@
+---
+title: "Building a monitoring mesh: architecture deep dive"
+description: "How we designed PulseGuard's distributed check infrastructure for reliability, low latency, and horizontal scalability across 12 global regions."
+date: "2026-06-05"
+category: "Engineering"
+readTime: "12 min read"
+tags: ["monitoring architecture", "distributed systems", "multi-region monitoring", "infrastructure"]
+---
+
+PulseGuard's monitoring infrastructure is built as a distributed mesh — a network of lightweight check nodes spread across 12 global regions that coordinate to verify endpoint availability. Here's how it works under the hood.
+
+## Architecture overview
+
+At a high level, the system has three layers: **scheduler**, **check nodes**, and **verifier**. The scheduler assigns checks to nodes, nodes execute them and report results, and the verifier resolves failures using multi-node consensus.
+
+Each layer is horizontally scalable and independently deployable. We use a publish-subscribe model for communication, with a message broker that handles millions of check results per day.
+
+## Check nodes
+
+Each check node is a lightweight container running a minimal Rust-based agent. The agent maintains a persistent connection to the scheduler, receives check assignments, executes them via HTTP, DNS, or TCP probes, and reports results back through the message bus.
+
+Nodes are stateless and ephemeral. They can be added or removed without any coordination. This makes scaling as simple as spinning up more containers in the region where you need additional capacity.
+
+## The scheduler
+
+The scheduler is the brain of the system. It maintains the desired check schedule for every monitor, assigns checks to available nodes using a consistent hashing algorithm, and handles node failures gracefully by reassigning orphaned checks within seconds.
+
+We use a Raft-based consensus layer to ensure scheduler state is consistent across replicas. If the primary scheduler fails, a replica takes over with zero data loss.
+
+## Verification and alerting
+
+When a check fails, the verifier kicks in. It selects two additional nodes from different regions and dispatches verification checks. Only when a majority of nodes confirm the failure does an alert fire. This is the core of our [zero-false-positive guarantee](/blog/zero-false-positives).
+
+## Data pipeline
+
+Check results flow through a streaming data pipeline that ingests, normalizes, and stores latency and status data. We use a time-series database optimized for high-throughput write patterns. Historical data is retained according to each plan's retention policy.
+
+The pipeline also feeds real-time dashboards, incident timelines, and the public status pages — all with sub-second latency from ingestion to display.
+
+## Lessons learned
+
+Building a global monitoring mesh taught us that network reliability is humbling. Even with redundant nodes in every region, we've seen edge cases where entire cloud regions become unreachable. The multi-node verification system wasn't just a feature — it was a necessity for building a system we could trust ourselves.

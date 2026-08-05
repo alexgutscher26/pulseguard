@@ -1,0 +1,67 @@
+---
+title: "Uptime monitoring 101: what it is, how it works, and why you need it"
+description: "A beginner's guide to uptime monitoring: how checks work, the metrics that matter, check intervals, alerting, and how to choose a monitoring tool for your site."
+date: "2026-07-28"
+category: "Guides"
+readTime: "9 min read"
+tags: ["uptime monitoring", "uptime monitoring guide", "website monitoring", "check interval"]
+---
+
+If your website or API is down right now, would you know within a minute — or would you find out from a customer? Uptime monitoring is the practice of automatically testing your services from the outside, so you detect problems before your users do. This guide covers the fundamentals.
+
+## What uptime monitoring actually does
+
+An uptime monitor is a program that periodically sends a request to your service and verifies the response. The simplest form is an **HTTP check**: request `https://yoursite.com/health` and confirm it returns a success status code within a timeout.
+
+Checks come in several flavors:
+
+- **HTTP/HTTPS checks** — verify status codes, response times, and page content
+- **TCP port checks** — confirm a port is accepting connections (useful for databases, SSH, message queues)
+- **Ping (ICMP) checks** — test network reachability
+- **SSL certificate checks** — warn before your TLS certificate expires
+- **DNS checks** — verify your records resolve from public resolvers
+- **Cron/API checks** — confirm scheduled jobs or background workers actually ran
+
+## The metrics that matter
+
+Raw "up or down" is only the start. The metrics that tell you the full story:
+
+| Metric | What it measures | Why it matters |
+| ------ | ---------------- | -------------- |
+| Availability | Percentage of checks that succeeded | The headline number for SLAs and status pages |
+| Response time | Latency of each check | Slow is a failure mode too; users leave slow sites |
+| Time to detection | Delay between failure and alert | The most underrated number in monitoring |
+| Error rate | Failed checks / total checks | Spiky error rates suggest flaky infrastructure |
+| SSL expiry | Days until certificate expiry | A silent killer — no downtime, just a hard failure |
+
+## Check intervals: how fast is fast enough?
+
+Your check interval is a trade-off between detection speed and cost:
+
+- **5 minutes** — the industry default; detects problems in minutes, misses short outages entirely
+- **60 seconds** — real-time awareness; catches most brief disruptions
+- **30 seconds or less** — critical-path services with revenue impact
+
+The math is brutal: with a 5-minute interval you cannot detect any outage shorter than 5 minutes, and the average detection time is 2.5 minutes. That's why PulseGuard runs [60-second checks](/blog/60-second-checks-standard) as standard.
+
+## What a good monitoring workflow looks like
+
+1. **Set up checks for every public endpoint** — website, API, status page, checkout flow
+2. **Add synthetic transaction checks** for critical journeys (login, add-to-cart, payment)
+3. **Configure alert channels** — email and Slack first, then PagerDuty or SMS for production
+4. **Verify false alarms** — a single failed check should not page anyone; require confirmation from multiple regions
+5. **Review monthly** — compare monitored uptime against vendor SLAs and incident reports
+
+## Choosing a monitoring tool
+
+What to look for in an uptime monitoring service:
+
+- **Multi-region checks** — if all checks come from one datacenter, you only know the service is down *for that datacenter*
+- **Fast intervals on free tiers** — cheap detection is the whole point
+- **Real alerting** — webhooks, Slack, PagerDuty, SMS; not just email
+- **Public status pages** — so you can communicate during incidents without scrambling
+- **History and reporting** — uptime percentages you can export for SLA discussions
+
+## Getting started
+
+You don't need to plan for weeks. Start by monitoring your landing page and API health endpoint today, add Slack alerts, and let it run. The first time you get an alert about something you didn't already know about, it pays for itself.

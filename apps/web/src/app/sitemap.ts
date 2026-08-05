@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import prisma from "@pulseguard/db";
+import { getAllPosts } from "@/lib/blog";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://pulseguard.com";
@@ -43,6 +44,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             ? 0.7
             : 0.5,
   }));
+
+  // Blog posts (statically generated from MDX)
+  for (const post of getAllPosts()) {
+    sitemapEntries.push({
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified: new Date(post.meta.date),
+      changeFrequency: "monthly",
+      priority: 0.6,
+    });
+  }
 
   try {
     // Dynamically retrieve public status pages from the database

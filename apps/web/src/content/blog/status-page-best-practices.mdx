@@ -1,0 +1,66 @@
+---
+title: "Status page best practices: how to communicate during outages"
+description: "The status page playbook: what to show before, during, and after an incident, how to write clear updates, and how to turn outages into trust."
+date: "2026-08-04"
+category: "Product"
+readTime: "6 min read"
+tags: ["status page", "outage communication", "incident updates", "status page best practices"]
+---
+
+A status page is the one piece of infrastructure users actually *want* to visit during an outage. Done well, it turns a bad moment into a trust-building one. Done poorly, it's the thing screenshots circulate on social media. Here's the playbook.
+
+## Before the incident: set up for success
+
+The time to think about outage communication is when everything is green.
+
+- **Make the page findable** — link it from your footer, docs, and login screens. A status page nobody can find is a liability
+- **Put the status page on its own infrastructure** — if it's hosted on the same stack as your product, it goes down with it
+- **Use a custom domain** — `status.yourdomain.com` is more credible and memorable than a vendor subdomain
+- **Subscribe users in advance** — pre-incident subscribers get updates automatically; emergency subscribers can't log in during an outage
+- **Write templates now** — skeleton incident updates you can fill in under pressure
+
+## During the incident: the three rules
+
+1. **Acknowledge within minutes.** The first update should appear as soon as you've confirmed something is wrong — even if you don't know the cause yet. "We're investigating elevated error rates on the API" is a complete, honest update.
+2. **Update on a schedule.** Users refresh status pages obsessively. Every 30–60 minutes without an update, they assume the worst. Set a reminder to post even when there's nothing new: "No change yet — investigation ongoing."
+3. **Never claim more than you know.** Don't say "the issue is resolved" while your monitors still show failures. You can say "we're seeing recovery; validating before marking resolved."
+
+## What a good update contains
+
+| Element | Example |
+| ------- | ------- |
+| Affected systems | "Checkout and payment API" |
+| Impact | "Users may see errors completing orders" |
+| Started at | "14:32 UTC, confirmed at 14:40 UTC" |
+| Current action | "Rolling back the deployment from 14:00" |
+| Next update | "Next update within 30 minutes" |
+
+Every update should answer the same four questions: what's affected, how badly, what are you doing, and when will we hear next.
+
+## The status page anatomy
+
+A status page is a hierarchy, not a wall of text:
+
+- **Overall status** — one indicator at the top: Operational / Degraded / Major Outage
+- **Component status** — per-service indicators (API, Web, Database, CDN)
+- **Active incidents** — newest first, with severity and start time
+- **Incident timeline** — the full update history, kept as a permanent record
+- **Uptime history** — rolling 30/90-day uptime percentages per component
+
+Put the overall indicator at the top, keep component granularity, and never bury the incident timeline.
+
+## After the incident: post-mortems and history
+
+- **Post-mortem within 72 hours** — publish root cause, timeline, and corrective actions. Ambitious companies publish even embarrassing post-mortems; users reward the honesty
+- **Keep incident history** — incident pages should stay live forever. They're your credibility archive
+- **Update your SLAs** — reconcile reported uptime against your [SLA calculations](/blog/sla-calculations) and issue credits where owed
+
+## Common mistakes to avoid
+
+- **Saying "resolved" twice** — declaring resolution then reopening the incident erodes trust more than a slow incident
+- **Markdown walls** — pasting internal chat logs into the status page. Write for users, not for yourself
+- **Vendor-status-only monitoring** — if your status page is driven by your monitoring tool's checks, make sure those checks are multi-region; a single-node check will declare you down when you're not
+
+## The bottom line
+
+Users forgive outages. They don't forgive silence. A status page that acknowledges fast, updates on schedule, and publishes honest post-mortems converts every incident into a proof point — and that's the best any monitoring setup can do.

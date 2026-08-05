@@ -1,0 +1,40 @@
+---
+title: "The engineer's guide to incident response runbooks"
+description: "A well-written runbook can mean the difference between a 5-minute fix and a 2-hour outage. Here's how to build runbooks that your on-call team will actually use."
+date: "2026-06-20"
+category: "Guides"
+readTime: "10 min read"
+tags: ["incident response", "runbooks", "on-call", "alerting"]
+---
+
+Every on-call engineer knows the feeling: 3 AM, pager goes off, your heart rate spikes, and you're staring at a dashboard trying to remember what to do. A good runbook turns that panic into a checklist.
+
+But most runbooks are terrible. They're out of date, impossible to find, or written in a way that assumes you already know the answer. Here's how to build runbooks that your team will actually use.
+
+## What makes a good runbook
+
+A runbook should answer three questions in order: **What is happening?**, **How bad is it?**, and **What do I do?**. Everything else is noise.
+
+- **Clear title and severity:** "High CPU on API Servers — P1" tells you exactly what's happening and how urgent it is
+- **Step-by-step diagnosis:** Dashboards to check, logs to grep, metrics to compare. Each step should be a single action
+- **Remediation steps:** Exact commands to run, buttons to click, configs to change. Include rollback steps for each action
+- **Escalation path:** Who to call if the runbook doesn't resolve the issue, and when to escalate
+
+## Common runbook mistakes
+
+The worst runbooks share the same flaws. Avoid these patterns:
+
+- **Out of date:** A runbook referencing a server that was decommissioned six months ago is worse than no runbook at all
+- **Too long:** If your runbook has 50 steps, no one will read it. Break it into a triage flow with clear exit points
+- **Assumes context:** "Restart the service" isn't a step. Which service? What command? Where?
+- **No testing:** Runbooks should be tested as part of your incident response drills, just like code
+
+## Runbook automation with PulseGuard
+
+PulseGuard integrates with your runbook workflow in two ways. First, alerts can include direct links to the relevant runbook so your on-call engineer never has to search. Second, our webhook system can trigger automated remediation playbooks in your infrastructure.
+
+The goal isn't to replace human judgment — it's to remove the cognitive load of remembering what to do so engineers can focus on solving the actual problem.
+
+## Keep them alive
+
+A runbook is a living document. Every time an incident occurs, update the runbook. Every time a server is decommissioned or a config changes, update the runbook. Treat them with the same rigor as your production code, and they'll save you hours of downtime.

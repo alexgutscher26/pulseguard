@@ -1,0 +1,82 @@
+---
+title: "HTTP status codes every site owner should know"
+description: "A practical guide to the HTTP status codes that matter for uptime monitoring: redirects, client errors, server errors, and how monitoring tools treat each one."
+date: "2026-08-02"
+category: "Engineering"
+readTime: "7 min read"
+tags: ["HTTP status codes", "HTTP 500", "monitoring alerts", "status code monitoring"]
+---
+
+Every uptime alert your monitoring tool fires is really about one of a handful of HTTP status codes. Knowing what each code means — and how monitoring tools classify them — makes the difference between chasing ghosts and fixing real problems.
+
+## The status code families
+
+HTTP responses fall into five families:
+
+| Code range | Family | Meaning |
+| ---------- | ------ | ------- |
+| 1xx | Informational | Request received, still processing |
+| 2xx | Success | Request succeeded (200, 201, 204) |
+| 3xx | Redirection | Client must follow another URL (301, 302, 308) |
+| 4xx | Client error | The request was bad or unauthorized (400–404, 429) |
+| 5xx | Server error | Your servers failed (500, 502, 503, 504) |
+
+For monitoring purposes you only care about 2xx, 3xx, 4xx, and 5xx — but the details within each family matter.
+
+## 2xx: what "success" actually means
+
+A 200 response means the server handled the request — but not necessarily that the page is correct. Good monitoring goes beyond status codes:
+
+- **200 with a degraded page** — an error page returned with HTTP 200 (a classic misconfiguration)
+- **200 with slow response** — success that takes 10 seconds is still a failure for users
+- **204 No Content** — success for webhooks and API pings
+
+Use **content checks** in your monitor (look for a string like `"status": "ok"` or a known page title) to catch the "happy 200 that's actually broken" cases.
+
+## 3xx: redirects deserve attention
+
+A 301 permanent redirect is normal for moved pages. Problems show up as:
+
+- **Redirect loops** — A → B → A, which browsers and monitors give up on after a few hops
+- **Redirect chains** — five hops where one would do; each hop adds latency
+- **Redirects to error pages** — `/login` silently redirecting to a 500
+
+If your monitor follows redirects (most do), a loop shows up as a timeout or "too many redirects" failure. Set an alert threshold if your platform exposes redirect counts.
+
+## 4xx: client errors are usually yours to fix
+
+- **401 Unauthorized / 403 Forbidden** — a broken auth cookie or an IP block that's catching real users
+- **404 Not Found** — broken links, removed pages, or a CDN misconfiguration. High 404 volume is a warning sign, not just a one-off
+- **429 Too Many Requests** — rate limiting kicking in too aggressively; a real availability problem for users even though the server is healthy
+
+A monitor that treats all non-200 as "down" will false-alarm on a public page that legitimately returns 404 for missing content. Configure which codes are acceptable per check.
+
+## 5xx: the codes that should page you
+
+- **500 Internal Server Error** — a generic server failure; investigate stack traces
+- **502 Bad Gateway** — your proxy or load balancer can't reach the upstream
+- **503 Service Unavailable** — the server is overloaded or in maintenance; check autoscaling and health checks
+- **504 Gateway Timeout** — the upstream took too long; latency problem in disguise
+
+A single 500 isn't an outage — that's where [multi-node verification](/blog/zero-false-positives) matters. But repeated 5xx from multiple regions is a real incident, and your monitoring should say so without waiting for a customer to report it.
+
+## How monitoring tools treat codes
+
+Most tools, including PulseGuard, let you define the success criteria per check:
+
+- **Status code range** — e.g., `200–399` as success
+- **Content match** — require a specific string in the body
+- **Timeout** — fail after N seconds regardless of code
+- **Keyword blocking** — fail when a string (like an error banner) appears
+
+Combining a code range with a content match is the single most effective way to cut false positives on HTTP checks.
+
+## The practical checklist
+
+- [ ] Alert on 5xx from two or more regions before paging anyone
+- [ ] Treat 3xx loops and chains as incidents
+- [ ] Use content checks for pages that can return 200 while broken
+- [ ] Watch 404 volume and 429 spikes as early-warning signals
+- [ ] Distinguish "down" (5xx / timeout) from "degraded" (slow 2xx) in your alert routing
+
+Understand the codes, configure your checks deliberately, and your alerts will tell you what's actually breaking — instead of just flashing red.

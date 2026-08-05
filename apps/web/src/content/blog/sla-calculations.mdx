@@ -1,0 +1,96 @@
+---
+title: "SLA calculations: how to calculate uptime percentage and credits"
+description: "Learn how to calculate SLA uptime percentages, what a 99.9% SLA really allows in downtime per month, and how monitoring data proves or disproves vendor SLAs."
+date: "2026-07-21"
+category: "Guides"
+readTime: "8 min read"
+tags: ["SLA calculations", "uptime percentage", "99.9% uptime", "SLA monitoring"]
+---
+
+SLA calculations look simple at first: available time divided by total time, multiplied by 100. But the details — measurement windows, error budgets, maintenance exclusions, and credit thresholds — are where most teams get burned. Here's a practical guide to calculating uptime SLAs correctly.
+
+## The basic uptime formula
+
+The core formula is straightforward:
+
+```
+Uptime % = (Total time - Downtime) / Total time × 100
+```
+
+For example, a service that was down for 45 minutes over a 30-day month has been up for 43,155 out of 43,200 minutes:
+
+```
+(43,200 - 45) / 43,200 × 100 = 99.9%
+```
+
+## What each "nine" really means
+
+Here's what common SLA tiers permit in downtime per month, week, and day:
+
+| SLA level | Downtime per month | Downtime per week | Downtime per day |
+| --------- | ------------------ | ----------------- | ---------------- |
+| 99% (two nines) | 7.20 hours | 1.68 hours | 14.4 minutes |
+| 99.9% (three nines) | 43.2 minutes | 10.1 minutes | 1.44 minutes |
+| 99.95% | 21.6 minutes | 5.0 minutes | 43 seconds |
+| 99.99% (four nines) | 4.32 minutes | 1.01 minutes | 8.6 seconds |
+| 99.999% (five nines) | 26 seconds | 6 seconds | 0.86 seconds |
+
+That table is the single most useful thing to memorize when negotiating or evaluating a vendor SLA. A "99.9% uptime guarantee" sounds impressive until you realize it allows 43 minutes of outage per month.
+
+## The measurement window trap
+
+Vendors rarely measure SLA over a month. Common windows include:
+
+- **Rolling 30 days** — downtime resets continuously, making single-month audits difficult
+- **Calendar month** — cleanest to audit, easiest to verify against your own monitoring
+- **Quarterly average** — allows a vendor to bury a bad month in two good ones
+- **Yearly average** — the most vendor-friendly; a full day of outage can still average out
+
+Always read the SLA's measurement window before signing, and make sure your uptime monitoring records timestamps you can reconcile against the vendor's report.
+
+## Maintenance and exclusions
+
+Most SLAs exclude **scheduled maintenance windows**. The fair version excludes only maintenance that is:
+
+- Announced in advance (typically 72 hours notice)
+- Time-boxed (e.g., max 4 hours per window)
+- Done during low-traffic hours
+
+Anything else is downtime, period. If the SLA allows the vendor to declare maintenance at will, the effective uptime guarantee is much weaker than it looks.
+
+## Calculating SLA credits
+
+When a vendor misses the SLA target, they typically issue credits based on the actual uptime achieved:
+
+| Achieved uptime | Typical credit |
+| --------------- | -------------- |
+| 99.0% – 99.9% | 10% of monthly fee |
+| 95.0% – 99.0% | 25% of monthly fee |
+| Below 95.0% | 50% of monthly fee |
+
+Credit calculations are usually based on the **prorated monthly fee for the affected period** — not the full subscription. If your bill is annual, make sure the credit applies to the contracted monthly equivalent.
+
+## Verify SLAs with independent monitoring
+
+You cannot rely on the vendor's own status page to audit their SLA. It's common for vendors to define "downtime" narrowly (e.g., HTTP 500s on the primary region) while your users experience errors from secondary regions or slow responses that never reach the error threshold.
+
+An independent uptime monitoring service like PulseGuard gives you:
+
+- **Independent timestamps** for every outage, verifiable against the vendor's incident report
+- **Multi-region checks** that catch partial or regional outages a single node misses
+- **Response-time tracking** so you can argue "degraded but not down" cases
+- **Historical reports** you can export when filing a credit request
+
+## A worked example
+
+Say your database vendor promises 99.95% monthly uptime. Your monitoring recorded the following:
+
+- Outage 1: 14 minutes on the 3rd (their status page never updated)
+- Outage 2: 9 minutes on the 17th (status page updated 20 minutes late)
+- Outage 3: 2 minutes on the 28th (HTTP 503s during a deploy)
+
+Total: 25 minutes of downtime in a 43,200-minute month = **99.94%** — just under the 99.95% guarantee. That qualifies for a 10% credit on most standard schedules. Without independent monitoring, you'd have no evidence to claim it.
+
+## The bottom line
+
+SLA calculations are a negotiation tool, not just an accounting exercise. Know your measurement window, watch the exclusions, and keep independent monitoring records so that when the number matters, you're the one with the receipts.
