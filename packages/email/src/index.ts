@@ -296,3 +296,92 @@ export async function sendMonthlyReport(
     return { error: error instanceof Error ? error.message : "Unknown error" };
   }
 }
+
+export interface UsageLimitWarningEmailData {
+  userName: string;
+  planName: string;
+  warnings: Array<{
+    resource: string;
+    label: string;
+    used: number;
+    limit: number;
+    percentage: number;
+  }>;
+  upgradeUrl?: string;
+}
+
+export async function sendUsageLimitWarning(
+  to: string,
+  data: UsageLimitWarningEmailData,
+  apiKey?: string,
+): Promise<{ id: string } | { error: string }> {
+  try {
+    const resend = getResendClient(apiKey);
+    const { renderUsageLimitWarning } = await import("./templates/usage-limit-warning");
+
+    const html = renderUsageLimitWarning({
+      userName: data.userName,
+      planName: data.planName,
+      warnings: data.warnings,
+      upgradeUrl: data.upgradeUrl ?? "https://pulseguard.io/dashboard/settings?tab=billing",
+    });
+
+    const result = await resend.emails.send({
+      from: "PulseGuard <billing@pulseguard.io>",
+      to,
+      subject: "⚠️ Workspace Plan Usage Warning",
+      html,
+    });
+
+    if (result.data && "id" in result.data) {
+      return { id: result.data.id };
+    }
+    return { error: result.error?.message || "Failed to send email" };
+  } catch (error) {
+    console.error("Error sending usage limit warning email:", error);
+    return { error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}
+
+export interface DunningNoticeEmailData {
+  userName: string;
+  planName: string;
+  amountDue: string;
+  failureReason?: string;
+  billingPortalUrl?: string;
+}
+
+export async function sendDunningNotice(
+  to: string,
+  data: DunningNoticeEmailData,
+  apiKey?: string,
+): Promise<{ id: string } | { error: string }> {
+  try {
+    const resend = getResendClient(apiKey);
+    const { renderDunningNotice } = await import("./templates/dunning-notice");
+
+    const html = renderDunningNotice({
+      userName: data.userName,
+      planName: data.planName,
+      amountDue: data.amountDue,
+      failureReason: data.failureReason ?? "Card declined",
+      billingPortalUrl:
+        data.billingPortalUrl ?? "https://pulseguard.io/dashboard/settings?tab=billing",
+    });
+
+    const result = await resend.emails.send({
+      from: "PulseGuard Billing <billing@pulseguard.io>",
+      to,
+      subject: "⚠️ Payment Failed: Action Required for Your PulseGuard Subscription",
+      html,
+    });
+
+    if (result.data && "id" in result.data) {
+      return { id: result.data.id };
+    }
+    return { error: result.error?.message || "Failed to send email" };
+  } catch (error) {
+    console.error("Error sending dunning notice email:", error);
+    return { error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}

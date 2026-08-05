@@ -1,0 +1,27 @@
+model ReferralCode {
+  id        String     @id @default(cuid())
+  userId    String     @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  code      String     @unique
+  clicks    Int        @default(0)
+  createdAt DateTime   @default(now())
+  referrals Referral[]
+
+  @@index([userId])
+  @@index([code])
+}
+
+model Referral {
+  id             String       @id @default(cuid())
+  referralCodeId String
+  referralCode   ReferralCode @relation(fields: [referralCodeId], references: [id], onDelete: Cascade)
+  referredUserId String       @unique
+  referredUser   User         @relation("ReferredUser", fields: [referredUserId], references: [id], onDelete: Cascade)
+  status         String       @default("PENDING") // PENDING, CONVERTED, REWARDED
+  rewardAmount   Float        @default(10.0)
+  createdAt      DateTime     @default(now())
+  convertedAt    DateTime?
+
+  @@index([referralCodeId])
+  @@index([referredUserId])
+}

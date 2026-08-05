@@ -9,6 +9,7 @@ model Subscription {
   status               String    @default("ACTIVE")   // ACTIVE, TRIALING, PAST_DUE, CANCELED
   currentPeriodStart   DateTime?
   currentPeriodEnd     DateTime?
+  trialEndsAt          DateTime?
   cancelAtPeriodEnd    Boolean   @default(false)
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt

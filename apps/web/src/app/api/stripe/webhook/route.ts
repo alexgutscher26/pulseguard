@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import db from "@pulseguard/db";
+import { sendDunningNotice } from "@pulseguard/email";
 import Stripe from "stripe";
 
 export async function POST(req: Request) {
@@ -90,6 +91,43 @@ export async function POST(req: Request) {
             where: { id: subRecord.userId },
             data: { tier: currentPlan },
           });
+        }
+        break;
+      }
+
+      case "invoice.payment_failed": {
+        const invoice = event.data.object as any;
+        const customerId = invoice.customer as string;
+
+        const subRecord = await db.subscription.findUnique({
+          where: { stripeCustomerId: customerId },
+          include: { user: true },
+        });
+
+        if (subRecord) {
+          await db.subscription.update({
+            where: { id: subRecord.id },
+            data: { status: "PAST_DUE" },
+          });
+
+          const userEmail = subRecord.user?.email || invoice.customer_email;
+          const userName = subRecord.user?.name || "PulseGuard Operator";
+          const amountDue = invoice.amount_due
+            ? `$${(invoice.amount_due / 100).toFixed(2)}`
+            : "$14.00";
+          const failureReason =
+            invoice.last_finalization_error?.message ||
+            invoice.payment_intent?.last_payment_error?.message ||
+            "Card declined or insufficient funds";
+
+          if (userEmail) {
+            await sendDunningNotice(userEmail, {
+              userName,
+              planName: subRecord.plan,
+              amountDue,
+              failureReason,
+            });
+          }
         }
         break;
       }

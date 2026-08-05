@@ -7,6 +7,7 @@ import { auth } from "@pulseguard/auth";
 import { headers } from "next/headers";
 import { sendMonitorAlert } from "@pulseguard/email";
 import { env } from "@pulseguard/env/server";
+import { assertNotificationChannelLimits, checkAndNotifyUsageLimits } from "@/lib/billing-server";
 
 const channelSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -49,18 +50,13 @@ export async function createNotificationChannel(prevState: any, formData: FormDa
   const data = validation.data;
 
   try {
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { tier: true },
+    const limitCheck = await assertNotificationChannelLimits(session.user.id, {
+      type: data.type,
+      isNew: true,
     });
-    const userTier = user?.tier || "INITIATE";
 
-    if (data.type === "SMS" && userTier !== "CONSTRUCT") {
-      return {
-        success: false,
-        error:
-          "SMS notifications are an enterprise feature exclusive to the Construct tier. Please upgrade to the Construct tier to configure SMS alerts.",
-      };
+    if (!limitCheck.allowed) {
+      return { success: false, error: limitCheck.error || "Plan limit exceeded" };
     }
 
     await prisma.notificationChannel.create({
@@ -71,6 +67,8 @@ export async function createNotificationChannel(prevState: any, formData: FormDa
         userId: session.user.id,
       },
     });
+
+    checkAndNotifyUsageLimits(session.user.id).catch(() => {});
 
     revalidatePath("/dashboard/alerts");
     return { success: true };

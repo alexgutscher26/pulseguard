@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@pulseguard/auth";
 import { headers, cookies } from "next/headers";
 import { env } from "@pulseguard/env/server";
+import { assertStatusPageLimits, checkAndNotifyUsageLimits } from "@/lib/billing-server";
 
 /**
  * Adds a custom domain to a Vercel project via their API.
@@ -150,32 +151,15 @@ export async function createStatusPage(prevState: any, formData: FormData) {
   }
   const data = validation.data;
 
-  // Enforce pricing tier limits
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { tier: true },
+  const limitCheck = await assertStatusPageLimits(session.user.id, {
+    customDomain: data.customDomain,
+    isPasswordProtected: Boolean(data.password),
+    isWhiteLabeled: false,
+    isNew: true,
   });
-  const userTier = user?.tier || "INITIATE";
 
-  if (userTier === "INITIATE") {
-    if (data.customDomain && data.customDomain.trim() !== "") {
-      return {
-        success: false,
-        error:
-          "Custom domains are a premium feature. Please upgrade to the Netrunner tier to configure custom domains.",
-      };
-    }
-
-    const pageCount = await prisma.statusPage.count({
-      where: { userId: session.user.id },
-    });
-    if (pageCount >= 1) {
-      return {
-        success: false,
-        error:
-          "Free tier accounts are limited to 1 public status page. Please upgrade to create more status pages.",
-      };
-    }
+  if (!limitCheck.allowed) {
+    return { success: false, error: limitCheck.error || "Plan limit exceeded" };
   }
 
   // Check slug uniqueness
@@ -216,6 +200,8 @@ export async function createStatusPage(prevState: any, formData: FormData) {
         ogImageUrl: data.ogImageUrl,
       },
     });
+
+    checkAndNotifyUsageLimits(session.user.id).catch(() => {});
 
     revalidatePath("/dashboard/pages");
     return { success: true, id: page.id };
@@ -335,21 +321,15 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
     // Check if domain changed
     const current = await prisma.statusPage.findUnique({ where: { id } });
 
-    // Enforce pricing tier limits
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { tier: true },
+    const limitCheck = await assertStatusPageLimits(session.user.id, {
+      customDomain: rawData.customDomain,
+      isPasswordProtected: Boolean(rawData.password),
+      isWhiteLabeled: false,
+      isNew: false,
     });
-    const userTier = user?.tier || "INITIATE";
 
-    if (userTier === "INITIATE") {
-      if (rawData.customDomain && rawData.customDomain.trim() !== "") {
-        return {
-          success: false,
-          error:
-            "Custom domains are a premium feature. Please upgrade to the Netrunner tier to configure custom domains.",
-        };
-      }
+    if (!limitCheck.allowed) {
+      return { success: false, error: limitCheck.error || "Plan limit exceeded" };
     }
 
     // Domain logic commented out

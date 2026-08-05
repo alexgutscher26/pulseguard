@@ -5,6 +5,7 @@ import DashboardLoading from "./loading";
 import type { DashboardStatsData } from "@/components/dashboard/stats";
 import type { MonitorInsight } from "@/components/dashboard/ai-insights";
 import type { OnboardingStatus } from "@/actions/onboarding";
+import type { UsageSummary } from "@/lib/billing";
 
 const Dashboard = dynamic(() => import("./dashboard"), {
   ssr: false,
@@ -16,11 +17,13 @@ export default function DashboardClient({
   stats,
   insights,
   onboardingStatus,
+  usageSummary,
 }: {
   monitors: any[];
   stats: DashboardStatsData;
   insights: MonitorInsight[];
   onboardingStatus: OnboardingStatus;
+  usageSummary?: UsageSummary;
 }) {
   return (
     <Dashboard
@@ -28,6 +31,7 @@ export default function DashboardClient({
       stats={stats}
       insights={insights}
       onboardingStatus={onboardingStatus}
+      usageSummary={usageSummary}
     />
   );
 }

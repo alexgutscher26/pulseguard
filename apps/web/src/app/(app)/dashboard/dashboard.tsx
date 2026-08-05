@@ -8,10 +8,12 @@ import { MonitorsGrid } from "@/components/dashboard/monitors-grid";
 import { AIInsights, type MonitorInsight } from "@/components/dashboard/ai-insights";
 import { PrivacyBanner } from "@/components/dashboard/privacy-banner";
 import { OnboardingChecklist } from "@/components/dashboard/onboarding-checklist";
+import { UsageLimitBanner } from "@/components/dashboard/usage-limit-banner";
 import { useMonitors, useDashboardStats } from "@/hooks/use-monitors";
 import { LayoutGrid, List, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { OnboardingStatus } from "@/actions/onboarding";
+import type { UsageSummary } from "@/lib/billing";
 
 // Dynamic import with ssr: false to prevent hydration errors and optimize bundle size
 const GlobeVisualization = dynamic(
@@ -31,11 +33,13 @@ export default function Dashboard({
   stats: initialStats,
   insights: initialInsights,
   onboardingStatus,
+  usageSummary,
 }: {
   monitors: any[];
   stats: DashboardStatsData;
   insights: MonitorInsight[];
   onboardingStatus: OnboardingStatus;
+  usageSummary?: UsageSummary;
 }) {
   const { data: monitors } = useMonitors(initialMonitors);
   const { data: stats } = useDashboardStats(initialStats);
@@ -68,6 +72,7 @@ export default function Dashboard({
 
   return (
     <div className="flex flex-col gap-6">
+      <UsageLimitBanner summary={usageSummary} />
       <OnboardingChecklist status={onboardingStatus} />
       <AIInsights insights={initialInsights} />
       <PrivacyBanner />

@@ -65,4 +65,27 @@ const rateLimitMiddleware = t.middleware(({ ctx, path, next }) => {
  */
 export const rateLimitedProcedure = protectedProcedure.use(rateLimitMiddleware);
 
+/**
+ * Creates a tRPC procedure middleware enforcing workspace feature flags or quotas.
+ */
+export const createFeatureFlagMiddleware = (
+  checkFn: (userId: string) => Promise<{ allowed: boolean; error?: string }>,
+) =>
+  t.middleware(async ({ ctx, next }) => {
+    if (!ctx.session?.user) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Authentication required",
+      });
+    }
+    const result = await checkFn(ctx.session.user.id);
+    if (!result.allowed) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: result.error || "Feature access denied by plan limits",
+      });
+    }
+    return next();
+  });
+
 export * from "./routers/index";

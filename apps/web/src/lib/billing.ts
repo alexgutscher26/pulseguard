@@ -54,7 +54,7 @@ export const PLANS: Record<PlanTier, PlanDetails> = {
     description:
       "Solo devs who value their sleep with multi-region verification & zero false alarms.",
     monthlyPrice: 14,
-    annualPriceMonthly: 11.66,
+    annualPriceMonthly: 11.2,
     stripePriceIdMonthly:
       process.env.STRIPE_NETRUNNER_MONTHLY_PRICE_ID || "price_netrunner_monthly",
     stripePriceIdAnnual: process.env.STRIPE_NETRUNNER_ANNUAL_PRICE_ID || "price_netrunner_annual",
@@ -82,7 +82,7 @@ export const PLANS: Record<PlanTier, PlanDetails> = {
     name: "The Construct",
     description: "Enterprise reliability, HFT checks, SAML & Workspaces for professional teams.",
     monthlyPrice: 69,
-    annualPriceMonthly: 57.5,
+    annualPriceMonthly: 55.2,
     stripePriceIdMonthly:
       process.env.STRIPE_CONSTRUCT_MONTHLY_PRICE_ID || "price_construct_monthly",
     stripePriceIdAnnual: process.env.STRIPE_CONSTRUCT_ANNUAL_PRICE_ID || "price_construct_annual",
@@ -107,6 +107,14 @@ export const PLANS: Record<PlanTier, PlanDetails> = {
   },
 };
 
+export interface UsageWarning {
+  resource: "monitors" | "alertChannels" | "statusPages";
+  label: string;
+  used: number;
+  limit: number;
+  percentage: number;
+}
+
 export interface UsageSummary {
   monitorsUsed: number;
   monitorsLimit: number;
@@ -117,4 +125,8 @@ export interface UsageSummary {
   monthlyChecksCount: number;
   plan: PlanTier;
   limits: PlanLimits;
+  isApproachingLimit: boolean;
+  warnings: UsageWarning[];
+  isTrialActive?: boolean;
+  trialDaysRemaining?: number;
 }

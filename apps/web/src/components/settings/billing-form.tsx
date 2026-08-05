@@ -1,7 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Check, CreditCard, ExternalLink, Moon, Zap, ShieldCheck, Loader2 } from "lucide-react";
+import {
+  Check,
+  CreditCard,
+  ExternalLink,
+  Moon,
+  Zap,
+  ShieldCheck,
+  Loader2,
+  Tag,
+} from "lucide-react";
 import { PLANS, type PlanTier, type UsageSummary } from "@/lib/billing";
 import { toast } from "sonner";
 
@@ -13,6 +22,8 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("annual");
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [loadingPortal, setLoadingPortal] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
 
   const usage = initialUsage || {
     monitorsUsed: 3,
@@ -24,12 +35,16 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
     monthlyChecksCount: 14280,
     plan: "INITIATE" as PlanTier,
     limits: PLANS.INITIATE.limits,
+    isApproachingLimit: false,
+    warnings: [],
+    isTrialActive: true,
+    trialDaysRemaining: 14,
   };
 
   const currentPlan = PLANS[usage.plan] || PLANS.INITIATE;
 
   const handleCheckout = async (planTier: PlanTier) => {
-    if (planTier === usage.plan) {
+    if (planTier === usage.plan && !usage.isTrialActive) {
       toast.info("You are currently subscribed to this plan.");
       return;
     }
@@ -39,7 +54,11 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
       const res = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan: planTier, interval: billingCycle }),
+        body: JSON.stringify({
+          plan: planTier,
+          interval: billingCycle,
+          promoCode: appliedPromo || promoCode.trim() || undefined,
+        }),
       });
 
       const data = (await res.json()) as { url?: string; error?: string };
@@ -79,6 +98,31 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
 
   return (
     <div className="space-y-8">
+      {/* 14-Day Pro Trial Active Banner */}
+      {usage.isTrialActive && (
+        <div className="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-cyan-950/20 p-5 backdrop-blur-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+              <Zap className="h-5 w-5 animate-pulse" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-bold text-cyan-200">
+                  14-Day Netrunner Pro Trial Active
+                </h3>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                  {usage.trialDaysRemaining ?? 14} DAYS REMAINING
+                </span>
+              </div>
+              <p className="text-xs text-slate-300 mt-0.5">
+                Enjoy full Netrunner Pro telemetry checks, zero false alarms, and multi-region
+                monitoring.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Current Plan Overview Banner */}
       <div className="relative overflow-hidden rounded-xl border border-emerald-500/20 bg-emerald-950/10 p-6 backdrop-blur-sm">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -179,6 +223,38 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
         </div>
       </div>
 
+      {/* Coupon / Promo Code Card */}
+      <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <Tag className="size-4 text-cyan-400" />
+          <span className="text-xs font-semibold text-slate-200">
+            {appliedPromo
+              ? `Promo code "${appliedPromo}" applied!`
+              : "Have a Coupon or Promo Code?"}
+          </span>
+        </div>
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <input
+            type="text"
+            placeholder="e.g. INDIE50"
+            value={promoCode}
+            onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+            className="bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50 uppercase font-mono w-full sm:w-36"
+          />
+          <button
+            type="button"
+            onClick={() => {
+              if (!promoCode.trim()) return;
+              setAppliedPromo(promoCode.trim());
+              toast.success(`Promo code "${promoCode.trim()}" applied for checkout!`);
+            }}
+            className="px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-semibold hover:bg-cyan-500/20 transition-all shrink-0 cursor-pointer"
+          >
+            Apply Code
+          </button>
+        </div>
+      </div>
+
       {/* Pricing Header & Cycle Toggle */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
         <div>
@@ -213,7 +289,7 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
           >
             Annual Billing
             <span className="px-1.5 py-0.5 rounded text-[10px] uppercase font-mono font-bold bg-slate-950 text-emerald-400">
-              Save 17%
+              Save 20% OFF
             </span>
           </button>
         </div>
@@ -273,8 +349,8 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
                   {billingCycle === "annual" && plan.monthlyPrice > 0 && (
                     <span className="text-[10px] text-emerald-400/90 font-mono font-bold uppercase tracking-wider">
                       {tierKey === "NETRUNNER"
-                        ? "Billed annually ($140) — Save $28"
-                        : "Billed annually ($690) — Save $138"}
+                        ? "Billed $134.40 annually — Save $33.60/yr"
+                        : "Billed $662.40 annually — Save $165.60/yr"}
                     </span>
                   )}
                 </div>
@@ -313,6 +389,12 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
             </div>
           );
         })}
+      </div>
+
+      {/* Stripe Tax & VAT/GST Compliance Footer Badge */}
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-slate-400 font-mono text-[11px] pt-4 border-t border-slate-800/60">
+        <ShieldCheck className="size-4 text-emerald-400 shrink-0" />
+        <span>Automated VAT/GST & Stripe Tax compliance enabled for all international regions</span>
       </div>
     </div>
   );

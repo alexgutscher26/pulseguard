@@ -18,6 +18,7 @@ import {
   ArrowDown,
   ShieldCheck,
   Heart,
+  Lock,
 } from "lucide-react";
 import Link from "next/link";
 import { createMonitor, updateMonitor } from "@/actions/monitors";
@@ -26,6 +27,7 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { RegionSelector } from "./region-selector";
+import type { UsageSummary } from "@/lib/billing";
 
 const initialState = {
   success: false,
@@ -52,9 +54,10 @@ interface MonitorFormProps {
     heartbeatToken?: string | null;
     tags?: string[];
   };
+  usageSummary?: UsageSummary;
 }
 
-export function MonitorForm({ monitor }: MonitorFormProps) {
+export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
   const searchParams = useSearchParams();
   const typeParam = searchParams.get("type")?.toUpperCase() as
     | "HTTP"
@@ -303,6 +306,9 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
     }
   }, [state, router, monitor]);
 
+  const isQuotaExceeded =
+    !monitor && Boolean(usageSummary && usageSummary.monitorsUsed >= usageSummary.monitorsLimit);
+
   return (
     <div className="max-w-2xl mx-auto flex flex-col gap-6">
       <div className="flex flex-col gap-1.5 px-1">
@@ -316,6 +322,30 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
             : "Configure a new endpoint for continuous global verification"}
         </p>
       </div>
+
+      {isQuotaExceeded && (
+        <div className="rounded-xl border border-red-500/30 bg-red-950/20 p-4 backdrop-blur-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-red-500/10 text-red-400 border border-red-500/30">
+              <Lock className="h-5 w-5" />
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-red-200">Monitor Quota Limit Reached</h4>
+              <p className="text-xs text-zinc-300 mt-0.5">
+                You have used {usageSummary?.monitorsUsed} of {usageSummary?.monitorsLimit} monitors
+                on your {usageSummary?.plan} plan. Hard limits block creating new monitors until you
+                upgrade.
+              </p>
+            </div>
+          </div>
+          <Link
+            href={"/dashboard/settings?tab=billing" as any}
+            className="inline-flex items-center gap-1.5 rounded-lg bg-red-500/20 border border-red-500/40 px-3 py-1.5 text-xs font-semibold text-red-200 hover:bg-red-500/30 transition-all shrink-0"
+          >
+            Upgrade Plan
+          </Link>
+        </div>
+      )}
 
       <form
         action={formAction}
@@ -1517,7 +1547,7 @@ export function MonitorForm({ monitor }: MonitorFormProps) {
             </Link>
             <button
               type="submit"
-              disabled={isPending}
+              disabled={isPending || isQuotaExceeded}
               className="px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/95 text-xs font-bold rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
             >
               {isPending ? (

@@ -64,12 +64,14 @@ export async function createCheckoutSession({
   plan,
   interval,
   returnUrl,
+  promoCode,
 }: {
   userId: string;
   email: string;
   plan: PlanTier;
   interval: "monthly" | "annual";
   returnUrl: string;
+  promoCode?: string;
 }): Promise<{ url: string }> {
   const customerId = await getOrCreateStripeCustomer(userId, email);
   const planDetails = PLANS[plan];
@@ -78,9 +80,13 @@ export async function createCheckoutSession({
     interval === "annual" ? planDetails.stripePriceIdAnnual : planDetails.stripePriceIdMonthly;
 
   if (process.env.STRIPE_SECRET_KEY && !process.env.STRIPE_SECRET_KEY.includes("mock")) {
-    const session = await stripe.checkout.sessions.create({
+    const sessionParams: Stripe.Checkout.SessionCreateParams = {
       customer: customerId,
       payment_method_types: ["card"],
+      allow_promotion_codes: true,
+      automatic_tax: { enabled: true },
+      tax_id_collection: { enabled: true },
+      customer_update: { name: "auto", address: "auto" },
       line_items: [
         {
           price: priceId,
@@ -94,15 +100,22 @@ export async function createCheckoutSession({
         userId,
         plan,
         interval,
+        promoCode: promoCode || "",
       },
-    });
+    };
 
+    if (promoCode) {
+      sessionParams.discounts = [{ coupon: promoCode }];
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionParams);
     return { url: session.url || returnUrl };
   }
 
   // Fallback demo/mock mode response when STRIPE_SECRET_KEY is not configured
+  const promoQuery = promoCode ? `&promo_code=${encodeURIComponent(promoCode)}` : "";
   return {
-    url: `${returnUrl}?mock_checkout=true&plan=${plan}&interval=${interval}`,
+    url: `${returnUrl}?mock_checkout=true&plan=${plan}&interval=${interval}${promoQuery}`,
   };
 }
 

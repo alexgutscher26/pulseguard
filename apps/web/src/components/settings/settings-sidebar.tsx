@@ -12,12 +12,14 @@ import {
   CreditCard,
   PanelLeftClose,
   PanelLeftOpen,
+  Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const items = [
   { name: "General", icon: User, tab: "general" },
   { name: "Billing", icon: CreditCard, tab: "billing" },
+  // { name: "Affiliate & Referrals", icon: Users, tab: "referrals" },
   { name: "Security", icon: Shield, tab: "security" },
   { name: "API Keys", icon: Key, tab: "api-keys" },
   { name: "Migration & Export", icon: Download, tab: "migration" },

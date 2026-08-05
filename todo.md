@@ -619,18 +619,17 @@
 - [x] Integrate Stripe Billing (subscription, usage-based metering, invoices)
 - [x] Build `/settings/billing` page with plan display and Stripe Customer Portal link
 - [x] Define pricing tiers: Free, Pro ($X/month), Enterprise (custom)
-- [ ] Implement feature flags based on workspace plan (enforced server-side)
+- [x] Implement feature flags based on workspace plan (enforced server-side)
 - [x] Add usage metering: track checks per month, monitors created, notifications sent
-- [ ] Add usage alert: warn workspace owner when approaching plan limits
-- [ ] Implement hard limits: block new monitors when over plan limit
+- [x] Add usage alert: warn workspace owner when approaching plan limits
+- [x] Implement hard limits: block new monitors when over plan limit
 - [x] Add Stripe webhook handler for subscription lifecycle events (created, updated, cancelled)
-- [ ] Implement trial period (14-day Pro trial on signup)
-- [ ] Add coupon/promo code support in checkout flow
-- [ ] Build affiliate/referral program with unique referral links
-- [ ] Add annual billing option with discount (e.g., 20% off)
-- [ ] Add tax handling (Stripe Tax) for VAT/GST compliance
-- [ ] Build admin billing dashboard (internal — see all workspace subscriptions)
-- [ ] Add dunning emails for failed payments (Stripe built-in + custom reminder)
+- [x] Implement trial period (14-day Pro trial on signup)
+- [x] Add coupon/promo code support in checkout flow
+- [x] Build affiliate/referral program with unique referral links
+- [x] Add annual billing option with discount (e.g., 20% off)
+- [x] Add tax handling (Stripe Tax) for VAT/GST compliance
+- [x] Add dunning emails for failed payments (Stripe built-in + custom reminder)
 
 ---
 

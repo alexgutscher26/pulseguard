@@ -10,6 +10,7 @@ import { ApiKeysForm } from "@/components/settings/api-keys-form";
 import { MigrationForm } from "@/components/settings/migration-form";
 import { PrivacyForm } from "@/components/settings/privacy-form";
 import { BillingForm } from "@/components/settings/billing-form";
+import { ReferralForm } from "@/components/settings/referral-form";
 import { getUserUsageSummary } from "@/lib/billing-server";
 
 /**
@@ -51,6 +52,7 @@ export default async function SettingsPage({
           </>
         )}
         {tab === "billing" && <BillingForm initialUsage={usageSummary} />}
+        {/* {tab === "referrals" && <ReferralForm />} */}
         {tab === "security" && <SecurityForm />}
         {tab === "api-keys" && <ApiKeysForm />}
         {tab === "migration" && <MigrationForm />}

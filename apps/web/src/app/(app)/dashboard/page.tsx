@@ -4,16 +4,11 @@ import { redirect } from "next/navigation";
 
 import { getDashboardStats, getMonitors, getMonitorInsights } from "@/actions/monitors";
 import { getOnboardingStatus } from "@/actions/onboarding";
+import { getUserUsageSummary } from "@/lib/billing-server";
 import DashboardClient from "./dashboard-client";
 
 /**
  * Renders the Dashboard page after validating the user session.
- *
- * This function retrieves the user session using the auth.api.getSession method,
- * passing the necessary headers. If the session does not contain a user, it redirects
- * the user to the login page. If the session is valid, it fetches monitors and
- * dashboard statistics concurrently, then returns the Dashboard component with the
- * retrieved data.
  */
 export default async function DashboardPage() {
   const session = await auth.api.getSession({
@@ -24,11 +19,12 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const [monitors, stats, insights, onboardingStatus] = await Promise.all([
+  const [monitors, stats, insights, onboardingStatus, usageSummary] = await Promise.all([
     getMonitors(),
     getDashboardStats(),
     getMonitorInsights(),
     getOnboardingStatus(),
+    getUserUsageSummary(session.user.id),
   ]);
 
   return (
@@ -37,6 +33,7 @@ export default async function DashboardPage() {
       stats={stats}
       insights={insights}
       onboardingStatus={onboardingStatus}
+      usageSummary={usageSummary}
     />
   );
 }

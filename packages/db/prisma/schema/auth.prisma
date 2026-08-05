@@ -21,6 +21,8 @@ model User {
   privacy              UserPrivacy?
   integrations         UserIntegration[]
   subscription         Subscription?
+  referralCode         ReferralCode?
+  referredBy           Referral?             @relation("ReferredUser")
 
 
   @@unique([email])
