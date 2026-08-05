@@ -398,10 +398,10 @@
 
 ### Onboarding & Marketing
 
-- [ ] Build interactive onboarding checklist (create monitor → set alert → share status page)
+- [x] Build interactive onboarding checklist (create monitor → set alert → share status page)
 - [ ] Add product demo mode with pre-seeded data (no signup required to explore)
-- [ ] Improve landing page hero with animated monitor status visualization
-- [ ] Add feature comparison table: PulseGuard vs UptimeRobot vs Checkly vs Better Uptime
+- [x] Improve landing page hero with animated monitor status visualization
+- [x] Add feature comparison table: PulseGuard vs UptimeRobot vs Checkly vs Better Uptime
 - [ ] Add "Testimonials" section with customer quotes and logos
 - [ ] Add pricing page with feature matrix and FAQ
 - [ ] Add use-case pages: DevOps, E-commerce, SaaS, API Monitoring
@@ -489,11 +489,11 @@
 
 ### Web Performance
 
-- [X] Run Lighthouse CI in GitHub Actions and enforce performance budget (LCP < 2.5s)
-- [X] Optimize largest contentful paint on the landing page
-- [X] Add `next/image` optimization for all images (lazy loading, WebP/AVIF)
+- [x] Run Lighthouse CI in GitHub Actions and enforce performance budget (LCP < 2.5s)
+- [x] Optimize largest contentful paint on the landing page
+- [x] Add `next/image` optimization for all images (lazy loading, WebP/AVIF)
 - [ ] Implement route-based code splitting for all dashboard routes
-- [X] Add `<Suspense>` boundaries around all data-fetching components
+- [x] Add `<Suspense>` boundaries around all data-fetching components
 - [x] Audit and remove unused dependencies from `apps/web/package.json`
 - [x] Enable Turbopack for faster local dev builds
 - [x] Add `prefetch` links for likely next navigations (monitors list → detail)

@@ -229,7 +229,7 @@ export function IntervalComparison() {
           color={intervalComparison.pulseguard.color}
           isPulseguard={true}
         />
-        {intervalComparison.competitors.map((c) => (
+        {intervalComparison.competitors.map((c: any) => (
           <IntervalBar
             key={c.label}
             label={c.label}
@@ -254,7 +254,8 @@ export function IntervalComparison() {
 export function DowntimeComparison() {
   const [activeScenario, setActiveScenario] = useState(downtimeScenarios[0].name);
 
-  const scenario = downtimeScenarios.find((s) => s.name === activeScenario) ?? downtimeScenarios[0];
+  const scenario =
+    downtimeScenarios.find((s: any) => s.name === activeScenario) ?? downtimeScenarios[0];
 
   return (
     <div className="flex flex-col gap-4">
@@ -267,7 +268,7 @@ export function DowntimeComparison() {
 
       {/* Scenario Selector */}
       <div className="flex gap-2 flex-wrap">
-        {downtimeScenarios.map((s) => (
+        {downtimeScenarios.map((s: any) => (
           <button
             key={s.name}
             onClick={() => setActiveScenario(s.name)}
@@ -394,9 +395,15 @@ export function FeatureComparisonTable() {
                   <td className="py-2.5 px-3 text-center bg-primary/[0.03] border-x border-border/20">
                     {renderCell(feature.pulseguard)}
                   </td>
-                  <td className="py-2.5 px-3 text-center">{renderCell(feature.competitor1)}</td>
-                  <td className="py-2.5 px-3 text-center">{renderCell(feature.competitor2)}</td>
-                  <td className="py-2.5 px-3 text-center">{renderCell(feature.competitor3)}</td>
+                  <td className="py-2.5 px-3 text-center">
+                    {renderCell(feature.competitor1 ?? false)}
+                  </td>
+                  <td className="py-2.5 px-3 text-center">
+                    {renderCell(feature.competitor2 ?? false)}
+                  </td>
+                  <td className="py-2.5 px-3 text-center">
+                    {renderCell(feature.competitor3 ?? false)}
+                  </td>
                 </tr>
               );
             })}

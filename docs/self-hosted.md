@@ -70,22 +70,22 @@ nano .env.production
 
 ### Required Variables
 
-| Variable                | Example                                           | Notes                                |
-| ----------------------- | ------------------------------------------------- | ------------------------------------ |
-| `DATABASE_URL`          | `postgresql://pg:secret@postgres:5432/pulseguard` | Internal Docker hostname `postgres`  |
-| `DIRECT_URL`            | same as above                                     | Used for migrations                  |
-| `BETTER_AUTH_SECRET`    | `$(openssl rand -hex 32)`                         | Generate with `openssl rand -hex 32` |
-| `BETTER_AUTH_URL`       | `https://pulseguard.yourdomain.com`               | Your public domain                   |
-| `NEXT_PUBLIC_APP_URL`   | `https://pulseguard.yourdomain.com`               | Must match `BETTER_AUTH_URL`         |
-| `CORS_ORIGIN`           | `https://pulseguard.yourdomain.com`               | Same domain                          |
+| Variable              | Example                                           | Notes                                |
+| --------------------- | ------------------------------------------------- | ------------------------------------ |
+| `DATABASE_URL`        | `postgresql://pg:secret@postgres:5432/pulseguard` | Internal Docker hostname `postgres`  |
+| `DIRECT_URL`          | same as above                                     | Used for migrations                  |
+| `BETTER_AUTH_SECRET`  | `$(openssl rand -hex 32)`                         | Generate with `openssl rand -hex 32` |
+| `BETTER_AUTH_URL`     | `https://pulseguard.yourdomain.com`               | Your public domain                   |
+| `NEXT_PUBLIC_APP_URL` | `https://pulseguard.yourdomain.com`               | Must match `BETTER_AUTH_URL`         |
+| `CORS_ORIGIN`         | `https://pulseguard.yourdomain.com`               | Same domain                          |
 
 If you run the optional private probe (`docker-compose.prod.yml` ships the `probe` service):
 
-| Variable                  | Example                                     | Notes                                     |
-| ------------------------- | ------------------------------------------- | ----------------------------------------- |
-| `PULSEGUARD_API_URL`      | `https://worker.yourdomain.com`             | Your PulseGuard Worker URL                |
-| `PULSEGUARD_PROBE_TOKEN`  | `$(openssl rand -hex 32)`                   | Must match the token your Worker accepts  |
-| `PROBE_REGION`            | `self-hosted`                               | Label shown in the dashboard              |
+| Variable                 | Example                         | Notes                                    |
+| ------------------------ | ------------------------------- | ---------------------------------------- |
+| `PULSEGUARD_API_URL`     | `https://worker.yourdomain.com` | Your PulseGuard Worker URL               |
+| `PULSEGUARD_PROBE_TOKEN` | `$(openssl rand -hex 32)`       | Must match the token your Worker accepts |
+| `PROBE_REGION`           | `self-hosted`                   | Label shown in the dashboard             |
 
 Generate secrets:
 

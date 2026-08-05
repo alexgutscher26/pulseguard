@@ -4,7 +4,7 @@ export type CompetitorFeature = {
   competitor1: string | boolean;
   competitor2: string | boolean;
   competitor3: string | boolean;
-  isBattle: boolean;
+  isBattle?: boolean;
 };
 
 export type CompetitorInfo = {
@@ -12,157 +12,190 @@ export type CompetitorInfo = {
   name: string;
   url: string;
   description: string;
+  badge?: string;
+  isPrimary?: boolean;
+};
+
+export type FeatureComparisonItem = {
+  category: string;
+  name: string;
+  description?: string;
+  pulseguard: string | boolean;
+  uptimerobot: string | boolean;
+  checkly: string | boolean;
+  betteruptime: string | boolean;
+  isBattle?: boolean;
+  competitor1?: string | boolean;
+  competitor2?: string | boolean;
+  competitor3?: string | boolean;
 };
 
 export const competitors: CompetitorInfo[] = [
   {
+    id: "pulseguard",
+    name: "PulseGuard",
+    url: "https://pulseguard.io",
+    description: "Cloudflare edge-native monitoring with 1-min checks and zero false positives.",
+    badge: "Recommended",
+    isPrimary: true,
+  },
+  {
     id: "uptimerobot",
     name: "UptimeRobot",
     url: "https://uptimerobot.com",
-    description: "The incumbent — popular but stuck at 5-minute free checks since 2015.",
+    description: "The legacy provider — popular but stuck at 5-minute free checks.",
+  },
+  {
+    id: "checkly",
+    name: "Checkly",
+    url: "https://checklyhq.com",
+    description: "API & Playwright synthetic monitoring focused on developer workflows.",
   },
   {
     id: "betteruptime",
     name: "Better Uptime",
     url: "https://betteruptime.com",
-    description:
-      "Modern competitor with solid UX, but free tier still limited to 5-minute intervals.",
-  },
-  {
-    id: "openstatus",
-    name: "OpenStatus",
-    url: "https://openstatus.dev",
-    description: "Open-source alternative with 1-minute free checks, but limited global regions.",
+    description: "Modern incident management UI, but expensive for multi-region scale.",
   },
 ];
 
-export const featureComparisons: CompetitorFeature[] = [
+export const featureComparisons: FeatureComparisonItem[] = [
   {
-    name: "Free Tier Check Interval",
+    category: "Core Monitoring",
+    name: "Free Check Interval",
+    description: "Frequency of synthetic ping & health checks on free plan",
     pulseguard: "1 minute",
+    uptimerobot: "5 minutes",
+    checkly: "10 minutes",
+    betteruptime: "5 minutes",
     competitor1: "5 minutes",
     competitor2: "5 minutes",
     competitor3: "1 minute",
     isBattle: true,
   },
   {
-    name: "Free Tier Monitor Limit",
+    category: "Core Monitoring",
+    name: "Free Monitor Limit",
+    description: "Number of active monitors allowed without paying",
     pulseguard: "50",
+    uptimerobot: "50",
+    checkly: "10",
+    betteruptime: "10",
     competitor1: "50",
     competitor2: "10",
     competitor3: "Unlimited",
     isBattle: false,
   },
   {
+    category: "Core Monitoring",
     name: "Multi-Region Checks",
+    description: "Distribution of global probe locations for zero false positives",
     pulseguard: "50+ global regions",
+    uptimerobot: "3 regions",
+    checkly: "15 regions",
+    betteruptime: "6 regions",
     competitor1: "3 regions",
     competitor2: "6 regions",
     competitor3: "Limited",
     isBattle: false,
   },
   {
+    category: "Monitor Types",
     name: "SSL Certificate Monitoring",
     pulseguard: true,
+    uptimerobot: true,
+    checkly: true,
+    betteruptime: true,
     competitor1: true,
     competitor2: true,
     competitor3: true,
     isBattle: false,
   },
   {
+    category: "Monitor Types",
     name: "Port / TCP Monitoring",
     pulseguard: true,
+    uptimerobot: true,
+    checkly: false,
+    betteruptime: true,
     competitor1: true,
     competitor2: false,
     competitor3: true,
     isBattle: false,
   },
   {
+    category: "Monitor Types",
     name: "DNS Monitoring",
     pulseguard: true,
+    uptimerobot: false,
+    checkly: false,
+    betteruptime: true,
     competitor1: false,
     competitor2: true,
     competitor3: true,
     isBattle: false,
   },
   {
-    name: "Heartbeat / Cron Monitoring",
+    category: "Advanced Features",
+    name: "Browser / Synthetic Testing",
+    description: "Run real headless browser end-to-end user journeys",
     pulseguard: true,
+    uptimerobot: false,
+    checkly: true,
+    betteruptime: false,
     competitor1: false,
-    competitor2: true,
+    competitor2: false,
+    competitor3: false,
+    isBattle: false,
+  },
+  {
+    category: "Advanced Features",
+    name: "Private Probe Agents",
+    description: "Deploy internal probes inside private VPCs or homelabs",
+    pulseguard: true,
+    uptimerobot: false,
+    checkly: "Enterprise",
+    betteruptime: false,
+    competitor1: false,
+    competitor2: "Paid",
     competitor3: true,
     isBattle: false,
   },
   {
+    category: "Advanced Features",
+    name: "AI Root Cause Diagnosis",
+    description: "LLM-assisted stack trace & latency anomaly breakdown",
+    pulseguard: true,
+    uptimerobot: false,
+    checkly: false,
+    betteruptime: false,
+    competitor1: false,
+    competitor2: false,
+    competitor3: false,
+    isBattle: false,
+  },
+  {
+    category: "Status Pages & Alerts",
     name: "Status Page (Custom Domain)",
     pulseguard: true,
+    uptimerobot: "Paid Only",
+    checkly: "Paid Only",
+    betteruptime: true,
     competitor1: "Paid only",
     competitor2: "Paid only",
     competitor3: true,
     isBattle: false,
   },
   {
-    name: "Incident Management",
-    pulseguard: true,
-    competitor1: true,
-    competitor2: true,
-    competitor3: false,
-    isBattle: false,
-  },
-  {
+    category: "Status Pages & Alerts",
     name: "Slack / Discord Alerts",
     pulseguard: true,
+    uptimerobot: "Paid Only",
+    checkly: true,
+    betteruptime: true,
     competitor1: "Paid only",
     competitor2: true,
     competitor3: true,
-    isBattle: false,
-  },
-  {
-    name: "SMS / Phone Alerts",
-    pulseguard: "Paid",
-    competitor1: "Paid",
-    competitor2: "Paid",
-    competitor3: false,
-    isBattle: false,
-  },
-  {
-    name: "API Sequence Checks",
-    pulseguard: true,
-    competitor1: false,
-    competitor2: false,
-    competitor3: true,
-    isBattle: false,
-  },
-  {
-    name: "Browser / Synthetic Testing",
-    pulseguard: true,
-    competitor1: false,
-    competitor2: false,
-    competitor3: false,
-    isBattle: false,
-  },
-  {
-    name: "Private Probe Agents",
-    pulseguard: true,
-    competitor1: false,
-    competitor2: "Paid",
-    competitor3: true,
-    isBattle: false,
-  },
-  {
-    name: "Data Export (No Lock-In)",
-    pulseguard: true,
-    competitor1: false,
-    competitor2: false,
-    competitor3: true,
-    isBattle: false,
-  },
-  {
-    name: "Cyberpunk Aesthetic",
-    pulseguard: true,
-    competitor1: false,
-    competitor2: false,
-    competitor3: false,
     isBattle: false,
   },
 ];

@@ -538,24 +538,24 @@ export async function processBatch(
                 `[SSL Expiry Alert] Monitor ${monitor.name} certificate expires in ${daysRemaining} days (Milestone: ${matchingMilestone}d)`,
               );
 
-               await queueNotification(
-                 env,
-                 {
-                   type: NotificationType.SSL_EXPIRY,
-                   monitorId: monitor.id,
-                   monitorName: monitor.name,
-                   url: monitor.url,
-                   status: currentStatus as "UP" | "DOWN",
-                   reason: `SSL certificate expires in ${daysRemaining} days (Issuer: ${issuer || "Unknown"})`,
-                   timestamp: new Date().toISOString(),
-                   daysRemaining,
-                 },
-                 ctx,
-               );
+              await queueNotification(
+                env,
+                {
+                  type: NotificationType.SSL_EXPIRY,
+                  monitorId: monitor.id,
+                  monitorName: monitor.name,
+                  url: monitor.url,
+                  status: currentStatus as "UP" | "DOWN",
+                  reason: `SSL certificate expires in ${daysRemaining} days (Issuer: ${issuer || "Unknown"})`,
+                  timestamp: new Date().toISOString(),
+                  daysRemaining,
+                },
+                ctx,
+              );
 
-               await recordAlertSent(monitor.id, env);
+              await recordAlertSent(monitor.id, env);
 
-               if (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN) {
+              if (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN) {
                 try {
                   const setUrl = `${env.UPSTASH_REDIS_REST_URL}/set/${redisKey}/sent/EX/604800`;
                   await fetch(setUrl, {

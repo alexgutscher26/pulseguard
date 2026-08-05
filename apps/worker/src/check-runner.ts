@@ -487,10 +487,7 @@ export async function shouldSendAlert(
  * Record that an alert was sent for a monitor, updating the cooldown tracker
  * in Redis for future de-duplication.
  */
-export async function recordAlertSent(
-  monitorId: string,
-  env?: Env,
-): Promise<void> {
+export async function recordAlertSent(monitorId: string, env?: Env): Promise<void> {
   if (!env?.UPSTASH_REDIS_REST_URL || !env?.UPSTASH_REDIS_REST_TOKEN) return;
 
   try {

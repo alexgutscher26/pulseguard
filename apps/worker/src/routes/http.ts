@@ -19,12 +19,17 @@ export function getCorsHeaders(env?: Env): Record<string, string> {
     "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
     "Access-Control-Max-Age": "86400",
-    "Vary": "Origin",
+    Vary: "Origin",
   };
 }
 
 /** Build a JSON response with CORS headers applied. */
-export function json(data: unknown, status = 200, env?: Env, extraHeaders?: Record<string, string>): Response {
+export function json(
+  data: unknown,
+  status = 200,
+  env?: Env,
+  extraHeaders?: Record<string, string>,
+): Response {
   return new Response(JSON.stringify(data), {
     status,
     headers: { "Content-Type": "application/json", ...getCorsHeaders(env), ...extraHeaders },
@@ -40,7 +45,10 @@ export async function requireJsonBody(request: Request): Promise<any> {
   if (contentLength) {
     const size = Number.parseInt(contentLength, 10);
     if (!Number.isNaN(size) && size > MAX_REQUEST_BODY_SIZE) {
-      throw new AppError(413, `Request body too large. Maximum allowed size is ${MAX_REQUEST_BODY_SIZE} bytes.`);
+      throw new AppError(
+        413,
+        `Request body too large. Maximum allowed size is ${MAX_REQUEST_BODY_SIZE} bytes.`,
+      );
     }
   }
 

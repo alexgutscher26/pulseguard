@@ -832,7 +832,11 @@ export async function checkMonitor(
       latency = Date.now() - start;
 
       if (response.ok) {
-        const result = (await response.json()) as { status: "UP" | "DOWN"; latency: number; errorReason?: string };
+        const result = (await response.json()) as {
+          status: "UP" | "DOWN";
+          latency: number;
+          errorReason?: string;
+        };
         currentStatus = result.status;
         latency = result.latency;
         errorReason = result.errorReason;

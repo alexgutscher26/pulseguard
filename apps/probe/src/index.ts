@@ -33,11 +33,7 @@ async function apiPost<T>(path: string, body?: unknown): Promise<T> {
     });
   } catch (err: unknown) {
     const message =
-      err instanceof Error
-        ? err.cause != null
-          ? String(err.cause)
-          : err.message
-        : "unknown";
+      err instanceof Error ? (err.cause != null ? String(err.cause) : err.message) : "unknown";
     throw new Error(`fetch failed for ${url}: ${message}`);
   }
   if (!response.ok) {

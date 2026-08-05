@@ -48,13 +48,13 @@ Changesets should be created for:
 A typical changeset file looks like this:
 
 ```yaml
---- 
+---
 
 "@pulseguard/core": minor
 
 "@pulseguard/worker": minor
 
---- 
+---
 
 ## Added
 

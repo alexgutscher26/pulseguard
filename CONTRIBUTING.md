@@ -195,10 +195,10 @@ docs(cli): update pulse wait examples
 
 Tests are required for new behavior. Bug fixes should include a regression test when a reasonable one exists. The test stack:
 
-| Layer       | Tool                                   | Location          | Run with                                  |
-| ----------- | -------------------------------------- | ----------------- | ----------------------------------------- |
+| Layer              | Tool                             | Location                                                          | Run with                        |
+| ------------------ | -------------------------------- | ----------------------------------------------------------------- | ------------------------------- |
 | Unit / integration | Vitest (Storybook browser tests) | `apps/web` (vitest configured; `*.stories.tsx` + component tests) | `bun --cwd apps/web vitest run` |
-| E2E         | Playwright                             | `apps/e2e/tests/` | `bun --cwd apps/e2e test`                 |
+| E2E                | Playwright                       | `apps/e2e/tests/`                                                 | `bun --cwd apps/e2e test`       |
 
 ### Rules
 

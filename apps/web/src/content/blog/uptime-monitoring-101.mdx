@@ -26,13 +26,13 @@ Checks come in several flavors:
 
 Raw "up or down" is only the start. The metrics that tell you the full story:
 
-| Metric | What it measures | Why it matters |
-| ------ | ---------------- | -------------- |
-| Availability | Percentage of checks that succeeded | The headline number for SLAs and status pages |
-| Response time | Latency of each check | Slow is a failure mode too; users leave slow sites |
-| Time to detection | Delay between failure and alert | The most underrated number in monitoring |
-| Error rate | Failed checks / total checks | Spiky error rates suggest flaky infrastructure |
-| SSL expiry | Days until certificate expiry | A silent killer — no downtime, just a hard failure |
+| Metric            | What it measures                    | Why it matters                                     |
+| ----------------- | ----------------------------------- | -------------------------------------------------- |
+| Availability      | Percentage of checks that succeeded | The headline number for SLAs and status pages      |
+| Response time     | Latency of each check               | Slow is a failure mode too; users leave slow sites |
+| Time to detection | Delay between failure and alert     | The most underrated number in monitoring           |
+| Error rate        | Failed checks / total checks        | Spiky error rates suggest flaky infrastructure     |
+| SSL expiry        | Days until certificate expiry       | A silent killer — no downtime, just a hard failure |
 
 ## Check intervals: how fast is fast enough?
 
@@ -56,7 +56,7 @@ The math is brutal: with a 5-minute interval you cannot detect any outage shorte
 
 What to look for in an uptime monitoring service:
 
-- **Multi-region checks** — if all checks come from one datacenter, you only know the service is down *for that datacenter*
+- **Multi-region checks** — if all checks come from one datacenter, you only know the service is down _for that datacenter_
 - **Fast intervals on free tiers** — cheap detection is the whole point
 - **Real alerting** — webhooks, Slack, PagerDuty, SMS; not just email
 - **Public status pages** — so you can communicate during incidents without scrambling

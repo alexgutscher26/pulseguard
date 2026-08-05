@@ -80,4 +80,3 @@ export async function handleFetch(
 
   return new Response("PulseGuard Worker is Running", { status: 200 });
 }
-

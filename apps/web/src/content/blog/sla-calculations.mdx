@@ -27,13 +27,13 @@ For example, a service that was down for 45 minutes over a 30-day month has been
 
 Here's what common SLA tiers permit in downtime per month, week, and day:
 
-| SLA level | Downtime per month | Downtime per week | Downtime per day |
-| --------- | ------------------ | ----------------- | ---------------- |
-| 99% (two nines) | 7.20 hours | 1.68 hours | 14.4 minutes |
-| 99.9% (three nines) | 43.2 minutes | 10.1 minutes | 1.44 minutes |
-| 99.95% | 21.6 minutes | 5.0 minutes | 43 seconds |
-| 99.99% (four nines) | 4.32 minutes | 1.01 minutes | 8.6 seconds |
-| 99.999% (five nines) | 26 seconds | 6 seconds | 0.86 seconds |
+| SLA level            | Downtime per month | Downtime per week | Downtime per day |
+| -------------------- | ------------------ | ----------------- | ---------------- |
+| 99% (two nines)      | 7.20 hours         | 1.68 hours        | 14.4 minutes     |
+| 99.9% (three nines)  | 43.2 minutes       | 10.1 minutes      | 1.44 minutes     |
+| 99.95%               | 21.6 minutes       | 5.0 minutes       | 43 seconds       |
+| 99.99% (four nines)  | 4.32 minutes       | 1.01 minutes      | 8.6 seconds      |
+| 99.999% (five nines) | 26 seconds         | 6 seconds         | 0.86 seconds     |
 
 That table is the single most useful thing to memorize when negotiating or evaluating a vendor SLA. A "99.9% uptime guarantee" sounds impressive until you realize it allows 43 minutes of outage per month.
 
@@ -62,11 +62,11 @@ Anything else is downtime, period. If the SLA allows the vendor to declare maint
 
 When a vendor misses the SLA target, they typically issue credits based on the actual uptime achieved:
 
-| Achieved uptime | Typical credit |
-| --------------- | -------------- |
-| 99.0% – 99.9% | 10% of monthly fee |
-| 95.0% – 99.0% | 25% of monthly fee |
-| Below 95.0% | 50% of monthly fee |
+| Achieved uptime | Typical credit     |
+| --------------- | ------------------ |
+| 99.0% – 99.9%   | 10% of monthly fee |
+| 95.0% – 99.0%   | 25% of monthly fee |
+| Below 95.0%     | 50% of monthly fee |
 
 Credit calculations are usually based on the **prorated monthly fee for the affected period** — not the full subscription. If your bill is annual, make sure the credit applies to the contracted monthly equivalent.
 

@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { getDashboardStats, getMonitors, getMonitorInsights } from "@/actions/monitors";
+import { getOnboardingStatus } from "@/actions/onboarding";
 import DashboardClient from "./dashboard-client";
 
 /**
@@ -23,11 +24,19 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const [monitors, stats, insights] = await Promise.all([
+  const [monitors, stats, insights, onboardingStatus] = await Promise.all([
     getMonitors(),
     getDashboardStats(),
     getMonitorInsights(),
+    getOnboardingStatus(),
   ]);
 
-  return <DashboardClient monitors={monitors} stats={stats} insights={insights} />;
+  return (
+    <DashboardClient
+      monitors={monitors}
+      stats={stats}
+      insights={insights}
+      onboardingStatus={onboardingStatus}
+    />
+  );
 }

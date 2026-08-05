@@ -89,7 +89,10 @@ export const openApiSpec = {
                   type: "object",
                   required: ["monitors"],
                   properties: {
-                    monitors: { type: "array", items: { $ref: "#/components/schemas/MonitorSummary" } },
+                    monitors: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/MonitorSummary" },
+                    },
                   },
                 },
               },
@@ -135,7 +138,13 @@ export const openApiSpec = {
     },
     "/api/cli/monitors/{id}": {
       parameters: [
-        { name: "id", in: "path", required: true, schema: { type: "string" }, description: "Monitor ID" },
+        {
+          name: "id",
+          in: "path",
+          required: true,
+          schema: { type: "string" },
+          description: "Monitor ID",
+        },
       ],
       get: {
         tags: ["Monitors"],
@@ -210,7 +219,13 @@ export const openApiSpec = {
     },
     "/api/cli/monitors/{id}/trigger": {
       parameters: [
-        { name: "id", in: "path", required: true, schema: { type: "string" }, description: "Monitor ID" },
+        {
+          name: "id",
+          in: "path",
+          required: true,
+          schema: { type: "string" },
+          description: "Monitor ID",
+        },
       ],
       post: {
         tags: ["Monitors"],
@@ -260,7 +275,13 @@ export const openApiSpec = {
     },
     "/api/cli/monitors/{id}/wait": {
       parameters: [
-        { name: "id", in: "path", required: true, schema: { type: "string" }, description: "Monitor ID" },
+        {
+          name: "id",
+          in: "path",
+          required: true,
+          schema: { type: "string" },
+          description: "Monitor ID",
+        },
       ],
       get: {
         tags: ["Monitors"],
@@ -317,7 +338,13 @@ export const openApiSpec = {
     },
     "/api/cli/monitors/{id}/events": {
       parameters: [
-        { name: "id", in: "path", required: true, schema: { type: "string" }, description: "Monitor ID" },
+        {
+          name: "id",
+          in: "path",
+          required: true,
+          schema: { type: "string" },
+          description: "Monitor ID",
+        },
       ],
       get: {
         tags: ["Monitors"],
@@ -331,7 +358,12 @@ export const openApiSpec = {
             required: false,
             schema: { type: "integer", maximum: 500, default: 50 },
           },
-          { name: "since", in: "query", required: false, schema: { type: "string", format: "date-time" } },
+          {
+            name: "since",
+            in: "query",
+            required: false,
+            schema: { type: "string", format: "date-time" },
+          },
         ],
         responses: {
           "200": {
@@ -340,7 +372,9 @@ export const openApiSpec = {
               "application/json": {
                 schema: {
                   type: "object",
-                  properties: { events: { type: "array", items: { $ref: "#/components/schemas/MonitorEvent" } } },
+                  properties: {
+                    events: { type: "array", items: { $ref: "#/components/schemas/MonitorEvent" } },
+                  },
                 },
               },
             },
@@ -352,7 +386,13 @@ export const openApiSpec = {
     },
     "/api/cli/monitors/{id}/summary": {
       parameters: [
-        { name: "id", in: "path", required: true, schema: { type: "string" }, description: "Monitor ID" },
+        {
+          name: "id",
+          in: "path",
+          required: true,
+          schema: { type: "string" },
+          description: "Monitor ID",
+        },
       ],
       get: {
         tags: ["Monitors"],
@@ -360,7 +400,12 @@ export const openApiSpec = {
         security: [{ apiKey: [] }],
         operationId: "getMonitorSummary",
         parameters: [
-          { name: "since", in: "query", required: false, schema: { type: "string", format: "date-time" } },
+          {
+            name: "since",
+            in: "query",
+            required: false,
+            schema: { type: "string", format: "date-time" },
+          },
         ],
         responses: {
           "200": {
@@ -389,7 +434,9 @@ export const openApiSpec = {
               "application/json": {
                 schema: {
                   type: "object",
-                  properties: { keys: { type: "array", items: { $ref: "#/components/schemas/ApiKey" } } },
+                  properties: {
+                    keys: { type: "array", items: { $ref: "#/components/schemas/ApiKey" } },
+                  },
                 },
               },
             },
@@ -438,7 +485,13 @@ export const openApiSpec = {
     },
     "/api/cli/api-keys/{id}": {
       parameters: [
-        { name: "id", in: "path", required: true, schema: { type: "string" }, description: "Key ID" },
+        {
+          name: "id",
+          in: "path",
+          required: true,
+          schema: { type: "string" },
+          description: "Key ID",
+        },
       ],
       delete: {
         tags: ["API Keys"],
@@ -461,7 +514,13 @@ export const openApiSpec = {
     },
     "/api/badge/{slug}": {
       parameters: [
-        { name: "slug", in: "path", required: true, schema: { type: "string" }, description: "Status page slug" },
+        {
+          name: "slug",
+          in: "path",
+          required: true,
+          schema: { type: "string" },
+          description: "Status page slug",
+        },
       ],
       get: {
         tags: ["Status Pages"],
@@ -479,7 +538,13 @@ export const openApiSpec = {
     },
     "/api/widget/{slug}": {
       parameters: [
-        { name: "slug", in: "path", required: true, schema: { type: "string" }, description: "Status page slug" },
+        {
+          name: "slug",
+          in: "path",
+          required: true,
+          schema: { type: "string" },
+          description: "Status page slug",
+        },
       ],
       get: {
         tags: ["Status Pages"],
@@ -488,7 +553,9 @@ export const openApiSpec = {
         responses: {
           "200": {
             description: "Widget payload",
-            content: { "application/json": { schema: { type: "object", additionalProperties: true } } },
+            content: {
+              "application/json": { schema: { type: "object", additionalProperties: true } },
+            },
           },
           "404": { $ref: "#/components/responses/NotFound" },
         },
@@ -496,7 +563,13 @@ export const openApiSpec = {
     },
     "/api/widget/{slug}/status": {
       parameters: [
-        { name: "slug", in: "path", required: true, schema: { type: "string" }, description: "Status page slug" },
+        {
+          name: "slug",
+          in: "path",
+          required: true,
+          schema: { type: "string" },
+          description: "Status page slug",
+        },
       ],
       get: {
         tags: ["Status Pages"],
@@ -514,7 +587,10 @@ export const openApiSpec = {
                   type: "object",
                   properties: {
                     slug: { type: "string" },
-                    status: { type: "string", enum: ["UP", "DOWN", "DEGRADED", "MAINTENANCE", "UNKNOWN"] },
+                    status: {
+                      type: "string",
+                      enum: ["UP", "DOWN", "DEGRADED", "MAINTENANCE", "UNKNOWN"],
+                    },
                     message: { type: "string" },
                   },
                   additionalProperties: true,
@@ -529,7 +605,13 @@ export const openApiSpec = {
     },
     "/api/feeds/{slug}/rss": {
       parameters: [
-        { name: "slug", in: "path", required: true, schema: { type: "string" }, description: "Status page slug" },
+        {
+          name: "slug",
+          in: "path",
+          required: true,
+          schema: { type: "string" },
+          description: "Status page slug",
+        },
       ],
       get: {
         tags: ["Status Pages"],
@@ -546,7 +628,13 @@ export const openApiSpec = {
     },
     "/api/feeds/{slug}/atom": {
       parameters: [
-        { name: "slug", in: "path", required: true, schema: { type: "string" }, description: "Status page slug" },
+        {
+          name: "slug",
+          in: "path",
+          required: true,
+          schema: { type: "string" },
+          description: "Status page slug",
+        },
       ],
       get: {
         tags: ["Status Pages"],
@@ -595,7 +683,8 @@ export const openApiSpec = {
       apiKey: {
         type: "http",
         scheme: "bearer",
-        description: "API key (`pg_live_...`) created in the dashboard or via POST /api/cli/api-keys",
+        description:
+          "API key (`pg_live_...`) created in the dashboard or via POST /api/cli/api-keys",
       },
     },
     responses: {
@@ -634,7 +723,10 @@ export const openApiSpec = {
           id: { type: "string" },
           name: { type: "string" },
           url: { type: "string" },
-          type: { type: "string", enum: ["HTTP", "TCP", "DNS", "SSL", "HEARTBEAT", "SEQUENCE", "BGP"] },
+          type: {
+            type: "string",
+            enum: ["HTTP", "TCP", "DNS", "SSL", "HEARTBEAT", "SEQUENCE", "BGP"],
+          },
           status: { type: "string", enum: ["UP", "DOWN", "PAUSED", "UNKNOWN"] },
           interval: { type: "integer" },
           timeout: { type: "integer" },
@@ -654,8 +746,18 @@ export const openApiSpec = {
           type: { type: "string", enum: ["HTTP"], default: "HTTP" },
           interval: { type: "integer", default: 60, description: "Check interval in seconds" },
           timeout: { type: "integer", default: 10, description: "Timeout in seconds" },
-          method: { type: "string", enum: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"], default: "GET" },
-          headers: { type: "array", items: { type: "object", properties: { key: { type: "string" }, value: { type: "string" } } } },
+          method: {
+            type: "string",
+            enum: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"],
+            default: "GET",
+          },
+          headers: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: { key: { type: "string" }, value: { type: "string" } },
+            },
+          },
           body: { type: "string", description: "Request body for POST/PUT/PATCH" },
           expectation: { type: "object", additionalProperties: true },
           alertThreshold: { type: "integer", default: 1, description: "Failures before alerting" },

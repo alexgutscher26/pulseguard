@@ -13,13 +13,13 @@ Every uptime alert your monitoring tool fires is really about one of a handful o
 
 HTTP responses fall into five families:
 
-| Code range | Family | Meaning |
-| ---------- | ------ | ------- |
-| 1xx | Informational | Request received, still processing |
-| 2xx | Success | Request succeeded (200, 201, 204) |
-| 3xx | Redirection | Client must follow another URL (301, 302, 308) |
-| 4xx | Client error | The request was bad or unauthorized (400–404, 429) |
-| 5xx | Server error | Your servers failed (500, 502, 503, 504) |
+| Code range | Family        | Meaning                                            |
+| ---------- | ------------- | -------------------------------------------------- |
+| 1xx        | Informational | Request received, still processing                 |
+| 2xx        | Success       | Request succeeded (200, 201, 204)                  |
+| 3xx        | Redirection   | Client must follow another URL (301, 302, 308)     |
+| 4xx        | Client error  | The request was bad or unauthorized (400–404, 429) |
+| 5xx        | Server error  | Your servers failed (500, 502, 503, 504)           |
 
 For monitoring purposes you only care about 2xx, 3xx, 4xx, and 5xx — but the details within each family matter.
 

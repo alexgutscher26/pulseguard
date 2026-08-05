@@ -66,7 +66,6 @@ export async function verifySession(
   }
 }
 
-
 export async function verifyMonitorAccess(
   userId: string | null,
   monitorId: string,

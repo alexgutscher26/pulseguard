@@ -10,7 +10,9 @@ function checkBodySize(request: NextRequest) {
     const size = Number.parseInt(contentLength, 10);
     if (!Number.isNaN(size) && size > MAX_REQUEST_BODY_SIZE) {
       return NextResponse.json(
-        { error: `Request body too large. Maximum allowed size is ${MAX_REQUEST_BODY_SIZE} bytes.` },
+        {
+          error: `Request body too large. Maximum allowed size is ${MAX_REQUEST_BODY_SIZE} bytes.`,
+        },
         { status: 413 },
       );
     }

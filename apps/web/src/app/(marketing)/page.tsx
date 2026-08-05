@@ -3,6 +3,7 @@ import Features from "@/components/landing/features";
 import Hero from "@/components/landing/hero";
 import Pricing from "@/components/landing/pricing";
 import HowItWorks from "@/components/landing/how-it-works";
+import ComparisonTable from "@/components/landing/comparison-table";
 
 export default function LandingPage() {
   return (
@@ -10,6 +11,7 @@ export default function LandingPage() {
       <Hero />
       <Features />
       <HowItWorks />
+      <ComparisonTable />
       <Pricing />
       <FAQ />
     </>
