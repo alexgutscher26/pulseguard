@@ -399,12 +399,12 @@
 ### Onboarding & Marketing
 
 - [x] Build interactive onboarding checklist (create monitor → set alert → share status page)
-- [ ] Add product demo mode with pre-seeded data (no signup required to explore)
+- [x] Add product demo mode with pre-seeded data (no signup required to explore)
 - [x] Improve landing page hero with animated monitor status visualization
 - [x] Add feature comparison table: PulseGuard vs UptimeRobot vs Checkly vs Better Uptime
 - [ ] Add "Testimonials" section with customer quotes and logos
 - [ ] Add pricing page with feature matrix and FAQ
-- [ ] Add use-case pages: DevOps, E-commerce, SaaS, API Monitoring
+- [x] Add use-case pages: DevOps, E-commerce, SaaS, API Monitoring
 - [ ] Add integration directory page listing all supported notification channels
 - [ ] Build changelog page (public release notes with dates and categories)
 - [ ] Add cookie consent banner (GDPR compliance)

@@ -153,6 +153,8 @@ export default function LandingHeader() {
 
           {[
             { name: "Features", href: "/#features" },
+            { name: "Use Cases", href: "/use-cases" },
+            { name: "Demo", href: "/demo" },
             { name: "Pricing", href: "/#pricing" },
             { name: "Docs", href: "https://pulse-41cf5b0d.mintlify.site/introduction" },
           ].map((item) => (
