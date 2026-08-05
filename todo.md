@@ -504,10 +504,10 @@
 
 - [ ] Add Playwright E2E tests in `.github/workflows` on every PR
 - [ ] Add visual regression testing with Percy or Chromatic
-- [ ] Set up preview deployments for every PR via Cloudflare Pages preview
-- [ ] Add automated `bun audit` check in CI for dependency vulnerabilities
-- [ ] Add Trivy container scan for the Docker probe image in CI
-- [ ] Implement semantic release and auto-changelog generation
+- [x] Set up preview deployments for every PR via Cloudflare Pages preview (implemented as Cloudflare Workers preview per PR, see `.github/workflows/preview.yml`)
+- [x] Add automated `bun audit` check in CI for dependency vulnerabilities
+- [x] Add Trivy container scan for the Docker probe image in CI
+- [x] Implement semantic release and auto-changelog generation
 - [ ] Add deploy lock mechanism to prevent concurrent production deployments
 - [ ] Set up staging environment with production-mirror config
 - [ ] Add smoke tests post-deployment (verify critical endpoints respond)

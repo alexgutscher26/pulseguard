@@ -24,3 +24,31 @@ jobs:
           # Fail the build if critical vulnerabilities are found
           exit-code: "1"
           severity: "CRITICAL,HIGH"
+
+  probe-image:
+    name: Trivy — Probe Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build probe image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: apps/probe/Dockerfile
+          load: true
+          tags: pulseguard-probe:ci
+
+      - name: Run Trivy vulnerability scanner on probe image
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: "image"
+          image-ref: "pulseguard-probe:ci"
+          ignore-unfixed: true
+          format: "table"
+          # Fail the build if critical vulnerabilities are found
+          exit-code: "1"
+          severity: "CRITICAL,HIGH"

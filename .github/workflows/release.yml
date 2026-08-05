@@ -64,7 +64,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add CHANGELOG.md
           git commit -m "chore(release): update CHANGELOG for ${{ steps.version.outputs.tag }}" || echo "No changelog changes"
-          git push origin HEAD:main
+          git push origin HEAD:master
 
       # ── Build Docker images ──────────────────────────────────────────────────
       - name: Set up Docker Buildx
