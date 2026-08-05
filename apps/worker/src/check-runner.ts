@@ -4,6 +4,13 @@ import { checkHttpUniversal, checkPortUniversal } from "@pulseguard/core";
 import { CheckErrorReason, MonitorStatus as Status, MonitorType } from "./constants";
 import type { Env } from "./env";
 
+/** Base cooldown (ms) between duplicate alerts for the same monitor. */
+const ALERT_COOLDOWN_BASE = 15 * 60 * 1000;
+/** Maximum cooldown (ms) — caps exponential backoff at 1 hour. */
+const ALERT_COOLDOWN_MAX = 60 * 60 * 1000;
+/** Redis key prefix for alert cooldown tracking. */
+const ALERT_COOLDOWN_PREFIX = "alert_cooldown";
+
 export interface CheckOutcome {
   status: MonitorStatus;
   latency: number;
@@ -28,6 +35,29 @@ export async function performCheck(monitor: any, env?: Env, prisma?: any): Promi
   // If explicitly in maintenance (passed from caller), skip check
   if (monitor.status === Status.MAINTENANCE) {
     return { status: Status.MAINTENANCE, latency: 0 };
+  }
+
+  // Check for active maintenance window in the database
+  if (prisma) {
+    try {
+      const activeWindow = await prisma.maintenanceWindow.findFirst({
+        where: {
+          monitorId: monitor.id,
+          startAt: { lte: new Date() },
+          endAt: { gte: new Date() },
+        },
+      });
+
+      if (activeWindow) {
+        console.log(
+          `[Maintenance] Skipping check for ${monitor.name || monitor.id} (active maintenance window)`,
+        );
+        return { status: Status.MAINTENANCE, latency: 0 };
+      }
+    } catch (dbErr) {
+      console.error(`[Maintenance] Failed to check maintenance window for ${monitor.id}:`, dbErr);
+      // On DB failure, proceed with the check (fail-open)
+    }
   }
   if (monitor.type === MonitorType.BROWSER) {
     const { performBrowserCheck } = await import("./lib/browser-runner");
@@ -398,8 +428,12 @@ export async function performInternalRequest(
   return { status: currentStatus, latency, errorReason };
 }
 
-// Helper: Check for flapping (Rate Limiting)
-export function shouldSendAlert(monitorId: string, eventCounts: Map<string, number>): boolean {
+// Helper: Check for flapping (Rate Limiting) and alert cooldown (de-duplication)
+export async function shouldSendAlert(
+  monitorId: string,
+  eventCounts: Map<string, number>,
+  env?: Env,
+): Promise<boolean> {
   const recentEvents = eventCounts.get(monitorId) || 0;
 
   // If > 3 events in 5 mins (e.g. DOWN -> UP -> DOWN -> ...), suppress
@@ -407,7 +441,86 @@ export function shouldSendAlert(monitorId: string, eventCounts: Map<string, numb
     console.warn(`[RateLimit] Flapping detected for ${monitorId}. Suppressing alert.`);
     return false;
   }
+
+  // Redis-based cooldown de-duplication
+  if (env?.UPSTASH_REDIS_REST_URL && env?.UPSTASH_REDIS_REST_TOKEN) {
+    try {
+      const redisKey = `${ALERT_COOLDOWN_PREFIX}:${monitorId}`;
+      const redisUrl = `${env.UPSTASH_REDIS_REST_URL}/get/${redisKey}`;
+      const redisRes = await fetch(redisUrl, {
+        headers: { Authorization: `Bearer ${env.UPSTASH_REDIS_REST_TOKEN}` },
+      });
+
+      if (redisRes.ok) {
+        const redisData = (await redisRes.json()) as any;
+        if (redisData.result) {
+          const { lastAlertAt, alertCount } = JSON.parse(redisData.result) as {
+            lastAlertAt: number;
+            alertCount: number;
+          };
+
+          const elapsed = Date.now() - lastAlertAt;
+          // Exponential backoff: base cooldown * 2^(alertCount-1), capped at max
+          const cooldown = Math.min(
+            ALERT_COOLDOWN_BASE * Math.pow(2, alertCount - 1),
+            ALERT_COOLDOWN_MAX,
+          );
+
+          if (elapsed < cooldown) {
+            console.warn(
+              `[AlertDedup] Suppressing alert for ${monitorId} (cooldown: ${cooldown}ms, elapsed: ${elapsed}ms, count: ${alertCount}).`,
+            );
+            return false;
+          }
+        }
+      }
+    } catch (err) {
+      console.error(`[AlertDedup] Redis check failed for ${monitorId}:`, err);
+      // On Redis failure, allow the alert through (fail-open)
+    }
+  }
+
   return true;
+}
+
+/**
+ * Record that an alert was sent for a monitor, updating the cooldown tracker
+ * in Redis for future de-duplication.
+ */
+export async function recordAlertSent(
+  monitorId: string,
+  env?: Env,
+): Promise<void> {
+  if (!env?.UPSTASH_REDIS_REST_URL || !env?.UPSTASH_REDIS_REST_TOKEN) return;
+
+  try {
+    const redisKey = `${ALERT_COOLDOWN_PREFIX}:${monitorId}`;
+    const redisUrl = `${env.UPSTASH_REDIS_REST_URL}/get/${redisKey}`;
+    const redisRes = await fetch(redisUrl, {
+      headers: { Authorization: `Bearer ${env.UPSTASH_REDIS_REST_TOKEN}` },
+    });
+
+    let alertCount = 0;
+    if (redisRes.ok) {
+      const redisData = (await redisRes.json()) as any;
+      if (redisData.result) {
+        const parsed = JSON.parse(redisData.result) as { lastAlertAt: number; alertCount: number };
+        alertCount = parsed.alertCount;
+      }
+    }
+
+    const newValue = JSON.stringify({
+      lastAlertAt: Date.now(),
+      alertCount: alertCount + 1,
+    });
+
+    const setUrl = `${env.UPSTASH_REDIS_REST_URL}/set/${redisKey}/${encodeURIComponent(newValue)}/EX/3600`;
+    await fetch(setUrl, {
+      headers: { Authorization: `Bearer ${env.UPSTASH_REDIS_REST_TOKEN}` },
+    });
+  } catch (err) {
+    console.error(`[AlertDedup] Failed to record alert for ${monitorId}:`, err);
+  }
 }
 
 // Helper: Record latency to Aggregator DO

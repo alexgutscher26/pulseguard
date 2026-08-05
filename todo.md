@@ -7,17 +7,17 @@
 
 ## 🏆 P0 — Critical / Blockers
 
-- [ ] Set up non-root `USER` directive enforcement in Docker probe image (noted in SECURITY.md as "tracked for future releases")
-- [ ] Add DLQ (Dead Letter Queue) wrangler setup: `monitor-checks-dlq` and `notifications-dlq`
-- [ ] Fix Cloudflare Queues DLQ binding in `wrangler.jsonc` for the worker
-- [ ] Add database connection pooling (PgBouncer or Neon serverless driver) to prevent connection exhaustion under load
-- [ ] Implement proper rate limiting on all tRPC routes
-- [ ] Add `CSRF` protection to all state-mutating API routes in the web app
-- [ ] Validate that `better-auth` session tokens are properly invalidated on logout in the worker API
-- [ ] Ensure `CORS_ORIGIN` is validated strictly in the worker (no wildcard in production)
-- [ ] Add input size limits on all webhook/payload-accepting endpoints to prevent abuse
-- [ ] Implement alert de-duplication to prevent notification storms during extended outages
-- [ ] Add check to prevent monitors from running during active `MaintenanceWindow` periods
+- [x] Set up non-root `USER` directive enforcement in Docker probe image
+- [x] Add DLQ (Dead Letter Queue) wrangler setup: `monitor-checks-dlq` and `notifications-dlq`
+- [x] Fix Cloudflare Queues DLQ binding in `wrangler.jsonc` for the worker
+- [x] Add database connection pooling (PgBouncer or Neon serverless driver) to prevent connection exhaustion under load
+- [x] Implement proper rate limiting on all tRPC routes
+- [x] Add `CSRF` protection to all state-mutating API routes in the web app
+- [x] Validate that `better-auth` session tokens are properly invalidated on logout in the worker API
+- [x] Ensure `CORS_ORIGIN` is validated strictly in the worker (no wildcard in production)
+- [x] Add input size limits on all webhook/payload-accepting endpoints to prevent abuse
+- [x] Implement alert de-duplication to prevent notification storms during extended outages
+- [x] Add check to prevent monitors from running during active `MaintenanceWindow` periods
 
 ---
 

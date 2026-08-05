@@ -12,9 +12,16 @@ export function createPrisma(databaseUrl?: string) {
     throw new Error("DATABASE_URL is not set. Ensure it's provided in your environment variables.");
   }
 
+  // Prefer DATABASE_POOL_URL when available so the pool targets a connection pooler
+  // (e.g. Neon's pooled endpoint or a PgBouncer URL) rather than hitting Postgres directly.
+  // DATABASE_URL should still point to the direct connection for Prisma CLI migrations.
+  // Set DATABASE_POOL_URL in production to prevent connection exhaustion under load.
+  const poolUrl =
+    (typeof process !== "undefined" ? process.env.DATABASE_POOL_URL : undefined) || url;
+
   // Determine if SSL is needed but remove sslmode from URL to avoid conflict with explicit ssl config
-  const isSsl = url.includes("sslmode=require") || url.includes("sslmode=verify");
-  const cleanUrl = url.replace(/[?&]sslmode=[^&]+/, "");
+  const isSsl = poolUrl.includes("sslmode=require") || poolUrl.includes("sslmode=verify");
+  const cleanUrl = poolUrl.replace(/[?&]sslmode=[^&]+/, "");
 
   const poolConfig: any = {
     connectionString: cleanUrl,
@@ -27,7 +34,7 @@ export function createPrisma(databaseUrl?: string) {
     connectionTimeoutMillis: 5_000,
   };
 
-  if (isSsl || url.includes("supabase") || url.includes("neon.tech")) {
+  if (isSsl || poolUrl.includes("supabase") || poolUrl.includes("neon.tech")) {
     poolConfig.ssl = { rejectUnauthorized: false };
   }
 

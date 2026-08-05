@@ -2,9 +2,28 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { env } from "@pulseguard/env/server";
 
+const MAX_REQUEST_BODY_SIZE = 1_048_576;
+
+function checkBodySize(request: NextRequest) {
+  const contentLength = request.headers.get("content-length");
+  if (contentLength) {
+    const size = Number.parseInt(contentLength, 10);
+    if (!Number.isNaN(size) && size > MAX_REQUEST_BODY_SIZE) {
+      return NextResponse.json(
+        { error: `Request body too large. Maximum allowed size is ${MAX_REQUEST_BODY_SIZE} bytes.` },
+        { status: 413 },
+      );
+    }
+  }
+  return null;
+}
+
 // Slack Interactive Components Handler
 export async function POST(req: NextRequest) {
   try {
+    const sizeCheck = checkBodySize(req);
+    if (sizeCheck) return sizeCheck;
+
     // 1. Verify Signature
     const text = await req.text();
     const headers = req.headers;

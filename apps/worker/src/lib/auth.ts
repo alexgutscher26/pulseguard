@@ -1,6 +1,20 @@
 import { getPrisma } from "@pulseguard/db";
 import type { Env } from "../env";
 
+/**
+ * Verify a session token from an incoming request against the database.
+ *
+ * ## Session invalidation guarantee
+ *
+ * `better-auth` handles logout by **deleting** the session row from the
+ * database (`DELETE FROM "session" WHERE token = ?`). This function performs a
+ * live `findUnique` on every call — there is no local cache — so a deleted
+ * session returns `null` on the very next request. Revocation is therefore
+ * immediate and does not require a separate token-blacklist mechanism.
+ *
+ * Expiry is enforced by `expiresAt > now()`; an expired (but not yet deleted)
+ * session is treated as invalid by the same check.
+ */
 export async function verifySession(
   request: Request,
   env: Env,
@@ -24,10 +38,12 @@ export async function verifySession(
 
     const session = await prisma.session.findUnique({
       where: { token },
-      select: { userId: true, expiresAt: true },
+      // Select `token` explicitly so we can confirm the DB row matches the
+      // decoded value — defence-in-depth against URL-encoding edge cases.
+      select: { userId: true, expiresAt: true, token: true },
     });
 
-    if (session && session.expiresAt > new Date()) {
+    if (session && session.token === token && session.expiresAt > new Date()) {
       return { userId: session.userId };
     }
     return null;
@@ -49,6 +65,7 @@ export async function verifySession(
     throw err;
   }
 }
+
 
 export async function verifyMonitorAccess(
   userId: string | null,

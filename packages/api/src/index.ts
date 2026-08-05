@@ -24,4 +24,45 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
   });
 });
 
+// ─── In-memory sliding-window rate limiter ────────────────────────────────────
+// Keyed by "<userId>:<procedurePath>". Stores an array of call timestamps.
+// Per-isolate state; resets on cold-start. For cross-isolate enforcement,
+// wire in Upstash Redis when the paid plan is available.
+
+const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minute
+const RATE_LIMIT_MAX_CALLS = 100; // max calls per window per user per procedure
+
+type RateLimitStore = Map<string, number[]>;
+const g = globalThis as typeof globalThis & { __rlStore?: RateLimitStore };
+if (!g.__rlStore) g.__rlStore = new Map();
+
+const rateLimitMiddleware = t.middleware(({ ctx, path, next }) => {
+  if (!ctx.session) return next(); // unauthenticated — let protectedProcedure handle it
+
+  const userId = ctx.session.user.id;
+  const key = `${userId}:${path}`;
+  const now = Date.now();
+  const windowStart = now - RATE_LIMIT_WINDOW_MS;
+
+  const calls = (g.__rlStore!.get(key) ?? []).filter((ts) => ts > windowStart);
+  calls.push(now);
+  g.__rlStore!.set(key, calls);
+
+  if (calls.length > RATE_LIMIT_MAX_CALLS) {
+    throw new TRPCError({
+      code: "TOO_MANY_REQUESTS",
+      message: `Rate limit exceeded: ${RATE_LIMIT_MAX_CALLS} calls per minute allowed.`,
+    });
+  }
+
+  return next();
+});
+
+/**
+ * Rate-limited protected procedure.
+ * Enforces session auth + 100 req/min per user per procedure (sliding window).
+ * Use this for all state-mutating or expensive query procedures.
+ */
+export const rateLimitedProcedure = protectedProcedure.use(rateLimitMiddleware);
+
 export * from "./routers/index";

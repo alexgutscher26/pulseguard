@@ -14,6 +14,7 @@ import { performRegionalChecks, getAverageLatency } from "./services/regional-mo
 import {
   broadcastLiveEvent,
   performCheck,
+  recordAlertSent,
   recordLatencyToAggregator,
   shouldSendAlert,
 } from "./check-runner";
@@ -537,22 +538,24 @@ export async function processBatch(
                 `[SSL Expiry Alert] Monitor ${monitor.name} certificate expires in ${daysRemaining} days (Milestone: ${matchingMilestone}d)`,
               );
 
-              await queueNotification(
-                env,
-                {
-                  type: NotificationType.SSL_EXPIRY,
-                  monitorId: monitor.id,
-                  monitorName: monitor.name,
-                  url: monitor.url,
-                  status: currentStatus as "UP" | "DOWN",
-                  reason: `SSL certificate expires in ${daysRemaining} days (Issuer: ${issuer || "Unknown"})`,
-                  timestamp: new Date().toISOString(),
-                  daysRemaining,
-                },
-                ctx,
-              );
+               await queueNotification(
+                 env,
+                 {
+                   type: NotificationType.SSL_EXPIRY,
+                   monitorId: monitor.id,
+                   monitorName: monitor.name,
+                   url: monitor.url,
+                   status: currentStatus as "UP" | "DOWN",
+                   reason: `SSL certificate expires in ${daysRemaining} days (Issuer: ${issuer || "Unknown"})`,
+                   timestamp: new Date().toISOString(),
+                   daysRemaining,
+                 },
+                 ctx,
+               );
 
-              if (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN) {
+               await recordAlertSent(monitor.id, env);
+
+               if (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN) {
                 try {
                   const setUrl = `${env.UPSTASH_REDIS_REST_URL}/set/${redisKey}/sent/EX/604800`;
                   await fetch(setUrl, {
@@ -570,7 +573,7 @@ export async function processBatch(
       // --- INCIDENT MANAGEMENT ---
       if (currentStatus === Status.DOWN && !maintenanceActive) {
         const activeIncident = activeIncidentsMap.get(monitor.id);
-        const alertable = shouldSendAlert(monitor.id, eventCountsMap);
+        const alertable = await shouldSendAlert(monitor.id, eventCountsMap, env);
 
         if (!activeIncident && alertable) {
           // CREATE NEW INCIDENT
@@ -597,6 +600,8 @@ export async function processBatch(
             },
             ctx,
           );
+
+          await recordAlertSent(monitor.id, env);
         } else if (activeIncident) {
           // Still DOWN
           await incidentService.logStillDown(activeIncident.id);
@@ -622,6 +627,8 @@ export async function processBatch(
             },
             ctx,
           );
+
+          await recordAlertSent(monitor.id, env);
         } else {
           // CHECK FOR CUSTOM ALERT RULES (Latency Thresholds)
           const latencyRule = monitor.alertRules?.find(
@@ -649,6 +656,8 @@ export async function processBatch(
               },
               ctx,
             );
+
+            await recordAlertSent(monitor.id, env);
           }
         }
       }

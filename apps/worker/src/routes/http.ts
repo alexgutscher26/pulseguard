@@ -1,21 +1,49 @@
 import { AppError } from "../errors";
+import type { Env } from "../env";
 
-export const CORS_HEADERS: Record<string, string> = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
-};
+/**
+ * Build CORS headers for a response.
+ *
+ * In production the `Access-Control-Allow-Origin` is locked to the value of
+ * `env.CORS_ORIGIN`. A wildcard ("*") is only used in non-production
+ * environments where no CORS_ORIGIN is configured, preventing an accidental
+ * open-CORS posture in production.
+ */
+export function getCorsHeaders(env?: Env): Record<string, string> {
+  const origin =
+    env?.CORS_ORIGIN ||
+    (typeof process !== "undefined" && process.env.NODE_ENV !== "production" ? "*" : "null");
 
-/** Build a JSON response with CORS headers applied by default. */
-export function json(data: unknown, status = 200, extraHeaders?: Record<string, string>): Response {
+  return {
+    "Access-Control-Allow-Origin": origin,
+    "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Max-Age": "86400",
+    "Vary": "Origin",
+  };
+}
+
+/** Build a JSON response with CORS headers applied. */
+export function json(data: unknown, status = 200, env?: Env, extraHeaders?: Record<string, string>): Response {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { "Content-Type": "application/json", ...CORS_HEADERS, ...extraHeaders },
+    headers: { "Content-Type": "application/json", ...getCorsHeaders(env), ...extraHeaders },
   });
 }
 
-/** Parse a JSON request body, throwing an AppError(400) for malformed input. */
+/** Maximum allowed request body size in bytes (1 MB). */
+export const MAX_REQUEST_BODY_SIZE = 1_048_576;
+
+/** Parse a JSON request body, throwing an AppError(400) for malformed input or oversized payloads. */
 export async function requireJsonBody(request: Request): Promise<any> {
+  const contentLength = request.headers.get("content-length");
+  if (contentLength) {
+    const size = Number.parseInt(contentLength, 10);
+    if (!Number.isNaN(size) && size > MAX_REQUEST_BODY_SIZE) {
+      throw new AppError(413, `Request body too large. Maximum allowed size is ${MAX_REQUEST_BODY_SIZE} bytes.`);
+    }
+  }
+
   try {
     return await request.json();
   } catch {

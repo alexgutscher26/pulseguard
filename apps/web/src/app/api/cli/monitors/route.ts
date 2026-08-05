@@ -2,6 +2,22 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@pulseguard/db";
 import { verifyApiKey, unauthorized } from "../_lib/auth";
 
+const MAX_REQUEST_BODY_SIZE = 1_048_576;
+
+function checkBodySize(request: NextRequest) {
+  const contentLength = request.headers.get("content-length");
+  if (contentLength) {
+    const size = Number.parseInt(contentLength, 10);
+    if (!Number.isNaN(size) && size > MAX_REQUEST_BODY_SIZE) {
+      return NextResponse.json(
+        { error: `Request body too large. Maximum allowed size is ${MAX_REQUEST_BODY_SIZE} bytes.` },
+        { status: 413 },
+      );
+    }
+  }
+  return null;
+}
+
 // GET /api/cli/monitors — list all monitors
 export async function GET(req: NextRequest) {
   const user = await verifyApiKey(req);
@@ -31,6 +47,9 @@ export async function GET(req: NextRequest) {
 
 // POST /api/cli/monitors — create a monitor
 export async function POST(req: NextRequest) {
+  const sizeCheck = checkBodySize(req);
+  if (sizeCheck) return sizeCheck;
+
   const user = await verifyApiKey(req);
   if (!user) return unauthorized();
   if (!user.scopes.includes("write")) {

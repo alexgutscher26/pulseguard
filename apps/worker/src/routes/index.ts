@@ -1,6 +1,6 @@
 import type { ExecutionContext } from "@cloudflare/workers-types";
 import type { Env } from "../env";
-import { CORS_HEADERS } from "./http";
+import { getCorsHeaders } from "./http";
 import type { RouteHandler } from "./types";
 import { websocketRoute } from "./websocket";
 import { debugFetchRoute } from "./debug";
@@ -73,10 +73,11 @@ export async function handleFetch(
     if (response) return response;
   }
 
-  // CORS Preflight
+  // CORS Preflight — respond with env-scoped origin, never a wildcard in production
   if (request.method === "OPTIONS") {
-    return new Response(null, { headers: CORS_HEADERS });
+    return new Response(null, { headers: getCorsHeaders(env) });
   }
 
   return new Response("PulseGuard Worker is Running", { status: 200 });
 }
+

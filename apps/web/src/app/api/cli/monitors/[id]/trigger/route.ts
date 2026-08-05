@@ -2,6 +2,22 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@pulseguard/db";
 import { verifyApiKey, unauthorized } from "../../../_lib/auth";
 
+const MAX_REQUEST_BODY_SIZE = 1_048_576;
+
+function checkBodySize(request: NextRequest) {
+  const contentLength = request.headers.get("content-length");
+  if (contentLength) {
+    const size = Number.parseInt(contentLength, 10);
+    if (!Number.isNaN(size) && size > MAX_REQUEST_BODY_SIZE) {
+      return NextResponse.json(
+        { error: `Request body too large. Maximum allowed size is ${MAX_REQUEST_BODY_SIZE} bytes.` },
+        { status: 413 },
+      );
+    }
+  }
+  return null;
+}
+
 type Ctx = { params: Promise<{ id: string }> };
 
 /**
@@ -12,6 +28,9 @@ type Ctx = { params: Promise<{ id: string }> };
  * Uses the same HTTP check logic as the probe app, running inline in the Next.js route.
  */
 export async function POST(req: NextRequest, { params }: Ctx) {
+  const sizeCheck = checkBodySize(req);
+  if (sizeCheck) return sizeCheck;
+
   const user = await verifyApiKey(req);
   if (!user) return unauthorized();
 

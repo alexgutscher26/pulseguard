@@ -11,6 +11,8 @@
     // UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN are set as Cloudflare Secrets
     // Run: npx wrangler secret put UPSTASH_REDIS_REST_URL
     // Run: npx wrangler secret put UPSTASH_REDIS_REST_TOKEN
+    // CORS_ORIGIN must be set as a Cloudflare Secret in production — no wildcard allowed
+    // Run: npx wrangler secret put CORS_ORIGIN
     "SHARD_ID": 0,
     "TOTAL_SHARDS": 1,
   },
@@ -67,9 +69,19 @@
       "id": "433c972a19cf4eeb8318fa093548511b",
     },
   ],
-  // Queues are dormant for Free Plan (Upgrade required)
+  // ─── Cloudflare Queues (Free Plan — dormant) ─────────────────────────────
+  // Queues require a paid Cloudflare Workers plan.
+  // When upgrading, create the four queues first:
+  //
+  //   bunx wrangler queues create monitor-checks
+  //   bunx wrangler queues create monitor-checks-dlq
+  //   bunx wrangler queues create notifications
+  //   bunx wrangler queues create notifications-dlq
+  //
+  // Then un-comment the entire block below and redeploy.
   // "queues": {
   //   "producers": [
+  //     // Primary queues — used by the worker to offload excess check work
   //     {
   //       "binding": "CHECK_QUEUE",
   //       "queue": "monitor-checks"
@@ -77,9 +89,19 @@
   //     {
   //       "binding": "NOTIFICATION_QUEUE",
   //       "queue": "notifications"
+  //     },
+  //     // DLQ producer bindings — lets the worker inspect / replay dead letters
+  //     {
+  //       "binding": "MONITOR_CHECKS_DLQ",
+  //       "queue": "monitor-checks-dlq"
+  //     },
+  //     {
+  //       "binding": "NOTIFICATIONS_DLQ",
+  //       "queue": "notifications-dlq"
   //     }
   //   ],
   //   "consumers": [
+  //     // Primary consumers
   //     {
   //       "queue": "monitor-checks",
   //       "max_batch_size": 10,
@@ -93,6 +115,19 @@
   //       "max_batch_timeout": 5,
   //       "max_retries": 5,
   //       "dead_letter_queue": "notifications-dlq"
+  //     },
+  //     // DLQ consumers — log and alert on unrecoverable messages
+  //     {
+  //       "queue": "monitor-checks-dlq",
+  //       "max_batch_size": 50,
+  //       "max_batch_timeout": 30,
+  //       "max_retries": 0
+  //     },
+  //     {
+  //       "queue": "notifications-dlq",
+  //       "max_batch_size": 50,
+  //       "max_batch_timeout": 30,
+  //       "max_retries": 0
   //     }
   //   ]
   // }

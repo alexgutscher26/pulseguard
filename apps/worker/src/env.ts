@@ -12,4 +12,6 @@ export interface Env {
   DNS_CACHE?: KVNamespace;
   BROWSER?: any;
   CHAOS_ENGINEERING?: string;
+  /** Allowed CORS origin — set via wrangler secret or .dev.vars. Must not be a wildcard in production. */
+  CORS_ORIGIN?: string;
 }

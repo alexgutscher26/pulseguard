@@ -92,7 +92,7 @@ We strictly adhere to the **OWASP Top 10 (2026)** and deeply respect the supply 
 
 ### Infrastructure
 
-- **Container Hardening**: Multi-stage Docker builds (Bun build → Node 22 Alpine runtime) minimize the production image footprint. Non-root `USER` directive enforcement is tracked for future releases.
+- **Container Hardening**: Multi-stage Docker builds (Bun build → Node 22 Alpine runtime) minimize the production image footprint. The runtime stage runs as a dedicated non-root system user (`probe`, UID 1001) — root execution is explicitly dropped before the process starts.
 - **CI/CD Pipeline**: Every push to `main`/`develop` runs lint, type-check, build, and Lighthouse performance audits with security budgets.
 
 ### Data Protection
