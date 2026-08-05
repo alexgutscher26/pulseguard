@@ -2,6 +2,7 @@
  * Module 18.1: Cyber Grid - Mesh & Proxy Services
  * Highly optimized integration for proxy mesh and quantum anomaly detection.
  */
+import { ProxyError, MonitorStatus as Status } from "../constants";
 
 export interface ProxyResponse {
   status: "UP" | "DOWN";
@@ -25,7 +26,12 @@ export class ProxyMesh {
 
     if (ProxyMesh.iopsCount > ProxyMesh.MAX_IOPS) {
       console.error("[Mesh] CRITICAL: IOPS limit exceeded (5000+). Preventing cascading failure.");
-      return { status: "DOWN", latency: 0, error: "MESH_CONGESTION_FAILSAFE", source: "18-1-0" };
+      return {
+        status: Status.DOWN,
+        latency: 0,
+        error: ProxyError.MESH_CONGESTION_FAILSAFE,
+        source: "18-1-0",
+      };
     }
 
     const start = Date.now();
@@ -44,9 +50,9 @@ export class ProxyMesh {
           `[Mesh 18-1-0] Proxy returned ${response.status} — proxy unavailable, not target.`,
         );
         return {
-          status: "DOWN",
+          status: Status.DOWN,
           latency: Date.now() - start,
-          error: "PROXY_UNAVAILABLE",
+          error: ProxyError.PROXY_UNAVAILABLE,
           source: "18-1-0",
         };
       }
@@ -56,7 +62,7 @@ export class ProxyMesh {
 
       // Extract actual target status from proxy wrapper
       if (data.status && data.status.http_code >= 200 && data.status.http_code < 400) {
-        return { status: "UP", latency, source: "18-1-0" };
+        return { status: Status.UP, latency, source: "18-1-0" };
       }
 
       // If allorigins couldn't fetch at all (http_code 0 or missing), treat as proxy failure
@@ -64,20 +70,25 @@ export class ProxyMesh {
         console.warn(
           `[Mesh 18-1-0] Proxy returned http_code=0 — proxy could not reach target, skipping.`,
         );
-        return { status: "DOWN", latency, error: "PROXY_FETCH_FAILED", source: "18-1-0" };
+        return {
+          status: Status.DOWN,
+          latency,
+          error: ProxyError.PROXY_FETCH_FAILED,
+          source: "18-1-0",
+        };
       }
 
       return {
-        status: "DOWN",
+        status: Status.DOWN,
         latency,
         error: `TARGET_HTTP_${data.status?.http_code || "UNKNOWN"}`,
         source: "18-1-0",
       };
     } catch (err: any) {
       return {
-        status: "DOWN",
+        status: Status.DOWN,
         latency: Date.now() - start,
-        error: err.name === "TimeoutError" ? "MESH_TIMEOUT" : err.message,
+        error: err.name === "TimeoutError" ? ProxyError.MESH_TIMEOUT : err.message,
         source: "18-1-0",
       };
     }
@@ -91,7 +102,12 @@ export class ProxyMesh {
     this.incrementIOPS();
 
     if (ProxyMesh.iopsCount > ProxyMesh.MAX_IOPS) {
-      return { status: "DOWN", latency: 0, error: "MESH_CONGESTION_FAILSAFE", source: "18-1-1" };
+      return {
+        status: Status.DOWN,
+        latency: 0,
+        error: ProxyError.MESH_CONGESTION_FAILSAFE,
+        source: "18-1-1",
+      };
     }
 
     const start = Date.now();
@@ -105,15 +121,15 @@ export class ProxyMesh {
 
       const latency = Date.now() - start;
       if (response.ok) {
-        return { status: "UP", latency, source: "18-1-1" };
+        return { status: Status.UP, latency, source: "18-1-1" };
       }
 
-      return { status: "DOWN", latency, error: `HTTP_${response.status}`, source: "18-1-1" };
+      return { status: Status.DOWN, latency, error: `HTTP_${response.status}`, source: "18-1-1" };
     } catch (err: any) {
       return {
-        status: "DOWN",
+        status: Status.DOWN,
         latency: Date.now() - start,
-        error: err.name === "TimeoutError" ? "MESH_TIMEOUT" : err.message,
+        error: err.name === "TimeoutError" ? ProxyError.MESH_TIMEOUT : err.message,
         source: "18-1-1",
       };
     }
@@ -133,7 +149,12 @@ export class ProxyMesh {
     // Strict 1000 IOPS check for Cluster Grid as per requirement 19-3-1
     if (ProxyMesh.iopsCount > 1000) {
       console.warn("[Mesh] GRID PEAK: IOPS limit (1000) reached for 19-3-1.");
-      return { status: "DOWN", latency: 0, error: "GRID_CONGESTION_FAILSAFE", source: "19-3-1" };
+      return {
+        status: Status.DOWN,
+        latency: 0,
+        error: ProxyError.GRID_CONGESTION_FAILSAFE,
+        source: "19-3-1",
+      };
     }
 
     const start = Date.now();
@@ -148,20 +169,20 @@ export class ProxyMesh {
       const anomaly = QuantumAnomalyDetector.detect(latency, historicalLatencies);
 
       if (response.ok) {
-        return { status: "UP", latency, source: "19-3-1", anomaly };
+        return { status: Status.UP, latency, source: "19-3-1", anomaly };
       }
 
       return {
-        status: "DOWN",
+        status: Status.DOWN,
         latency,
         error: `CLUSTER_HTTP_${response.status}`,
         source: "19-3-1",
       };
     } catch (err: any) {
       return {
-        status: "DOWN",
+        status: Status.DOWN,
         latency: Date.now() - start,
-        error: err.name === "TimeoutError" ? "CLUSTER_TIMEOUT" : err.message,
+        error: err.name === "TimeoutError" ? ProxyError.CLUSTER_TIMEOUT : err.message,
         source: "19-3-1",
       };
     }

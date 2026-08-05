@@ -1,5 +1,5 @@
 import { getPrisma } from "@pulseguard/db";
-import type { Env } from "../index";
+import type { Env } from "../env";
 
 export async function verifySession(
   request: Request,

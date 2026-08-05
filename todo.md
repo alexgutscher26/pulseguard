@@ -590,11 +590,11 @@
 
 ## 🔧 P12 — Technical Debt & Code Quality
 
-- [ ] Refactor `apps/worker/src/index.ts` (currently 87KB monolith) into separate route handlers
-- [ ] Extract notification channel implementations into separate files under `services/notifications/`
-- [ ] Standardize error handling across all worker services (use a common `AppError` class)
-- [ ] Add JSDoc comments to all exported functions in `packages/core`
-- [ ] Replace magic strings with typed enums/constants across the codebase
+- [x] Refactor `apps/worker/src/index.ts` (currently 87KB monolith) into separate route handlers
+- [x] Extract notification channel implementations into separate files under `services/notifications/`
+- [x] Standardize error handling across all worker services (use a common `AppError` class)
+- [x] Add JSDoc comments to all exported functions in `packages/core`
+- [x] Replace magic strings with typed enums/constants across the codebase
 - [x] Consolidate all environment variable access through `packages/env` (no raw `process.env` access)
 - [x] Add stricter oxlint rules (unicorn, sonarjs equivalents)
 - [x] Enable stricter TypeScript: `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`

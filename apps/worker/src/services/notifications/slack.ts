@@ -1,0 +1,163 @@
+import type { MonitorAlertData } from "@pulseguard/email";
+import { NotificationType, type NotificationTypeValue } from "../../constants";
+
+/**
+ * Sends an alert to a Slack channel based on the monitor's status.
+ *
+ * The function constructs a message payload that varies depending on the monitor's status and the type of alert.
+ * It handles different alert types such as incident creation, resolution, and high latency, and includes relevant details
+ * such as target URL, status, downtime duration, and failed regions. Finally, it sends the payload to the specified Slack
+ * webhook URL and checks for a successful response.
+ *
+ * @param url - The Slack webhook URL to send the alert to.
+ * @param data - The data containing monitor alert information.
+ * @param type - Optional type of alert (e.g., "INCIDENT_CREATED", "INCIDENT_RESOLVED", "HIGH_LATENCY").
+ * @param incidentId - Optional identifier for the incident, used for acknowledgment and resolution buttons.
+ * @throws Error If the Slack webhook request fails.
+ */
+export async function sendSlackAlert(
+  url: string,
+  data: MonitorAlertData,
+  type?: NotificationTypeValue | string,
+  incidentId?: string,
+) {
+  const isDown = data.status === "DOWN";
+
+  let headerText = isDown
+    ? "🚨 Alert: " + data.monitorName + " Unreachable"
+    : "✅ Recovery: " + data.monitorName + " Restored";
+
+  if (type === NotificationType.INCIDENT_CREATED)
+    headerText = `🔥 Incident: ${data.monitorName} is DOWN`;
+  if (type === NotificationType.INCIDENT_RESOLVED)
+    headerText = `✅ Resolved: ${data.monitorName} Recovered`;
+  if (type === NotificationType.HIGH_LATENCY) headerText = `⚠️ High Latency: ${data.monitorName}`;
+  if (type === NotificationType.SSL_EXPIRY)
+    headerText = `⚠️ SSL Expiry Warning: ${data.monitorName}`;
+
+  const payload = {
+    text: headerText,
+    blocks: [
+      {
+        type: "header",
+        text: {
+          type: "plain_text",
+          text: headerText,
+          emoji: true,
+        },
+      },
+      {
+        type: "section",
+        fields: [
+          {
+            type: "mrkdwn",
+            text: "*Target:*\n<" + data.url + "|" + data.url + ">",
+          },
+          {
+            type: "mrkdwn",
+            text: "*Status:*\n" + data.status,
+          },
+        ],
+      },
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: "*Details:* " + (data.reason || "No detail provided"),
+        },
+      },
+      ...(data.downtimeDuration
+        ? [
+            {
+              type: "section",
+              text: {
+                type: "mrkdwn",
+                text: "*Downtime:* " + data.downtimeDuration,
+              },
+            },
+          ]
+        : []),
+      ...(data.failedRegions && data.failedRegions.length > 0
+        ? [
+            {
+              type: "section",
+              text: {
+                type: "mrkdwn",
+                text: "*Failed Regions:* " + data.failedRegions.join(", "),
+              },
+            },
+          ]
+        : []),
+      {
+        type: "context",
+        elements: [
+          {
+            type: "mrkdwn",
+            text: "⏱ Detected at " + new Date(data.timestamp).toLocaleTimeString(),
+          },
+        ],
+      },
+      ...(data.runbookUrl
+        ? [
+            {
+              type: "section",
+              text: {
+                type: "mrkdwn",
+                text: "*Remediation Runbook:* <" + data.runbookUrl + "|View Runbook>",
+              },
+            },
+          ]
+        : []),
+      {
+        type: "actions",
+        elements: [
+          {
+            type: "button",
+            text: {
+              type: "plain_text",
+              text: "View Dashboard",
+            },
+            url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/monitors/` + data.monitorId,
+            style: isDown ? "danger" : "primary",
+          },
+          ...(incidentId && type === NotificationType.INCIDENT_CREATED
+            ? [
+                {
+                  type: "button",
+                  text: {
+                    type: "plain_text",
+                    text: "Acknowledge",
+                  },
+                  action_id: "acknowledge_incident",
+                  value: incidentId,
+                },
+                {
+                  type: "button",
+                  text: {
+                    type: "plain_text",
+                    text: "Resolve",
+                  },
+                  action_id: "resolve_incident",
+                  value: incidentId,
+                  style: "danger",
+                },
+              ]
+            : []),
+        ],
+      },
+    ],
+  };
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  // Consume body
+  await res.text();
+
+  if (!res.ok) {
+    throw new Error("Slack Webhook failed: " + res.status + " " + res.statusText);
+  }
+}

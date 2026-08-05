@@ -6,28 +6,24 @@ import {
   type MonitorAlertData,
   type StatusUpdateData,
 } from "@pulseguard/email";
+import { MonitorStatus as Status, NotificationType, type NotificationTypeValue } from "./constants";
+import type { Env } from "./env";
+import { runWithLimit, sendDiscordAlert, sendSlackAlert } from "./services/notifications";
 
-export interface Env {
-  CHECK_QUEUE: Queue<any>;
-  NOTIFICATION_QUEUE: Queue<any>;
-  DATABASE_URL: string;
-  RESEND_API_KEY: string;
-}
-
-interface NotificationMessage {
-  type?: "INCIDENT_CREATED" | "INCIDENT_RESOLVED" | "HIGH_LATENCY" | "SSL_EXPIRY";
-  incidentId?: string;
+export interface NotificationMessage {
+  type?: NotificationTypeValue | undefined;
+  incidentId?: string | undefined;
   monitorId: string;
   monitorName: string;
   url: string;
   status: "UP" | "DOWN";
-  latency?: number;
-  previousStatus?: "UP" | "DOWN";
+  latency?: number | undefined;
+  previousStatus?: "UP" | "DOWN" | undefined;
   timestamp: string;
-  reason?: string;
-  failedRegions?: string[];
-  runbookUrl?: string;
-  daysRemaining?: number;
+  reason?: string | undefined;
+  failedRegions?: string[] | undefined;
+  runbookUrl?: string | undefined;
+  daysRemaining?: number | undefined;
 }
 
 export default {
@@ -60,7 +56,7 @@ export default {
     const monitorMap = new Map(monitors.map((m) => [m.id, m]));
 
     // --- Pre-fetch LAST DOWN EVENTS FOR UP TRANSITIONS (to avoid N+1 queries) ---
-    const upNotifications = batch.messages.filter((msg) => msg.body.status === "UP");
+    const upNotifications = batch.messages.filter((msg) => msg.body.status === Status.UP);
     const upMonitorIds = Array.from(new Set(upNotifications.map((msg) => msg.body.monitorId)));
 
     const lastDownEventMap = new Map<string, Date>();
@@ -69,7 +65,7 @@ export default {
         by: ["monitorId"],
         where: {
           monitorId: { in: upMonitorIds },
-          status: "DOWN",
+          status: Status.DOWN,
         },
         _max: {
           timestamp: true,
@@ -88,7 +84,9 @@ export default {
       new Set(
         batch.messages
           .filter(
-            (msg) => msg.body.type === "INCIDENT_CREATED" || msg.body.type === "INCIDENT_RESOLVED",
+            (msg) =>
+              msg.body.type === NotificationType.INCIDENT_CREATED ||
+              msg.body.type === NotificationType.INCIDENT_RESOLVED,
           )
           .map((msg) => msg.body.monitorId),
       ),
@@ -136,7 +134,7 @@ export default {
           // Check if any alert rules match this notification
           const matchingRules = monitor.alertRules.filter((rule: any) => {
             // 1. Explicit LATENCY trigger
-            if (rule.trigger === "LATENCY" && notification.type === "HIGH_LATENCY") {
+            if (rule.trigger === "LATENCY" && notification.type === NotificationType.HIGH_LATENCY) {
               if (rule.threshold && notification.latency) {
                 if (rule.comparison === "GT") return notification.latency > rule.threshold;
                 if (rule.comparison === "LT") return notification.latency < rule.threshold;
@@ -147,7 +145,10 @@ export default {
             // 2. STATUS_CHANGE trigger
             if (rule.trigger === "STATUS_CHANGE") {
               // If High Latency or SSL Expiry, only alert if rule is "Any Status Change" (no specific target)
-              if (notification.type === "HIGH_LATENCY" || notification.type === "SSL_EXPIRY") {
+              if (
+                notification.type === NotificationType.HIGH_LATENCY ||
+                notification.type === NotificationType.SSL_EXPIRY
+              ) {
                 return !rule.targetStatus;
               }
 
@@ -159,7 +160,10 @@ export default {
             }
 
             // 3. SSL_EXPIRY trigger
-            if (rule.trigger === "SSL_EXPIRY" && notification.type === "SSL_EXPIRY") {
+            if (
+              rule.trigger === "SSL_EXPIRY" &&
+              notification.type === NotificationType.SSL_EXPIRY
+            ) {
               if (rule.threshold && notification.daysRemaining !== undefined) {
                 if (rule.comparison === "LT" || !rule.comparison) {
                   return notification.daysRemaining <= rule.threshold;
@@ -246,26 +250,33 @@ export default {
           // --- 2. STATUS PAGE SUBSCRIBER ALERTS ---
           // Only send if it's an incident-related event (not just high latency, unless we want to)
           if (
-            notification.type === "INCIDENT_CREATED" ||
-            notification.type === "INCIDENT_RESOLVED"
+            notification.type === NotificationType.INCIDENT_CREATED ||
+            notification.type === NotificationType.INCIDENT_RESOLVED
           ) {
             const statusPages = statusPageMap.get(notification.monitorId) || [];
 
             for (const page of statusPages) {
               const mappedStatus =
-                notification.type === "INCIDENT_CREATED" ? "INVESTIGATING" : "RESOLVED";
+                notification.type === NotificationType.INCIDENT_CREATED
+                  ? "INVESTIGATING"
+                  : "RESOLVED";
 
               const incidentTitle =
                 notification.reason ||
-                (notification.type === "INCIDENT_CREATED"
+                (notification.type === NotificationType.INCIDENT_CREATED
                   ? `${notification.monitorName} is experiencing issues`
                   : `${notification.monitorName} has recovered`);
 
               // Filter subscribers
               const subscribersToNotify = page.subscribers.filter((sub: any) => {
                 // Check preferences
-                if (notification.type === "INCIDENT_CREATED" && !sub.notifyIncidents) return false;
-                if (notification.type === "INCIDENT_RESOLVED" && !sub.notifyIncidents) return false;
+                if (notification.type === NotificationType.INCIDENT_CREATED && !sub.notifyIncidents)
+                  return false;
+                if (
+                  notification.type === NotificationType.INCIDENT_RESOLVED &&
+                  !sub.notifyIncidents
+                )
+                  return false;
 
                 // Check monitor subscription
                 const isSubscribedToMonitor = sub.monitorSubscriptions.some(
@@ -281,7 +292,7 @@ export default {
                   incidentTitle: incidentTitle,
                   incidentStatus: mappedStatus,
                   description:
-                    notification.type === "INCIDENT_CREATED"
+                    notification.type === NotificationType.INCIDENT_CREATED
                       ? `We are investigating reports of issues with ${notification.monitorName}.`
                       : `The issue with ${notification.monitorName} has been resolved.`,
                   affectedMonitors: [notification.monitorName],
@@ -319,275 +330,3 @@ export default {
     );
   },
 };
-
-// --- Discord Adapter ---
-async function sendDiscordAlert(url: string, data: MonitorAlertData, type?: string) {
-  const isDown = data.status === "DOWN";
-  let color = isDown ? 15548997 : 5763719; // #ED4245 (Red) or #57F287 (Green)
-
-  let title = isDown
-    ? "🚨 System Critical: " + data.monitorName + " is DOWN"
-    : "✅ System Recovered: " + data.monitorName + " is ONLINE";
-
-  if (type === "INCIDENT_CREATED") title = `🔥 Incident Opened: ${data.monitorName}`;
-  if (type === "INCIDENT_RESOLVED") title = `✅ Incident Resolved: ${data.monitorName}`;
-  if (type === "HIGH_LATENCY") {
-    title = `⚠️ High Latency: ${data.monitorName}`;
-    color = 16753920; // #FFA500 (Orange)
-  }
-  if (type === "SSL_EXPIRY") {
-    title = `⚠️ SSL Expiry Warning: ${data.monitorName}`;
-    color = 16753920; // #FFA500 (Orange)
-  }
-
-  const payload = {
-    username: "PulseGuard",
-    embeds: [
-      {
-        title: title,
-        description:
-          data.reason || (isDown ? "Connection timeout or error" : "Service is reachable"),
-        url: data.url,
-        color: color,
-        fields: [
-          {
-            name: "Target",
-            value: data.url,
-            inline: true,
-          },
-          {
-            name: "Timestamp",
-            value: new Date(data.timestamp).toLocaleString(),
-            inline: true,
-          },
-          ...(data.downtimeDuration
-            ? [
-                {
-                  name: "Downtime Duration",
-                  value: data.downtimeDuration,
-                  inline: true,
-                },
-              ]
-            : []),
-          ...(data.failedRegions && data.failedRegions.length > 0
-            ? [
-                {
-                  name: "Failed Regions",
-                  value: data.failedRegions.join(", "),
-                  inline: false,
-                },
-              ]
-            : []),
-          ...(data.runbookUrl
-            ? [
-                {
-                  name: "Remediation Runbook",
-                  value: `[View Runbook](${data.runbookUrl})`,
-                  inline: false,
-                },
-              ]
-            : []),
-        ],
-        footer: {
-          text: "PulseGuard Sentinel • Monitoring Infrastructure",
-        },
-        timestamp: data.timestamp,
-      },
-    ],
-  };
-
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-
-  // Consume body
-  // Consume body
-  await res.text();
-
-  if (!res.ok) {
-    throw new Error("Discord Webhook failed: " + res.status + " " + res.statusText);
-  }
-}
-
-// --- Slack Adapter ---
-/**
- * Sends an alert to a Slack channel based on the monitor's status.
- *
- * The function constructs a message payload that varies depending on the monitor's status and the type of alert.
- * It handles different alert types such as incident creation, resolution, and high latency, and includes relevant details
- * such as target URL, status, downtime duration, and failed regions. Finally, it sends the payload to the specified Slack
- * webhook URL and checks for a successful response.
- *
- * @param url - The Slack webhook URL to send the alert to.
- * @param data - The data containing monitor alert information.
- * @param type - Optional type of alert (e.g., "INCIDENT_CREATED", "INCIDENT_RESOLVED", "HIGH_LATENCY").
- * @param incidentId - Optional identifier for the incident, used for acknowledgment and resolution buttons.
- * @throws Error If the Slack webhook request fails.
- */
-async function sendSlackAlert(
-  url: string,
-  data: MonitorAlertData,
-  type?: string,
-  incidentId?: string,
-) {
-  const isDown = data.status === "DOWN";
-
-  let headerText = isDown
-    ? "🚨 Alert: " + data.monitorName + " Unreachable"
-    : "✅ Recovery: " + data.monitorName + " Restored";
-
-  if (type === "INCIDENT_CREATED") headerText = `🔥 Incident: ${data.monitorName} is DOWN`;
-  if (type === "INCIDENT_RESOLVED") headerText = `✅ Resolved: ${data.monitorName} Recovered`;
-  if (type === "HIGH_LATENCY") headerText = `⚠️ High Latency: ${data.monitorName}`;
-  if (type === "SSL_EXPIRY") headerText = `⚠️ SSL Expiry Warning: ${data.monitorName}`;
-
-  const payload = {
-    text: headerText,
-    blocks: [
-      {
-        type: "header",
-        text: {
-          type: "plain_text",
-          text: headerText,
-          emoji: true,
-        },
-      },
-      {
-        type: "section",
-        fields: [
-          {
-            type: "mrkdwn",
-            text: "*Target:*\n<" + data.url + "|" + data.url + ">",
-          },
-          {
-            type: "mrkdwn",
-            text: "*Status:*\n" + data.status,
-          },
-        ],
-      },
-      {
-        type: "section",
-        text: {
-          type: "mrkdwn",
-          text: "*Details:* " + (data.reason || "No detail provided"),
-        },
-      },
-      ...(data.downtimeDuration
-        ? [
-            {
-              type: "section",
-              text: {
-                type: "mrkdwn",
-                text: "*Downtime:* " + data.downtimeDuration,
-              },
-            },
-          ]
-        : []),
-      ...(data.failedRegions && data.failedRegions.length > 0
-        ? [
-            {
-              type: "section",
-              text: {
-                type: "mrkdwn",
-                text: "*Failed Regions:* " + data.failedRegions.join(", "),
-              },
-            },
-          ]
-        : []),
-      {
-        type: "context",
-        elements: [
-          {
-            type: "mrkdwn",
-            text: "⏱ Detected at " + new Date(data.timestamp).toLocaleTimeString(),
-          },
-        ],
-      },
-      ...(data.runbookUrl
-        ? [
-            {
-              type: "section",
-              text: {
-                type: "mrkdwn",
-                text: "*Remediation Runbook:* <" + data.runbookUrl + "|View Runbook>",
-              },
-            },
-          ]
-        : []),
-      {
-        type: "actions",
-        elements: [
-          {
-            type: "button",
-            text: {
-              type: "plain_text",
-              text: "View Dashboard",
-            },
-            url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/monitors/` + data.monitorId,
-            style: isDown ? "danger" : "primary",
-          },
-          ...(incidentId && type === "INCIDENT_CREATED"
-            ? [
-                {
-                  type: "button",
-                  text: {
-                    type: "plain_text",
-                    text: "Acknowledge",
-                  },
-                  action_id: "acknowledge_incident",
-                  value: incidentId,
-                },
-                {
-                  type: "button",
-                  text: {
-                    type: "plain_text",
-                    text: "Resolve",
-                  },
-                  action_id: "resolve_incident",
-                  value: incidentId,
-                  style: "danger",
-                },
-              ]
-            : []),
-        ],
-      },
-    ],
-  };
-
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-
-  // Consume body
-  await res.text();
-
-  if (!res.ok) {
-    throw new Error("Slack Webhook failed: " + res.status + " " + res.statusText);
-  }
-}
-
-/**
- * Executes a list of asynchronous tasks with a limit on how many run concurrently.
- */
-async function runWithLimit<T>(tasks: (() => Promise<T>)[], limit: number): Promise<T[]> {
-  const results: T[] = new Array(tasks.length);
-  let currentIndex = 0;
-
-  async function worker() {
-    while (currentIndex < tasks.length) {
-      const index = currentIndex++;
-      const task = tasks[index];
-      if (task) {
-        results[index] = await task();
-      }
-    }
-  }
-
-  const workers = Array.from({ length: Math.min(limit, tasks.length) }).map(worker);
-  await Promise.all(workers);
-  return results;
-}

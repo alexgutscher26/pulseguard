@@ -1,14 +1,16 @@
 import type { MonitorStatus } from "@pulseguard/types";
 
 /**
- * Universal port connection checker that automatically detects the runtime environment.
- * Supports:
- * - Node.js (via net.connect)
- * - Cloudflare Workers (via cloudflare:sockets)
- * - Standard fetch bypass for HTTP(S) ports 80 and 443
- */
-/**
  * Formats a detailed, developer-friendly diagnostic trace when a network socket check or fetch fails.
+ *
+ * Classifies the failure into one of several categories (timeout, DNS failure,
+ * connection refused, SSL/TLS failure, connection reset) and returns a
+ * multi-line diagnostic string describing the target, stage, and suggested
+ * remediation steps.
+ *
+ * @param err - The error object thrown by the network operation.
+ * @param target - The host:port or URL that was being checked.
+ * @returns A formatted multi-line diagnostic trace.
  */
 export function diagnoseError(err: any, target: string): string {
   const msg = err.message || "";
@@ -85,6 +87,13 @@ export function diagnoseError(err: any, target: string): string {
 
 /**
  * Formats a detailed diagnostic trace for unhealthy HTTP status codes.
+ *
+ * Provides targeted guidance for common gateway/application errors (502, 503,
+ * 504, 500, 404) and a generic template for any other unhealthy status.
+ *
+ * @param status - The HTTP status code returned by the target server.
+ * @param target - The URL that was being checked.
+ * @returns A formatted multi-line diagnostic trace.
  */
 export function diagnoseStatus(status: number, target: string): string {
   if (status === 502) {
@@ -140,6 +149,13 @@ export function diagnoseStatus(status: number, target: string): string {
  * - Node.js (via net.connect)
  * - Cloudflare Workers (via cloudflare:sockets)
  * - Standard fetch bypass for HTTP(S) ports 80 and 443
+ *
+ * @param host - The hostname or IP address to connect to.
+ * @param port - The TCP port to check.
+ * @param timeoutMs - Connection timeout in milliseconds (default 3000).
+ * @returns An object with the connection result: whether the port is open, the
+ *   measured latency in ms, the connection status ("OPEN", "CLOSED", "TIMEOUT",
+ *   "BLOCKED"), and an optional diagnostic error reason.
  */
 export async function checkPortUniversal(
   host: string,
@@ -237,6 +253,13 @@ export async function checkPortUniversal(
 
 /**
  * Universal HTTP/HTTPS request checker that handles redirect following, custom headers, and timeouts.
+ *
+ * @param urlStr - The URL to check.
+ * @param config - Request configuration: HTTP method, headers (as a JSON string
+ *   or object), request body, and timeout in seconds.
+ * @returns The check result: monitor status ("UP"|"DOWN"), latency in ms, an
+ *   optional diagnostic error reason, the response body text, and the HTTP
+ *   status code when a response was received.
  */
 export async function checkHttpUniversal(
   urlStr: string,

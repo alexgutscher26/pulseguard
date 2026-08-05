@@ -1,0 +1,502 @@
+import type { ExecutionContext } from "@cloudflare/workers-types";
+import type { MonitorStatus } from "@pulseguard/types";
+import { checkHttpUniversal, checkPortUniversal } from "@pulseguard/core";
+import { CheckErrorReason, MonitorStatus as Status, MonitorType } from "./constants";
+import type { Env } from "./env";
+
+export interface CheckOutcome {
+  status: MonitorStatus;
+  latency: number;
+  errorReason?: string | undefined;
+  daysRemaining?: number | undefined;
+  issuer?: string | undefined;
+  protocol?: string | undefined;
+  registrar?: string | undefined;
+}
+
+/**
+ * Perform a health check on a given monitor URL.
+ *
+ * The function checks the status of the URL by making an HTTP GET request, establishing a TCP connection, or sending a ping based on the URL protocol. It measures the latency and captures any error reasons if the check fails. The function handles various protocols and classifies errors into specific categories for better diagnostics. If the monitor is explicitly marked as "MAINTENANCE", the check is skipped.
+ *
+ * @param monitor - An object containing the URL to be monitored and optional timeout settings.
+ * @param env - Optional worker environment bindings (used by browser/sequence checks).
+ * @param prisma - Optional database client (used by heartbeat checks).
+ * @returns An object containing the status ("UP", "DOWN", or "MAINTENANCE"), the latency in milliseconds, and an optional error reason.
+ */
+export async function performCheck(monitor: any, env?: Env, prisma?: any): Promise<CheckOutcome> {
+  // If explicitly in maintenance (passed from caller), skip check
+  if (monitor.status === Status.MAINTENANCE) {
+    return { status: Status.MAINTENANCE, latency: 0 };
+  }
+  if (monitor.type === MonitorType.BROWSER) {
+    const { performBrowserCheck } = await import("./lib/browser-runner");
+    return performBrowserCheck(monitor, env);
+  }
+
+  if (monitor.type === MonitorType.SEQUENCE) {
+    const { performSequenceCheck } = await import("./lib/sequence-runner");
+    return performSequenceCheck(monitor, env);
+  }
+
+  if (monitor.type === MonitorType.SSL) {
+    const { checkSSL } = await import("./services/ssl-check");
+    try {
+      const startSsl = performance.now();
+      const sslResult = await checkSSL(monitor.url);
+      const sslLatency = Math.round(performance.now() - startSsl);
+
+      let currentStatus: MonitorStatus = Status.UP;
+      let errorReason: string | undefined = undefined;
+
+      if (sslResult.status !== "VALID") {
+        currentStatus = Status.DOWN;
+        errorReason = `SSL_${sslResult.status}`;
+      } else if (sslResult.protocol === "TLSv1.0" || sslResult.protocol === "TLSv1.1") {
+        currentStatus = Status.DOWN;
+        errorReason = CheckErrorReason.LEGACY_TLS_PROTOCOL;
+      }
+
+      return {
+        status: currentStatus,
+        latency: sslLatency,
+        errorReason,
+        daysRemaining: sslResult.daysRemaining,
+        issuer: sslResult.issuer,
+        protocol: sslResult.protocol,
+      };
+    } catch (e: any) {
+      return { status: Status.DOWN, latency: 0, errorReason: CheckErrorReason.SSL_CHECK_FAILED };
+    }
+  }
+
+  if (monitor.type === MonitorType.DNS) {
+    const { checkDNSWatchdog } = await import("./services/dns-watchdog");
+    try {
+      const startDns = performance.now();
+      const expected = monitor.expectation
+        ? (JSON.parse(monitor.expectation).expectedIPs as string[]) || []
+        : [];
+      const dnsResult = await checkDNSWatchdog(monitor.url, expected);
+      const dnsLatency = Math.round(performance.now() - startDns);
+
+      const isHealthy = dnsResult.anomalies.length === 0;
+      return {
+        status: isHealthy ? Status.UP : Status.DOWN,
+        latency: dnsLatency,
+        errorReason: isHealthy ? undefined : `DNS_ANOMALY: ${dnsResult.anomalies.join("; ")}`,
+      };
+    } catch (e: any) {
+      return { status: Status.DOWN, latency: 0, errorReason: CheckErrorReason.DNS_CHECK_FAILED };
+    }
+  }
+
+  if (monitor.type === MonitorType.DOMAIN) {
+    const { checkDomainExpiration } = await import("./services/domain-expiration");
+    try {
+      const startDom = performance.now();
+      const domainResult = await checkDomainExpiration(monitor.url);
+      const domLatency = Math.round(performance.now() - startDom);
+
+      return {
+        status: domainResult.isCritical ? Status.DOWN : Status.UP,
+        latency: domLatency,
+        errorReason: domainResult.isCritical
+          ? `DOMAIN_${domainResult.criticalStatuses.length > 0 ? "CRITICAL_STATUS" : "EXPIRED"}`
+          : undefined,
+        daysRemaining: domainResult.daysRemaining,
+        registrar: domainResult.registrar ?? undefined,
+      };
+    } catch (e: any) {
+      return { status: Status.DOWN, latency: 0, errorReason: CheckErrorReason.DOMAIN_CHECK_FAILED };
+    }
+  }
+
+  if (monitor.type === MonitorType.HEARTBEAT) {
+    const { checkHeartbeat } = await import("./services/heartbeat");
+    try {
+      const result = await checkHeartbeat(prisma, monitor.id, monitor.interval || 300);
+      return {
+        status: result.status,
+        latency: result.latency,
+        errorReason: result.errorReason,
+      };
+    } catch (e: any) {
+      return {
+        status: Status.DOWN,
+        latency: 0,
+        errorReason: CheckErrorReason.HEARTBEAT_CHECK_FAILED,
+      };
+    }
+  }
+
+  if (monitor.type === MonitorType.MCP) {
+    const { checkMCP } = await import("./services/mcp-sentinel");
+    try {
+      const mcpMethod = monitor.script
+        ? (JSON.parse(monitor.script).method as string) || "tools/list"
+        : "tools/list";
+      const mcpParams = monitor.script
+        ? (JSON.parse(monitor.script).params as Record<string, unknown> | undefined)
+        : undefined;
+      const mcpAssertions = monitor.expectation
+        ? (JSON.parse(monitor.expectation).assertions as any[]) || []
+        : [];
+      const result = await checkMCP(monitor.url, mcpAssertions, mcpMethod, mcpParams);
+      return {
+        status: result.status,
+        latency: result.latency,
+        errorReason: result.errorReason,
+      };
+    } catch (e: any) {
+      return { status: Status.DOWN, latency: 0, errorReason: CheckErrorReason.MCP_CHECK_FAILED };
+    }
+  }
+
+  if (monitor.type === MonitorType.GRAPHQL) {
+    const { checkGraphQL } = await import("./services/graphql-monitor");
+    try {
+      const gqlQuery = monitor.body || undefined;
+      const gqlAssertions = monitor.expectation
+        ? (JSON.parse(monitor.expectation).assertions as any[]) || []
+        : [];
+      const result = await checkGraphQL(monitor.url, gqlQuery, undefined, gqlAssertions);
+      return {
+        status: result.status,
+        latency: result.latency,
+        errorReason: result.errorReason,
+      };
+    } catch (e: any) {
+      return {
+        status: Status.DOWN,
+        latency: 0,
+        errorReason: CheckErrorReason.GRAPHQL_CHECK_FAILED,
+      };
+    }
+  }
+
+  if (monitor.type === MonitorType.WEBSOCKET) {
+    const { checkWebSocket } = await import("./services/websocket-monitor");
+    try {
+      const listenSeconds = monitor.timeout || 5;
+      const wsAssertion = monitor.expectation
+        ? (JSON.parse(monitor.expectation) as any)
+        : undefined;
+      const result = await checkWebSocket(monitor.url, listenSeconds, wsAssertion);
+      return {
+        status: result.status,
+        latency: result.latency,
+        errorReason: result.errorReason,
+      };
+    } catch (e: any) {
+      return {
+        status: Status.DOWN,
+        latency: 0,
+        errorReason: CheckErrorReason.WEBSOCKET_CHECK_FAILED,
+      };
+    }
+  }
+
+  if (monitor.type === MonitorType.DATABASE) {
+    const { checkDatabase } = await import("./services/database-monitor");
+    try {
+      const dbQuery = monitor.body || undefined;
+      const dbExpectation = monitor.expectation
+        ? (JSON.parse(monitor.expectation) as any)
+        : undefined;
+      const result = await checkDatabase(monitor.url, dbQuery, dbExpectation);
+      return {
+        status: result.status,
+        latency: result.latency,
+        errorReason: result.errorReason,
+      };
+    } catch (e: any) {
+      return {
+        status: Status.DOWN,
+        latency: 0,
+        errorReason: CheckErrorReason.DATABASE_CHECK_FAILED,
+      };
+    }
+  }
+
+  if (monitor.type === MonitorType.BGP) {
+    const { checkBGPTRoute } = await import("./services/bgp-monitor");
+    try {
+      const startBgp = performance.now();
+      const expectation = monitor.expectation
+        ? (JSON.parse(monitor.expectation) as any)
+        : undefined;
+      const result = await checkBGPTRoute(monitor.url, expectation);
+      const bgpLatency = Math.round(performance.now() - startBgp);
+
+      return {
+        status: result.status,
+        latency: bgpLatency,
+        errorReason: result.errorReason,
+      };
+    } catch (e: any) {
+      return { status: Status.DOWN, latency: 0, errorReason: CheckErrorReason.BGP_CHECK_FAILED };
+    }
+  }
+
+  const urlStr = monitor.url;
+
+  // 1. Initial Standard Check
+  let result = await performInternalRequest(monitor, urlStr);
+
+  // 2. DNS Fallback Layer: If DNS failed but we have a cached IP
+  if (
+    result.status === Status.DOWN &&
+    result.errorReason === CheckErrorReason.DNS_ERROR &&
+    env?.DNS_CACHE
+  ) {
+    try {
+      const urlObj = new URL(urlStr);
+      const hostname = urlObj.hostname;
+
+      const cachedValue = await env.DNS_CACHE.get(`dns:${hostname}`);
+      if (cachedValue) {
+        const { ip } = JSON.parse(cachedValue) as { ip: string };
+        console.warn(`[DNSFallback] DNS failed for ${hostname}. Retrying via IP ${ip}...`);
+
+        // Re-map the hostname to IP for the fetch
+        const ipUrl = urlStr.replace(hostname, ip);
+        const fallbackResult = await performInternalRequest(monitor, ipUrl, { Host: hostname });
+
+        if (fallbackResult.status === Status.UP) {
+          console.log(
+            `[DNSFallback] SUCCESS: ${hostname} reached via direct IP. False positive avoided.`,
+          );
+          return fallbackResult;
+        }
+      }
+    } catch (err) {
+      // Fallback-of-fallback failure
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Reusable core fetch/connection logic
+ */
+export async function performInternalRequest(
+  monitor: any,
+  urlStr: string,
+  extraHeaders?: Record<string, string>,
+): Promise<{ status: MonitorStatus; latency: number; errorReason?: string | undefined }> {
+  const start = performance.now();
+  let currentStatus: MonitorStatus = Status.DOWN;
+  let latency = 0;
+  let errorReason: string | undefined = undefined;
+
+  try {
+    if (urlStr.startsWith("http://") || urlStr.startsWith("https://")) {
+      const headersObj: Record<string, string> = {};
+      if (monitor.headers) {
+        try {
+          const parsed = JSON.parse(monitor.headers);
+          if (Array.isArray(parsed)) {
+            parsed.forEach((h: { key: string; value: string }) => {
+              if (h.key) headersObj[h.key] = h.value;
+            });
+          } else if (typeof parsed === "object") {
+            Object.assign(headersObj, parsed);
+          }
+        } catch {}
+      }
+      if (extraHeaders) {
+        Object.assign(headersObj, extraHeaders);
+      }
+
+      const checkResult = await checkHttpUniversal(urlStr, {
+        method: monitor.method,
+        headers: headersObj,
+        body: monitor.body,
+        timeoutSeconds: monitor.timeout,
+      });
+
+      currentStatus = checkResult.status;
+      latency = checkResult.latency;
+      errorReason = checkResult.errorReason;
+
+      // 3. Deep Payload/Status Validation (WASM/Rust Optimized Bridge)
+      if (currentStatus === Status.UP && monitor.expectation) {
+        const { validatePayload } = await import("./lib/payload-parser");
+        const validation = validatePayload(
+          checkResult.bodyText,
+          checkResult.statusCode || 200,
+          monitor.expectation,
+        );
+        if (!validation.success) {
+          currentStatus = Status.DOWN;
+          errorReason = validation.errorMessage || `HTTP_${checkResult.statusCode || 200}`;
+        }
+      }
+    } else if (urlStr.startsWith("tcp://")) {
+      // Parse tcp://hostname:port
+      const part = urlStr.replace("tcp://", "");
+      const [hostname, port] = part.split(":");
+
+      if (!hostname || !port) throw new Error("Invalid TCP URL format");
+
+      const checkResult = await checkPortUniversal(
+        hostname,
+        parseInt(port, 10),
+        (monitor.timeout || 10) * 1000,
+      );
+
+      if (checkResult.isOpen) {
+        currentStatus = Status.UP;
+      } else {
+        currentStatus = Status.DOWN;
+        errorReason = checkResult.errorReason || CheckErrorReason.PORT_CLOSED;
+      }
+    } else if (urlStr.startsWith("ping://")) {
+      const hostname = urlStr.replace("ping://", "");
+      const checkResult = await checkPortUniversal(hostname, 80, (monitor.timeout || 10) * 1000);
+
+      if (checkResult.isOpen) {
+        currentStatus = Status.UP;
+      } else {
+        currentStatus = Status.DOWN;
+        errorReason = checkResult.errorReason || CheckErrorReason.PING_FAILED;
+      }
+    } else {
+      // Fallback or unknown
+      throw new Error("Unknown protocol");
+    }
+
+    if (latency === 0) {
+      latency = Math.round(performance.now() - start);
+    }
+  } catch (err: any) {
+    console.error(`Error checking ${urlStr}:`, err);
+    latency = 0;
+    currentStatus = Status.DOWN;
+
+    // Classify Error
+    if (err.name === "TimeoutError" || (err.message && err.message.includes("Stats"))) {
+      errorReason = CheckErrorReason.TIMEOUT;
+    } else if (
+      err.code === "ECONNREFUSED" ||
+      (err.message && err.message.includes("Connection refused"))
+    ) {
+      errorReason = CheckErrorReason.CONNECTION_REFUSED;
+    } else if (
+      err.code === "ENOTFOUND" ||
+      (err.message && err.message.includes("getaddrinfo")) ||
+      (err.message && err.message.includes("dns"))
+    ) {
+      errorReason = CheckErrorReason.DNS_ERROR;
+    } else {
+      errorReason = CheckErrorReason.UNKNOWN_ERROR;
+    }
+  }
+
+  return { status: currentStatus, latency, errorReason };
+}
+
+// Helper: Check for flapping (Rate Limiting)
+export function shouldSendAlert(monitorId: string, eventCounts: Map<string, number>): boolean {
+  const recentEvents = eventCounts.get(monitorId) || 0;
+
+  // If > 3 events in 5 mins (e.g. DOWN -> UP -> DOWN -> ...), suppress
+  if (recentEvents > 3) {
+    console.warn(`[RateLimit] Flapping detected for ${monitorId}. Suppressing alert.`);
+    return false;
+  }
+  return true;
+}
+
+// Helper: Record latency to Aggregator DO
+/**
+ * Records latency data to the aggregator service.
+ *
+ * This function checks if the LATENCY_AGGREGATOR is defined in the environment. If it is, it retrieves the corresponding
+ * DO instance using the monitorId and sends a POST request with the latency data, including the monitorId, region,
+ * latency value, success status, and a timestamp. Any errors during the fetch operation are logged to the console.
+ *
+ * @param {Env | undefined} env - The environment object that may contain the LATENCY_AGGREGATOR.
+ * @param {string} monitorId - The identifier for the monitor.
+ * @param {string} region - The region associated with the latency data.
+ * @param {number} latency - The recorded latency value.
+ * @param {boolean} success - Indicates whether the operation was successful.
+ */
+export async function recordLatencyToAggregator(
+  env: Env | undefined,
+  monitorId: string,
+  region: string,
+  latency: number,
+  success: boolean,
+): Promise<void> {
+  if (!env?.LATENCY_AGGREGATOR) return;
+
+  try {
+    // Get DO instance (using monitorId as the DO ID for consistent routing)
+    const id = env.LATENCY_AGGREGATOR.idFromName(monitorId);
+    const stub = env.LATENCY_AGGREGATOR.get(id);
+
+    // Send latency data
+    await stub
+      .fetch("https://latency-aggregator/record", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          monitorId,
+          region,
+          latency,
+          success,
+          timestamp: Date.now(),
+        }),
+      })
+      .then((r) => r.text()); // Consume body
+  } catch (error) {
+    console.error(`[LatencyAggregator] Failed to record latency:`, error);
+  }
+}
+
+// Helper: Broadcast live event to MonitorChannel DO
+/**
+ * Broadcasts a live event to the specified monitor channel.
+ *
+ * This function checks if the MONITOR_CHANNEL is defined in the environment. If it is, it retrieves the DO instance using the monitorId and sends a broadcast request with the event data. The request is sent without awaiting the response to prevent blocking the check loop, allowing for a fire-and-forget approach. Errors during the broadcast setup or execution are logged to the console.
+ *
+ * @param {Env | undefined} env - The environment object that may contain the MONITOR_CHANNEL.
+ * @param {string} monitorId - The identifier for the monitor to which the event is being broadcasted.
+ * @param {any} event - The event data to be broadcasted.
+ * @param {ExecutionContext} [ctx] - Optional execution context; when provided the broadcast is scheduled via waitUntil.
+ */
+export async function broadcastLiveEvent(
+  env: Env | undefined,
+  monitorId: string,
+  event: any,
+  ctx?: ExecutionContext,
+): Promise<void> {
+  if (!env?.MONITOR_CHANNEL) return;
+
+  try {
+    // Get DO instance (using monitorId as the DO ID)
+    const id = env.MONITOR_CHANNEL.idFromName(monitorId);
+    const stub = env.MONITOR_CHANNEL.get(id);
+
+    // Send broadcast
+    const promise = stub
+      .fetch("https://monitor-channel/broadcast", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(event),
+      })
+      .then((r) => r.text())
+      .catch((err) => console.error(`[MonitorChannel] Broadcast failed:`, err));
+
+    if (ctx) {
+      ctx.waitUntil(promise);
+    } else {
+      await promise;
+    }
+  } catch (error) {
+    console.error(`[MonitorChannel] Failed to setup broadcast:`, error);
+  }
+}
