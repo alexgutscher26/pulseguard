@@ -201,8 +201,8 @@
 
 ### 🖥️ CLI (`pulse`)
 
-- [ ] Add `pulse monitors create` — interactive wizard to create a monitor from CLI
-- [ ] Add `pulse monitors delete <id>` — delete a monitor from CLI
+- [x] Add `pulse monitors create` — interactive wizard to create a monitor from CLI
+- [x] Add `pulse monitors delete <id>` — delete a monitor from CLI
 - [ ] Add `pulse monitors pause <id>` / `resume <id>` — toggle monitor active state
 - [ ] Add `pulse incidents list` — list active incidents with severity and status
 - [ ] Add `pulse incidents update <id>` — update incident status from terminal

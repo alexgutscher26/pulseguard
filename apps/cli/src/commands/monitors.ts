@@ -4,6 +4,7 @@ import { table } from "table";
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import ora from "ora";
+import inquirer from "inquirer";
 import { api, ApiError } from "../client.js";
 
 interface Monitor {
@@ -237,7 +238,103 @@ monitorsCmd
           alertThreshold: m.alertThreshold,
           ...(m.checkRegions ? { checkRegions: JSON.parse(m.checkRegions) } : {}),
         })),
+   });
+
+   // pulse monitors create — interactive wizard
+   monitorsCmd
+     .command("create")
+     .description("Interactive wizard to create a new monitor")
+     .action(async () => {
+       const answers = await inquirer.prompt([
+         {
+           type: "input",
+           name: "name",
+           message: "Monitor name:",
+           validate: (input: string) => (input.trim() !== "" ? true : "Name cannot be empty"),
+         },
+         {
+           type: "input",
+           name: "url",
+           message: "Monitor URL:",
+           validate: (input: string | URL) => {
+             try {
+               new URL(input);
+               return true;
+             } catch {
+               return "Invalid URL";
+             }
+           },
+         },
+         {
+           type: "list",
+           name: "type",
+           message: "Monitor type:",
+           choices: [
+             "HTTP",
+             "HTTPS",
+             "PING",
+             "PORT",
+             "DNS",
+             "SSL",
+             "DOMAIN",
+             "HEARTBEAT",
+             "BROWSER",
+             "SEQUENCE",
+             "GRAPHQL",
+             "WEBSOCKET",
+             "DATABASE",
+             "BGP",
+             "MCP",
+           ],
+           default: "HTTP",
+         },
+         {
+           type: "input",
+           name: "interval",
+           message: "Check interval (seconds):",
+           default: "60",
+           validate: (input: string) => /^\d+$/.test(input) && Number(input) > 0 ? true : "Must be a positive integer",
+         },
+         {
+           type: "input",
+           name: "timeout",
+           message: "Timeout (seconds):",
+           default: "10",
+           validate: (input: string) => /^\d+$/.test(input) && Number(input) > 0 ? true : "Must be a positive integer",
+         },
+       ]);
+
+       const spinner = ora("Creating monitor…").start();
+       try {
+         const payload = {
+           name: answers.name,
+           url: answers.url,
+           type: answers.type,
+           interval: Number(answers.interval),
+           timeout: Number(answers.timeout),
+         };
+         await api.post("/api/cli/monitors", payload);
+         spinner.succeed("Monitor created");
+       } catch (err) {
+         spinner.fail("Failed to create monitor");
+         if (err instanceof ApiError) console.error(chalk.red(err.message));
+       }
       });
+      // pulse monitors delete <id>
+      monitorsCmd
+        .command("delete <id>")
+        .description("Delete a monitor")
+        .action(async (id) => {
+          const spinner = ora(`Deleting monitor ${id}…`).start();
+          try {
+            await api.delete(`/api/cli/monitors/${id}`);
+            spinner.succeed("Monitor deleted");
+          } catch (err) {
+            spinner.fail("Failed to delete monitor");
+            if (err instanceof ApiError) console.error(chalk.red(err.message));
+          }
+        });
+
 
       writeFileSync(
         opts.output,

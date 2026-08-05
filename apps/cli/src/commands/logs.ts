@@ -1,7 +1,6 @@
 import { Command } from "commander";
 import chalk from "chalk";
 import { api, ApiError } from "../client.js";
-import { getBaseUrl, getApiKey } from "../config.js";
 
 interface Event {
   id: string;

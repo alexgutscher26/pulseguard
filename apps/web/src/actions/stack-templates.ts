@@ -4,7 +4,7 @@ import prisma, { MonitorType } from "@pulseguard/db";
 import { auth } from "@pulseguard/auth";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { getTemplateById, type StackMonitorPreset } from "@pulseguard/shared/stack-templates";
+import { getTemplateById } from "@pulseguard/shared/stack-templates";
 
 export type ApplyTemplateResult = {
   success: boolean;
