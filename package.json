@@ -49,7 +49,8 @@
     "check-size": "turbo size-limit",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "publish-packages": "changeset publish"
+    "publish-packages": "changeset publish",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@pulseguard/env": "workspace:*",

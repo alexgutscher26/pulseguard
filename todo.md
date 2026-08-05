@@ -562,8 +562,8 @@
 - [ ] Write SLA calculation methodology explanation
 - [ ] Write architecture decision records (ADRs) for key design choices
 - [ ] Add inline code examples to all API documentation
-- [ ] Build interactive API explorer (Scalar or Swagger UI at `/docs/api`)
-- [ ] Write self-hosting guide (Docker Compose full stack)
+- [x] Build interactive API explorer (Scalar or Swagger UI at `/docs/api`)
+- [x] Write self-hosting guide (Docker Compose full stack)
 - [x] Add Helm chart for Kubernetes self-hosted deployment
 - [ ] Create video tutorials: "Set up your first monitor", "Configure alerts", "Status page setup"
 - [x] Write contributing guide with code style, testing requirements, and PR process

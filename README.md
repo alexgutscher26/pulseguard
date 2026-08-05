@@ -70,6 +70,7 @@ See the [`examples/`](./examples/) directory for ready-to-use Monitoring as Code
 - **REST endpoints**: Worker HTTP API for on-demand checks, DNS audit, SSL checks, etc.
 - **WebSocket gateway**: Real-time monitor state via Durable Objects
 - **API keys**: Scoped, hashed, with expiry
+- **Interactive API reference**: [Scalar explorer](http://localhost:3000/docs/api) with raw OpenAPI spec at `/docs/api/openapi.json`
 
 ---
 

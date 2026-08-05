@@ -26,7 +26,7 @@
 └──────────────────────────────────────────────────────────┘
 ```
 
-> **Note on the Worker**: PulseGuard's monitoring engine runs on Cloudflare Workers. Self-hosted deployments connect to Cloudflare for the Worker layer. The guide below covers hosting the **dashboard (Next.js)** and **all stateful infrastructure** (PostgreSQL, Redis) on your own server.
+> **Note on the Worker**: PulseGuard's monitoring engine runs on Cloudflare Workers. Self-hosted deployments connect to Cloudflare for the Worker layer. The guide below covers hosting the **dashboard (Next.js)** and **all stateful infrastructure** (PostgreSQL, and optionally Redis as a resilience fallback) on your own server.
 
 ---
 
@@ -70,114 +70,44 @@ nano .env.production
 
 ### Required Variables
 
-| Variable              | Example                                           | Notes                                |
-| --------------------- | ------------------------------------------------- | ------------------------------------ |
-| `DATABASE_URL`        | `postgresql://pg:secret@postgres:5432/pulseguard` | Internal Docker hostname `postgres`  |
-| `DIRECT_URL`          | same as above                                     | Used for migrations                  |
-| `BETTER_AUTH_SECRET`  | `$(openssl rand -hex 32)`                         | Generate with `openssl rand -hex 32` |
-| `BETTER_AUTH_URL`     | `https://pulseguard.yourdomain.com`               | Your public domain                   |
-| `NEXT_PUBLIC_APP_URL` | `https://pulseguard.yourdomain.com`               | Must match `BETTER_AUTH_URL`         |
-| `CORS_ORIGIN`         | `https://pulseguard.yourdomain.com`               | Same domain                          |
+| Variable                | Example                                           | Notes                                |
+| ----------------------- | ------------------------------------------------- | ------------------------------------ |
+| `DATABASE_URL`          | `postgresql://pg:secret@postgres:5432/pulseguard` | Internal Docker hostname `postgres`  |
+| `DIRECT_URL`            | same as above                                     | Used for migrations                  |
+| `BETTER_AUTH_SECRET`    | `$(openssl rand -hex 32)`                         | Generate with `openssl rand -hex 32` |
+| `BETTER_AUTH_URL`       | `https://pulseguard.yourdomain.com`               | Your public domain                   |
+| `NEXT_PUBLIC_APP_URL`   | `https://pulseguard.yourdomain.com`               | Must match `BETTER_AUTH_URL`         |
+| `CORS_ORIGIN`           | `https://pulseguard.yourdomain.com`               | Same domain                          |
+
+If you run the optional private probe (`docker-compose.prod.yml` ships the `probe` service):
+
+| Variable                  | Example                                     | Notes                                     |
+| ------------------------- | ------------------------------------------- | ----------------------------------------- |
+| `PULSEGUARD_API_URL`      | `https://worker.yourdomain.com`             | Your PulseGuard Worker URL                |
+| `PULSEGUARD_PROBE_TOKEN`  | `$(openssl rand -hex 32)`                   | Must match the token your Worker accepts  |
+| `PROBE_REGION`            | `self-hosted`                               | Label shown in the dashboard              |
 
 Generate secrets:
 
 ```bash
-openssl rand -hex 32   # use as BETTER_AUTH_SECRET
+openssl rand -hex 32   # use as BETTER_AUTH_SECRET and PULSEGUARD_PROBE_TOKEN
 ```
 
 ---
 
 ## Step 2 — Production Docker Compose
 
-Create `docker-compose.prod.yml` in the project root:
+The production stack ships in the repo as [`docker-compose.prod.yml`](../docker-compose.prod.yml). It runs:
 
-```yaml
-# docker-compose.prod.yml
-# Production-ready single-server stack
+- **Caddy** — reverse proxy with automatic HTTPS (Let's Encrypt)
+- **web** — the Next.js dashboard, built from `apps/web/Dockerfile`
+- **migrate** — one-off Prisma migration runner (see Step 5)
+- **postgres** — PostgreSQL 16 with a named volume
+- **redis** — optional, used only as a resilience fallback when `UPSTASH_REDIS_REST_URL` is set; remove the service if unused
+- **probe** — optional private probe reporting to your Worker
 
-services:
-  # ── Reverse Proxy + TLS (Caddy auto-HTTPS) ──────────────────────────────────
-  caddy:
-    image: caddy:2-alpine
-    container_name: pulseguard-caddy
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy_data:/data
-      - caddy_config:/config
-    depends_on:
-      - web
-
-  # ── Next.js Dashboard ────────────────────────────────────────────────────────
-  web:
-    build:
-      context: .
-      dockerfile: apps/web/Dockerfile
-    container_name: pulseguard-web
-    restart: unless-stopped
-    env_file: .env.production
-    environment:
-      NODE_ENV: production
-    expose:
-      - "3000"
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-
-  # ── PostgreSQL ───────────────────────────────────────────────────────────────
-  postgres:
-    image: postgres:16-alpine
-    container_name: pulseguard-postgres
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: pulseguard
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
-      POSTGRES_DB: pulseguard
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U pulseguard -d pulseguard"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-
-  # ── Redis ────────────────────────────────────────────────────────────────────
-  redis:
-    image: redis:7-alpine
-    container_name: pulseguard-redis
-    restart: unless-stopped
-    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-changeme}
-    volumes:
-      - redis_data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-changeme}", "ping"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
-
-  # ── Private Probe (optional — remove if not needed) ──────────────────────────
-  probe:
-    build:
-      context: .
-      dockerfile: apps/probe/Dockerfile
-    container_name: pulseguard-probe
-    restart: unless-stopped
-    env_file: .env.production
-    environment:
-      NODE_ENV: production
-    depends_on:
-      - web
-
-volumes:
-  postgres_data:
-  redis_data:
-  caddy_data:
-  caddy_config:
+```bash
+docker compose -f docker-compose.prod.yml config   # sanity check
 ```
 
 ---
@@ -232,11 +162,14 @@ Wait for DNS to propagate (`dig pulseguard.yourdomain.com`).
 ## Step 5 — Build and Start
 
 ```bash
-# Build the web image
+# Build the web and probe images
 docker compose -f docker-compose.prod.yml build
 
-# Run database migrations
-docker compose -f docker-compose.prod.yml run --rm web bun run db:migrate
+# Start the database first, then run migrations
+docker compose -f docker-compose.prod.yml up -d postgres
+
+# Run database migrations (Prisma 7 — migrate deploy, not dev)
+docker compose -f docker-compose.prod.yml run --rm migrate
 
 # Start all services
 docker compose -f docker-compose.prod.yml up -d
@@ -244,6 +177,11 @@ docker compose -f docker-compose.prod.yml up -d
 # Tail logs
 docker compose -f docker-compose.prod.yml logs -f
 ```
+
+> The `migrate` service mounts the repo checkout and runs
+> `bunx prisma migrate deploy` inside `packages/db`. The web image itself is a
+> trimmed Next.js standalone build and does **not** include the Prisma CLI, so
+> never use `docker compose run web ...` for migrations.
 
 Check that all services are healthy:
 
@@ -278,7 +216,7 @@ Set your dashboard URL as `BETTER_AUTH_URL` in your Cloudflare Worker environmen
 ```bash
 git pull origin main
 docker compose -f docker-compose.prod.yml build
-docker compose -f docker-compose.prod.yml run --rm web bun run db:migrate
+docker compose -f docker-compose.prod.yml run --rm migrate
 docker compose -f docker-compose.prod.yml up -d
 ```
 

@@ -1,0 +1,120 @@
+# docker-compose.prod.yml
+# Production-ready single-server PulseGuard stack.
+# Companion to the self-hosting guide: docs/self-hosted.md
+#
+# Usage:
+#   docker compose -f docker-compose.prod.yml build
+#   docker compose -f docker-compose.prod.yml up -d
+#
+# Requires a `.env.production` file and a `Caddyfile` in the project root —
+# see docs/self-hosted.md for the full walkthrough.
+
+services:
+  # ── Reverse Proxy + TLS (Caddy auto-HTTPS) ──────────────────────────────────
+  caddy:
+    image: caddy:2-alpine
+    container_name: pulseguard-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      web:
+        condition: service_healthy
+
+  # ── Next.js Dashboard ────────────────────────────────────────────────────────
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: pulseguard-web
+    restart: unless-stopped
+    env_file: .env.production
+    environment:
+      NODE_ENV: production
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ── Database migrations (one-off) ────────────────────────────────────────────
+  # The web image is a trimmed Next.js standalone build without the Prisma CLI,
+  # so migrations run from a container that mounts the repo checkout instead:
+  #   docker compose -f docker-compose.prod.yml run --rm migrate
+  migrate:
+    image: oven/bun:1.2-alpine
+    container_name: pulseguard-migrate
+    restart: "no"
+    working_dir: /app/packages/db
+    volumes:
+      - .:/app
+      - /app/node_modules # shadow host node_modules (mounts repo read-only context)
+    environment:
+      DATABASE_URL: postgresql://pulseguard:${POSTGRES_PASSWORD:-changeme}@postgres:5432/pulseguard
+    command: bunx --yes prisma migrate deploy
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ── PostgreSQL ───────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: pulseguard-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: pulseguard
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_DB: pulseguard
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pulseguard -d pulseguard"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── Redis (optional — connection-pool resilience fallback) ──────────────────
+  # The dashboard works without Redis. It is only used as a resilience fallback
+  # when UPSTASH_REDIS_REST_URL is set. Remove this service if unused.
+  redis:
+    image: redis:7-alpine
+    container_name: pulseguard-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-changeme}
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-changeme}", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # ── Private Probe (optional — remove if not needed) ─────────────────────────
+  probe:
+    build:
+      context: .
+      dockerfile: apps/probe/Dockerfile
+    container_name: pulseguard-probe
+    restart: unless-stopped
+    env_file: .env.production
+    environment:
+      NODE_ENV: production
+    depends_on:
+      - web
+
+volumes:
+  postgres_data:
+  redis_data:
+  caddy_data:
+  caddy_config:
