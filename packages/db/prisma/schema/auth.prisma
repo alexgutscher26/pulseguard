@@ -20,6 +20,8 @@ model User {
   apiKeys              ApiKey[]
   privacy              UserPrivacy?
   integrations         UserIntegration[]
+  subscription         Subscription?
+
 
   @@unique([email])
   @@map("user")

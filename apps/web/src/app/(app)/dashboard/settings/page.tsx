@@ -9,6 +9,8 @@ import { SecurityForm } from "@/components/settings/security-form";
 import { ApiKeysForm } from "@/components/settings/api-keys-form";
 import { MigrationForm } from "@/components/settings/migration-form";
 import { PrivacyForm } from "@/components/settings/privacy-form";
+import { BillingForm } from "@/components/settings/billing-form";
+import { getUserUsageSummary } from "@/lib/billing-server";
 
 /**
  * Renders the settings page based on the user's session and selected tab.
@@ -35,6 +37,7 @@ export default async function SettingsPage({
   }
 
   const { tab = "general" } = await searchParams;
+  const usageSummary = tab === "billing" ? await getUserUsageSummary(session.user.id) : undefined;
 
   return (
     <div className="flex flex-col md:flex-row gap-8 max-w-6xl">
@@ -47,6 +50,7 @@ export default async function SettingsPage({
             <DangerZone />
           </>
         )}
+        {tab === "billing" && <BillingForm initialUsage={usageSummary} />}
         {tab === "security" && <SecurityForm />}
         {tab === "api-keys" && <ApiKeysForm />}
         {tab === "migration" && <MigrationForm />}

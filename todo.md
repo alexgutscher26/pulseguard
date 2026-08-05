@@ -616,14 +616,14 @@
 
 ## 💰 P13 — Monetization & Billing
 
-- [ ] Integrate Stripe Billing (subscription, usage-based metering, invoices)
-- [ ] Build `/settings/billing` page with plan display and Stripe Customer Portal link
-- [ ] Define pricing tiers: Free, Pro ($X/month), Enterprise (custom)
+- [x] Integrate Stripe Billing (subscription, usage-based metering, invoices)
+- [x] Build `/settings/billing` page with plan display and Stripe Customer Portal link
+- [x] Define pricing tiers: Free, Pro ($X/month), Enterprise (custom)
 - [ ] Implement feature flags based on workspace plan (enforced server-side)
-- [ ] Add usage metering: track checks per month, monitors created, notifications sent
+- [x] Add usage metering: track checks per month, monitors created, notifications sent
 - [ ] Add usage alert: warn workspace owner when approaching plan limits
 - [ ] Implement hard limits: block new monitors when over plan limit
-- [ ] Add Stripe webhook handler for subscription lifecycle events (created, updated, cancelled)
+- [x] Add Stripe webhook handler for subscription lifecycle events (created, updated, cancelled)
 - [ ] Implement trial period (14-day Pro trial on signup)
 - [ ] Add coupon/promo code support in checkout flow
 - [ ] Build affiliate/referral program with unique referral links

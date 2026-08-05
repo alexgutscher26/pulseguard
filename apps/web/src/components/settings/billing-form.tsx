@@ -1,0 +1,319 @@
+"use client";
+
+import { useState } from "react";
+import { Check, CreditCard, ExternalLink, Moon, Zap, ShieldCheck, Loader2 } from "lucide-react";
+import { PLANS, type PlanTier, type UsageSummary } from "@/lib/billing";
+import { toast } from "sonner";
+
+interface BillingFormProps {
+  initialUsage?: UsageSummary;
+}
+
+export function BillingForm({ initialUsage }: BillingFormProps) {
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("annual");
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+  const [loadingPortal, setLoadingPortal] = useState(false);
+
+  const usage = initialUsage || {
+    monitorsUsed: 3,
+    monitorsLimit: 50,
+    alertChannelsUsed: 2,
+    alertChannelsLimit: 3,
+    statusPagesUsed: 1,
+    statusPagesLimit: 1,
+    monthlyChecksCount: 14280,
+    plan: "INITIATE" as PlanTier,
+    limits: PLANS.INITIATE.limits,
+  };
+
+  const currentPlan = PLANS[usage.plan] || PLANS.INITIATE;
+
+  const handleCheckout = async (planTier: PlanTier) => {
+    if (planTier === usage.plan) {
+      toast.info("You are currently subscribed to this plan.");
+      return;
+    }
+
+    try {
+      setLoadingPlan(planTier);
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan: planTier, interval: billingCycle }),
+      });
+
+      const data = (await res.json()) as { url?: string; error?: string };
+      if (!res.ok) throw new Error(data.error || "Failed to start checkout");
+
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Checkout error";
+      toast.error(msg);
+    } finally {
+      setLoadingPlan(null);
+    }
+  };
+
+  const handleManageSubscription = async () => {
+    try {
+      setLoadingPortal(true);
+      const res = await fetch("/api/stripe/portal", {
+        method: "POST",
+      });
+
+      const data = (await res.json()) as { url?: string; error?: string };
+      if (!res.ok) throw new Error(data.error || "Failed to open customer portal");
+
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Portal error";
+      toast.error(msg);
+    } finally {
+      setLoadingPortal(false);
+    }
+  };
+
+  return (
+    <div className="space-y-8">
+      {/* Current Plan Overview Banner */}
+      <div className="relative overflow-hidden rounded-xl border border-emerald-500/20 bg-emerald-950/10 p-6 backdrop-blur-sm">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-1">
+            <div className="flex items-center gap-3">
+              <span className="font-mono text-xs uppercase tracking-widest text-emerald-400 font-semibold">
+                Current Subscription
+              </span>
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                <ShieldCheck className="size-3" />
+                {currentPlan.name}
+              </span>
+            </div>
+            <h2 className="text-xl font-bold text-slate-100">{currentPlan.description}</h2>
+            <p className="text-xs text-slate-400 font-mono">
+              Monthly telemetry checks performed this cycle:{" "}
+              <span className="text-slate-200 font-bold">
+                {usage.monthlyChecksCount.toLocaleString()}
+              </span>
+            </p>
+          </div>
+
+          <button
+            onClick={handleManageSubscription}
+            disabled={loadingPortal}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 hover:border-slate-600 text-sm font-semibold transition-all shadow-sm shrink-0"
+          >
+            {loadingPortal ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <>
+                <CreditCard className="size-4 text-emerald-400" />
+                Manage Invoices & Billing
+                <ExternalLink className="size-3.5 text-slate-400" />
+              </>
+            )}
+          </button>
+        </div>
+
+        {/* Usage Progress Meters */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6 pt-6 border-t border-slate-800/80">
+          <div>
+            <div className="flex justify-between text-xs font-mono mb-1.5">
+              <span className="text-slate-400">Monitors Used</span>
+              <span className="text-slate-200 font-bold">
+                {usage.monitorsUsed} / {usage.monitorsLimit}
+              </span>
+            </div>
+            <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+              <div
+                className="bg-emerald-500 h-2 rounded-full transition-all duration-500"
+                style={{
+                  width: `${Math.min(100, (usage.monitorsUsed / usage.monitorsLimit) * 100)}%`,
+                }}
+              />
+            </div>
+          </div>
+
+          <div>
+            <div className="flex justify-between text-xs font-mono mb-1.5">
+              <span className="text-slate-400">Alert Channels</span>
+              <span className="text-slate-200 font-bold">
+                {usage.alertChannelsUsed} / {usage.alertChannelsLimit}
+              </span>
+            </div>
+            <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+              <div
+                className="bg-cyan-500 h-2 rounded-full transition-all duration-500"
+                style={{
+                  width: `${Math.min(
+                    100,
+                    (usage.alertChannelsUsed / usage.alertChannelsLimit) * 100,
+                  )}%`,
+                }}
+              />
+            </div>
+          </div>
+
+          <div>
+            <div className="flex justify-between text-xs font-mono mb-1.5">
+              <span className="text-slate-400">Status Pages</span>
+              <span className="text-slate-200 font-bold">
+                {usage.statusPagesUsed} / {usage.statusPagesLimit}
+              </span>
+            </div>
+            <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+              <div
+                className="bg-sky-500 h-2 rounded-full transition-all duration-500"
+                style={{
+                  width: `${Math.min(
+                    100,
+                    (usage.statusPagesUsed / usage.statusPagesLimit) * 100,
+                  )}%`,
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Pricing Header & Cycle Toggle */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
+        <div>
+          <h3 className="text-lg font-bold text-slate-100 flex items-center gap-2">
+            <Zap className="size-5 text-emerald-400" />
+            Upgrade Plan & Quotas
+          </h3>
+          <p className="text-xs text-slate-400">
+            Select simple, developer-friendly options designed to scale with your infrastructure.
+          </p>
+        </div>
+
+        {/* Monthly / Annual Toggle */}
+        <div className="inline-flex items-center bg-slate-900/90 p-1 rounded-lg border border-slate-800 self-start sm:self-auto">
+          <button
+            onClick={() => setBillingCycle("monthly")}
+            className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+              billingCycle === "monthly"
+                ? "bg-emerald-500 text-slate-950 shadow-sm"
+                : "text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            Monthly Billing
+          </button>
+          <button
+            onClick={() => setBillingCycle("annual")}
+            className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center gap-1.5 ${
+              billingCycle === "annual"
+                ? "bg-emerald-500 text-slate-950 shadow-sm"
+                : "text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            Annual Billing
+            <span className="px-1.5 py-0.5 rounded text-[10px] uppercase font-mono font-bold bg-slate-950 text-emerald-400">
+              Save 17%
+            </span>
+          </button>
+        </div>
+      </div>
+
+      {/* Pricing Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {(Object.keys(PLANS) as PlanTier[]).map((tierKey) => {
+          const plan = PLANS[tierKey];
+          const isCurrent = usage.plan === tierKey;
+          const isSleepPlan = plan.id === "NETRUNNER";
+          const price = billingCycle === "annual" ? plan.annualPriceMonthly : plan.monthlyPrice;
+
+          return (
+            <div
+              key={tierKey}
+              className={`relative flex flex-col justify-between rounded-xl border p-6 transition-all duration-300 ${
+                isSleepPlan
+                  ? "border-emerald-500/50 bg-slate-900/80 shadow-lg shadow-emerald-500/5 ring-1 ring-emerald-500/30"
+                  : isCurrent
+                    ? "border-slate-700 bg-slate-900/50"
+                    : "border-slate-800 bg-slate-900/30 hover:border-slate-700"
+              }`}
+            >
+              {isSleepPlan && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3.5 py-0.5 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase bg-emerald-500 text-slate-950 flex items-center gap-1.5 shadow-md">
+                  <Moon className="size-3" />
+                  The Sleep Plan
+                </div>
+              )}
+
+              <div className="space-y-4">
+                <div className="space-y-1">
+                  <h4 className="text-base font-bold text-slate-100">{plan.name}</h4>
+                  <p className="text-xs text-slate-400 min-h-[32px]">{plan.description}</p>
+                </div>
+
+                <div className="flex flex-col gap-1 py-2 border-y border-slate-800/60">
+                  <div className="flex items-baseline gap-1.5">
+                    {billingCycle === "annual" && plan.monthlyPrice > 0 && (
+                      <span className="text-sm line-through text-slate-500 font-mono">
+                        ${plan.monthlyPrice}
+                      </span>
+                    )}
+                    <span className="text-3xl font-extrabold text-slate-100 font-mono">
+                      ${price}
+                    </span>
+                    <span className="text-xs text-slate-400 font-mono">
+                      / mo {billingCycle === "annual" && price > 0 ? "(billed annually)" : ""}
+                    </span>
+                  </div>
+                  {plan.monthlyPrice === 0 && (
+                    <span className="text-[10px] text-slate-400 font-mono font-bold uppercase tracking-wider">
+                      Free Forever
+                    </span>
+                  )}
+                  {billingCycle === "annual" && plan.monthlyPrice > 0 && (
+                    <span className="text-[10px] text-emerald-400/90 font-mono font-bold uppercase tracking-wider">
+                      {tierKey === "NETRUNNER"
+                        ? "Billed annually ($140) — Save $28"
+                        : "Billed annually ($690) — Save $138"}
+                    </span>
+                  )}
+                </div>
+
+                <ul className="space-y-2.5 text-xs text-slate-300">
+                  {plan.features.map((feat, idx) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <Check className="size-4 text-emerald-400 shrink-0 mt-0.5" />
+                      <span>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="pt-6">
+                <button
+                  onClick={() => handleCheckout(tierKey)}
+                  disabled={isCurrent || loadingPlan === tierKey}
+                  className={`w-full py-2.5 px-4 rounded-lg font-semibold text-xs transition-all flex items-center justify-center gap-2 ${
+                    isCurrent
+                      ? "bg-slate-800 text-slate-400 cursor-not-allowed border border-slate-700"
+                      : isSleepPlan
+                        ? "bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md hover:shadow-emerald-500/20"
+                        : "bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700"
+                  }`}
+                >
+                  {loadingPlan === tierKey ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : isCurrent ? (
+                    "Active Plan"
+                  ) : (
+                    `Subscribe to ${plan.name}`
+                  )}
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}

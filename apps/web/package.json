@@ -57,6 +57,7 @@
     "remark-gfm": "^4.0.1",
     "shadcn": "^3.6.2",
     "sonner": "^2.0.5",
+    "stripe": "catalog:",
     "tailwind-merge": "^3.3.1",
     "three": "^0.184.0",
     "tw-animate-css": "^1.3.4",
