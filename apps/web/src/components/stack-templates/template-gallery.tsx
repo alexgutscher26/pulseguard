@@ -10,6 +10,12 @@ import {
   FileText,
   LayoutDashboard,
   Server,
+  Cpu,
+  Boxes,
+  Smartphone,
+  Coins,
+  Cloud,
+  Network,
   Loader2,
   CheckCircle2,
   AlertTriangle,
@@ -39,6 +45,12 @@ const iconMap: Record<string, React.ElementType> = {
   FileText,
   LayoutDashboard,
   Server,
+  Cpu,
+  Boxes,
+  Smartphone,
+  Coins,
+  Cloud,
+  Network,
 };
 
 const monitorTypeIcons: Record<string, React.ElementType> = {

@@ -1,6 +1,16 @@
 "use client";
 
-import { Search, Plus, LogOut, User, Settings, Menu, Terminal } from "lucide-react";
+import {
+  Search,
+  Plus,
+  LogOut,
+  User,
+  Settings,
+  Menu,
+  Terminal,
+  ChevronRight,
+  Command,
+} from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,17 +19,22 @@ import { usePathname, useRouter } from "next/navigation";
 import { ModeToggle } from "@/components/mode-toggle";
 import { useHaptic } from "@/hooks/use-haptic";
 import { useTerminalStore } from "@/hooks/use-terminal-store";
+import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = {}) {
+interface DashboardHeaderProps {
+  onMenuClick?: () => void;
+  userTier?: string;
+}
+
+export function DashboardHeader({ onMenuClick, userTier }: DashboardHeaderProps = {}) {
   const { data: session } = authClient.useSession();
   const pathname = usePathname();
   const router = useRouter();
@@ -38,13 +53,13 @@ export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = 
       if (segment === "monitors") return "Monitors";
       if (segment === "pages") return "Status Pages";
       if (segment === "incidents") return "Incidents";
-      if (segment === "alerts") return "Alerts";
+      if (segment === "alerts") return "Alert Channels";
       if (segment === "settings") return "Settings";
       if (segment === "new") return "New";
       if (segment === "edit") return "Edit";
 
       if (segment.length > 15) return `${segment.slice(0, 8)}...`;
-      return segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ");
+      return segment.charAt(0).toUpperCase() + segment.slice(1).replaceAll("-", " ");
     };
 
     return paths.map((segment, index) => {
@@ -65,9 +80,19 @@ export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = 
         .toUpperCase()
     : "OP";
 
+  const resolvedTier =
+    userTier ||
+    (session?.user as any)?.tier ||
+    (session?.user as any)?.plan ||
+    (session?.user as any)?.subscription?.plan ||
+    (session?.user as any)?.role ||
+    (session?.user?.name?.toLowerCase().includes("admin") ? "ADMIN" : "INITIATE");
+
+  const displayTier = String(resolvedTier).toUpperCase();
+
   return (
-    <header className="sticky top-0 z-30 flex h-20 min-h-[80px] items-center justify-between border-b border-border/60 bg-background/70 backdrop-blur-xl px-6 md:px-8 overflow-hidden transition-all">
-      <div className="flex items-center gap-4 relative z-20 min-w-0 flex-1 md:flex-none">
+    <header className="sticky top-0 z-30 flex h-16 min-h-[64px] items-center justify-between border-b border-border/80 bg-background/80 backdrop-blur-2xl px-4 md:px-8 overflow-hidden transition-all shadow-[0_4px_20px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_25px_rgba(0,0,0,0.35)]">
+      <div className="flex items-center gap-3 md:gap-4 relative z-20 min-w-0 flex-1 md:flex-none">
         {/* Hamburger Menu - Mobile Only */}
         {onMenuClick && (
           <button
@@ -75,29 +100,27 @@ export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = 
               trigger("light");
               onMenuClick();
             }}
-            className="md:hidden flex items-center justify-center size-9 rounded-lg border border-border bg-card hover:bg-accent transition-colors shrink-0 active:scale-95 cursor-pointer"
+            className="md:hidden flex items-center justify-center size-9 rounded-lg border border-border/80 bg-accent/30 hover:bg-accent hover:border-border transition-all shrink-0 active:scale-95 cursor-pointer"
             aria-label="Open navigation menu"
           >
-            <Menu className="size-4.5 text-foreground" />
+            <Menu className="size-4 text-foreground" />
           </button>
         )}
 
         {/* Breadcrumbs Navigation */}
-        <div className="flex items-center gap-4 min-w-0">
-          <nav className="flex items-center gap-1.5 text-sm font-semibold tracking-tight text-muted-foreground select-none min-w-0">
+        <div className="flex items-center gap-3 min-w-0">
+          <nav className="flex items-center gap-1.5 text-xs font-mono select-none min-w-0">
             {getBreadcrumbs().map((crumb, index) => (
               <div key={crumb.url} className="flex items-center gap-1.5 min-w-0">
-                {index > 0 && (
-                  <span className="text-muted-foreground/30 text-xs font-normal">/</span>
-                )}
+                {index > 0 && <ChevronRight className="size-3 text-muted-foreground/40 shrink-0" />}
                 {crumb.isLast ? (
-                  <span className="text-foreground font-bold tracking-tight text-sm md:text-base truncate max-w-[120px] sm:max-w-[180px] md:max-w-[240px]">
+                  <span className="text-foreground font-bold tracking-tight text-xs md:text-sm truncate max-w-[120px] sm:max-w-[180px] md:max-w-[240px]">
                     {crumb.label}
                   </span>
                 ) : (
                   <Link
                     href={crumb.url as any}
-                    className="hover:text-foreground transition-colors text-xs font-medium md:text-sm shrink-0"
+                    className="text-muted-foreground hover:text-foreground transition-colors font-medium text-xs shrink-0"
                   >
                     {crumb.label}
                   </Link>
@@ -105,24 +128,11 @@ export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = 
               </div>
             ))}
           </nav>
-
-          {/* Active Health Status Badge */}
-          <a
-            href="http://localhost:3000/status-page/f34f34f"
-            className="hidden sm:block shrink-0 active:scale-95 transition-transform"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img
-              src="/api/badge/f34f34f.svg?style=flat&theme=dark&size=sm"
-              alt="PulseGuard Status"
-            />
-          </a>
         </div>
       </div>
 
-      <div className="flex items-center gap-3 md:gap-5 relative z-20 shrink-0">
-        {/* Search - Icon on mobile, full width simulation on desktop */}
+      <div className="flex items-center gap-2.5 md:gap-3.5 relative z-20 shrink-0">
+        {/* Global Command Palette Search */}
         <button
           onClick={() => {
             const event = new KeyboardEvent("keydown", {
@@ -132,28 +142,19 @@ export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = 
             });
             document.dispatchEvent(event);
           }}
-          className="relative flex items-center justify-center size-9 md:h-10 md:w-60 lg:w-68 md:justify-start gap-2.5 bg-accent/30 hover:bg-accent/40 text-muted-foreground hover:text-foreground rounded-lg border border-border hover:border-border/80 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all duration-200 cursor-pointer active:scale-95 shrink-0 px-0 md:px-3.5 group"
+          className="relative flex items-center justify-center size-9 md:h-9 md:w-56 lg:w-64 md:justify-start gap-2 bg-accent/40 hover:bg-accent/70 text-muted-foreground hover:text-foreground rounded-lg border border-border/80 hover:border-primary/30 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all duration-200 cursor-pointer active:scale-95 shrink-0 px-0 md:px-3 group"
           aria-label="Search"
           id="global-search-trigger"
         >
-          <Search className="size-4 text-muted-foreground group-hover:text-foreground transition-colors shrink-0" />
-          <span className="hidden md:inline flex-1 text-left text-xs font-semibold">Search...</span>
-          <kbd className="hidden md:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[8px] font-bold bg-accent border border-border/40 text-muted-foreground rounded font-mono">
-            <span>⌘</span>
+          <Search className="size-3.5 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
+          <span className="hidden md:inline flex-1 text-left text-xs font-medium font-sans">
+            Search metrics, nodes...
+          </span>
+          <kbd className="hidden md:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold bg-background border border-border text-muted-foreground rounded font-mono shadow-2xs">
+            <Command className="size-2.5" />
             <span>K</span>
           </kbd>
         </button>
-
-        {/* Add Monitor Button - Plus Icon on mobile, full text on desktop */}
-        <Link
-          href="/dashboard/monitors/new"
-          className="flex items-center justify-center size-9 md:h-10 md:w-auto md:px-4 bg-primary text-primary-foreground text-xs font-bold rounded-lg hover:bg-primary/95 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 gap-1.5 cursor-pointer shadow-sm shadow-primary/20 shrink-0"
-          aria-label="Add Monitor"
-          id="add-monitor-header-btn"
-        >
-          <Plus className="size-4 shrink-0" />
-          <span className="hidden md:inline">Add Monitor</span>
-        </Link>
 
         {/* Terminal Toggle Button */}
         <button
@@ -161,48 +162,49 @@ export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = 
             trigger("medium");
             toggleTerminalMode();
           }}
-          className={`flex items-center justify-center size-9 md:size-10 rounded-lg border hover:bg-accent hover:text-foreground transition-all duration-200 cursor-pointer active:scale-95 shrink-0 ${
+          className={`flex items-center justify-center size-9 rounded-lg border hover:bg-accent hover:text-foreground transition-all duration-200 cursor-pointer active:scale-95 shrink-0 ${
             isTerminalMode
-              ? "border-primary bg-primary/10 text-primary shadow-sm shadow-primary/25 animate-pulse"
-              : "border-border bg-card text-muted-foreground"
+              ? "border-primary bg-primary/10 text-primary shadow-xs shadow-primary/25"
+              : "border-border/80 bg-accent/20 text-muted-foreground hover:border-border"
           }`}
-          title="Terminal-Only Mode"
+          title="Toggle Terminal-Only Mode"
           aria-label="Toggle Terminal-Only Mode"
           id="terminal-mode-toggle"
         >
-          <Terminal className="size-4" />
+          <Terminal className="size-3.5" />
         </button>
 
-        {/* Mode Toggle - Hidden on Mobile */}
+        {/* Theme Toggle */}
         <div className="hidden sm:block text-muted-foreground hover:text-foreground">
           <ModeToggle />
         </div>
 
-        {/* User Menu */}
-        <div className="flex items-center gap-3 border-l border-border/80 pl-4 md:pl-6 h-9 shrink-0 ml-2 md:ml-3">
+        {/* User Dropdown Menu */}
+        <div className="flex items-center gap-3 border-l border-border/80 pl-3 md:pl-4 h-8 shrink-0 ml-1">
           <DropdownMenu>
             <DropdownMenuTrigger
               id="user-menu-trigger"
-              className="flex items-center gap-3 outline-none group cursor-pointer"
+              className="flex items-center gap-2.5 outline-none group cursor-pointer"
             >
-              {/* User Name - Desktop Only */}
+              {/* Desktop User Info */}
               <div className="text-right hidden lg:block">
                 <p className="text-xs text-foreground font-bold leading-tight group-hover:text-primary transition-colors">
                   {session?.user?.name || "Operator"}
                 </p>
-                <p className="text-[10px] text-muted-foreground font-medium mt-0.5">
+                <p className="text-[10px] text-muted-foreground font-mono mt-0.5">
                   {session?.user?.email || "admin@pulseguard.io"}
                 </p>
               </div>
-              {/* Avatar */}
-              <div className="relative size-9 rounded-full overflow-hidden border border-border bg-gradient-to-br from-primary/10 to-primary/5 hover:border-primary/30 hover:scale-105 active:scale-95 transition-all shrink-0 flex items-center justify-center shadow-sm">
+
+              {/* Avatar with Status Dot */}
+              <div className="relative size-8.5 rounded-full border border-border bg-gradient-to-br from-primary/10 via-primary/5 to-transparent group-hover:border-primary/40 group-hover:scale-105 active:scale-95 transition-all shrink-0 flex items-center justify-center shadow-xs overflow-hidden">
                 {session?.user?.image && !avatarError ? (
                   <Image
                     className="object-cover transition-opacity duration-300"
                     alt="User profile"
                     src={session.user.image}
                     fill
-                    sizes="36px"
+                    sizes="34px"
                     onError={() => setAvatarError(true)}
                   />
                 ) : (
@@ -214,38 +216,65 @@ export function DashboardHeader({ onMenuClick }: { onMenuClick?: () => void } = 
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
-              className="w-56 bg-popover/95 backdrop-blur-md border border-border/80 text-foreground rounded-xl p-1.5 shadow-[0_12px_38px_rgba(0,0,0,0.08)] dark:shadow-[0_12px_38px_rgba(0,0,0,0.35)] animate-in fade-in-50 zoom-in-95 duration-100"
+              className="w-56 bg-popover/95 backdrop-blur-xl border border-border/80 text-foreground rounded-xl p-1.5 shadow-[0_12px_38px_rgba(0,0,0,0.12)] animate-in fade-in-50 zoom-in-95 duration-100"
             >
               <DropdownMenuGroup>
-                <DropdownMenuLabel className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider px-2.5 py-2">
-                  My Account
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-border/60" />
+                <div className="px-2.5 py-2 border-b border-border/60 mb-1">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-wider">
+                      Account Tier
+                    </span>
+                    <span
+                      className={cn(
+                        "text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border tracking-wider uppercase",
+                        displayTier === "ADMIN" &&
+                          "border-amber-500/30 bg-amber-500/10 text-amber-400",
+                        displayTier === "CONSTRUCT" &&
+                          "border-cyan-500/30 bg-cyan-500/10 text-cyan-400",
+                        displayTier === "NETRUNNER" &&
+                          "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
+                        displayTier !== "ADMIN" &&
+                          displayTier !== "CONSTRUCT" &&
+                          displayTier !== "NETRUNNER" &&
+                          "border-primary/30 bg-primary/10 text-primary",
+                      )}
+                    >
+                      {displayTier}
+                    </span>
+                  </div>
+                  <p className="text-xs font-bold truncate text-foreground">
+                    {session?.user?.name || "Operator"}
+                  </p>
+                  <p className="text-[10px] text-muted-foreground truncate font-mono">
+                    {session?.user?.email || "admin@pulseguard.io"}
+                  </p>
+                </div>
+
                 <DropdownMenuItem
-                  className="text-xs font-semibold focus:bg-accent focus:text-foreground cursor-pointer rounded-lg px-2.5 py-2 transition-colors"
+                  className="text-xs font-semibold focus:bg-accent focus:text-foreground cursor-pointer rounded-lg px-2.5 py-2 transition-colors gap-2"
                   onClick={() => router.push("/dashboard/settings?tab=general")}
                 >
-                  <User className="mr-2 h-3.5 w-3.5" />
-                  <span>Profile</span>
+                  <User className="size-3.5 text-muted-foreground" />
+                  <span>Profile & Security</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  className="text-xs font-semibold focus:bg-accent focus:text-foreground cursor-pointer rounded-lg px-2.5 py-2 transition-colors"
+                  className="text-xs font-semibold focus:bg-accent focus:text-foreground cursor-pointer rounded-lg px-2.5 py-2 transition-colors gap-2"
                   onClick={() => router.push("/dashboard/settings")}
                 >
-                  <Settings className="mr-2 h-3.5 w-3.5" />
-                  <span>Settings</span>
+                  <Settings className="size-3.5 text-muted-foreground" />
+                  <span>Settings & Billing</span>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
-              <DropdownMenuSeparator className="bg-border/60" />
+              <DropdownMenuSeparator className="bg-border/60 my-1" />
               <DropdownMenuItem
-                className="text-xs font-semibold text-red-500 focus:bg-red-500/10 focus:text-red-500 cursor-pointer rounded-lg px-2.5 py-2 transition-colors"
+                className="text-xs font-semibold text-red-500 focus:bg-red-500/10 focus:text-red-500 cursor-pointer rounded-lg px-2.5 py-2 transition-colors gap-2"
                 onClick={async () => {
                   await authClient.signOut();
                   window.location.href = "/login";
                 }}
               >
-                <LogOut className="mr-2 h-3.5 w-3.5" />
-                <span>Log out</span>
+                <LogOut className="size-3.5" />
+                <span>Log Out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

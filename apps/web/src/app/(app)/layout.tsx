@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { Plus } from "lucide-react";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { MobileSidebar } from "@/components/dashboard/mobile-sidebar";
 import { DashboardHeader } from "@/components/dashboard/header";
@@ -26,6 +28,17 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           {children}
         </div>
       </main>
+
+      {/* Floating Bottom-Right Add Monitor Button */}
+      <Link
+        href="/dashboard/monitors/new"
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 rounded-full bg-primary text-primary-foreground font-mono font-bold text-xs uppercase tracking-wider shadow-lg shadow-primary/25 border border-primary/40 hover:scale-105 active:scale-95 transition-all duration-200 group cursor-pointer backdrop-blur-md"
+        id="floating-add-monitor-btn"
+        aria-label="Add New Monitor"
+      >
+        <Plus className="size-4 group-hover:rotate-90 transition-transform duration-300 shrink-0" />
+        <span>Add Monitor</span>
+      </Link>
 
       {/* Global Command Palette */}
       <CommandPalette />

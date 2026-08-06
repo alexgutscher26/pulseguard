@@ -65,6 +65,16 @@ export async function grantSelfAdminAccess(): Promise<{ success: boolean; error?
       return { success: false, error: "Must be logged in to grant admin access" };
     }
 
+    const email = session.user.email?.toLowerCase() || "";
+    const adminEmails = (process.env.ADMIN_EMAILS || "")
+      .split(",")
+      .map((e) => e.trim().toLowerCase())
+      .filter(Boolean);
+
+    if (!email || !adminEmails.includes(email)) {
+      return { success: false, error: "Unauthorized: User email is not listed in ADMIN_EMAILS" };
+    }
+
     await prisma.user.update({
       where: { id: session.user.id },
       data: {

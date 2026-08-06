@@ -166,7 +166,6 @@ export const featureComparisons: FeatureComparisonItem[] = [
     competitor3: true,
     isBattle: false,
   },
-  /*
   {
     category: "Advanced Features",
     name: "AI Root Cause Diagnosis",
@@ -180,7 +179,6 @@ export const featureComparisons: FeatureComparisonItem[] = [
     competitor3: false,
     isBattle: false,
   },
-  */
   {
     category: "Status Pages & Alerts",
     name: "Status Page (Custom Domain)",
