@@ -57,6 +57,12 @@ export default function LandingFooter() {
                 Hall of Fame
               </Link>
               <Link
+                href={"/design-partners" as any}
+                className="text-primary hover:text-primary/80 text-xs font-semibold transition-colors w-fit flex items-center gap-1"
+              >
+                Design Partners <span className="text-[9px] bg-primary/10 text-primary px-1.5 py-0.2 rounded font-mono font-bold">1Yr Free</span>
+              </Link>
+              <Link
                 href={"https://pulse-41cf5b0d.mintlify.site/introduction" as any}
                 className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
               >
