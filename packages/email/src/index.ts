@@ -151,6 +151,15 @@ export async function sendPasswordResetEmail(
   apiKey?: string,
 ): Promise<{ id: string } | { error: string }> {
   try {
+    const key = apiKey ?? env.RESEND_API_KEY;
+    if (!key && (process.env.NODE_ENV === "development" || !process.env.NODE_ENV)) {
+      console.log(`\n==================================================`);
+      console.log(`📧 [DEV EMAIL FALLBACK] Password Reset Email to: ${to}`);
+      console.log(`🔗 Reset Link: ${data.resetUrl}`);
+      console.log(`==================================================\n`);
+      return { id: "dev-mock-email-id" };
+    }
+
     const resend = getResendClient(apiKey);
     const { renderPasswordReset } = await import("./templates/password-reset");
 
