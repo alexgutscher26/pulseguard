@@ -16,6 +16,7 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Zap,
+  Award,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
@@ -28,6 +29,7 @@ const navigation = [
   { name: "Integrations", href: "/dashboard/integrations", icon: Blocks },
   { name: "Incidents", href: "/dashboard/incidents", icon: TriangleAlert },
   { name: "Alerts", href: "/dashboard/alerts", icon: Bell },
+  { name: "Design Partners", href: "/dashboard/design-partners", icon: Award },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 

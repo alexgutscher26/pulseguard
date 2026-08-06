@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ShieldCheck, CheckCircle2, Zap, Sparkles, ArrowRight, Loader2, Award, Users, Copy, Check } from "lucide-react";
+import { ShieldCheck, CheckCircle2, Zap, Sparkles, ArrowRight, Loader2, Award, Users, Copy, Check, Clock } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { submitDesignPartnerApplication, getDesignPartnerSpots } from "@/actions/design-partners";
@@ -127,35 +127,29 @@ export default function DesignPartnerClient({ initialSpots = 15 }: { initialSpot
       <div className="bg-card border border-border/80 rounded-2xl p-8 shadow-xl relative overflow-hidden">
         {submitted ? (
           <div className="text-center py-12 flex flex-col items-center gap-4">
-            <div className="size-14 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-              <CheckCircle2 className="size-8" />
+            <div className="size-14 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+              <Clock className="size-8 animate-pulse" />
             </div>
-            <h3 className="text-2xl font-bold text-foreground">You're on the Design Partner List!</h3>
+            <h3 className="text-2xl font-bold text-foreground">Application Under Review!</h3>
             <p className="text-muted-foreground text-xs leading-relaxed max-w-md">
-              We've reserved your 1-year Pro license code. Check your inbox ({formData.email}) for onboarding instructions and your VIP Discord invite.
+              Thank you for applying! To ensure high-quality launch feedback, our founding team reviews applications within 24 hours. We've sent a confirmation notice to <span className="text-foreground font-semibold font-mono">{formData.email}</span>.
             </p>
 
-            {vipCode && (
-              <div className="my-2 p-4 bg-muted/40 border border-primary/30 rounded-xl flex items-center gap-3 font-mono">
-                <div className="flex flex-col text-left">
-                  <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Your VIP License Code</span>
-                  <span className="text-sm font-bold text-primary">{vipCode}</span>
-                </div>
-                <button
-                  onClick={handleCopyCode}
-                  className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 transition-all cursor-pointer ml-auto"
-                >
-                  {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
-                </button>
-              </div>
-            )}
+            <div className="my-2 p-4 bg-amber-500/5 border border-amber-500/20 rounded-xl flex items-center gap-3 text-left max-w-md">
+              <ShieldCheck className="size-5 text-amber-400 shrink-0" />
+              <p className="text-[11px] text-muted-foreground leading-relaxed">
+                Once approved by an admin, your 1-Year VIP Netrunner Pro license key will be issued and emailed automatically.
+              </p>
+            </div>
 
-            <Link
-              href="/signup"
-              className="mt-4 inline-flex items-center gap-2 h-10 px-6 bg-primary text-primary-foreground font-bold text-xs rounded-lg hover:bg-primary/90 transition-all"
-            >
-              Go to App & Activate <ArrowRight className="size-4" />
-            </Link>
+            <div className="flex items-center gap-3 mt-4">
+              <Link
+                href="/dashboard"
+                className="inline-flex items-center gap-2 h-10 px-6 bg-primary text-primary-foreground font-bold text-xs rounded-lg hover:bg-primary/90 transition-all"
+              >
+                Go to Dashboard <ArrowRight className="size-4" />
+              </Link>
+            </div>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
