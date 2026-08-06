@@ -161,11 +161,18 @@ export async function performRegionalChecks(monitor: Monitor): Promise<RegionalC
 }
 
 /**
- * Get the overall status from regional checks
- * Returns DOWN if ANY region is down
+ * Get the overall status from regional checks using multi-region consensus.
+ * Requires majority of regions to agree on DOWN status before declaring an incident,
+ * preventing single-region network glitches from firing false alarms.
  */
 export function getOverallStatus(results: RegionalCheckResult[]): "UP" | "DOWN" {
-  return results.some((r) => r.status === "DOWN") ? "DOWN" : "UP";
+  if (results.length === 0) return "UP";
+  if (results.length === 1) return results[0]?.status === "DOWN" ? "DOWN" : "UP";
+
+  const downCount = results.filter((r) => r.status === "DOWN").length;
+  // Require at least 2 regions or > 50% of total regions to be DOWN for consensus
+  const consensusThreshold = Math.max(2, Math.ceil(results.length / 2));
+  return downCount >= consensusThreshold ? "DOWN" : "UP";
 }
 
 /**
