@@ -599,13 +599,6 @@ export function PublicView({
           </div>
         </>
       )}
-      {page.customJs && (
-        <script
-          dangerouslySetInnerHTML={{
-            __html: page.customJs,
-          }}
-        />
-      )}
     </div>
   );
 }
