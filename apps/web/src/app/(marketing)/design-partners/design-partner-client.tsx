@@ -1,13 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { ShieldCheck, CheckCircle2, Zap, Sparkles, ArrowRight, Loader2, Award, Users } from "lucide-react";
+import { ShieldCheck, CheckCircle2, Zap, Sparkles, ArrowRight, Loader2, Award, Users, Copy, Check } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
+import { submitDesignPartnerApplication } from "@/actions/design-partners";
 
 export default function DesignPartnerClient() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [vipCode, setVipCode] = useState("");
+  const [copied, setCopied] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -26,11 +29,24 @@ export default function DesignPartnerClient() {
     }
 
     setLoading(true);
-    // Simulate partner application registration
-    await new Promise((resolve) => setTimeout(resolve, 800));
+    const res = await submitDesignPartnerApplication(formData);
     setLoading(false);
-    setSubmitted(true);
-    toast.success("Design Partner application submitted successfully!");
+
+    if (res.success) {
+      setVipCode(res.vipCode || "");
+      setSubmitted(true);
+      toast.success(res.message || "Design Partner application submitted successfully!");
+    } else {
+      toast.error(res.error || "Failed to submit application. Please check your inputs.");
+    }
+  };
+
+  const handleCopyCode = () => {
+    if (!vipCode) return;
+    navigator.clipboard.writeText(vipCode);
+    setCopied(true);
+    toast.success("VIP Code copied to clipboard!");
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -102,11 +118,27 @@ export default function DesignPartnerClient() {
             <p className="text-muted-foreground text-xs leading-relaxed max-w-md">
               We've reserved your 1-year Pro license code. Check your inbox ({formData.email}) for onboarding instructions and your VIP Discord invite.
             </p>
+
+            {vipCode && (
+              <div className="my-2 p-4 bg-muted/40 border border-primary/30 rounded-xl flex items-center gap-3 font-mono">
+                <div className="flex flex-col text-left">
+                  <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Your VIP License Code</span>
+                  <span className="text-sm font-bold text-primary">{vipCode}</span>
+                </div>
+                <button
+                  onClick={handleCopyCode}
+                  className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 transition-all cursor-pointer ml-auto"
+                >
+                  {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
+                </button>
+              </div>
+            )}
+
             <Link
-              href="/dashboard"
+              href="/signup"
               className="mt-4 inline-flex items-center gap-2 h-10 px-6 bg-primary text-primary-foreground font-bold text-xs rounded-lg hover:bg-primary/90 transition-all"
             >
-              Go to Dashboard <ArrowRight className="size-4" />
+              Go to App & Activate <ArrowRight className="size-4" />
             </Link>
           </div>
         ) : (
