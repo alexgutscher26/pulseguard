@@ -5,7 +5,7 @@ import prisma from "@pulseguard/db";
 import { headers } from "next/headers";
 import { auth } from "@pulseguard/auth";
 
-export const designPartnerSchema = z.object({
+const designPartnerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Please enter a valid work email"),
   company: z.string().optional().default("Indie / Personal"),
