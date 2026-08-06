@@ -1,6 +1,51 @@
 import type { MonitorStatus } from "@pulseguard/types";
 
 /**
+ * Validates a target URL string to prevent Server-Side Request Forgery (SSRF)
+ * against private IP ranges, local loopbacks, link-local addresses, and cloud metadata endpoints.
+ */
+export function isPrivateOrInternalUrl(urlStr: string): { isForbidden: boolean; reason?: string } {
+  try {
+    const url = new URL(urlStr);
+    const hostname = url.hostname.toLowerCase().replace(/^\[|\]$/g, "");
+
+    // Block direct dangerous hostnames
+    if (
+      hostname === "localhost" ||
+      hostname === "127.0.0.1" ||
+      hostname === "0.0.0.0" ||
+      hostname === "::1" ||
+      hostname === "169.254.169.254" ||
+      hostname === "metadata.google.internal"
+    ) {
+      return { isForbidden: true, reason: `Forbidden target host: ${hostname}` };
+    }
+
+    // Check numerical IP formats
+    const ipParts = hostname.split(".").map(Number);
+    if (ipParts.length === 4 && ipParts.every((p) => !isNaN(p) && p >= 0 && p <= 255)) {
+      const [p1, p2] = ipParts;
+      // 127.0.0.0/8 (Loopback)
+      if (p1 === 127) return { isForbidden: true, reason: "Loopback address range (127.0.0.0/8) is forbidden" };
+      // 10.0.0.0/8 (Private)
+      if (p1 === 10) return { isForbidden: true, reason: "Private network range (10.0.0.0/8) is forbidden" };
+      // 172.16.0.0/12 (Private)
+      if (p1 === 172 && p2 >= 16 && p2 <= 31) return { isForbidden: true, reason: "Private network range (172.16.0.0/12) is forbidden" };
+      // 192.168.0.0/16 (Private)
+      if (p1 === 192 && p2 === 168) return { isForbidden: true, reason: "Private network range (192.168.0.0/16) is forbidden" };
+      // 169.254.0.0/16 (Link-Local / Metadata)
+      if (p1 === 169 && p2 === 254) return { isForbidden: true, reason: "Link-local/metadata range (169.254.0.0/16) is forbidden" };
+      // 0.0.0.0/8
+      if (p1 === 0) return { isForbidden: true, reason: "Invalid target IP address" };
+    }
+
+    return { isForbidden: false };
+  } catch {
+    return { isForbidden: true, reason: "Malformed or unparseable URL" };
+  }
+}
+
+/**
  * Formats a detailed, developer-friendly diagnostic trace when a network socket check or fetch fails.
  *
  * Classifies the failure into one of several categories (timeout, DNS failure,
@@ -296,6 +341,16 @@ export async function checkHttpUniversal(
     } else if (typeof config.headers === "object") {
       Object.assign(userHeaders, config.headers);
     }
+  }
+
+  const ssrfCheck = isPrivateOrInternalUrl(urlStr);
+  if (ssrfCheck.isForbidden) {
+    return {
+      status: "DOWN",
+      latency: 0,
+      errorReason: `SSRF_PROTECTION: ${ssrfCheck.reason || "Forbidden target URL"}`,
+      bodyText: "",
+    };
   }
 
   try {
