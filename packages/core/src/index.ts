@@ -4,6 +4,83 @@ import type { MonitorStatus } from "@pulseguard/types";
  * Validates a target URL string to prevent Server-Side Request Forgery (SSRF)
  * against private IP ranges, local loopbacks, link-local addresses, and cloud metadata endpoints.
  */
+/**
+ * Checks whether an IP string (v4 or v6) belongs to a private, loopback, link-local, or cloud metadata range.
+ */
+export function isPrivateOrInternalIp(ip: string): { isForbidden: boolean; reason?: string } {
+  const normalized = ip
+    .trim()
+    .toLowerCase()
+    .replace(/^\[|\]$/g, "");
+
+  // IPv6 checks
+  if (normalized === "::1" || normalized === "0:0:0:0:0:0:0:1") {
+    return { isForbidden: true, reason: "IPv6 loopback address (::1) is forbidden" };
+  }
+  if (normalized === "::" || normalized === "0:0:0:0:0:0:0:0") {
+    return { isForbidden: true, reason: "IPv6 unspecified address (::) is forbidden" };
+  }
+  if (normalized.startsWith("fe80:") || normalized.startsWith("fe80::")) {
+    return { isForbidden: true, reason: "IPv6 link-local address range (fe80::/10) is forbidden" };
+  }
+  if (normalized.startsWith("fc") || normalized.startsWith("fd")) {
+    return { isForbidden: true, reason: "IPv6 unique local address range (fc00::/7) is forbidden" };
+  }
+  // IPv4-mapped IPv6 (::ffff:127.0.0.1)
+  if (normalized.startsWith("::ffff:")) {
+    const v4Part = normalized.replace("::ffff:", "");
+    return isPrivateOrInternalIp(v4Part);
+  }
+
+  // Handle IPv4 decimal/hex/octal representations
+  let p1: number, p2: number, p3: number, p4: number;
+  const ipParts = normalized.split(".");
+  if (ipParts.length === 4) {
+    p1 = parseInt(ipParts[0] || "", 10);
+    p2 = parseInt(ipParts[1] || "", 10);
+    p3 = parseInt(ipParts[2] || "", 10);
+    p4 = parseInt(ipParts[3] || "", 10);
+  } else if (/^\d+$/.test(normalized)) {
+    // Single Dword integer IP (e.g., 2130706433 for 127.0.0.1)
+    const num = Number(BigInt(normalized));
+    p1 = (num >> 24) & 255;
+    p2 = (num >> 16) & 255;
+    p3 = (num >> 8) & 255;
+    p4 = num & 255;
+  } else {
+    return { isForbidden: false };
+  }
+
+  if (isNaN(p1) || isNaN(p2) || isNaN(p3) || isNaN(p4)) {
+    return { isForbidden: false };
+  }
+
+  // 127.0.0.0/8 (Loopback)
+  if (p1 === 127)
+    return { isForbidden: true, reason: "Loopback address range (127.0.0.0/8) is forbidden" };
+  // 10.0.0.0/8 (Private)
+  if (p1 === 10)
+    return { isForbidden: true, reason: "Private network range (10.0.0.0/8) is forbidden" };
+  // 172.16.0.0/12 (Private)
+  if (p1 === 172 && p2 >= 16 && p2 <= 31)
+    return { isForbidden: true, reason: "Private network range (172.16.0.0/12) is forbidden" };
+  // 192.168.0.0/16 (Private)
+  if (p1 === 192 && p2 === 168)
+    return { isForbidden: true, reason: "Private network range (192.168.0.0/16) is forbidden" };
+  // 169.254.0.0/16 (Link-Local / AWS Metadata)
+  if (p1 === 169 && p2 === 254)
+    return { isForbidden: true, reason: "Link-local/metadata range (169.254.0.0/16) is forbidden" };
+  // 0.0.0.0/8
+  if (p1 === 0)
+    return { isForbidden: true, reason: "Unspecified/invalid target IP address (0.0.0.0/8)" };
+
+  return { isForbidden: false };
+}
+
+/**
+ * Validates a target URL string to prevent Server-Side Request Forgery (SSRF)
+ * against private IP ranges, local loopbacks, link-local addresses, and cloud metadata endpoints.
+ */
 export function isPrivateOrInternalUrl(urlStr: string): { isForbidden: boolean; reason?: string } {
   try {
     const url = new URL(urlStr);
@@ -16,39 +93,13 @@ export function isPrivateOrInternalUrl(urlStr: string): { isForbidden: boolean; 
       hostname === "0.0.0.0" ||
       hostname === "::1" ||
       hostname === "169.254.169.254" ||
-      hostname === "metadata.google.internal"
+      hostname === "metadata.google.internal" ||
+      hostname === "instance-data"
     ) {
       return { isForbidden: true, reason: `Forbidden target host: ${hostname}` };
     }
 
-    // Check numerical IP formats
-    const ipParts = hostname.split(".").map(Number);
-    if (ipParts.length === 4 && ipParts.every((p) => !isNaN(p) && p >= 0 && p <= 255)) {
-      const p1 = ipParts[0] ?? -1;
-      const p2 = ipParts[1] ?? -1;
-      // 127.0.0.0/8 (Loopback)
-      if (p1 === 127)
-        return { isForbidden: true, reason: "Loopback address range (127.0.0.0/8) is forbidden" };
-      // 10.0.0.0/8 (Private)
-      if (p1 === 10)
-        return { isForbidden: true, reason: "Private network range (10.0.0.0/8) is forbidden" };
-      // 172.16.0.0/12 (Private)
-      if (p1 === 172 && p2 >= 16 && p2 <= 31)
-        return { isForbidden: true, reason: "Private network range (172.16.0.0/12) is forbidden" };
-      // 192.168.0.0/16 (Private)
-      if (p1 === 192 && p2 === 168)
-        return { isForbidden: true, reason: "Private network range (192.168.0.0/16) is forbidden" };
-      // 169.254.0.0/16 (Link-Local / Metadata)
-      if (p1 === 169 && p2 === 254)
-        return {
-          isForbidden: true,
-          reason: "Link-local/metadata range (169.254.0.0/16) is forbidden",
-        };
-      // 0.0.0.0/8
-      if (p1 === 0) return { isForbidden: true, reason: "Invalid target IP address" };
-    }
-
-    return { isForbidden: false };
+    return isPrivateOrInternalIp(hostname);
   } catch {
     return { isForbidden: true, reason: "Malformed or unparseable URL" };
   }
@@ -322,7 +373,7 @@ export async function checkHttpUniversal(
     headers?: string | Record<string, string>;
     body?: string;
     timeoutSeconds?: number;
-  },
+  } = {},
 ): Promise<{
   status: MonitorStatus;
   latency: number;
@@ -331,7 +382,7 @@ export async function checkHttpUniversal(
   statusCode?: number | undefined;
 }> {
   const start = Date.now();
-  const method = config.method || "GET";
+  const method = config?.method || "GET";
   const timeoutMs = (config.timeoutSeconds || 10) * 1000;
   const userHeaders: Record<string, string> = {};
 
@@ -352,52 +403,107 @@ export async function checkHttpUniversal(
     }
   }
 
-  const ssrfCheck = isPrivateOrInternalUrl(urlStr);
-  if (ssrfCheck.isForbidden) {
+  // Response body size limit: 5MB (5,242,880 bytes)
+  const MAX_RESPONSE_BYTES = 5 * 1024 * 1024;
+
+  let currentUrl = urlStr;
+  let response: Response | null = null;
+  let hops = 0;
+  const maxHops = 5;
+
+  while (hops < maxHops) {
+    const ssrfCheck = isPrivateOrInternalUrl(currentUrl);
+    if (ssrfCheck.isForbidden) {
+      return {
+        status: "DOWN",
+        latency: Date.now() - start,
+        errorReason: `SSRF_PROTECTION: ${ssrfCheck.reason || "Forbidden target URL or redirect target"}`,
+        bodyText: "",
+      };
+    }
+
+    try {
+      response = await fetch(currentUrl, {
+        method: hops === 0 ? method : "GET", // Follow redirects with GET
+        redirect: "manual",
+        headers: {
+          "User-Agent": "Mozilla/5.0 (compatible; PulseGuard/1.0; +https://pulseguard.io/bot)",
+          Accept: "*/*",
+          ...userHeaders,
+        },
+        body:
+          hops === 0 && ["POST", "PUT", "PATCH"].includes(method) ? (config.body ?? null) : null,
+        signal: AbortSignal.timeout(timeoutMs),
+      });
+
+      // Handle redirect chain manually to re-apply SSRF validation per hop
+      if ([301, 302, 303, 307, 308].includes(response.status)) {
+        const location = response.headers.get("location");
+        if (!location) break;
+        currentUrl = new URL(location, currentUrl).href;
+        hops++;
+        continue;
+      }
+
+      break;
+    } catch (err: any) {
+      const latency = Date.now() - start;
+      return {
+        status: "DOWN",
+        latency,
+        errorReason: diagnoseError(err, currentUrl),
+        bodyText: "",
+      };
+    }
+  }
+
+  if (!response) {
     return {
       status: "DOWN",
-      latency: 0,
-      errorReason: `SSRF_PROTECTION: ${ssrfCheck.reason || "Forbidden target URL"}`,
+      latency: Date.now() - start,
+      errorReason: "TOO_MANY_REDIRECTS: Exceeded maximum redirect hop count of 5",
       bodyText: "",
     };
   }
 
-  try {
-    const response = await fetch(urlStr, {
-      method,
-      redirect: "follow",
-      headers: {
-        "User-Agent": "Mozilla/5.0 (compatible; PulseGuard/1.0; +https://pulseguard.io/bot)",
-        Accept: "*/*",
-        ...userHeaders,
-      },
-      body: ["POST", "PUT", "PATCH"].includes(method) ? (config.body ?? null) : null,
-      signal: AbortSignal.timeout(timeoutMs),
-    });
-
-    const bodyText = await response.text();
-    const latency = Date.now() - start;
-
-    const statusNum = Number(response.status);
-    const isRateLimited = statusNum === 429;
-    const isIPBlocked = statusNum === 403;
-    const isHealthyStatus =
-      response.ok || (statusNum >= 300 && statusNum < 400) || isRateLimited || isIPBlocked;
-
-    return {
-      status: isHealthyStatus ? "UP" : "DOWN",
-      latency,
-      errorReason: isHealthyStatus ? undefined : diagnoseStatus(response.status, urlStr),
-      bodyText,
-      statusCode: statusNum,
-    };
-  } catch (err: any) {
-    const latency = Date.now() - start;
-    return {
-      status: "DOWN",
-      latency,
-      errorReason: diagnoseError(err, urlStr),
-      bodyText: "",
-    };
+  // Stream body with strict size limit to prevent OOM/memory exhaustion
+  let bodyText = "";
+  if (response.body) {
+    const reader = response.body.getReader();
+    let receivedBytes = 0;
+    const decoder = new TextDecoder();
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (value) {
+        receivedBytes += value.length;
+        if (receivedBytes > MAX_RESPONSE_BYTES) {
+          reader.cancel("Response size exceeded maximum limit of 5MB");
+          return {
+            status: "DOWN",
+            latency: Date.now() - start,
+            errorReason: "RESPONSE_TOO_LARGE: Exceeded maximum body size limit of 5MB",
+            bodyText: bodyText.substring(0, 1024) + "... [truncated]",
+            statusCode: response.status,
+          };
+        }
+        bodyText += decoder.decode(value, { stream: true });
+      }
+    }
   }
+
+  const latency = Date.now() - start;
+  const statusNum = Number(response.status);
+  const isRateLimited = statusNum === 429;
+  const isIPBlocked = statusNum === 403;
+  const isHealthyStatus =
+    response.ok || (statusNum >= 300 && statusNum < 400) || isRateLimited || isIPBlocked;
+
+  return {
+    status: isHealthyStatus ? "UP" : "DOWN",
+    latency,
+    errorReason: isHealthyStatus ? undefined : diagnoseStatus(response.status, currentUrl),
+    bodyText,
+    statusCode: statusNum,
+  };
 }
