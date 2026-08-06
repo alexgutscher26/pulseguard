@@ -6,7 +6,7 @@ import { useTheme } from "next-themes";
 import { CommandItem } from "../command-item";
 import { useCommandPalette } from "../use-command-palette";
 import { Sun, Moon, BookOpen, HelpCircle, LogOut } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 
 export function ActionCommands() {
   const router = useRouter();

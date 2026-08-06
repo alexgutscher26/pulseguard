@@ -5,7 +5,7 @@ import { authClient } from "@/lib/auth-client";
 import { useUploadThing } from "@/lib/uploadthing";
 import Image from "next/image";
 import { useRef, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 
 export function ProfileForm() {
   const { data: session } = authClient.useSession();

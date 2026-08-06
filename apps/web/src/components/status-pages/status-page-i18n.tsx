@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { updateLanguageSettings } from "@/actions/i18n";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import { Globe, Edit, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 

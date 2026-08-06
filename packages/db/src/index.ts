@@ -86,42 +86,56 @@ function getUrl() {
 }
 
 export async function resetPrisma(databaseUrl?: string) {
-  if (databaseUrl) {
-    if (g.instances!.has(databaseUrl)) {
-      const client = g.instances!.get(databaseUrl);
-      if (client) {
-        try {
-          await client.$disconnect();
-        } catch {}
-        if ((client as any).$pool) {
-          try {
-            await (client as any).$pool.end();
-          } catch {}
-        }
-      }
-      g.instances!.delete(databaseUrl);
-    }
-  } else {
-    if (g.prisma) {
+  if (databaseUrl && g.instances?.has(databaseUrl)) {
+    const client = g.instances.get(databaseUrl);
+    g.instances.delete(databaseUrl);
+    if (client) {
       try {
-        await g.prisma.$disconnect();
+        await client.$disconnect();
       } catch {}
-      if ((g.prisma as any).$pool) {
+      if ((client as any).$pool) {
         try {
-          await (g.prisma as any).$pool.end();
+          await (client as any).$pool.end();
         } catch {}
       }
-      g.prisma = undefined;
+    }
+  }
+
+  if (g.prisma) {
+    const oldClient = g.prisma;
+    g.prisma = undefined;
+    try {
+      await oldClient.$disconnect();
+    } catch {}
+    if ((oldClient as any).$pool) {
+      try {
+        await (oldClient as any).$pool.end();
+      } catch {}
     }
   }
 }
 
 export function getPrisma(databaseUrl?: string) {
   if (databaseUrl) {
-    if (!g.instances!.has(databaseUrl)) {
-      g.instances!.set(databaseUrl, createPrisma(databaseUrl));
+    const existing = g.instances?.get(databaseUrl);
+    if (existing) {
+      const pool = (existing as any).$pool;
+      if (pool && (pool.ended || pool.ending)) {
+        g.instances?.delete(databaseUrl);
+      } else {
+        return existing;
+      }
     }
-    return g.instances!.get(databaseUrl)!;
+    const created = createPrisma(databaseUrl);
+    g.instances?.set(databaseUrl, created);
+    return created;
+  }
+
+  if (g.prisma) {
+    const pool = (g.prisma as any).$pool;
+    if (pool && (pool.ended || pool.ending)) {
+      g.prisma = undefined;
+    }
   }
 
   if (!g.prisma) {

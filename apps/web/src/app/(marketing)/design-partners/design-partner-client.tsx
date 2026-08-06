@@ -15,7 +15,7 @@ import {
   Clock,
 } from "lucide-react";
 import Link from "next/link";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import { submitDesignPartnerApplication, getDesignPartnerSpots } from "@/actions/design-partners";
 
 export default function DesignPartnerClient({ initialSpots = 15 }: { initialSpots?: number }) {

@@ -6,7 +6,7 @@ import { CommandItem } from "../command-item";
 import { useCommandPalette } from "../use-command-palette";
 import { Edit, CheckCircle } from "lucide-react";
 import { getMonitors } from "@/actions/monitors";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import { useRouter } from "next/navigation";
 
 export function MonitorCommands() {

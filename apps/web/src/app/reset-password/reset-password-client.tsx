@@ -4,7 +4,7 @@ import { Suspense, useState } from "react";
 import { useForm } from "@tanstack/react-form";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import z from "zod";
 import { AlertTriangle, ArrowLeft, CheckCircle2, Lock } from "lucide-react";
 

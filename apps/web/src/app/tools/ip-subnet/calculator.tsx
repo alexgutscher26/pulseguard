@@ -17,7 +17,7 @@ import {
   ChevronRight,
   Monitor,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { calculateSubnet } from "@/lib/network-utils";
 import { cn } from "@/lib/utils";

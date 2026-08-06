@@ -6,7 +6,7 @@ import {
   deleteStatusPageOverride,
   getStatusPageOverrides,
 } from "@/actions/status-pages";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import {
   Loader2,
   Plus,

@@ -27,7 +27,7 @@ import {
   type StackTemplate,
   type StackMonitorPreset,
 } from "@pulseguard/shared/stack-templates";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import { useRouter } from "next/navigation";
 
 const iconMap: Record<string, React.ElementType> = {

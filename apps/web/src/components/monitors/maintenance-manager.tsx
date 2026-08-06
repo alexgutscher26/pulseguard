@@ -2,7 +2,7 @@
 
 import { useActionState, useState, useEffect } from "react";
 import { createMaintenanceWindow, deleteMaintenanceWindow } from "@/actions/maintenance";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import { Loader2, Plus, Calendar, Trash2, Construction } from "lucide-react";
 import { useRouter } from "next/navigation";
 

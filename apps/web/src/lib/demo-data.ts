@@ -39,6 +39,7 @@ export const DEMO_ONBOARDING_STATUS: OnboardingStatus = {
   hasCreatedMonitor: true,
   hasConfiguredAlert: true,
   hasSharedStatusPage: true,
+  onboardingCompleted: true,
   monitorsCount: 8,
   channelsCount: 3,
   statusPagesCount: 2,

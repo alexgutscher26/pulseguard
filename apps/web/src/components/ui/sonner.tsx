@@ -1,45 +1,53 @@
-import type { ToasterProps } from "sonner";
+"use client";
 
-import {
-  CircleCheckIcon,
-  InfoIcon,
-  Loader2Icon,
-  OctagonXIcon,
-  TriangleAlertIcon,
-} from "lucide-react";
+import "goey-toast/styles.css";
+
 import { useTheme } from "next-themes";
-import { Toaster as Sonner } from "sonner";
+import { GooeyToaster, gooeyToast } from "goey-toast";
+import type { GooeyToasterProps } from "goey-toast";
 
-const Toaster = ({ ...props }: ToasterProps) => {
+const Toaster = ({ ...props }: GooeyToasterProps) => {
   const { theme = "system" } = useTheme();
+  const isDark =
+    theme === "dark" || theme === "matrix" || theme === "cyberpunk" || theme === "blade";
 
   return (
-    <Sonner
-      theme={theme as ToasterProps["theme"]}
-      className="toaster group"
-      icons={{
-        success: <CircleCheckIcon className="size-4" />,
-        info: <InfoIcon className="size-4" />,
-        warning: <TriangleAlertIcon className="size-4" />,
-        error: <OctagonXIcon className="size-4" />,
-        loading: <Loader2Icon className="size-4 animate-spin" />,
-      }}
-      style={
-        {
-          "--normal-bg": "var(--popover)",
-          "--normal-text": "var(--popover-foreground)",
-          "--normal-border": "var(--border)",
-          "--border-radius": "var(--radius)",
-        } as React.CSSProperties
-      }
-      toastOptions={{
-        classNames: {
-          toast: "cn-toast",
-        },
-      }}
+    <GooeyToaster
+      position="bottom-right"
+      theme={isDark ? "dark" : "light"}
+      preset="snappy"
+      showProgress
       {...props}
     />
   );
 };
 
-export { Toaster };
+const toastFn = (title?: string | React.ReactNode, options?: any) => {
+  return gooeyToast(String(title || ""), options);
+};
+
+toastFn.success = (title?: string | React.ReactNode, options?: any) => {
+  return gooeyToast.success(String(title || ""), options);
+};
+
+toastFn.error = (title?: string | React.ReactNode, options?: any) => {
+  return gooeyToast.error(String(title || "An error occurred"), options);
+};
+
+toastFn.warning = (title?: string | React.ReactNode, options?: any) => {
+  return gooeyToast.warning(String(title || ""), options);
+};
+
+toastFn.info = (title?: string | React.ReactNode, options?: any) => {
+  return gooeyToast.info(String(title || ""), options);
+};
+
+toastFn.loading = (title?: string | React.ReactNode, options?: any) => {
+  return gooeyToast.info(String(title || "Loading..."), options);
+};
+
+toastFn.promise = gooeyToast.promise;
+toastFn.dismiss = gooeyToast.dismiss;
+toastFn.update = gooeyToast.update;
+
+export { Toaster, gooeyToast, toastFn as toast };

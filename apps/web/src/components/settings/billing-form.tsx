@@ -12,7 +12,7 @@ import {
   Tag,
 } from "lucide-react";
 import { PLANS, type PlanTier, type UsageSummary } from "@/lib/billing";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 
 interface BillingFormProps {
   initialUsage?: UsageSummary;

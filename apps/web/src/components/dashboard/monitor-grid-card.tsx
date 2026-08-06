@@ -15,7 +15,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import { checkMonitor } from "@/actions/monitors";
 import { useHaptic } from "@/hooks/use-haptic";
 

@@ -6,7 +6,6 @@ import { DashboardStats, type DashboardStatsData } from "@/components/dashboard/
 import { MonitorsTable } from "@/components/dashboard/monitors-table";
 import { MonitorsGrid } from "@/components/dashboard/monitors-grid";
 import { AIInsights, type MonitorInsight } from "@/components/dashboard/ai-insights";
-import { PrivacyBanner } from "@/components/dashboard/privacy-banner";
 import { OnboardingChecklist } from "@/components/dashboard/onboarding-checklist";
 import { UsageLimitBanner } from "@/components/dashboard/usage-limit-banner";
 import { useMonitors, useDashboardStats } from "@/hooks/use-monitors";
@@ -79,7 +78,6 @@ export default function Dashboard({
       {!isDemo && <UsageLimitBanner summary={usageSummary} />}
       {!isDemo && <OnboardingChecklist status={onboardingStatus} userEmail={userEmail} />}
       <AIInsights insights={initialInsights} />
-      {!isDemo && <PrivacyBanner />}
       <DashboardStats stats={stats} />
 
       {/* View Mode Selector bar */}

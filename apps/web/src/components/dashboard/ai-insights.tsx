@@ -14,7 +14,7 @@ import {
   BarChart3,
 } from "lucide-react";
 import { dismissInsight } from "@/actions/monitors";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
 import {
   Dialog,

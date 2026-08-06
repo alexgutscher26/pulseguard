@@ -3,7 +3,7 @@
 import { Smartphone, Lock, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 
 /**
  * Renders a security form for managing two-factor authentication and password changes.

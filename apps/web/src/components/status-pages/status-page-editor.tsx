@@ -26,7 +26,7 @@ import {
   Trophy,
 } from "lucide-react";
 import Link from "next/link";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import { useRouter } from "next/navigation";
 
 import { StatusPageSettings } from "./status-page-settings";

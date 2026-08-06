@@ -13,7 +13,7 @@ import {
   FileJson,
   Trophy,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import type { PrivacyReport } from "@/actions/privacy";
 import { cn } from "@/lib/utils";
 

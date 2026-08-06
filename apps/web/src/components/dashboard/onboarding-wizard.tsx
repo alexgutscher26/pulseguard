@@ -24,6 +24,13 @@ import {
   Cpu,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
@@ -40,6 +47,7 @@ import {
 } from "@/actions/importers";
 import { createNotificationChannel } from "@/actions/notifications";
 import type { OnboardingStatus } from "@/actions/onboarding";
+import { completeOnboarding } from "@/actions/onboarding";
 
 interface OnboardingWizardProps {
   open: boolean;
@@ -284,11 +292,19 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
     setStep(3);
   };
 
-  if (!open) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-zinc-950/85 backdrop-blur-xl animate-fade-in overflow-y-auto">
-      <div className="relative w-full max-w-2xl max-h-[90vh] flex flex-col rounded-2xl border border-emerald-500/30 bg-zinc-950/95 shadow-[0_0_60px_rgba(16,185,129,0.25)] my-auto overflow-hidden text-zinc-100">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="dark max-w-2xl max-h-[90vh] p-0 border border-emerald-500/30 bg-zinc-950/95 shadow-[0_0_60px_rgba(16,185,129,0.25)] text-zinc-100 overflow-hidden rounded-2xl sm:rounded-2xl flex flex-col [&>button]:hidden">
+        <DialogHeader className="sr-only">
+          <DialogTitle>PulseGuard 60-Second Setup</DialogTitle>
+          <DialogDescription>
+            {step === 1 &&
+              "Create monitor or 1-click import from UptimeRobot, Better Stack, or StatusCake."}
+            {step === 2 && "Connect your alert channel — never leave a monitor unnotified."}
+            {step === 3 && "Live Multi-Region Edge Consensus Verification."}
+          </DialogDescription>
+        </DialogHeader>
+
         {/* Header bar (Fixed Top) */}
         <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-zinc-800/80 bg-zinc-900/60 backdrop-blur-md">
           <div className="flex items-center gap-3">
@@ -825,7 +841,8 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
 
                 <div className="pt-2">
                   <Button
-                    onClick={() => {
+                    onClick={async () => {
+                      await completeOnboarding();
                       onOpenChange(false);
                       window.location.reload();
                     }}
@@ -838,7 +855,7 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
             )}
           </AnimatePresence>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

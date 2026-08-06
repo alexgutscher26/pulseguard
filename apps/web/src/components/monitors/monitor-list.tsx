@@ -31,7 +31,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { toggleMonitor, checkMonitor, deleteMonitor } from "@/actions/monitors";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 
 /**
  * Renders a status bar with a background color based on the provided status.

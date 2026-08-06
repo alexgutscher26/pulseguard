@@ -3,7 +3,7 @@
 import { useActionState, useEffect } from "react";
 import { verifyStatusPagePassword } from "@/actions/status-pages";
 import { Lock, Loader2, ArrowRight } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import { useRouter } from "next/navigation";
 
 export function PasswordProtection({ pageId, title }: { pageId: string; title: string }) {

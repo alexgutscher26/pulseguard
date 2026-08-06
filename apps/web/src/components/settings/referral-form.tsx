@@ -17,7 +17,7 @@ import {
   Gift,
 } from "lucide-react";
 import { getReferralSummary, type ReferralSummary } from "@/actions/referrals";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 
 export function ReferralForm() {
   const [summary, setSummary] = useState<ReferralSummary | null>(null);

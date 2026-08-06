@@ -3,7 +3,7 @@
 import { useActionState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { createStatusPage } from "@/actions/status-pages";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import { useRouter } from "next/navigation";
 import { Globe, Loader2, Link as LinkIcon, Lock } from "lucide-react";
 

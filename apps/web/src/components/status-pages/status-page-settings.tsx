@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useState } from "react";
 import { updateStatusPage } from "@/actions/status-pages";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import {
   Loader2,
   Palette,

@@ -17,7 +17,7 @@ import {
   Server,
   Activity,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import { motion, AnimatePresence } from "framer-motion";
 
 const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";

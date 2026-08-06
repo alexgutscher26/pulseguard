@@ -12,7 +12,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { updateLeaderboardPrivacy } from "@/actions/privacy";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 
 interface ShowcaseSubmitPanelProps {
   /** Slug of the status page — used to build the badge embed URL */

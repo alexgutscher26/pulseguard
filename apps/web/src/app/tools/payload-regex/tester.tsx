@@ -21,7 +21,7 @@ import {
   Globe,
   FileText,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import { GlitchText } from "@/components/ui/effects/glitch-text";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";

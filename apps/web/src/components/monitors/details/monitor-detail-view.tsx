@@ -29,7 +29,7 @@ import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import { MonitorExportModal } from "@/components/monitors/details/export-modal";
 import { useHaptic } from "@/hooks/use-haptic";
 

@@ -2,7 +2,7 @@
 
 import { CheckCircle, ExternalLink } from "lucide-react";
 import { toggleMonitor } from "@/actions/monitors";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import { useTransition } from "react";
 import { AVAILABLE_REGIONS } from "@pulseguard/shared";
 import { useHaptic } from "@/hooks/use-haptic";

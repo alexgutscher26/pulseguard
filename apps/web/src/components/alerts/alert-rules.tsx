@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useState, useTransition } from "react";
 import { createAlertRule, deleteAlertRule, toggleAlertRule } from "@/actions/notifications";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import {
   Dialog,
   DialogContent,

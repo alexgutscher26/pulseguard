@@ -23,7 +23,7 @@ import {
   generatePostMortemSummary,
   getMonitorEventsDuringIncident,
 } from "@/actions/post-mortem";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import { motion } from "framer-motion";
 
 interface PostMortemData {

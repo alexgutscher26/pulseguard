@@ -3,7 +3,7 @@ import type { AppRouter } from "@pulseguard/api";
 import { QueryCache, QueryClient } from "@tanstack/react-query";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import { createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 
 export const queryClient = new QueryClient({
   queryCache: new QueryCache({

@@ -24,7 +24,7 @@ import Link from "next/link";
 import { createMonitor, updateMonitor } from "@/actions/monitors";
 import { useActionState, useState } from "react";
 import { useEffect } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { RegionSelector } from "./region-selector";
 import type { UsageSummary } from "@/lib/billing";

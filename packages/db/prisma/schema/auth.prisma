@@ -8,6 +8,7 @@ model User {
   dateFormat           String?               @default("MM/DD/YYYY")
   timeFormat           String?               @default("HH:mm")
   tier                 String                @default("INITIATE")
+  onboardingCompleted  Boolean               @default(false)
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @updatedAt
   sessions             Session[]
