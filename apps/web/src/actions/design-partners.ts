@@ -33,17 +33,29 @@ export interface DesignPartnerSpotsInfo {
   remainingSpots: number;
 }
 
-// In-memory application counter initialized to 4 claimed (11 remaining out of 15)
-let globalClaimedApplications = 4;
 const TOTAL_PARTNER_SPOTS = 15;
+const DESIGN_PARTNER_IDENTIFIER = "design_partner_application";
 
 export async function getDesignPartnerSpots(): Promise<DesignPartnerSpotsInfo> {
-  const remainingSpots = Math.max(1, TOTAL_PARTNER_SPOTS - globalClaimedApplications);
-  return {
-    totalSpots: TOTAL_PARTNER_SPOTS,
-    claimedSpots: globalClaimedApplications,
-    remainingSpots,
-  };
+  try {
+    const claimedSpots = await prisma.verification.count({
+      where: { identifier: DESIGN_PARTNER_IDENTIFIER },
+    });
+    const remainingSpots = Math.max(1, TOTAL_PARTNER_SPOTS - claimedSpots);
+
+    return {
+      totalSpots: TOTAL_PARTNER_SPOTS,
+      claimedSpots,
+      remainingSpots,
+    };
+  } catch (error) {
+    console.error("Failed to query design partner spots from DB:", error);
+    return {
+      totalSpots: TOTAL_PARTNER_SPOTS,
+      claimedSpots: 0,
+      remainingSpots: TOTAL_PARTNER_SPOTS,
+    };
+  }
 }
 
 function generateVipCode(): string {
@@ -63,11 +75,26 @@ export async function submitDesignPartnerApplication(
 
     const vipCode = generateVipCode();
 
-    // Increment global claimed application count
-    globalClaimedApplications += 1;
-    const remainingSpots = Math.max(1, TOTAL_PARTNER_SPOTS - globalClaimedApplications);
+    // Persist application in Prisma database
+    try {
+      await prisma.verification.create({
+        data: {
+          id: `dp_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+          identifier: DESIGN_PARTNER_IDENTIFIER,
+          value: JSON.stringify({
+            ...parsed,
+            vipCode,
+            userId: session?.user?.id || null,
+            timestamp: new Date().toISOString(),
+          }),
+          expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year
+        },
+      });
+    } catch (dbSaveErr) {
+      console.warn("Could not save design partner application record to DB:", dbSaveErr);
+    }
 
-    // If user is currently logged in, upgrade user or log design partner status
+    // If user is currently logged in, upgrade user tier to NETRUNNER (Pro)
     if (session?.user?.id) {
       try {
         await prisma.user.update({
@@ -81,10 +108,13 @@ export async function submitDesignPartnerApplication(
       }
     }
 
-    console.log(`[DesignPartner] New Application Received:`, {
+    // Query fresh remaining spots count from database
+    const spotsInfo = await getDesignPartnerSpots();
+
+    console.log(`[DesignPartner] Application Accepted:`, {
       ...parsed,
       vipCode,
-      remainingSpots,
+      remainingSpots: spotsInfo.remainingSpots,
       userId: session?.user?.id || "guest",
       timestamp: new Date().toISOString(),
     });
@@ -92,7 +122,7 @@ export async function submitDesignPartnerApplication(
     return {
       success: true,
       vipCode,
-      remainingSpots,
+      remainingSpots: spotsInfo.remainingSpots,
       message: "Application accepted! Your 1-year Netrunner Pro access code has been generated.",
     };
   } catch (error: any) {

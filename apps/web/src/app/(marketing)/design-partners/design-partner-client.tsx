@@ -6,12 +6,12 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { submitDesignPartnerApplication, getDesignPartnerSpots } from "@/actions/design-partners";
 
-export default function DesignPartnerClient() {
+export default function DesignPartnerClient({ initialSpots = 15 }: { initialSpots?: number }) {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [vipCode, setVipCode] = useState("");
   const [copied, setCopied] = useState(false);
-  const [remainingSpots, setRemainingSpots] = useState(11);
+  const [remainingSpots, setRemainingSpots] = useState(initialSpots);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
