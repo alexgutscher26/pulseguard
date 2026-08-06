@@ -23,6 +23,23 @@ export default {
   async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
     console.log(`Cron triggered: ${event.cron}`);
 
+    // --- DOWNSAMPLING & DATA RETENTION: Run on daily cron trigger ---
+    if (event.cron === "0 0 * * *") {
+      ctx.waitUntil(
+        (async () => {
+          try {
+            const dsPrisma = getPrisma(env.DATABASE_URL);
+            const { runDownsamplingCron } = await import("./downsampling-cron");
+            await runDownsamplingCron(env);
+            const { resetPrisma } = await import("@pulseguard/db");
+            await resetPrisma(env.DATABASE_URL);
+          } catch (err) {
+            console.error("[Downsampling] Daily run failed:", err);
+          }
+        })(),
+      );
+    }
+
     // --- ANOMALY SCANNER: Run on 5-minute or hourly triggers ---
     if (event.cron === "*/5 * * * *" || event.cron === "0 * * * *") {
       ctx.waitUntil(
@@ -73,9 +90,8 @@ export default {
       );
     }
 
-    // FREE TIER CONFIG: Process 5 monitors per cron tick (1 min)
-    // Decreased to 5 to avoid CPU limits (exceededCpu error).
-    const BATCH_SIZE = 5;
+    // Increased batch size ceiling to process up to 100 due monitors per cron tick
+    const BATCH_SIZE = 100;
 
     const totalShards = Number(env.TOTAL_SHARDS || 1);
     const shardId = Number(env.SHARD_ID || 0);

@@ -366,39 +366,32 @@ async function cleanupRawMonitorEvents(prisma: any): Promise<void> {
 }
 
 /**
+ * Entry point for downsampling and raw event cleanup.
+ */
+export async function runDownsamplingCron(env: Env): Promise<void> {
+  const prisma = getPrisma(env.DATABASE_URL);
+  try {
+    console.log("[Downsampling] Running 1m → 5m downsampling");
+    await downsample1mTo5m(prisma);
+
+    console.log("[Downsampling] Running 5m → 1h downsampling");
+    await downsample5mTo1h(prisma);
+
+    console.log("[Aggregator] Running Daily Summary");
+    await summarizeDailyEvents(prisma);
+
+    console.log("[Aggregator] Running Raw Event Cleanup");
+    await cleanupRawMonitorEvents(prisma);
+  } catch (error) {
+    console.error("[Downsampling] Error:", error);
+  }
+}
+
+/**
  * Scheduled handler
  */
 export default {
   async scheduled(event: ScheduledEvent, env: Env, _ctx: ExecutionContext): Promise<void> {
-    const prisma = getPrisma(env.DATABASE_URL);
-    const cron = event.cron;
-
-    try {
-      // Every 5 minutes: 1m → 5m downsampling
-      if (cron === "*/5 * * * *") {
-        console.log("[Downsampling] Running 1m → 5m downsampling");
-        await downsample1mTo5m(prisma);
-      }
-
-      // Every hour: 5m → 1h downsampling + cleanup
-      if (cron === "0 * * * *") {
-        console.log("[Downsampling] Running 5m → 1h downsampling");
-        await downsample5mTo1h(prisma);
-
-        console.log("[Downsampling] Running aggregate cleanup");
-        await cleanupOldData(prisma);
-      }
-
-      // Daily: Summary + Raw Event Cleanup
-      if (cron === "0 0 * * *") {
-        console.log("[Aggregator] Running Daily Summary");
-        await summarizeDailyEvents(prisma);
-
-        console.log("[Aggregator] Running Raw Event Cleanup");
-        await cleanupRawMonitorEvents(prisma);
-      }
-    } catch (error) {
-      console.error("[Downsampling] Error:", error);
-    }
+    await runDownsamplingCron(env);
   },
 };
