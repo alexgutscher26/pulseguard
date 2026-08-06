@@ -1,16 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ShieldCheck, CheckCircle2, Zap, Sparkles, ArrowRight, Loader2, Award, Users, Copy, Check } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { submitDesignPartnerApplication } from "@/actions/design-partners";
+import { submitDesignPartnerApplication, getDesignPartnerSpots } from "@/actions/design-partners";
 
 export default function DesignPartnerClient() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [vipCode, setVipCode] = useState("");
   const [copied, setCopied] = useState(false);
+  const [remainingSpots, setRemainingSpots] = useState(11);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -20,6 +21,16 @@ export default function DesignPartnerClient() {
     currentTool: "UptimeRobot",
     feedbackCommitment: true,
   });
+
+  useEffect(() => {
+    getDesignPartnerSpots()
+      .then((info) => {
+        if (typeof info.remainingSpots === "number") {
+          setRemainingSpots(info.remainingSpots);
+        }
+      })
+      .catch((err) => console.warn("Failed to fetch spots info:", err));
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +45,11 @@ export default function DesignPartnerClient() {
 
     if (res.success) {
       setVipCode(res.vipCode || "");
+      if (typeof res.remainingSpots === "number") {
+        setRemainingSpots(res.remainingSpots);
+      } else {
+        setRemainingSpots((prev) => Math.max(1, prev - 1));
+      }
       setSubmitted(true);
       toast.success(res.message || "Design Partner application submitted successfully!");
     } else {
@@ -64,13 +80,13 @@ export default function DesignPartnerClient() {
           Get <span className="text-foreground font-bold font-mono">1 Year of PulseGuard Netrunner Pro ($168 value) free</span>. In exchange, give us 15 minutes of real feedback and an honest review for launch day.
         </p>
 
-        {/* Spots counter */}
+        {/* Dynamic Spots counter */}
         <div className="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-card border border-border text-xs font-mono">
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75 animate-ping" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
           </span>
-          <span className="text-foreground font-bold">11 of 15 spots remaining</span>
+          <span className="text-foreground font-bold">{remainingSpots} of 15 spots remaining</span>
         </div>
       </div>
 

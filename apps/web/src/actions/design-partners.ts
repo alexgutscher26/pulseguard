@@ -22,8 +22,28 @@ export type DesignPartnerInput = z.infer<typeof designPartnerSchema>;
 export interface DesignPartnerResponse {
   success: boolean;
   vipCode?: string;
+  remainingSpots?: number;
   message?: string;
   error?: string;
+}
+
+export interface DesignPartnerSpotsInfo {
+  totalSpots: number;
+  claimedSpots: number;
+  remainingSpots: number;
+}
+
+// In-memory application counter initialized to 4 claimed (11 remaining out of 15)
+let globalClaimedApplications = 4;
+const TOTAL_PARTNER_SPOTS = 15;
+
+export async function getDesignPartnerSpots(): Promise<DesignPartnerSpotsInfo> {
+  const remainingSpots = Math.max(1, TOTAL_PARTNER_SPOTS - globalClaimedApplications);
+  return {
+    totalSpots: TOTAL_PARTNER_SPOTS,
+    claimedSpots: globalClaimedApplications,
+    remainingSpots,
+  };
 }
 
 function generateVipCode(): string {
@@ -43,6 +63,10 @@ export async function submitDesignPartnerApplication(
 
     const vipCode = generateVipCode();
 
+    // Increment global claimed application count
+    globalClaimedApplications += 1;
+    const remainingSpots = Math.max(1, TOTAL_PARTNER_SPOTS - globalClaimedApplications);
+
     // If user is currently logged in, upgrade user or log design partner status
     if (session?.user?.id) {
       try {
@@ -60,6 +84,7 @@ export async function submitDesignPartnerApplication(
     console.log(`[DesignPartner] New Application Received:`, {
       ...parsed,
       vipCode,
+      remainingSpots,
       userId: session?.user?.id || "guest",
       timestamp: new Date().toISOString(),
     });
@@ -67,6 +92,7 @@ export async function submitDesignPartnerApplication(
     return {
       success: true,
       vipCode,
+      remainingSpots,
       message: "Application accepted! Your 1-year Netrunner Pro access code has been generated.",
     };
   } catch (error: any) {
