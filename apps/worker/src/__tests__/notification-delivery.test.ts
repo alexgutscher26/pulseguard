@@ -6,7 +6,7 @@ describe("Alert Notification Resilience & Failure Modes", () => {
   test("sendSlackAlert: retries on 500 Server Error and throws after max attempts", async () => {
     let callCount = 0;
     const originalFetch = globalThis.fetch;
-    
+
     // Mock fetch to simulate 500 status
     globalThis.fetch = (async () => {
       callCount++;
@@ -21,6 +21,7 @@ describe("Alert Notification Resilience & Failure Modes", () => {
         status: "DOWN",
         timestamp: new Date().toISOString(),
         reason: "HTTP 500",
+        previousStatus: "DOWN",
       });
       expect(true).toBe(false); // Should not reach here
     } catch (err: any) {
@@ -50,6 +51,7 @@ describe("Alert Notification Resilience & Failure Modes", () => {
         url: "tcp://db.example.com:5432",
         status: "DOWN",
         timestamp: new Date().toISOString(),
+        previousStatus: "DOWN",
       });
       expect(callCount).toBe(2); // Recovered on 2nd attempt
     } finally {

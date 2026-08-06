@@ -321,7 +321,9 @@ export default {
           );
 
           if (failed > 0 && successful === 0) {
-            console.error(`[Notification] All deliveries failed for ${notification.monitorName}, triggering queue retry.`);
+            console.error(
+              `[Notification] All deliveries failed for ${notification.monitorName}, triggering queue retry.`,
+            );
             msg.retry();
           } else {
             msg.ack();
