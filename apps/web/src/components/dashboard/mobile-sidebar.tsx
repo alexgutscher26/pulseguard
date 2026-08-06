@@ -25,7 +25,6 @@ const navigation = [
   { name: "Integrations", href: "/dashboard/integrations", icon: Blocks },
   { name: "Incidents", href: "/dashboard/incidents", icon: TriangleAlert },
   { name: "Alerts", href: "/dashboard/alerts", icon: Bell },
-  { name: "Design Partners", href: "/dashboard/design-partners", icon: Award },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
@@ -78,9 +77,7 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
 
           {/* Navigation Links */}
           <nav className="flex flex-col gap-1">
-            {navigation
-              .filter((item) => item.href !== "/dashboard/design-partners")
-              .map((item) => {
+            {navigation.map((item) => {
               const isActive = pathname === item.href;
               return (
                 <Link

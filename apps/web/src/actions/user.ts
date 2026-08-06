@@ -74,7 +74,16 @@ export async function getLicenseTelemetry() {
 
   try {
     const prisma = await import("@pulseguard/db").then((m) => m.default);
-    const userTier = session.user.tier || "INITIATE";
+
+    const dbUser = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { tier: true, email: true },
+    });
+
+    const userTier = dbUser?.tier || session.user.tier || "INITIATE";
+    const adminEmails = (process.env.ADMIN_EMAILS || "").split(",").map((e) => e.trim().toLowerCase());
+    const isEmailAdmin = Boolean(dbUser?.email && adminEmails.includes(dbUser.email.toLowerCase()));
+    const isAdmin = userTier === "ADMIN" || isEmailAdmin;
 
     const probeCount = await prisma.probe.count({
       where: {
@@ -91,14 +100,15 @@ export async function getLicenseTelemetry() {
       maxProbes = 3;
       pingInterval = "30s Min";
       regions = "3 Regions";
-    } else if (userTier === "CONSTRUCT") {
-      maxProbes = 5; // Construct represents enterprise tier
+    } else if (userTier === "CONSTRUCT" || userTier === "ADMIN") {
+      maxProbes = 5; // Enterprise / Admin
       pingInterval = "10s Min";
       regions = "Global Edge";
     }
 
     return {
       tier: userTier,
+      isAdmin,
       probeCount,
       maxProbes,
       pingInterval,

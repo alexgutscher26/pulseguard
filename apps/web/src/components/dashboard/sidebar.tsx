@@ -29,7 +29,6 @@ const navigation = [
   { name: "Integrations", href: "/dashboard/integrations", icon: Blocks },
   { name: "Incidents", href: "/dashboard/incidents", icon: TriangleAlert },
   { name: "Alerts", href: "/dashboard/alerts", icon: Bell },
-  { name: "Design Partners", href: "/dashboard/design-partners", icon: Award },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
@@ -38,6 +37,7 @@ export function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [telemetry, setTelemetry] = useState<{
     tier: string;
+    isAdmin?: boolean;
     probeCount: number;
     maxProbes: number;
     pingInterval: string;
@@ -128,9 +128,14 @@ export function Sidebar() {
 
         {/* Navigation Links */}
         <nav className="flex flex-col gap-1.5 mt-2">
-          {navigation
-            .filter((item) => item.href !== "/dashboard/design-partners" || currentTier === "ADMIN")
-            .map((item) => {
+          {(telemetry?.isAdmin
+            ? [
+                ...navigation.slice(0, 7),
+                { name: "Design Partners", href: "/dashboard/design-partners", icon: Award },
+                ...navigation.slice(7),
+              ]
+            : navigation
+          ).map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link
