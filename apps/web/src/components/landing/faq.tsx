@@ -21,7 +21,7 @@ export default function FAQ() {
     },
     {
       q: "What are the exact capabilities and limits of the Initiate (Free) plan?",
-      a: `The Initiate plan is designed for side projects and indie developers. It includes 50 active monitors, 60-second checks, 1 public status page, and up to ${PRODUCT_CONFIG.FREE_CHECKS_LIMIT.toLocaleString()} free checks per month. It requires no credit card and supports HTTP, SSL/TLS, DNS, and Heartbeat checks with 3 days of log retention.`,
+      a: `The Initiate plan is designed for side projects, indie developers, and commercial applications. Free plan includes commercial use with 50 active monitors, 60-second checks, 1 public status page, and up to ${PRODUCT_CONFIG.FREE_CHECKS_LIMIT.toLocaleString()} free checks per month. It requires no credit card and supports HTTP, SSL/TLS, DNS, and Heartbeat checks with 3 days of log retention.`,
     },
     {
       q: "Can I monitor protocols other than standard web pages?",

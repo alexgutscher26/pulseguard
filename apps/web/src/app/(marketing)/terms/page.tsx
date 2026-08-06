@@ -18,9 +18,14 @@ const sections = [
       "By accessing or using PulseGuard, you agree to be bound by these Terms of Service. If you do not agree, do not use the service. We reserve the right to update these terms at any time; continued use after changes constitutes acceptance.",
   },
   {
-    title: "Service Description",
+    title: "Service Description & Commercial Use",
     content:
-      "PulseGuard provides uptime monitoring, incident alerting, and status page hosting. Features and availability depend on your subscription plan. We strive for high availability but do not guarantee uninterrupted service. PulseGuard is not a replacement for your own disaster recovery planning.",
+      "PulseGuard provides uptime monitoring, incident alerting, and status page hosting. Features and availability depend on your subscription plan. Free plan includes commercial use. We strive for high availability but do not guarantee uninterrupted service. PulseGuard is not a replacement for your own disaster recovery planning.",
+  },
+  {
+    title: "Commercial Use Guarantee",
+    content:
+      "Free plan includes commercial use. You are expressly permitted to use PulseGuard's free tier for commercial applications, production workloads, SaaS products, client projects, open-source tools, and personal infrastructure without any requirement to upgrade to a paid plan, subject only to standard acceptable use terms and plan limits.",
   },
   {
     title: "Account Registration",

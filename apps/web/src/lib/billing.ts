@@ -27,7 +27,7 @@ export const PLANS: Record<PlanTier, PlanDetails> = {
   INITIATE: {
     id: "INITIATE",
     name: "The Initiate",
-    description: "Perfect for indie developers & personal side projects.",
+    description: "Perfect for indie developers, side projects & commercial use.",
     monthlyPrice: 0,
     annualPriceMonthly: 0,
     limits: {
@@ -42,6 +42,7 @@ export const PLANS: Record<PlanTier, PlanDetails> = {
     features: [
       "50 Active Monitors",
       "60-second Heartbeat checks",
+      "Free plan includes commercial use",
       "Email & Discord alert dispatches",
       "1 Public Status page",
       "3 Days log & telemetry retention",

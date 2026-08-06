@@ -120,6 +120,12 @@ export default function Pricing() {
               <ul className="text-xs space-y-4 text-muted-foreground/90 font-medium">
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
+                  <span className="text-foreground font-semibold">
+                    Free plan includes commercial use
+                  </span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check className="size-4 text-primary shrink-0" />
                   <span className="text-foreground">
                     <span className="font-mono font-bold">50</span> Active Monitors
                   </span>
@@ -383,6 +389,10 @@ export default function Pricing() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-6 text-xs text-muted-foreground pt-2">
+            <div className="flex items-center gap-2">
+              <span className="text-primary font-bold">✓</span> Free plan includes commercial use
+            </div>
+            <div className="hidden sm:block text-muted-foreground/30">•</div>
             <div className="flex items-center gap-2">
               <span className="text-primary font-bold">✓</span> 14-day free trial on paid plans
             </div>
