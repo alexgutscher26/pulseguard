@@ -240,8 +240,10 @@ export async function getStatusPages() {
  *
  * @param {string} id - The unique identifier of the status page to retrieve.
  */
+import { getSafeSession } from "@/lib/safe-session";
+
 export async function getStatusPage(id: string) {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getSafeSession();
   if (!session?.user) return null;
 
   return prisma.statusPage.findUnique({
@@ -387,7 +389,13 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
  * @returns An object indicating the success of the operation and any associated error messages.
  */
 export async function addMonitorToPage(pageId: string, monitorId: string) {
-  const session = await auth.api.getSession({ headers: await headers() });
+  let reqHeaders: any;
+  try {
+    reqHeaders = await headers();
+  } catch {
+    reqHeaders = new Headers();
+  }
+  const session = await auth.api.getSession({ headers: reqHeaders });
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
   try {
@@ -395,6 +403,11 @@ export async function addMonitorToPage(pageId: string, monitorId: string) {
       where: { id: pageId, userId: session.user.id },
     });
     if (!page) return { success: false, error: "Page not found" };
+
+    const monitor = await prisma.monitor.findFirst({
+      where: { id: monitorId, userId: session.user.id },
+    });
+    if (!monitor) return { success: false, error: "Monitor not found or unauthorized" };
 
     await prisma.statusPageMonitor.create({
       data: {
@@ -826,13 +839,24 @@ export async function createStatusPageOverride(
   status: string,
   message?: string,
 ) {
-  const session = await auth.api.getSession({ headers: await headers() });
+  let reqHeaders: any;
+  try {
+    reqHeaders = await headers();
+  } catch {
+    reqHeaders = new Headers();
+  }
+  const session = await auth.api.getSession({ headers: reqHeaders });
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
   const page = await prisma.statusPage.findUnique({
     where: { id: statusPageId, userId: session.user.id } as any,
   });
   if (!page) return { success: false, error: "Status page not found" };
+
+  const monitor = await prisma.monitor.findFirst({
+    where: { id: monitorId, userId: session.user.id },
+  });
+  if (!monitor) return { success: false, error: "Monitor not found or unauthorized" };
 
   const date = new Date(dateStr);
   date.setUTCHours(0, 0, 0, 0);
@@ -872,13 +896,24 @@ export async function createStatusPageOverride(
  * Deletes a manual override.
  */
 export async function deleteStatusPageOverride(statusPageId: string, overrideId: string) {
-  const session = await auth.api.getSession({ headers: await headers() });
+  let reqHeaders: any;
+  try {
+    reqHeaders = await headers();
+  } catch {
+    reqHeaders = new Headers();
+  }
+  const session = await auth.api.getSession({ headers: reqHeaders });
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
   const page = await prisma.statusPage.findUnique({
     where: { id: statusPageId, userId: session.user.id } as any,
   });
   if (!page) return { success: false, error: "Status page not found" };
+
+  const override = await prisma.statusPageOverride.findFirst({
+    where: { id: overrideId, statusPageId, statusPage: { userId: session.user.id } },
+  });
+  if (!override) return { success: false, error: "Override not found or unauthorized" };
 
   try {
     await prisma.statusPageOverride.delete({

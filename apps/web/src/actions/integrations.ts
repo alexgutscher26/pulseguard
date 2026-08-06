@@ -728,10 +728,10 @@ export async function getConnectedIntegrations() {
 /**
  * Disconnects/deletes a persistent integration.
  */
+import { getSafeSession } from "@/lib/safe-session";
+
 export async function disconnectIntegration(integrationId: string) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSafeSession();
 
   if (!session?.user) {
     return { success: false, error: "Unauthorized" };

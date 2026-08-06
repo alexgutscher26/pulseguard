@@ -5,10 +5,10 @@ import { auth } from "@pulseguard/auth";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 
+import { getSafeSession } from "@/lib/safe-session";
+
 export async function getIncidents() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSafeSession();
 
   if (!session?.user) return [];
 
@@ -43,9 +43,7 @@ export async function getIncidents() {
 }
 
 export async function getIncident(id: string) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSafeSession();
 
   if (!session?.user) return null;
 
@@ -77,9 +75,7 @@ export async function updateIncidentStatus(
   id: string,
   status: "INVESTIGATING" | "IDENTIFIED" | "MONITORING" | "RESOLVED",
 ) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSafeSession();
 
   if (!session?.user) return { success: false, error: "Unauthorized" };
 

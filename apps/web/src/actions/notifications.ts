@@ -79,9 +79,7 @@ export async function createNotificationChannel(prevState: any, formData: FormDa
 }
 
 export async function deleteNotificationChannel(id: string) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSafeSession();
 
   if (!session?.user) {
     return { success: false, error: "Unauthorized" };
@@ -112,9 +110,7 @@ export async function deleteNotificationChannel(id: string) {
  * @returns An object indicating the success status and any error messages.
  */
 export async function sendTestNotification(id: string) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSafeSession();
 
   if (!session?.user) {
     return { success: false, error: "Unauthorized" };
@@ -498,10 +494,10 @@ export async function updateAlertRule(id: string, prevState: any, formData: Form
   }
 }
 
+import { getSafeSession } from "@/lib/safe-session";
+
 export async function deleteAlertRule(id: string) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSafeSession();
 
   if (!session?.user) {
     return { success: false, error: "Unauthorized" };

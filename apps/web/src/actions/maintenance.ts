@@ -87,10 +87,10 @@ export async function createMaintenanceWindow(prevState: any, formData: FormData
   }
 }
 
+import { getSafeSession } from "@/lib/safe-session";
+
 export async function deleteMaintenanceWindow(id: string) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSafeSession();
 
   if (!session?.user) {
     return { success: false, error: "Unauthorized" };

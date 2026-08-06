@@ -316,6 +316,22 @@ export async function unsubscribe(manageToken: string): Promise<SubscriptionResu
  */
 export async function getVerifiedSubscribers(statusPageId: string, monitorId?: string) {
   try {
+    const { auth } = await import("@pulseguard/auth");
+    const { headers } = await import("next/headers");
+    let reqHeaders: any;
+    try {
+      reqHeaders = await headers();
+    } catch {
+      reqHeaders = new Headers();
+    }
+    const session = await auth.api.getSession({ headers: reqHeaders });
+    if (!session?.user) return [];
+
+    const page = await prisma.statusPage.findFirst({
+      where: { id: statusPageId, userId: session.user.id },
+    });
+    if (!page) return [];
+
     const whereClause: any = {
       statusPageId,
       verified: true,

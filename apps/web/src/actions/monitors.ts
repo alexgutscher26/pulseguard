@@ -624,10 +624,10 @@ export async function getMonitors() {
  * @param id - The unique identifier of the monitor to retrieve.
  * @returns The monitor object if found, or null if the user is not authenticated or an error occurs.
  */
+import { getSafeSession } from "@/lib/safe-session";
+
 export async function getMonitor(id: string) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSafeSession();
 
   if (!session?.user) return null;
 
@@ -1255,9 +1255,7 @@ async function sendSlackAlert(
 }
 
 export async function toggleMonitor(id: string, enabled: boolean) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSafeSession();
 
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
@@ -1446,9 +1444,7 @@ export async function getSessionToken() {
 }
 
 export async function deleteMonitor(id: string) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSafeSession();
 
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
