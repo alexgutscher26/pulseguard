@@ -148,16 +148,35 @@ export async function sendSlackAlert(
     ],
   };
 
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
+  let attempts = 0;
+  const maxAttempts = 3;
 
-  // Consume body
-  await res.text();
+  while (attempts < maxAttempts) {
+    attempts++;
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-  if (!res.ok) {
-    throw new Error("Slack Webhook failed: " + res.status + " " + res.statusText);
+      await res.text();
+
+      if (res.ok) {
+        return; // Success
+      }
+
+      if (res.status === 429 || res.status >= 500) {
+        if (attempts < maxAttempts) {
+          await new Promise((resolve) => setTimeout(resolve, Math.pow(2, attempts) * 500));
+          continue;
+        }
+      }
+
+      throw new Error(`Slack Webhook failed: ${res.status} ${res.statusText}`);
+    } catch (err) {
+      if (attempts >= maxAttempts) throw err;
+      await new Promise((resolve) => setTimeout(resolve, Math.pow(2, attempts) * 500));
+    }
   }
 }

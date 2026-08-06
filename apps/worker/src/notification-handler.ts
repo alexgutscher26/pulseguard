@@ -320,7 +320,12 @@ export default {
             `[Notification] Processed ${successful} deliveries for ${notification.monitorName} (${failed} failed)`,
           );
 
-          msg.ack();
+          if (failed > 0 && successful === 0) {
+            console.error(`[Notification] All deliveries failed for ${notification.monitorName}, triggering queue retry.`);
+            msg.retry();
+          } else {
+            msg.ack();
+          }
         } catch (error) {
           console.error(`[Notification] Error processing notification:`, error);
           msg.retry();
