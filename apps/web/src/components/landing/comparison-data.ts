@@ -11,6 +11,7 @@ export type CompetitorInfo = {
   id: string;
   name: string;
   url: string;
+  pricingUrl: string;
   description: string;
   badge?: string;
   isPrimary?: boolean;
@@ -35,6 +36,7 @@ export const competitors: CompetitorInfo[] = [
     id: "pulseguard",
     name: "PulseGuard",
     url: "https://pulseguard.io",
+    pricingUrl: "/pricing",
     description: "Cloudflare edge-native monitoring with 1-min checks and zero false positives.",
     badge: "Recommended",
     isPrimary: true,
@@ -43,19 +45,22 @@ export const competitors: CompetitorInfo[] = [
     id: "uptimerobot",
     name: "UptimeRobot",
     url: "https://uptimerobot.com",
-    description: "The legacy provider — popular but stuck at 5-minute free checks.",
+    pricingUrl: "https://uptimerobot.com/pricing",
+    description: "Popular legacy provider with 50 free monitors at 5-min check intervals.",
   },
   {
     id: "checkly",
     name: "Checkly",
     url: "https://checklyhq.com",
-    description: "API & Playwright synthetic monitoring focused on developer workflows.",
+    pricingUrl: "https://www.checklyhq.com/pricing",
+    description: "API & Playwright synthetic monitoring (10 monitors, 2-min check interval).",
   },
   {
     id: "betteruptime",
     name: "Better Uptime",
     url: "https://betteruptime.com",
-    description: "Modern incident management UI, but expensive for multi-region scale.",
+    pricingUrl: "https://betterstack.com/uptime/pricing",
+    description: "Modern incident management UI (10 monitors, 5-min check interval).",
   },
 ];
 
@@ -66,7 +71,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
     description: "Frequency of synthetic ping & health checks on free plan",
     pulseguard: "1 minute",
     uptimerobot: "5 minutes",
-    checkly: "10 minutes",
+    checkly: "2 minutes",
     betteruptime: "5 minutes",
     competitor1: "5 minutes",
     competitor2: "5 minutes",

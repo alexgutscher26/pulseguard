@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Check, X, Sparkles, ArrowRight, ShieldCheck } from "lucide-react";
+import { Check, X, Sparkles, ArrowRight, ShieldCheck, ExternalLink } from "lucide-react";
 import { competitors, featureComparisons } from "./comparison-data";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -93,9 +93,16 @@ export default function ComparisonTable() {
                   {otherCompetitors.map((comp) => (
                     <th key={comp.id} className="p-5 w-1/6 text-center">
                       <div className="flex flex-col items-center text-center gap-1">
-                        <span className="text-sm font-bold text-foreground/80 font-mono">
+                        <a
+                          href={comp.pricingUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-sm font-bold text-foreground/80 font-mono hover:text-primary transition-colors hover:underline decoration-primary underline-offset-4"
+                          title={`Verify ${comp.name} pricing & plan details`}
+                        >
                           {comp.name}
-                        </span>
+                          <ExternalLink className="size-3 text-muted-foreground/70" />
+                        </a>
                         <span className="text-[10px] text-muted-foreground font-sans line-clamp-2 font-normal max-w-[140px]">
                           {comp.description}
                         </span>
@@ -141,6 +148,41 @@ export default function ComparisonTable() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Verification & Disclaimer Note */}
+          <div className="px-5 py-3 bg-muted/20 border-t border-border/50 text-[11px] font-mono text-muted-foreground flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+            <div>
+              <span className="font-bold text-foreground">Last verified August 2026.</span> All pricing and feature claims are verified against official competitor pricing pages:{" "}
+              <a
+                href="https://uptimerobot.com/pricing"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-primary transition-colors"
+              >
+                UptimeRobot Pricing
+              </a>
+              {", "}
+              <a
+                href="https://www.checklyhq.com/pricing"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-primary transition-colors"
+              >
+                Checkly Pricing
+              </a>
+              {" (2-min interval, 10 monitors, 6 locations)"}
+              {", and "}
+              <a
+                href="https://betterstack.com/uptime/pricing"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-primary transition-colors"
+              >
+                Better Stack Pricing
+              </a>
+              {"."}
+            </div>
           </div>
 
           {/* Table Footer Banner */}

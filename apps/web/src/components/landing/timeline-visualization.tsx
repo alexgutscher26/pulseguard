@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Clock, AlertTriangle, CheckCircle2, Zap, ArrowRight } from "lucide-react";
+import { Clock, AlertTriangle, CheckCircle2, Zap, ArrowRight, ExternalLink } from "lucide-react";
 import { intervalComparison, downtimeScenarios, featureComparisons } from "./comparison-data";
 
 function IntervalBar({
@@ -337,13 +337,40 @@ export function FeatureComparisonTable() {
                 PulseGuard
               </th>
               <th className="text-center py-3 px-3 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                UptimeRobot
+                <a
+                  href="https://uptimerobot.com/pricing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 hover:text-primary transition-colors underline decoration-border hover:decoration-primary"
+                  title="Verify UptimeRobot pricing & plan specs"
+                >
+                  UptimeRobot
+                  <ExternalLink className="size-2.5 text-muted-foreground/70" />
+                </a>
               </th>
               <th className="text-center py-3 px-3 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                Better Uptime
+                <a
+                  href="https://betterstack.com/uptime/pricing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 hover:text-primary transition-colors underline decoration-border hover:decoration-primary"
+                  title="Verify Better Stack pricing & plan specs"
+                >
+                  Better Uptime
+                  <ExternalLink className="size-2.5 text-muted-foreground/70" />
+                </a>
               </th>
               <th className="text-center py-3 px-3 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                OpenStatus
+                <a
+                  href="https://www.openstatus.dev/pricing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 hover:text-primary transition-colors underline decoration-border hover:decoration-primary"
+                  title="Verify OpenStatus pricing & plan specs"
+                >
+                  OpenStatus
+                  <ExternalLink className="size-2.5 text-muted-foreground/70" />
+                </a>
               </th>
             </tr>
           </thead>
@@ -409,6 +436,14 @@ export function FeatureComparisonTable() {
             })}
           </tbody>
         </table>
+      </div>
+
+      <div className="pt-2 text-[10px] font-mono text-muted-foreground">
+        <span className="font-bold text-foreground">Last verified August 2026.</span> Specs verified against official provider documentation:{" "}
+        <a href="https://uptimerobot.com/pricing" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">UptimeRobot</a>,{" "}
+        <a href="https://www.checklyhq.com/pricing" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">Checkly</a>,{" "}
+        <a href="https://betterstack.com/uptime/pricing" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">Better Stack</a>, and{" "}
+        <a href="https://www.openstatus.dev/pricing" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">OpenStatus</a>.
       </div>
     </div>
   );
