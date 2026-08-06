@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import AdminDesignPartnersClient from "./admin-client";
 import { getAllDesignPartnerApplications } from "@/actions/design-partners";
+import { getAdminStatus } from "@/actions/admin";
 
 export const metadata: Metadata = {
   title: "Design Partner Applications | Admin | PulseGuard",
@@ -8,6 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminDesignPartnersPage() {
+  const admin = await getAdminStatus();
   const applications = await getAllDesignPartnerApplications();
-  return <AdminDesignPartnersClient initialApplications={applications} />;
+  return <AdminDesignPartnersClient initialApplications={applications} isAdmin={admin.isAdmin} />;
 }

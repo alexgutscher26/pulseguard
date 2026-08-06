@@ -191,13 +191,20 @@ export async function getAllDesignPartnerApplications(): Promise<DesignPartnerRe
   }
 }
 
+import { getAdminStatus } from "./admin";
+
 /**
- * Approve a pending design partner application
+ * Approve a pending design partner application (Requires Admin role)
  */
 export async function approveDesignPartnerApplication(
   id: string
 ): Promise<{ success: boolean; vipCode?: string; error?: string }> {
   try {
+    const admin = await getAdminStatus();
+    if (!admin.isAdmin) {
+      return { success: false, error: "Unauthorized: Admin access required to approve design partners" };
+    }
+
     const record = await prisma.verification.findUnique({
       where: { id },
     });
@@ -245,12 +252,17 @@ export async function approveDesignPartnerApplication(
 }
 
 /**
- * Reject a design partner application
+ * Reject a design partner application (Requires Admin role)
  */
 export async function rejectDesignPartnerApplication(
   id: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const admin = await getAdminStatus();
+    if (!admin.isAdmin) {
+      return { success: false, error: "Unauthorized: Admin access required to reject design partners" };
+    }
+
     const record = await prisma.verification.findUnique({
       where: { id },
     });
