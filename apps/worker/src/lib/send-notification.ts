@@ -27,10 +27,10 @@ export async function queueNotification(
   console.warn(
     `[Notification] Queue not available - sending notification directly for ${payload.monitorName}`,
   );
-  
+
   let attempts = 0;
   const maxAttempts = 3;
-  
+
   while (attempts < maxAttempts) {
     try {
       attempts++;
@@ -52,7 +52,10 @@ export async function queueNotification(
       await notificationHandler.queue(batch, env, ctx);
       return; // Success
     } catch (notifError) {
-      console.error(`[Notification] Attempt ${attempts}/${maxAttempts} failed for ${payload.monitorName}:`, notifError);
+      console.error(
+        `[Notification] Attempt ${attempts}/${maxAttempts} failed for ${payload.monitorName}:`,
+        notifError,
+      );
       if (attempts < maxAttempts) {
         await new Promise((resolve) => setTimeout(resolve, Math.pow(2, attempts) * 500));
       }

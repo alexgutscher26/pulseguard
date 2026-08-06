@@ -24,17 +24,26 @@ export function isPrivateOrInternalUrl(urlStr: string): { isForbidden: boolean; 
     // Check numerical IP formats
     const ipParts = hostname.split(".").map(Number);
     if (ipParts.length === 4 && ipParts.every((p) => !isNaN(p) && p >= 0 && p <= 255)) {
-      const [p1, p2] = ipParts;
+      const p1 = ipParts[0] ?? -1;
+      const p2 = ipParts[1] ?? -1;
       // 127.0.0.0/8 (Loopback)
-      if (p1 === 127) return { isForbidden: true, reason: "Loopback address range (127.0.0.0/8) is forbidden" };
+      if (p1 === 127)
+        return { isForbidden: true, reason: "Loopback address range (127.0.0.0/8) is forbidden" };
       // 10.0.0.0/8 (Private)
-      if (p1 === 10) return { isForbidden: true, reason: "Private network range (10.0.0.0/8) is forbidden" };
+      if (p1 === 10)
+        return { isForbidden: true, reason: "Private network range (10.0.0.0/8) is forbidden" };
       // 172.16.0.0/12 (Private)
-      if (p1 === 172 && p2 >= 16 && p2 <= 31) return { isForbidden: true, reason: "Private network range (172.16.0.0/12) is forbidden" };
+      if (p1 === 172 && p2 >= 16 && p2 <= 31)
+        return { isForbidden: true, reason: "Private network range (172.16.0.0/12) is forbidden" };
       // 192.168.0.0/16 (Private)
-      if (p1 === 192 && p2 === 168) return { isForbidden: true, reason: "Private network range (192.168.0.0/16) is forbidden" };
+      if (p1 === 192 && p2 === 168)
+        return { isForbidden: true, reason: "Private network range (192.168.0.0/16) is forbidden" };
       // 169.254.0.0/16 (Link-Local / Metadata)
-      if (p1 === 169 && p2 === 254) return { isForbidden: true, reason: "Link-local/metadata range (169.254.0.0/16) is forbidden" };
+      if (p1 === 169 && p2 === 254)
+        return {
+          isForbidden: true,
+          reason: "Link-local/metadata range (169.254.0.0/16) is forbidden",
+        };
       // 0.0.0.0/8
       if (p1 === 0) return { isForbidden: true, reason: "Invalid target IP address" };
     }

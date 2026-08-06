@@ -7,7 +7,11 @@ export async function GET() {
   try {
     const prisma = getPrisma();
     await prisma.$queryRaw`SELECT 1`;
-    return NextResponse.json({ status: "ok", db: "connected", timestamp: new Date().toISOString() });
+    return NextResponse.json({
+      status: "ok",
+      db: "connected",
+      timestamp: new Date().toISOString(),
+    });
   } catch (error) {
     console.error("[HealthCheck] Database ping failed:", error);
     return NextResponse.json(

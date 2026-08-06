@@ -391,7 +391,7 @@ export async function runDownsamplingCron(env: Env): Promise<void> {
  * Scheduled handler
  */
 export default {
-  async scheduled(event: ScheduledEvent, env: Env, _ctx: ExecutionContext): Promise<void> {
+  async scheduled(_event: ScheduledEvent, env: Env, _ctx: ExecutionContext): Promise<void> {
     await runDownsamplingCron(env);
   },
 };
