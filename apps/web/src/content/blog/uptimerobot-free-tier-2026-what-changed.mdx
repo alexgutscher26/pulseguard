@@ -21,31 +21,35 @@ Here is an objective, factual breakdown of UptimeRobot's free tier policies in 2
 ## What Changed: Key Free Tier Policy Updates
 
 ### 1. Custom Domain Status Pages Moved to Paid Tiers
+
 Historically, free users could point custom DNS `CNAME` records (e.g., `status.yourdomain.com`) to UptimeRobot status pages at no cost. Under updated plan tiering, custom domain mapping and SSL certificate issuance for public status pages require upgrading to a paid subscription (starting at $7/month). Free status pages remain hosted under UptimeRobot's default domain handles (e.g., `stats.uptimerobot.com/xxxx`).
 
 ### 2. Strict 5-Minute (300-Second) Check Interval Enforcement
+
 While 5-minute checks have always been the baseline for UptimeRobot's free tier, legacy workarounds and custom API configurations that previously allowed sub-5-minute sampling were formally deprecated. All free accounts are strictly bound to 300-second polling windows across all 50 endpoints.
 
 ### 3. Email Alert Rate-Limiting & Integration Tiers
+
 Free tier notification dispatches are subject to monthly email quotas and rate-limiting during high-frequency outage flapping. Advanced alert integrations — including native Slack, Microsoft Teams, Discord webhooks, and SMS credits — are restricted or capped on free tiers, encouraging users to adopt paid plans for team operational workflows.
 
 ### 4. Inactive Account & Dormant Monitor Pruning
+
 To reduce infrastructure load from abandoned side projects, accounts without active owner logins for 180 consecutive days receive automated warning notices before monitor execution is paused.
 
 ---
 
 ## Side-by-Side: UptimeRobot Free Tier (2018 vs 2026)
 
-| Policy / Feature | UptimeRobot Free (2018) | UptimeRobot Free (2026) |
-| :--- | :---: | :---: |
-| **Monitor Count** | 50 Monitors | **50 Monitors** (Unchanged) |
-| **Check Interval** | 5 Minutes (300s) | **5 Minutes (300s)** (Strict) |
-| **Status Page Custom Domain** | Included (Free `CNAME`) | **Paid Only** ($7/mo+) |
-| **Alert Notification Methods** | Email, SMS credits, Webhooks | **Email (Quota Capped)** |
-| **SSL Expiry Monitoring** | Basic Included | **Basic Included** |
-| **Account Retention Policy** | Indefinite | **180-Day Activity Rule** |
+| Policy / Feature               |   UptimeRobot Free (2018)    |    UptimeRobot Free (2026)    |
+| :----------------------------- | :--------------------------: | :---------------------------: |
+| **Monitor Count**              |         50 Monitors          |  **50 Monitors** (Unchanged)  |
+| **Check Interval**             |       5 Minutes (300s)       | **5 Minutes (300s)** (Strict) |
+| **Status Page Custom Domain**  |   Included (Free `CNAME`)    |    **Paid Only** ($7/mo+)     |
+| **Alert Notification Methods** | Email, SMS credits, Webhooks |   **Email (Quota Capped)**    |
+| **SSL Expiry Monitoring**      |        Basic Included        |      **Basic Included**       |
+| **Account Retention Policy**   |          Indefinite          |   **180-Day Activity Rule**   |
 
-*Data compiled from public ToS archives and official product change logs as of August 2026.*
+_Data compiled from public ToS archives and official product change logs as of August 2026._
 
 ---
 
@@ -54,11 +58,13 @@ To reduce infrastructure load from abandoned side projects, accounts without act
 Why are legacy monitoring providers adjusting free tier boundaries? It comes down to the changing cost structure of cloud infrastructure.
 
 ### The Legacy Cloud Polling Model
+
 UptimeRobot operates a traditional centralized polling infrastructure across dedicated cloud servers. Running thousands of persistent background processes to issue HTTP, TCP, and Ping requests across 50 endpoints per user generates continuous compute, database write, and network egress costs.
 
 As cloud hosting costs increased and free-tier abuse by automated botnets rose, legacy providers faced a choice: either monetize features that were previously free (such as custom domain status pages and webhook integrations) or reduce free endpoint limits. UptimeRobot chose to preserve its **50-monitor count** while monetizing custom domains and advanced alerting integrations.
 
 ### The Modern Edge-Native Alternative
+
 Newer monitoring platforms built on serverless edge networks (such as Cloudflare Workers or AWS Lambda@Edge) operate under a fundamentally different cost model:
 
 - **Serverless Compute:** Edge workers execute pings only when triggered, reducing idle server costs by over 90%.
@@ -72,12 +78,14 @@ Newer monitoring platforms built on serverless edge networks (such as Cloudflare
 Depending on your specific monitoring requirements, here is how to evaluate your setup in 2026:
 
 ### Stay with UptimeRobot if:
+
 - You have up to 50 side-project endpoints where a 5-minute check delay is completely acceptable.
 - You do not need a custom domain (`status.yourdomain.com`) for your public status page.
 - You are comfortable receiving outage alerts via standard email rather than instant webhooks or team chat channels.
 - Your existing workflows rely on third-party CMS plugins built specifically for UptimeRobot API keys.
 
 ### Consider Modern Alternatives (e.g., PulseGuard) if:
+
 - You require **sub-minute incident detection (60-second checks vs 300-second checks)**.
 - You need **custom domain status pages with free SSL certificates**.
 - You want **multi-region quorum consensus** to eliminate false positive 3 AM wake-up calls.
@@ -88,6 +96,6 @@ Depending on your specific monitoring requirements, here is how to evaluate your
 
 ## Conclusion
 
-UptimeRobot's 2026 free tier remains a functional starting point for basic side projects. However, the enforcement of 5-minute check intervals and the monetization of custom domain status pages reflect the realities of legacy cloud polling infrastructure. 
+UptimeRobot's 2026 free tier remains a functional starting point for basic side projects. However, the enforcement of 5-minute check intervals and the monetization of custom domain status pages reflect the realities of legacy cloud polling infrastructure.
 
 For developers building production web applications, understanding these policy changes allows you to select the right monitoring tool for your infrastructure needs.

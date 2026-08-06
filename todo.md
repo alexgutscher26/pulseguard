@@ -618,7 +618,9 @@
 
 - [x] Integrate Stripe Billing (subscription, usage-based metering, invoices)
 - [x] Build `/settings/billing` page with plan display and Stripe Customer Portal link
-- [x] Define pricing tiers: Free, Pro ($X/month), Enterprise (custom)
+- [x] Define pricing tiers: Initiate (Free), Netrunner ($14/mo), Construct ($69/mo)
+- [x] Establish Team & Business Necessity Paywall: Core monitoring & false-positive consensus free; custom domain, multi-seat, on-call, private probes paid
+- [x] Implement Early Cohort Grandfathering Guarantee (`tierVersion` & `grandfatheredAt` schema locking)
 - [x] Implement feature flags based on workspace plan (enforced server-side)
 - [x] Add usage metering: track checks per month, monitors created, notifications sent
 - [x] Add usage alert: warn workspace owner when approaching plan limits

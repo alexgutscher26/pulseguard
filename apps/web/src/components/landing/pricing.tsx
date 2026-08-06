@@ -94,14 +94,19 @@ export default function Pricing() {
           {/* Tier 1: The Initiate */}
           <div className="bg-card border border-border rounded-2xl flex flex-col relative hover:border-primary/20 transition-all duration-300">
             <div className="p-8 border-b border-border">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/50 mb-2">
-                tier_00
-              </p>
+              <div className="flex items-center justify-between mb-2">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/50">
+                  tier_00
+                </p>
+                <span className="text-[9px] font-mono font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                  Grandfathered
+                </span>
+              </div>
               <h3 className="text-foreground font-bold text-lg uppercase tracking-wider">
                 The Initiate
               </h3>
               <p className="text-xs text-muted-foreground mt-1">
-                Perfect for indie developers & side projects.
+                Full core function for indie devs & side projects.
               </p>
               <div className="mt-6 flex flex-col gap-1.5 h-[52px] justify-center">
                 <div className="flex items-baseline gap-1">
@@ -110,8 +115,8 @@ export default function Pricing() {
                   </span>
                   <span className="text-muted-foreground text-xs font-medium">/mo</span>
                 </div>
-                <span className="text-[10px] text-muted-foreground/60 font-mono font-bold uppercase tracking-wider">
-                  Free Forever
+                <span className="text-[10px] text-muted-foreground/70 font-mono font-bold uppercase tracking-wider">
+                  Free Forever • Launch Cohort Guaranteed
                 </span>
               </div>
             </div>
@@ -121,42 +126,31 @@ export default function Pricing() {
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
                   <span className="text-foreground font-semibold">
-                    Free plan includes commercial use
+                    <span className="font-mono font-bold">50</span> Active Monitors (60s interval)
+                  </span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Activity className="size-4 text-primary shrink-0" />
+                  <span className="text-foreground font-semibold">
+                    Multi-Region Consensus (Zero false positives)
                   </span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span className="text-foreground">
-                    <span className="font-mono font-bold">50</span> Active Monitors
+                  <span>Slack, Discord & Email alerts</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check className="size-4 text-primary shrink-0" />
+                  <span>1 Public Status page (PulseGuard footer)</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check className="size-4 text-primary shrink-0" />
+                  <span>3 Days log retention & full commercial use</span>
+                </li>
+                <li className="flex items-center gap-3 text-muted-foreground/60 pt-2 border-t border-border/40">
+                  <span className="text-[11px]">
+                    🔒 Launch terms honored permanently for early accounts
                   </span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Check className="size-4 text-primary shrink-0" />
-                  <span>
-                    <span className="font-mono font-bold text-foreground">
-                      {PRODUCT_CONFIG.FREE_CHECKS_LIMIT.toLocaleString()}
-                    </span>{" "}
-                    free checks/mo
-                  </span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Check className="size-4 text-primary shrink-0" />
-                  <span>
-                    <span className="font-mono font-bold text-foreground">60-Second</span> Heartbeat
-                    checks
-                  </span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Check className="size-4 text-primary shrink-0" />
-                  <span>1 Public Status page</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Check className="size-4 text-primary shrink-0" />
-                  <span>Email & Discord dispatches</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Check className="size-4 text-primary shrink-0" />
-                  <span>3 Days Log retention</span>
                 </li>
               </ul>
 
@@ -176,7 +170,7 @@ export default function Pricing() {
               The Sleep Plan
             </div>
 
-            {/* Live indicator — this is the tier actually watching things in real time */}
+            {/* Live indicator */}
             <div
               className="absolute top-5 right-5 flex items-center gap-1.5"
               aria-label="Live monitoring status: active"
@@ -197,9 +191,11 @@ export default function Pricing() {
               <h3 className="text-primary font-bold text-lg uppercase tracking-wider">
                 The Netrunner
               </h3>
-              <p className="text-xs text-primary/70 mt-1">Solo devs who value their sleep.</p>
+              <p className="text-xs text-primary/70 mt-1">
+                For growing apps & branded status pages.
+              </p>
 
-              {/* Signature: a live-looking heartbeat trace, because this is the plan built on "pulse" */}
+              {/* Heartbeat trace */}
               <div className="mt-4 h-7 w-full text-primary/70" aria-hidden="true">
                 <svg viewBox="0 0 300 32" className="w-full h-full" preserveAspectRatio="none">
                   <path
@@ -239,38 +235,26 @@ export default function Pricing() {
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
                   <span className="text-foreground font-semibold">
-                    <span className="font-mono">200</span> Active Monitors
+                    <span className="font-mono">200</span> Active Monitors (30s interval)
                   </span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
                   <span className="text-foreground font-semibold">
-                    <span className="font-mono">30-Second</span> Heartbeat checks
+                    Custom Domain & White-Label (Remove footer)
                   </span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <Activity className="size-4 text-primary shrink-0" />
-                  <span>Real alerts only — if we call, it&apos;s real</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Activity className="size-4 text-primary shrink-0" />
-                  <span>Multi-Region verification</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Activity className="size-4 text-primary shrink-0" />
-                  <span>Anomalous latency indicators</span>
+                  <Check className="size-4 text-primary shrink-0" />
+                  <span>SMS & Phone voice call alerts</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>SSL & Port monitoring</span>
+                  <span>SSL, Port & Browser synthetic allowance</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>White-label Status pages</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Check className="size-4 text-primary shrink-0" />
-                  <span>30 Days Logs & PDF reports</span>
+                  <span>30 Days log retention & PDF reports</span>
                 </li>
               </ul>
 
@@ -293,7 +277,7 @@ export default function Pricing() {
                 The Construct
               </h3>
               <p className="text-xs text-muted-foreground mt-1">
-                Enterprise reliability for professional teams.
+                Built for multi-user teams & private infrastructure.
               </p>
               <div className="mt-6 flex flex-col gap-1.5 h-[52px] justify-center">
                 <div className="flex items-baseline gap-2">
@@ -319,36 +303,31 @@ export default function Pricing() {
               <ul className="text-xs space-y-4 text-muted-foreground/90 font-medium">
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span className="text-foreground">Unlimited Monitors</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Check className="size-4 text-primary shrink-0" />
-                  <span>
-                    <span className="font-mono font-bold text-foreground">10-Second</span> HFT
-                    Heartbeat checks
+                  <span className="text-foreground font-semibold">
+                    Unlimited Monitors & 10s checks
                   </span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>
-                    Full Global Pulse coverage <span className="font-mono">(5 regions)</span>
+                  <span className="text-foreground font-semibold">
+                    Multi-Seat Team Workspaces & RBAC
                   </span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>SSO, SAML & Workspaces</span>
+                  <span>On-Call Escalation policies & schedules</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>PagerDuty & custom alerts</span>
+                  <span>Private Probe Agents (VPC / On-prem)</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>Private status portals</span>
+                  <span>PagerDuty, Opsgenie & custom webhooks</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>1 Year Log retention</span>
+                  <span>1 Year log retention & SAML / SSO</span>
                 </li>
               </ul>
 

@@ -81,7 +81,9 @@ export async function getLicenseTelemetry() {
     });
 
     const userTier = dbUser?.tier || session.user.tier || "INITIATE";
-    const adminEmails = (process.env.ADMIN_EMAILS || "").split(",").map((e) => e.trim().toLowerCase());
+    const adminEmails = (process.env.ADMIN_EMAILS || "")
+      .split(",")
+      .map((e) => e.trim().toLowerCase());
     const isEmailAdmin = Boolean(dbUser?.email && adminEmails.includes(dbUser.email.toLowerCase()));
     const isAdmin = userTier === "ADMIN" || isEmailAdmin;
 

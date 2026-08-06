@@ -372,6 +372,70 @@ export async function createMonitor(prevState: any, formData: FormData) {
 }
 
 /**
+ * Quick creates a monitor from JSON data (for onboarding wizard).
+ */
+export async function quickCreateMonitor(data: {
+  name: string;
+  url?: string;
+  type?: "HTTP" | "PING" | "PORT" | "SSL" | "DNS";
+  interval?: number;
+  port?: number;
+}) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  try {
+    const limitCheck = await assertMonitorLimits(session.user.id, { isNew: true });
+    if (!limitCheck.allowed) {
+      return { success: false, error: limitCheck.error || "Plan limit reached" };
+    }
+
+    const monitorType = data.type || "HTTP";
+    let targetUrl = data.url?.trim() || "";
+
+    if (monitorType === "HTTP" || monitorType === "SSL") {
+      if (targetUrl && !targetUrl.startsWith("http://") && !targetUrl.startsWith("https://")) {
+        targetUrl = `https://${targetUrl}`;
+      }
+    } else if (monitorType === "PING" && targetUrl) {
+      targetUrl = targetUrl.startsWith("ping://")
+        ? targetUrl
+        : `ping://${targetUrl.replace(/^ping:\/\//, "")}`;
+    } else if (monitorType === "PORT" && targetUrl) {
+      const portNum = data.port || 80;
+      targetUrl = targetUrl.startsWith("tcp://") ? targetUrl : `tcp://${targetUrl}:${portNum}`;
+    }
+
+    const newMonitor = await prisma.monitor.create({
+      data: {
+        name: data.name.trim() || targetUrl || "New Monitor",
+        url: targetUrl || "https://example.com",
+        type: monitorType as any,
+        interval: data.interval || 60,
+        timeout: 10,
+        status: "UP",
+        checkRegions: JSON.stringify(["us-east", "eu-central", "ap-tokyo"]),
+        userId: session.user.id,
+      },
+    });
+
+    checkAndNotifyUsageLimits(session.user.id).catch(() => {});
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/monitors");
+
+    return { success: true, monitor: newMonitor };
+  } catch (error: any) {
+    console.error("Failed to quick create monitor:", error);
+    return { success: false, error: error.message || "Failed to create monitor" };
+  }
+}
+
+/**
  * Update a monitor's configuration in the database.
  *
  * This function first retrieves the current user session and checks for authorization. It then validates the input data against a schema. Depending on the monitor type, it constructs the appropriate URL format. Finally, it attempts to update the monitor in the database and revalidates the relevant paths. If any step fails, it returns an error message.

@@ -10,7 +10,7 @@ tags: ["false alarm fatigue", "uptime monitoring", "incident response", "multi-r
 
 It's 3:14 AM. Your phone violently buzzes on the nightstand. PagerDuty is blasting a high-severity alert: `CRITICAL: api.yourcompany.com HTTP 504 Gateway Timeout`.
 
-You jump out of bed, open your laptop with bleary eyes, tail your application logs, check your Datadog dashboards, and run a `curl -Iv https://api.yourcompany.com/health`. 
+You jump out of bed, open your laptop with bleary eyes, tail your application logs, check your Datadog dashboards, and run a `curl -Iv https://api.yourcompany.com/health`.
 
 Everything returns `HTTP 200 OK`. Response time: 24 milliseconds. Database connection pool: normal. CPU utilization: 12%.
 
@@ -25,7 +25,8 @@ This is **false alarm fatigue**, and it is one of the most toxic dynamics in mod
 Why do traditional monitoring services call you at 3 AM when your app is completely healthy? It comes down to four fundamental architectural flaws in legacy uptime pollers.
 
 ### 1. Single-Probe Fragility
-Most uptime services poll your endpoint from a single static worker node per check cycle. If that single server experiences local network congestion, socket exhaustion, or a transient ISP routing drop, it records a timeout. 
+
+Most uptime services poll your endpoint from a single static worker node per check cycle. If that single server experiences local network congestion, socket exhaustion, or a transient ISP routing drop, it records a timeout.
 
 ```
 [Legacy Poller in AWS us-east-1] ---- (Transient Packet Loss on Transit Provider) ----x----> [Your Server]
@@ -37,14 +38,17 @@ Most uptime services poll your endpoint from a single static worker node per che
 To the poller, your server was unreachable. To the rest of the Internet, your site was operating normally.
 
 ### 2. BGP Route Flapping & ISP Peering Drops
-Internet routing is not static. Border Gateway Protocol (BGP) dynamically updates paths between Autonomous Systems (ASNs). When a major tier-1 transit provider re-routes traffic, packets can be dropped for 2 to 10 seconds while routing tables converge. 
+
+Internet routing is not static. Border Gateway Protocol (BGP) dynamically updates paths between Autonomous Systems (ASNs). When a major tier-1 transit provider re-routes traffic, packets can be dropped for 2 to 10 seconds while routing tables converge.
 
 If your monitor pings your endpoint during those 4 seconds of convergence, a single-node check fails even though your application server never crashed.
 
 ### 3. CDN Edge Node Cold-Starts & TLS Handshake Flaps
+
 Modern frontends sit behind Cloudflare, Fastly, or AWS CloudFront. When an edge POP (Point of Presence) refreshes TLS session tickets or experiences localized TCP SYN retries, a single probe pinging from an adjacent location may observe a 3001ms timeout while edge caching warms up.
 
 ### 4. DNS Resolver Stale Cache & TTL Mismatches
+
 When updating DNS records or using GEO-DNS routing, local DNS resolvers across cloud providers can return stale IP addresses during propagation. If a monitoring probe hits an old IP address while migration is underway, it flags an outage that end users never experience.
 
 ---

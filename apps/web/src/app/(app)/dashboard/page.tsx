@@ -34,6 +34,7 @@ export default async function DashboardPage() {
       insights={insights}
       onboardingStatus={onboardingStatus}
       usageSummary={usageSummary}
+      userEmail={session.user.email}
     />
   );
 }

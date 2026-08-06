@@ -153,7 +153,8 @@ export default function ComparisonTable() {
           {/* Verification & Disclaimer Note */}
           <div className="px-5 py-3 bg-muted/20 border-t border-border/50 text-[11px] font-mono text-muted-foreground flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <div>
-              <span className="font-bold text-foreground">Last verified August 2026.</span> All pricing and feature claims are verified against official competitor pricing pages:{" "}
+              <span className="font-bold text-foreground">Last verified August 2026.</span> All
+              pricing and feature claims are verified against official competitor pricing pages:{" "}
               <a
                 href="https://uptimerobot.com/pricing"
                 target="_blank"

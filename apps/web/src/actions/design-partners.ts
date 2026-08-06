@@ -96,7 +96,7 @@ function generateVipCode(): string {
  * Submit a new Design Partner application (Status defaults to PENDING under review)
  */
 export async function submitDesignPartnerApplication(
-  input: DesignPartnerInput
+  input: DesignPartnerInput,
 ): Promise<DesignPartnerResponse> {
   try {
     const parsed = designPartnerSchema.parse(input);
@@ -137,7 +137,8 @@ export async function submitDesignPartnerApplication(
       success: true,
       status: "PENDING",
       remainingSpots: spotsInfo.remainingSpots,
-      message: "Application submitted successfully! Our founding team will review your application within 24 hours.",
+      message:
+        "Application submitted successfully! Our founding team will review your application within 24 hours.",
     };
   } catch (error: any) {
     console.error("Failed to submit design partner application:", error);
@@ -197,12 +198,15 @@ import { getAdminStatus } from "./admin";
  * Approve a pending design partner application (Requires Admin role)
  */
 export async function approveDesignPartnerApplication(
-  id: string
+  id: string,
 ): Promise<{ success: boolean; vipCode?: string; error?: string }> {
   try {
     const admin = await getAdminStatus();
     if (!admin.isAdmin) {
-      return { success: false, error: "Unauthorized: Admin access required to approve design partners" };
+      return {
+        success: false,
+        error: "Unauthorized: Admin access required to approve design partners",
+      };
     }
 
     const record = await prisma.verification.findUnique({
@@ -255,12 +259,15 @@ export async function approveDesignPartnerApplication(
  * Reject a design partner application (Requires Admin role)
  */
 export async function rejectDesignPartnerApplication(
-  id: string
+  id: string,
 ): Promise<{ success: boolean; error?: string }> {
   try {
     const admin = await getAdminStatus();
     if (!admin.isAdmin) {
-      return { success: false, error: "Unauthorized: Admin access required to reject design partners" };
+      return {
+        success: false,
+        error: "Unauthorized: Admin access required to reject design partners",
+      };
     }
 
     const record = await prisma.verification.findUnique({

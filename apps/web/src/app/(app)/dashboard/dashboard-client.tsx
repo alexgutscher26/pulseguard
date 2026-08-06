@@ -18,6 +18,7 @@ export default function DashboardClient({
   insights,
   onboardingStatus,
   usageSummary,
+  userEmail,
   isDemo = false,
 }: {
   monitors: any[];
@@ -25,6 +26,7 @@ export default function DashboardClient({
   insights: MonitorInsight[];
   onboardingStatus: OnboardingStatus;
   usageSummary?: UsageSummary;
+  userEmail?: string;
   isDemo?: boolean;
 }) {
   return (
@@ -34,6 +36,7 @@ export default function DashboardClient({
       insights={insights}
       onboardingStatus={onboardingStatus}
       usageSummary={usageSummary}
+      userEmail={userEmail}
       isDemo={isDemo}
     />
   );

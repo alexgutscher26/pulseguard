@@ -18,11 +18,11 @@ If you are evaluating PulseGuard against Better Stack, here is a transparent tec
 
 ## The Check Interval Gap: 5 Minutes vs 60 Seconds
 
-On Better Stack's free plan, uptime checks execute once every **5 minutes** (300 seconds) across 10 monitors. 
+On Better Stack's free plan, uptime checks execute once every **5 minutes** (300 seconds) across 10 monitors.
 
 While 5-minute intervals might be acceptable for personal blogs, microservices and production APIs can experience micro-outages, memory leaks, or transient routing failures that resolve within 2 to 4 minutes. A 5-minute poller will miss these blips entirely, leaving your team clueless as to why customer error rates spiked during a deployment.
 
-PulseGuard provides **60-second checks on the free tier** for up to 50 endpoints. 
+PulseGuard provides **60-second checks on the free tier** for up to 50 endpoints.
 
 ```
 Better Stack Free Plan (5-minute checks):
@@ -48,9 +48,11 @@ By increasing sampling frequency to 60 seconds, PulseGuard captures transient fa
 The core difference in pricing models stems directly from underlying infrastructure architecture.
 
 ### Better Stack's Infrastructure
+
 Better Stack operates dedicated polling instances across 6 AWS/GCP cloud regions. When scaling polling frequency down to 30 seconds or 10 seconds across dozens of targets, centralized cloud instances incur significant bandwidth egress and compute costs. That cost is passed directly to customers via per-seat subscription tiers.
 
 ### PulseGuard's Edge-Native Mesh
+
 PulseGuard executes synthetic health checks natively on Cloudflare's global edge network across 50+ regions. Because checks run at the edge where your users actually connect, compute overhead is distributed with near-zero transit latency:
 
 ```ts
@@ -76,20 +78,20 @@ Because edge workers execute lightweight pings globally without expensive cloud 
 
 Here is how PulseGuard and Better Stack compare across core monitoring specifications:
 
-| Feature / Capability | PulseGuard | Better Stack |
-| :--- | :---: | :---: |
-| **Free Monitor Count** | **50 Active Monitors** | 10 Active Monitors |
-| **Free Check Interval** | **60 Seconds (1 min)** | 300 Seconds (5 min) |
-| **Free Region Coverage** | **50+ Edge Locations** | 6 Cloud Regions |
-| **Multi-Node Verification** | Included on Free Tier | Included |
-| **Custom Status Pages** | Included (Custom Domain) | Included |
-| **SSL Expiry Monitoring** | Included (30-day alerts) | Included |
-| **DNS Record Watchdog** | Included | Included |
-| **Pricing Model** | **Flat usage tiers** | Per-seat team pricing |
-| **Paid Plan Entry** | **$14/month (200 monitors)** | $29/seat/month |
-| **Commercial Use** | **Guaranteed on Free** | Allowed |
+| Feature / Capability        |          PulseGuard          |     Better Stack      |
+| :-------------------------- | :--------------------------: | :-------------------: |
+| **Free Monitor Count**      |    **50 Active Monitors**    |  10 Active Monitors   |
+| **Free Check Interval**     |    **60 Seconds (1 min)**    |  300 Seconds (5 min)  |
+| **Free Region Coverage**    |    **50+ Edge Locations**    |    6 Cloud Regions    |
+| **Multi-Node Verification** |    Included on Free Tier     |       Included        |
+| **Custom Status Pages**     |   Included (Custom Domain)   |       Included        |
+| **SSL Expiry Monitoring**   |   Included (30-day alerts)   |       Included        |
+| **DNS Record Watchdog**     |           Included           |       Included        |
+| **Pricing Model**           |     **Flat usage tiers**     | Per-seat team pricing |
+| **Paid Plan Entry**         | **$14/month (200 monitors)** |    $29/seat/month     |
+| **Commercial Use**          |    **Guaranteed on Free**    |        Allowed        |
 
-*Data last verified August 2026 against official pricing documentation.*
+_Data last verified August 2026 against official pricing documentation._
 
 ---
 

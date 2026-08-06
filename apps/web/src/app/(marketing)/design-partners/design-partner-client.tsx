@@ -1,7 +1,19 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ShieldCheck, CheckCircle2, Zap, Sparkles, ArrowRight, Loader2, Award, Users, Copy, Check, Clock } from "lucide-react";
+import {
+  ShieldCheck,
+  CheckCircle2,
+  Zap,
+  Sparkles,
+  ArrowRight,
+  Loader2,
+  Award,
+  Users,
+  Copy,
+  Check,
+  Clock,
+} from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { submitDesignPartnerApplication, getDesignPartnerSpots } from "@/actions/design-partners";
@@ -77,7 +89,11 @@ export default function DesignPartnerClient({ initialSpots = 15 }: { initialSpot
           Become a <span className="text-primary">PulseGuard Design Partner</span>
         </h1>
         <p className="text-muted-foreground text-sm sm:text-base leading-relaxed max-w-xl">
-          Get <span className="text-foreground font-bold font-mono">1 Year of PulseGuard Netrunner Pro ($168 value) free</span>. In exchange, give us 15 minutes of real feedback and an honest review for launch day.
+          Get{" "}
+          <span className="text-foreground font-bold font-mono">
+            1 Year of PulseGuard Netrunner Pro ($168 value) free
+          </span>
+          . In exchange, give us 15 minutes of real feedback and an honest review for launch day.
         </p>
 
         {/* Dynamic Spots counter */}
@@ -98,7 +114,8 @@ export default function DesignPartnerClient({ initialSpots = 15 }: { initialSpot
           </div>
           <h3 className="font-bold text-foreground text-sm">1 Year Free Pro Access</h3>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Full Netrunner tier features: 200 monitors, 30-second checks, multi-region verification, and custom status pages.
+            Full Netrunner tier features: 200 monitors, 30-second checks, multi-region verification,
+            and custom status pages.
           </p>
         </div>
 
@@ -108,7 +125,8 @@ export default function DesignPartnerClient({ initialSpots = 15 }: { initialSpot
           </div>
           <h3 className="font-bold text-foreground text-sm">Direct Founder Access</h3>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Private Telegram/Discord channel with our core engineers to request custom features and roadmap priority.
+            Private Telegram/Discord channel with our core engineers to request custom features and
+            roadmap priority.
           </p>
         </div>
 
@@ -118,7 +136,8 @@ export default function DesignPartnerClient({ initialSpots = 15 }: { initialSpot
           </div>
           <h3 className="font-bold text-foreground text-sm">Launch Spotlight</h3>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Featured logo and testimonial on our Product Hunt launch page, landing page, and social proof directory.
+            Featured logo and testimonial on our Product Hunt launch page, landing page, and social
+            proof directory.
           </p>
         </div>
       </div>
@@ -132,13 +151,16 @@ export default function DesignPartnerClient({ initialSpots = 15 }: { initialSpot
             </div>
             <h3 className="text-2xl font-bold text-foreground">Application Under Review!</h3>
             <p className="text-muted-foreground text-xs leading-relaxed max-w-md">
-              Thank you for applying! To ensure high-quality launch feedback, our founding team reviews applications within 24 hours. We've sent a confirmation notice to <span className="text-foreground font-semibold font-mono">{formData.email}</span>.
+              Thank you for applying! To ensure high-quality launch feedback, our founding team
+              reviews applications within 24 hours. We've sent a confirmation notice to{" "}
+              <span className="text-foreground font-semibold font-mono">{formData.email}</span>.
             </p>
 
             <div className="my-2 p-4 bg-amber-500/5 border border-amber-500/20 rounded-xl flex items-center gap-3 text-left max-w-md">
               <ShieldCheck className="size-5 text-amber-400 shrink-0" />
               <p className="text-[11px] text-muted-foreground leading-relaxed">
-                Once approved by an admin, your 1-Year VIP Netrunner Pro license key will be issued and emailed automatically.
+                Once approved by an admin, your 1-Year VIP Netrunner Pro license key will be issued
+                and emailed automatically.
               </p>
             </div>
 
@@ -156,13 +178,16 @@ export default function DesignPartnerClient({ initialSpots = 15 }: { initialSpot
             <div>
               <h2 className="text-xl font-bold text-foreground">Apply for Design Partner Status</h2>
               <p className="text-xs text-muted-foreground mt-1">
-                Takes 60 seconds. We approve engineers and founders building active web applications.
+                Takes 60 seconds. We approve engineers and founders building active web
+                applications.
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-mono font-semibold text-foreground">Your Name *</label>
+                <label className="text-xs font-mono font-semibold text-foreground">
+                  Your Name *
+                </label>
                 <input
                   type="text"
                   required
@@ -174,7 +199,9 @@ export default function DesignPartnerClient({ initialSpots = 15 }: { initialSpot
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-mono font-semibold text-foreground">Work Email *</label>
+                <label className="text-xs font-mono font-semibold text-foreground">
+                  Work Email *
+                </label>
                 <input
                   type="email"
                   required
@@ -188,7 +215,9 @@ export default function DesignPartnerClient({ initialSpots = 15 }: { initialSpot
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-mono font-semibold text-foreground">Company / Project Name</label>
+                <label className="text-xs font-mono font-semibold text-foreground">
+                  Company / Project Name
+                </label>
                 <input
                   type="text"
                   placeholder="Acme SaaS"
@@ -199,7 +228,9 @@ export default function DesignPartnerClient({ initialSpots = 15 }: { initialSpot
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-mono font-semibold text-foreground">Project URL / App Domain *</label>
+                <label className="text-xs font-mono font-semibold text-foreground">
+                  Project URL / App Domain *
+                </label>
                 <input
                   type="url"
                   required
@@ -213,7 +244,9 @@ export default function DesignPartnerClient({ initialSpots = 15 }: { initialSpot
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-mono font-semibold text-foreground">Active Endpoints to Monitor</label>
+                <label className="text-xs font-mono font-semibold text-foreground">
+                  Active Endpoints to Monitor
+                </label>
                 <select
                   value={formData.monitorsCount}
                   onChange={(e) => setFormData({ ...formData, monitorsCount: e.target.value })}
@@ -227,7 +260,9 @@ export default function DesignPartnerClient({ initialSpots = 15 }: { initialSpot
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-mono font-semibold text-foreground">Current Monitoring Solution</label>
+                <label className="text-xs font-mono font-semibold text-foreground">
+                  Current Monitoring Solution
+                </label>
                 <select
                   value={formData.currentTool}
                   onChange={(e) => setFormData({ ...formData, currentTool: e.target.value })}
@@ -251,8 +286,13 @@ export default function DesignPartnerClient({ initialSpots = 15 }: { initialSpot
                 onChange={(e) => setFormData({ ...formData, feedbackCommitment: e.target.checked })}
                 className="mt-0.5 accent-primary"
               />
-              <label htmlFor="commitment" className="text-xs text-muted-foreground leading-relaxed cursor-pointer">
-                I agree to use PulseGuard for real uptime monitoring and provide an honest 2-sentence review / feedback for launch day in exchange for 1 year of free Netrunner Pro.
+              <label
+                htmlFor="commitment"
+                className="text-xs text-muted-foreground leading-relaxed cursor-pointer"
+              >
+                I agree to use PulseGuard for real uptime monitoring and provide an honest
+                2-sentence review / feedback for launch day in exchange for 1 year of free Netrunner
+                Pro.
               </label>
             </div>
 

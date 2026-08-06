@@ -184,7 +184,8 @@ export const featureComparisons: FeatureComparisonItem[] = [
   {
     category: "Status Pages & Alerts",
     name: "Status Page (Custom Domain)",
-    pulseguard: true,
+    description: "Custom domain CNAME mapping for status pages",
+    pulseguard: "Paid Only",
     uptimerobot: "Paid Only",
     checkly: "Paid Only",
     betteruptime: true,
@@ -195,7 +196,8 @@ export const featureComparisons: FeatureComparisonItem[] = [
   },
   {
     category: "Status Pages & Alerts",
-    name: "Slack / Discord Alerts",
+    name: "Slack / Discord Alerts (Free)",
+    description: "Webhook & chat alerts included without upgrading",
     pulseguard: true,
     uptimerobot: "Paid Only",
     checkly: true,

@@ -20,14 +20,18 @@ import {
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { OnboardingStatus } from "@/actions/onboarding";
+import { OnboardingWizard } from "@/components/dashboard/onboarding-wizard";
+import { Zap } from "lucide-react";
 
 interface OnboardingChecklistProps {
   status: OnboardingStatus;
+  userEmail?: string;
 }
 
-export function OnboardingChecklist({ status }: OnboardingChecklistProps) {
+export function OnboardingChecklist({ status, userEmail = "" }: OnboardingChecklistProps) {
   const [isDismissed, setIsDismissed] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [wizardOpen, setWizardOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -40,7 +44,14 @@ export function OnboardingChecklist({ status }: OnboardingChecklistProps) {
     if (collapsed === "true") {
       setIsCollapsed(true);
     }
-  }, []);
+
+    // Auto-open wizard if user has no monitors or came from demo prefill
+    const hasPrefill =
+      typeof window !== "undefined" && localStorage.getItem("pulseguard_prefill_monitor");
+    if (!status.hasCreatedMonitor || hasPrefill) {
+      setWizardOpen(true);
+    }
+  }, [status.hasCreatedMonitor]);
 
   if (!mounted) {
     return null;
@@ -169,6 +180,16 @@ export function OnboardingChecklist({ status }: OnboardingChecklistProps) {
           </div>
 
           <div className="flex items-center gap-1.5">
+            {!isComplete && (
+              <Button
+                size="sm"
+                onClick={() => setWizardOpen(true)}
+                className="h-7 px-2.5 text-[10px] font-mono font-bold uppercase tracking-wider bg-emerald-500 hover:bg-emerald-600 text-zinc-950 shadow-md"
+              >
+                <Zap className="size-3 mr-1" />
+                60s Wizard
+              </Button>
+            )}
             <Button
               variant="ghost"
               size="icon"
@@ -288,6 +309,13 @@ export function OnboardingChecklist({ status }: OnboardingChecklistProps) {
           )}
         </AnimatePresence>
       </div>
+
+      <OnboardingWizard
+        open={wizardOpen}
+        onOpenChange={setWizardOpen}
+        userEmail={userEmail}
+        onboardingStatus={status}
+      />
     </motion.div>
   );
 }

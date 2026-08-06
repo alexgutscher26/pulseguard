@@ -439,11 +439,44 @@ export function FeatureComparisonTable() {
       </div>
 
       <div className="pt-2 text-[10px] font-mono text-muted-foreground">
-        <span className="font-bold text-foreground">Last verified August 2026.</span> Specs verified against official provider documentation:{" "}
-        <a href="https://uptimerobot.com/pricing" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">UptimeRobot</a>,{" "}
-        <a href="https://www.checklyhq.com/pricing" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">Checkly</a>,{" "}
-        <a href="https://betterstack.com/uptime/pricing" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">Better Stack</a>, and{" "}
-        <a href="https://www.openstatus.dev/pricing" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">OpenStatus</a>.
+        <span className="font-bold text-foreground">Last verified August 2026.</span> Specs verified
+        against official provider documentation:{" "}
+        <a
+          href="https://uptimerobot.com/pricing"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-primary"
+        >
+          UptimeRobot
+        </a>
+        ,{" "}
+        <a
+          href="https://www.checklyhq.com/pricing"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-primary"
+        >
+          Checkly
+        </a>
+        ,{" "}
+        <a
+          href="https://betterstack.com/uptime/pricing"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-primary"
+        >
+          Better Stack
+        </a>
+        , and{" "}
+        <a
+          href="https://www.openstatus.dev/pricing"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-primary"
+        >
+          OpenStatus
+        </a>
+        .
       </div>
     </div>
   );

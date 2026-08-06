@@ -25,13 +25,13 @@ Let's be scrupulous about the numbers:
 
 ### Round-Robin Scheduling vs Parallel Consensus
 
-Checkly's free plan rotates checks sequentially through 6 locations (e.g., Check 1 from Virginia, Check 2 from London 2 minutes later, Check 3 from Tokyo 2 minutes later). 
+Checkly's free plan rotates checks sequentially through 6 locations (e.g., Check 1 from Virginia, Check 2 from London 2 minutes later, Check 3 from Tokyo 2 minutes later).
 
 While round-robin sampling checks different regions over time, it means a single geographic check happens only once every 12 minutes per location. If a routing failure specifically impacts European traffic, it can take multiple rotation cycles to isolate.
 
 ```
 Checkly Round-Robin (2-min rotation):
-00:00 [US-East Ping: OK] 
+00:00 [US-East Ping: OK]
 00:02 [EU-West Ping: DOWN] ==> Is it EU routing or target failure? Must wait for next rotation.
 00:04 [AP-East Ping: OK]
 
@@ -48,25 +48,26 @@ PulseGuard checks your target every 60 seconds from the nearest edge location. W
 
 ## Feature Comparison Matrix
 
-| Feature / Capability | PulseGuard | Checkly |
-| :--- | :---: | :---: |
-| **Free Monitor Count** | **50 Monitors** | 10 Monitors |
-| **Free Check Interval** | **60 Seconds (1 min)** | 120 Seconds (2 min) |
-| **Location Strategy** | Parallel Edge Quorum | Round-Robin Rotation |
+| Feature / Capability            |         PulseGuard         |          Checkly           |
+| :------------------------------ | :------------------------: | :------------------------: |
+| **Free Monitor Count**          |      **50 Monitors**       |        10 Monitors         |
+| **Free Check Interval**         |   **60 Seconds (1 min)**   |    120 Seconds (2 min)     |
+| **Location Strategy**           |    Parallel Edge Quorum    |    Round-Robin Rotation    |
 | **Headless Playwright Scripts** | Included (Node.js runtime) | Primary Focus (Playwright) |
-| **SSL Certificate Watchdog** | Included | Included |
-| **DNS Record Verification** | Included (A, MX, TXT, CAA) | Limited |
-| **Port / TCP Reachability** | Included | Paid / Enterprise |
-| **Custom Domain Status Page** | Included on Free | Paid Tier Only |
-| **Commercial Use Included** | **Yes — Guaranteed** | Yes |
+| **SSL Certificate Watchdog**    |          Included          |          Included          |
+| **DNS Record Verification**     | Included (A, MX, TXT, CAA) |          Limited           |
+| **Port / TCP Reachability**     |          Included          |     Paid / Enterprise      |
+| **Custom Domain Status Page**   |      Included on Free      |       Paid Tier Only       |
+| **Commercial Use Included**     |    **Yes — Guaranteed**    |            Yes             |
 
-*Data last verified August 2026 against official pricing documentation.*
+_Data last verified August 2026 against official pricing documentation._
 
 ---
 
 ## Code Comparison: API Monitoring Setup
 
 ### Checkly: Monitoring-as-Code (TypeScript / Playwright)
+
 Checkly requires defining checks inside a Node.js project using their CLI package:
 
 ```ts
@@ -91,6 +92,7 @@ new ApiCheck('api-health-check', {
 This model is powerful if you already maintain a dedicated QA test repository, but adds friction for quick infrastructure monitoring.
 
 ### PulseGuard: Zero-Config CLI or Dashboard
+
 PulseGuard supports declarative YAML/JSON files, web UI configuration, or instant CLI setup without requiring a Node.js build pipeline:
 
 ```bash

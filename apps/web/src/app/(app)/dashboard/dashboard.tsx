@@ -34,6 +34,7 @@ export default function Dashboard({
   insights: initialInsights,
   onboardingStatus,
   usageSummary,
+  userEmail,
   isDemo = false,
 }: {
   monitors: any[];
@@ -41,6 +42,7 @@ export default function Dashboard({
   insights: MonitorInsight[];
   onboardingStatus: OnboardingStatus;
   usageSummary?: UsageSummary;
+  userEmail?: string;
   isDemo?: boolean;
 }) {
   const { data: monitors } = useMonitors(initialMonitors, isDemo);
@@ -75,7 +77,7 @@ export default function Dashboard({
   return (
     <div className="flex flex-col gap-6">
       {!isDemo && <UsageLimitBanner summary={usageSummary} />}
-      {!isDemo && <OnboardingChecklist status={onboardingStatus} />}
+      {!isDemo && <OnboardingChecklist status={onboardingStatus} userEmail={userEmail} />}
       <AIInsights insights={initialInsights} />
       {!isDemo && <PrivacyBanner />}
       <DashboardStats stats={stats} />

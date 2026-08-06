@@ -34,7 +34,9 @@ export async function getAdminStatus(): Promise<AdminStatusResponse> {
     const email = dbUser?.email || session.user.email || null;
 
     // User is admin if tier is ADMIN, or if email matches ADMIN_EMAILS environment variable
-    const adminEmails = (process.env.ADMIN_EMAILS || "").split(",").map((e) => e.trim().toLowerCase());
+    const adminEmails = (process.env.ADMIN_EMAILS || "")
+      .split(",")
+      .map((e) => e.trim().toLowerCase());
     const isEmailAdmin = Boolean(email && adminEmails.includes(email.toLowerCase()));
     const isAdmin = tier === "ADMIN" || isEmailAdmin;
 

@@ -44,7 +44,9 @@ export default function AdminDesignPartnersClient({
 
     if (res.success) {
       setIsAdminState(true);
-      toast.success("ADMIN tier granted to your account! You can now review and approve partnerships.");
+      toast.success(
+        "ADMIN tier granted to your account! You can now review and approve partnerships.",
+      );
     } else {
       toast.error(res.error || "Failed to grant admin access");
     }
@@ -69,8 +71,8 @@ export default function AdminDesignPartnersClient({
       toast.success(`Partnership APPROVED! Generated VIP Code: ${res.vipCode}`);
       setApplications((prev) =>
         prev.map((app) =>
-          app.id === id ? { ...app, status: "APPROVED", vipCode: res.vipCode } : app
-        )
+          app.id === id ? { ...app, status: "APPROVED", vipCode: res.vipCode } : app,
+        ),
       );
     } else {
       toast.error(res.error || "Failed to approve application");
@@ -85,7 +87,7 @@ export default function AdminDesignPartnersClient({
     if (res.success) {
       toast.info("Application set to REJECTED");
       setApplications((prev) =>
-        prev.map((app) => (app.id === id ? { ...app, status: "REJECTED" } : app))
+        prev.map((app) => (app.id === id ? { ...app, status: "REJECTED" } : app)),
       );
     } else {
       toast.error(res.error || "Failed to reject application");
@@ -128,15 +130,21 @@ export default function AdminDesignPartnersClient({
       {/* Stats Overview */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="bg-card border border-border p-4 rounded-xl flex flex-col gap-1">
-          <span className="text-[10px] font-mono font-bold uppercase text-muted-foreground">Total Received</span>
+          <span className="text-[10px] font-mono font-bold uppercase text-muted-foreground">
+            Total Received
+          </span>
           <span className="text-2xl font-bold text-foreground">{applications.length}</span>
         </div>
         <div className="bg-card border border-amber-500/30 bg-amber-500/5 p-4 rounded-xl flex flex-col gap-1">
-          <span className="text-[10px] font-mono font-bold uppercase text-amber-400">Needs Review</span>
+          <span className="text-[10px] font-mono font-bold uppercase text-amber-400">
+            Needs Review
+          </span>
           <span className="text-2xl font-bold text-amber-400">{pendingCount}</span>
         </div>
         <div className="bg-card border border-emerald-500/30 bg-emerald-500/5 p-4 rounded-xl flex flex-col gap-1">
-          <span className="text-[10px] font-mono font-bold uppercase text-emerald-400">Approved Partners</span>
+          <span className="text-[10px] font-mono font-bold uppercase text-emerald-400">
+            Approved Partners
+          </span>
           <span className="text-2xl font-bold text-emerald-400">{approvedCount}</span>
         </div>
         <div className="bg-card border border-red-500/30 bg-red-500/5 p-4 rounded-xl flex flex-col gap-1">
@@ -186,8 +194,8 @@ export default function AdminDesignPartnersClient({
                 app.status === "PENDING"
                   ? "border-amber-500/40 shadow-sm"
                   : app.status === "APPROVED"
-                  ? "border-emerald-500/30"
-                  : "border-border opacity-70"
+                    ? "border-emerald-500/30"
+                    : "border-border opacity-70"
               }`}
             >
               {/* Info Column */}
@@ -219,7 +227,8 @@ export default function AdminDesignPartnersClient({
                     Company: <strong className="text-foreground">{app.company}</strong>
                   </span>
                   <span>
-                    Endpoints: <strong className="text-foreground font-mono">{app.monitorsCount}</strong>
+                    Endpoints:{" "}
+                    <strong className="text-foreground font-mono">{app.monitorsCount}</strong>
                   </span>
                   <span>
                     Current Tool: <strong className="text-foreground">{app.currentTool}</strong>
@@ -240,12 +249,18 @@ export default function AdminDesignPartnersClient({
                 {app.status === "APPROVED" && app.vipCode && (
                   <div className="mt-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded-lg inline-flex items-center gap-3 w-fit">
                     <span className="text-[10px] font-mono text-muted-foreground">VIP CODE:</span>
-                    <span className="text-xs font-mono font-bold text-emerald-400">{app.vipCode}</span>
+                    <span className="text-xs font-mono font-bold text-emerald-400">
+                      {app.vipCode}
+                    </span>
                     <button
                       onClick={() => handleCopyCode(app.vipCode!)}
                       className="p-1 text-emerald-400 hover:text-emerald-300 transition-all cursor-pointer"
                     >
-                      {copiedCode === app.vipCode ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+                      {copiedCode === app.vipCode ? (
+                        <Check className="size-3.5" />
+                      ) : (
+                        <Copy className="size-3.5" />
+                      )}
                     </button>
                   </div>
                 )}

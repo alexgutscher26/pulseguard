@@ -10,7 +10,7 @@ tags: ["Cloudflare Workers", "Durable Objects", "distributed systems", "consensu
 
 Building a global monitoring platform that checks thousands of endpoints every 60 seconds presents a classic distributed systems problem: **How do you execute millions of synthetic pings from 50+ locations without spending tens of thousands of dollars on centralized cloud servers or introducing multi-second consensus delays?**
 
-Traditional monitoring platforms rely on dedicated fleets of virtual machines in AWS or GCP regions. Centralized pollers execute cron loops, write raw results to centralized Postgres or TimeScale instances, and process alerting queues asynchronously. 
+Traditional monitoring platforms rely on dedicated fleets of virtual machines in AWS or GCP regions. Centralized pollers execute cron loops, write raw results to centralized Postgres or TimeScale instances, and process alerting queues asynchronously.
 
 At scale, this centralized architecture suffers from three major flaws:
 
@@ -145,7 +145,7 @@ export class MonitorChannel implements DurableObject {
     // If this is the first failed vote, immediately request pings from 2 partner POPs
     if (votes.length === 1) {
       await this.requestPartnerProbes(vote.targetUrl, vote.originRegion);
-      
+
       // Wait up to 1200ms for partner votes to arrive
       await new Promise((resolve) => setTimeout(resolve, 1200));
     }
@@ -167,6 +167,7 @@ export class MonitorChannel implements DurableObject {
 ```
 
 ### Why Durable Objects?
+
 Unlike traditional databases that require locking and complex SQL transactions to coordinate state, a Durable Object guarantees **single-threaded, in-memory execution** with automatic persistence. This allows consensus evaluation to execute in under **15 milliseconds** once partner votes arrive.
 
 ---
@@ -182,13 +183,13 @@ No architecture is without trade-offs. Here is where our edge consensus approach
 
 ## Benchmark Comparison: Detection Speed & Cost
 
-| Metric | Traditional Cloud VM Architecture | PulseGuard Edge Consensus Mesh |
-| :--- | :---: | :---: |
-| **Check Resolution** | 5 minutes (Standard) | **60 seconds (1 minute)** |
-| **Consensus Latency** | 15–30 seconds | **< 1.2 seconds total** |
-| **Global Probe POPs** | 3–8 Datacenters | **50+ Edge Regions** |
-| **Compute Overhead / Mo** | $400–$1,200 (VM Fleets) | **$5 (Serverless Edge)** |
-| **False Positive Rate** | ~3.2% of alerts | **< 0.02% (Quorum Locked)** |
+| Metric                    | Traditional Cloud VM Architecture | PulseGuard Edge Consensus Mesh |
+| :------------------------ | :-------------------------------: | :----------------------------: |
+| **Check Resolution**      |       5 minutes (Standard)        |   **60 seconds (1 minute)**    |
+| **Consensus Latency**     |           15–30 seconds           |    **< 1.2 seconds total**     |
+| **Global Probe POPs**     |          3–8 Datacenters          |      **50+ Edge Regions**      |
+| **Compute Overhead / Mo** |      $400–$1,200 (VM Fleets)      |    **$5 (Serverless Edge)**    |
+| **False Positive Rate**   |          ~3.2% of alerts          |  **< 0.02% (Quorum Locked)**   |
 
 ---
 
