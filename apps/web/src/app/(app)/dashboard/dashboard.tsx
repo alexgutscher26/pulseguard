@@ -34,15 +34,17 @@ export default function Dashboard({
   insights: initialInsights,
   onboardingStatus,
   usageSummary,
+  isDemo = false,
 }: {
   monitors: any[];
   stats: DashboardStatsData;
   insights: MonitorInsight[];
   onboardingStatus: OnboardingStatus;
   usageSummary?: UsageSummary;
+  isDemo?: boolean;
 }) {
-  const { data: monitors } = useMonitors(initialMonitors);
-  const { data: stats } = useDashboardStats(initialStats);
+  const { data: monitors } = useMonitors(initialMonitors, isDemo);
+  const { data: stats } = useDashboardStats(initialStats, isDemo);
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
   const [showGlobe, setShowGlobe] = useState(false);
 
@@ -72,10 +74,10 @@ export default function Dashboard({
 
   return (
     <div className="flex flex-col gap-6">
-      <UsageLimitBanner summary={usageSummary} />
-      <OnboardingChecklist status={onboardingStatus} />
+      {!isDemo && <UsageLimitBanner summary={usageSummary} />}
+      {!isDemo && <OnboardingChecklist status={onboardingStatus} />}
       <AIInsights insights={initialInsights} />
-      <PrivacyBanner />
+      {!isDemo && <PrivacyBanner />}
       <DashboardStats stats={stats} />
 
       {/* View Mode Selector bar */}

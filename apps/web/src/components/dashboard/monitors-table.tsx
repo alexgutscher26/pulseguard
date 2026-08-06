@@ -45,7 +45,10 @@ function UptimeBar({ status }: { status: number }) {
 /**
  * Converts events into a visual history array for the uptime bar
  */
-function getHistory(events: { status: string; latency: number; timestamp: Date }[]): number[] {
+function getHistory(events?: { status: string; latency: number; timestamp: Date }[]): number[] {
+  if (!events || !Array.isArray(events)) {
+    return Array(20).fill(-1);
+  }
   const history: number[] = [];
   const sorted = [...events].sort(
     (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
@@ -75,8 +78,8 @@ function getHistory(events: { status: string; latency: number; timestamp: Date }
 /**
  * Calculate uptime percentage from events
  */
-function getUptime(events: { status: string }[]): string {
-  if (events.length === 0) return "100.0";
+function getUptime(events?: { status: string }[]): string {
+  if (!events || !Array.isArray(events) || events.length === 0) return "100.0";
   const upCount = events.filter((e) => e.status === "UP").length;
   return ((upCount / events.length) * 100).toFixed(1);
 }
@@ -84,13 +87,13 @@ function getUptime(events: { status: string }[]): string {
 /**
  * Get last response time from events
  */
-function getLastResponse(events: { latency: number; status: string }[]): string {
-  if (events.length === 0) return "N/A";
+function getLastResponse(events?: { latency: number; status: string }[]): string {
+  if (!events || !Array.isArray(events) || events.length === 0) return "N/A";
   const sorted = [...events].sort(
     (a, b) => new Date((b as any).timestamp).getTime() - new Date((a as any).timestamp).getTime(),
   );
   const latest = sorted[0];
-  if (latest.status === "DOWN") return "Error";
+  if (!latest || latest.status === "DOWN") return "Error";
   return `${latest.latency}ms`;
 }
 

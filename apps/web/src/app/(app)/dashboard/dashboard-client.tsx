@@ -18,12 +18,14 @@ export default function DashboardClient({
   insights,
   onboardingStatus,
   usageSummary,
+  isDemo = false,
 }: {
   monitors: any[];
   stats: DashboardStatsData;
   insights: MonitorInsight[];
   onboardingStatus: OnboardingStatus;
   usageSummary?: UsageSummary;
+  isDemo?: boolean;
 }) {
   return (
     <Dashboard
@@ -32,6 +34,7 @@ export default function DashboardClient({
       insights={insights}
       onboardingStatus={onboardingStatus}
       usageSummary={usageSummary}
+      isDemo={isDemo}
     />
   );
 }

@@ -14,20 +14,21 @@ import { useEffect, useRef } from "react";
  *
  * @param {any[]} initialMonitors - The initial list of monitors to be used before the query fetches data.
  */
-export function useMonitors(initialMonitors: any[]) {
+export function useMonitors(initialMonitors: any[], isDemo = false) {
   const query = useQuery({
-    queryKey: ["monitors"],
+    queryKey: isDemo ? ["demo-monitors"] : ["monitors"],
     queryFn: async () => await getMonitors(),
     initialData: initialMonitors,
-    refetchInterval: 5000,
-    refetchOnWindowFocus: true,
+    enabled: !isDemo,
+    refetchInterval: isDemo ? false : 5000,
+    refetchOnWindowFocus: !isDemo,
   });
 
   const checkedRef = useRef<Set<string>>(new Set());
 
   // Auto-check stale monitors (helper for when cron is not running/slow)
   useEffect(() => {
-    if (!query.data) return;
+    if (isDemo || !query.data) return;
 
     query.data.forEach((monitor: any) => {
       const lastCheck = monitor.lastCheck ? new Date(monitor.lastCheck).getTime() : 0;
@@ -50,17 +51,18 @@ export function useMonitors(initialMonitors: any[]) {
         });
       }
     });
-  }, [query.data]);
+  }, [query.data, isDemo]);
 
   return query;
 }
 
-export function useDashboardStats(initialStats: any) {
+export function useDashboardStats(initialStats: any, isDemo = false) {
   return useQuery({
-    queryKey: ["dashboard-stats"],
+    queryKey: isDemo ? ["demo-dashboard-stats"] : ["dashboard-stats"],
     queryFn: async () => await getDashboardStats(),
     initialData: initialStats,
-    refetchInterval: 5000,
-    refetchOnWindowFocus: true,
+    enabled: !isDemo,
+    refetchInterval: isDemo ? false : 5000,
+    refetchOnWindowFocus: !isDemo,
   });
 }

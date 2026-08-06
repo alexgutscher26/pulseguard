@@ -95,15 +95,14 @@ export default function Hero() {
 
         {/* Subheading */}
         <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mb-10 text-balance font-sans">
-          PulseGuard tracks latency goals and validates connections using a global array of{" "}
-          {AVAILABLE_REGIONS.length}+ regional edge nodes. Monitor continuously, assure API
-          responses, and alert instantly.
+          PulseGuard checks your API from {AVAILABLE_REGIONS.length}+ edge locations every 60
+          seconds and alerts your team the moment something breaks — before your customers do.
         </p>
 
         {/* Probe Input Form */}
         <form
           onSubmit={handleScan}
-          className="relative w-full max-w-xl mb-14 bg-background/50 border border-border p-1.5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)] rounded-xl flex items-center transition-all duration-300 hover:border-primary/30"
+          className="relative w-full max-w-xl mb-14 bg-background/50 border border-border p-1.5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)] rounded-xl flex items-center transition-all duration-300 hover:border-primary/30 focus-within:border-primary/40"
         >
           <input
             type="text"
@@ -111,6 +110,7 @@ export default function Hero() {
             onChange={(e) => setInputUrl(e.target.value)}
             disabled={isScanning}
             placeholder="https://api.your-app.com/health"
+            aria-label="Endpoint URL to check"
             className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground/50 border-none outline-none px-3.5 text-sm min-w-0 font-mono"
           />
           <button
@@ -196,8 +196,8 @@ export default function Hero() {
                 </div>
               </div>
 
-              {/* Animated Latency Wave Chart */}
-              <div className="relative h-20 w-full bg-zinc-950/60 rounded-lg border border-border/50 p-2 overflow-hidden flex items-end">
+              {/* Animated Latency Wave Chart (Borderless & Transparent Background) */}
+              <div className="relative h-20 w-full overflow-hidden flex items-end">
                 <svg
                   className="w-full h-full overflow-visible"
                   viewBox="0 0 300 60"

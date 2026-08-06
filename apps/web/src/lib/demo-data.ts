@@ -2,6 +2,32 @@ import type { DashboardStatsData } from "@/components/dashboard/stats";
 import type { MonitorInsight } from "@/components/dashboard/ai-insights";
 import type { OnboardingStatus } from "@/actions/onboarding";
 
+function generateEvents(status: "UP" | "DOWN" | "DEGRADED", baseLatency: number) {
+  const events = [];
+  const now = Date.now();
+  for (let i = 0; i < 20; i++) {
+    const timestamp = new Date(now - i * 60 * 1000);
+    let eventStatus = "UP";
+    let latency = baseLatency + Math.floor(Math.random() * 6) - 3;
+
+    if (status === "DEGRADED" && i < 5) {
+      eventStatus = "UP";
+      latency = baseLatency + Math.floor(Math.random() * 80) + 120;
+    } else if (status === "DOWN" && i < 3) {
+      eventStatus = "DOWN";
+      latency = 0;
+    }
+
+    events.push({
+      id: `evt-${i}`,
+      status: eventStatus,
+      latency: Math.max(1, latency),
+      timestamp,
+    });
+  }
+  return events;
+}
+
 export const DEMO_STATS: DashboardStatsData = {
   activeMonitors: 8,
   globalUptime: 99.98,
@@ -60,6 +86,7 @@ export const DEMO_MONITORS = [
     latency: 18,
     lastCheck: new Date().toISOString(),
     regions: ["US-East", "EU-Central", "AP-Tokyo"],
+    events: generateEvents("UP", 18),
   },
   {
     id: "demo-mon-2",
@@ -72,6 +99,7 @@ export const DEMO_MONITORS = [
     latency: 6,
     lastCheck: new Date().toISOString(),
     regions: ["US-East", "US-West", "EU-Central", "SA-East"],
+    events: generateEvents("UP", 6),
   },
   {
     id: "demo-mon-3",
@@ -84,6 +112,7 @@ export const DEMO_MONITORS = [
     latency: 11,
     lastCheck: new Date().toISOString(),
     regions: ["US-East"],
+    events: generateEvents("UP", 11),
   },
   {
     id: "demo-mon-4",
@@ -96,6 +125,7 @@ export const DEMO_MONITORS = [
     latency: 24,
     lastCheck: new Date().toISOString(),
     regions: ["US-East", "EU-Central"],
+    events: generateEvents("UP", 24),
   },
   {
     id: "demo-mon-5",
@@ -108,6 +138,7 @@ export const DEMO_MONITORS = [
     latency: 85,
     lastCheck: new Date().toISOString(),
     regions: ["US-East", "EU-Central"],
+    events: generateEvents("UP", 85),
   },
   {
     id: "demo-mon-6",
@@ -120,6 +151,7 @@ export const DEMO_MONITORS = [
     latency: 2,
     lastCheck: new Date().toISOString(),
     regions: ["Private-VPC"],
+    events: generateEvents("UP", 2),
   },
   {
     id: "demo-mon-7",
@@ -132,6 +164,7 @@ export const DEMO_MONITORS = [
     latency: 185,
     lastCheck: new Date().toISOString(),
     regions: ["US-East", "EU-Central", "AP-Tokyo"],
+    events: generateEvents("DEGRADED", 185),
   },
   {
     id: "demo-mon-8",
@@ -144,5 +177,6 @@ export const DEMO_MONITORS = [
     latency: 14,
     lastCheck: new Date().toISOString(),
     regions: ["US-East"],
+    events: generateEvents("UP", 14),
   },
 ];
