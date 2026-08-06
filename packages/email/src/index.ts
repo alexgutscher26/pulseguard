@@ -319,7 +319,7 @@ export async function sendUsageLimitWarning(
     const resend = getResendClient(apiKey);
     const { renderUsageLimitWarning } = await import("./templates/usage-limit-warning");
 
-    const html = renderUsageLimitWarning({
+    const html = await renderUsageLimitWarning({
       userName: data.userName,
       planName: data.planName,
       warnings: data.warnings,
@@ -360,7 +360,7 @@ export async function sendDunningNotice(
     const resend = getResendClient(apiKey);
     const { renderDunningNotice } = await import("./templates/dunning-notice");
 
-    const html = renderDunningNotice({
+    const html = await renderDunningNotice({
       userName: data.userName,
       planName: data.planName,
       amountDue: data.amountDue,

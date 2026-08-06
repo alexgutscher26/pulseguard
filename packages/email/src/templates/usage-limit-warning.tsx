@@ -1,4 +1,5 @@
 import * as React from "react";
+import { render } from "@react-email/render";
 
 export interface UsageLimitWarningEmailProps {
   userName: string;
@@ -141,7 +142,6 @@ export const UsageLimitWarningEmail: React.FC<Readonly<UsageLimitWarningEmailPro
   </div>
 );
 
-export function renderUsageLimitWarning(props: UsageLimitWarningEmailProps): string {
-  const ReactDomServer = require("react-dom/server");
-  return ReactDomServer.renderToStaticMarkup(<UsageLimitWarningEmail {...props} />);
+export async function renderUsageLimitWarning(props: UsageLimitWarningEmailProps): Promise<string> {
+  return await render(<UsageLimitWarningEmail {...props} />);
 }

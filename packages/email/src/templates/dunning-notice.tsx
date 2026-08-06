@@ -1,4 +1,5 @@
 import * as React from "react";
+import { render } from "@react-email/render";
 
 export interface DunningNoticeEmailProps {
   userName: string;
@@ -104,7 +105,6 @@ export const DunningNoticeEmail: React.FC<Readonly<DunningNoticeEmailProps>> = (
   </div>
 );
 
-export function renderDunningNotice(props: DunningNoticeEmailProps): string {
-  const ReactDomServer = require("react-dom/server");
-  return ReactDomServer.renderToStaticMarkup(<DunningNoticeEmail {...props} />);
+export async function renderDunningNotice(props: DunningNoticeEmailProps): Promise<string> {
+  return await render(<DunningNoticeEmail {...props} />);
 }
