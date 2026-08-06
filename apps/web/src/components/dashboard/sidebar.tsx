@@ -128,7 +128,9 @@ export function Sidebar() {
 
         {/* Navigation Links */}
         <nav className="flex flex-col gap-1.5 mt-2">
-          {navigation.map((item) => {
+          {navigation
+            .filter((item) => item.href !== "/dashboard/design-partners" || currentTier === "ADMIN")
+            .map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link

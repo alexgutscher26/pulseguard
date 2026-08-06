@@ -78,7 +78,9 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
 
           {/* Navigation Links */}
           <nav className="flex flex-col gap-1">
-            {navigation.map((item) => {
+            {navigation
+              .filter((item) => item.href !== "/dashboard/design-partners")
+              .map((item) => {
               const isActive = pathname === item.href;
               return (
                 <Link

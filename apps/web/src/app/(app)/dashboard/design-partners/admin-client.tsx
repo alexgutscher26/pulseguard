@@ -101,39 +101,6 @@ export default function AdminDesignPartnersClient({
 
   return (
     <div className="flex flex-col gap-8 py-8 px-6 max-w-6xl mx-auto">
-      {/* Admin Elevation Banner if not admin */}
-      {!isAdminState && (
-        <div className="bg-amber-500/10 border border-amber-500/30 p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="size-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
-              <ShieldCheck className="size-5" />
-            </div>
-            <div>
-              <h3 className="text-sm font-bold text-foreground">Admin Authorization Setup</h3>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Your account is currently tier <span className="font-mono text-foreground font-semibold">INITIATE/NETRUNNER</span>. Elevate your user account to <span className="font-mono text-amber-400 font-bold">ADMIN</span> to manage design partners.
-              </p>
-            </div>
-          </div>
-
-          <button
-            onClick={handleGrantAdmin}
-            disabled={grantingAdmin}
-            className="inline-flex items-center justify-center gap-2 h-10 px-6 bg-amber-500 text-black font-extrabold text-xs rounded-xl hover:bg-amber-400 transition-all cursor-pointer shrink-0 disabled:opacity-50"
-          >
-            {grantingAdmin ? (
-              <>
-                <Loader2 className="size-4 animate-spin" /> Elevating Tier...
-              </>
-            ) : (
-              <>
-                <ShieldCheck className="size-4" /> Grant Me Admin Access
-              </>
-            )}
-          </button>
-        </div>
-      )}
-
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

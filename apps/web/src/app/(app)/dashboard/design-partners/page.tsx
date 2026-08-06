@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import AdminDesignPartnersClient from "./admin-client";
 import { getAllDesignPartnerApplications } from "@/actions/design-partners";
 import { getAdminStatus } from "@/actions/admin";
@@ -10,6 +11,10 @@ export const metadata: Metadata = {
 
 export default async function AdminDesignPartnersPage() {
   const admin = await getAdminStatus();
+  if (!admin.isAdmin) {
+    redirect("/dashboard");
+  }
+
   const applications = await getAllDesignPartnerApplications();
   return <AdminDesignPartnersClient initialApplications={applications} isAdmin={admin.isAdmin} />;
 }
