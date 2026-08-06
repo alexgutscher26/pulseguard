@@ -9,7 +9,9 @@ import { PRODUCT_CONFIG } from "@pulseguard/shared";
 // Fixed heights so SSR/client markup match (no Math.random at render time).
 // index 6 sits slightly low + amber — a small honest "we had one blip" beat,
 // since a perfectly flat green strip on a monitoring company's own site reads as fake.
-const UPTIME_BARS = [8, 8, 8, 8, 8, 8, 4, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8];
+const UPTIME_BARS = [
+  8, 8, 8, 8, 8, 8, 4, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
+];
 
 export default function Pricing() {
   const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
@@ -103,7 +105,9 @@ export default function Pricing() {
               </p>
               <div className="mt-6 flex flex-col gap-1.5 h-[52px] justify-center">
                 <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-extrabold tracking-tight text-foreground font-mono">$0</span>
+                  <span className="text-4xl font-extrabold tracking-tight text-foreground font-mono">
+                    $0
+                  </span>
                   <span className="text-muted-foreground text-xs font-medium">/mo</span>
                 </div>
                 <span className="text-[10px] text-muted-foreground/60 font-mono font-bold uppercase tracking-wider">
@@ -132,7 +136,8 @@ export default function Pricing() {
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
                   <span>
-                    <span className="font-mono font-bold text-foreground">60-Second</span> Heartbeat checks
+                    <span className="font-mono font-bold text-foreground">60-Second</span> Heartbeat
+                    checks
                   </span>
                 </li>
                 <li className="flex items-center gap-3">
@@ -313,7 +318,8 @@ export default function Pricing() {
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
                   <span>
-                    <span className="font-mono font-bold text-foreground">10-Second</span> HFT Heartbeat checks
+                    <span className="font-mono font-bold text-foreground">10-Second</span> HFT
+                    Heartbeat checks
                   </span>
                 </li>
                 <li className="flex items-center gap-3">
@@ -372,7 +378,9 @@ export default function Pricing() {
               />
             ))}
           </div>
-          <p className="text-[11px] font-mono text-muted-foreground/70">99.98% uptime, last 90 days</p>
+          <p className="text-[11px] font-mono text-muted-foreground/70">
+            99.98% uptime, last 90 days
+          </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-6 text-xs text-muted-foreground pt-2">
             <div className="flex items-center gap-2">

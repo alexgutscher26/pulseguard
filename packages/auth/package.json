@@ -14,6 +14,7 @@
   "dependencies": {
     "@better-auth/expo": "catalog:",
     "@pulseguard/db": "workspace:*",
+    "@pulseguard/email": "workspace:*",
     "@pulseguard/env": "workspace:*",
     "better-auth": "catalog:"
   },

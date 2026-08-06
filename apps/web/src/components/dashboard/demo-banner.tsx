@@ -27,7 +27,8 @@ export function DemoBanner() {
               </span>
             </div>
             <p className="text-xs text-muted-foreground font-sans leading-relaxed">
-              Explore PulseGuard&apos;s real-time edge monitoring platform with zero setup or credit card required.
+              Explore PulseGuard&apos;s real-time edge monitoring platform with zero setup or credit
+              card required.
             </p>
           </div>
         </div>

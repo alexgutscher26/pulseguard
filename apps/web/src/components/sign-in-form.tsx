@@ -1,4 +1,5 @@
 import { useForm } from "@tanstack/react-form";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import z from "zod";
@@ -100,12 +101,12 @@ export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () 
                   >
                     Password
                   </Label>
-                  <Button
-                    variant="link"
-                    className="text-xs h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
+                  <Link
+                    href={"/forgot-password" as any}
+                    className="text-xs font-medium text-muted-foreground hover:text-foreground hover:underline transition-colors"
                   >
                     Forgot password?
-                  </Button>
+                  </Link>
                 </div>
                 <Input
                   id={field.name}

@@ -5,15 +5,26 @@ import LandingHeader from "@/components/landing/header";
 export default function AuthLayout({
   children,
   title,
+  subtitle: customSubtitle,
 }: {
   children: React.ReactNode;
   title: string;
+  subtitle?: string;
 }) {
-  const displayTitle = title === "System Login" ? "Welcome back" : "Create an account";
-  const subtitle =
+  const displayTitle =
     title === "System Login"
+      ? "Welcome back"
+      : title === "New User Registration"
+        ? "Create an account"
+        : title;
+
+  const subtitle =
+    customSubtitle ??
+    (title === "System Login"
       ? "Log in to your PulseGuard dashboard"
-      : "Start monitoring your infrastructure globally";
+      : title === "New User Registration"
+        ? "Start monitoring your infrastructure globally"
+        : "");
 
   return (
     <div className="relative min-h-screen flex flex-col bg-[#0A0A0A] text-foreground font-sans selection:bg-primary/20">

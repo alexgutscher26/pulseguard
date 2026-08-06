@@ -5,6 +5,8 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
 
+import { sendPasswordResetEmail } from "@pulseguard/email";
+
 console.log("🔧 Initializing BetterAuth with config:", {
   hasSecret: !!env.BETTER_AUTH_SECRET,
   baseURL: env.BETTER_AUTH_URL,
@@ -69,6 +71,12 @@ export const auth = betterAuth({
   ],
   emailAndPassword: {
     enabled: true,
+    sendResetPassword: async ({ user, url }, _request) => {
+      await sendPasswordResetEmail(user.email, {
+        userName: user.name || user.email,
+        resetUrl: url,
+      });
+    },
   },
   plugins: [nextCookies(), expo()],
 });

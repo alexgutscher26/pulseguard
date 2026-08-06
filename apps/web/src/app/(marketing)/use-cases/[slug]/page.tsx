@@ -163,10 +163,7 @@ export default async function UseCasePage({ params }: { params: Promise<{ slug: 
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {useCase.architecturePoints.map((point, idx) => (
-              <div
-                key={idx}
-                className="relative p-5 rounded-xl border border-border bg-muted/40"
-              >
+              <div key={idx} className="relative p-5 rounded-xl border border-border bg-muted/40">
                 <div className="text-xs font-mono font-bold text-primary px-2.5 py-0.5 rounded border border-primary/30 bg-primary/10 inline-block mb-3">
                   {point.step}
                 </div>

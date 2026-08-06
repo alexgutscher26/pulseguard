@@ -38,6 +38,11 @@ export interface VerificationEmailData {
   verificationUrl: string;
 }
 
+export interface PasswordResetEmailData {
+  userName?: string;
+  resetUrl: string;
+}
+
 export interface WeeklyDigestData {
   userName: string;
   weekRange: string;
@@ -136,6 +141,34 @@ export async function sendVerificationEmail(
     return { error: result.error?.message || "Failed to send email" };
   } catch (error) {
     console.error("Error sending verification email:", error);
+    return { error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}
+
+export async function sendPasswordResetEmail(
+  to: string,
+  data: PasswordResetEmailData,
+  apiKey?: string,
+): Promise<{ id: string } | { error: string }> {
+  try {
+    const resend = getResendClient(apiKey);
+    const { renderPasswordReset } = await import("./templates/password-reset");
+
+    const html = await renderPasswordReset(data);
+
+    const result = await resend.emails.send({
+      from: "PulseGuard <auth@pulseguard.com>",
+      to,
+      subject: "🔑 Reset Your Password - PulseGuard",
+      html,
+    });
+
+    if (result.data && "id" in result.data) {
+      return { id: result.data.id };
+    }
+    return { error: result.error?.message || "Failed to send email" };
+  } catch (error) {
+    console.error("Error sending password reset email:", error);
     return { error: error instanceof Error ? error.message : "Unknown error" };
   }
 }
