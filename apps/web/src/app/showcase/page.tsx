@@ -4,6 +4,8 @@ import LandingFooter from "@/components/landing/footer";
 import { ShowcaseGallery } from "./showcase-gallery";
 import { getShowcaseEntries } from "@/actions/showcase";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Cyberpunk Status Page Showcase | PulseGuard",
   description:
