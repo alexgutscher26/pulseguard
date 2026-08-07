@@ -114,7 +114,7 @@ export async function POST(req: Request) {
           const userName = subRecord.user?.name || "PulseGuard Operator";
           const amountDue = invoice.amount_due
             ? `$${(invoice.amount_due / 100).toFixed(2)}`
-            : "$14.00";
+            : "$19.00";
           const failureReason =
             invoice.last_finalization_error?.message ||
             invoice.payment_intent?.last_payment_error?.message ||

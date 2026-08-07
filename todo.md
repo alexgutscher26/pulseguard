@@ -618,7 +618,7 @@
 
 - [x] Integrate Stripe Billing (subscription, usage-based metering, invoices)
 - [x] Build `/settings/billing` page with plan display and Stripe Customer Portal link
-- [x] Define pricing tiers: Initiate (Free), Netrunner ($14/mo), Construct ($69/mo)
+- [x] Define pricing tiers: Initiate (Free), Netrunner ($19/mo), Construct ($79/mo)
 - [x] Establish Team & Business Necessity Paywall: Core monitoring & false-positive consensus free; custom domain, multi-seat, on-call, private probes paid
 - [x] Implement Early Cohort Grandfathering Guarantee (`tierVersion` & `grandfatheredAt` schema locking)
 - [x] Implement feature flags based on workspace plan (enforced server-side)

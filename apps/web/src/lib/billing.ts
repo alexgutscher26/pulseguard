@@ -16,7 +16,7 @@ export interface PlanDetails {
   badge?: string;
   description: string;
   monthlyPrice: number;
-  annualPriceMonthly: number; // Monthly equivalent when billed annually ($140/yr = $11.66/mo, $690/yr = $57.50/mo)
+  annualPriceMonthly: number; // Monthly equivalent when billed annually ($180/yr = $15/mo, $780/yr = $65/mo)
   stripePriceIdMonthly?: string;
   stripePriceIdAnnual?: string;
   limits: PlanLimits;
@@ -54,55 +54,55 @@ export const PLANS: Record<PlanTier, PlanDetails> = {
     badge: "THE SLEEP PLAN",
     description:
       "Solo devs who value their sleep with multi-region verification & zero false alarms.",
-    monthlyPrice: 14,
-    annualPriceMonthly: 11.2,
+    monthlyPrice: 19,
+    annualPriceMonthly: 15,
     stripePriceIdMonthly:
       process.env.STRIPE_NETRUNNER_MONTHLY_PRICE_ID || "price_netrunner_monthly",
     stripePriceIdAnnual: process.env.STRIPE_NETRUNNER_ANNUAL_PRICE_ID || "price_netrunner_annual",
     limits: {
-      maxMonitors: 200,
+      maxMonitors: 250,
       minIntervalSeconds: 30,
-      maxAlertChannels: 20,
-      maxStatusPages: 10,
+      maxAlertChannels: 25,
+      maxStatusPages: 15,
       customDomainAllowed: true,
       usageMetered: true,
       priorityProbes: true,
     },
     features: [
-      "200 Active Monitors",
+      "250 Active Monitors",
       "30-second Heartbeat checks",
       "Multi-Region verification & zero false alarms",
       "Anomalous latency indicators",
       "SSL & Port monitoring",
-      "10 White-label Status pages",
-      "30 Days logs & PDF SLA reports",
+      "15 White-label Status pages",
+      "45 Days logs & PDF SLA reports",
     ],
   },
   CONSTRUCT: {
     id: "CONSTRUCT",
     name: "The Construct",
     description: "Enterprise reliability, HFT checks, SAML & Workspaces for professional teams.",
-    monthlyPrice: 69,
-    annualPriceMonthly: 55.2,
+    monthlyPrice: 79,
+    annualPriceMonthly: 65,
     stripePriceIdMonthly:
       process.env.STRIPE_CONSTRUCT_MONTHLY_PRICE_ID || "price_construct_monthly",
     stripePriceIdAnnual: process.env.STRIPE_CONSTRUCT_ANNUAL_PRICE_ID || "price_construct_annual",
     limits: {
-      maxMonitors: 1000,
+      maxMonitors: 1500,
       minIntervalSeconds: 10,
-      maxAlertChannels: 100,
-      maxStatusPages: 50,
+      maxAlertChannels: 250,
+      maxStatusPages: 75,
       customDomainAllowed: true,
       usageMetered: true,
       priorityProbes: true,
     },
     features: [
-      "Unlimited Active Monitors",
+      "1,500 Active Monitors",
       "10-second HFT Heartbeat checks",
       "Full Global Pulse coverage (5 regions)",
       "SSO, SAML & Workspaces",
       "PagerDuty, Slack & custom webhooks",
-      "50 Private status portals",
+      "75 Private status portals",
       "1 Year log retention & 99.99% SLA",
     ],
   },

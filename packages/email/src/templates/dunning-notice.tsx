@@ -12,7 +12,7 @@ export interface DunningNoticeEmailProps {
 export const DunningNoticeEmail: React.FC<Readonly<DunningNoticeEmailProps>> = ({
   userName = "PulseGuard Operator",
   planName = "The Netrunner",
-  amountDue = "$14.00",
+  amountDue = "$19.00",
   failureReason = "Card declined",
   billingPortalUrl = "https://pulseguard.io/dashboard/settings?tab=billing",
 }) => (

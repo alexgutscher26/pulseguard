@@ -5,10 +5,10 @@ import { getDesignPartnerSpots } from "@/actions/design-partners";
 export const metadata: Metadata = {
   title: "Design Partner Program — Free Pro Access for 1 Year | PulseGuard",
   description:
-    "Apply to become a PulseGuard Design Partner. Get 1 year of Netrunner Pro ($168 value) free in exchange for real usage and launch-day feedback.",
+    "Apply to become a PulseGuard Design Partner. Get 1 year of Netrunner Pro ($228 value) free in exchange for real usage and launch-day feedback.",
   openGraph: {
     title: "Design Partner Program — Free Pro Access for 1 Year | PulseGuard",
-    description: "Get 1 year of PulseGuard Netrunner Pro ($168 value) free.",
+    description: "Get 1 year of PulseGuard Netrunner Pro ($228 value) free.",
   },
 };
 

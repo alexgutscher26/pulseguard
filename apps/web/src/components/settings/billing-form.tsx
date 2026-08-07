@@ -349,8 +349,8 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
                   {billingCycle === "annual" && plan.monthlyPrice > 0 && (
                     <span className="text-[10px] text-emerald-400/90 font-mono font-bold uppercase tracking-wider">
                       {tierKey === "NETRUNNER"
-                        ? "Billed $134.40 annually — Save $33.60/yr"
-                        : "Billed $662.40 annually — Save $165.60/yr"}
+                        ? "Billed $180 annually — Save $48/yr"
+                        : "Billed $780 annually — Save $168/yr"}
                     </span>
                   )}
                 </div>

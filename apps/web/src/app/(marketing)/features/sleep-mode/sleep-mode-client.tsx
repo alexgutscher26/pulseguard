@@ -97,7 +97,7 @@ export function SleepModeClient() {
               href="/signup?plan=netrunner"
               className="inline-flex items-center gap-1.5 h-10 px-6 bg-primary text-primary-foreground font-bold text-xs rounded-lg border border-primary hover:bg-primary/90 transition-all"
             >
-              Get The Sleep Plan — $14/mo
+              Get The Sleep Plan — $19/mo
             </Link>
             <Link
               href="/#pricing"
@@ -222,7 +222,7 @@ export function SleepModeClient() {
             The Sleep Plan
           </div>
           <h3 className="text-2xl sm:text-3xl font-extrabold text-foreground mb-3">
-            Upgrade to Netrunner — <span className="text-primary">$14/mo</span>
+            Upgrade to Netrunner — <span className="text-primary">$19/mo</span>
           </h3>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-lg mx-auto mb-6">
             The Sleep Plan isn&apos;t a gimmick — it&apos;s our Netrunner tier with 30-second
@@ -236,7 +236,7 @@ export function SleepModeClient() {
               "Anomaly Detection",
               "Flapping Suppression",
               "Circuit Breaker",
-              "200 Monitors",
+              "250 Monitors",
             ].map((feature) => (
               <span
                 key={feature}
@@ -250,7 +250,7 @@ export function SleepModeClient() {
             href="/signup?plan=netrunner"
             className="inline-flex items-center gap-1.5 h-11 px-8 bg-primary text-primary-foreground font-bold text-sm rounded-lg border border-primary hover:bg-primary/90 transition-all"
           >
-            Get The Sleep Plan — $14/mo
+            Get The Sleep Plan — $19/mo
           </Link>
         </div>
       </div>

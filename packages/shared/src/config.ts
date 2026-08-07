@@ -37,7 +37,7 @@ export const TIER_TRIGGERS = {
     "On-call escalation policies & schedules",
     "Private probe agents (VPC / On-prem)",
     "30-day & 1-year log retention",
-    "SMS & Phone voice call alerts",
+    "SMS & Telegram alert dispatches",
     "Browser synthetics beyond base allowance",
   ],
 };

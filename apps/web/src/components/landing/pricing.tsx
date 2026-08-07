@@ -214,17 +214,17 @@ export default function Pricing() {
                 <div className="flex items-baseline gap-2">
                   {billing === "yearly" && (
                     <span className="text-sm line-through text-muted-foreground/50 font-mono">
-                      $14
+                      $19
                     </span>
                   )}
                   <span className="text-4xl font-extrabold tracking-tight text-foreground font-mono">
-                    {billing === "yearly" ? "$11.66" : "$14"}
+                    {billing === "yearly" ? "$15" : "$19"}
                   </span>
                   <span className="text-muted-foreground text-xs font-medium">/mo</span>
                 </div>
                 {billing === "yearly" && (
                   <span className="text-[10px] text-primary/80 font-mono font-bold uppercase tracking-wider">
-                    Billed annually ($140) — Save $28
+                    Billed annually ($180) — Save $48
                   </span>
                 )}
               </div>
@@ -235,7 +235,7 @@ export default function Pricing() {
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
                   <span className="text-foreground font-semibold">
-                    <span className="font-mono">200</span> Active Monitors (30s interval)
+                    <span className="font-mono">250</span> Active Monitors (30s interval)
                   </span>
                 </li>
                 <li className="flex items-center gap-3">
@@ -246,7 +246,7 @@ export default function Pricing() {
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>SMS & Phone voice call alerts</span>
+                  <span>SMS & Telegram alert dispatches</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
@@ -254,7 +254,7 @@ export default function Pricing() {
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>30 Days log retention & PDF reports</span>
+                  <span>45 Days log retention & PDF reports</span>
                 </li>
               </ul>
 
@@ -283,17 +283,17 @@ export default function Pricing() {
                 <div className="flex items-baseline gap-2">
                   {billing === "yearly" && (
                     <span className="text-sm line-through text-muted-foreground/50 font-mono">
-                      $69
+                      $79
                     </span>
                   )}
                   <span className="text-4xl font-extrabold tracking-tight text-foreground font-mono">
-                    {billing === "yearly" ? "$57.50" : "$69"}
+                    {billing === "yearly" ? "$65" : "$79"}
                   </span>
                   <span className="text-muted-foreground text-xs font-medium">/mo</span>
                 </div>
                 {billing === "yearly" && (
                   <span className="text-[10px] text-muted-foreground/60 font-mono font-bold uppercase tracking-wider">
-                    Billed annually ($690) — Save $138
+                    Billed annually ($780) — Save $168
                   </span>
                 )}
               </div>
@@ -304,7 +304,7 @@ export default function Pricing() {
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
                   <span className="text-foreground font-semibold">
-                    Unlimited Monitors & 10s checks
+                    1,500 Active Monitors & 10s checks
                   </span>
                 </li>
                 <li className="flex items-center gap-3">

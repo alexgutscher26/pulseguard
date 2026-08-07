@@ -91,7 +91,7 @@ export default function DesignPartnerClient({ initialSpots = 15 }: { initialSpot
         <p className="text-muted-foreground text-sm sm:text-base leading-relaxed max-w-xl">
           Get{" "}
           <span className="text-foreground font-bold font-mono">
-            1 Year of PulseGuard Netrunner Pro ($168 value) free
+            1 Year of PulseGuard Netrunner Pro ($228 value) free
           </span>
           . In exchange, give us 15 minutes of real feedback and an honest review for launch day.
         </p>
@@ -114,7 +114,7 @@ export default function DesignPartnerClient({ initialSpots = 15 }: { initialSpot
           </div>
           <h3 className="font-bold text-foreground text-sm">1 Year Free Pro Access</h3>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Full Netrunner tier features: 200 monitors, 30-second checks, multi-region verification,
+            Full Netrunner tier features: 250 monitors, 30-second checks, multi-region verification,
             and custom status pages.
           </p>
         </div>
