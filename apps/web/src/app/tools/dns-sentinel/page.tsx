@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import LandingHeader from "@/components/landing/header";
 import { DNSAnalyzer } from "./analyzer";
+import { ToolSchema } from "@/components/seo/tool-schema";
 
 export const metadata: Metadata = {
   title: "MX & DNS Record Lookup Analyzer | PulseGuard",
@@ -17,6 +18,11 @@ export const metadata: Metadata = {
 export default function DNSSentinelPage() {
   return (
     <div className="min-h-screen bg-background">
+      <ToolSchema
+        name="MX & DNS Record Lookup Analyzer"
+        description="Free MX and DNS record lookup tool to audit SPF/DKIM/DMARC health scores. Verify email deliverability and security with PulseGuard's DNS sentinel."
+        url="https://pulseguard.io/tools/dns-sentinel"
+      />
       <LandingHeader />
       <main className="container mx-auto pt-32 pb-12 px-4 md:px-6">
         <div className="max-w-6xl mx-auto space-y-8">

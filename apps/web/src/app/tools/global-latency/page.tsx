@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { LatencyChecker } from "./checker";
 import LandingHeader from "@/components/landing/header";
+import { ToolSchema } from "@/components/seo/tool-schema";
 
 export const metadata: Metadata = {
   title: "Global Website Latency Test | PulseGuard Free Tools",
@@ -21,6 +22,11 @@ export const metadata: Metadata = {
 export default function GlobalLatencyPage() {
   return (
     <div className="min-h-screen bg-background">
+      <ToolSchema
+        name="Global Website Latency Test"
+        description="Instantly ping your website from 10 global locations. Check server latency, uptime, and regional performance for free."
+        url="https://pulseguard.io/tools/global-latency"
+      />
       <LandingHeader />
       <main className="container mx-auto pt-32 pb-12 px-4 md:px-6">
         <div className="max-w-4xl mx-auto space-y-6">

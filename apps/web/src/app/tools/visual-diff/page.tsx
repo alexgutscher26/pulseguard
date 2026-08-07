@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { VisualDiffComparator } from "./comparator";
 import LandingHeader from "@/components/landing/header";
+import { ToolSchema } from "@/components/seo/tool-schema";
 
 export const metadata: Metadata = {
   title: "Visual Website Diff Tool | PulseGuard Free Tools",
@@ -19,6 +20,11 @@ export const metadata: Metadata = {
 export default function VisualDiffPage() {
   return (
     <div className="min-h-screen bg-background">
+      <ToolSchema
+        name="Visual Website Diff Tool"
+        description="Instantly compare two versions of a website to detect visual regressions, design shifts, or content updates. The ultimate tool for modern UI/UX monitoring."
+        url="https://pulseguard.io/tools/visual-diff"
+      />
       <LandingHeader />
       <main className="container mx-auto pt-32 pb-12 px-4 md:px-6">
         <div className="max-w-5xl mx-auto space-y-8">

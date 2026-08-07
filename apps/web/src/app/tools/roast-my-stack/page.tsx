@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { RoastMyStack } from "@/components/tools/roast-my-stack";
 import LandingHeader from "@/components/landing/header";
+import { ToolSchema } from "@/components/seo/tool-schema";
 
 export const metadata: Metadata = {
   title: "Free Roast My Stack Analyzer | PulseGuard",
@@ -19,6 +20,11 @@ export const metadata: Metadata = {
 export default function RoastMyStackPage() {
   return (
     <div className="min-h-screen bg-background">
+      <ToolSchema
+        name="Free Roast My Stack Analyzer"
+        description="Get roasted by PulseGuard: analyze your stack for slow TTFB, weak SSL, missing DNS records, and more. Free instant audit."
+        url="https://pulseguard.io/tools/roast-my-stack"
+      />
       <LandingHeader />
       <main className="container mx-auto pt-32 pb-12 px-4 md:px-6">
         <div className="max-w-4xl mx-auto space-y-6">

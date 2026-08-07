@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import LandingHeader from "@/components/landing/header";
 import { CronSentinel } from "./builder";
+import { ToolSchema } from "@/components/seo/tool-schema";
 
 export const metadata: Metadata = {
   title: "Cron Expression Generator & Debugger | PulseGuard",
@@ -17,6 +18,11 @@ export const metadata: Metadata = {
 export default function CronSentinelPage() {
   return (
     <div className="min-h-screen bg-background">
+      <ToolSchema
+        name="Cron Expression Generator & Debugger"
+        description="Free cron expression generator and debugger for infrastructure monitoring. Visualize schedules, humanize cron strings, and plan next executions."
+        url="https://pulseguard.io/tools/cron-sentinel"
+      />
       <LandingHeader />
       <main className="container mx-auto pt-32 pb-12 px-4 md:px-6">
         <div className="max-w-6xl mx-auto space-y-8">

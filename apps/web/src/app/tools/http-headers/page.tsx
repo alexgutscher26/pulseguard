@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import LandingHeader from "@/components/landing/header";
 import { HeaderAnalyzer as Analyzer } from "./analyzer";
+import { ToolSchema } from "@/components/seo/tool-schema";
 
 export const metadata: Metadata = {
   title: "HTTP Security Header Analyzer | PulseGuard",
@@ -17,6 +18,11 @@ export const metadata: Metadata = {
 export default function SecurityHeadersPage() {
   return (
     <div className="min-h-screen bg-background">
+      <ToolSchema
+        name="HTTP Security Header Analyzer"
+        description="Free HTTP header analyzer to audit website security. Scan HSTS, CSP, X-Frame-Options and more with our security sentinel tool."
+        url="https://pulseguard.io/tools/http-headers"
+      />
       <LandingHeader />
       <main className="container mx-auto pt-32 pb-12 px-4 md:px-6">
         <div className="max-w-5xl mx-auto space-y-8">

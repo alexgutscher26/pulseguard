@@ -3,7 +3,7 @@ import prisma from "@pulseguard/db";
 import { getAllPosts } from "@/lib/blog";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://pulseguard.com";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://pulseguard.io";
 
   // Static routes
   const staticRoutes = [

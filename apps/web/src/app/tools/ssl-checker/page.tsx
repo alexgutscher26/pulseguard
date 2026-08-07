@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SSLChecker } from "@/components/tools/ssl-checker";
 import LandingHeader from "@/components/landing/header";
+import { ToolSchema } from "@/components/seo/tool-schema";
 
 export const metadata: Metadata = {
   title: "Free SSL Certificate Checker | PulseGuard",
@@ -15,6 +16,11 @@ export const metadata: Metadata = {
 export default function SSLCheckerPage() {
   return (
     <div className="min-h-screen bg-background">
+      <ToolSchema
+        name="Free SSL Certificate Checker"
+        description="Analyze your SSL/TLS security health. Check for expired certificates, legacy protocols, and HSTS configuration issues instantly."
+        url="https://pulseguard.io/tools/ssl-checker"
+      />
       <LandingHeader />
       <main className="container mx-auto pt-32 pb-12 px-4 md:px-6">
         <div className="max-w-4xl mx-auto space-y-6">
