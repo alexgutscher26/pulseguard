@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import DesignPartnerClient from "./design-partner-client";
 import { getDesignPartnerSpots } from "@/actions/design-partners";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Design Partner Program — Free Pro Access for 1 Year | PulseGuard",
   description:
