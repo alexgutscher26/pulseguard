@@ -28,6 +28,13 @@ export const env = createEnv({
     // Discord OAuth integration
     DISCORD_CLIENT_ID: z.string().min(1).optional(),
     DISCORD_CLIENT_SECRET: z.string().min(1).optional(),
+    DISCORD_REDIRECT_URI: z.string().min(1).optional(),
+    // Slack OAuth integration
+    SLACK_REDIRECT_URI: z.string().min(1).optional(),
+    // Admin access control
+    ADMIN_EMAILS: z.string().optional(),
+    // Dev origins
+    ALLOWED_DEV_ORIGINS: z.string().optional(),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
