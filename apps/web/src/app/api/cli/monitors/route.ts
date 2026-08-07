@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@pulseguard/db";
 import { verifyApiKey, unauthorized } from "../_lib/auth";
+import { assertMonitorLimits } from "@/lib/billing-server";
 
 const MAX_REQUEST_BODY_SIZE = 1_048_576;
 
@@ -76,6 +77,18 @@ export async function POST(req: NextRequest) {
 
   if (!name?.trim()) return NextResponse.json({ error: "name is required" }, { status: 400 });
   if (!url?.trim()) return NextResponse.json({ error: "url is required" }, { status: 400 });
+
+  const limitCheck = await assertMonitorLimits(user.userId, {
+    isNew: true,
+    type,
+    interval,
+  });
+  if (!limitCheck.allowed) {
+    return NextResponse.json(
+      { error: limitCheck.error || "Plan limit exceeded" },
+      { status: 403 },
+    );
+  }
 
   const monitor = await prisma.monitor.create({
     data: {
