@@ -21,13 +21,18 @@ export async function GET() {
     let redisStatus = "not_configured";
     if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
       try {
-        const { Redis } = await import("@upstash/redis");
-        const redis = new Redis({
-          url: process.env.UPSTASH_REDIS_REST_URL,
-          token: process.env.UPSTASH_REDIS_REST_TOKEN,
+        const pingUrl = `${process.env.UPSTASH_REDIS_REST_URL}/ping`;
+        const res = await fetch(pingUrl, {
+          headers: {
+            Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`,
+          },
+          signal: AbortSignal.timeout(3000),
         });
-        await redis.ping();
-        redisStatus = "connected";
+        if (res.ok) {
+          redisStatus = "connected";
+        } else {
+          redisStatus = "error";
+        }
       } catch (redisErr) {
         console.error("[HealthCheck] Redis ping failed:", redisErr);
         redisStatus = "error";
