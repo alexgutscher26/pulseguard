@@ -5,6 +5,8 @@
  * No paid Cloudflare plan required.
  */
 
+import { isPrivateOrInternalUrl } from "@pulseguard/core";
+
 export interface RegionalCheckResult {
   region: string;
   status: "UP" | "DOWN";
@@ -29,7 +31,6 @@ export interface Monitor {
  */
 async function checkFromRegion(monitor: Monitor, region: string): Promise<RegionalCheckResult> {
   const start = Date.now();
-  const url = monitor.url;
   const timeout = monitor.timeout;
 
   try {
@@ -49,19 +50,56 @@ async function checkFromRegion(monitor: Monitor, region: string): Promise<Region
       }
     }
 
-    const response = await fetch(url, {
-      method,
-      redirect: "follow",
-      headers: {
-        // Use a real browser UA to avoid bot detection (429) from sites like Google
-        "User-Agent": "Mozilla/5.0 (compatible; PulseGuard/1.0; +https://pulseguard.io/bot)",
-        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.5",
-        ...userHeaders,
-      },
-      body: ["POST", "PUT", "PATCH"].includes(method) ? (monitor.body ?? null) : null,
-      signal: AbortSignal.timeout(timeout * 1000),
-    });
+    let currentUrl = monitor.url;
+    let response: Response | null = null;
+    let hops = 0;
+    const maxHops = 5;
+
+    while (hops < maxHops) {
+      const ssrfCheck = isPrivateOrInternalUrl(currentUrl);
+      if (ssrfCheck.isForbidden) {
+        return {
+          region,
+          status: "DOWN",
+          latency: Date.now() - start,
+          timestamp: new Date(),
+          errorReason: `SSRF_PROTECTION: ${ssrfCheck.reason || "Forbidden target URL or redirect target"}`,
+        };
+      }
+
+      response = await fetch(currentUrl, {
+        method: hops === 0 ? method : "GET",
+        redirect: "manual",
+        headers: {
+          "User-Agent": "Mozilla/5.0 (compatible; PulseGuard/1.0; +https://pulseguard.io/bot)",
+          Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+          "Accept-Language": "en-US,en;q=0.5",
+          ...userHeaders,
+        },
+        body: hops === 0 && ["POST", "PUT", "PATCH"].includes(method) ? (monitor.body ?? null) : null,
+        signal: AbortSignal.timeout(timeout * 1000),
+      });
+
+      if ([301, 302, 303, 307, 308].includes(response.status)) {
+        const location = response.headers.get("location");
+        if (!location) break;
+        currentUrl = new URL(location, currentUrl).href;
+        hops++;
+        continue;
+      }
+
+      break;
+    }
+
+    if (!response) {
+      return {
+        region,
+        status: "DOWN",
+        latency: Date.now() - start,
+        timestamp: new Date(),
+        errorReason: "TOO_MANY_REDIRECTS: Exceeded maximum redirect hop count of 5",
+      };
+    }
 
     // CRITICAL: Consume body to prevent deadlock
     await response.text();
