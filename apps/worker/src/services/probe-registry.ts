@@ -39,9 +39,8 @@ function generateToken(): string {
   return (
     "pg_probe_" +
     Array.from(bytes)
-      .map((b) => b.toString(36).padStart(2, "0"))
+      .map((b) => b.toString(16).padStart(2, "0"))
       .join("")
-      .slice(0, 40)
   );
 }
 
