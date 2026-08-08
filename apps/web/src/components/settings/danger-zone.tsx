@@ -4,7 +4,6 @@ import { AlertTriangle, Loader2 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
 import { toast } from "@/components/ui/sonner";
-import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -67,16 +66,15 @@ export function DangerZone() {
 
 function DeleteConfirmButton() {
   const [isDeleting, setIsDeleting] = useState(false);
-  const router = useRouter();
 
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
       await authClient.deleteUser({
-        callbackURL: "/login",
+        callbackURL: "/",
       });
       toast.success("Account deleted successfully");
-      router.push("/login");
+      window.location.href = "/";
     } catch (error) {
       toast.error("Failed to delete account");
       console.error(error);

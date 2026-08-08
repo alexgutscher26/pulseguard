@@ -62,20 +62,8 @@ function ThemeToggleButton() {
 }
 
 export default function LandingHeader() {
-  const [session, setSession] = useState<{ data: any } | null>(null);
+  const { data: session } = authClient.useSession();
   const [isToolsOpen, setIsToolsOpen] = useState(false);
-
-  // Safely load session client-side
-  useEffect(() => {
-    authClient
-      .getSession()
-      .then((res) => {
-        if (res?.data) {
-          setSession(res);
-        }
-      })
-      .catch(() => {});
-  }, []);
 
   return (
     <header className="fixed top-5 left-0 right-0 z-50 flex justify-center px-4 w-full">
@@ -210,7 +198,7 @@ export default function LandingHeader() {
           {/* Theme switcher */}
           <ThemeToggleButton />
 
-          {session.data ? (
+          {session ? (
             <Link
               href="/dashboard"
               className="flex items-center justify-center h-8.5 px-4 bg-primary text-primary-foreground font-semibold text-xs rounded-lg border border-primary hover:bg-primary/90 transition-all duration-300"
