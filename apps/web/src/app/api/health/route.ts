@@ -6,7 +6,7 @@ export const runtime = "nodejs";
 export async function GET() {
   try {
     const prisma = getPrisma();
-    
+
     // 1. DB Ping
     await prisma.$queryRaw`SELECT 1`;
 

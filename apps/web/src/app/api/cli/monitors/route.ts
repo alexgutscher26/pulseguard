@@ -84,10 +84,7 @@ export async function POST(req: NextRequest) {
     interval,
   });
   if (!limitCheck.allowed) {
-    return NextResponse.json(
-      { error: limitCheck.error || "Plan limit exceeded" },
-      { status: 403 },
-    );
+    return NextResponse.json({ error: limitCheck.error || "Plan limit exceeded" }, { status: 403 });
   }
 
   const monitor = await prisma.monitor.create({

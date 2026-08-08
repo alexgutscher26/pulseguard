@@ -76,7 +76,8 @@ async function checkFromRegion(monitor: Monitor, region: string): Promise<Region
           "Accept-Language": "en-US,en;q=0.5",
           ...userHeaders,
         },
-        body: hops === 0 && ["POST", "PUT", "PATCH"].includes(method) ? (monitor.body ?? null) : null,
+        body:
+          hops === 0 && ["POST", "PUT", "PATCH"].includes(method) ? (monitor.body ?? null) : null,
         signal: AbortSignal.timeout(timeout * 1000),
       });
 

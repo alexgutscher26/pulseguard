@@ -81,10 +81,7 @@ const jsonLd = {
       name: "PulseGuard",
       url: BASE_URL,
       logo: `${BASE_URL}/logo.png`,
-      sameAs: [
-        "https://github.com/alexgutscher26/pulseguard",
-        "https://twitter.com/pulseguard",
-      ],
+      sameAs: ["https://github.com/alexgutscher26/pulseguard", "https://twitter.com/pulseguard"],
     },
     {
       "@type": "WebSite",
@@ -122,7 +119,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body
+        suppressHydrationWarning
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

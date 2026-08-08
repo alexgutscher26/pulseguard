@@ -92,7 +92,7 @@ flowchart TD
 1. **Incident Memory & Retrieval-Augmented Generation (RAG)**
    - When an endpoint fails, query Pinecone for past incidents with similar error payloads, stack traces, and status codes within the workspace.
    - Inject the top matching past resolutions into the LLM prompt:
-     > *"Incident #402 resolved on June 12 was fixed by restarting the Redis connection pool in `us-east-1`."*
+     > _"Incident #402 resolved on June 12 was fixed by restarting the Redis connection pool in `us-east-1`."_
 
 2. **Error Payload & Log Clustering**
    - Convert incoming monitor HTTP response bodies, error messages, and header logs into vector embeddings (`text-embedding-3-small`).
@@ -100,7 +100,7 @@ flowchart TD
 
 3. **Semantic Monitor Search & Natural Language Queries**
    - Allow enterprise users with thousands of monitors to perform semantic search:
-     - *"Show me all payment endpoints that failed with TLS/SSL errors in the past month."*
+     - _"Show me all payment endpoints that failed with TLS/SSL errors in the past month."_
      - Pinecone computes cosine similarity between natural language queries and vectorized monitor configurations/incident histories.
 
 4. **Self-Healing Synthetic AI Agent Checks**
@@ -312,13 +312,13 @@ Provide a structured Markdown post-mortem with Summary, Root Cause Analysis, Imp
 
 Integrate Helicone usage stats & Pinecone RAG features directly into PulseGuard's subscription plans:
 
-| Feature / Capability | Starter / Free | Pro ($29/mo) | Enterprise ($99+/mo) |
-| :--- | :--- | :--- | :--- |
-| **AI Incident Summaries** | Basic (Helicone Cached) | Unlimited | Priority GPT-4o Model |
-| **Incident Memory RAG (Pinecone)** | ❌ Disabled | 90-Day Vector Retention | Unlimited Retention & Custom Namespace |
-| **Log Clustering & Semantic Search** | ❌ Disabled | Up to 10k vectors | Unlimited Log Vectors |
-| **Helicone LLM Cost Analytics** | ❌ Disabled | Workspace Aggregates | Full Usage Breakdown & Export |
-| **Custom AI Prompt Tuning** | Standard Defaults | Standard Defaults | Custom System Prompts |
+| Feature / Capability                 | Starter / Free          | Pro ($29/mo)            | Enterprise ($99+/mo)                   |
+| :----------------------------------- | :---------------------- | :---------------------- | :------------------------------------- |
+| **AI Incident Summaries**            | Basic (Helicone Cached) | Unlimited               | Priority GPT-4o Model                  |
+| **Incident Memory RAG (Pinecone)**   | ❌ Disabled             | 90-Day Vector Retention | Unlimited Retention & Custom Namespace |
+| **Log Clustering & Semantic Search** | ❌ Disabled             | Up to 10k vectors       | Unlimited Log Vectors                  |
+| **Helicone LLM Cost Analytics**      | ❌ Disabled             | Workspace Aggregates    | Full Usage Breakdown & Export          |
+| **Custom AI Prompt Tuning**          | Standard Defaults       | Standard Defaults       | Custom System Prompts                  |
 
 ---
 

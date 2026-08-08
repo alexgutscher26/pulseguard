@@ -13,7 +13,9 @@ export async function POST(req: Request) {
   try {
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
     if (!webhookSecret || !signature) {
-      console.error("Stripe Webhook Error: Missing STRIPE_WEBHOOK_SECRET or stripe-signature header");
+      console.error(
+        "Stripe Webhook Error: Missing STRIPE_WEBHOOK_SECRET or stripe-signature header",
+      );
       return NextResponse.json(
         { error: "Webhook Error: Missing webhook secret or signature header" },
         { status: 400 },
