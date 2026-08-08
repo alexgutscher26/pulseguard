@@ -24,6 +24,8 @@ import { USE_CASES } from "@/content/use-cases-data";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+export const dynamic = "force-dynamic";
+
 const iconMap: Record<string, any> = {
   Server,
   Code2,

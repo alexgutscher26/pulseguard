@@ -5,6 +5,8 @@ import Pricing from "@/components/landing/pricing";
 import HowItWorks from "@/components/landing/how-it-works";
 import ComparisonTable from "@/components/landing/comparison-table";
 
+export const dynamic = "force-dynamic";
+
 export default function LandingPage() {
   return (
     <>

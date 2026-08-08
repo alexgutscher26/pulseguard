@@ -3,6 +3,8 @@ import { Activity, Globe, Shield, Bell, Brain, Cpu, ArrowRight } from "lucide-re
 import Link from "next/link";
 import { PRODUCT_CONFIG, AVAILABLE_REGIONS } from "@pulseguard/shared";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "About PulseGuard | Global Uptime Monitoring",
   description:

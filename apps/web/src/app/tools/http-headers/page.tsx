@@ -3,6 +3,8 @@ import LandingHeader from "@/components/landing/header";
 import { HeaderAnalyzer as Analyzer } from "./analyzer";
 import { ToolSchema } from "@/components/seo/tool-schema";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "HTTP Security Header Analyzer | PulseGuard",
   description:

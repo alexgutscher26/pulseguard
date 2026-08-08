@@ -4,6 +4,8 @@ import { MonitorSettingsView } from "@/components/monitors/settings-view";
 import { auth } from "@pulseguard/auth";
 import { headers } from "next/headers";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Renders the monitor settings page.
  *

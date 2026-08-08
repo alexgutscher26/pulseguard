@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { VerificationClient } from "./verification-client";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Multi-Region Global Verification | PulseGuard Features",
   description:

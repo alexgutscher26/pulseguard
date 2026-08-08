@@ -3,6 +3,8 @@ import LandingHeader from "@/components/landing/header";
 import { CronSentinel } from "./builder";
 import { ToolSchema } from "@/components/seo/tool-schema";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Cron Expression Generator & Debugger | PulseGuard",
   description:

@@ -13,6 +13,8 @@ import { BillingForm } from "@/components/settings/billing-form";
 import { ReferralForm } from "@/components/settings/referral-form";
 import { getUserUsageSummary } from "@/lib/billing-server";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Renders the settings page based on the user's session and selected tab.
  *

@@ -3,6 +3,8 @@ import LandingHeader from "@/components/landing/header";
 import { PayloadTester } from "./tester";
 import { ToolSchema } from "@/components/seo/tool-schema";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Regex Payload Monitor & Tester | PulseGuard",
   description:

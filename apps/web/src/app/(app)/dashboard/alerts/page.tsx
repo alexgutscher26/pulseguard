@@ -7,6 +7,8 @@ import { AlertRules } from "@/components/alerts/alert-rules";
 import { getNotificationChannels, getAlertHistory, getAlertRules } from "@/actions/notifications";
 import { getMonitors } from "@/actions/monitors";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Renders the Alerts page component.
  *

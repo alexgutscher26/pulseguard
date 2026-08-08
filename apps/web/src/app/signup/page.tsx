@@ -1,15 +1,18 @@
-"use client";
+import { auth } from "@pulseguard/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import SignupClient from "./signup-client";
 
-import { useRouter } from "next/navigation";
-import AuthLayout from "@/components/auth-layout";
-import SignUpForm from "@/components/sign-up-form";
+export const dynamic = "force-dynamic";
 
-export default function SignupPage() {
-  const router = useRouter();
+export default async function SignupPage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-  return (
-    <AuthLayout title="New User Registration">
-      <SignUpForm onSwitchToSignIn={() => router.push("/login")} />
-    </AuthLayout>
-  );
+  if (session?.user) {
+    redirect("/dashboard");
+  }
+
+  return <SignupClient />;
 }

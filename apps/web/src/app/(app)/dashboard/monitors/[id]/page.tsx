@@ -3,6 +3,8 @@ import { getMonitor, getMonitorInsights } from "@/actions/monitors";
 import { MonitorDetailView } from "@/components/monitors/details/monitor-detail-view";
 import { AIInsights } from "@/components/dashboard/ai-insights";
 
+export const dynamic = "force-dynamic";
+
 export default async function MonitorDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const [monitor, insights] = await Promise.all([getMonitor(id), getMonitorInsights(id)]);

@@ -1,6 +1,8 @@
 import LandingHeader from "@/components/landing/header";
 import LandingFooter from "@/components/landing/footer";
 
+export const dynamic = "force-dynamic";
+
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground font-sans selection:bg-primary/20">

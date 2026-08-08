@@ -3,6 +3,8 @@ import { RoastMyStack } from "@/components/tools/roast-my-stack";
 import LandingHeader from "@/components/landing/header";
 import { ToolSchema } from "@/components/seo/tool-schema";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Free Roast My Stack Analyzer | PulseGuard",
   description:

@@ -3,6 +3,8 @@ import { VisualDiffComparator } from "./comparator";
 import LandingHeader from "@/components/landing/header";
 import { ToolSchema } from "@/components/seo/tool-schema";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Visual Website Diff Tool | PulseGuard Free Tools",
   description:

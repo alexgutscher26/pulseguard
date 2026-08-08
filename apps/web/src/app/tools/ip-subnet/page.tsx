@@ -3,6 +3,8 @@ import LandingHeader from "@/components/landing/header";
 import { SubnetCalculator } from "./calculator";
 import { ToolSchema } from "@/components/seo/tool-schema";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "IP Subnet Calculator | PulseGuard",
   description:

@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PostLayout from "@/components/blog/post-layout";
 import { formatPostDate, getAllPosts, getPostBySlug } from "@/lib/blog";
+import { MarkdownRenderer } from "@/lib/markdown";
 
-export const dynamicParams = false;
+export const dynamic = "force-dynamic";
 
 export function generateStaticParams() {
   return getAllPosts().map((post) => ({ slug: post.slug }));
@@ -74,7 +75,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <PostLayout title={title} date={formatPostDate(date)} readTime={readTime} category={category}>
-        {post.body}
+        <MarkdownRenderer content={post.content} />
       </PostLayout>
     </>
   );

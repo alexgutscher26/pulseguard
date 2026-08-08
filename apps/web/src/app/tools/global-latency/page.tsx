@@ -3,6 +3,8 @@ import { LatencyChecker } from "./checker";
 import LandingHeader from "@/components/landing/header";
 import { ToolSchema } from "@/components/seo/tool-schema";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Global Website Latency Test | PulseGuard Free Tools",
   description:

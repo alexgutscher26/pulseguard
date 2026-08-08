@@ -22,16 +22,20 @@ import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
 
-export default function LandingHeader() {
-  const session = authClient.useSession();
-  const [isToolsOpen, setIsToolsOpen] = useState(false);
-  const { theme, setTheme } = useTheme();
+function ThemeToggleButton() {
   const [mounted, setMounted] = useState(false);
+  const themeContext = useTheme();
 
-  // Avoid hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  if (!mounted) {
+    return <div className="size-8 rounded-lg border border-border bg-background/50" />;
+  }
+
+  const theme = themeContext?.theme || "dark";
+  const setTheme = themeContext?.setTheme || (() => {});
 
   const cycleTheme = () => {
     const themes = ["dark", "light", "matrix", "cyberpunk", "blade"];
@@ -39,6 +43,39 @@ export default function LandingHeader() {
     const nextIdx = (currentIdx + 1) % themes.length;
     setTheme(themes[nextIdx]);
   };
+
+  return (
+    <button
+      onClick={cycleTheme}
+      className="flex items-center justify-center size-8 rounded-lg border border-border bg-background/50 hover:bg-accent text-muted-foreground hover:text-foreground transition-all"
+      title={`Active Theme: ${theme || "dark"}. Click to change.`}
+    >
+      {theme === "light" ? (
+        <Sun className="size-4" />
+      ) : theme === "dark" ? (
+        <Moon className="size-4" />
+      ) : (
+        <Monitor className="size-4 text-primary" />
+      )}
+    </button>
+  );
+}
+
+export default function LandingHeader() {
+  const [session, setSession] = useState<{ data: any } | null>(null);
+  const [isToolsOpen, setIsToolsOpen] = useState(false);
+
+  // Safely load session client-side
+  useEffect(() => {
+    authClient
+      .getSession()
+      .then((res) => {
+        if (res?.data) {
+          setSession(res);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <header className="fixed top-5 left-0 right-0 z-50 flex justify-center px-4 w-full">
@@ -171,21 +208,7 @@ export default function LandingHeader() {
         {/* Action Panel */}
         <div className="flex items-center gap-3.5">
           {/* Theme switcher */}
-          {mounted && (
-            <button
-              onClick={cycleTheme}
-              className="flex items-center justify-center size-8 rounded-lg border border-border bg-background/50 hover:bg-accent text-muted-foreground hover:text-foreground transition-all"
-              title={`Active Theme: ${theme || "dark"}. Click to change.`}
-            >
-              {theme === "light" ? (
-                <Sun className="size-4" />
-              ) : theme === "dark" ? (
-                <Moon className="size-4" />
-              ) : (
-                <Monitor className="size-4 text-primary" />
-              )}
-            </button>
-          )}
+          <ThemeToggleButton />
 
           {session.data ? (
             <Link

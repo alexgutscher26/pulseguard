@@ -3,6 +3,8 @@ import { SSLChecker } from "@/components/tools/ssl-checker";
 import LandingHeader from "@/components/landing/header";
 import { ToolSchema } from "@/components/seo/tool-schema";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Free SSL Certificate Checker | PulseGuard",
   description:

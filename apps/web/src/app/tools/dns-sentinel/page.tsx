@@ -3,6 +3,8 @@ import LandingHeader from "@/components/landing/header";
 import { DNSAnalyzer } from "./analyzer";
 import { ToolSchema } from "@/components/seo/tool-schema";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "MX & DNS Record Lookup Analyzer | PulseGuard",
   description:

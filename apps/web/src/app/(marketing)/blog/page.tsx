@@ -3,6 +3,8 @@ import { FileText, Clock, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { formatPostDate, getAllPosts } from "@/lib/blog";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Blog | PulseGuard",
   description:

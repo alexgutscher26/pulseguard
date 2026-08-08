@@ -7,6 +7,8 @@ import { getOnboardingStatus } from "@/actions/onboarding";
 import { getUserUsageSummary } from "@/lib/billing-server";
 import DashboardClient from "./dashboard-client";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Renders the Dashboard page after validating the user session.
  */

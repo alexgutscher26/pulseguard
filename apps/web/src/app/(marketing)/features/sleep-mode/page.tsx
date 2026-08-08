@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { SleepModeClient } from "./sleep-mode-client";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Sleep Mode — PulseGuard",
   description:

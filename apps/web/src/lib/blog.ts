@@ -1,8 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
-import { compileMDX } from "next-mdx-remote/rsc";
-import remarkGfm from "remark-gfm";
 import { z } from "zod";
 
 const POSTS_DIR = path.join(process.cwd(), "src", "content", "blog");
@@ -44,12 +42,7 @@ export async function getPostBySlug(slug: string) {
   const raw = fs.readFileSync(filePath, "utf8");
   const { data, content } = matter(raw);
 
-  const { content: body } = await compileMDX({
-    source: content,
-    options: { mdxOptions: { remarkPlugins: [remarkGfm] } },
-  });
-
-  return { slug, meta: postSchema.parse(data), body };
+  return { slug, meta: postSchema.parse(data), content };
 }
 
 export function formatPostDate(isoDate: string): string {

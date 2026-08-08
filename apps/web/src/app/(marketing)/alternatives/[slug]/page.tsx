@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import PostLayout from "@/components/blog/post-layout";
 import { formatPostDate, getPostBySlug } from "@/lib/blog";
 
+export const dynamic = "force-dynamic";
+
 const ALTERNATIVES_MAP: Record<string, string> = {
   freshping: "freshping-alternative",
 };

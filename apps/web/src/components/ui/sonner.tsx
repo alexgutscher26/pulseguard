@@ -5,9 +5,21 @@ import "goey-toast/styles.css";
 import { useTheme } from "next-themes";
 import { GooeyToaster, gooeyToast } from "goey-toast";
 import type { GooeyToasterProps } from "goey-toast";
+import { useEffect, useState } from "react";
 
 const Toaster = ({ ...props }: GooeyToasterProps) => {
-  const { theme = "system" } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const themeContext = useTheme();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
+  const theme = themeContext?.theme || "system";
   const isDark =
     theme === "dark" || theme === "matrix" || theme === "cyberpunk" || theme === "blade";
 

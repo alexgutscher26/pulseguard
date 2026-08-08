@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import PostLayout from "@/components/blog/post-layout";
 import { formatPostDate, getPostBySlug } from "@/lib/blog";
 
+export const dynamic = "force-dynamic";
+
 const COMPETITOR_MAP: Record<string, string> = {
   uptimerobot: "vs-uptimerobot",
   "better-stack": "vs-better-stack",

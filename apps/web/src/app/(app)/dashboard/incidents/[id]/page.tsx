@@ -12,6 +12,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getPostMortem } from "@/actions/post-mortem";
 import { PostMortemEditor } from "@/components/incidents/post-mortem/post-mortem-editor";
 
+export const dynamic = "force-dynamic";
+
 export default async function IncidentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const incident = await getIncident(id);

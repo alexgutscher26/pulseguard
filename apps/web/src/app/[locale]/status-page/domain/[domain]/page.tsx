@@ -9,6 +9,8 @@ import { getMessages } from "next-intl/server";
 import { getI18nOverrides } from "@/actions/i18n";
 import set from "lodash.set";
 
+export const dynamic = "force-dynamic";
+
 async function getPageByDomain(domain: string) {
   return prisma.statusPage.findUnique({
     where: { customDomain: domain },

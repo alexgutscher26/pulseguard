@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { getStatusPages } from "@/actions/status-pages";
 import { StatusPageList } from "@/components/status-pages/status-page-list";
 
+export const dynamic = "force-dynamic";
+
 export default async function StatusPagesPage() {
   const session = await auth.api.getSession({
     headers: await headers(),

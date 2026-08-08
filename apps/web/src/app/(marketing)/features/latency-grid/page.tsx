@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { LatencyGridClient } from "./latency-grid-client";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Live Latency Grid Monitoring | PulseGuard Features",
   description:

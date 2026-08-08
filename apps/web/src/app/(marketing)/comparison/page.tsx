@@ -8,6 +8,8 @@ import {
   TimeSavingCalculator,
 } from "@/components/landing/timeline-visualization";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "PulseGuard vs Competitors — Better Monitoring, Faster Checks",
   description:

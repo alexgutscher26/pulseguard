@@ -11,6 +11,8 @@ import set from "lodash.set";
 import { auth } from "@pulseguard/auth";
 import { getMockStatusPage } from "@/components/status-pages/mock-data";
 
+export const dynamic = "force-dynamic";
+
 async function getPublicStatusPage(slug: string) {
   return prisma.statusPage.findUnique({
     where: { slug: slug },
