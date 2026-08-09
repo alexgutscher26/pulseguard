@@ -289,7 +289,7 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
           >
             Annual Billing
             <span className="px-1.5 py-0.5 rounded text-[10px] uppercase font-mono font-bold bg-slate-950 text-emerald-400">
-              Save 20% OFF
+              Save 17% OFF
             </span>
           </button>
         </div>

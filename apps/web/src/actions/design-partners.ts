@@ -6,6 +6,10 @@ import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { auth } from "@pulseguard/auth";
 import { getAdminStatus } from "./admin";
+import {
+  createStripePromotionCode,
+  createStripeRenewalDiscountCode,
+} from "@/lib/stripe";
 
 const designPartnerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -37,6 +41,10 @@ export interface DesignPartnerRecord {
   painPoint?: string;
   status: "PENDING" | "APPROVED" | "REJECTED";
   vipCode?: string;
+  stripePromoId?: string;
+  stripeSynced?: boolean;
+  renewalDiscountCode?: string;
+  renewalDiscountPercent?: number;
   userId?: string | null;
   redeemedAt?: string | null;
   redeemedByUserId?: string | null;
@@ -220,6 +228,10 @@ export async function getAllDesignPartnerApplications(): Promise<DesignPartnerRe
           painPoint: data.painPoint || "",
           status: data.status || "PENDING",
           vipCode: data.vipCode,
+          stripePromoId: data.stripePromoId,
+          stripeSynced: data.stripeSynced ?? Boolean(data.stripePromoId),
+          renewalDiscountCode: data.renewalDiscountCode,
+          renewalDiscountPercent: data.renewalDiscountPercent,
           userId: data.userId,
           redeemedAt: data.redeemedAt || null,
           redeemedByUserId: data.redeemedByUserId || null,
@@ -322,8 +334,32 @@ export async function approveDesignPartnerApplication(
     const data: DesignPartnerRecord = JSON.parse(record.value);
     const vipCode = data.vipCode || generateVipCode();
 
+    // Automatically synchronize promotion code in Stripe via Stripe SDK
+    let stripePromoId: string | undefined = data.stripePromoId;
+    let stripeSynced = data.stripeSynced ?? false;
+
+    try {
+      const stripePromo = await createStripePromotionCode({
+        code: vipCode,
+        percentOff: 100,
+        durationMonths: 12,
+        maxRedemptions: 1,
+        metadata: {
+          partnerId: record.id,
+          applicantEmail: data.email,
+          applicantName: data.name,
+        },
+      });
+      stripePromoId = stripePromo.id;
+      stripeSynced = !stripePromo.isMock;
+    } catch (stripeErr) {
+      console.warn("[DesignPartner] Note on Stripe promotion code sync:", stripeErr);
+    }
+
     data.status = "APPROVED";
     data.vipCode = vipCode;
+    data.stripePromoId = stripePromoId;
+    data.stripeSynced = stripeSynced;
 
     // Update database verification record
     await prisma.verification.update({
@@ -365,7 +401,9 @@ export async function approveDesignPartnerApplication(
       }
     }
 
-    console.log(`[DesignPartner] Application APPROVED for ${data.email}. VIP Code: ${vipCode}`);
+    console.log(
+      `[DesignPartner] Application APPROVED for ${data.email}. VIP Code: ${vipCode} (Stripe: ${stripeSynced ? "LIVE SYNCED" : "MOCK/SAVED"})`,
+    );
 
     revalidatePath("/dashboard/design-partners");
     revalidatePath("/design-partners");
@@ -378,6 +416,76 @@ export async function approveDesignPartnerApplication(
   } catch (error: any) {
     console.error("Failed to approve application:", error);
     return { success: false, error: error.message || "Failed to approve application" };
+  }
+}
+
+/**
+ * Generate a post-year renewal loyalty discount code via Stripe SDK (Admin only)
+ */
+export async function generatePartnerRenewalDiscount(
+  id: string,
+  percentOff: number = 50,
+): Promise<{ success: boolean; discountCode?: string; percentOff?: number; isMock?: boolean; error?: string }> {
+  try {
+    const admin = await getAdminStatus();
+    if (!admin.isAdmin) {
+      return {
+        success: false,
+        error: "Unauthorized: Admin access required to generate renewal codes",
+      };
+    }
+
+    const record = await prisma.verification.findUnique({
+      where: { id },
+    });
+
+    if (!record) {
+      return { success: false, error: "Partner application not found" };
+    }
+
+    const data: DesignPartnerRecord = JSON.parse(record.value);
+    if (data.status !== "APPROVED") {
+      return {
+        success: false,
+        error: "Renewal discount codes can only be generated for APPROVED design partners",
+      };
+    }
+
+    const renewalResult = await createStripeRenewalDiscountCode({
+      applicantEmail: data.email,
+      partnerId: record.id,
+      percentOff,
+      durationMonths: 12,
+    });
+
+    data.renewalDiscountCode = renewalResult.code;
+    data.renewalDiscountPercent = percentOff;
+
+    await prisma.verification.update({
+      where: { id },
+      data: {
+        value: JSON.stringify(data),
+      },
+    });
+
+    console.log(
+      `[DesignPartner] Generated Renewal Discount Code ${renewalResult.code} (${percentOff}% off) for ${data.email}`,
+    );
+
+    revalidatePath("/dashboard/design-partners");
+
+    return {
+      success: true,
+      discountCode: renewalResult.code,
+      percentOff,
+      isMock: renewalResult.isMock,
+    };
+  } catch (error: any) {
+    console.error("Failed to generate renewal discount code:", error);
+    return {
+      success: false,
+      error: error.message || "Failed to generate renewal discount code",
+    };
   }
 }
 

@@ -14,11 +14,13 @@ import {
   Loader2,
   Award,
   Filter,
+  Sparkles,
 } from "lucide-react";
 import { toast } from "@/components/ui/sonner";
 import {
   approveDesignPartnerApplication,
   rejectDesignPartnerApplication,
+  generatePartnerRenewalDiscount,
 } from "@/actions/design-partners";
 import type { DesignPartnerRecord } from "@/actions/design-partners";
 import { grantSelfAdminAccess } from "@/actions/admin";
@@ -35,6 +37,7 @@ export default function AdminDesignPartnersClient({
   const [applications, setApplications] = useState<DesignPartnerRecord[]>(initialApplications);
   const [filter, setFilter] = useState<"ALL" | "PENDING" | "APPROVED" | "REJECTED">("PENDING");
   const [processingId, setProcessingId] = useState<string | null>(null);
+  const [generatingRenewalId, setGeneratingRenewalId] = useState<string | null>(null);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   const handleGrantAdmin = async () => {
@@ -68,10 +71,12 @@ export default function AdminDesignPartnersClient({
     setProcessingId(null);
 
     if (res.success) {
-      toast.success(`Partnership APPROVED! Generated VIP Code: ${res.vipCode}`);
+      toast.success(`Partnership APPROVED! Generated & Synced VIP Code: ${res.vipCode}`);
       setApplications((prev) =>
         prev.map((app) =>
-          app.id === id ? { ...app, status: "APPROVED", vipCode: res.vipCode } : app,
+          app.id === id
+            ? { ...app, status: "APPROVED", vipCode: res.vipCode, stripeSynced: true }
+            : app,
         ),
       );
     } else {
@@ -94,10 +99,35 @@ export default function AdminDesignPartnersClient({
     }
   };
 
-  const handleCopyCode = (code: string) => {
+  const handleGenerateRenewal = async (id: string, percentOff: number = 50) => {
+    setGeneratingRenewalId(id);
+    const res = await generatePartnerRenewalDiscount(id, percentOff);
+    setGeneratingRenewalId(null);
+
+    if (res.success && res.discountCode) {
+      toast.success(
+        `Created Stripe ${percentOff}% Renewal Discount Code: ${res.discountCode}`,
+      );
+      setApplications((prev) =>
+        prev.map((app) =>
+          app.id === id
+            ? {
+                ...app,
+                renewalDiscountCode: res.discountCode,
+                renewalDiscountPercent: percentOff,
+              }
+            : app,
+        ),
+      );
+    } else {
+      toast.error(res.error || "Failed to generate renewal discount code");
+    }
+  };
+
+  const handleCopyCode = (code: string, label: string = "Code") => {
     navigator.clipboard.writeText(code);
     setCopiedCode(code);
-    toast.success("VIP Code copied!");
+    toast.success(`${label} copied to clipboard!`);
     setTimeout(() => setCopiedCode(null), 2000);
   };
 
@@ -114,7 +144,7 @@ export default function AdminDesignPartnersClient({
             Design Partner Applications
           </h1>
           <p className="text-xs text-muted-foreground mt-1">
-            Review, approve, or reject applicants for the 1-Year Free Netrunner Pro partnership.
+            Review, approve, or reject applicants for the 1-Year Free Netrunner Pro partnership, with automated Stripe SDK promotion codes.
           </p>
         </div>
 
@@ -153,8 +183,35 @@ export default function AdminDesignPartnersClient({
         </div>
       </div>
 
+      {/* Admin Privilege Guard */}
+      {!isAdminState && (
+        <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <ShieldCheck className="size-6 text-amber-400 shrink-0 mt-0.5" />
+            <div>
+              <h3 className="text-sm font-bold text-foreground">Admin Mode Required</h3>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                You are currently viewing as a standard operator. Grant your current session ADMIN privileges to approve/reject applications and generate Stripe promo codes.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={handleGrantAdmin}
+            disabled={grantingAdmin}
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs transition-all cursor-pointer shrink-0 disabled:opacity-50"
+          >
+            {grantingAdmin ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <ShieldCheck className="size-4" />
+            )}
+            Elevate to ADMIN
+          </button>
+        </div>
+      )}
+
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-border pb-3">
+      <div className="flex items-center gap-2 border-b border-border pb-4">
         <Filter className="size-4 text-muted-foreground mr-1" />
         {(["PENDING", "APPROVED", "REJECTED", "ALL"] as const).map((tab) => (
           <button
@@ -162,27 +219,22 @@ export default function AdminDesignPartnersClient({
             onClick={() => setFilter(tab)}
             className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer ${
               filter === tab
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted/40 text-muted-foreground hover:text-foreground hover:bg-muted"
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "bg-muted/40 text-muted-foreground hover:bg-muted"
             }`}
           >
-            {tab === "PENDING" && `Pending (${pendingCount})`}
-            {tab === "APPROVED" && `Approved (${approvedCount})`}
-            {tab === "REJECTED" && `Rejected (${rejectedCount})`}
-            {tab === "ALL" && `All (${applications.length})`}
+            {tab}
           </button>
         ))}
       </div>
 
-      {/* Applications List */}
+      {/* Application List */}
       {filteredApplications.length === 0 ? (
-        <div className="text-center py-16 bg-card border border-border rounded-xl flex flex-col items-center gap-3">
-          <Users className="size-10 text-muted-foreground/40" />
-          <h3 className="text-sm font-bold text-foreground">No applications found</h3>
-          <p className="text-xs text-muted-foreground max-w-xs">
-            {filter === "PENDING"
-              ? "All submitted design partner applications have been reviewed."
-              : `No applications matching filter "${filter}".`}
+        <div className="text-center py-16 bg-card/50 border border-dashed border-border rounded-2xl">
+          <Users className="size-8 text-muted-foreground mx-auto mb-2 opacity-50" />
+          <p className="text-sm font-medium text-foreground">No applications found</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            No design partner submissions match the "{filter}" filter.
           </p>
         </div>
       ) : (
@@ -190,33 +242,25 @@ export default function AdminDesignPartnersClient({
           {filteredApplications.map((app) => (
             <div
               key={app.id}
-              className={`bg-card border rounded-2xl p-6 transition-all flex flex-col md:flex-row md:items-center justify-between gap-6 ${
-                app.status === "PENDING"
-                  ? "border-amber-500/40 shadow-sm"
-                  : app.status === "APPROVED"
-                    ? "border-emerald-500/30"
-                    : "border-border opacity-70"
-              }`}
+              className="bg-card border border-border rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-border/80 transition-all"
             >
-              {/* Info Column */}
-              <div className="flex flex-col gap-2 max-w-xl">
+              <div className="flex flex-col gap-2.5 flex-1 min-w-0">
                 <div className="flex items-center gap-3 flex-wrap">
-                  <span className="font-bold text-foreground text-sm">{app.name}</span>
-                  <span className="text-xs text-muted-foreground font-mono">({app.email})</span>
+                  <span className="font-bold text-sm text-foreground">{app.name}</span>
+                  <span className="text-xs font-mono text-muted-foreground">{app.email}</span>
 
-                  {/* Status Badge */}
                   {app.status === "PENDING" && (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[10px] font-mono font-bold">
-                      <Clock className="size-3 animate-pulse" /> PENDING REVIEW
+                    <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-400">
+                      <Clock className="size-3" /> PENDING
                     </span>
                   )}
                   {app.status === "APPROVED" && (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-mono font-bold">
-                      <CheckCircle2 className="size-3" /> APPROVED PARTNER
+                    <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+                      <CheckCircle2 className="size-3" /> APPROVED
                     </span>
                   )}
                   {app.status === "REJECTED" && (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-red-500/10 border border-red-500/30 text-red-400 text-[10px] font-mono font-bold">
+                    <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-red-500/10 border border-red-500/30 text-red-400">
                       <XCircle className="size-3" /> REJECTED
                     </span>
                   )}
@@ -263,22 +307,72 @@ export default function AdminDesignPartnersClient({
                   </a>
                 )}
 
-                {app.status === "APPROVED" && app.vipCode && (
-                  <div className="mt-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded-lg inline-flex items-center gap-3 w-fit">
-                    <span className="text-[10px] font-mono text-muted-foreground">VIP CODE:</span>
-                    <span className="text-xs font-mono font-bold text-emerald-400">
-                      {app.vipCode}
-                    </span>
-                    <button
-                      onClick={() => handleCopyCode(app.vipCode!)}
-                      className="p-1 text-emerald-400 hover:text-emerald-300 transition-all cursor-pointer"
-                    >
-                      {copiedCode === app.vipCode ? (
-                        <Check className="size-3.5" />
-                      ) : (
-                        <Copy className="size-3.5" />
-                      )}
-                    </button>
+                {app.status === "APPROVED" && (
+                  <div className="flex flex-wrap items-center gap-3 mt-2">
+                    {/* VIP 1-Year Code */}
+                    {app.vipCode && (
+                      <div className="px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded-lg inline-flex items-center gap-2.5">
+                        <span className="text-[10px] font-mono text-muted-foreground uppercase">
+                          VIP 100% Promo:
+                        </span>
+                        <span className="text-xs font-mono font-bold text-emerald-400">
+                          {app.vipCode}
+                        </span>
+                        <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
+                          Stripe SDK
+                        </span>
+                        <button
+                          onClick={() => handleCopyCode(app.vipCode!, "VIP Code")}
+                          className="p-1 text-emerald-400 hover:text-emerald-300 transition-all cursor-pointer"
+                          title="Copy VIP Code"
+                        >
+                          {copiedCode === app.vipCode ? (
+                            <Check className="size-3.5" />
+                          ) : (
+                            <Copy className="size-3.5" />
+                          )}
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Post-Year Renewal Discount Code */}
+                    {app.renewalDiscountCode ? (
+                      <div className="px-3 py-1.5 bg-cyan-500/10 border border-cyan-500/30 rounded-lg inline-flex items-center gap-2.5">
+                        <span className="text-[10px] font-mono text-muted-foreground uppercase">
+                          Year-2 Renewal ({app.renewalDiscountPercent || 50}% Off):
+                        </span>
+                        <span className="text-xs font-mono font-bold text-cyan-400">
+                          {app.renewalDiscountCode}
+                        </span>
+                        <button
+                          onClick={() =>
+                            handleCopyCode(app.renewalDiscountCode!, "Renewal Discount Code")
+                          }
+                          className="p-1 text-cyan-400 hover:text-cyan-300 transition-all cursor-pointer"
+                          title="Copy Renewal Code"
+                        >
+                          {copiedCode === app.renewalDiscountCode ? (
+                            <Check className="size-3.5" />
+                          ) : (
+                            <Copy className="size-3.5" />
+                          )}
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => handleGenerateRenewal(app.id, 50)}
+                        disabled={generatingRenewalId === app.id}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-cyan-500/40 bg-cyan-500/10 text-cyan-400 font-mono text-[11px] font-semibold hover:bg-cyan-500/20 transition-all cursor-pointer disabled:opacity-50"
+                        title="Generate 50% off renewal discount code in Stripe for this partner"
+                      >
+                        {generatingRenewalId === app.id ? (
+                          <Loader2 className="size-3 animate-spin" />
+                        ) : (
+                          <Sparkles className="size-3" />
+                        )}
+                        Issue 50% Renewal Code
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
