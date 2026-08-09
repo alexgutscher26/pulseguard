@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PostLayout from "@/components/blog/post-layout";
 import { formatPostDate, getAllPosts, getPostBySlug } from "@/lib/blog";
-import { MarkdownRenderer } from "@/lib/markdown";
+import { MarkdownRenderer, extractHeadings } from "@/lib/markdown";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +23,7 @@ export async function generateMetadata({
   const url = `https://pulseguard.com/blog/${slug}`;
 
   return {
-    title,
+    title: `${title} | PulseGuard Engineering`,
     description,
     keywords: tags,
     alternates: { canonical: url },
@@ -51,6 +51,29 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
   const { title, description, date, category, readTime, author, tags } = post.meta;
 
+  const tocItems = extractHeadings(post.content);
+
+  const allPosts = getAllPosts();
+  const relatedPosts = allPosts
+    .filter((p) => p.slug !== slug)
+    .sort((a, b) => {
+      // Prioritize same category or shared tags
+      const aMatchesCat = a.meta.category === category ? 2 : 0;
+      const bMatchesCat = b.meta.category === category ? 2 : 0;
+      const aSharedTags = a.meta.tags.filter((t) => tags.includes(t)).length;
+      const bSharedTags = b.meta.tags.filter((t) => tags.includes(t)).length;
+      return bMatchesCat + bSharedTags - (aMatchesCat + aSharedTags);
+    })
+    .slice(0, 3)
+    .map((p) => ({
+      slug: p.slug,
+      title: p.meta.title,
+      description: p.meta.description,
+      date: formatPostDate(p.meta.date),
+      category: p.meta.category,
+      readTime: p.meta.readTime,
+    }));
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -58,7 +81,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     description,
     datePublished: date,
     dateModified: date,
-    author: { "@type": "Organization", name: author, url: "https://pulseguard.com" },
+    author: { "@type": "Person", name: author, url: "https://pulseguard.com" },
     publisher: {
       "@type": "Organization",
       name: "PulseGuard",
@@ -74,7 +97,18 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <PostLayout title={title} date={formatPostDate(date)} readTime={readTime} category={category}>
+      <PostLayout
+        title={title}
+        description={description}
+        date={formatPostDate(date)}
+        readTime={readTime}
+        category={category}
+        author={author}
+        tags={tags}
+        slug={slug}
+        tocItems={tocItems}
+        relatedPosts={relatedPosts}
+      >
         <MarkdownRenderer content={post.content} />
       </PostLayout>
     </>

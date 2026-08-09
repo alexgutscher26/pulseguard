@@ -233,7 +233,24 @@ export default function AdminDesignPartnersClient({
                   <span>
                     Current Tool: <strong className="text-foreground">{app.currentTool}</strong>
                   </span>
+                  {app.techStack && (
+                    <span>
+                      Stack: <strong className="text-foreground">{app.techStack}</strong>
+                    </span>
+                  )}
+                  {app.socialHandle && (
+                    <span>
+                      Spotlight Handle:{" "}
+                      <strong className="text-foreground font-mono">{app.socialHandle}</strong>
+                    </span>
+                  )}
                 </div>
+
+                {app.painPoint && (
+                  <p className="text-xs text-muted-foreground bg-muted/30 border border-border/50 rounded-lg p-2.5 mt-1 italic">
+                    "{app.painPoint}"
+                  </p>
+                )}
 
                 {app.website && (
                   <a

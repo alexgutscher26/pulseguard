@@ -1,42 +1,104 @@
 ---
-title: "Building a monitoring mesh: architecture deep dive"
-description: "How we designed PulseGuard's distributed check infrastructure for reliability, low latency, and horizontal scalability across 12 global regions."
+title: "Building a Global Monitoring Mesh: Architecture Deep Dive"
+description: "How we designed PulseGuard's distributed check infrastructure for reliability, low latency, and horizontal scalability across 50+ global edge locations."
 date: "2026-06-05"
 category: "Engineering"
 readTime: "12 min read"
-tags: ["monitoring architecture", "distributed systems", "multi-region monitoring", "infrastructure"]
+author: "Alex Gutscher"
+tags: ["monitoring architecture", "distributed systems", "Cloudflare Workers", "Durable Objects", "infrastructure"]
 ---
 
-PulseGuard's monitoring infrastructure is built as a distributed mesh — a network of lightweight check nodes spread across 12 global regions that coordinate to verify endpoint availability. Here's how it works under the hood.
+PulseGuard's monitoring infrastructure is built as a distributed mesh — a network of lightweight check nodes spread across 50+ global edge locations that coordinate to verify endpoint availability and response times. Here's how it works under the hood.
 
-## Architecture overview
+---
 
-At a high level, the system has three layers: **scheduler**, **check nodes**, and **verifier**. The scheduler assigns checks to nodes, nodes execute them and report results, and the verifier resolves failures using multi-node consensus.
+## High-Level Architecture Overview
 
-Each layer is horizontally scalable and independently deployable. We use a publish-subscribe model for communication, with a message broker that handles millions of check results per day.
+At a high level, the system decouples into three distinct operational layers: **Edge Probes**, **Quorum State Coordinators**, and **Alert Dispatch Pipelines**:
 
-## Check nodes
+```
+[Target Application / API]
+       ^             ^             ^
+       |             |             |  (Parallel 60s Edge Checks)
++------+-------------+-------------+------+
+| Edge Probe Node    Edge Probe Node      |  (50+ Cloudflare Locations)
+| (Frankfurt)        (Virginia)           |
++------+-------------+-------------+------+
+       |             |             |  (Sub-30ms RPC Consensus)
+       v             v             v
++-----------------------------------------+
+| MonitorChannel (Durable Object Actor)   |  (Quorum State Manager)
+| - Aggregates 2/3 multi-region voting    |
+| - Computes rolling P50/P95/P99 latency  |
++--------------------+--------------------+
+                     |
+                     v
+  [Alert Dispatch: Slack, Webhooks, PagerDuty]
+```
 
-Each check node is a lightweight container running a minimal Rust-based agent. The agent maintains a persistent connection to the scheduler, receives check assignments, executes them via HTTP, DNS, or TCP probes, and reports results back through the message bus.
+Each layer is horizontally scalable, stateless at the edge, and coordinate via stateful actors to maintain high-throughput check aggregation.
 
-Nodes are stateless and ephemeral. They can be added or removed without any coordination. This makes scaling as simple as spinning up more containers in the region where you need additional capacity.
+---
 
-## The scheduler
+## 1. Edge Probe Nodes
 
-The scheduler is the brain of the system. It maintains the desired check schedule for every monitor, assigns checks to available nodes using a consistent hashing algorithm, and handles node failures gracefully by reassigning orphaned checks within seconds.
+Each check probe is executed by an ephemeral Cloudflare Worker located at one of 50+ Points of Presence (POPs). When scheduled:
 
-We use a Raft-based consensus layer to ensure scheduler state is consistent across replicas. If the primary scheduler fails, a replica takes over with zero data loss.
+- Probes pull target configurations cached locally in memory or fast KV stores.
+- Probes issue non-blocking HTTP, DNS, SSL, or TCP probes with strict timeout budgets.
+- Latency and TLS handshake metrics are measured with sub-millisecond precision using native Web APIs (`performance.now()`).
 
-## Verification and alerting
+Because edge nodes are distributed worldwide, checks accurately reflect real-world user latency rather than synthetic measurements taken inside a single cloud provider's private network.
 
-When a check fails, the verifier kicks in. It selects two additional nodes from different regions and dispatches verification checks. Only when a majority of nodes confirm the failure does an alert fire. This is the core of our [zero-false-positive guarantee](/blog/zero-false-positives).
+---
 
-## Data pipeline
+## 2. The Stateful Consensus Coordinator
 
-Check results flow through a streaming data pipeline that ingests, normalizes, and stores latency and status data. We use a time-series database optimized for high-throughput write patterns. Historical data is retained according to each plan's retention policy.
+When an edge node detects a non-2xx status code or a connection timeout, it does not page your team immediately. Instead, it engages the **MonitorChannel Durable Object**:
 
-The pipeline also feeds real-time dashboards, incident timelines, and the public status pages — all with sub-second latency from ingestion to display.
+```typescript
+// Quorum Consensus Dispatch Logic
+export async function verifyFailure(
+  targetId: string,
+  originFailure: ProbeResult,
+  env: Env
+): Promise<ConsensusResult> {
+  // Dispatch parallel verification to two geographically distinct edge nodes
+  const [probeA, probeB] = await Promise.all([
+    dispatchSecondaryProbe(targetId, "fra-eu-central", env),
+    dispatchSecondaryProbe(targetId, "sin-ap-southeast", env),
+  ]);
 
-## Lessons learned
+  const votes = [originFailure, probeA, probeB];
+  const confirmedDown = votes.filter((v) => !v.success).length;
 
-Building a global monitoring mesh taught us that network reliability is humbling. Even with redundant nodes in every region, we've seen edge cases where entire cloud regions become unreachable. The multi-node verification system wasn't just a feature — it was a necessity for building a system we could trust ourselves.
+  return {
+    isDown: confirmedDown >= 2,
+    voteCount: confirmedDown,
+    totalProbes: 3,
+    timestamp: Date.now(),
+  };
+}
+```
+
+This 2/3 consensus protocol eliminates 99.9% of transient false positives caused by single-node transit drops or BGP route flapping.
+
+---
+
+## 3. Streaming Telemetry Pipeline
+
+Check results flow through a streaming ingestion pipeline that normalizes latency, status codes, and DNS timings:
+
+| Metric Stage        | Resolution | Retention (Free) | Retention (Pro) |
+| :------------------ | :--------: | :--------------: | :-------------: |
+| **Real-Time Pings** |    60s     |     30 Days      |    365 Days     |
+| **Latency Rollups** | 1hr / 24hr |     90 Days      |     3 Years     |
+| **Incident Logs**   | Exact logs |    Unlimited     |    Unlimited    |
+
+The pipeline feeds real-time dashboard graphs, incident timelines, and public status pages with under 300ms propagation delay.
+
+---
+
+## Key Lessons Learned
+
+Building a global monitoring mesh taught us that network reliability is inherently non-deterministic. Even with redundant nodes in every continent, regional ISP drops and CDN cold-starts happen daily. Multi-region quorum consensus isn't an optional optimization — it's the prerequisite for building an alerting system that on-call engineers can trust with their sleep.

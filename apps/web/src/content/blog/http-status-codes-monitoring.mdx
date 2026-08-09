@@ -1,82 +1,75 @@
 ---
-title: "HTTP status codes every site owner should know"
-description: "A practical guide to the HTTP status codes that matter for uptime monitoring: redirects, client errors, server errors, and how monitoring tools treat each one."
+title: "HTTP Status Codes Every Site Owner & SRE Should Know"
+description: "A practical engineering guide to HTTP status codes for uptime monitoring: redirects, client errors, 5xx server errors, and how monitoring engines classify each."
 date: "2026-08-02"
 category: "Engineering"
 readTime: "7 min read"
-tags: ["HTTP status codes", "HTTP 500", "monitoring alerts", "status code monitoring"]
+author: "Alex Gutscher"
+tags: ["HTTP status codes", "HTTP 500", "monitoring alerts", "status code monitoring", "SRE"]
 ---
 
-Every uptime alert your monitoring tool fires is really about one of a handful of HTTP status codes. Knowing what each code means — and how monitoring tools classify them — makes the difference between chasing ghosts and fixing real problems.
+Every uptime alert your monitoring tool fires is really about one of a handful of HTTP status codes. Knowing what each code signifies — and how monitoring engines classify them — makes the difference between chasing phantom bugs and remediating real production outages.
 
-## The status code families
+---
 
-HTTP responses fall into five families:
+## The Five HTTP Status Code Families
 
-| Code range | Family        | Meaning                                            |
-| ---------- | ------------- | -------------------------------------------------- |
-| 1xx        | Informational | Request received, still processing                 |
-| 2xx        | Success       | Request succeeded (200, 201, 204)                  |
-| 3xx        | Redirection   | Client must follow another URL (301, 302, 308)     |
-| 4xx        | Client error  | The request was bad or unauthorized (400–404, 429) |
-| 5xx        | Server error  | Your servers failed (500, 502, 503, 504)           |
+HTTP responses fall into five distinct families:
 
-For monitoring purposes you only care about 2xx, 3xx, 4xx, and 5xx — but the details within each family matter.
+| Code Range | Family        | Meaning                                            | Default Poller Action |
+| :--------- | :------------ | :------------------------------------------------- | :-------------------: |
+| **1xx**    | Informational | Request received, protocol handshake in progress   |        Ignored        |
+| **2xx**    | Success       | Request successfully handled (200, 201, 204)       |        **UP**         |
+| **3xx**    | Redirection   | Client must follow alternate URL (301, 302, 308)   |     Follow / Warn     |
+| **4xx**    | Client Error  | Bad request or unauthorized access (400, 403, 404) |   Configurable Down   |
+| **5xx**    | Server Error  | Origin server crashed or timed out (500, 502, 503) |       **DOWN**        |
 
-## 2xx: what "success" actually means
+---
 
-A 200 response means the server handled the request — but not necessarily that the page is correct. Good monitoring goes beyond status codes:
+## 1. 2xx: What "Success" Actually Means
 
-- **200 with a degraded page** — an error page returned with HTTP 200 (a classic misconfiguration)
-- **200 with slow response** — success that takes 10 seconds is still a failure for users
-- **204 No Content** — success for webhooks and API pings
+A `200 OK` response indicates that the HTTP server returned a payload — but not necessarily that your backend application is healthy:
 
-Use **content checks** in your monitor (look for a string like `"status": "ok"` or a known page title) to catch the "happy 200 that's actually broken" cases.
+- **200 with Broken Body:** An error screen returned with a `200 OK` status code (a common framework misconfiguration).
+- **200 with Degraded Latency:** A 200 response that takes 8,000ms is effectively an outage for users.
+- **204 No Content:** Valid response for health probes and webhook receivers.
 
-## 3xx: redirects deserve attention
+> [!TIP]
+> Always pair status code checks with **Body Keyword Assertions** (e.g. asserting `{"status":"ok"}` in JSON or checking for specific page elements) to catch silent failure modes.
 
-A 301 permanent redirect is normal for moved pages. Problems show up as:
+---
 
-- **Redirect loops** — A → B → A, which browsers and monitors give up on after a few hops
-- **Redirect chains** — five hops where one would do; each hop adds latency
-- **Redirects to error pages** — `/login` silently redirecting to a 500
+## 2. 3xx: Redirects and Redirect Loops
 
-If your monitor follows redirects (most do), a loop shows up as a timeout or "too many redirects" failure. Set an alert threshold if your platform exposes redirect counts.
+A `301 Permanent Redirect` or `308` redirect is standard when moving resources or enforcing HTTPS. However, watch for:
 
-## 4xx: client errors are usually yours to fix
+- **Redirect Loops (A -> B -> A):** Browsers and uptime probes abort after reaching max hops (typically 10).
+- **Redirect Chains:** Multiple sequential redirects that add hundreds of milliseconds of transit latency.
+- **Redirects to 500 Pages:** Endpoints redirecting unauthenticated users to a broken login gateway.
 
-- **401 Unauthorized / 403 Forbidden** — a broken auth cookie or an IP block that's catching real users
-- **404 Not Found** — broken links, removed pages, or a CDN misconfiguration. High 404 volume is a warning sign, not just a one-off
-- **429 Too Many Requests** — rate limiting kicking in too aggressively; a real availability problem for users even though the server is healthy
+---
 
-A monitor that treats all non-200 as "down" will false-alarm on a public page that legitimately returns 404 for missing content. Configure which codes are acceptable per check.
+## 3. 4xx: Client Errors That Warrant Investigation
 
-## 5xx: the codes that should page you
+- **401 Unauthorized / 403 Forbidden:** Expired API tokens, broken JWT validation, or WAF rate-limit rules blocking legitimate user traffic.
+- **404 Not Found:** Broken routes, missing static assets, or failed CDN origin mappings.
+- **429 Too Many Requests:** Upstream rate-limiting kicking in aggressively; represents an availability outage for end users.
 
-- **500 Internal Server Error** — a generic server failure; investigate stack traces
-- **502 Bad Gateway** — your proxy or load balancer can't reach the upstream
-- **503 Service Unavailable** — the server is overloaded or in maintenance; check autoscaling and health checks
-- **504 Gateway Timeout** — the upstream took too long; latency problem in disguise
+---
 
-A single 500 isn't an outage — that's where [multi-node verification](/blog/zero-false-positives) matters. But repeated 5xx from multiple regions is a real incident, and your monitoring should say so without waiting for a customer to report it.
+## 4. 5xx: The Codes That Must Trigger Pages
 
-## How monitoring tools treat codes
+- **500 Internal Server Error:** Application runtime exception, unhandled crash, or database query error.
+- **502 Bad Gateway:** Reverse proxy (Nginx, Cloudflare, ALB) unable to connect to the upstream application container.
+- **503 Service Unavailable:** Target overloaded, undergoing deployment, or container pool depleted.
+- **504 Gateway Timeout:** Upstream service exceeded proxy execution deadline.
 
-Most tools, including PulseGuard, let you define the success criteria per check:
+---
 
-- **Status code range** — e.g., `200–399` as success
-- **Content match** — require a specific string in the body
-- **Timeout** — fail after N seconds regardless of code
-- **Keyword blocking** — fail when a string (like an error banner) appears
+## SRE Best Practices Checklist
 
-Combining a code range with a content match is the single most effective way to cut false positives on HTTP checks.
-
-## The practical checklist
-
-- [ ] Alert on 5xx from two or more regions before paging anyone
-- [ ] Treat 3xx loops and chains as incidents
-- [ ] Use content checks for pages that can return 200 while broken
-- [ ] Watch 404 volume and 429 spikes as early-warning signals
-- [ ] Distinguish "down" (5xx / timeout) from "degraded" (slow 2xx) in your alert routing
-
-Understand the codes, configure your checks deliberately, and your alerts will tell you what's actually breaking — instead of just flashing red.
+- [x] Require 2/3 multi-region confirmation on 5xx errors before paging engineers.
+- [x] Configure keyword/body payload assertions for critical API routes.
+- [x] Monitor SSL certificate expiration with at least 30 days of advance notice.
+- [x] Set distinct latency degradation thresholds (e.g. warning at 1,500ms, critical at 5,000ms).
+- [x] Track 429 rate-limit responses to detect unexpected traffic spikes.

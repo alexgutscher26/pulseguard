@@ -2,6 +2,11 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import { z } from "zod";
+import type { BlogPost, PostMeta } from "./blog-types";
+import { formatPostDate } from "./blog-types";
+
+export type { BlogPost, PostMeta };
+export { formatPostDate };
 
 const POSTS_DIR = path.join(process.cwd(), "src", "content", "blog");
 
@@ -14,13 +19,6 @@ export const postSchema = z.object({
   tags: z.array(z.string()).default([]),
   author: z.string().default("PulseGuard Team"),
 });
-
-export type PostMeta = z.infer<typeof postSchema>;
-
-export interface BlogPost {
-  slug: string;
-  meta: PostMeta;
-}
 
 export function getAllPosts(): BlogPost[] {
   const files = fs.readdirSync(POSTS_DIR).filter((file) => file.endsWith(".mdx"));
@@ -43,13 +41,4 @@ export async function getPostBySlug(slug: string) {
   const { data, content } = matter(raw);
 
   return { slug, meta: postSchema.parse(data), content };
-}
-
-export function formatPostDate(isoDate: string): string {
-  return new Date(isoDate + "T00:00:00Z").toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-    timeZone: "UTC",
-  });
 }

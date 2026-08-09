@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PostLayout from "@/components/blog/post-layout";
 import { formatPostDate, getPostBySlug } from "@/lib/blog";
-import { MarkdownRenderer } from "@/lib/markdown";
+import { MarkdownRenderer, extractHeadings } from "@/lib/markdown";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +28,7 @@ export async function generateMetadata({
   const url = `https://pulseguard.com/alternatives/${slug}`;
 
   return {
-    title,
+    title: `${title} | PulseGuard`,
     description,
     keywords: tags,
     alternates: { canonical: url },
@@ -61,6 +61,7 @@ export default async function AlternativeSlugPage({
   if (!post) notFound();
 
   const { title, description, date, category, readTime, author, tags } = post.meta;
+  const tocItems = extractHeadings(post.content);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -85,7 +86,17 @@ export default async function AlternativeSlugPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <PostLayout title={title} date={formatPostDate(date)} readTime={readTime} category={category}>
+      <PostLayout
+        title={title}
+        description={description}
+        date={formatPostDate(date)}
+        readTime={readTime}
+        category={category}
+        author={author}
+        tags={tags}
+        slug={`alternatives/${slug}`}
+        tocItems={tocItems}
+      >
         <MarkdownRenderer content={post.content} />
       </PostLayout>
     </>

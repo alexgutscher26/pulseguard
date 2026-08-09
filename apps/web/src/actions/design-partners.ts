@@ -3,7 +3,9 @@
 import { z } from "zod";
 import prisma from "@pulseguard/db";
 import { headers } from "next/headers";
+import { revalidatePath } from "next/cache";
 import { auth } from "@pulseguard/auth";
+import { getAdminStatus } from "./admin";
 
 const designPartnerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -12,6 +14,9 @@ const designPartnerSchema = z.object({
   website: z.string().url("Please enter a valid URL (e.g. https://yourcompany.com)"),
   monitorsCount: z.string().default("10-50"),
   currentTool: z.string().default("UptimeRobot"),
+  techStack: z.string().optional().default("Next.js / Cloudflare / Node"),
+  socialHandle: z.string().optional().default(""),
+  painPoint: z.string().optional().default(""),
   feedbackCommitment: z.boolean().refine((val) => val === true, {
     message: "You must agree to the feedback commitment to join",
   }),
@@ -27,9 +32,15 @@ export interface DesignPartnerRecord {
   website: string;
   monitorsCount: string;
   currentTool: string;
+  techStack?: string;
+  socialHandle?: string;
+  painPoint?: string;
   status: "PENDING" | "APPROVED" | "REJECTED";
   vipCode?: string;
   userId?: string | null;
+  redeemedAt?: string | null;
+  redeemedByUserId?: string | null;
+  redeemedByEmail?: string | null;
   createdAt: string;
 }
 
@@ -45,6 +56,9 @@ export interface DesignPartnerResponse {
 export interface DesignPartnerSpotsInfo {
   totalSpots: number;
   claimedSpots: number;
+  approvedSpots: number;
+  pendingSpots: number;
+  redeemedSpots: number;
   remainingSpots: number;
 }
 
@@ -52,7 +66,7 @@ const TOTAL_PARTNER_SPOTS = 15;
 const DESIGN_PARTNER_IDENTIFIER = "design_partner_application";
 
 /**
- * Get count of APPROVED spots remaining
+ * Get count of spots remaining, approved, pending, and redeemed
  */
 export async function getDesignPartnerSpots(): Promise<DesignPartnerSpotsInfo> {
   try {
@@ -61,11 +75,19 @@ export async function getDesignPartnerSpots(): Promise<DesignPartnerSpotsInfo> {
     });
 
     let approvedCount = 0;
+    let pendingCount = 0;
+    let redeemedCount = 0;
+
     for (const record of records) {
       try {
-        const data = JSON.parse(record.value);
+        const data = JSON.parse(record.value) as DesignPartnerRecord;
         if (data.status === "APPROVED") {
           approvedCount++;
+          if (data.redeemedAt || data.redeemedByUserId) {
+            redeemedCount++;
+          }
+        } else if (data.status === "PENDING") {
+          pendingCount++;
         }
       } catch {}
     }
@@ -75,6 +97,9 @@ export async function getDesignPartnerSpots(): Promise<DesignPartnerSpotsInfo> {
     return {
       totalSpots: TOTAL_PARTNER_SPOTS,
       claimedSpots: approvedCount,
+      approvedSpots: approvedCount,
+      pendingSpots: pendingCount,
+      redeemedSpots: redeemedCount,
       remainingSpots,
     };
   } catch (error) {
@@ -82,6 +107,9 @@ export async function getDesignPartnerSpots(): Promise<DesignPartnerSpotsInfo> {
     return {
       totalSpots: TOTAL_PARTNER_SPOTS,
       claimedSpots: 0,
+      approvedSpots: 0,
+      pendingSpots: 0,
+      redeemedSpots: 0,
       remainingSpots: TOTAL_PARTNER_SPOTS,
     };
   }
@@ -101,19 +129,25 @@ export async function submitDesignPartnerApplication(
   try {
     const parsed = designPartnerSchema.parse(input);
 
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    let session: any = null;
+    try {
+      session = await auth.api.getSession({
+        headers: await headers(),
+      });
+    } catch {}
 
     const recordId = `dp_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
     const payload: DesignPartnerRecord = {
       id: recordId,
       name: parsed.name,
       email: parsed.email,
-      company: parsed.company,
+      company: parsed.company || "Indie / Personal",
       website: parsed.website,
       monitorsCount: parsed.monitorsCount,
       currentTool: parsed.currentTool,
+      techStack: parsed.techStack || "Next.js / Cloudflare / Node",
+      socialHandle: parsed.socialHandle || "",
+      painPoint: parsed.painPoint || "",
       status: "PENDING",
       userId: session?.user?.id || null,
       createdAt: new Date().toISOString(),
@@ -133,9 +167,13 @@ export async function submitDesignPartnerApplication(
 
     console.log(`[DesignPartner] New Application Submitted (PENDING):`, payload);
 
+    revalidatePath("/design-partners");
+    revalidatePath("/dashboard/design-partners");
+
     return {
       success: true,
       status: "PENDING",
+      vipCode: recordId,
       remainingSpots: spotsInfo.remainingSpots,
       message:
         "Application submitted successfully! Our founding team will review your application within 24 hours.",
@@ -177,9 +215,15 @@ export async function getAllDesignPartnerApplications(): Promise<DesignPartnerRe
           website: data.website || "",
           monitorsCount: data.monitorsCount || "10-50",
           currentTool: data.currentTool || "UptimeRobot",
+          techStack: data.techStack || "Next.js / Cloudflare / Node",
+          socialHandle: data.socialHandle || "",
+          painPoint: data.painPoint || "",
           status: data.status || "PENDING",
           vipCode: data.vipCode,
           userId: data.userId,
+          redeemedAt: data.redeemedAt || null,
+          redeemedByUserId: data.redeemedByUserId || null,
+          redeemedByEmail: data.redeemedByEmail || null,
           createdAt: data.createdAt || r.createdAt.toISOString(),
         });
       } catch {}
@@ -192,7 +236,65 @@ export async function getAllDesignPartnerApplications(): Promise<DesignPartnerRe
   }
 }
 
-import { getAdminStatus } from "./admin";
+/**
+ * Check application status by email, applicant ID, or VIP Code
+ */
+export async function checkDesignPartnerStatus(query: string): Promise<{
+  found: boolean;
+  record?: {
+    id: string;
+    name: string;
+    company: string;
+    website: string;
+    status: "PENDING" | "APPROVED" | "REJECTED";
+    vipCode?: string;
+    redeemedAt?: string | null;
+    createdAt: string;
+  };
+  error?: string;
+}> {
+  try {
+    const cleanQuery = query.trim().toLowerCase();
+    if (!cleanQuery) {
+      return { found: false, error: "Please enter your email or application reference ID" };
+    }
+
+    const records = await prisma.verification.findMany({
+      where: { identifier: DESIGN_PARTNER_IDENTIFIER },
+    });
+
+    for (const r of records) {
+      try {
+        const data = JSON.parse(r.value) as DesignPartnerRecord;
+        const matchesEmail = data.email?.toLowerCase() === cleanQuery;
+        const matchesId =
+          r.id.toLowerCase() === cleanQuery || data.id?.toLowerCase() === cleanQuery;
+        const matchesVip = data.vipCode?.toLowerCase() === cleanQuery;
+
+        if (matchesEmail || matchesId || matchesVip) {
+          return {
+            found: true,
+            record: {
+              id: r.id,
+              name: data.name,
+              company: data.company,
+              website: data.website,
+              status: data.status,
+              vipCode: data.vipCode,
+              redeemedAt: data.redeemedAt,
+              createdAt: data.createdAt || r.createdAt.toISOString(),
+            },
+          };
+        }
+      } catch {}
+    }
+
+    return { found: false, error: "No matching application found. Please check your email or ID." };
+  } catch (error: any) {
+    console.error("Failed to lookup design partner status:", error);
+    return { found: false, error: "Failed to search applications" };
+  }
+}
 
 /**
  * Approve a pending design partner application (Requires Admin role)
@@ -231,12 +333,32 @@ export async function approveDesignPartnerApplication(
       },
     });
 
-    // If there is an associated user, upgrade their tier to NETRUNNER (Pro)
+    // If there is an associated registered user, upgrade their tier to NETRUNNER (Pro) for 1 year
     if (data.userId) {
       try {
         await prisma.user.update({
           where: { id: data.userId },
           data: { tier: "NETRUNNER" },
+        });
+
+        const oneYearFromNow = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+        await prisma.subscription.upsert({
+          where: { userId: data.userId },
+          create: {
+            userId: data.userId,
+            plan: "NETRUNNER",
+            status: "ACTIVE",
+            currentPeriodStart: new Date(),
+            currentPeriodEnd: oneYearFromNow,
+            tierVersion: "design_partner_vip",
+          },
+          update: {
+            plan: "NETRUNNER",
+            status: "ACTIVE",
+            currentPeriodStart: new Date(),
+            currentPeriodEnd: oneYearFromNow,
+            tierVersion: "design_partner_vip",
+          },
         });
       } catch (err) {
         console.warn("Failed to upgrade user tier on approval:", err);
@@ -244,6 +366,10 @@ export async function approveDesignPartnerApplication(
     }
 
     console.log(`[DesignPartner] Application APPROVED for ${data.email}. VIP Code: ${vipCode}`);
+
+    revalidatePath("/dashboard/design-partners");
+    revalidatePath("/design-partners");
+    revalidatePath("/dashboard/settings");
 
     return {
       success: true,
@@ -289,9 +415,172 @@ export async function rejectDesignPartnerApplication(
     });
 
     console.log(`[DesignPartner] Application REJECTED for ${data.email}`);
+
+    revalidatePath("/dashboard/design-partners");
+    revalidatePath("/design-partners");
+
     return { success: true };
   } catch (error: any) {
     console.error("Failed to reject application:", error);
     return { success: false, error: error.message || "Failed to reject application" };
+  }
+}
+
+/**
+ * Delete a design partner application (Requires Admin role)
+ */
+export async function deleteDesignPartnerApplication(
+  id: string,
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const admin = await getAdminStatus();
+    if (!admin.isAdmin) {
+      return {
+        success: false,
+        error: "Unauthorized: Admin access required to delete applications",
+      };
+    }
+
+    await prisma.verification.delete({
+      where: { id },
+    });
+
+    revalidatePath("/dashboard/design-partners");
+    revalidatePath("/design-partners");
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Failed to delete application:", error);
+    return { success: false, error: error.message || "Failed to delete application" };
+  }
+}
+
+/**
+ * Redeem a VIP Design Partner License Code to activate 1-Year Netrunner Pro
+ */
+export async function redeemDesignPartnerCode(
+  rawCode: string,
+): Promise<{ success: boolean; message?: string; error?: string }> {
+  try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session?.user?.id) {
+      return {
+        success: false,
+        error: "You must be logged in to redeem a VIP Partner license key.",
+      };
+    }
+
+    const code = rawCode.trim().toUpperCase();
+    if (!code || !code.startsWith("VIP-PARTNER-")) {
+      return {
+        success: false,
+        error: "Invalid VIP Code format. Must start with 'VIP-PARTNER-'",
+      };
+    }
+
+    // Find the verification application with this VIP code
+    const records = await prisma.verification.findMany({
+      where: { identifier: DESIGN_PARTNER_IDENTIFIER },
+    });
+
+    let matchedRecord: (typeof records)[0] | null = null;
+    let matchedData: DesignPartnerRecord | null = null;
+
+    for (const r of records) {
+      try {
+        const d = JSON.parse(r.value) as DesignPartnerRecord;
+        if (d.vipCode && d.vipCode.trim().toUpperCase() === code) {
+          matchedRecord = r;
+          matchedData = d;
+          break;
+        }
+      } catch {}
+    }
+
+    if (!matchedRecord || !matchedData) {
+      return {
+        success: false,
+        error: "VIP license key not found. Please verify your code or contact support.",
+      };
+    }
+
+    if (matchedData.status !== "APPROVED") {
+      return {
+        success: false,
+        error: `This application status is currently ${matchedData.status}. Only APPROVED codes can be redeemed.`,
+      };
+    }
+
+    // Check if already redeemed by another user
+    if (matchedData.redeemedByUserId && matchedData.redeemedByUserId !== session.user.id) {
+      return {
+        success: false,
+        error: "This VIP license key has already been activated by another account.",
+      };
+    }
+
+    // Grant 1 Year (365 days) Netrunner Pro to the current user
+    const oneYearFromNow = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+
+    // Update User model tier
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { tier: "NETRUNNER" },
+    });
+
+    // Upsert subscription record with ACTIVE status for 365 days
+    await prisma.subscription.upsert({
+      where: { userId: session.user.id },
+      create: {
+        userId: session.user.id,
+        plan: "NETRUNNER",
+        status: "ACTIVE",
+        currentPeriodStart: new Date(),
+        currentPeriodEnd: oneYearFromNow,
+        tierVersion: "design_partner_vip",
+      },
+      update: {
+        plan: "NETRUNNER",
+        status: "ACTIVE",
+        currentPeriodStart: new Date(),
+        currentPeriodEnd: oneYearFromNow,
+        tierVersion: "design_partner_vip",
+      },
+    });
+
+    // Update verification record metadata to record redemption
+    matchedData.redeemedAt = new Date().toISOString();
+    matchedData.redeemedByUserId = session.user.id;
+    matchedData.redeemedByEmail = session.user.email || null;
+
+    await prisma.verification.update({
+      where: { id: matchedRecord.id },
+      data: {
+        value: JSON.stringify(matchedData),
+      },
+    });
+
+    console.log(
+      `[DesignPartner] VIP Code ${code} REDEEMED by User ${session.user.id} (${session.user.email}). 1-Year Netrunner Pro granted until ${oneYearFromNow.toISOString()}.`,
+    );
+
+    revalidatePath("/dashboard/settings");
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/design-partners");
+
+    return {
+      success: true,
+      message:
+        "VIP Partner License activated successfully! 1-Year Netrunner Pro ($228 Value) is now active on your account.",
+    };
+  } catch (error: any) {
+    console.error("Failed to redeem VIP design partner code:", error);
+    return {
+      success: false,
+      error: error.message || "Failed to redeem VIP code. Please try again.",
+    };
   }
 }
