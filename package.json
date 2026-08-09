@@ -41,6 +41,8 @@
     "db:studio": "turbo -F @pulseguard/db db:studio",
     "db:generate": "turbo -F @pulseguard/db db:generate",
     "db:migrate": "turbo -F @pulseguard/db db:migrate",
+    "db:seed": "turbo -F @pulseguard/db db:seed",
+    "seed": "bun scripts/seed-monitors.ts",
     "deploy": "turbo -F @pulseguard/infra deploy",
     "destroy": "turbo -F @pulseguard/infra destroy",
     "check": "oxlint && oxfmt --write",

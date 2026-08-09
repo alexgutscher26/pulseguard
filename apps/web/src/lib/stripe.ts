@@ -114,7 +114,9 @@ export async function createStripePromotionCode({
       },
     });
 
-    console.log(`[Stripe] Successfully created promotion code in Stripe: ${promo.code} (ID: ${promo.id})`);
+    console.log(
+      `[Stripe] Successfully created promotion code in Stripe: ${promo.code} (ID: ${promo.id})`,
+    );
     return { id: promo.id, code: promo.code, isMock: false };
   } catch (error: any) {
     console.error(`[Stripe] Failed to create promotion code ${cleanCode}:`, error);
@@ -229,7 +231,10 @@ export async function createCheckoutSession({
           sessionParams.discounts = [{ coupon: cleanPromo }];
         }
       } catch (promoErr) {
-        console.warn(`[Stripe] Could not resolve promo code ${cleanPromo}, falling back to direct coupon:`, promoErr);
+        console.warn(
+          `[Stripe] Could not resolve promo code ${cleanPromo}, falling back to direct coupon:`,
+          promoErr,
+        );
         sessionParams.discounts = [{ coupon: cleanPromo }];
       }
     } else {
@@ -276,4 +281,3 @@ export async function createPortalSession({
     url: `${returnUrl}?mock_portal=true`,
   };
 }
-

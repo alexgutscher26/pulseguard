@@ -6,10 +6,7 @@ import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { auth } from "@pulseguard/auth";
 import { getAdminStatus } from "./admin";
-import {
-  createStripePromotionCode,
-  createStripeRenewalDiscountCode,
-} from "@/lib/stripe";
+import { createStripePromotionCode, createStripeRenewalDiscountCode } from "@/lib/stripe";
 
 const designPartnerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -425,7 +422,13 @@ export async function approveDesignPartnerApplication(
 export async function generatePartnerRenewalDiscount(
   id: string,
   percentOff: number = 50,
-): Promise<{ success: boolean; discountCode?: string; percentOff?: number; isMock?: boolean; error?: string }> {
+): Promise<{
+  success: boolean;
+  discountCode?: string;
+  percentOff?: number;
+  isMock?: boolean;
+  error?: string;
+}> {
   try {
     const admin = await getAdminStatus();
     if (!admin.isAdmin) {

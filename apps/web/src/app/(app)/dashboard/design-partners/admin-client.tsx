@@ -105,9 +105,7 @@ export default function AdminDesignPartnersClient({
     setGeneratingRenewalId(null);
 
     if (res.success && res.discountCode) {
-      toast.success(
-        `Created Stripe ${percentOff}% Renewal Discount Code: ${res.discountCode}`,
-      );
+      toast.success(`Created Stripe ${percentOff}% Renewal Discount Code: ${res.discountCode}`);
       setApplications((prev) =>
         prev.map((app) =>
           app.id === id
@@ -144,7 +142,8 @@ export default function AdminDesignPartnersClient({
             Design Partner Applications
           </h1>
           <p className="text-xs text-muted-foreground mt-1">
-            Review, approve, or reject applicants for the 1-Year Free Netrunner Pro partnership, with automated Stripe SDK promotion codes.
+            Review, approve, or reject applicants for the 1-Year Free Netrunner Pro partnership,
+            with automated Stripe SDK promotion codes.
           </p>
         </div>
 
@@ -191,7 +190,8 @@ export default function AdminDesignPartnersClient({
             <div>
               <h3 className="text-sm font-bold text-foreground">Admin Mode Required</h3>
               <p className="text-xs text-muted-foreground mt-0.5">
-                You are currently viewing as a standard operator. Grant your current session ADMIN privileges to approve/reject applications and generate Stripe promo codes.
+                You are currently viewing as a standard operator. Grant your current session ADMIN
+                privileges to approve/reject applications and generate Stripe promo codes.
               </p>
             </div>
           </div>
