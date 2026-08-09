@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import prisma from "./index.js";
 import {
   type MonitorType,
@@ -27,23 +28,27 @@ export async function seedDatabase(options: SeedOptions = {}) {
     if (verbose) console.log(...args);
   };
 
-  log("🌱 [PulseGuard Seed] Initializing real PulseGuard services, APIs & endpoint seed generator...");
+  log(
+    "🌱 [PulseGuard Seed] Initializing real PulseGuard services, APIs & endpoint seed generator...",
+  );
 
-  // 1. Locate or create target user
+  // 1. Locate or create target user & core auth profile
   let targetUser = userEmail
     ? await prisma.user.findUnique({ where: { email: userEmail } })
     : await prisma.user.findFirst({ orderBy: { createdAt: "asc" } });
 
+  const defaultEmail = userEmail || "admin@pulseguard.io";
+  const userId = targetUser?.id || "seed-user-admin-01";
+
   if (!targetUser) {
-    const defaultEmail = userEmail || "admin@pulseguard.io";
     log(`👤 No user found. Creating default administrative user: ${defaultEmail}`);
     targetUser = await prisma.user.create({
       data: {
-        id: "seed-user-admin-01",
+        id: userId,
         email: defaultEmail,
         name: "PulseGuard Admin",
         emailVerified: true,
-        tier: "ADMIN",
+        tier: "CONSTRUCT",
         onboardingCompleted: true,
         timezone: "UTC",
         dateFormat: "YYYY-MM-DD",
@@ -52,29 +57,164 @@ export async function seedDatabase(options: SeedOptions = {}) {
     });
     log(`✅ Created seed user: ${targetUser.email} (${targetUser.id})`);
   } else {
+    // Ensure user is on Construct tier with onboarding complete
+    targetUser = await prisma.user.update({
+      where: { id: targetUser.id },
+      data: {
+        tier: "CONSTRUCT",
+        onboardingCompleted: true,
+        emailVerified: true,
+      },
+    });
     log(`👤 Target user identified: ${targetUser.email} (${targetUser.id})`);
   }
 
-  const userId = targetUser.id;
+  // 2. Seed User Session, Account, Subscription, API Key & Integrations
+  log("🔐 Setting up Authentication, Subscription, API Keys & Integrations...");
 
-  // 2. Clean or Reset previous seed records if requested
+  // Session
+  const sessionToken = "pulseguard_seed_session_token_admin_2026";
+  await prisma.session.upsert({
+    where: { token: sessionToken },
+    update: {
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      userId,
+    },
+    create: {
+      id: "seed-session-01",
+      token: sessionToken,
+      userId,
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      ipAddress: "127.0.0.1",
+      userAgent: "PulseGuard Dev Environment (Bun/Next.js)",
+    },
+  });
+
+  // Account
+  const existingAccount = await prisma.account.findFirst({
+    where: { userId, providerId: "credential" },
+  });
+  if (!existingAccount) {
+    await prisma.account.create({
+      data: {
+        id: "seed-account-01",
+        accountId: targetUser.email,
+        providerId: "credential",
+        userId,
+      },
+    });
+  }
+
+  // Subscription (Construct Tier)
+  await prisma.subscription.upsert({
+    where: { userId },
+    update: {
+      plan: "CONSTRUCT",
+      status: "ACTIVE",
+      currentPeriodStart: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000),
+      currentPeriodEnd: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
+    },
+    create: {
+      userId,
+      stripeCustomerId: "cus_pulseguard_admin_seed",
+      stripeSubscriptionId: "sub_pulseguard_construct_seed",
+      plan: "CONSTRUCT",
+      status: "ACTIVE",
+      currentPeriodStart: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000),
+      currentPeriodEnd: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
+      tierVersion: "v1_launch",
+    },
+  });
+
+  // API Key for CLI and programmatic SDK access
+  const rawApiKey = "pg_live_pulseguard_admin_master_key_2026";
+  const apiKeyHash = createHash("sha256").update(rawApiKey).digest("hex");
+  await prisma.apiKey.upsert({
+    where: { keyHash: apiKeyHash },
+    update: {
+      name: "PulseGuard CLI & CI/CD Master Key",
+      scopes: "read,write,admin",
+      lastUsedAt: new Date(),
+    },
+    create: {
+      name: "PulseGuard CLI & CI/CD Master Key",
+      keyHash: apiKeyHash,
+      prefix: rawApiKey.slice(0, 12) + "...",
+      scopes: "read,write,admin",
+      userId,
+      lastUsedAt: new Date(),
+    },
+  });
+
+  // User Integrations
+  await prisma.userIntegration.upsert({
+    where: {
+      userId_provider_teamId: {
+        userId,
+        provider: "vercel",
+        teamId: "personal",
+      },
+    },
+    update: {
+      teamName: "PulseGuard Cloud Platform",
+      teamSlug: "pulseguard-cloud",
+    },
+    create: {
+      provider: "vercel",
+      accessToken: "vercel_sec_pulseguard_dev_token",
+      configurationId: "icfg_pulseguard_dev",
+      userId,
+      teamId: "personal",
+      teamName: "PulseGuard Cloud Platform",
+      teamSlug: "pulseguard-cloud",
+    },
+  });
+
+  // User Privacy
+  await prisma.userPrivacy.upsert({
+    where: { userId },
+    update: { anonymizeAnalytics: false, showOnLeaderboard: true },
+    create: {
+      userId,
+      anonymizeAnalytics: false,
+      showOnLeaderboard: true,
+      leaderboardBio: "PulseGuard SRE & Core Infrastructure Team",
+    },
+  });
+
+  // Referral Code
+  await prisma.referralCode.upsert({
+    where: { userId },
+    update: { clicks: 42 },
+    create: {
+      userId,
+      code: "PULSE-VIP-2026",
+      clicks: 42,
+    },
+  });
+
+  // 3. Clean or Reset previous seed records if requested
   if (cleanExisting || resetDb) {
     log("🧹 [DB Reset] Cleaning previous monitors, telemetry, notifications, and status pages...");
-    
+
     // Status pages & links
     await prisma.statusPageView.deleteMany({});
+    await prisma.statusPageOverride.deleteMany({});
     await prisma.statusPageMonitor.deleteMany({});
     await prisma.statusPageGroup.deleteMany({});
+    await prisma.statusPageI18n.deleteMany({});
+    await prisma.statusPageSubscriber.deleteMany({});
     await prisma.statusPage.deleteMany({ where: { userId } });
 
-    // Incidents, Post-Mortems, Insights
+    // Incidents, Post-Mortems, Templates, Insights
     await prisma.monitorInsight.deleteMany({});
     await prisma.postMortem.deleteMany({});
     await prisma.incidentEvent.deleteMany({});
     await prisma.regionalIncident.deleteMany({});
     await prisma.incident.deleteMany({});
+    await prisma.incidentTemplate.deleteMany({ where: { createdById: userId } });
 
-    // Telemetry & Monitors
+    // Telemetry, Probes & Monitors
     await prisma.maintenanceWindow.deleteMany({});
     await prisma.heartbeatPing.deleteMany({});
     await prisma.dailyMonitorSummary.deleteMany({});
@@ -82,6 +222,8 @@ export async function seedDatabase(options: SeedOptions = {}) {
     await prisma.regionalBaseline.deleteMany({});
     await prisma.monitorEvent.deleteMany({});
     await prisma.alertRule.deleteMany({});
+    await prisma.probeAssignment.deleteMany({});
+    await prisma.probe.deleteMany({ where: { userId } });
     await prisma.monitor.deleteMany({ where: { userId } });
 
     // Channels
@@ -90,7 +232,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
     log("✨ [DB Reset] All previous data cleaned successfully.");
   }
 
-  // 3. Create Multi-Channel Notification Endpoints
+  // 4. Create Multi-Channel Notification Endpoints
   log("🔔 Creating Notification Channels across all notification types...");
   const channelsToCreate: { name: string; type: NotificationType; config: any }[] = [
     {
@@ -159,7 +301,56 @@ export async function seedDatabase(options: SeedOptions = {}) {
   }
   log(`✅ Configured ${createdChannels.length} notification channels.`);
 
-  // 4. Define Real PulseGuard Monitor Types & Endpoints
+  // 5. Seed Private Network Probes
+  log("🛰️ Registering Private Network Probes...");
+  const probesToSeed = [
+    {
+      name: "PulseGuard Docker Local Probe 01",
+      token: "pg_probe_local_dev_token_2026",
+      userId,
+      platform: "docker",
+      region: "us-east-1",
+      status: "ACTIVE" as const,
+      version: "v1.4.2",
+      ipAddress: "172.18.0.10",
+      lastHeartbeat: new Date(),
+      heartbeatInterval: 60,
+    },
+    {
+      name: "PulseGuard Edge WASM Mesh Probe 02",
+      token: "pg_probe_edge_wasm_token_2026",
+      userId,
+      platform: "wasm",
+      region: "eu-central-1",
+      status: "ACTIVE" as const,
+      version: "v1.4.2",
+      ipAddress: "172.18.0.22",
+      lastHeartbeat: new Date(),
+      heartbeatInterval: 60,
+    },
+  ];
+
+  const seededProbes: any[] = [];
+  for (const p of probesToSeed) {
+    const probe = await prisma.probe.upsert({
+      where: { token: p.token },
+      update: {
+        userId,
+        status: "ACTIVE",
+        name: p.name,
+        lastHeartbeat: new Date(),
+        version: p.version,
+        platform: p.platform,
+        region: p.region,
+      },
+      create: p,
+    });
+    seededProbes.push(probe);
+  }
+  const privateProbe = seededProbes[0];
+  log(`✅ Configured ${seededProbes.length} active private probes for ${targetUser.email}.`);
+
+  // 6. Define Real PulseGuard Monitor Types & Endpoints (All 13 Types)
   interface SeedMonitorDef {
     name: string;
     url: string;
@@ -179,12 +370,14 @@ export async function seedDatabase(options: SeedOptions = {}) {
     heartbeatToken?: string;
     tags: string[];
     baseLatencyMs: number;
+    groupName: string;
+    assignToPrivateProbe?: boolean;
     isDown?: boolean;
     isMaintenance?: boolean;
   }
 
   const monitorDefinitions: SeedMonitorDef[] = [
-    // ── 1. PulseGuard Core API & Web Services (HTTP) ──────────────────────────────
+    // ── Group 1: Core API & Application Gateways (HTTP) ───────────────────────────
     {
       name: "PulseGuard Core API Health Check",
       url: "http://localhost:3000/api/health",
@@ -193,20 +386,13 @@ export async function seedDatabase(options: SeedOptions = {}) {
       interval: 30,
       timeout: 5,
       status: "UP",
-      checkRegions: [
-        "us-east-1",
-        "eu-central-1",
-        "ap-northeast-1",
-        "sa-east-1",
-        "af-south-1",
-        "me-central-1",
-      ],
+      checkRegions: ["us-east-1", "eu-central-1", "ap-northeast-1", "sa-east-1", "af-south-1"],
       alertThreshold: 2,
       dynamicThresholding: true,
       runbookUrl: "https://docs.pulseguard.io/runbooks/api-health",
       headers: [
         { key: "Accept", value: "application/json" },
-        { key: "X-Watchdog-Source", value: "pulseguard-core" },
+        { key: "X-Watchdog-Source", value: "pulseguard-mesh" },
       ],
       expectation: {
         body_contains: "ok",
@@ -215,44 +401,49 @@ export async function seedDatabase(options: SeedOptions = {}) {
           { path: "$.db", operator: "==", value: "connected" },
         ],
       },
-      tags: ["api", "health", "database", "redis", "tier-1", "global-mesh"],
+      tags: ["core", "api", "health", "tier-1", "mesh"],
       baseLatencyMs: 14,
+      groupName: "Core API & Application Gateways",
     },
     {
-      name: "PulseGuard Better-Auth Session Service",
-      url: "http://localhost:3000/api/auth/session",
+      name: "PulseGuard Database Connection Probe",
+      url: "http://localhost:3000/api/test-db",
       type: "HTTP",
       method: "GET",
       interval: 60,
       timeout: 5,
       status: "UP",
-      checkRegions: ["us-east-1", "eu-west-1", "ap-northeast-1"],
+      checkRegions: ["us-east-1", "eu-west-1"],
+      alertThreshold: 1,
+      dynamicThresholding: false,
+      runbookUrl: "https://docs.pulseguard.io/runbooks/db-connectivity",
+      headers: [{ key: "Accept", value: "application/json" }],
+      expectation: {
+        json_assertions: [{ path: "$.status", operator: "==", value: "connected" }],
+      },
+      tags: ["database", "postgres", "health", "tier-1"],
+      baseLatencyMs: 12,
+      groupName: "Core API & Application Gateways",
+    },
+    {
+      name: "PulseGuard Better-Auth Session Service",
+      url: "http://localhost:3000/api/auth/get-session",
+      type: "HTTP",
+      method: "GET",
+      interval: 60,
+      timeout: 5,
+      status: "UP",
+      checkRegions: ["us-east-1", "eu-central-1", "ap-northeast-1"],
       alertThreshold: 1,
       dynamicThresholding: false,
       runbookUrl: "https://docs.pulseguard.io/runbooks/auth-failures",
       headers: [{ key: "Accept", value: "application/json" }],
-      tags: ["auth", "better-auth", "session", "security"],
-      baseLatencyMs: 22,
-    },
-    {
-      name: "PulseGuard tRPC API Gateway",
-      url: "http://localhost:3000/api/trpc/healthCheck",
-      type: "HTTP",
-      method: "GET",
-      interval: 30,
-      timeout: 5,
-      status: "UP",
-      checkRegions: ["us-east-1", "eu-central-1"],
-      alertThreshold: 1,
-      dynamicThresholding: true,
-      expectation: {
-        json_assertions: [{ path: "$.result.data", operator: "==", value: "OK" }],
-      },
-      tags: ["trpc", "api", "type-safe", "backend"],
+      tags: ["auth", "better-auth", "security", "session"],
       baseLatencyMs: 18,
+      groupName: "Core API & Application Gateways",
     },
     {
-      name: "PulseGuard Web App Dashboard",
+      name: "PulseGuard Web App Dashboard UI",
       url: "http://localhost:3000/dashboard",
       type: "HTTP",
       method: "GET",
@@ -266,48 +457,12 @@ export async function seedDatabase(options: SeedOptions = {}) {
         body_contains: "PulseGuard",
       },
       tags: ["web", "nextjs", "dashboard", "frontend"],
-      baseLatencyMs: 32,
+      baseLatencyMs: 28,
+      groupName: "Core API & Application Gateways",
     },
     {
-      name: "PulseGuard Status Badge SVG Endpoint",
-      url: "http://localhost:3000/api/badge/pulseguard-global-status",
-      type: "HTTP",
-      method: "GET",
-      interval: 60,
-      timeout: 5,
-      status: "UP",
-      checkRegions: ["us-east-1", "eu-central-1"],
-      alertThreshold: 1,
-      dynamicThresholding: false,
-      headers: [{ key: "Accept", value: "image/svg+xml" }],
-      expectation: {
-        body_contains: "<svg",
-      },
-      tags: ["badge", "svg", "status-page", "public-api"],
-      baseLatencyMs: 15,
-    },
-    {
-      name: "PulseGuard Embed Widget JSON Endpoint",
-      url: "http://localhost:3000/api/widget/pulseguard-global-status",
-      type: "HTTP",
-      method: "GET",
-      interval: 60,
-      timeout: 5,
-      status: "UP",
-      checkRegions: ["us-east-1", "ap-southeast-1"],
-      alertThreshold: 1,
-      dynamicThresholding: false,
-      expectation: {
-        json_assertions: [
-          { path: "$.statusPage.slug", operator: "==", value: "pulseguard-global-status" },
-        ],
-      },
-      tags: ["widget", "embed", "status-page", "api"],
-      baseLatencyMs: 20,
-    },
-    {
-      name: "PulseGuard Stripe Webhook Ingestion",
-      url: "http://localhost:3000/api/webhooks/stripe",
+      name: "PulseGuard Stripe Webhook Receiver",
+      url: "http://localhost:3000/api/stripe/webhook",
       type: "HTTP",
       method: "POST",
       interval: 120,
@@ -318,392 +473,91 @@ export async function seedDatabase(options: SeedOptions = {}) {
       dynamicThresholding: false,
       headers: [
         { key: "Content-Type", value: "application/json" },
-        { key: "Stripe-Signature", value: "t=1720000000,v1=test_signature" },
+        { key: "Stripe-Signature", value: "t=1720000000,v1=test_signature_seed" },
       ],
       body: JSON.stringify({
         type: "payment_intent.succeeded",
-        data: { object: { id: "pi_pulseguard_seed_123" } },
+        data: { object: { id: "pi_seed_pulseguard_123" } },
       }),
       tags: ["billing", "stripe", "webhooks", "payments"],
-      baseLatencyMs: 28,
-    },
-
-    // ── 2. Cloudflare Worker Edge & Probe Engine (HTTP / Worker) ───────────────────
-    {
-      name: "PulseGuard Worker Check Engine (Edge)",
-      url: "http://127.0.0.1:8787/api/check",
-      type: "HTTP",
-      method: "POST",
-      interval: 30,
-      timeout: 5,
-      status: "UP",
-      checkRegions: ["us-east-1", "eu-central-1", "ap-northeast-1"],
-      alertThreshold: 1,
-      dynamicThresholding: true,
-      headers: [{ key: "Content-Type", value: "application/json" }],
-      body: JSON.stringify({ url: "https://1.1.1.1", type: "PING" }),
-      tags: ["worker", "cloudflare-edge", "check-engine", "miniflare"],
-      baseLatencyMs: 9,
-    },
-    {
-      name: "PulseGuard Docker Private Probe Gateway",
-      url: "http://127.0.0.1:8787/api/probes",
-      type: "HTTP",
-      method: "GET",
-      interval: 60,
-      timeout: 10,
-      status: "UP",
-      checkRegions: ["us-east-1", "us-west-2"],
-      alertThreshold: 1,
-      dynamicThresholding: false,
-      headers: [{ key: "Authorization", value: "Bearer local-dev-probe-secret" }],
-      tags: ["probe", "docker", "private-network", "agent"],
-      baseLatencyMs: 12,
-    },
-    {
-      name: "PulseGuard MailHog Email Preview UI (8025)",
-      url: "http://localhost:8025",
-      type: "HTTP",
-      method: "GET",
-      interval: 120,
-      timeout: 5,
-      status: "UP",
-      checkRegions: ["us-east-1"],
-      alertThreshold: 1,
-      dynamicThresholding: false,
-      expectation: {
-        body_contains: "MailHog",
-      },
-      tags: ["mailhog", "email-preview", "web-ui", "port-8025"],
-      baseLatencyMs: 8,
-    },
-
-    // ── 3. Network PING & Mesh Verification ───────────────────────────────────────
-    {
-      name: "PulseGuard Cloudflare Anycast CDN Mesh",
-      url: "ping://1.1.1.1",
-      type: "PING",
-      interval: 30,
-      timeout: 5,
-      status: "UP",
-      checkRegions: [
-        "us-east-1",
-        "us-west-1",
-        "eu-west-1",
-        "eu-central-1",
-        "ap-southeast-1",
-        "ap-northeast-1",
-        "sa-east-1",
-        "af-south-1",
-        "me-central-1",
-      ],
-      alertThreshold: 2,
-      dynamicThresholding: true,
-      runbookUrl: "https://docs.pulseguard.io/runbooks/anycast-mesh",
-      tags: ["network", "cdn", "anycast", "icmp", "global-mesh"],
-      baseLatencyMs: 8,
-    },
-    {
-      name: "PulseGuard Local Gateway ICMP Ping",
-      url: "ping://127.0.0.1",
-      type: "PING",
-      interval: 60,
-      timeout: 5,
-      status: "UP",
-      checkRegions: ["us-east-1", "us-west-2"],
-      alertThreshold: 1,
-      dynamicThresholding: false,
-      tags: ["network", "gateway", "icmp", "local-dev"],
-      baseLatencyMs: 3,
-    },
-
-    // ── 4. Infrastructure TCP Ports (PORT) ────────────────────────────────────────
-    {
-      name: "PulseGuard PostgreSQL Database Port (5432)",
-      url: "tcp://localhost:5432",
-      type: "PORT",
-      interval: 60,
-      timeout: 5,
-      status: "UP",
-      checkRegions: ["us-east-1", "us-east-2"],
-      alertThreshold: 1,
-      dynamicThresholding: false,
-      runbookUrl: "https://docs.pulseguard.io/runbooks/postgres-port",
-      tags: ["database", "postgres", "port-5432", "tier-1", "infrastructure"],
-      baseLatencyMs: 6,
-    },
-    {
-      name: "PulseGuard Redis Cache & Queue Port (6379)",
-      url: "tcp://localhost:6379",
-      type: "PORT",
-      interval: 60,
-      timeout: 5,
-      status: "UP",
-      checkRegions: ["us-east-1", "eu-central-1"],
-      alertThreshold: 1,
-      dynamicThresholding: false,
-      tags: ["redis", "cache", "port-6379", "infrastructure"],
-      baseLatencyMs: 5,
-    },
-    {
-      name: "PulseGuard MailHog SMTP Port (1025)",
-      url: "tcp://localhost:1025",
-      type: "PORT",
-      interval: 120,
-      timeout: 5,
-      status: "UP",
-      checkRegions: ["us-east-1"],
-      alertThreshold: 1,
-      dynamicThresholding: false,
-      tags: ["mailhog", "smtp", "port-1025", "email"],
-      baseLatencyMs: 4,
-    },
-    {
-      name: "PulseGuard Transactional SMTP Gateway (587)",
-      url: "tcp://smtp.pulseguard.io:587",
-      type: "PORT",
-      interval: 300,
-      timeout: 10,
-      status: "UP",
-      checkRegions: ["us-east-1", "eu-west-1"],
-      alertThreshold: 1,
-      dynamicThresholding: false,
-      tags: ["smtp", "email", "port-587", "notifications"],
       baseLatencyMs: 25,
-    },
-
-    // ── 5. Synthetic Browser Workflows (BROWSER) ──────────────────────────────────
-    {
-      name: "Synthetic E2E: User Sign-in & Dashboard Navigation",
-      url: "http://localhost:3000/login",
-      type: "BROWSER",
-      interval: 300,
-      timeout: 30,
-      status: "UP",
-      checkRegions: ["us-east-1", "eu-central-1", "ap-northeast-1"],
-      alertThreshold: 2,
-      dynamicThresholding: true,
-      runbookUrl: "https://docs.pulseguard.io/runbooks/synthetic-auth",
-      script: [
-        { action: "goto", value: "http://localhost:3000/login", selector: "" },
-        {
-          action: "fill",
-          value: "admin@pulseguard.io",
-          selector: "input[name='email']",
-        },
-        { action: "fill", value: "SyntheticPass123!", selector: "input[name='password']" },
-        { action: "click", value: "", selector: "button[type='submit']" },
-        { action: "wait", value: "1500", selector: "" },
-        { action: "assert_text", value: "Monitors", selector: "" },
-      ],
-      tags: ["synthetic", "browser", "playwright", "auth", "critical-journey"],
-      baseLatencyMs: 420,
+      groupName: "Core API & Application Gateways",
     },
     {
-      name: "Synthetic E2E: Onboarding Setup Wizard",
-      url: "http://localhost:3000/onboarding",
-      type: "BROWSER",
-      interval: 600,
-      timeout: 30,
+      name: "PulseGuard CLI & REST API Management Gateway",
+      url: "http://localhost:3000/api/cli/monitors",
+      type: "HTTP",
+      method: "GET",
+      interval: 60,
+      timeout: 5,
       status: "UP",
       checkRegions: ["us-east-1", "eu-west-1"],
       alertThreshold: 1,
       dynamicThresholding: false,
-      script: [
-        { action: "goto", value: "http://localhost:3000/onboarding", selector: "" },
-        { action: "click", value: "", selector: "[data-step='first-monitor']" },
-        { action: "wait", value: "1000", selector: "" },
-        { action: "assert_text", value: "Configure a new endpoint", selector: "" },
+      headers: [
+        { key: "Accept", value: "application/json" },
+        { key: "Authorization", value: `Bearer ${rawApiKey}` },
       ],
-      tags: ["synthetic", "browser", "onboarding", "wizard"],
-      baseLatencyMs: 510,
+      tags: ["cli", "api", "management", "rest"],
+      baseLatencyMs: 16,
+      groupName: "Core API & Application Gateways",
     },
 
-    // ── 6. Chained API Transaction (SEQUENCE) ─────────────────────────────────────
+    // ── Group 2: Edge Worker & Realtime Streaming ──────────────────────────────────
     {
-      name: "API Sequence: Auth Session → Health Check → tRPC Query",
-      url: "http://localhost:3000",
-      type: "SEQUENCE",
-      interval: 120,
-      timeout: 20,
+      name: "PulseGuard Cloudflare Worker Edge Engine",
+      url: "http://127.0.0.1:8787/",
+      type: "HTTP",
+      method: "GET",
+      interval: 30,
+      timeout: 5,
       status: "UP",
-      checkRegions: ["us-east-1", "eu-central-1", "ap-southeast-1"],
-      alertThreshold: 2,
-      dynamicThresholding: true,
-      runbookUrl: "https://docs.pulseguard.io/runbooks/api-chain",
-      script: [
-        {
-          name: "1. Query Better-Auth Session Endpoint",
-          method: "GET",
-          url: "/api/auth/session",
-          headers: [{ key: "Accept", value: "application/json" }],
-          body: "",
-          assertions: [{ type: "status_code", path: "", value: "200" }],
-          extractions: [{ name: "session_token", source: "header", path: "set-cookie" }],
-        },
-        {
-          name: "2. Verify Core API Health with Context",
-          method: "GET",
-          url: "/api/health",
-          headers: [
-            { key: "Authorization", value: "Bearer {{session_token}}" },
-            { key: "Accept", value: "application/json" },
-          ],
-          body: "",
-          assertions: [
-            { type: "status_code", path: "", value: "200" },
-            { type: "json_path", path: "status", value: "ok" },
-          ],
-          extractions: [],
-        },
-        {
-          name: "3. Execute tRPC Procedure HealthCheck",
-          method: "GET",
-          url: "/api/trpc/healthCheck",
-          headers: [{ key: "Accept", value: "application/json" }],
-          body: "",
-          assertions: [
-            { type: "status_code", path: "", value: "200" },
-            { type: "json_path", path: "result.data", value: "OK" },
-          ],
-          extractions: [],
-        },
-      ],
-      tags: ["sequence", "api-chain", "synthetic", "trpc", "auth"],
-      baseLatencyMs: 180,
-    },
-
-    // ── 7. TLS/SSL Certificate Watchdogs (SSL) ───────────────────────────────────
-    {
-      name: "PulseGuard Production Edge TLS 1.3 Certificate Watchdog",
-      url: "https://pulseguard.io",
-      type: "SSL",
-      interval: 3600,
-      timeout: 10,
-      status: "UP",
-      checkRegions: ["us-east-1", "eu-west-1", "ap-northeast-1"],
+      checkRegions: ["us-east-1", "eu-central-1", "ap-northeast-1"],
       alertThreshold: 1,
-      dynamicThresholding: false,
-      runbookUrl: "https://docs.pulseguard.io/runbooks/ssl-renewal",
-      tags: ["security", "ssl", "tls-1.3", "certificates"],
-      baseLatencyMs: 35,
+      dynamicThresholding: true,
+      expectation: {
+        body_contains: "PulseGuard Worker is Running",
+      },
+      tags: ["worker", "cloudflare-edge", "monitoring-engine"],
+      baseLatencyMs: 8,
+      groupName: "Edge Worker & Realtime Streaming",
     },
     {
-      name: "PulseGuard Auth Subdomain Wildcard SSL Watchdog",
-      url: "https://auth.pulseguard.io",
-      type: "SSL",
-      interval: 3600,
-      timeout: 10,
+      name: "PulseGuard Worker Edge Heartbeat Ping",
+      url: "http://127.0.0.1:8787/api/heartbeat",
+      type: "HTTP",
+      method: "GET",
+      interval: 30,
+      timeout: 5,
       status: "UP",
       checkRegions: ["us-east-1", "eu-central-1"],
       alertThreshold: 1,
       dynamicThresholding: false,
-      tags: ["security", "ssl", "subdomain", "auth"],
-      baseLatencyMs: 38,
+      tags: ["worker", "edge", "heartbeat"],
+      baseLatencyMs: 6,
+      groupName: "Edge Worker & Realtime Streaming",
     },
-
-    // ── 8. Authoritative DNS & Anti-Poisoning (DNS) ───────────────────────────────
     {
-      name: "PulseGuard Authoritative DNS & Name Resolution Watchdog",
-      url: "pulseguard.io",
-      type: "DNS",
+      name: "PulseGuard Private Probe Gateway API",
+      url: "http://127.0.0.1:8787/api/probes/register",
+      type: "HTTP",
+      method: "POST",
       interval: 60,
       timeout: 5,
       status: "UP",
-      checkRegions: ["us-east-1", "eu-west-1", "ap-southeast-1", "sa-east-1", "af-south-1"],
-      alertThreshold: 1,
-      dynamicThresholding: false,
-      expectation: {
-        expectedIPs: ["104.21.55.10", "172.67.182.20"],
-      },
-      runbookUrl: "https://docs.pulseguard.io/runbooks/dns-security",
-      tags: ["dns", "nameserver", "anti-poisoning", "expected-ips"],
-      baseLatencyMs: 11,
-    },
-
-    // ── 9. Dead Man's Snitch / Cron Heartbeats (HEARTBEAT) ────────────────────────
-    {
-      name: "PulseGuard Worker Cron Dead Man's Snitch",
-      url: "heartbeat://pulseguard-worker-snitch-live",
-      heartbeatToken: "pulseguard-worker-snitch-live",
-      type: "HEARTBEAT",
-      interval: 60,
-      timeout: 10,
-      status: "UP",
-      checkRegions: [],
-      alertThreshold: 1,
-      dynamicThresholding: false,
-      runbookUrl: "https://docs.pulseguard.io/runbooks/worker-cron-snitch",
-      tags: ["heartbeat", "deadmans-snitch", "worker", "cron"],
-      baseLatencyMs: 2,
-    },
-    {
-      name: "PulseGuard Nightly Database S3 Backup Snitch",
-      url: "heartbeat://pulseguard-nightly-db-backup",
-      heartbeatToken: "pulseguard-nightly-db-backup",
-      type: "HEARTBEAT",
-      interval: 86400,
-      timeout: 30,
-      status: "UP",
-      checkRegions: [],
-      alertThreshold: 1,
-      dynamicThresholding: false,
-      tags: ["heartbeat", "backup", "disaster-recovery", "cron"],
-      baseLatencyMs: 3,
-    },
-
-    // ── 10. AI Agent Protocol Sentinel (MCP) ──────────────────────────────────────
-    {
-      name: "PulseGuard MCP AI Tool Sentinel (tools/list)",
-      url: "http://localhost:3000/api/mcp",
-      type: "MCP",
-      interval: 60,
-      timeout: 10,
-      status: "UP",
-      checkRegions: ["us-east-1", "eu-central-1"],
-      alertThreshold: 1,
-      dynamicThresholding: false,
-      script: {
-        method: "tools/list",
-        params: { category: "pulseguard-tools" },
-      },
-      expectation: {
-        assertions: [
-          { type: "tool_exists", name: "check_monitor" },
-          { type: "schema_valid", strict: true },
-        ],
-      },
-      tags: ["ai", "mcp", "agent-sentinel", "tools-list"],
-      baseLatencyMs: 65,
-    },
-
-    // ── 11. GraphQL Federation Gateway (GRAPHQL) ──────────────────────────────────
-    {
-      name: "PulseGuard GraphQL Federation Gateway",
-      url: "http://localhost:3000/api/graphql",
-      type: "GRAPHQL",
-      method: "POST",
-      interval: 60,
-      timeout: 10,
-      status: "UP",
-      checkRegions: ["us-east-1", "eu-west-1", "ap-northeast-1"],
+      checkRegions: ["us-east-1"],
       alertThreshold: 1,
       dynamicThresholding: false,
       headers: [{ key: "Content-Type", value: "application/json" }],
       body: JSON.stringify({
-        query:
-          "query HealthCheck { __typename systemHealth { database cache scheduler } }",
+        token: "pg_probe_local_dev_token_2026",
+        version: "v1.4.2",
+        platform: "docker",
       }),
-      expectation: {
-        assertions: [
-          { path: "data.systemHealth.database", operator: "==", value: "connected" },
-        ],
-      },
-      tags: ["graphql", "api", "query-assertions"],
-      baseLatencyMs: 40,
+      tags: ["probe", "gateway", "docker", "edge"],
+      baseLatencyMs: 7,
+      groupName: "Edge Worker & Realtime Streaming",
     },
-
-    // ── 12. Real-Time WebSocket Streaming (WEBSOCKET) ─────────────────────────────
     {
       name: "PulseGuard Live Telemetry WebSocket Stream",
       url: "ws://127.0.0.1:8787/api/broadcast",
@@ -720,10 +574,11 @@ export async function seedDatabase(options: SeedOptions = {}) {
         payload_contains: "connected",
       },
       tags: ["websocket", "durable-objects", "realtime", "telemetry"],
-      baseLatencyMs: 15,
+      baseLatencyMs: 11,
+      groupName: "Edge Worker & Realtime Streaming",
     },
 
-    // ── 13. Direct Database Health Probe (DATABASE) ───────────────────────────────
+    // ── Group 3: Database, Caching & Infrastructure Layer ─────────────────────────
     {
       name: "PulseGuard PostgreSQL Activity & Connection Pool Probe",
       url: "postgresql://pulseguard:pulseguard@localhost:5432/pulseguard",
@@ -739,10 +594,218 @@ export async function seedDatabase(options: SeedOptions = {}) {
         assertions: [{ column: "is_replica", operator: "==", value: "false" }],
       },
       tags: ["database", "postgres", "sql-probe", "connection-pool"],
-      baseLatencyMs: 8,
+      baseLatencyMs: 5,
+      groupName: "Database, Caching & Infrastructure Layer",
+      assignToPrivateProbe: true,
+    },
+    {
+      name: "PulseGuard PostgreSQL Database Port (5432)",
+      url: "tcp://localhost:5432",
+      type: "PORT",
+      interval: 60,
+      timeout: 5,
+      status: "UP",
+      checkRegions: ["us-east-1"],
+      alertThreshold: 1,
+      dynamicThresholding: false,
+      runbookUrl: "https://docs.pulseguard.io/runbooks/postgres-port",
+      tags: ["database", "postgres", "port-5432", "tier-1"],
+      baseLatencyMs: 4,
+      groupName: "Database, Caching & Infrastructure Layer",
+      assignToPrivateProbe: true,
+    },
+    {
+      name: "PulseGuard Redis Cache & Queue Port (6379)",
+      url: "tcp://localhost:6379",
+      type: "PORT",
+      interval: 60,
+      timeout: 5,
+      status: "UP",
+      checkRegions: ["us-east-1"],
+      alertThreshold: 1,
+      dynamicThresholding: false,
+      tags: ["redis", "cache", "port-6379"],
+      baseLatencyMs: 3,
+      groupName: "Database, Caching & Infrastructure Layer",
+      assignToPrivateProbe: true,
+    },
+    {
+      name: "PulseGuard MailHog SMTP Port (1025)",
+      url: "tcp://localhost:1025",
+      type: "PORT",
+      interval: 120,
+      timeout: 5,
+      status: "UP",
+      checkRegions: ["us-east-1"],
+      alertThreshold: 1,
+      dynamicThresholding: false,
+      tags: ["mailhog", "smtp", "port-1025"],
+      baseLatencyMs: 3,
+      groupName: "Database, Caching & Infrastructure Layer",
+      assignToPrivateProbe: true,
+    },
+    {
+      name: "PulseGuard MailHog Email Inbox Web UI",
+      url: "http://localhost:8025",
+      type: "HTTP",
+      method: "GET",
+      interval: 120,
+      timeout: 5,
+      status: "UP",
+      checkRegions: ["us-east-1"],
+      alertThreshold: 1,
+      dynamicThresholding: false,
+      expectation: {
+        body_contains: "MailHog",
+      },
+      tags: ["mailhog", "email-preview", "web-ui"],
+      baseLatencyMs: 6,
+      groupName: "Database, Caching & Infrastructure Layer",
     },
 
-    // ── 14. BGP Autonomous System Route Watchdog (BGP) ───────────────────────────
+    // ── Group 4: Public Feeds, Badges & Network Security ──────────────────────────
+    {
+      name: "PulseGuard Status Badge SVG Endpoint",
+      url: "http://localhost:3000/api/badge/pulseguard-global-status",
+      type: "HTTP",
+      method: "GET",
+      interval: 60,
+      timeout: 5,
+      status: "UP",
+      checkRegions: ["us-east-1", "eu-central-1"],
+      alertThreshold: 1,
+      dynamicThresholding: false,
+      headers: [{ key: "Accept", value: "image/svg+xml" }],
+      expectation: {
+        body_contains: "<svg",
+      },
+      tags: ["badge", "svg", "status-page", "public-api"],
+      baseLatencyMs: 12,
+      groupName: "Public Feeds, Badges & Network Security",
+    },
+    {
+      name: "PulseGuard Embed Widget JSON Endpoint",
+      url: "http://localhost:3000/api/widget/pulseguard-global-status/status",
+      type: "HTTP",
+      method: "GET",
+      interval: 60,
+      timeout: 5,
+      status: "UP",
+      checkRegions: ["us-east-1", "ap-southeast-1"],
+      alertThreshold: 1,
+      dynamicThresholding: false,
+      expectation: {
+        json_assertions: [
+          { path: "$.statusPage.slug", operator: "==", value: "pulseguard-global-status" },
+        ],
+      },
+      tags: ["widget", "embed", "status-page", "api"],
+      baseLatencyMs: 14,
+      groupName: "Public Feeds, Badges & Network Security",
+    },
+    {
+      name: "PulseGuard Incident RSS Feed",
+      url: "http://localhost:3000/api/feeds/pulseguard-global-status/rss",
+      type: "HTTP",
+      method: "GET",
+      interval: 120,
+      timeout: 5,
+      status: "UP",
+      checkRegions: ["us-east-1", "eu-west-1"],
+      alertThreshold: 1,
+      dynamicThresholding: false,
+      headers: [{ key: "Accept", value: "application/xml, text/xml" }],
+      expectation: {
+        body_contains: "<rss",
+      },
+      tags: ["feeds", "rss", "syndication", "status"],
+      baseLatencyMs: 15,
+      groupName: "Public Feeds, Badges & Network Security",
+    },
+    {
+      name: "PulseGuard Cloudflare Anycast CDN Mesh",
+      url: "ping://1.1.1.1",
+      type: "PING",
+      interval: 30,
+      timeout: 5,
+      status: "UP",
+      checkRegions: [
+        "us-east-1",
+        "us-west-1",
+        "eu-west-1",
+        "eu-central-1",
+        "ap-southeast-1",
+        "ap-northeast-1",
+        "sa-east-1",
+        "af-south-1",
+      ],
+      alertThreshold: 2,
+      dynamicThresholding: true,
+      runbookUrl: "https://docs.pulseguard.io/runbooks/anycast-mesh",
+      tags: ["network", "cdn", "anycast", "icmp", "global-mesh"],
+      baseLatencyMs: 8,
+      groupName: "Public Feeds, Badges & Network Security",
+    },
+    {
+      name: "PulseGuard Local Gateway ICMP Ping",
+      url: "ping://127.0.0.1",
+      type: "PING",
+      interval: 60,
+      timeout: 5,
+      status: "UP",
+      checkRegions: ["us-east-1", "us-west-2"],
+      alertThreshold: 1,
+      dynamicThresholding: false,
+      tags: ["network", "gateway", "icmp", "local-dev"],
+      baseLatencyMs: 2,
+      groupName: "Public Feeds, Badges & Network Security",
+    },
+    {
+      name: "PulseGuard Production Edge TLS 1.3 Certificate Watchdog",
+      url: "https://pulseguard.io",
+      type: "SSL",
+      interval: 3600,
+      timeout: 10,
+      status: "UP",
+      checkRegions: ["us-east-1", "eu-west-1", "ap-northeast-1"],
+      alertThreshold: 1,
+      dynamicThresholding: false,
+      runbookUrl: "https://docs.pulseguard.io/runbooks/ssl-renewal",
+      tags: ["security", "ssl", "tls-1.3", "certificates"],
+      baseLatencyMs: 32,
+      groupName: "Public Feeds, Badges & Network Security",
+    },
+    {
+      name: "PulseGuard Authoritative DNS Watchdog",
+      url: "pulseguard.io",
+      type: "DNS",
+      interval: 60,
+      timeout: 5,
+      status: "UP",
+      checkRegions: ["us-east-1", "eu-west-1", "ap-southeast-1", "sa-east-1"],
+      alertThreshold: 1,
+      dynamicThresholding: false,
+      expectation: {
+        expectedIPs: ["104.21.55.10", "172.67.182.20"],
+      },
+      tags: ["dns", "nameserver", "anti-poisoning"],
+      baseLatencyMs: 10,
+      groupName: "Public Feeds, Badges & Network Security",
+    },
+    {
+      name: "PulseGuard Domain Registration & WHOIS Expiration Watchdog",
+      url: "pulseguard.io",
+      type: "DOMAIN",
+      interval: 86400,
+      timeout: 15,
+      status: "UP",
+      checkRegions: ["us-east-1"],
+      alertThreshold: 1,
+      dynamicThresholding: false,
+      tags: ["domain", "whois", "registrar", "expiration"],
+      baseLatencyMs: 85,
+      groupName: "Public Feeds, Badges & Network Security",
+    },
     {
       name: "PulseGuard Cloudflare AS13335 BGP Route & RPKI Sentinel",
       url: "AS13335",
@@ -758,55 +821,116 @@ export async function seedDatabase(options: SeedOptions = {}) {
         rpki_required: true,
       },
       tags: ["network", "bgp", "rpki", "anti-hijack"],
-      baseLatencyMs: 120,
+      baseLatencyMs: 110,
+      groupName: "Public Feeds, Badges & Network Security",
     },
-
-    // ── 15. Domain WHOIS Expiration Watchdog (DOMAIN) ─────────────────────────────
     {
-      name: "PulseGuard Domain Registration & WHOIS Expiration Watchdog",
-      url: "pulseguard.io",
-      type: "DOMAIN",
-      interval: 86400,
-      timeout: 15,
+      name: "PulseGuard Worker Cron Dead Man's Snitch",
+      url: "heartbeat://pulseguard-worker-snitch-live",
+      heartbeatToken: "pulseguard-worker-snitch-live",
+      type: "HEARTBEAT",
+      interval: 60,
+      timeout: 10,
       status: "UP",
-      checkRegions: ["us-east-1"],
+      checkRegions: [],
       alertThreshold: 1,
       dynamicThresholding: false,
-      tags: ["domain", "whois", "registrar", "expiration"],
-      baseLatencyMs: 95,
+      runbookUrl: "https://docs.pulseguard.io/runbooks/worker-cron-snitch",
+      tags: ["heartbeat", "deadmans-snitch", "worker", "cron"],
+      baseLatencyMs: 2,
+      groupName: "Edge Worker & Realtime Streaming",
     },
-
-    // ── 16. Outage & Maintenance Edge Cases ───────────────────────────────────────
     {
-      name: "PulseGuard Legacy Telemetry Ingester (Simulated Incident)",
-      url: "http://localhost:3000/api/legacy-ingest",
-      type: "HTTP",
-      method: "GET",
-      interval: 60,
-      timeout: 10,
-      status: "DOWN",
+      name: "PulseGuard Nightly Database S3 Backup Snitch",
+      url: "heartbeat://pulseguard-nightly-db-backup",
+      heartbeatToken: "pulseguard-nightly-db-backup",
+      type: "HEARTBEAT",
+      interval: 86400,
+      timeout: 30,
+      status: "UP",
+      checkRegions: [],
+      alertThreshold: 1,
+      dynamicThresholding: false,
+      tags: ["heartbeat", "backup", "disaster-recovery", "cron"],
+      baseLatencyMs: 2,
+      groupName: "Database, Caching & Infrastructure Layer",
+    },
+    {
+      name: "Synthetic E2E: User Sign-in & Dashboard Journey",
+      url: "http://localhost:3000/login",
+      type: "BROWSER",
+      interval: 300,
+      timeout: 30,
+      status: "UP",
       checkRegions: ["us-east-1", "eu-central-1", "ap-northeast-1"],
-      alertThreshold: 1,
-      dynamicThresholding: false,
-      runbookUrl: "https://docs.pulseguard.io/runbooks/ingester-outage",
-      tags: ["legacy", "ingest", "incident", "simulated-down"],
-      baseLatencyMs: 0,
-      isDown: true,
+      alertThreshold: 2,
+      dynamicThresholding: true,
+      runbookUrl: "https://docs.pulseguard.io/runbooks/synthetic-auth",
+      script: [
+        { action: "goto", value: "http://localhost:3000/login", selector: "" },
+        {
+          action: "fill",
+          value: "admin@pulseguard.io",
+          selector: "input[name='email']",
+        },
+        { action: "fill", value: "AdminPassword123!", selector: "input[name='password']" },
+        { action: "click", value: "", selector: "button[type='submit']" },
+        { action: "wait", value: "1500", selector: "" },
+        { action: "assert_text", value: "Monitors", selector: "" },
+      ],
+      tags: ["synthetic", "browser", "playwright", "auth", "critical-journey"],
+      baseLatencyMs: 380,
+      groupName: "Core API & Application Gateways",
     },
     {
-      name: "PulseGuard Billing Webhook Gateway (Scheduled Maintenance)",
-      url: "http://localhost:3000/api/billing-gateway",
-      type: "HTTP",
-      method: "GET",
-      interval: 60,
-      timeout: 10,
-      status: "MAINTENANCE",
-      checkRegions: ["us-east-1", "eu-west-1"],
-      alertThreshold: 1,
-      dynamicThresholding: false,
-      tags: ["billing", "maintenance-window", "scheduled"],
-      baseLatencyMs: 0,
-      isMaintenance: true,
+      name: "API Sequence: Health Check → Auth Session → Test DB",
+      url: "http://localhost:3000",
+      type: "SEQUENCE",
+      interval: 120,
+      timeout: 20,
+      status: "UP",
+      checkRegions: ["us-east-1", "eu-central-1", "ap-southeast-1"],
+      alertThreshold: 2,
+      dynamicThresholding: true,
+      runbookUrl: "https://docs.pulseguard.io/runbooks/api-chain",
+      script: [
+        {
+          name: "1. Core API Health Check",
+          method: "GET",
+          url: "/api/health",
+          headers: [{ key: "Accept", value: "application/json" }],
+          body: "",
+          assertions: [
+            { type: "status_code", path: "", value: "200" },
+            { type: "json_path", path: "status", value: "ok" },
+          ],
+          extractions: [],
+        },
+        {
+          name: "2. Query Better-Auth Session Service",
+          method: "GET",
+          url: "/api/auth/get-session",
+          headers: [{ key: "Accept", value: "application/json" }],
+          body: "",
+          assertions: [{ type: "status_code", path: "", value: "200" }],
+          extractions: [],
+        },
+        {
+          name: "3. Direct Database Connectivity Ping",
+          method: "GET",
+          url: "/api/test-db",
+          headers: [{ key: "Accept", value: "application/json" }],
+          body: "",
+          assertions: [
+            { type: "status_code", path: "", value: "200" },
+            { type: "json_path", path: "status", value: "connected" },
+          ],
+          extractions: [],
+        },
+      ],
+      tags: ["sequence", "api-chain", "synthetic", "health", "auth"],
+      baseLatencyMs: 140,
+      groupName: "Core API & Application Gateways",
     },
   ];
 
@@ -817,7 +941,6 @@ export async function seedDatabase(options: SeedOptions = {}) {
   const seededMonitors: any[] = [];
 
   for (const def of monitorDefinitions) {
-    // Check if monitor exists by name + userId
     let monitor = await prisma.monitor.findFirst({
       where: { userId, name: def.name },
     });
@@ -858,7 +981,24 @@ export async function seedDatabase(options: SeedOptions = {}) {
 
     seededMonitors.push({ ...monitor, def });
 
-    // 5. Attach Default Alert Rules
+    // Assign to private probe if marked
+    if (def.assignToPrivateProbe && privateProbe) {
+      await prisma.probeAssignment.upsert({
+        where: {
+          probeId_monitorId: {
+            probeId: privateProbe.id,
+            monitorId: monitor.id,
+          },
+        },
+        update: {},
+        create: {
+          probeId: privateProbe.id,
+          monitorId: monitor.id,
+        },
+      });
+    }
+
+    // Attach Default Alert Rules
     await prisma.alertRule.deleteMany({ where: { monitorId: monitor.id } });
     await prisma.alertRule.create({
       data: {
@@ -879,7 +1019,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
       },
     });
 
-    // 6. Generate Realistic Time-Series Telemetry Events
+    // Generate Realistic Time-Series Telemetry Events
     await prisma.monitorEvent.deleteMany({ where: { monitorId: monitor.id } });
 
     const now = Date.now();
@@ -891,21 +1031,20 @@ export async function seedDatabase(options: SeedOptions = {}) {
       const timestamp = new Date(now - i * (def.interval * 1000 || 60000));
       const region = regions[i % regions.length] ?? "us-east-1";
 
-      // Regional latency multiplier
       let regionMultiplier = 1.0;
-      if (region.startsWith("eu")) regionMultiplier = 3.5;
-      else if (region.startsWith("ap")) regionMultiplier = 6.2;
-      else if (region.startsWith("sa")) regionMultiplier = 8.5;
-      else if (region.startsWith("af") || region.startsWith("me")) regionMultiplier = 9.8;
+      if (region.startsWith("eu")) regionMultiplier = 3.2;
+      else if (region.startsWith("ap")) regionMultiplier = 5.8;
+      else if (region.startsWith("sa")) regionMultiplier = 7.5;
+      else if (region.startsWith("af") || region.startsWith("me")) regionMultiplier = 8.8;
 
       let eventStatus: MonitorStatus = def.status;
       let latency = Math.max(
         1,
-        Math.round(def.baseLatencyMs * regionMultiplier + (Math.random() * 8 - 4)),
+        Math.round(def.baseLatencyMs * regionMultiplier + (Math.random() * 6 - 3)),
       );
       let errorReason: string | null = null;
 
-      if (def.isDown && i < 8) {
+      if (def.isDown && i < 6) {
         eventStatus = "DOWN";
         latency = 0;
         errorReason = "HTTP_503_SERVICE_UNAVAILABLE";
@@ -921,6 +1060,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
         errorReason,
         timestamp,
         region,
+        probeId: def.assignToPrivateProbe ? privateProbe?.id : null,
       });
     }
 
@@ -928,7 +1068,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
       data: eventsToCreate,
     });
 
-    // 7. Seed Heartbeat Pings if Heartbeat monitor
+    // Seed Heartbeat Pings if Heartbeat monitor
     if (def.type === "HEARTBEAT") {
       await prisma.heartbeatPing.deleteMany({ where: { monitorId: monitor.id } });
       const pings: any[] = [];
@@ -943,16 +1083,16 @@ export async function seedDatabase(options: SeedOptions = {}) {
       await prisma.heartbeatPing.createMany({ data: pings });
     }
 
-    // 8. Seed Regional Baselines & Latency Aggregates
+    // Seed Regional Baselines & Latency Aggregates
     await prisma.regionalBaseline.deleteMany({ where: { monitorId: monitor.id } });
     await prisma.latencyAggregate.deleteMany({ where: { monitorId: monitor.id } });
 
     for (const r of regions) {
       let rMult = 1.0;
-      if (r.startsWith("eu")) rMult = 3.5;
-      else if (r.startsWith("ap")) rMult = 6.2;
-      else if (r.startsWith("sa")) rMult = 8.5;
-      else if (r.startsWith("af") || r.startsWith("me")) rMult = 9.8;
+      if (r.startsWith("eu")) rMult = 3.2;
+      else if (r.startsWith("ap")) rMult = 5.8;
+      else if (r.startsWith("sa")) rMult = 7.5;
+      else if (r.startsWith("af") || r.startsWith("me")) rMult = 8.8;
 
       const baseline = Math.max(1, Math.round(def.baseLatencyMs * rMult));
 
@@ -973,20 +1113,20 @@ export async function seedDatabase(options: SeedOptions = {}) {
           region: r,
           timestamp: aggTime,
           granularity: "ONE_HOUR" as LatencyGranularity,
-          avgLatency: baseline + (Math.random() * 6 - 3),
-          minLatency: Math.max(1, baseline - 4),
-          maxLatency: baseline + 18,
+          avgLatency: baseline + (Math.random() * 4 - 2),
+          minLatency: Math.max(1, baseline - 3),
+          maxLatency: baseline + 12,
           p50Latency: baseline,
-          p95Latency: baseline + 8,
-          p99Latency: baseline + 15,
+          p95Latency: baseline + 6,
+          p99Latency: baseline + 10,
           sampleCount: 60,
-          successRate: def.isDown ? 0.88 : 0.999,
+          successRate: def.isDown ? 0.92 : 0.9999,
         });
       }
       await prisma.latencyAggregate.createMany({ data: aggregates });
     }
 
-    // 9. Seed 7-Day Daily Summaries
+    // Seed 7-Day Daily Summaries
     await prisma.dailyMonitorSummary.deleteMany({ where: { monitorId: monitor.id } });
     const dailySummaries: any[] = [];
     for (let d = 0; d < 7; d++) {
@@ -994,93 +1134,143 @@ export async function seedDatabase(options: SeedOptions = {}) {
       dailySummaries.push({
         monitorId: monitor.id,
         date: summaryDate,
-        uptimePct: def.isDown && d === 0 ? 94.25 : 99.98,
-        avgLatency: Math.max(1, def.baseLatencyMs * 1.8),
+        uptimePct: def.isDown && d === 0 ? 96.8 : 100.0,
+        avgLatency: Math.max(1, Math.round(def.baseLatencyMs * 1.5)),
         checksTotal: 2880,
-        checksUp: def.isDown && d === 0 ? 2714 : 2879,
-        checksDown: def.isDown && d === 0 ? 166 : 1,
-        downDuration: def.isDown && d === 0 ? 9960 : 60,
+        checksUp: def.isDown && d === 0 ? 2788 : 2880,
+        checksDown: def.isDown && d === 0 ? 92 : 0,
+        downDuration: def.isDown && d === 0 ? 5520 : 0,
       });
     }
     await prisma.dailyMonitorSummary.createMany({ data: dailySummaries });
+  }
 
-    // 10. Seed Outage Incident and Maintenance Window for edge-case monitors
-    if (def.isDown) {
-      await prisma.incident.deleteMany({ where: { monitorId: monitor.id } });
-      const incident = await prisma.incident.create({
-        data: {
-          monitorId: monitor.id,
-          status: "INVESTIGATING" as IncidentStatus,
-          severity: "HIGH" as Severity,
-          title: "Elevated Error Rates on Legacy Ingestion Pipeline",
-          description:
-            "Automated watchdog triggered HTTP 503 response code anomaly across edge verification mesh.",
-          startedAt: new Date(now - 15 * 60 * 1000),
-          events: {
-            create: [
-              {
-                type: "STATE_CHANGE" as IncidentEventType,
-                message: "Watchdog detected HTTP 503 Service Unavailable from us-east-1 and eu-central-1.",
-                createdAt: new Date(now - 15 * 60 * 1000),
-              },
-              {
-                type: "ALERT_SENT" as IncidentEventType,
-                message: "On-call engineer alert sent via PagerDuty and Slack webhooks.",
-                createdAt: new Date(now - 10 * 60 * 1000),
-              },
-              {
-                type: "COMMENT" as IncidentEventType,
-                message: "Triaging upstream database connection saturation in legacy worker pool.",
-                createdAt: new Date(now - 5 * 60 * 1000),
-              },
-            ],
-          },
-        },
-      });
+  // 7. Seed Incident Templates
+  log("📝 Creating Incident Response Templates...");
+  const incidentTemplates = [
+    {
+      name: "Database Connection Pool Saturation",
+      title: "Elevated Latency Due to PostgreSQL Connection Pool Saturation",
+      description:
+        "PostgreSQL connection exhaustion observed across active worker instances. Triaging connection pool limits and slow queries.",
+      severity: "HIGH" as Severity,
+      status: "INVESTIGATING" as IncidentStatus,
+    },
+    {
+      name: "Edge CDN & Anycast Route Degradation",
+      title: "Intermittent Edge Packet Loss on Anycast Route Mesh",
+      description:
+        "Elevated packet loss and DNS resolution latency detected in regional edge POPs. Re-routing traffic to backup transit providers.",
+      severity: "MEDIUM" as Severity,
+      status: "IDENTIFIED" as IncidentStatus,
+    },
+    {
+      name: "Scheduled Database Cluster Maintenance",
+      title: "Planned PostgreSQL Version Upgrade & Partition Indexing",
+      description:
+        "Scheduled maintenance window to perform database index rebalancing and schema migrations.",
+      severity: "LOW" as Severity,
+      status: "MONITORING" as IncidentStatus,
+    },
+  ];
 
-      // Seed Regional Incident
-      await prisma.regionalIncident.deleteMany({ where: { monitorId: monitor.id } });
-      await prisma.regionalIncident.create({
+  for (const tpl of incidentTemplates) {
+    const existing = await prisma.incidentTemplate.findFirst({
+      where: { createdById: userId, name: tpl.name },
+    });
+    if (!existing) {
+      await prisma.incidentTemplate.create({
         data: {
-          monitorId: monitor.id,
-          region: "us-east-1",
-          status: "INVESTIGATING" as IncidentStatus,
-          startedAt: new Date(now - 15 * 60 * 1000),
-          avgLatency: 0,
-          latencyThreshold: 150,
-        },
-      });
-
-      // Seed Incident Post-Mortem draft
-      await prisma.postMortem.deleteMany({ where: { incidentId: incident.id } });
-      await prisma.postMortem.create({
-        data: {
-          incidentId: incident.id,
-          summary: "Upstream connection pool exhaustion in legacy ingestion service.",
-          rootCause: "Unbounded query retry loop triggered connection pool starvation.",
-          impactScope: "Legacy telemetry ingest degraded for 15 minutes.",
-          detectionMethod: "PulseGuard HTTP Synthetic Watchdog",
-          timeline: "T-15m: Watchdog triggered -> T-10m: Acked -> T-5m: Investigation underway",
-          actionItems: "1. Add exponential backoff to query retries.\n2. Scale connection pool limit.",
-          status: "DRAFT" as PostMortemStatus,
-        },
-      });
-    }
-
-    if (def.isMaintenance) {
-      await prisma.maintenanceWindow.deleteMany({ where: { monitorId: monitor.id } });
-      await prisma.maintenanceWindow.create({
-        data: {
-          monitorId: monitor.id,
-          description: "Scheduled database partition maintenance and cluster index optimization",
-          startAt: new Date(now - 10 * 60 * 1000),
-          endAt: new Date(now + 50 * 60 * 1000),
+          ...tpl,
+          createdById: userId,
         },
       });
     }
   }
 
-  // 11. Generate AI Insights for the Monitors
+  // 8. Seed Realistic Resolved Incident & Post-Mortem
+  log("🚨 Creating Historical Resolved Incident & Post-Mortem...");
+  const dbProbeMonitor = seededMonitors.find(
+    (m) => m.def.name === "PulseGuard Database Connection Probe",
+  );
+
+  if (dbProbeMonitor) {
+    await prisma.incident.deleteMany({ where: { monitorId: dbProbeMonitor.id } });
+    const resolvedIncident = await prisma.incident.create({
+      data: {
+        monitorId: dbProbeMonitor.id,
+        status: "RESOLVED" as IncidentStatus,
+        severity: "HIGH" as Severity,
+        title: "Transient Connection Pool Exhaustion on Primary PostgreSQL Instance",
+        description:
+          "Automated health check detected elevated connection latency and intermittent connection pool timeout errors.",
+        startedAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
+        resolvedAt: new Date(Date.now() - 47 * 60 * 60 * 1000 - 30 * 60 * 1000),
+        events: {
+          create: [
+            {
+              type: "STATE_CHANGE" as IncidentEventType,
+              message: "Watchdog detected connection pool queue timeout on port 5432.",
+              createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
+            },
+            {
+              type: "ALERT_SENT" as IncidentEventType,
+              message: "Automated alert dispatched to #ops-alerts and PagerDuty.",
+              createdAt: new Date(Date.now() - 47 * 60 * 60 * 1000 - 55 * 60 * 1000),
+            },
+            {
+              type: "COMMENT" as IncidentEventType,
+              message:
+                "SRE team adjusted PgBouncer pool ceiling and cleared idle backend connections.",
+              createdAt: new Date(Date.now() - 47 * 60 * 60 * 1000 - 40 * 60 * 1000),
+            },
+            {
+              type: "AUTO_RESOLVE" as IncidentEventType,
+              message: "All 3 consecutive regional probes confirmed 100% healthy response times.",
+              createdAt: new Date(Date.now() - 47 * 60 * 60 * 1000 - 30 * 60 * 1000),
+            },
+          ],
+        },
+      },
+    });
+
+    // Create Incident Post-Mortem
+    await prisma.postMortem.upsert({
+      where: { incidentId: resolvedIncident.id },
+      update: {},
+      create: {
+        incidentId: resolvedIncident.id,
+        summary: "Primary PostgreSQL connection pool reached maximum allocated client limit.",
+        rootCause:
+          "Unindexed aggregation query ran in parallel across 4 background workers simultaneously.",
+        impactScope: "API response latency elevated by 240ms for 30 minutes. Zero data loss.",
+        detectionMethod: "PulseGuard Synthetic Database Health Probe",
+        timeline:
+          "T-48h: Saturation detected -> T-47.5h: Pool limit expanded -> T-47.5h: Health verified and resolved",
+        actionItems:
+          "1. Added composite index on telemetry event timestamp.\n2. Configured strict PgBouncer client timeout.\n3. Added connection count watchdog alert.",
+        status: "PUBLISHED" as PostMortemStatus,
+      },
+    });
+  }
+
+  // Active Maintenance Window
+  const edgeWorkerMonitor = seededMonitors.find(
+    (m) => m.def.name === "PulseGuard Cloudflare Worker Edge Engine",
+  );
+  if (edgeWorkerMonitor) {
+    await prisma.maintenanceWindow.deleteMany({ where: { monitorId: edgeWorkerMonitor.id } });
+    await prisma.maintenanceWindow.create({
+      data: {
+        monitorId: edgeWorkerMonitor.id,
+        description: "Scheduled edge worker runtime upgrade and Durable Object state compaction",
+        startAt: new Date(Date.now() + 2 * 60 * 60 * 1000),
+        endAt: new Date(Date.now() + 3 * 60 * 60 * 1000),
+      },
+    });
+  }
+
+  // 9. Generate AI Insights for the Monitors
   log("🧠 Generating AI Monitor Insights...");
   await prisma.monitorInsight.deleteMany({
     where: { monitor: { userId } },
@@ -1093,9 +1283,8 @@ export async function seedDatabase(options: SeedOptions = {}) {
         monitorId: apiMonitor.id,
         type: "ANOMALY" as InsightType,
         severity: "INFO" as InsightSeverity,
-        message:
-          "P95 latency decreased by 12% following edge route optimization in eu-central-1.",
-        metadata: JSON.stringify({ improvementPct: 12, region: "eu-central-1" }),
+        message: "P95 latency decreased by 14% following edge route optimization in eu-central-1.",
+        metadata: JSON.stringify({ improvementPct: 14, region: "eu-central-1" }),
       },
     });
   }
@@ -1109,8 +1298,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
         monitorId: sslMonitor.id,
         type: "PREDICTION" as InsightType,
         severity: "WARNING" as InsightSeverity,
-        message:
-          "TLS certificate expires in 68 days. Automated ACME renewal scheduled in 38 days.",
+        message: "TLS certificate expires in 68 days. Automated ACME renewal scheduled in 38 days.",
         metadata: JSON.stringify({ daysRemaining: 68, autoRenew: true }),
       },
     });
@@ -1132,8 +1320,8 @@ export async function seedDatabase(options: SeedOptions = {}) {
     });
   }
 
-  // 12. Create / Update Public Status Page with all seeded monitors
-  log("🌐 Creating Global Status Page...");
+  // 10. Create / Update Public Status Page with Grouped Monitors
+  log("🌐 Creating Global Status Page & Grouped Components...");
   const statusPageSlug = "pulseguard-global-status";
   let statusPage = await prisma.statusPage.findFirst({
     where: { userId, slug: statusPageSlug },
@@ -1143,8 +1331,14 @@ export async function seedDatabase(options: SeedOptions = {}) {
     slug: statusPageSlug,
     title: "PulseGuard Global Infrastructure Status",
     description:
-      "Real-time operational status for PulseGuard edge monitors, API gateways, database clusters, and background workers.",
-    theme: "DARK",
+      "Real-time operational status for PulseGuard core API gateways, Cloudflare edge workers, PostgreSQL clusters, and public feeds.",
+    theme: {
+      mode: "dark",
+      colors: {
+        primary: "#10b981",
+        background: "#090d16",
+      },
+    },
     isPrivate: false,
     seoIndex: true,
     showUptime: true,
@@ -1153,8 +1347,8 @@ export async function seedDatabase(options: SeedOptions = {}) {
     showInShowcase: true,
     widgetEnabled: true,
     historyDays: 90,
-    barType: "FULL",
-    cardType: "EXPANDED",
+    barType: "absolute",
+    cardType: "duration",
     userId,
   };
 
@@ -1169,18 +1363,86 @@ export async function seedDatabase(options: SeedOptions = {}) {
     });
   }
 
-  // Link monitors to status page
+  // Create Groups
+  const groupNames = [
+    "Core API & Application Gateways",
+    "Edge Worker & Realtime Streaming",
+    "Database, Caching & Infrastructure Layer",
+    "Public Feeds, Badges & Network Security",
+  ];
+
+  await prisma.statusPageGroup.deleteMany({ where: { statusPageId: statusPage.id } });
+  const createdGroups = new Map<string, string>();
+
+  for (const [idx, gName] of groupNames.entries()) {
+    const grp = await prisma.statusPageGroup.create({
+      data: {
+        statusPageId: statusPage.id,
+        name: gName,
+        sortOrder: idx + 1,
+        isExpanded: true,
+      },
+    });
+    createdGroups.set(gName, grp.id);
+  }
+
+  // Link monitors to status page with groups
   await prisma.statusPageMonitor.deleteMany({
     where: { statusPageId: statusPage.id },
   });
 
   for (const [i, sm] of seededMonitors.entries()) {
+    const groupId = createdGroups.get(sm.def.groupName) || null;
     await prisma.statusPageMonitor.create({
       data: {
         statusPageId: statusPage.id,
         monitorId: sm.id,
+        groupId,
         sortOrder: i + 1,
         displayName: sm.def.name,
+      },
+    });
+  }
+
+  // Seed Status Page Subscriber
+  const subscriberEmail = "subscriber@pulseguard.io";
+  await prisma.statusPageSubscriber.upsert({
+    where: {
+      statusPageId_email: {
+        statusPageId: statusPage.id,
+        email: subscriberEmail,
+      },
+    },
+    update: { verified: true },
+    create: {
+      statusPageId: statusPage.id,
+      email: subscriberEmail,
+      verified: true,
+      manageToken: "token_sub_pulseguard_admin_manage",
+      notifyIncidents: true,
+      notifyMaintenance: true,
+    },
+  });
+
+  // Seed Status Page Views for Analytics
+  await prisma.statusPageView.deleteMany({ where: { statusPageId: statusPage.id } });
+  const sampleViews = [
+    { country: "US", userAgent: "Mozilla/5.0 Chrome/120.0" },
+    { country: "DE", userAgent: "Mozilla/5.0 Firefox/122.0" },
+    { country: "JP", userAgent: "Mozilla/5.0 Safari/605.1" },
+    { country: "GB", userAgent: "Mozilla/5.0 Chrome/120.0" },
+    { country: "BR", userAgent: "Mozilla/5.0 Edge/120.0" },
+  ];
+  for (const sv of sampleViews) {
+    await prisma.statusPageView.create({
+      data: {
+        statusPageId: statusPage.id,
+        visitorHash: createHash("sha256")
+          .update(sv.country + Math.random())
+          .digest("hex")
+          .slice(0, 16),
+        country: sv.country,
+        userAgent: sv.userAgent,
       },
     });
   }
@@ -1188,7 +1450,8 @@ export async function seedDatabase(options: SeedOptions = {}) {
   log("\n========================================================");
   log("🎉 [PulseGuard Seed Complete] Successfully seeded database!");
   log(`👤 Target User: ${targetUser.email} (${targetUser.id})`);
-  log(`📡 Total Monitors Seeded: ${seededMonitors.length}`);
+  log(`🔑 CLI API Key: ${rawApiKey}`);
+  log(`📡 Total Real Monitors Seeded: ${seededMonitors.length}`);
   log("📋 Monitor Types Covered:");
   const distinctTypes = Array.from(new Set(monitorDefinitions.map((m) => m.type)));
   for (const t of distinctTypes) {
@@ -1196,13 +1459,31 @@ export async function seedDatabase(options: SeedOptions = {}) {
     log(`   - ${t.padEnd(12)}: ${count} configuration(s)`);
   }
   log(`🔔 Notification Channels: ${createdChannels.length}`);
-  log(`🌐 Status Page: /status/${statusPageSlug}`);
+  log(`📁 Status Page Groups: ${groupNames.length}`);
+  log(`🌐 Status Page: http://localhost:3000/status/${statusPageSlug}`);
+  log(`📊 Dashboard: http://localhost:3000/dashboard`);
   log("========================================================\n");
 
   return {
     user: targetUser,
+    apiKey: rawApiKey,
     monitorsCount: seededMonitors.length,
     channelsCount: createdChannels.length,
     statusPageSlug,
   };
+}
+
+if (import.meta.main) {
+  const args = process.argv.slice(2);
+  const emailArgIdx = args.findIndex((a) => a === "--user" || a === "--email");
+  const userEmail = emailArgIdx !== -1 ? args[emailArgIdx + 1] : undefined;
+  const cleanExisting = args.includes("--clean") || args.includes("--reset");
+  const resetDb = args.includes("--reset");
+
+  seedDatabase({ userEmail, cleanExisting, resetDb })
+    .then(() => process.exit(0))
+    .catch((err) => {
+      console.error("❌ Seed execution failed:", err);
+      process.exit(1);
+    });
 }

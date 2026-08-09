@@ -68,7 +68,8 @@ export async function getUserPlan(userId: string): Promise<PlanTier> {
   }
 
   const rawPlan = (subscription?.plan || user?.tier || "INITIATE").toUpperCase();
-  if (rawPlan === "ADMIN") return "CONSTRUCT";
+  if (rawPlan === "ADMIN" || rawPlan === "ENTERPRISE") return "CONSTRUCT";
+  if (rawPlan === "PRO") return "NETRUNNER";
   return rawPlan in PLANS ? (rawPlan as PlanTier) : "INITIATE";
 }
 
