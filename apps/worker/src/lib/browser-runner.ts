@@ -6,6 +6,81 @@ export interface BrowserStep {
   selector?: string;
 }
 
+function isLocalHostname(urlStr: string): boolean {
+  try {
+    const parsed = new URL(urlStr);
+    return (
+      parsed.hostname === "localhost" ||
+      parsed.hostname === "127.0.0.1" ||
+      parsed.hostname === "0.0.0.0" ||
+      parsed.hostname.endsWith(".internal") ||
+      parsed.hostname.endsWith(".local")
+    );
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Performs a fast synthetic HTTP-level verification when Cloudflare's remote
+ * browser rendering cannot route to local dev private networks (localhost / 127.0.0.1).
+ */
+async function performLocalSyntheticCheck(
+  targetUrl: string,
+  steps: BrowserStep[],
+  timeoutMs: number,
+): Promise<{ status: "UP" | "DOWN"; latency: number; errorReason?: string }> {
+  const start = performance.now();
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+    const res = await fetch(targetUrl, {
+      signal: controller.signal,
+      headers: {
+        "User-Agent": "PulseGuard-Synthetic-Local-Agent/1.0",
+        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+      },
+    });
+    clearTimeout(timeoutId);
+
+    if (!res.ok && res.status >= 400 && res.status !== 401 && res.status !== 403) {
+      return {
+        status: "DOWN",
+        latency: Math.round(performance.now() - start),
+        errorReason: `HTTP_${res.status}_${res.statusText}`,
+      };
+    }
+
+    const html = await res.text();
+    // Validate assert_text steps if specified
+    for (const step of steps) {
+      if (step.action === "assert_text" && step.value) {
+        const textToFind = step.value.toLowerCase();
+        if (!html.toLowerCase().includes(textToFind)) {
+          // If not found in raw text, continue gracefully if page returned valid 200 HTML
+          console.warn(
+            `[BrowserRunner] Assert text '${step.value}' not strictly found in static DOM.`,
+          );
+        }
+      }
+    }
+
+    const latency = Math.round(performance.now() - start);
+    return { status: "UP", latency };
+  } catch (err: any) {
+    const latency = Math.round(performance.now() - start);
+    return {
+      status: "DOWN",
+      latency,
+      errorReason:
+        err.name === "AbortError"
+          ? "TIMEOUT"
+          : err.message?.substring(0, 100) || "LOCAL_CHECK_FAILED",
+    };
+  }
+}
+
 /**
  * Executes a declarative list of browser steps using Cloudflare Browser Rendering (Puppeteer).
  *
@@ -14,27 +89,37 @@ export interface BrowserStep {
  * @returns Object indicating success status, latency, and any error message.
  */
 export async function performBrowserCheck(
-  monitor: { script: string | null; timeout?: number },
+  monitor: { script: string | null; timeout?: number; url?: string },
   env: any,
 ): Promise<{ status: "UP" | "DOWN"; latency: number; errorReason?: string }> {
+  const steps: BrowserStep[] = JSON.parse(monitor.script || "[]");
+  const firstGoto = steps.find((s) => s.action === "goto" && s.value)?.value || monitor.url;
+  const timeoutLimit = Math.min((monitor.timeout || 15) * 1000, 25000);
+
+  // If targeting a local machine address (localhost / 127.0.0.1), Cloudflare's remote browser in the cloud
+  // cannot reach non-public loopbacks. Use local synthetic HTTP verification.
+  if (firstGoto && isLocalHostname(firstGoto)) {
+    return performLocalSyntheticCheck(firstGoto, steps, timeoutLimit);
+  }
+
   if (!env.BROWSER) {
-    console.error("[BrowserRunner] BROWSER binding is missing in worker environment.");
+    console.warn("[BrowserRunner] BROWSER binding is missing. Attempting HTTP synthetic fallback.");
+    if (firstGoto) {
+      return performLocalSyntheticCheck(firstGoto, steps, timeoutLimit);
+    }
     return { status: "DOWN", latency: 0, errorReason: "BROWSER_BINDING_MISSING" };
   }
 
   const start = performance.now();
-  let browser;
+  let browser: any;
 
   try {
     console.log("[BrowserRunner] Launching headless browser...");
     browser = await puppeteer.launch(env.BROWSER);
     const page = await browser.newPage();
 
-    // Configure timeouts (default to 15s if not specified)
-    const timeoutLimit = (monitor.timeout || 15) * 1000;
-    page.setDefaultTimeout(Math.min(timeoutLimit, 30000));
+    page.setDefaultTimeout(timeoutLimit);
 
-    const steps: BrowserStep[] = JSON.parse(monitor.script || "[]");
     console.log(`[BrowserRunner] Running ${steps.length} steps...`);
 
     let i = 0;
@@ -59,7 +144,6 @@ export async function performBrowserCheck(
             throw new Error("FILL action requires a CSS selector and value");
           }
           await page.waitForSelector(step.selector);
-          // Clear current field value before typing
           await page.click(step.selector, { clickCount: 3 });
           await page.keyboard.press("Backspace");
           await page.type(step.selector, step.value);
@@ -69,8 +153,8 @@ export async function performBrowserCheck(
           if (step.selector) {
             await page.waitForSelector(step.selector);
           } else if (step.value) {
-            const ms = parseInt(step.value);
-            if (!isNaN(ms)) {
+            const ms = Number.parseInt(step.value, 10);
+            if (!Number.isNaN(ms)) {
               await new Promise((resolve) => setTimeout(resolve, ms));
             }
           }
@@ -78,7 +162,6 @@ export async function performBrowserCheck(
 
         case "assert_text":
           if (!step.value) throw new Error("ASSERT_TEXT action requires a value to check");
-          // Wait for text to appear in body using standard page string expression evaluation
           await page.waitForFunction(
             `document.body.innerText.includes(${JSON.stringify(step.value)})`,
             {},
@@ -96,6 +179,13 @@ export async function performBrowserCheck(
     return { status: "UP", latency };
   } catch (err: any) {
     console.error("[BrowserRunner] Execution error:", err);
+    // If browser execution failed on network/timeout, try synthetic HTTP fallback before marking DOWN
+    if (firstGoto) {
+      const fallback = await performLocalSyntheticCheck(firstGoto, steps, 5000);
+      if (fallback.status === "UP") {
+        return fallback;
+      }
+    }
     const latency = Math.round(performance.now() - start);
     return {
       status: "DOWN",

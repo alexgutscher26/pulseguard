@@ -10,6 +10,7 @@ import { auth } from "@pulseguard/auth";
 import { headers, cookies } from "next/headers";
 import { sendMonitorAlert, type MonitorAlertData } from "@pulseguard/email";
 import { assertMonitorLimits, checkAndNotifyUsageLimits } from "@/lib/billing-server";
+import { generateDeepInsightAnalysis, getAIProviderClient } from "@/lib/ai";
 
 // Helper Types for Incident Management
 enum IncidentEventType {
@@ -1459,5 +1460,184 @@ export async function deleteMonitor(id: string) {
   } catch (error) {
     console.error("Failed to delete monitor", error);
     return { success: false, error: "Failed to delete monitor" };
+  }
+}
+
+/**
+ * Triggers deep SRE Root-Cause AI Analysis on a specific Insight
+ * utilizing OpenRouter or Ollama.
+ */
+export async function analyzeInsightWithAI(insightId: string) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) return { success: false, error: "Unauthorized" };
+
+  try {
+    const insight = await prisma.monitorInsight.findFirst({
+      where: {
+        id: insightId,
+        monitor: {
+          userId: session.user.id,
+        },
+      },
+      include: {
+        monitor: {
+          include: {
+            events: {
+              orderBy: { timestamp: "desc" },
+              take: 20,
+            },
+          },
+        },
+      },
+    });
+
+    if (!insight) return { success: false, error: "Insight not found" };
+
+    const analysisResult = await generateDeepInsightAnalysis({
+      monitorName: insight.monitor.name,
+      monitorUrl: insight.monitor.url,
+      monitorType: insight.monitor.type,
+      insightType: insight.type as any,
+      severity: insight.severity as any,
+      message: insight.message,
+      metadata: (insight.metadata as any) || {},
+      recentEvents: insight.monitor.events.map((e) => ({
+        latency: e.latency,
+        status: e.status,
+        timestamp: e.timestamp,
+        region: e.region || undefined,
+        errorReason: e.errorReason || undefined,
+      })),
+    });
+
+    // Persist AI analysis inside the insight metadata
+    const existingMetadata =
+      typeof insight.metadata === "object" && insight.metadata !== null
+        ? (insight.metadata as Record<string, any>)
+        : {};
+    const updatedMetadata = {
+      ...existingMetadata,
+      aiAnalysis: analysisResult,
+      analyzedAt: new Date().toISOString(),
+    };
+
+    const updated = await prisma.monitorInsight.update({
+      where: { id: insight.id },
+      data: {
+        metadata: updatedMetadata as any,
+      },
+      include: {
+        monitor: {
+          select: { name: true },
+        },
+      },
+    });
+
+    revalidatePath("/dashboard");
+    return { success: true, insight: updated, analysis: analysisResult };
+  } catch (error: any) {
+    console.error("[AI Insights] Failed to analyze insight:", error);
+    return { success: false, error: error.message || "Failed to analyze insight" };
+  }
+}
+
+/**
+ * On-demand generation/refresh of AI insights across all user monitors.
+ */
+export async function generateLiveAIInsights() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) return { success: false, error: "Unauthorized" };
+
+  try {
+    const userMonitors = await prisma.monitor.findMany({
+      where: { userId: session.user.id },
+      include: {
+        events: {
+          orderBy: { timestamp: "desc" },
+          take: 25,
+        },
+      },
+    });
+
+    if (userMonitors.length === 0) {
+      return { success: false, error: "No monitors found to analyze" };
+    }
+
+    const aiClient = getAIProviderClient();
+    let generatedCount = 0;
+
+    for (const monitor of userMonitors.slice(0, 5)) {
+      const recent = monitor.events;
+      if (recent.length === 0) continue;
+
+      const avgLatency = Math.round(recent.reduce((a, b) => a + b.latency, 0) / recent.length);
+      const failures = recent.filter((e) => e.status === "DOWN").length;
+
+      // Anomaly detection criteria
+      if (failures > 0 || avgLatency > 200) {
+        const severity = failures > 2 ? "CRITICAL" : "WARNING";
+        const message =
+          failures > 0
+            ? `Elevated Outage Rate: ${monitor.name} encountered ${failures} failure(s) in recent telemetry window.`
+            : `High Latency Drift: Average response time (${avgLatency}ms) exceeds target performance tier.`;
+
+        const existing = await prisma.monitorInsight.findFirst({
+          where: {
+            monitorId: monitor.id,
+            dismissed: false,
+            createdAt: { gt: new Date(Date.now() - 10 * 60 * 1000) },
+          },
+        });
+
+        if (!existing) {
+          const analysisResult = await generateDeepInsightAnalysis({
+            monitorName: monitor.name,
+            monitorUrl: monitor.url,
+            monitorType: monitor.type,
+            insightType: "ANOMALY",
+            severity,
+            message,
+            metadata: { avgLatency, failures, sampleCount: recent.length },
+            recentEvents: recent.map((e) => ({
+              latency: e.latency,
+              status: e.status,
+              timestamp: e.timestamp,
+              region: e.region || undefined,
+            })),
+          });
+
+          await prisma.monitorInsight.create({
+            data: {
+              monitorId: monitor.id,
+              type: "ANOMALY",
+              severity,
+              message,
+              metadata: {
+                avgLatency,
+                failures,
+                aiAnalysis: analysisResult,
+                provider: aiClient?.provider || "heuristic",
+              } as any,
+            },
+          });
+          generatedCount++;
+        }
+      }
+    }
+
+    revalidatePath("/dashboard");
+    return {
+      success: true,
+      message: `Generated ${generatedCount} new AI insights using ${aiClient ? aiClient.provider.toUpperCase() : "Heuristic SRE Engine"}.`,
+    };
+  } catch (error: any) {
+    console.error("[AI Insights] Failed to generate live insights:", error);
+    return { success: false, error: error.message || "Failed to generate AI insights" };
   }
 }

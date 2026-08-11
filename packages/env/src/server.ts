@@ -10,6 +10,15 @@ export const env = createEnv({
     NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
     SLACK_SIGNING_SECRET: z.string().min(1).optional(),
     OPENAI_API_KEY: z.string().min(1).optional(),
+    // OpenRouter AI Configuration
+    OPENROUTER_API_KEY: z.string().min(1).optional(),
+    OPENROUTER_MODEL: z.string().default("meta-llama/llama-3.3-70b-instruct"),
+    OPENROUTER_BASE_URL: z.string().url().default("https://openrouter.ai/api/v1"),
+    // Ollama Local AI Configuration (for testing)
+    OLLAMA_BASE_URL: z.string().url().default("http://localhost:11434/v1"),
+    OLLAMA_MODEL: z.string().default("llama3.2"),
+    // Provider selection: "openrouter" | "ollama" | "openai" | "auto"
+    AI_PROVIDER: z.enum(["openrouter", "ollama", "openai", "auto"]).default("auto"),
     UPSTASH_REDIS_REST_URL: z.string().url().optional(),
     UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
     NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
