@@ -57,7 +57,7 @@
     "@pulseguard/env": "workspace:*",
     "@types/inquirer": "^9.0.10",
     "dotenv": "catalog:",
-    "next-intl": "^4.8.2",
+    "next-intl": "4.13.6",
     "port-nuker": "^1.0.8",
     "zod": "catalog:"
   },
