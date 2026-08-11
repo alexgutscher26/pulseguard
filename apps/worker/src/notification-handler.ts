@@ -8,7 +8,7 @@ import {
 } from "@pulseguard/email";
 import { MonitorStatus as Status, NotificationType, type NotificationTypeValue } from "./constants";
 import type { Env } from "./env";
-import { runWithLimit, sendDiscordAlert, sendSlackAlert } from "./services/notifications";
+import { runWithLimit, sendDiscordAlert, sendPagerDutyAlert, sendSlackAlert } from "./services/notifications";
 
 export interface NotificationMessage {
   type?: NotificationTypeValue | undefined;
@@ -213,6 +213,7 @@ export default {
             const emailChannels = new Set<string>();
             const slackChannels = new Set<{ url: string; token?: string }>();
             const discordChannels = new Set<{ url: string; token?: string }>();
+            const pagerdutyChannels = new Set<string>();
 
             if (monitor.user.email) {
               emailChannels.add(monitor.user.email);
@@ -228,6 +229,8 @@ export default {
                   slackChannels.add({ url: config.webhookUrl, token: config.accessToken });
                 } else if (channel.type === "DISCORD" && config?.webhookUrl) {
                   discordChannels.add({ url: config.webhookUrl });
+                } else if (channel.type === "PAGERDUTY" && config?.routingKey) {
+                  pagerdutyChannels.add(config.routingKey);
                 }
               });
             });
@@ -242,6 +245,16 @@ export default {
             });
             Array.from(discordChannels).forEach((target) => {
               deliveryPromises.push(sendDiscordAlert(target.url, emailData, notification.type));
+            });
+            Array.from(pagerdutyChannels).forEach((routingKey) => {
+              deliveryPromises.push(
+                sendPagerDutyAlert(
+                  routingKey,
+                  emailData,
+                  notification.type,
+                  notification.incidentId,
+                ),
+              );
             });
           } else {
             console.log(`[Notification] No matching alert rules for ${notification.monitorName}`);

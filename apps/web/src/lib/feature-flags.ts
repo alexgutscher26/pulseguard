@@ -12,6 +12,7 @@ export type FeatureFlag =
   | "sla_pdf_export"
   | "saml_sso"
   | "custom_webhooks_pagerduty"
+  | "pagerduty_integration"
   | "sms_alerts";
 
 export const PLAN_FEATURE_FLAGS: Record<PlanTier, Record<FeatureFlag, boolean>> = {
@@ -27,6 +28,7 @@ export const PLAN_FEATURE_FLAGS: Record<PlanTier, Record<FeatureFlag, boolean>> 
     sla_pdf_export: false,
     saml_sso: false,
     custom_webhooks_pagerduty: false,
+    pagerduty_integration: true,
     sms_alerts: false,
   },
   NETRUNNER: {
@@ -41,6 +43,7 @@ export const PLAN_FEATURE_FLAGS: Record<PlanTier, Record<FeatureFlag, boolean>> 
     sla_pdf_export: true,
     saml_sso: false,
     custom_webhooks_pagerduty: false,
+    pagerduty_integration: true,
     sms_alerts: false,
   },
   CONSTRUCT: {
@@ -55,6 +58,7 @@ export const PLAN_FEATURE_FLAGS: Record<PlanTier, Record<FeatureFlag, boolean>> 
     sla_pdf_export: true,
     saml_sso: true,
     custom_webhooks_pagerduty: true,
+    pagerduty_integration: true,
     sms_alerts: true,
   },
 };
@@ -70,10 +74,8 @@ const FEATURE_DESCRIPTIONS: Record<FeatureFlag, { name: string; requiredPlan: Pl
   private_status_pages: { name: "Password-Protected Portals", requiredPlan: "CONSTRUCT" },
   sla_pdf_export: { name: "SLA PDF Export Reports", requiredPlan: "NETRUNNER" },
   saml_sso: { name: "SAML SSO & Workspaces", requiredPlan: "CONSTRUCT" },
-  custom_webhooks_pagerduty: {
-    name: "PagerDuty & Webhook Integrations",
-    requiredPlan: "CONSTRUCT",
-  },
+  custom_webhooks_pagerduty: { name: "Custom Webhook Integrations", requiredPlan: "CONSTRUCT" },
+  pagerduty_integration: { name: "PagerDuty Integration", requiredPlan: "INITIATE" },
   sms_alerts: { name: "SMS Notification Alerts", requiredPlan: "CONSTRUCT" },
 };
 

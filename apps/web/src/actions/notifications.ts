@@ -11,7 +11,7 @@ import { assertNotificationChannelLimits, checkAndNotifyUsageLimits } from "@/li
 
 const channelSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  type: z.enum(["EMAIL", "DISCORD", "SLACK", "WEBHOOK", "TELEGRAM", "SMS"]),
+  type: z.enum(["EMAIL", "DISCORD", "SLACK", "WEBHOOK", "TELEGRAM", "SMS", "PAGERDUTY"]),
   config: z.string().transform((str, ctx) => {
     try {
       return JSON.parse(str);
@@ -230,6 +230,55 @@ export async function sendTestNotification(id: string) {
           ],
         }),
       });
+      return { success: true };
+    }
+
+    if (channel.type === "PAGERDUTY") {
+      if (!config?.routingKey)
+        return { success: false, error: "Invalid PagerDuty configuration: routing key required" };
+
+      const PD_EVENTS_URL = "https://events.pagerduty.com/v2/enqueue";
+      const dedupKey = `pulseguard-test-${Date.now()}`;
+
+      // Fire a test trigger
+      const triggerRes = await fetch(PD_EVENTS_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          routing_key: config.routingKey,
+          dedup_key: dedupKey,
+          event_action: "trigger",
+          payload: {
+            summary: "🔴 PulseGuard Test Alert: Monitor Down",
+            source: "https://example.com",
+            severity: "critical",
+            custom_details: {
+              monitor_name: "Test Monitor",
+              target_url: "https://example.com",
+              status: "DOWN",
+              reason: "This is a test notification from PulseGuard",
+            },
+          },
+          links: [{ href: `${env.NEXT_PUBLIC_APP_URL}/dashboard`, text: "Open PulseGuard" }],
+        }),
+      });
+
+      if (!triggerRes.ok) {
+        const errText = await triggerRes.text();
+        return { success: false, error: `PagerDuty API error: ${triggerRes.status} ${errText}` };
+      }
+
+      // Immediately resolve so no phantom incident stays open
+      await fetch(PD_EVENTS_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          routing_key: config.routingKey,
+          dedup_key: dedupKey,
+          event_action: "resolve",
+        }),
+      });
+
       return { success: true };
     }
 

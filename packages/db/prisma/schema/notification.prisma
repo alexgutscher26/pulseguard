@@ -5,6 +5,7 @@ enum NotificationType {
   WEBHOOK
   TELEGRAM
   SMS
+  PAGERDUTY
 }
 
 enum AlertTrigger {

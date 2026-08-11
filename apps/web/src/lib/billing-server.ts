@@ -326,11 +326,12 @@ export async function assertNotificationChannelLimits(
     return { allowed: false, error: getFeatureError("sms_alerts") };
   }
 
-  if (
-    (params.type === "WEBHOOK" || params.type === "PAGERDUTY") &&
-    !isFeatureEnabled(plan, "custom_webhooks_pagerduty")
-  ) {
+  if (params.type === "WEBHOOK" && !isFeatureEnabled(plan, "custom_webhooks_pagerduty")) {
     return { allowed: false, error: getFeatureError("custom_webhooks_pagerduty") };
+  }
+
+  if (params.type === "PAGERDUTY" && !isFeatureEnabled(plan, "pagerduty_integration")) {
+    return { allowed: false, error: getFeatureError("pagerduty_integration") };
   }
 
   return { allowed: true };
