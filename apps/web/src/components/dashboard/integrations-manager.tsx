@@ -46,7 +46,7 @@ export function IntegrationsManager() {
   const searchParams = useSearchParams();
   const [activeProvider, setActiveProvider] = useState<Provider | null>(null);
   const [token, setToken] = useState("");
-  const [useDemo, setUseDemo] = useState(true);
+
   const [loading, setLoading] = useState(false);
   const [resources, setResources] = useState<ExternalResource[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -89,11 +89,8 @@ export function IntegrationsManager() {
       const savedToken = localStorage.getItem(`pulseguard_token_${activeProvider}`);
       if (savedToken) {
         setToken(savedToken);
-        setUseDemo(false);
         setHasSavedToken(true);
       } else {
-        // If Vercel, Netlify, or GitHub is active and we have a persistent integration connected in the DB,
-        // we default token to "db" so we fetch from the DB.
         const hasDbConfig = connectedIntegrations.some((ci) => ci.provider === activeProvider);
         const isDbProvider =
           activeProvider === "vercel" ||
@@ -101,15 +98,9 @@ export function IntegrationsManager() {
           activeProvider === "github";
         if (isDbProvider && hasDbConfig) {
           setToken("db");
-          setUseDemo(false);
-          setHasSavedToken(false);
-        } else if (isDbProvider) {
-          setToken("");
-          setUseDemo(false);
           setHasSavedToken(false);
         } else {
           setToken("");
-          setUseDemo(true);
           setHasSavedToken(false);
         }
       }
@@ -120,7 +111,6 @@ export function IntegrationsManager() {
     if (activeProvider) {
       localStorage.removeItem(`pulseguard_token_${activeProvider}`);
       setToken("");
-      setUseDemo(true);
       setHasSavedToken(false);
       toast.success("Saved credentials cleared successfully");
     }
@@ -157,8 +147,7 @@ export function IntegrationsManager() {
             res.teamsCount && res.teamsCount > 0 ? ` and ${res.teamsCount} team scopes!` : "!"
           }`,
         );
-        setToken("db"); // set to db to fetch projects using db integrations
-        setUseDemo(false);
+        setToken("db");
         await loadIntegrations();
       } else {
         toast.error(res.error || "Failed to verify or connect Vercel token");
@@ -180,8 +169,7 @@ export function IntegrationsManager() {
       const res = await connectNetlifyWithToken(token);
       if (res.success && res.name) {
         toast.success(`Successfully connected Netlify account "${res.name}"!`);
-        setToken("db"); // set to db to fetch sites using db integrations
-        setUseDemo(false);
+        setToken("db");
         await loadIntegrations();
       } else {
         toast.error(res.error || "Failed to verify or connect Netlify token");
@@ -203,8 +191,7 @@ export function IntegrationsManager() {
       const res = await connectGitHubWithToken(token);
       if (res.success && res.name) {
         toast.success(`Successfully connected GitHub account "${res.name}"!`);
-        setToken("db"); // set to db to fetch repos using db integrations
-        setUseDemo(false);
+        setToken("db");
         await loadIntegrations();
       } else {
         toast.error(res.error || "Failed to verify or connect GitHub token");
@@ -265,16 +252,13 @@ export function IntegrationsManager() {
   const handleConnectClick = (provider: Provider) => {
     setActiveProvider(provider);
     setToken("");
-    setUseDemo(provider !== "vercel" && provider !== "netlify" && provider !== "github");
     setResources([]);
     setSelectedIds(new Set());
   };
 
   const handleFetchResources = async () => {
     setLoading(true);
-    const tokenToUse = useDemo ? "mock" : token;
-
-    if (!useDemo && !token) {
+    if (!token) {
       toast.error("Please enter a valid API access token");
       setLoading(false);
       return;
@@ -283,11 +267,11 @@ export function IntegrationsManager() {
     try {
       let result;
       if (activeProvider === "vercel") {
-        result = await fetchVercelProjects(tokenToUse, useDemo);
+        result = await fetchVercelProjects(token);
       } else if (activeProvider === "netlify") {
-        result = await fetchNetlifySites(tokenToUse);
+        result = await fetchNetlifySites(token);
       } else {
-        result = await fetchGitHubRepos(tokenToUse);
+        result = await fetchGitHubRepos(token);
       }
 
       if (result.success && result.data) {
@@ -297,7 +281,7 @@ export function IntegrationsManager() {
         toast.success(`Successfully loaded ${result.data.length} projects!`);
 
         // Save the valid token in localStorage
-        if (!useDemo && token && token !== "db" && activeProvider) {
+        if (token && token !== "db" && activeProvider) {
           localStorage.setItem(`pulseguard_token_${activeProvider}`, token);
           setHasSavedToken(true);
         }
@@ -560,33 +544,10 @@ export function IntegrationsManager() {
                 {resources.length === 0 ? (
                   /* Credential Entry Mode */
                   <div className="space-y-4">
-                    {/* Demo/Mock Mode Selector */}
-                    <div className="p-3.5 rounded-xl border border-border bg-accent/30 space-y-2.5">
-                      <div className="flex items-center justify-between">
-                        <label className="text-xs font-bold text-foreground cursor-pointer flex items-center gap-2">
-                          <input
-                            type="checkbox"
-                            checked={useDemo}
-                            onChange={(e) => setUseDemo(e.target.checked)}
-                            className="size-4 accent-primary rounded cursor-pointer"
-                          />
-                          Use Demo Simulation Mode
-                        </label>
-                        <Badge
-                          variant="outline"
-                          className="text-primary border-primary/20 bg-primary/5 text-[9px]"
-                        >
-                          Instant
-                        </Badge>
-                      </div>
-                      <p className="text-[10px] text-muted-foreground leading-relaxed">
-                        Don't have an API key handy? Enable this checkbox to load virtual
-                        repositories/projects instantly and test the zero-code import flow.
-                      </p>
-                    </div>
+
 
                     {/* Vercel Specific Live Token Integration Flow */}
-                    {!useDemo && activeProvider === "vercel" && (
+                    {activeProvider === "vercel" && (
                       <div className="space-y-4">
                         {connectedIntegrations.some((ci) => ci.provider === "vercel") && (
                           /* Connected Scopes */
@@ -680,7 +641,7 @@ export function IntegrationsManager() {
                     )}
 
                     {/* Netlify Specific Live Token Integration Flow */}
-                    {!useDemo && activeProvider === "netlify" && (
+                    {activeProvider === "netlify" && (
                       <div className="space-y-4">
                         {connectedIntegrations.some((ci) => ci.provider === "netlify") && (
                           /* Connected Scopes */
@@ -774,7 +735,7 @@ export function IntegrationsManager() {
                     )}
 
                     {/* GitHub Specific Live Token Integration Flow */}
-                    {!useDemo && activeProvider === "github" && (
+                    {activeProvider === "github" && (
                       <div className="space-y-4">
                         {connectedIntegrations.some((ci) => ci.provider === "github") && (
                           /* Connected Scopes */
@@ -867,8 +828,7 @@ export function IntegrationsManager() {
                       </div>
                     )}
 
-                    {(useDemo ||
-                      connectedIntegrations.some((ci) => ci.provider === activeProvider)) && (
+                    {connectedIntegrations.some((ci) => ci.provider === activeProvider) && (
                       <Button
                         onClick={handleFetchResources}
                         disabled={loading}

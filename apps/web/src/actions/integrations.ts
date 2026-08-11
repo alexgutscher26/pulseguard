@@ -123,32 +123,8 @@ export async function importThirdPartyMonitors(projects: IntegrationProject[]) {
  */
 export async function fetchVercelProjects(
   token?: string,
-  useDemo?: boolean,
 ): Promise<{ success: boolean; data?: ExternalResource[]; error?: string }> {
-  // Handle mock credentials
-  if (
-    useDemo ||
-    !token ||
-    token.toLowerCase().trim() === "mock" ||
-    token.toLowerCase().trim() === "demo"
-  ) {
-    return {
-      success: true,
-      data: [
-        { id: "v1", name: "[personal] pulseguard-landing", url: "pulseguard.io", type: "HTTP" },
-        {
-          id: "v2",
-          name: "[personal] nextjs-dashboard-prod",
-          url: "dashboard.pulseguard.io",
-          type: "HTTP",
-        },
-        { id: "v3", name: "[acme-corp] acme-main-website", url: "acme.com", type: "HTTP" },
-        { id: "v4", name: "[acme-corp] saas-api-service", url: "api.acme.com", type: "HTTP" },
-      ],
-    };
-  }
-
-  // If token is explicitly provided (fallback/legacy flow), fetch using it:
+  // If a direct token is provided, use it immediately
   if (token && token.toLowerCase().trim() !== "db") {
     try {
       const headers = {
@@ -175,7 +151,6 @@ export async function fetchVercelProjects(
       const teamsPromise = fetch("https://api.vercel.com/v2/teams", { headers })
         .then(async (res) => {
           if (!res.ok) {
-            // If we can't read teams, maybe token doesn't have permissions or user has no teams.
             return { teams: [] };
           }
           return res.json() as Promise<{ teams: any[] }>;
@@ -195,7 +170,6 @@ export async function fetchVercelProjects(
         scope: { type: "personal" | "team"; slug: string; name: string };
       }> = [];
 
-      // Add personal projects to our list
       if (personalResult.projects) {
         for (const p of personalResult.projects) {
           allProjects.push({
@@ -236,7 +210,7 @@ export async function fetchVercelProjects(
         }
       }
 
-      // 4. Map and de-duplicate or structure aliases
+      // 4. Map and de-duplicate
       const data: ExternalResource[] = [];
       const seenUrls = new Set<string>();
 
@@ -297,7 +271,7 @@ export async function fetchVercelProjects(
     });
 
     if (integrations.length === 0) {
-      return { success: true, data: [] }; // No connections yet
+      return { success: true, data: [] };
     }
 
     const allProjects: Array<{
@@ -306,7 +280,7 @@ export async function fetchVercelProjects(
     }> = [];
 
     for (const integration of integrations) {
-      const headers = {
+      const authHeaders = {
         Authorization: `Bearer ${integration.accessToken}`,
       };
 
@@ -316,7 +290,7 @@ export async function fetchVercelProjects(
         : `https://api.vercel.com/v9/projects?teamId=${integration.teamId}&limit=100`;
 
       try {
-        const res = await fetch(url, { headers });
+        const res = await fetch(url, { headers: authHeaders });
         if (!res.ok) {
           const text = await res.text();
           console.error(
@@ -341,7 +315,6 @@ export async function fetchVercelProjects(
       }
     }
 
-    // Map and de-duplicate or structure aliases
     const data: ExternalResource[] = [];
     const seenUrls = new Set<string>();
 
