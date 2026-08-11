@@ -70,9 +70,10 @@ function DeleteConfirmButton() {
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
-      await authClient.deleteUser({
-        callbackURL: "/",
-      });
+      await authClient.deleteUser();
+      // Sign out to clear the session cookie — without this the browser
+      // still holds a valid-looking cookie even though the user row is gone.
+      await authClient.signOut();
       toast.success("Account deleted successfully");
       window.location.href = "/";
     } catch (error) {
