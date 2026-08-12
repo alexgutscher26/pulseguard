@@ -9,7 +9,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@pulseguard/auth";
 import { headers, cookies } from "next/headers";
 import { sendMonitorAlert, type MonitorAlertData } from "@pulseguard/email";
-import { assertMonitorLimits, checkAndNotifyUsageLimits } from "@/lib/billing-server";
+import { assertMonitorLimits, assertManualCheckRateLimit, checkAndNotifyUsageLimits } from "@/lib/billing-server";
 import { generateDeepInsightAnalysis, getAIProviderClient } from "@/lib/ai";
 
 // Helper Types for Incident Management
@@ -671,7 +671,11 @@ export async function checkMonitor(
 
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
-  /* Updated to include maintenance check */
+  const rateLimit = await assertManualCheckRateLimit(session.user.id, id);
+  if (!rateLimit.allowed) {
+    return { success: false, error: rateLimit.error };
+  }
+
   const monitor = await prisma.monitor.findFirst({
     where: { id, userId: session.user.id },
     include: {

@@ -8,6 +8,10 @@ export interface PlanLimits {
   customDomainAllowed: boolean;
   usageMetered: boolean;
   priorityProbes: boolean;
+  /** Max manual run-checks per monitor per window. 0 = unlimited. */
+  maxManualChecksPerWindow: number;
+  /** Sliding window length in seconds for manual check rate limiting. */
+  manualCheckWindowSeconds: number;
 }
 
 export interface PlanDetails {
@@ -38,6 +42,8 @@ export const PLANS: Record<PlanTier, PlanDetails> = {
       customDomainAllowed: false,
       usageMetered: false,
       priorityProbes: false,
+      maxManualChecksPerWindow: 3,
+      manualCheckWindowSeconds: 300,
     },
     features: [
       "50 Active Monitors",
@@ -67,6 +73,8 @@ export const PLANS: Record<PlanTier, PlanDetails> = {
       customDomainAllowed: true,
       usageMetered: true,
       priorityProbes: true,
+      maxManualChecksPerWindow: 10,
+      manualCheckWindowSeconds: 300,
     },
     features: [
       "250 Active Monitors",
@@ -95,6 +103,8 @@ export const PLANS: Record<PlanTier, PlanDetails> = {
       customDomainAllowed: true,
       usageMetered: true,
       priorityProbes: true,
+      maxManualChecksPerWindow: 0,
+      manualCheckWindowSeconds: 300,
     },
     features: [
       "1,500 Active Monitors",
