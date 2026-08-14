@@ -1,15 +1,7 @@
 "use client";
 
 import { useState, useEffect, useTransition } from "react";
-import {
-  Settings,
-  Trash2,
-  Check,
-  Loader2,
-  Bell,
-  Calendar,
-  ArrowLeft,
-} from "lucide-react";
+import { Settings, Trash2, Check, Loader2, Bell, Calendar, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import {
   getSubscriberByManageToken,
@@ -47,9 +39,7 @@ interface Subscriber {
   }>;
 }
 
-export default function ManagePageClient({
-  manageToken,
-}: ManagePageClientProps) {
+export default function ManagePageClient({ manageToken }: ManagePageClientProps) {
   const [subscriber, setSubscriber] = useState<Subscriber | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isPending, startTransition] = useTransition();
@@ -72,9 +62,7 @@ export default function ManagePageClient({
         setSubscriber(data as Subscriber);
         setNotifyIncidents(data.notifyIncidents);
         setNotifyMaintenance(data.notifyMaintenance);
-        setSelectedMonitorIds(
-          data.monitorSubscriptions.map((ms) => ms.monitorId),
-        );
+        setSelectedMonitorIds(data.monitorSubscriptions.map((ms) => ms.monitorId));
       }
       setIsLoading(false);
     }
@@ -119,14 +107,11 @@ export default function ManagePageClient({
             <Check className="size-8 text-primary" />
           </div>
           <h1 className="text-xl font-bold text-primary mb-2">
-            {isUnsubscribed
-              ? "Successfully Unsubscribed"
-              : "Subscription Not Found"}
+            {isUnsubscribed ? "Successfully Unsubscribed" : "Subscription Not Found"}
           </h1>
           <p className="text-primary/60 mb-6">
             {isUnsubscribed
-              ? result?.message ||
-                "You have been unsubscribed from all updates."
+              ? result?.message || "You have been unsubscribed from all updates."
               : "This subscription link is invalid or has expired."}
           </p>
           <Link
@@ -156,9 +141,7 @@ export default function ManagePageClient({
             <ArrowLeft className="size-4" />
             Back to Status Page
           </Link>
-          <h1 className="text-2xl font-bold text-primary font-mono">
-            Manage Subscription
-          </h1>
+          <h1 className="text-2xl font-bold text-primary font-mono">Manage Subscription</h1>
           <p className="text-primary/60 mt-1">
             {subscriber.email} • {subscriber.statusPage.title}
           </p>
@@ -192,12 +175,8 @@ export default function ManagePageClient({
                 <div className="flex items-center gap-3">
                   <Bell className="size-5 text-primary/60" />
                   <div>
-                    <p className="text-sm font-medium text-primary">
-                      Incidents
-                    </p>
-                    <p className="text-xs text-primary/50">
-                      Major outages and issues
-                    </p>
+                    <p className="text-sm font-medium text-primary">Incidents</p>
+                    <p className="text-xs text-primary/50">Major outages and issues</p>
                   </div>
                 </div>
                 <input
@@ -212,12 +191,8 @@ export default function ManagePageClient({
                 <div className="flex items-center gap-3">
                   <Calendar className="size-5 text-primary/60" />
                   <div>
-                    <p className="text-sm font-medium text-primary">
-                      Maintenance
-                    </p>
-                    <p className="text-xs text-primary/50">
-                      Scheduled maintenance windows
-                    </p>
+                    <p className="text-sm font-medium text-primary">Maintenance</p>
+                    <p className="text-xs text-primary/50">Scheduled maintenance windows</p>
                   </div>
                 </div>
                 <input
@@ -297,9 +272,7 @@ export default function ManagePageClient({
         </div>
 
         {/* Footer */}
-        <p className="text-center text-primary/30 text-xs mt-6 font-mono">
-          Powered by PulseGuard
-        </p>
+        <p className="text-center text-primary/30 text-xs mt-6 font-mono">Powered by PulseGuard</p>
       </div>
     </div>
   );

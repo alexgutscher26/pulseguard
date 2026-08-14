@@ -43,22 +43,17 @@ async function downsample1mTo5m(prisma: any): Promise<void> {
     if (totalSamples === 0) continue;
 
     const avgLatency =
-      aggregates.reduce((sum, a) => sum + a.avgLatency * a.sampleCount, 0) /
-      totalSamples;
+      aggregates.reduce((sum, a) => sum + a.avgLatency * a.sampleCount, 0) / totalSamples;
     const minLatency = Math.min(...aggregates.map((a) => a.minLatency));
     const maxLatency = Math.max(...aggregates.map((a) => a.maxLatency));
     const p50Latency =
-      aggregates.reduce((sum, a) => sum + a.p50Latency * a.sampleCount, 0) /
-      totalSamples;
+      aggregates.reduce((sum, a) => sum + a.p50Latency * a.sampleCount, 0) / totalSamples;
     const p95Latency =
-      aggregates.reduce((sum, a) => sum + a.p95Latency * a.sampleCount, 0) /
-      totalSamples;
+      aggregates.reduce((sum, a) => sum + a.p95Latency * a.sampleCount, 0) / totalSamples;
     const p99Latency =
-      aggregates.reduce((sum, a) => sum + a.p99Latency * a.sampleCount, 0) /
-      totalSamples;
+      aggregates.reduce((sum, a) => sum + a.p99Latency * a.sampleCount, 0) / totalSamples;
     const successRate =
-      aggregates.reduce((sum, a) => sum + a.successRate * a.sampleCount, 0) /
-      totalSamples;
+      aggregates.reduce((sum, a) => sum + a.successRate * a.sampleCount, 0) / totalSamples;
 
     // Round timestamp to 5-minute boundary
     const timestamp = new Date(
@@ -85,9 +80,7 @@ async function downsample1mTo5m(prisma: any): Promise<void> {
     await prisma.latencyAggregate.createMany({
       data: fiveMinAggregates,
     });
-    console.log(
-      `[Downsampling] Created ${fiveMinAggregates.length} 5-minute aggregates`,
-    );
+    console.log(`[Downsampling] Created ${fiveMinAggregates.length} 5-minute aggregates`);
   }
 }
 
@@ -129,22 +122,17 @@ async function downsample5mTo1h(prisma: any): Promise<void> {
     if (totalSamples === 0) continue;
 
     const avgLatency =
-      aggregates.reduce((sum, a) => sum + a.avgLatency * a.sampleCount, 0) /
-      totalSamples;
+      aggregates.reduce((sum, a) => sum + a.avgLatency * a.sampleCount, 0) / totalSamples;
     const minLatency = Math.min(...aggregates.map((a) => a.minLatency));
     const maxLatency = Math.max(...aggregates.map((a) => a.maxLatency));
     const p50Latency =
-      aggregates.reduce((sum, a) => sum + a.p50Latency * a.sampleCount, 0) /
-      totalSamples;
+      aggregates.reduce((sum, a) => sum + a.p50Latency * a.sampleCount, 0) / totalSamples;
     const p95Latency =
-      aggregates.reduce((sum, a) => sum + a.p95Latency * a.sampleCount, 0) /
-      totalSamples;
+      aggregates.reduce((sum, a) => sum + a.p95Latency * a.sampleCount, 0) / totalSamples;
     const p99Latency =
-      aggregates.reduce((sum, a) => sum + a.p99Latency * a.sampleCount, 0) /
-      totalSamples;
+      aggregates.reduce((sum, a) => sum + a.p99Latency * a.sampleCount, 0) / totalSamples;
     const successRate =
-      aggregates.reduce((sum, a) => sum + a.successRate * a.sampleCount, 0) /
-      totalSamples;
+      aggregates.reduce((sum, a) => sum + a.successRate * a.sampleCount, 0) / totalSamples;
 
     // Round timestamp to hour boundary
     const timestamp = new Date(
@@ -171,9 +159,7 @@ async function downsample5mTo1h(prisma: any): Promise<void> {
     await prisma.latencyAggregate.createMany({
       data: hourlyAggregates,
     });
-    console.log(
-      `[Downsampling] Created ${hourlyAggregates.length} hourly aggregates`,
-    );
+    console.log(`[Downsampling] Created ${hourlyAggregates.length} hourly aggregates`);
   }
 }
 
@@ -209,9 +195,7 @@ async function cleanupOldData(prisma: any): Promise<void> {
   });
 
   if (fiveMinResult.count > 0) {
-    console.log(
-      `[Cleanup] Deleted ${fiveMinResult.count} old 5-minute aggregates`,
-    );
+    console.log(`[Cleanup] Deleted ${fiveMinResult.count} old 5-minute aggregates`);
   }
 }
 
@@ -220,9 +204,7 @@ async function cleanupOldData(prisma: any): Promise<void> {
  */
 async function summarizeDailyEvents(prisma: any): Promise<void> {
   const now = new Date();
-  const utcNow = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
-  );
+  const utcNow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
 
   // Target: The specific calendar day that ended 7 days ago.
   // Example: Today is Day 8. 7 days ago (end of retention) was Day 1.
@@ -230,9 +212,7 @@ async function summarizeDailyEvents(prisma: any): Promise<void> {
   const startOfDay = new Date(utcNow.getTime() - 8 * 24 * 60 * 60 * 1000);
   const endOfDay = new Date(utcNow.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-  console.log(
-    `[Summarize] Processing day: ${startOfDay.toISOString().split("T")[0]}`,
-  );
+  console.log(`[Summarize] Processing day: ${startOfDay.toISOString().split("T")[0]}`);
 
   // Fetch all monitors
   const monitors = await prisma.monitor.findMany({ select: { id: true } });
@@ -247,9 +227,7 @@ async function summarizeDailyEvents(prisma: any): Promise<void> {
     select: { monitorId: true },
   });
 
-  const existingMonitorIds = new Set(
-    existingSummaries.map((s: any) => s.monitorId),
-  );
+  const existingMonitorIds = new Set(existingSummaries.map((s: any) => s.monitorId));
 
   for (const monitor of monitors) {
     // Check if summary already exists
@@ -413,11 +391,7 @@ export async function runDownsamplingCron(env: Env): Promise<void> {
  * Scheduled handler
  */
 export default {
-  async scheduled(
-    _event: ScheduledEvent,
-    env: Env,
-    _ctx: ExecutionContext,
-  ): Promise<void> {
+  async scheduled(_event: ScheduledEvent, env: Env, _ctx: ExecutionContext): Promise<void> {
     await runDownsamplingCron(env);
   },
 };

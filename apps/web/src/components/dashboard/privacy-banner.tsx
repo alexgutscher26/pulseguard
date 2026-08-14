@@ -19,8 +19,8 @@ export function PrivacyBanner() {
               Privacy-First Intelligence
             </span>
             <span className="text-[10px] text-primary/50 font-mono">
-              Your uptime metrics are yours. Full transparency on data
-              collection, retention, and controls.
+              Your uptime metrics are yours. Full transparency on data collection, retention, and
+              controls.
             </span>
           </div>
         </div>

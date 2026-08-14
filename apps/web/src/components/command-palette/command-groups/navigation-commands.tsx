@@ -36,11 +36,7 @@ export function NavigationCommands() {
     <>
       {/* Main Navigation */}
       <Command.Group heading="Navigation">
-        <CommandItem
-          icon={Home}
-          label="Go to Dashboard"
-          onSelect={() => navigate("/dashboard")}
-        />
+        <CommandItem icon={Home} label="Go to Dashboard" onSelect={() => navigate("/dashboard")} />
         <CommandItem
           icon={Activity}
           label="Go to Monitors"

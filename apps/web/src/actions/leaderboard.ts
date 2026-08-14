@@ -27,9 +27,7 @@ export async function getLeaderboard(limit = 50): Promise<LeaderboardEntry[]> {
     }
 
     const allowedUserIds = privacySettings.map((p) => p.userId);
-    const bioMap = new Map(
-      privacySettings.map((p) => [p.userId, p.leaderboardBio]),
-    );
+    const bioMap = new Map(privacySettings.map((p) => [p.userId, p.leaderboardBio]));
 
     // Fetch users, monitors, summaries, and public status pages
     const [users, monitors, summaries, pages] = await Promise.all([

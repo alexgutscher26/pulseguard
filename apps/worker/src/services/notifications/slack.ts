@@ -31,8 +31,7 @@ export async function sendSlackAlert(
     headerText = `🔥 Incident: ${data.monitorName} is DOWN`;
   if (type === NotificationType.INCIDENT_RESOLVED)
     headerText = `✅ Resolved: ${data.monitorName} Recovered`;
-  if (type === NotificationType.HIGH_LATENCY)
-    headerText = `⚠️ High Latency: ${data.monitorName}`;
+  if (type === NotificationType.HIGH_LATENCY) headerText = `⚠️ High Latency: ${data.monitorName}`;
   if (type === NotificationType.SSL_EXPIRY)
     headerText = `⚠️ SSL Expiry Warning: ${data.monitorName}`;
 
@@ -94,8 +93,7 @@ export async function sendSlackAlert(
         elements: [
           {
             type: "mrkdwn",
-            text:
-              "⏱ Detected at " + new Date(data.timestamp).toLocaleTimeString(),
+            text: "⏱ Detected at " + new Date(data.timestamp).toLocaleTimeString(),
           },
         ],
       },
@@ -105,10 +103,7 @@ export async function sendSlackAlert(
               type: "section",
               text: {
                 type: "mrkdwn",
-                text:
-                  "*Remediation Runbook:* <" +
-                  data.runbookUrl +
-                  "|View Runbook>",
+                text: "*Remediation Runbook:* <" + data.runbookUrl + "|View Runbook>",
               },
             },
           ]
@@ -122,9 +117,7 @@ export async function sendSlackAlert(
               type: "plain_text",
               text: "View Dashboard",
             },
-            url:
-              `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/monitors/` +
-              data.monitorId,
+            url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/monitors/` + data.monitorId,
             style: isDown ? "danger" : "primary",
           },
           ...(incidentId && type === NotificationType.INCIDENT_CREATED
@@ -175,9 +168,7 @@ export async function sendSlackAlert(
 
       if (res.status === 429 || res.status >= 500) {
         if (attempts < maxAttempts) {
-          await new Promise((resolve) =>
-            setTimeout(resolve, Math.pow(2, attempts) * 500),
-          );
+          await new Promise((resolve) => setTimeout(resolve, Math.pow(2, attempts) * 500));
           continue;
         }
       }
@@ -185,9 +176,7 @@ export async function sendSlackAlert(
       throw new Error(`Slack Webhook failed: ${res.status} ${res.statusText}`);
     } catch (err) {
       if (attempts >= maxAttempts) throw err;
-      await new Promise((resolve) =>
-        setTimeout(resolve, Math.pow(2, attempts) * 500),
-      );
+      await new Promise((resolve) => setTimeout(resolve, Math.pow(2, attempts) * 500));
     }
   }
 }

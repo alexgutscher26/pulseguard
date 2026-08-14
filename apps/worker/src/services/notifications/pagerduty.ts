@@ -13,19 +13,11 @@ function dedupKey(monitorId: string): string {
 /**
  * Returns the PagerDuty event severity that best maps to the alert type.
  */
-function severity(
-  type?: NotificationTypeValue | string,
-): "critical" | "warning" | "info" {
-  if (
-    type === NotificationType.INCIDENT_CREATED ||
-    type === NotificationType.INCIDENT_RESOLVED
-  ) {
+function severity(type?: NotificationTypeValue | string): "critical" | "warning" | "info" {
+  if (type === NotificationType.INCIDENT_CREATED || type === NotificationType.INCIDENT_RESOLVED) {
     return "critical";
   }
-  if (
-    type === NotificationType.HIGH_LATENCY ||
-    type === NotificationType.SSL_EXPIRY
-  ) {
+  if (type === NotificationType.HIGH_LATENCY || type === NotificationType.SSL_EXPIRY) {
     return "warning";
   }
   return "critical";
@@ -51,8 +43,7 @@ export async function sendPagerDutyAlert(
   type?: NotificationTypeValue | string,
   incidentId?: string,
 ): Promise<void> {
-  const isResolved =
-    data.status === "UP" || type === NotificationType.INCIDENT_RESOLVED;
+  const isResolved = data.status === "UP" || type === NotificationType.INCIDENT_RESOLVED;
 
   const eventAction = isResolved ? "resolve" : "trigger";
   const dedup = dedupKey(data.monitorId);
@@ -96,9 +87,7 @@ export async function sendPagerDutyAlert(
             ...(data.failedRegions?.length
               ? { failed_regions: data.failedRegions.join(", ") }
               : {}),
-            ...(data.downtimeDuration
-              ? { downtime_duration: data.downtimeDuration }
-              : {}),
+            ...(data.downtimeDuration ? { downtime_duration: data.downtimeDuration } : {}),
             ...(incidentId ? { pulseguard_incident_id: incidentId } : {}),
           },
         },
@@ -107,9 +96,7 @@ export async function sendPagerDutyAlert(
             href: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/monitors/${data.monitorId}`,
             text: "View in PulseGuard",
           },
-          ...(data.runbookUrl
-            ? [{ href: data.runbookUrl, text: "Runbook" }]
-            : []),
+          ...(data.runbookUrl ? [{ href: data.runbookUrl, text: "Runbook" }] : []),
         ],
       };
 
@@ -144,9 +131,7 @@ export async function sendPagerDutyAlert(
       }
 
       const errBody = await res.text();
-      throw new Error(
-        `PagerDuty Events API returned ${res.status}: ${errBody}`,
-      );
+      throw new Error(`PagerDuty Events API returned ${res.status}: ${errBody}`);
     } catch (err) {
       if (attempts >= maxAttempts) throw err;
       await new Promise((r) => setTimeout(r, Math.pow(2, attempts) * 500));

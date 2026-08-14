@@ -157,8 +157,7 @@ const SCENARIOS: Record<ScenarioType, ScenarioConfig> = {
         icon: Globe2,
         status: "success",
         latency: "84ms",
-        logDetail:
-          "[V3] Mesh Alpha (Frankfurt) returned HTTP 200 OK — Origin online",
+        logDetail: "[V3] Mesh Alpha (Frankfurt) returned HTTP 200 OK — Origin online",
       },
       {
         id: 4,
@@ -215,8 +214,7 @@ const SCENARIOS: Record<ScenarioType, ScenarioConfig> = {
         icon: Clock,
         status: "quarantined",
         latency: "96ms",
-        logDetail:
-          "[V2] Rapid state change detected. Flagged as Flapping state",
+        logDetail: "[V2] Rapid state change detected. Flagged as Flapping state",
       },
       {
         id: 3,
@@ -226,8 +224,7 @@ const SCENARIOS: Record<ScenarioType, ScenarioConfig> = {
         icon: Globe2,
         status: "quarantined",
         latency: "140ms",
-        logDetail:
-          "[V3] Flap dampener active. Threshold: 3 transitions / 5 min exceeded",
+        logDetail: "[V3] Flap dampener active. Threshold: 3 transitions / 5 min exceeded",
       },
       {
         id: 4,
@@ -237,8 +234,7 @@ const SCENARIOS: Record<ScenarioType, ScenarioConfig> = {
         icon: Layers,
         status: "quarantined",
         latency: "112ms",
-        logDetail:
-          "[V4] Circuit breaker throttles check interval to 5m cooldown",
+        logDetail: "[V4] Circuit breaker throttles check interval to 5m cooldown",
       },
       {
         id: 5,
@@ -275,8 +271,7 @@ const SCENARIOS: Record<ScenarioType, ScenarioConfig> = {
         icon: Radio,
         status: "failure",
         latency: "48ms",
-        logDetail:
-          "[V1] HTTP 500 Internal Server Error (Database connection refused)",
+        logDetail: "[V1] HTTP 500 Internal Server Error (Database connection refused)",
       },
       {
         id: 2,
@@ -316,16 +311,14 @@ const SCENARIOS: Record<ScenarioType, ScenarioConfig> = {
         icon: Cpu,
         status: "failure",
         latency: "78ms",
-        logDetail:
-          "[V5] CF Trace confirms 100% failure rate across global egress edges",
+        logDetail: "[V5] CF Trace confirms 100% failure rate across global egress edges",
       },
     ],
   },
 };
 
 export function FiveVectorSimulator() {
-  const [activeScenarioKey, setActiveScenarioKey] =
-    useState<ScenarioType>("blip");
+  const [activeScenarioKey, setActiveScenarioKey] = useState<ScenarioType>("blip");
   const [activeStepIndex, setActiveStepIndex] = useState<number>(0);
   const [isSimulating, setIsSimulating] = useState<boolean>(false);
 
@@ -387,9 +380,7 @@ export function FiveVectorSimulator() {
           disabled={isSimulating}
           className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-md border border-border/70 bg-card hover:bg-muted/50 text-xs font-mono font-medium text-foreground transition-colors disabled:opacity-50 self-start sm:self-auto"
         >
-          <RotateCcw
-            className={`size-3.5 ${isSimulating ? "animate-spin" : ""}`}
-          />
+          <RotateCcw className={`size-3.5 ${isSimulating ? "animate-spin" : ""}`} />
           <span>Replay Protocol</span>
         </button>
       </div>
@@ -449,9 +440,7 @@ export function FiveVectorSimulator() {
         {/* Ambient background glow */}
         <div
           className={`absolute top-0 right-0 w-72 h-72 rounded-full blur-3xl pointer-events-none transition-all duration-700 ${
-            scenario.outcomeType === "alert"
-              ? "bg-rose-500/[0.05]"
-              : "bg-primary/[0.05]"
+            scenario.outcomeType === "alert" ? "bg-rose-500/[0.05]" : "bg-primary/[0.05]"
           }`}
         />
 
@@ -464,13 +453,9 @@ export function FiveVectorSimulator() {
             <div>
               <div className="text-xs font-mono font-bold text-foreground flex items-center gap-2">
                 <span>SCENARIO TARGET:</span>
-                <span className="text-primary font-mono">
-                  https://api.solodev.app/health
-                </span>
+                <span className="text-primary font-mono">https://api.solodev.app/health</span>
               </div>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
-                {scenario.description}
-              </p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">{scenario.description}</p>
             </div>
           </div>
 
@@ -485,9 +470,7 @@ export function FiveVectorSimulator() {
             </div>
             <div className="h-6 w-px bg-border/60" />
             <div className="flex flex-col items-end">
-              <span className="text-[10px] font-mono uppercase text-muted-foreground">
-                Status
-              </span>
+              <span className="text-[10px] font-mono uppercase text-muted-foreground">Status</span>
               <span
                 className={`text-xs font-mono font-bold ${
                   isSimulating
@@ -569,9 +552,7 @@ export function FiveVectorSimulator() {
 
                 {/* Vector Footer Status */}
                 <div className="pt-2 border-t border-border/40 flex items-center justify-between text-[10px] font-mono">
-                  <span className="text-muted-foreground/80">
-                    {vec.latency}
-                  </span>
+                  <span className="text-muted-foreground/80">{vec.latency}</span>
                   {isCurrent ? (
                     <span className="text-amber-400 font-bold flex items-center gap-1 animate-pulse">
                       <Radio className="size-3 animate-spin" />
@@ -631,9 +612,7 @@ export function FiveVectorSimulator() {
                           : "text-muted-foreground/50"
                   }`}
                 >
-                  <span className="text-muted-foreground/50 select-none">
-                    &gt;
-                  </span>
+                  <span className="text-muted-foreground/50 select-none">&gt;</span>
                   <span className="flex-1">{vec.logDetail}</span>
                 </div>
               );
@@ -701,39 +680,26 @@ export function FiveVectorSimulator() {
       {/* Proof Metrics Banner */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
         <div className="border border-border/60 bg-card/40 p-4 rounded-xl flex flex-col gap-1">
-          <span className="text-2xl font-extrabold text-foreground font-mono">
-            99.4%
-          </span>
-          <span className="text-xs font-bold text-foreground">
-            False-Positive Noise Filtered
-          </span>
+          <span className="text-2xl font-extrabold text-foreground font-mono">99.4%</span>
+          <span className="text-xs font-bold text-foreground">False-Positive Noise Filtered</span>
           <p className="text-[10px] text-muted-foreground leading-tight">
             Transient socket resets and BGP drops intercepted before alerting.
           </p>
         </div>
 
         <div className="border border-border/60 bg-card/40 p-4 rounded-xl flex flex-col gap-1">
-          <span className="text-2xl font-extrabold text-primary font-mono">
-            &lt; 1,800ms
-          </span>
-          <span className="text-xs font-bold text-foreground">
-            5-Vector Consensus Time
-          </span>
+          <span className="text-2xl font-extrabold text-primary font-mono">&lt; 1,800ms</span>
+          <span className="text-xs font-bold text-foreground">5-Vector Consensus Time</span>
           <p className="text-[10px] text-muted-foreground leading-tight">
             Full multi-vector mesh verification completes in under 2 seconds.
           </p>
         </div>
 
         <div className="border border-border/60 bg-card/40 p-4 rounded-xl flex flex-col gap-1">
-          <span className="text-2xl font-extrabold text-foreground font-mono">
-            0
-          </span>
-          <span className="text-xs font-bold text-foreground">
-            Phantom 3 AM Wakeups
-          </span>
+          <span className="text-2xl font-extrabold text-foreground font-mono">0</span>
+          <span className="text-xs font-bold text-foreground">Phantom 3 AM Wakeups</span>
           <p className="text-[10px] text-muted-foreground leading-tight">
-            If your pager sounds, your production database or container is
-            actually down.
+            If your pager sounds, your production database or container is actually down.
           </p>
         </div>
       </div>

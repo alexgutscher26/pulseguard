@@ -56,10 +56,7 @@ export async function POST(req: NextRequest) {
   const user = await verifyApiKey(req);
   if (!user) return unauthorized();
   if (!user.scopes.includes("write")) {
-    return NextResponse.json(
-      { error: "Write scope required" },
-      { status: 403 },
-    );
+    return NextResponse.json({ error: "Write scope required" }, { status: 403 });
   }
 
   const body = (await req.json()) as any;
@@ -78,10 +75,8 @@ export async function POST(req: NextRequest) {
     runbookUrl,
   } = body;
 
-  if (!name?.trim())
-    return NextResponse.json({ error: "name is required" }, { status: 400 });
-  if (!url?.trim())
-    return NextResponse.json({ error: "url is required" }, { status: 400 });
+  if (!name?.trim()) return NextResponse.json({ error: "name is required" }, { status: 400 });
+  if (!url?.trim()) return NextResponse.json({ error: "url is required" }, { status: 400 });
 
   const limitCheck = await assertMonitorLimits(user.userId, {
     isNew: true,
@@ -89,10 +84,7 @@ export async function POST(req: NextRequest) {
     interval,
   });
   if (!limitCheck.allowed) {
-    return NextResponse.json(
-      { error: limitCheck.error || "Plan limit exceeded" },
-      { status: 403 },
-    );
+    return NextResponse.json({ error: limitCheck.error || "Plan limit exceeded" }, { status: 403 });
   }
 
   const monitor = await prisma.monitor.create({

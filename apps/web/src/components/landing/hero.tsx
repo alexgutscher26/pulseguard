@@ -1,14 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  ArrowRight,
-  Activity,
-  ShieldCheck,
-  Zap,
-  Server,
-  RefreshCw,
-} from "lucide-react";
+import { ArrowRight, Activity, ShieldCheck, Zap, Server, RefreshCw } from "lucide-react";
 import { AVAILABLE_REGIONS } from "@pulseguard/shared";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
@@ -24,9 +17,7 @@ export default function Hero() {
   });
   const [isScanning, setIsScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState(100);
-  const [activeNodes, setActiveNodes] = useState<number[]>(
-    Array.from({ length: 30 }, (_, i) => i),
-  );
+  const [activeNodes, setActiveNodes] = useState<number[]>(Array.from({ length: 30 }, (_, i) => i));
 
   // Simulate continuous background telemetry fluctuations
   useEffect(() => {
@@ -109,10 +100,9 @@ export default function Hero() {
 
         {/* Subhead */}
         <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mb-8 text-balance font-sans">
-          PulseGuard checks your endpoints every 60 seconds from seven global
-          regions. One region seeing a failure is a network blip, and we ignore
-          it. When four regions independently agree, you get paged. Every alert
-          you receive has already been confirmed four times over.
+          PulseGuard checks your endpoints every 60 seconds from seven global regions. One region
+          seeing a failure is a network blip, and we ignore it. When four regions independently
+          agree, you get paged. Every alert you receive has already been confirmed four times over.
         </p>
 
         {/* Probe Input Form */}
@@ -167,16 +157,15 @@ export default function Hero() {
         {/* Trust Row */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl mb-16 text-xs font-mono text-muted-foreground/90 border-y border-border/60 py-4 bg-muted/20 rounded-xl px-4">
           <div className="flex items-center justify-center gap-2">
-            <span className="text-emerald-500 font-bold">✓</span> 60-second
-            checks on the free tier
+            <span className="text-emerald-500 font-bold">✓</span> 60-second checks on the free tier
           </div>
           <div className="flex items-center justify-center gap-2">
-            <span className="text-emerald-500 font-bold">✓</span> 7-region
-            verification, included free
+            <span className="text-emerald-500 font-bold">✓</span> 7-region verification, included
+            free
           </div>
           <div className="flex items-center justify-center gap-2">
-            <span className="text-emerald-500 font-bold">✓</span> Commercial use
-            permitted, in writing
+            <span className="text-emerald-500 font-bold">✓</span> Commercial use permitted, in
+            writing
           </div>
         </div>
 
@@ -236,19 +225,9 @@ export default function Hero() {
                   preserveAspectRatio="none"
                 >
                   <defs>
-                    <linearGradient
-                      id="waveGradient"
-                      x1="0"
-                      y1="0"
-                      x2="0"
-                      y2="1"
-                    >
+                    <linearGradient id="waveGradient" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="#10b981" stopOpacity="0.4" />
-                      <stop
-                        offset="100%"
-                        stopColor="#10b981"
-                        stopOpacity="0.0"
-                      />
+                      <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
                     </linearGradient>
                   </defs>
                   <path
@@ -278,9 +257,7 @@ export default function Hero() {
               <div>
                 <div className="flex justify-between items-center text-[10px] text-muted-foreground font-mono font-bold mb-2">
                   <span>30-DAY OPERATIONAL MATRIX</span>
-                  <span className="text-emerald-400 font-bold">
-                    100.0% UPTIME
-                  </span>
+                  <span className="text-emerald-400 font-bold">100.0% UPTIME</span>
                 </div>
                 <div className="flex items-center gap-1">
                   {Array.from({ length: 30 }).map((_, idx) => (
@@ -313,52 +290,36 @@ export default function Hero() {
                   <div className="flex items-center justify-between p-2 rounded bg-zinc-950/40 border border-zinc-800/80">
                     <div className="flex items-center gap-2 text-xs">
                       <span className="size-2 bg-emerald-400 rounded-full animate-pulse" />
-                      <span className="text-zinc-300 font-sans text-[11px]">
-                        wnam (San Jose)
-                      </span>
+                      <span className="text-zinc-300 font-sans text-[11px]">wnam (San Jose)</span>
                     </div>
-                    <span className="text-xs font-bold text-emerald-400">
-                      {latencies.wnam}ms
-                    </span>
+                    <span className="text-xs font-bold text-emerald-400">{latencies.wnam}ms</span>
                   </div>
 
                   {/* Region 2: US East */}
                   <div className="flex items-center justify-between p-2 rounded bg-zinc-950/40 border border-zinc-800/80">
                     <div className="flex items-center gap-2 text-xs">
                       <span className="size-2 bg-emerald-400 rounded-full animate-pulse" />
-                      <span className="text-zinc-300 font-sans text-[11px]">
-                        enam (Ashburn)
-                      </span>
+                      <span className="text-zinc-300 font-sans text-[11px]">enam (Ashburn)</span>
                     </div>
-                    <span className="text-xs font-bold text-emerald-400">
-                      {latencies.enam}ms
-                    </span>
+                    <span className="text-xs font-bold text-emerald-400">{latencies.enam}ms</span>
                   </div>
 
                   {/* Region 3: Western Europe */}
                   <div className="flex items-center justify-between p-2 rounded bg-zinc-950/40 border border-zinc-800/80">
                     <div className="flex items-center gap-2 text-xs">
                       <span className="size-2 bg-emerald-400 rounded-full animate-pulse" />
-                      <span className="text-zinc-300 font-sans text-[11px]">
-                        weur (London)
-                      </span>
+                      <span className="text-zinc-300 font-sans text-[11px]">weur (London)</span>
                     </div>
-                    <span className="text-xs font-bold text-emerald-400">
-                      {latencies.weur}ms
-                    </span>
+                    <span className="text-xs font-bold text-emerald-400">{latencies.weur}ms</span>
                   </div>
 
                   {/* Region 4: Asia Pacific */}
                   <div className="flex items-center justify-between p-2 rounded bg-zinc-950/40 border border-zinc-800/80">
                     <div className="flex items-center gap-2 text-xs">
                       <span className="size-2 bg-emerald-400 rounded-full animate-pulse" />
-                      <span className="text-zinc-300 font-sans text-[11px]">
-                        apac-ne (Tokyo)
-                      </span>
+                      <span className="text-zinc-300 font-sans text-[11px]">apac-ne (Tokyo)</span>
                     </div>
-                    <span className="text-xs font-bold text-emerald-400">
-                      {latencies.apac}ms
-                    </span>
+                    <span className="text-xs font-bold text-emerald-400">{latencies.apac}ms</span>
                   </div>
                 </div>
               </div>
@@ -368,9 +329,7 @@ export default function Hero() {
                   <ShieldCheck className="size-3 text-emerald-400" />
                   Cloudflare Edge DOs
                 </span>
-                <span className="text-emerald-400/80 font-mono">
-                  4-of-7 Quorum
-                </span>
+                <span className="text-emerald-400/80 font-mono">4-of-7 Quorum</span>
               </div>
             </div>
           </div>

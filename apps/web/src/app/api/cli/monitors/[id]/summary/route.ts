@@ -47,9 +47,7 @@ export async function GET(req: NextRequest, { params }: Ctx) {
 
   const latencies = events.map((e) => e.latency).sort((a, b) => a - b);
   const avgLatency =
-    total > 0
-      ? Math.round(latencies.reduce((sum, val) => sum + val, 0) / total)
-      : 0;
+    total > 0 ? Math.round(latencies.reduce((sum, val) => sum + val, 0) / total) : 0;
 
   const getPercentile = (arr: number[], pct: number) => {
     if (arr.length === 0) return 0;

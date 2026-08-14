@@ -11,11 +11,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
-export default function SignUpForm({
-  onSwitchToSignIn,
-}: {
-  onSwitchToSignIn: () => void;
-}) {
+export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () => void }) {
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
 
@@ -86,10 +82,7 @@ export default function SignUpForm({
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
                 {field.state.meta.errors.map((error) => (
-                  <p
-                    key={error?.message}
-                    className="text-red-500 font-medium text-xs mt-1"
-                  >
+                  <p key={error?.message} className="text-red-500 font-medium text-xs mt-1">
                     {error?.message}
                   </p>
                 ))}
@@ -119,10 +112,7 @@ export default function SignUpForm({
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
                 {field.state.meta.errors.map((error) => (
-                  <p
-                    key={error?.message}
-                    className="text-red-500 font-medium text-xs mt-1"
-                  >
+                  <p key={error?.message} className="text-red-500 font-medium text-xs mt-1">
                     {error?.message}
                   </p>
                 ))}
@@ -152,10 +142,7 @@ export default function SignUpForm({
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
                 {field.state.meta.errors.map((error) => (
-                  <p
-                    key={error?.message}
-                    className="text-red-500 font-medium text-xs mt-1"
-                  >
+                  <p key={error?.message} className="text-red-500 font-medium text-xs mt-1">
                     {error?.message}
                   </p>
                 ))}
@@ -178,9 +165,7 @@ export default function SignUpForm({
       </form>
 
       <div className="text-center pt-2">
-        <span className="text-sm text-muted-foreground font-medium">
-          Already have an account?{" "}
-        </span>
+        <span className="text-sm text-muted-foreground font-medium">Already have an account? </span>
         <Button
           variant="link"
           onClick={onSwitchToSignIn}

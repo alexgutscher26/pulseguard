@@ -10,15 +10,11 @@ export async function GET(req: NextRequest) {
   const error = searchParams.get("error");
 
   if (error) {
-    return NextResponse.redirect(
-      new URL("/dashboard/alerts?error=slack_auth_failed", req.url),
-    );
+    return NextResponse.redirect(new URL("/dashboard/alerts?error=slack_auth_failed", req.url));
   }
 
   if (!code) {
-    return NextResponse.redirect(
-      new URL("/dashboard/alerts?error=no_code", req.url),
-    );
+    return NextResponse.redirect(new URL("/dashboard/alerts?error=no_code", req.url));
   }
 
   // 1. Exchange code for access token
@@ -64,9 +60,7 @@ export async function GET(req: NextRequest) {
     const channelId = data.incoming_webhook?.channel_id; // OR incoming_webhook config
 
     if (!webhookUrl) {
-      return NextResponse.redirect(
-        new URL("/dashboard/alerts?error=slack_no_webhook", req.url),
-      );
+      return NextResponse.redirect(new URL("/dashboard/alerts?error=slack_no_webhook", req.url));
     }
 
     await prisma.notificationChannel.create({
@@ -86,13 +80,9 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    return NextResponse.redirect(
-      new URL("/dashboard/alerts?success=slack_connected", req.url),
-    );
+    return NextResponse.redirect(new URL("/dashboard/alerts?success=slack_connected", req.url));
   } catch (err) {
     console.error("Slack OAuth Exception:", err);
-    return NextResponse.redirect(
-      new URL("/dashboard/alerts?error=internal_error", req.url),
-    );
+    return NextResponse.redirect(new URL("/dashboard/alerts?error=internal_error", req.url));
   }
 }

@@ -21,9 +21,7 @@ export function HeatmapLegend({ metricType, colorScale }: HeatmapLegendProps) {
 
   return (
     <div className="flex flex-col gap-4 p-5 bg-card border border-border rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.02)]">
-      <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-        Legend
-      </h3>
+      <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Legend</h3>
 
       <div className="flex flex-col lg:flex-row gap-6">
         {scales.map(({ type, title }) => (
@@ -51,8 +49,7 @@ export function HeatmapLegend({ metricType, colorScale }: HeatmapLegendProps) {
 
             {colorScale && (
               <div className="mt-2 text-xs text-muted-foreground">
-                Range: {colorScale[type].min.toFixed(0)} -{" "}
-                {colorScale[type].max.toFixed(0)}
+                Range: {colorScale[type].min.toFixed(0)} - {colorScale[type].max.toFixed(0)}
                 {type === "absolute" ? "ms" : "x"}
               </div>
             )}
@@ -62,9 +59,7 @@ export function HeatmapLegend({ metricType, colorScale }: HeatmapLegendProps) {
 
       <div className="flex items-center gap-2 pt-2 border-t">
         <div className="w-8 h-8 rounded border-2 border-destructive animate-pulse" />
-        <span className="text-xs text-muted-foreground">
-          Active Incident (pulsing red border)
-        </span>
+        <span className="text-xs text-muted-foreground">Active Incident (pulsing red border)</span>
       </div>
     </div>
   );

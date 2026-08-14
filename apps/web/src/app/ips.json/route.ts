@@ -5,16 +5,18 @@ export const dynamic = "force-dynamic";
 export const revalidate = 60;
 
 export async function GET() {
-  const allIpv4 = Array.from(
-    new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv4Ranges)),
-  );
-  const allIpv6 = Array.from(
-    new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv6Ranges)),
-  );
+  const allIpv4 = Array.from(new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv4Ranges)));
+  const allIpv6 = Array.from(new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv6Ranges)));
 
   return NextResponse.json(
     {
       updated_at: new Date().toISOString(),
+      notice:
+        "Subrequests originate from Cloudflare's global edge network. For secure WAF allowlisting without permitting shared edge IP traffic, match on the un-spoofable CF-Worker and User-Agent headers.",
+      identification_headers: {
+        "CF-Worker": "pulseguard.io",
+        "User-Agent": "PulseGuard-Monitor/1.0 (+https://pulseguard.io/bot)",
+      },
       user_agent: "PulseGuard-Monitor/1.0 (+https://pulseguard.io/locations)",
       ipv4: allIpv4,
       ipv6: allIpv6,

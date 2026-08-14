@@ -131,9 +131,7 @@ export const REGIONS = [
   },
 ];
 
-export async function checkGlobalLatency(
-  targetUrl: string,
-): Promise<LatencyResult[]> {
+export async function checkGlobalLatency(targetUrl: string): Promise<LatencyResult[]> {
   const start = Date.now();
   const url = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
 
@@ -204,13 +202,10 @@ export async function checkGlobalLatency(
         // Wait 2s before polling
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        const getRes = await fetch(
-          `https://api.globalping.io/v1/measurements/${id}`,
-          {
-            headers: { "User-Agent": "PulseGuard-Global-Latency-Checker" },
-            signal: AbortSignal.timeout(5000),
-          },
-        );
+        const getRes = await fetch(`https://api.globalping.io/v1/measurements/${id}`, {
+          headers: { "User-Agent": "PulseGuard-Global-Latency-Checker" },
+          signal: AbortSignal.timeout(5000),
+        });
 
         if (getRes.ok) {
           const getData = (await getRes.json()) as any;

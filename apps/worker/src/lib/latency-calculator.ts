@@ -88,8 +88,7 @@ export class LatencyBuffer {
       p95Latency: this.calculator.getPercentile(95),
       p99Latency: this.calculator.getPercentile(99),
       sampleCount: this.calculator.getCount(),
-      successRate:
-        this.totalCount > 0 ? this.successCount / this.totalCount : 0,
+      successRate: this.totalCount > 0 ? this.successCount / this.totalCount : 0,
     };
   }
 

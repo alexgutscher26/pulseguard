@@ -14,11 +14,7 @@ const COMPETITOR_MAP: Record<string, string> = {
 };
 
 export function generateStaticParams() {
-  return [
-    { competitor: "uptimerobot" },
-    { competitor: "better-stack" },
-    { competitor: "checkly" },
-  ];
+  return [{ competitor: "uptimerobot" }, { competitor: "better-stack" }, { competitor: "checkly" }];
 }
 
 export async function generateMetadata({
@@ -67,8 +63,7 @@ export default async function VsCompetitorPage({
 
   if (!post) notFound();
 
-  const { title, description, date, category, readTime, author, tags } =
-    post.meta;
+  const { title, description, date, category, readTime, author, tags } = post.meta;
   const tocItems = extractHeadings(post.content);
 
   const jsonLd = {

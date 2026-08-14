@@ -72,10 +72,7 @@ const themes = [
 
 export function StatusPageSettings({ page }: StatusPageSettingsProps) {
   const updateWithId = updateStatusPage.bind(null, page.id);
-  const [state, formAction, isPending] = useActionState(
-    updateWithId,
-    initialState,
-  );
+  const [state, formAction, isPending] = useActionState(updateWithId, initialState);
 
   // Parse existing theme
   const currentTheme = (page.theme as any)?.value || "cyberpunk";
@@ -91,9 +88,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
   });
 
   // Parse custom footer links
-  const [footerLinks, setFooterLinks] = useState<
-    { label: string; url: string }[]
-  >(() => {
+  const [footerLinks, setFooterLinks] = useState<{ label: string; url: string }[]>(() => {
     try {
       return Array.isArray(page.footerLinks) ? page.footerLinks : [];
     } catch {
@@ -181,10 +176,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                   id="seoIndex"
                   className="accent-primary size-4"
                 />
-                <label
-                  htmlFor="seoIndex"
-                  className="text-sm font-bold text-foreground"
-                >
+                <label htmlFor="seoIndex" className="text-sm font-bold text-foreground">
                   Allow Indexing by Search Engines
                 </label>
               </div>
@@ -206,10 +198,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                   </label>
                   <p className="text-[10px] text-muted-foreground font-mono mt-0.5">
                     Display this page in the public{" "}
-                    <a
-                      href="/showcase"
-                      className="text-primary hover:underline"
-                    >
+                    <a href="/showcase" className="text-primary hover:underline">
                       showcase gallery
                     </a>
                     . Only available for public (non-password-protected) pages.
@@ -270,10 +259,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 id="isPrivate"
                 className="accent-primary size-4"
               />
-              <label
-                htmlFor="isPrivate"
-                className="text-sm font-bold text-foreground"
-              >
+              <label htmlFor="isPrivate" className="text-sm font-bold text-foreground">
                 Make Page Private
               </label>
             </div>
@@ -319,8 +305,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 name:
                   selectedTheme === "custom"
                     ? "Custom"
-                    : themes.find((t) => t.value === selectedTheme)?.name ||
-                      "Custom",
+                    : themes.find((t) => t.value === selectedTheme)?.name || "Custom",
                 value: selectedTheme,
                 colors: customColors,
               })}
@@ -362,9 +347,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                         style={{ backgroundColor: theme.colors.primary }}
                       />
                     </div>
-                    <span className="font-mono text-[10px] font-bold uppercase">
-                      {theme.name}
-                    </span>
+                    <span className="font-mono text-[10px] font-bold uppercase">{theme.name}</span>
                   </div>
                 </button>
               ))}
@@ -393,16 +376,12 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />
-                    <span className="text-xs font-mono uppercase">
-                      {customColors.bg}
-                    </span>
+                    <span className="text-xs font-mono uppercase">{customColors.bg}</span>
                   </div>
                 </div>
 
                 <div className="space-y-1">
-                  <div className="text-[9px] font-mono text-muted-foreground uppercase">
-                    Text
-                  </div>
+                  <div className="text-[9px] font-mono text-muted-foreground uppercase">Text</div>
                   <div className="flex items-center gap-2">
                     <input
                       type="color"
@@ -416,9 +395,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />
-                    <span className="text-xs font-mono uppercase">
-                      {customColors.text}
-                    </span>
+                    <span className="text-xs font-mono uppercase">{customColors.text}</span>
                   </div>
                 </div>
 
@@ -439,9 +416,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />
-                    <span className="text-xs font-mono uppercase">
-                      {customColors.primary}
-                    </span>
+                    <span className="text-xs font-mono uppercase">{customColors.primary}</span>
                   </div>
                 </div>
 
@@ -462,16 +437,12 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />
-                    <span className="text-xs font-mono uppercase">
-                      {customColors.degraded}
-                    </span>
+                    <span className="text-xs font-mono uppercase">{customColors.degraded}</span>
                   </div>
                 </div>
 
                 <div className="space-y-1">
-                  <div className="text-[9px] font-mono text-muted-foreground uppercase">
-                    Outage
-                  </div>
+                  <div className="text-[9px] font-mono text-muted-foreground uppercase">Outage</div>
                   <div className="flex items-center gap-2">
                     <input
                       type="color"
@@ -485,9 +456,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />
-                    <span className="text-xs font-mono uppercase">
-                      {customColors.error}
-                    </span>
+                    <span className="text-xs font-mono uppercase">{customColors.error}</span>
                   </div>
                 </div>
               </div>
@@ -495,11 +464,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
 
             {/* Branding */}
             <div className="space-y-4 pt-4 border-t border-white/5">
-              <input
-                type="hidden"
-                name="footerLinks"
-                value={JSON.stringify(footerLinks)}
-              />
+              <input type="hidden" name="footerLinks" value={JSON.stringify(footerLinks)} />
 
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
@@ -581,9 +546,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                       <button
                         type="button"
                         onClick={() => {
-                          const updated = footerLinks.filter(
-                            (_, i) => i !== idx,
-                          );
+                          const updated = footerLinks.filter((_, i) => i !== idx);
                           setFooterLinks(updated);
                         }}
                         className="p-1.5 text-red-500 hover:bg-red-500/10 rounded-sm border border-red-500/20 transition-all flex items-center justify-center"
@@ -631,8 +594,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
                 />
                 <p className="text-[9px] text-muted-foreground font-mono">
-                  Injected before the closing body tag. Do not include
-                  &lt;script&gt; tags.
+                  Injected before the closing body tag. Do not include &lt;script&gt; tags.
                 </p>
               </div>
             </div>
@@ -701,10 +663,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 />
               </div>
               <div className="flex items-center justify-between">
-                <label
-                  htmlFor="showUptime"
-                  className="text-sm font-mono text-muted-foreground"
-                >
+                <label htmlFor="showUptime" className="text-sm font-mono text-muted-foreground">
                   Show Uptime Percentage
                 </label>
                 <input
@@ -731,10 +690,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 />
               </div>
               <div className="flex items-center justify-between">
-                <label
-                  htmlFor="showPaused"
-                  className="text-sm font-mono text-muted-foreground"
-                >
+                <label htmlFor="showPaused" className="text-sm font-mono text-muted-foreground">
                   Show Paused Monitors
                 </label>
                 <input

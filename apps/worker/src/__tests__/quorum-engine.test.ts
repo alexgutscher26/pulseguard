@@ -3,9 +3,7 @@ import { evaluateQuorum, QuorumEngine } from "../services/quorum-engine";
 import type { ProbeCheckResult } from "@pulseguard/types";
 
 describe("Quorum Engine — Zero False Positive Consensus Verification", () => {
-  const createMockResults = (
-    overrides: Partial<ProbeCheckResult>[],
-  ): ProbeCheckResult[] => {
+  const createMockResults = (overrides: Partial<ProbeCheckResult>[]): ProbeCheckResult[] => {
     const defaultRegions = [
       { region: "wnam", asn: "AS13335" },
       { region: "enam", asn: "AS13335" },

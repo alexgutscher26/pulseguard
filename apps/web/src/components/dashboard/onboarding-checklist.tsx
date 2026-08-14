@@ -9,22 +9,16 @@ interface OnboardingChecklistProps {
   userEmail?: string;
 }
 
-export function OnboardingChecklist({
-  status,
-  userEmail = "",
-}: OnboardingChecklistProps) {
+export function OnboardingChecklist({ status, userEmail = "" }: OnboardingChecklistProps) {
   const [wizardOpen, setWizardOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     const hasPrefill =
-      typeof window !== "undefined" &&
-      localStorage.getItem("pulseguard_prefill_monitor");
+      typeof window !== "undefined" && localStorage.getItem("pulseguard_prefill_monitor");
     if (
-      (!status.hasCreatedMonitor &&
-        !status.isComplete &&
-        !status.onboardingCompleted) ||
+      (!status.hasCreatedMonitor && !status.isComplete && !status.onboardingCompleted) ||
       hasPrefill
     ) {
       setWizardOpen(true);

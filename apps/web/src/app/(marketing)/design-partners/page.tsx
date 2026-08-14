@@ -5,13 +5,11 @@ import { getDesignPartnerSpots } from "@/actions/design-partners";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title:
-    "Design Partner Program — 1-Year Free Netrunner Pro ($228 Value) | PulseGuard",
+  title: "Design Partner Program — 1-Year Free Netrunner Pro ($228 Value) | PulseGuard",
   description:
     "Join the exclusive PulseGuard Design Partner Program. Get 1 year of unrestricted Netrunner Pro ($228 value) free with 250 monitors, 30s checks across 7 sovereign Cloudflare edge regions, multi-channel alerts, and direct founder channel access.",
   openGraph: {
-    title:
-      "Design Partner Program — 1-Year Free Netrunner Pro ($228 Value) | PulseGuard",
+    title: "Design Partner Program — 1-Year Free Netrunner Pro ($228 Value) | PulseGuard",
     description:
       "Join the exclusive PulseGuard Design Partner Program. 250 monitors, 30s multi-region edge verification, custom status pages, and private founder access for 15 engineering teams.",
     type: "website",

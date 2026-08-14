@@ -5,16 +5,8 @@ import { MonitorForm } from "./monitor-form";
 import { MaintenanceManager } from "./maintenance-manager";
 import { Settings, Construction } from "lucide-react";
 
-export function MonitorSettingsView({
-  monitor,
-  windows,
-}: {
-  monitor: any;
-  windows: any[];
-}) {
-  const [activeTab, setActiveTab] = useState<"general" | "maintenance">(
-    "general",
-  );
+export function MonitorSettingsView({ monitor, windows }: { monitor: any; windows: any[] }) {
+  const [activeTab, setActiveTab] = useState<"general" | "maintenance">("general");
 
   return (
     <div className="w-full max-w-4xl mx-auto">

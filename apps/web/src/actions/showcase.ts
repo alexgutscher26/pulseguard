@@ -53,8 +53,7 @@ export async function getShowcaseEntries(limit = 18): Promise<ShowcaseEntry[]> {
 
     return pages.map((page) => {
       const themeValue =
-        (page.theme as any)?.value ??
-        (typeof page.theme === "string" ? page.theme : "cyberpunk");
+        (page.theme as any)?.value ?? (typeof page.theme === "string" ? page.theme : "cyberpunk");
       const colors = THEME_COLORS[themeValue] ?? THEME_COLORS.cyberpunk;
       const themeName =
         themeValue === "cyberpunk"
@@ -68,24 +67,13 @@ export async function getShowcaseEntries(limit = 18): Promise<ShowcaseEntry[]> {
                 : "Custom";
 
       const total = page.monitors.length;
-      const downCount = page.monitors.filter(
-        (m) => m.monitor.status === MonitorStatus.DOWN,
-      ).length;
+      const downCount = page.monitors.filter((m) => m.monitor.status === MonitorStatus.DOWN).length;
 
       // Page status: all down → outage, some down → degraded, none down → operational
       const status: ShowcaseEntry["preview"]["status"] =
-        total > 0 && downCount === total
-          ? "outage"
-          : downCount > 0
-            ? "degraded"
-            : "operational";
+        total > 0 && downCount === total ? "outage" : downCount > 0 ? "degraded" : "operational";
 
-      const uptime =
-        status === "operational"
-          ? "100%"
-          : status === "degraded"
-            ? "99.5%"
-            : "98.0%";
+      const uptime = status === "operational" ? "100%" : status === "degraded" ? "99.5%" : "98.0%";
 
       return {
         name: page.title,

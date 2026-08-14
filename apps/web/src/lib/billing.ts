@@ -31,8 +31,7 @@ export const PLANS: Record<PlanTier, PlanDetails> = {
   INITIATE: {
     id: "INITIATE",
     name: "The Initiate",
-    description:
-      "Perfect for indie developers, side projects & commercial use.",
+    description: "Perfect for indie developers, side projects & commercial use.",
     monthlyPrice: 0,
     annualPriceMonthly: 0,
     limits: {
@@ -65,10 +64,8 @@ export const PLANS: Record<PlanTier, PlanDetails> = {
     monthlyPrice: 19,
     annualPriceMonthly: 15,
     stripePriceIdMonthly:
-      process.env.STRIPE_NETRUNNER_MONTHLY_PRICE_ID ||
-      "price_netrunner_monthly",
-    stripePriceIdAnnual:
-      process.env.STRIPE_NETRUNNER_ANNUAL_PRICE_ID || "price_netrunner_annual",
+      process.env.STRIPE_NETRUNNER_MONTHLY_PRICE_ID || "price_netrunner_monthly",
+    stripePriceIdAnnual: process.env.STRIPE_NETRUNNER_ANNUAL_PRICE_ID || "price_netrunner_annual",
     limits: {
       maxMonitors: 250,
       minIntervalSeconds: 30,
@@ -93,15 +90,12 @@ export const PLANS: Record<PlanTier, PlanDetails> = {
   CONSTRUCT: {
     id: "CONSTRUCT",
     name: "The Construct",
-    description:
-      "Enterprise reliability, HFT checks, SAML & Workspaces for professional teams.",
+    description: "Enterprise reliability, HFT checks, SAML & Workspaces for professional teams.",
     monthlyPrice: 79,
     annualPriceMonthly: 65,
     stripePriceIdMonthly:
-      process.env.STRIPE_CONSTRUCT_MONTHLY_PRICE_ID ||
-      "price_construct_monthly",
-    stripePriceIdAnnual:
-      process.env.STRIPE_CONSTRUCT_ANNUAL_PRICE_ID || "price_construct_annual",
+      process.env.STRIPE_CONSTRUCT_MONTHLY_PRICE_ID || "price_construct_monthly",
+    stripePriceIdAnnual: process.env.STRIPE_CONSTRUCT_ANNUAL_PRICE_ID || "price_construct_annual",
     limits: {
       maxMonitors: 1500,
       minIntervalSeconds: 10,

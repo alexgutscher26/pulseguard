@@ -44,11 +44,7 @@ export async function GET(req: NextRequest) {
         if (urlStr.includes("://")) {
           const urlObj = new URL(urlStr);
           host = urlObj.hostname;
-          port = urlObj.port
-            ? parseInt(urlObj.port)
-            : urlObj.protocol === "https:"
-              ? 443
-              : 80;
+          port = urlObj.port ? parseInt(urlObj.port) : urlObj.protocol === "https:" ? 443 : 80;
         } else if (urlStr.includes(":")) {
           const parts = urlStr.split(":");
           host = parts[0];
@@ -120,8 +116,7 @@ export async function GET(req: NextRequest) {
         let headersObj = {};
         if (m.headers) {
           try {
-            headersObj =
-              typeof m.headers === "string" ? JSON.parse(m.headers) : m.headers;
+            headersObj = typeof m.headers === "string" ? JSON.parse(m.headers) : m.headers;
           } catch {}
         }
         const target = parseUrlTarget(m.url);
@@ -160,18 +155,14 @@ export async function GET(req: NextRequest) {
           let headersObj = undefined;
           if (m.headers) {
             try {
-              headersObj =
-                typeof m.headers === "string"
-                  ? JSON.parse(m.headers)
-                  : m.headers;
+              headersObj = typeof m.headers === "string" ? JSON.parse(m.headers) : m.headers;
             } catch {}
           }
           const target = parseUrlTarget(m.url);
           return {
             id: idx + 1,
             name: m.name,
-            type:
-              m.type === "PING" ? "ping" : m.type === "PORT" ? "port" : "http",
+            type: m.type === "PING" ? "ping" : m.type === "PORT" ? "port" : "http",
             url: m.url || "",
             hostname: target.host,
             port: target.port,
@@ -196,9 +187,7 @@ export async function GET(req: NextRequest) {
 
     // 4. Prometheus Config Format (YAML)
     if (format === "prometheus") {
-      const httpTargets = monitors
-        .filter((m) => m.type === "HTTP" && m.url)
-        .map((m) => m.url);
+      const httpTargets = monitors.filter((m) => m.type === "HTTP" && m.url).map((m) => m.url);
       const tcpTargets = monitors
         .filter((m) => m.type === "PORT" || m.type === "PING")
         .map((m) => {

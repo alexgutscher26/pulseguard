@@ -179,9 +179,7 @@ export const PAID_TIER_PROBE_REGIONS: DOLocationHint[] = [
 /**
  * Returns the assigned probe regions based on subscription plan
  */
-export function getProbeRegionsForPlan(
-  _plan?: string | null,
-): DOLocationHint[] {
+export function getProbeRegionsForPlan(_plan?: string | null): DOLocationHint[] {
   return [...PAID_TIER_PROBE_REGIONS];
 }
 
@@ -226,6 +224,4 @@ export function getRegionsByContinent(continent: string): Region[] {
   return AVAILABLE_REGIONS.filter((r) => r.continent === continent);
 }
 
-export const CONTINENTS = Array.from(
-  new Set(AVAILABLE_REGIONS.map((r) => r.continent)),
-);
+export const CONTINENTS = Array.from(new Set(AVAILABLE_REGIONS.map((r) => r.continent)));

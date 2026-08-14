@@ -8,12 +8,8 @@ export const revalidate = 60;
  * GET /api/locations — Public machine-readable JSON endpoint for customer WAF / Firewall allowlisting
  */
 export async function GET() {
-  const allIpv4 = Array.from(
-    new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv4Ranges)),
-  );
-  const allIpv6 = Array.from(
-    new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv6Ranges)),
-  );
+  const allIpv4 = Array.from(new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv4Ranges)));
+  const allIpv6 = Array.from(new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv6Ranges)));
 
   const probeNodes = CLOUDFLARE_PROBE_REGIONS.map((region) => ({
     code: region.code,

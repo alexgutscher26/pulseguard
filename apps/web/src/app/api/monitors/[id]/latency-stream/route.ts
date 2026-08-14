@@ -53,9 +53,7 @@ export async function GET(request: NextRequest, props: LatencyStreamParams) {
       start(controller) {
         // Send initial connection message
         controller.enqueue(
-          encoder.encode(
-            `data: ${JSON.stringify({ type: "connected", monitorId })}\n\n`,
-          ),
+          encoder.encode(`data: ${JSON.stringify({ type: "connected", monitorId })}\n\n`),
         );
 
         // Heartbeat every 30 seconds to keep connection alive

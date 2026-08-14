@@ -15,10 +15,7 @@ export type FeatureFlag =
   | "pagerduty_integration"
   | "sms_alerts";
 
-export const PLAN_FEATURE_FLAGS: Record<
-  PlanTier,
-  Record<FeatureFlag, boolean>
-> = {
+export const PLAN_FEATURE_FLAGS: Record<PlanTier, Record<FeatureFlag, boolean>> = {
   INITIATE: {
     custom_domains: false,
     browser_monitors: false,
@@ -66,10 +63,7 @@ export const PLAN_FEATURE_FLAGS: Record<
   },
 };
 
-const FEATURE_DESCRIPTIONS: Record<
-  FeatureFlag,
-  { name: string; requiredPlan: PlanTier }
-> = {
+const FEATURE_DESCRIPTIONS: Record<FeatureFlag, { name: string; requiredPlan: PlanTier }> = {
   custom_domains: { name: "Custom CNAME Domains", requiredPlan: "NETRUNNER" },
   browser_monitors: {
     name: "Browser Synthetic Checks",

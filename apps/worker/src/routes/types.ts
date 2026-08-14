@@ -11,7 +11,4 @@ export interface RouteContext {
  * A route handler. Returns a `Response` when the handler owns the request, or
  * `null` to fall through to the next registered route.
  */
-export type RouteHandler = (
-  ctx: RouteContext,
-  url: URL,
-) => Promise<Response | null>;
+export type RouteHandler = (ctx: RouteContext, url: URL) => Promise<Response | null>;

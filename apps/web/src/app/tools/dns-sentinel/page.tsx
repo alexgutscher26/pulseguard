@@ -33,8 +33,8 @@ export default function DNSSentinelPage() {
               DNS Pulse Sentinel
             </h1>
             <p className="text-muted-foreground text-lg md:text-xl max-w-3xl mx-auto font-mono">
-              [RESOLVING ENDPOINT RECORDSETS... ] Evaluate your domain's email
-              deliverability and security integrity.
+              [RESOLVING ENDPOINT RECORDSETS... ] Evaluate your domain's email deliverability and
+              security integrity.
             </p>
           </div>
 
@@ -49,8 +49,8 @@ export default function DNSSentinelPage() {
                 Mail Exchange Extraction
               </h3>
               <p className="text-xs text-muted-foreground font-mono leading-relaxed">
-                Verify authoritative servers to ensure your domain can receive
-                mail. Essential for identifying configuration gaps.
+                Verify authoritative servers to ensure your domain can receive mail. Essential for
+                identifying configuration gaps.
               </p>
             </div>
             <div className="space-y-4 p-6 bg-white/5 rounded-xl border border-white/5 group hover:bg-white/10 transition-colors">
@@ -61,8 +61,8 @@ export default function DNSSentinelPage() {
                 Sender Policy Verification
               </h3>
               <p className="text-xs text-muted-foreground font-mono leading-relaxed">
-                Check for strict policy enforcement (-all) to prevent
-                unauthorized IPs from spoofing your endpoint.
+                Check for strict policy enforcement (-all) to prevent unauthorized IPs from spoofing
+                your endpoint.
               </p>
             </div>
             <div className="space-y-4 p-6 bg-white/5 rounded-xl border border-white/5 group hover:bg-white/10 transition-colors">
@@ -73,8 +73,8 @@ export default function DNSSentinelPage() {
                 DMARC Integrity Score
               </h3>
               <p className="text-xs text-muted-foreground font-mono leading-relaxed">
-                Audit your reporting and enforcement policies. Advanced
-                deliverability requires p=reject or p=quarantine.
+                Audit your reporting and enforcement policies. Advanced deliverability requires
+                p=reject or p=quarantine.
               </p>
             </div>
           </div>

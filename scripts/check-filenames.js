@@ -52,9 +52,7 @@ for (const dir of SCAN_DIRS) {
 }
 
 if (violations.length > 0) {
-  console.error(
-    "File naming violations (use kebab-case, e.g. `heatmap-grid.tsx`):",
-  );
+  console.error("File naming violations (use kebab-case, e.g. `heatmap-grid.tsx`):");
   for (const v of violations) console.error(`  ${v}`);
   process.exit(1);
 }

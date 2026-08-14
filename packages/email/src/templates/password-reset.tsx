@@ -1,15 +1,6 @@
 import React from "react";
 import { render } from "@react-email/render";
-import {
-  Html,
-  Head,
-  Body,
-  Container,
-  Section,
-  Text,
-  Link,
-  Hr,
-} from "@react-email/components";
+import { Html, Head, Body, Container, Section, Text, Link, Hr } from "@react-email/components";
 import { emailTheme } from "../styles/theme";
 
 export interface PasswordResetEmailData {
@@ -100,8 +91,8 @@ export function PasswordReset({ data }: { data: PasswordResetEmailData }) {
                 marginBottom: emailTheme.spacing.md,
               }}
             >
-              We received a request to reset your password for your PulseGuard
-              account. Click the button below to choose a new password.
+              We received a request to reset your password for your PulseGuard account. Click the
+              button below to choose a new password.
             </Text>
 
             {/* CTA Button */}
@@ -139,8 +130,8 @@ export function PasswordReset({ data }: { data: PasswordResetEmailData }) {
                 lineHeight: "1.6",
               }}
             >
-              If you didn't request a password reset, you can safely ignore this
-              email. Your password will remain unchanged.
+              If you didn't request a password reset, you can safely ignore this email. Your
+              password will remain unchanged.
             </Text>
 
             <Text
@@ -193,8 +184,6 @@ export function PasswordReset({ data }: { data: PasswordResetEmailData }) {
   );
 }
 
-export async function renderPasswordReset(
-  data: PasswordResetEmailData,
-): Promise<string> {
+export async function renderPasswordReset(data: PasswordResetEmailData): Promise<string> {
   return await render(<PasswordReset data={data} />);
 }

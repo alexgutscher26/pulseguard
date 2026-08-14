@@ -14,9 +14,7 @@ export interface UsageLimitWarningEmailProps {
   upgradeUrl: string;
 }
 
-export const UsageLimitWarningEmail: React.FC<
-  Readonly<UsageLimitWarningEmailProps>
-> = ({
+export const UsageLimitWarningEmail: React.FC<Readonly<UsageLimitWarningEmailProps>> = ({
   userName = "PulseGuard Operator",
   planName = "The Initiate",
   warnings = [
@@ -34,8 +32,7 @@ export const UsageLimitWarningEmail: React.FC<
     style={{
       backgroundColor: "#030712",
       color: "#f3f4f6",
-      fontFamily:
-        "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+      fontFamily: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
       padding: "40px 20px",
     }}
   >
@@ -75,8 +72,8 @@ export const UsageLimitWarningEmail: React.FC<
       </div>
 
       <p style={{ fontSize: "14px", color: "#9ca3af", lineHeight: "1.6" }}>
-        Hello {userName}, your workspace on <strong>{planName}</strong> plan is
-        approaching resource limits.
+        Hello {userName}, your workspace on <strong>{planName}</strong> plan is approaching resource
+        limits.
       </p>
 
       <div style={{ marginTop: "24px", marginBottom: "24px" }}>
@@ -139,8 +136,8 @@ export const UsageLimitWarningEmail: React.FC<
       </div>
 
       <p style={{ fontSize: "14px", color: "#9ca3af", lineHeight: "1.6" }}>
-        To prevent monitor or integration creation blocks when reaching 100%
-        capacity, upgrade your plan.
+        To prevent monitor or integration creation blocks when reaching 100% capacity, upgrade your
+        plan.
       </p>
 
       <div style={{ marginTop: "32px", textAlign: "center" }}>
@@ -164,8 +161,6 @@ export const UsageLimitWarningEmail: React.FC<
   </div>
 );
 
-export async function renderUsageLimitWarning(
-  props: UsageLimitWarningEmailProps,
-): Promise<string> {
+export async function renderUsageLimitWarning(props: UsageLimitWarningEmailProps): Promise<string> {
   return await render(<UsageLimitWarningEmail {...props} />);
 }

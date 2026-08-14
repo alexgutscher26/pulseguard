@@ -1,18 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@pulseguard/db";
-import {
-  getOverallStatus,
-  getStatusMessage,
-  type BadgeTextConfig,
-} from "@/lib/uptime-calculator";
+import { getOverallStatus, getStatusMessage, type BadgeTextConfig } from "@/lib/uptime-calculator";
 
 /**
  * Validate if the origin is allowed based on the configured domains
  */
-function validateOrigin(
-  origin: string | null,
-  allowedDomains: string | null,
-): boolean {
+function validateOrigin(origin: string | null, allowedDomains: string | null): boolean {
   // If no origin header (same-origin request), allow
   if (!origin) return true;
 
@@ -50,10 +43,7 @@ function validateOrigin(
  *
  * Respects CORS based on widgetAllowedDomains configuration.
  */
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ slug: string }> },
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const origin = request.headers.get("origin");
 
@@ -77,10 +67,7 @@ export async function GET(
 
   // Page not found or widget not enabled
   if (!statusPage) {
-    return NextResponse.json(
-      { error: "Status page not found" },
-      { status: 404 },
-    );
+    return NextResponse.json({ error: "Status page not found" }, { status: 404 });
   }
 
   if (!statusPage.widgetEnabled) {
@@ -105,9 +92,7 @@ export async function GET(
   }));
 
   // Determine overall status
-  const overallStatus = getOverallStatus(
-    monitors.map((m) => ({ status: m.status })),
-  );
+  const overallStatus = getOverallStatus(monitors.map((m) => ({ status: m.status })));
 
   // Get status message from config or defaults
   const badgeText = statusPage.widgetBadgeText as BadgeTextConfig | null;
@@ -120,11 +105,7 @@ export async function GET(
     monitors: monitors.map((m) => ({
       name: m.name,
       status:
-        m.status === "UP"
-          ? "operational"
-          : m.status === "DOWN"
-            ? "down"
-            : m.status.toLowerCase(),
+        m.status === "UP" ? "operational" : m.status === "DOWN" ? "down" : m.status.toLowerCase(),
       group: m.group,
     })),
     lastUpdated: new Date().toISOString(),

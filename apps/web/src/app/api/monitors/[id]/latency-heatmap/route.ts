@@ -32,10 +32,7 @@ export async function GET(request: NextRequest, props: LatencyHeatmapParams) {
     const metricType = searchParams.get("metricType") || "both";
 
     // Determine granularity based on time range
-    const granularityMap: Record<
-      string,
-      { granularity: string; hours: number }
-    > = {
+    const granularityMap: Record<string, { granularity: string; hours: number }> = {
       "1h": { granularity: "ONE_MINUTE", hours: 1 },
       "6h": { granularity: "ONE_MINUTE", hours: 6 },
       "24h": { granularity: "FIVE_MINUTE", hours: 24 },
@@ -167,9 +164,6 @@ export async function GET(request: NextRequest, props: LatencyHeatmapParams) {
     );
   } catch (error) {
     console.error("[LatencyHeatmap] Error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

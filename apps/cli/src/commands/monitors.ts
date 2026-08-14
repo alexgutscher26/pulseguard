@@ -29,9 +29,7 @@ function colorStatus(status: string) {
   return (STATUS_COLOR[status] ?? chalk.dim)(status);
 }
 
-export const monitorsCmd = new Command("monitors").description(
-  "Manage monitors",
-);
+export const monitorsCmd = new Command("monitors").description("Manage monitors");
 
 // pulse monitors list
 monitorsCmd
@@ -42,9 +40,7 @@ monitorsCmd
   .action(async (opts) => {
     const spinner = ora("Fetching monitors…").start();
     try {
-      const { monitors } = await api.get<{ monitors: Monitor[] }>(
-        "/api/cli/monitors",
-      );
+      const { monitors } = await api.get<{ monitors: Monitor[] }>("/api/cli/monitors");
       spinner.stop();
 
       if (opts.json) {
@@ -54,9 +50,7 @@ monitorsCmd
 
       if (monitors.length === 0) {
         console.log(
-          chalk.dim(
-            "No monitors found. Create one with: pulse monitors apply -f pulseguard.yaml",
-          ),
+          chalk.dim("No monitors found. Create one with: pulse monitors apply -f pulseguard.yaml"),
         );
         return;
       }
@@ -76,9 +70,7 @@ monitorsCmd
           chalk.cyan(m.type),
           chalk.dim(m.url.slice(0, 40) + (m.url.length > 40 ? "…" : "")),
           `${m.interval}s`,
-          m.lastCheck
-            ? new Date(m.lastCheck).toLocaleTimeString()
-            : chalk.dim("never"),
+          m.lastCheck ? new Date(m.lastCheck).toLocaleTimeString() : chalk.dim("never"),
         ]),
       ];
 
@@ -105,9 +97,7 @@ monitorsCmd
         }),
       );
       console.log(
-        chalk.dim(
-          `  ${monitors.length} monitor${monitors.length !== 1 ? "s" : ""} total`,
-        ),
+        chalk.dim(`  ${monitors.length} monitor${monitors.length !== 1 ? "s" : ""} total`),
       );
     } catch (err) {
       spinner.fail("Failed to fetch monitors");
@@ -123,9 +113,7 @@ monitorsCmd
   .action(async (id, opts) => {
     const spinner = ora("Fetching monitor…").start();
     try {
-      const { monitor } = await api.get<{ monitor: any }>(
-        `/api/cli/monitors/${id}`,
-      );
+      const { monitor } = await api.get<{ monitor: any }>(`/api/cli/monitors/${id}`);
       spinner.stop();
 
       if (opts.json) {
@@ -133,17 +121,11 @@ monitorsCmd
         return;
       }
 
-      console.log(
-        `\n${chalk.bold(monitor.name)} ${colorStatus(monitor.status)}`,
-      );
+      console.log(`\n${chalk.bold(monitor.name)} ${colorStatus(monitor.status)}`);
       console.log(chalk.dim(`  ID       : ${monitor.id}`));
       console.log(chalk.dim(`  URL      : ${monitor.url}`));
       console.log(chalk.dim(`  Type     : ${monitor.type}`));
-      console.log(
-        chalk.dim(
-          `  Interval : ${monitor.interval}s  Timeout: ${monitor.timeout}s`,
-        ),
-      );
+      console.log(chalk.dim(`  Interval : ${monitor.interval}s  Timeout: ${monitor.timeout}s`));
       console.log(
         chalk.dim(
           `  Last check: ${monitor.lastCheck ? new Date(monitor.lastCheck).toLocaleString() : "never"}`,
@@ -169,9 +151,7 @@ monitorsCmd
 // pulse monitors apply -f pulseguard.yaml
 monitorsCmd
   .command("apply")
-  .description(
-    "Create or update monitors from a pulseguard.yaml file (Monitoring as Code)",
-  )
+  .description("Create or update monitors from a pulseguard.yaml file (Monitoring as Code)")
   .requiredOption("-f, --file <path>", "Path to pulseguard.yaml")
   .option("--dry-run", "Preview changes without applying")
   .action(async (opts) => {
@@ -201,12 +181,8 @@ monitorsCmd
     }
 
     // Fetch existing monitors for idempotency
-    const { monitors: existing } = await api.get<{ monitors: Monitor[] }>(
-      "/api/cli/monitors",
-    );
-    const existingByName = new Map(
-      existing.map((m) => [m.name.toLowerCase(), m]),
-    );
+    const { monitors: existing } = await api.get<{ monitors: Monitor[] }>("/api/cli/monitors");
+    const existingByName = new Map(existing.map((m) => [m.name.toLowerCase(), m]));
 
     let created = 0,
       updated = 0;
@@ -216,15 +192,11 @@ monitorsCmd
       const action = existing ? "update" : "create";
 
       if (opts.dryRun) {
-        console.log(
-          `  ${action === "create" ? chalk.green("[+]") : chalk.yellow("[~]")} ${name}`,
-        );
+        console.log(`  ${action === "create" ? chalk.green("[+]") : chalk.yellow("[~]")} ${name}`);
         continue;
       }
 
-      const spinner = ora(
-        `${action === "create" ? "Creating" : "Updating"} ${name}…`,
-      ).start();
+      const spinner = ora(`${action === "create" ? "Creating" : "Updating"} ${name}…`).start();
       try {
         if (existing) {
           await api.put(`/api/cli/monitors/${existing.id}`, def);
@@ -237,31 +209,24 @@ monitorsCmd
         }
       } catch (err) {
         spinner.fail(`Failed: ${name}`);
-        if (err instanceof ApiError)
-          console.error(chalk.dim(`    ${err.message}`));
+        if (err instanceof ApiError) console.error(chalk.dim(`    ${err.message}`));
       }
     }
 
     if (!opts.dryRun) {
-      console.log(
-        `\n${chalk.green("✔ Applied:")} ${created} created, ${updated} updated`,
-      );
+      console.log(`\n${chalk.green("✔ Applied:")} ${created} created, ${updated} updated`);
     }
   });
 
 // pulse monitors import (export all monitors to pulseguard.yaml)
 monitorsCmd
   .command("import")
-  .description(
-    "Export all monitors to pulseguard.yaml (Monitoring as Code snapshot)",
-  )
+  .description("Export all monitors to pulseguard.yaml (Monitoring as Code snapshot)")
   .option("-o, --output <path>", "Output file path", "pulseguard.yaml")
   .action(async (opts) => {
     const spinner = ora("Fetching monitors…").start();
     try {
-      const { monitors } = await api.get<{ monitors: any[] }>(
-        "/api/cli/monitors",
-      );
+      const { monitors } = await api.get<{ monitors: any[] }>("/api/cli/monitors");
       spinner.stop();
 
       const yamlContent = stringifyYaml({
@@ -273,9 +238,7 @@ monitorsCmd
           timeout: m.timeout,
           method: m.method || "GET",
           alertThreshold: m.alertThreshold,
-          ...(m.checkRegions
-            ? { checkRegions: JSON.parse(m.checkRegions) }
-            : {}),
+          ...(m.checkRegions ? { checkRegions: JSON.parse(m.checkRegions) } : {}),
         })),
       });
 
@@ -289,8 +252,7 @@ monitorsCmd
               type: "input",
               name: "name",
               message: "Monitor name:",
-              validate: (input: string) =>
-                input.trim() !== "" ? true : "Name cannot be empty",
+              validate: (input: string) => (input.trim() !== "" ? true : "Name cannot be empty"),
             },
             {
               type: "input",
@@ -334,9 +296,7 @@ monitorsCmd
               message: "Check interval (seconds):",
               default: "60",
               validate: (input: string) =>
-                /^\d+$/.test(input) && Number(input) > 0
-                  ? true
-                  : "Must be a positive integer",
+                /^\d+$/.test(input) && Number(input) > 0 ? true : "Must be a positive integer",
             },
             {
               type: "input",
@@ -344,9 +304,7 @@ monitorsCmd
               message: "Timeout (seconds):",
               default: "10",
               validate: (input: string) =>
-                /^\d+$/.test(input) && Number(input) > 0
-                  ? true
-                  : "Must be a positive integer",
+                /^\d+$/.test(input) && Number(input) > 0 ? true : "Must be a positive integer",
             },
           ]);
 
@@ -385,9 +343,7 @@ monitorsCmd
         opts.output,
         `# PulseGuard Monitoring as Code\n# Generated: ${new Date().toISOString()}\n\n${yamlContent}`,
       );
-      console.log(
-        chalk.green(`✔ Exported ${monitors.length} monitors to ${opts.output}`),
-      );
+      console.log(chalk.green(`✔ Exported ${monitors.length} monitors to ${opts.output}`));
     } catch (err) {
       spinner.fail("Failed to export monitors");
       if (err instanceof ApiError) console.error(chalk.red(err.message));

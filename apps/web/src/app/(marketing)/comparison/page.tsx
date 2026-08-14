@@ -40,14 +40,11 @@ export default function ComparisonPage() {
             .
           </h1>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-xl">
-            The monitoring industry has settled on a 5-minute free tier as
-            &ldquo;standard.&rdquo; We think that&apos;s a relic. PulseGuard
-            gives you{" "}
-            <span className="text-foreground font-bold">
-              1-minute checks for free
-            </span>{" "}
-            — 400% faster detection, 5x more data points, and less downtime you
-            have to explain to your customers.
+            The monitoring industry has settled on a 5-minute free tier as &ldquo;standard.&rdquo;
+            We think that&apos;s a relic. PulseGuard gives you{" "}
+            <span className="text-foreground font-bold">1-minute checks for free</span> — 400%
+            faster detection, 5x more data points, and less downtime you have to explain to your
+            customers.
           </p>
           <div className="flex gap-4 pt-2">
             <Link
@@ -77,9 +74,8 @@ export default function ComparisonPage() {
               See the difference 240 seconds makes
             </h2>
             <p className="text-muted-foreground text-sm leading-relaxed mb-10">
-              Scroll through the check intervals side by side. PulseGuard&apos;s
-              free 1-minute interval means you detect problems before your
-              competitors even run their first check.
+              Scroll through the check intervals side by side. PulseGuard&apos;s free 1-minute
+              interval means you detect problems before your competitors even run their first check.
             </p>
           </div>
           <IntervalComparison />
@@ -97,9 +93,8 @@ export default function ComparisonPage() {
               How downtime plays out
             </h2>
             <p className="text-muted-foreground text-sm leading-relaxed mb-10">
-              When your server goes down, every second counts. See how
-              PulseGuard&apos;s faster check interval catches failures up to 4
-              minutes earlier than the competition.
+              When your server goes down, every second counts. See how PulseGuard&apos;s faster
+              check interval catches failures up to 4 minutes earlier than the competition.
             </p>
           </div>
           <DowntimeComparison />
@@ -117,8 +112,8 @@ export default function ComparisonPage() {
               Do the math yourself
             </h2>
             <p className="text-muted-foreground text-sm leading-relaxed mb-10">
-              Adjust the slider to see how PulseGuard&apos;s faster checks
-              compound across your monitoring fleet.
+              Adjust the slider to see how PulseGuard&apos;s faster checks compound across your
+              monitoring fleet.
             </p>
           </div>
           <TimeSavingCalculator />
@@ -136,9 +131,8 @@ export default function ComparisonPage() {
               Full feature comparison
             </h2>
             <p className="text-muted-foreground text-sm leading-relaxed mb-10">
-              PulseGuard doesn&apos;t just win on check intervals. See how we
-              stack up across every feature that matters for modern
-              infrastructure monitoring.
+              PulseGuard doesn&apos;t just win on check intervals. See how we stack up across every
+              feature that matters for modern infrastructure monitoring.
             </p>
           </div>
           <FeatureComparisonTable />
@@ -158,8 +152,8 @@ export default function ComparisonPage() {
             <span className="text-primary">Free. Forever.</span>
           </h2>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-lg mx-auto mb-8">
-            No credit card required. No time limit on the free tier. Just faster
-            monitoring from day one.
+            No credit card required. No time limit on the free tier. Just faster monitoring from day
+            one.
           </p>
           <Link
             href="/signup"

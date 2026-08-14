@@ -24,9 +24,7 @@ export function useSfx() {
   const play = useCallback(
     (type: SoundType) => {
       // Check mute preference inside the callback to get latest value without re-rendering loop
-      const isMuted =
-        typeof window !== "undefined" &&
-        localStorage.getItem("sfx-muted") === "true";
+      const isMuted = typeof window !== "undefined" && localStorage.getItem("sfx-muted") === "true";
       if (isMuted) return;
 
       switch (type) {

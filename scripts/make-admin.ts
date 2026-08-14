@@ -22,9 +22,7 @@ async function main() {
       data: { tier: "ADMIN" },
     });
 
-    console.log(
-      `Successfully granted ADMIN tier to ${updated.email} (${updated.id})!`,
-    );
+    console.log(`Successfully granted ADMIN tier to ${updated.email} (${updated.id})!`);
     process.exit(0);
   } catch (error) {
     console.error("Error making user admin:", error);

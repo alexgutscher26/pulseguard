@@ -22,8 +22,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://pulseguard.io";
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default:
-      "PulseGuard — Uptime monitoring that confirms failures from 7 regions before alerting",
+    default: "PulseGuard — Uptime monitoring that confirms failures from 7 regions before alerting",
     template: "%s | PulseGuard",
   },
   description:
@@ -51,15 +50,13 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: BASE_URL,
     siteName: "PulseGuard",
-    title:
-      "PulseGuard — Uptime monitoring that confirms failures from 7 regions before alerting",
+    title: "PulseGuard — Uptime monitoring that confirms failures from 7 regions before alerting",
     description:
       "Four of seven global regions must agree before PulseGuard pages you. 60-second checks, 50 monitors, multi-region verification — free, and free for commercial use.",
   },
   twitter: {
     card: "summary_large_image",
-    title:
-      "PulseGuard — Uptime monitoring that confirms failures from 7 regions before alerting",
+    title: "PulseGuard — Uptime monitoring that confirms failures from 7 regions before alerting",
     description:
       "Four of seven global regions must agree before PulseGuard pages you. 60-second checks, 50 monitors, multi-region verification — free, and free for commercial use.",
     creator: "@pulseguard",
@@ -86,10 +83,7 @@ const jsonLd = {
       name: "PulseGuard",
       url: BASE_URL,
       logo: `${BASE_URL}/logo.png`,
-      sameAs: [
-        "https://github.com/alexgutscher26/pulseguard",
-        "https://twitter.com/pulseguard",
-      ],
+      sameAs: ["https://github.com/alexgutscher26/pulseguard", "https://twitter.com/pulseguard"],
     },
     {
       "@type": "WebSite",

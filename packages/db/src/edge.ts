@@ -6,14 +6,10 @@ import { Pool } from "pg";
 export function createPrisma(databaseUrl?: string) {
   const url =
     databaseUrl ||
-    (typeof process !== "undefined"
-      ? process.env.DATABASE_URL
-      : (globalThis as any).DATABASE_URL);
+    (typeof process !== "undefined" ? process.env.DATABASE_URL : (globalThis as any).DATABASE_URL);
 
   if (!url) {
-    throw new Error(
-      "DATABASE_URL is not set. Ensure it's provided in your environment variables.",
-    );
+    throw new Error("DATABASE_URL is not set. Ensure it's provided in your environment variables.");
   }
 
   // Prefer DATABASE_POOL_URL when available so the pool targets a connection pooler
@@ -26,8 +22,7 @@ export function createPrisma(databaseUrl?: string) {
       : (globalThis as any).DATABASE_POOL_URL) || url;
 
   // Determine if SSL is needed but remove sslmode from URL to avoid conflict with explicit ssl config
-  const isSsl =
-    poolUrl.includes("sslmode=require") || poolUrl.includes("sslmode=verify");
+  const isSsl = poolUrl.includes("sslmode=require") || poolUrl.includes("sslmode=verify");
   const cleanUrl = poolUrl.replace(/[?&]sslmode=[^&]+/, "");
 
   const poolConfig: any = {
@@ -51,10 +46,7 @@ export function createPrisma(databaseUrl?: string) {
 
   const pool = new Pool(poolConfig);
   pool.on("error", (err) => {
-    console.error(
-      "[PG Pool Error] Unexpected error on idle client:",
-      err.message,
-    );
+    console.error("[PG Pool Error] Unexpected error on idle client:", err.message);
     if (
       err.message?.includes("Connection terminated") ||
       err.message?.includes("closed") ||
@@ -68,8 +60,7 @@ export function createPrisma(databaseUrl?: string) {
   });
   const adapter = new PrismaPg(pool);
 
-  const isDev =
-    typeof process !== "undefined" && process.env.NODE_ENV === "development";
+  const isDev = typeof process !== "undefined" && process.env.NODE_ENV === "development";
 
   const client = new PrismaClient({
     adapter,

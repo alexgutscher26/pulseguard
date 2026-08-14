@@ -6,11 +6,7 @@ import {
   type MonitorAlertData,
   type StatusUpdateData,
 } from "@pulseguard/email";
-import {
-  MonitorStatus as Status,
-  NotificationType,
-  type NotificationTypeValue,
-} from "./constants";
+import { MonitorStatus as Status, NotificationType, type NotificationTypeValue } from "./constants";
 import type { Env } from "./env";
 import {
   runWithLimit,
@@ -37,20 +33,12 @@ export interface NotificationMessage {
 
 export default {
   // Notification Queue Consumer
-  async queue(
-    batch: MessageBatch<NotificationMessage>,
-    env: Env,
-    _ctx: ExecutionContext,
-  ) {
+  async queue(batch: MessageBatch<NotificationMessage>, env: Env, _ctx: ExecutionContext) {
     const prisma = getPrisma(env.DATABASE_URL);
 
-    console.log(
-      `[Notification] Processing ${batch.messages.length} notification(s)...`,
-    );
+    console.log(`[Notification] Processing ${batch.messages.length} notification(s)...`);
 
-    const monitorIds = Array.from(
-      new Set(batch.messages.map((msg) => msg.body.monitorId)),
-    );
+    const monitorIds = Array.from(new Set(batch.messages.map((msg) => msg.body.monitorId)));
 
     // Fetch all monitors in one query
     const monitors = await prisma.monitor.findMany({
@@ -73,12 +61,8 @@ export default {
     const monitorMap = new Map(monitors.map((m) => [m.id, m]));
 
     // --- Pre-fetch LAST DOWN EVENTS FOR UP TRANSITIONS (to avoid N+1 queries) ---
-    const upNotifications = batch.messages.filter(
-      (msg) => msg.body.status === Status.UP,
-    );
-    const upMonitorIds = Array.from(
-      new Set(upNotifications.map((msg) => msg.body.monitorId)),
-    );
+    const upNotifications = batch.messages.filter((msg) => msg.body.status === Status.UP);
+    const upMonitorIds = Array.from(new Set(upNotifications.map((msg) => msg.body.monitorId)));
 
     const lastDownEventMap = new Map<string, Date>();
     if (upMonitorIds.length > 0) {
@@ -149,9 +133,7 @@ export default {
           const monitor = monitorMap.get(notification.monitorId);
 
           if (!monitor) {
-            console.error(
-              `[Notification] Monitor ${notification.monitorId} not found`,
-            );
+            console.error(`[Notification] Monitor ${notification.monitorId} not found`);
             msg.ack();
             return;
           }
@@ -159,15 +141,10 @@ export default {
           // Check if any alert rules match this notification
           const matchingRules = monitor.alertRules.filter((rule: any) => {
             // 1. Explicit LATENCY trigger
-            if (
-              rule.trigger === "LATENCY" &&
-              notification.type === NotificationType.HIGH_LATENCY
-            ) {
+            if (rule.trigger === "LATENCY" && notification.type === NotificationType.HIGH_LATENCY) {
               if (rule.threshold && notification.latency) {
-                if (rule.comparison === "GT")
-                  return notification.latency > rule.threshold;
-                if (rule.comparison === "LT")
-                  return notification.latency < rule.threshold;
+                if (rule.comparison === "GT") return notification.latency > rule.threshold;
+                if (rule.comparison === "LT") return notification.latency < rule.threshold;
               }
               return true; // Match if no specific threshold set in rule
             }
@@ -213,14 +190,11 @@ export default {
           // Monitor Alert Data (Owner/Team)
           let downtimeDuration: string | undefined;
           if (notification.status === "UP") {
-            const lastDownTimestamp = lastDownEventMap.get(
-              notification.monitorId,
-            );
+            const lastDownTimestamp = lastDownEventMap.get(notification.monitorId);
 
             if (lastDownTimestamp) {
               const downtime =
-                new Date(notification.timestamp).getTime() -
-                lastDownTimestamp.getTime();
+                new Date(notification.timestamp).getTime() - lastDownTimestamp.getTime();
               const minutes = Math.floor(downtime / 60000);
               const seconds = Math.floor((downtime % 60000) / 1000);
               downtimeDuration = `${minutes}m ${seconds}s`;
@@ -233,14 +207,12 @@ export default {
             url: notification.url,
             status: notification.status,
             previousStatus:
-              notification.previousStatus ||
-              (notification.status === "UP" ? "DOWN" : "UP"),
+              notification.previousStatus || (notification.status === "UP" ? "DOWN" : "UP"),
             timestamp: notification.timestamp,
             reason: notification.reason,
             downtimeDuration,
             failedRegions: notification.failedRegions,
-            runbookUrl:
-              notification.runbookUrl || monitor?.runbookUrl || undefined,
+            runbookUrl: notification.runbookUrl || monitor?.runbookUrl || undefined,
           };
 
           // --- 1. OWNER ALERTS (Email, Slack, Discord) ---
@@ -274,24 +246,15 @@ export default {
             });
 
             Array.from(emailChannels).forEach((email) => {
-              deliveryPromises.push(
-                sendMonitorAlert(email, emailData, env.RESEND_API_KEY),
-              );
+              deliveryPromises.push(sendMonitorAlert(email, emailData, env.RESEND_API_KEY));
             });
             Array.from(slackChannels).forEach((target) => {
               deliveryPromises.push(
-                sendSlackAlert(
-                  target.url,
-                  emailData,
-                  notification.type,
-                  notification.incidentId,
-                ),
+                sendSlackAlert(target.url, emailData, notification.type, notification.incidentId),
               );
             });
             Array.from(discordChannels).forEach((target) => {
-              deliveryPromises.push(
-                sendDiscordAlert(target.url, emailData, notification.type),
-              );
+              deliveryPromises.push(sendDiscordAlert(target.url, emailData, notification.type));
             });
             Array.from(pagerdutyChannels).forEach((routingKey) => {
               deliveryPromises.push(
@@ -304,9 +267,7 @@ export default {
               );
             });
           } else {
-            console.log(
-              `[Notification] No matching alert rules for ${notification.monitorName}`,
-            );
+            console.log(`[Notification] No matching alert rules for ${notification.monitorName}`);
           }
 
           // --- 2. STATUS PAGE SUBSCRIBER ALERTS ---
@@ -330,27 +291,22 @@ export default {
                   : `${notification.monitorName} has recovered`);
 
               // Filter subscribers
-              const subscribersToNotify = page.subscribers.filter(
-                (sub: any) => {
-                  // Check preferences
-                  if (
-                    notification.type === NotificationType.INCIDENT_CREATED &&
-                    !sub.notifyIncidents
-                  )
-                    return false;
-                  if (
-                    notification.type === NotificationType.INCIDENT_RESOLVED &&
-                    !sub.notifyIncidents
-                  )
-                    return false;
+              const subscribersToNotify = page.subscribers.filter((sub: any) => {
+                // Check preferences
+                if (notification.type === NotificationType.INCIDENT_CREATED && !sub.notifyIncidents)
+                  return false;
+                if (
+                  notification.type === NotificationType.INCIDENT_RESOLVED &&
+                  !sub.notifyIncidents
+                )
+                  return false;
 
-                  // Check monitor subscription
-                  const isSubscribedToMonitor = sub.monitorSubscriptions.some(
-                    (ms: any) => ms.monitorId === notification.monitorId,
-                  );
-                  return isSubscribedToMonitor;
-                },
-              );
+                // Check monitor subscription
+                const isSubscribedToMonitor = sub.monitorSubscriptions.some(
+                  (ms: any) => ms.monitorId === notification.monitorId,
+                );
+                return isSubscribedToMonitor;
+              });
 
               // Send emails
               subscribersToNotify.forEach((sub: any) => {
@@ -367,9 +323,7 @@ export default {
                   pageUrl: `https://pulseguard.com/status-page/${page.slug}`,
                 };
 
-                deliveryPromises.push(
-                  sendStatusUpdate(sub.email, updateData, env.RESEND_API_KEY),
-                );
+                deliveryPromises.push(sendStatusUpdate(sub.email, updateData, env.RESEND_API_KEY));
               });
 
               if (subscribersToNotify.length > 0) {
@@ -382,9 +336,7 @@ export default {
 
           const results = await Promise.allSettled(deliveryPromises);
 
-          const successful = results.filter(
-            (r) => r.status === "fulfilled",
-          ).length;
+          const successful = results.filter((r) => r.status === "fulfilled").length;
           const failed = results.filter((r) => r.status === "rejected").length;
 
           console.log(

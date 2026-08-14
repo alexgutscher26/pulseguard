@@ -5,9 +5,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 60;
 
 export async function GET() {
-  const allIpv4 = Array.from(
-    new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv4Ranges)),
-  );
+  const allIpv4 = Array.from(new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv4Ranges)));
 
   return new NextResponse(allIpv4.join("\n") + "\n", {
     headers: {

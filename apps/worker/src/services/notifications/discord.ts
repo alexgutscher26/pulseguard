@@ -29,8 +29,7 @@ export async function sendDiscordAlert(
     ? "🚨 System Critical: " + data.monitorName + " is DOWN"
     : "✅ System Recovered: " + data.monitorName + " is ONLINE";
 
-  if (type === NotificationType.INCIDENT_CREATED)
-    title = `🔥 Incident Opened: ${data.monitorName}`;
+  if (type === NotificationType.INCIDENT_CREATED) title = `🔥 Incident Opened: ${data.monitorName}`;
   if (type === NotificationType.INCIDENT_RESOLVED)
     title = `✅ Incident Resolved: ${data.monitorName}`;
   if (type === NotificationType.HIGH_LATENCY) {
@@ -48,8 +47,7 @@ export async function sendDiscordAlert(
       {
         title: title,
         description:
-          data.reason ||
-          (isDown ? "Connection timeout or error" : "Service is reachable"),
+          data.reason || (isDown ? "Connection timeout or error" : "Service is reachable"),
         url: data.url,
         color: color,
         fields: [
@@ -119,21 +117,15 @@ export async function sendDiscordAlert(
 
       if (res.status === 429 || res.status >= 500) {
         if (attempts < maxAttempts) {
-          await new Promise((resolve) =>
-            setTimeout(resolve, Math.pow(2, attempts) * 500),
-          );
+          await new Promise((resolve) => setTimeout(resolve, Math.pow(2, attempts) * 500));
           continue;
         }
       }
 
-      throw new Error(
-        `Discord Webhook failed: ${res.status} ${res.statusText}`,
-      );
+      throw new Error(`Discord Webhook failed: ${res.status} ${res.statusText}`);
     } catch (err) {
       if (attempts >= maxAttempts) throw err;
-      await new Promise((resolve) =>
-        setTimeout(resolve, Math.pow(2, attempts) * 500),
-      );
+      await new Promise((resolve) => setTimeout(resolve, Math.pow(2, attempts) * 500));
     }
   }
 }

@@ -14,8 +14,7 @@ console.log("🔧 Initializing BetterAuth with config:", {
   appUrl: env.NEXT_PUBLIC_APP_URL,
 });
 
-const safeDbUrl =
-  env.DATABASE_URL || "postgresql://dummy:dummy@localhost:5432/dummy";
+const safeDbUrl = env.DATABASE_URL || "postgresql://dummy:dummy@localhost:5432/dummy";
 const safeAuthUrl = env.BETTER_AUTH_URL || "http://localhost:3000";
 
 const prisma = getPrisma(safeDbUrl);

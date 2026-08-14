@@ -20,14 +20,10 @@ export async function GET(req: NextRequest, { params }: Ctx) {
     where: { id, userId: user.userId },
     select: { id: true, name: true, status: true },
   });
-  if (!monitor)
-    return NextResponse.json({ error: "Monitor not found" }, { status: 404 });
+  if (!monitor) return NextResponse.json({ error: "Monitor not found" }, { status: 404 });
 
   const searchParams = req.nextUrl.searchParams;
-  const timeoutSec = Math.min(
-    Number(searchParams.get("timeout") || "300"),
-    600,
-  ); // max 10 min
+  const timeoutSec = Math.min(Number(searchParams.get("timeout") || "300"), 600); // max 10 min
   const intervalSec = Math.max(Number(searchParams.get("interval") || "15"), 5); // min 5s
 
   const deadline = Date.now() + timeoutSec * 1000;

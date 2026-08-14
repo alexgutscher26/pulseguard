@@ -25,19 +25,13 @@ interface LocationsClientProps {
 export default function LocationsClient({ probes }: LocationsClientProps) {
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
 
-  const allIpv4 = Array.from(
-    new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv4Ranges)),
-  );
-  const allIpv6 = Array.from(
-    new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv6Ranges)),
-  );
+  const allIpv4 = Array.from(new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv4Ranges)));
+  const allIpv6 = Array.from(new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv6Ranges)));
 
   const healthyCount = probes.filter((p) => p.status === "ONLINE").length;
   const flappingProbes = probes.filter((p) => p.status === "FLAPPING");
   const excludedRegionText =
-    flappingProbes.length > 0
-      ? flappingProbes.map((p) => p.code).join(", ")
-      : null;
+    flappingProbes.length > 0 ? flappingProbes.map((p) => p.code).join(", ") : null;
 
   const handleCopy = (text: string, section: string) => {
     navigator.clipboard.writeText(text);
@@ -45,13 +39,16 @@ export default function LocationsClient({ probes }: LocationsClientProps) {
     setTimeout(() => setCopiedSection(null), 2000);
   };
 
-  const allowlistSnippet = `# Machine-readable, always current
-GET https://pulseguard.io/ips.json
-GET https://pulseguard.io/ips.txt      # newline-delimited CIDRs
-GET https://pulseguard.io/ips-v6.txt   # IPv6 — don't forget these
+  const allowlistSnippet = `# 1. Cloudflare WAF / Fastly / AWS WAF (Recommended)
+# Our checks originate from Cloudflare's global edge network.
+# Match on un-spoofable edge headers to allowlist without opening to all shared egress:
+CF-Worker: pulseguard.io
+User-Agent: PulseGuard-Monitor/1.0 (+https://pulseguard.io/bot)
 
-# Our probes always identify themselves
-User-Agent: PulseGuard-Monitor/1.0 (+https://pulseguard.io/locations)`;
+# 2. Machine-readable reference feeds (for IP-based firewalls)
+GET https://pulseguard.io/ips.json
+GET https://pulseguard.io/ips.txt      # IPv4 CIDR reference list
+GET https://pulseguard.io/ips-v6.txt   # IPv6 CIDR reference list`;
 
   return (
     <div className="min-h-screen bg-background text-foreground pt-32 pb-24 px-4 sm:px-6 lg:px-8">
@@ -68,9 +65,9 @@ User-Agent: PulseGuard-Monitor/1.0 (+https://pulseguard.io/locations)`;
           </h1>
 
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-            Live status of all seven probe regions, the networks they run on,
-            and the IP ranges to allowlist. Updated continuously. If a probe is
-            unhealthy, you&apos;ll see it here before it can affect your alerts.
+            Live status of all seven probe regions, the networks they run on, and cryptographic
+            headers to allowlist. Updated continuously. If a probe is unhealthy, you&apos;ll see it
+            here before it can affect your alerts.
           </p>
         </div>
 
@@ -94,19 +91,14 @@ User-Agent: PulseGuard-Monitor/1.0 (+https://pulseguard.io/locations)`;
                     const isFlapping = probe.status === "FLAPPING";
 
                     return (
-                      <tr
-                        key={probe.code}
-                        className="hover:bg-muted/30 transition-colors"
-                      >
+                      <tr key={probe.code} className="hover:bg-muted/30 transition-colors">
                         <td className="p-4 sm:p-5 font-mono font-bold text-foreground">
                           <div className="flex items-center gap-2">
                             <span>{probe.flag}</span>
                             <span>{probe.code}</span>
                           </div>
                         </td>
-                        <td className="p-4 sm:p-5 text-foreground font-medium">
-                          {probe.covers}
-                        </td>
+                        <td className="p-4 sm:p-5 text-foreground font-medium">{probe.covers}</td>
                         <td className="p-4 sm:p-5 font-mono text-muted-foreground text-[11px]">
                           {probe.asn} ({probe.provider})
                         </td>
@@ -146,21 +138,17 @@ User-Agent: PulseGuard-Monitor/1.0 (+https://pulseguard.io/locations)`;
             <div className="p-4 sm:p-5 bg-muted/20 border-t border-border font-mono text-xs text-muted-foreground flex items-start gap-2.5">
               <ShieldCheck className="size-4 text-emerald-500 shrink-0 mt-0.5" />
               <div className="leading-relaxed">
-                <strong className="text-foreground">Current quorum:</strong> 4
-                of {healthyCount} healthy regions must confirm a failure before
-                an incident opens.{" "}
+                <strong className="text-foreground">Current quorum:</strong> 4 of {healthyCount}{" "}
+                healthy regions must confirm a failure before an incident opens.{" "}
                 {excludedRegionText ? (
                   <span>
-                    <strong className="text-amber-500">
-                      {excludedRegionText}
-                    </strong>{" "}
-                    is excluded automatically until it stabilises — a probe that
-                    can&apos;t agree with itself doesn&apos;t get a vote.
+                    <strong className="text-amber-500">{excludedRegionText}</strong> is excluded
+                    automatically until it stabilises — a probe that can&apos;t agree with itself
+                    doesn&apos;t get a vote.
                   </span>
                 ) : (
                   <span>
-                    All 7 regions are currently healthy and participating in
-                    active quorum.
+                    All 7 regions are currently healthy and participating in active quorum.
                   </span>
                 )}
               </div>
@@ -175,11 +163,12 @@ User-Agent: PulseGuard-Monitor/1.0 (+https://pulseguard.io/locations)`;
               Allowlist our probes
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-              If your WAF, CDN or bot manager challenges datacenter traffic, our
-              probes can be blocked before they ever reach your service — and on
-              some platforms those challenges don&apos;t appear in your event
-              log. That looks exactly like downtime, and it isn&apos;t.
-              Allowlist these ranges, or permit our User-Agent.
+              Our probes originate from Cloudflare&apos;s global edge network. Because raw IP ranges
+              on serverless edge networks are shared across platforms, we recommend configuring your
+              WAF to match on our un-spoofable{" "}
+              <code className="text-primary font-mono font-semibold">CF-Worker: pulseguard.io</code>{" "}
+              header and <code className="text-primary font-mono font-semibold">User-Agent</code>.
+              For traditional firewalls, reference CIDR feeds are also provided below.
             </p>
           </div>
 
@@ -214,11 +203,7 @@ User-Agent: PulseGuard-Monitor/1.0 (+https://pulseguard.io/locations)`;
               ) : (
                 <Copy className="size-3.5" />
               )}
-              <span>
-                {copiedSection === "ipv4"
-                  ? "Copied IPv4 CIDRs"
-                  : "Copy IPv4 CIDRs"}
-              </span>
+              <span>{copiedSection === "ipv4" ? "Copied IPv4 CIDRs" : "Copy IPv4 CIDRs"}</span>
             </button>
 
             <button
@@ -230,11 +215,7 @@ User-Agent: PulseGuard-Monitor/1.0 (+https://pulseguard.io/locations)`;
               ) : (
                 <Copy className="size-3.5" />
               )}
-              <span>
-                {copiedSection === "ipv6"
-                  ? "Copied IPv6 CIDRs"
-                  : "Copy IPv6 CIDRs"}
-              </span>
+              <span>{copiedSection === "ipv6" ? "Copied IPv6 CIDRs" : "Copy IPv6 CIDRs"}</span>
             </button>
 
             <a
@@ -258,24 +239,19 @@ User-Agent: PulseGuard-Monitor/1.0 (+https://pulseguard.io/locations)`;
               <div className="size-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500">
                 <AlertTriangle className="size-5" />
               </div>
-              <h3 className="text-xl font-bold text-foreground">
-                Coverage we don&apos;t have
-              </h3>
+              <h3 className="text-xl font-bold text-foreground">Coverage we don&apos;t have</h3>
               <div className="space-y-3 text-xs sm:text-sm text-muted-foreground leading-relaxed">
                 <p>
-                  South America, Africa, the Middle East, Oceania. Our probe
-                  regions run on Cloudflare&apos;s network, which does not
-                  currently place workloads in those regions — so we don&apos;t
-                  claim them.
+                  South America, Africa, the Middle East, Oceania. Our probe regions run on
+                  Cloudflare&apos;s network, which does not currently place workloads in those
+                  regions — so we don&apos;t claim them.
                 </p>
                 <p>
-                  What this means practically: a genuine outage still pages you,
-                  because your endpoint will fail from all seven regions
-                  regardless of where it&apos;s hosted. What we&apos;d miss is a
-                  problem affecting only users in those regions — a São Paulo
-                  CDN edge, an African transit route. If that&apos;s a real risk
-                  for your traffic, tell us; it moves our roadmap, and
-                  we&apos;ll say so here when it ships.
+                  What this means practically: a genuine outage still pages you, because your
+                  endpoint will fail from all seven regions regardless of where it&apos;s hosted.
+                  What we&apos;d miss is a problem affecting only users in those regions — a São
+                  Paulo CDN edge, an African transit route. If that&apos;s a real risk for your
+                  traffic, tell us; it moves our roadmap, and we&apos;ll say so here when it ships.
                 </p>
               </div>
             </div>
@@ -292,17 +268,15 @@ User-Agent: PulseGuard-Monitor/1.0 (+https://pulseguard.io/locations)`;
               </h3>
               <div className="space-y-3 text-xs sm:text-sm text-muted-foreground leading-relaxed">
                 <p>
-                  A monitoring probe with a bad network path reports failures
-                  that aren&apos;t real — the industry&apos;s most common source
-                  of false alarms. Any probe with three or more state
-                  transitions in two hours is marked Flapping and automatically
-                  removed from quorum until it stabilises.
+                  A monitoring probe with a bad network path reports failures that aren&apos;t real
+                  — the industry&apos;s most common source of false alarms. Any probe with three or
+                  more state transitions in two hours is marked Flapping and automatically removed
+                  from quorum until it stabilises.
                 </p>
                 <p>
-                  Every probe also reports on a heartbeat channel separate from
-                  its measurement path, so a probe that&apos;s blocked is
-                  distinguishable from one that&apos;s crashed. All of it is
-                  visible above, in real time, including when it&apos;s our
+                  Every probe also reports on a heartbeat channel separate from its measurement
+                  path, so a probe that&apos;s blocked is distinguishable from one that&apos;s
+                  crashed. All of it is visible above, in real time, including when it&apos;s our
                   fault.
                 </p>
               </div>

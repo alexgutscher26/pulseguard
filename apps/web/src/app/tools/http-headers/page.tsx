@@ -33,8 +33,8 @@ export default function SecurityHeadersPage() {
               HTTP Security Sentinel
             </h1>
             <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto font-mono">
-              [ANALYZING PROTOCOL INTEGRITY... ] Evaluate your endpoint's
-              exposure via HTTP response header dissection.
+              [ANALYZING PROTOCOL INTEGRITY... ] Evaluate your endpoint's exposure via HTTP response
+              header dissection.
             </p>
           </div>
 
@@ -47,8 +47,8 @@ export default function SecurityHeadersPage() {
                 Hardened HSTS
               </h3>
               <p className="text-sm text-muted-foreground font-mono leading-relaxed">
-                Mandate secure tunnel transport. Prevents man-in-the-middle
-                attacks by forcing browsers to use HTTPS exclusively.
+                Mandate secure tunnel transport. Prevents man-in-the-middle attacks by forcing
+                browsers to use HTTPS exclusively.
               </p>
             </div>
             <div className="space-y-4">
@@ -57,8 +57,8 @@ export default function SecurityHeadersPage() {
                 Injected CSP
               </h3>
               <p className="text-sm text-muted-foreground font-mono leading-relaxed">
-                Lock down your execution scope. Mitigates XSS and data injection
-                vulnerabilities by defining trusted script sources.
+                Lock down your execution scope. Mitigates XSS and data injection vulnerabilities by
+                defining trusted script sources.
               </p>
             </div>
             <div className="space-y-4">
@@ -67,8 +67,8 @@ export default function SecurityHeadersPage() {
                 Anti-Clickjacking
               </h3>
               <p className="text-sm text-muted-foreground font-mono leading-relaxed">
-                Prevent UI redressing. Use X-Frame-Options to control frame
-                rendering and block malicious overlay attacks.
+                Prevent UI redressing. Use X-Frame-Options to control frame rendering and block
+                malicious overlay attacks.
               </p>
             </div>
           </div>

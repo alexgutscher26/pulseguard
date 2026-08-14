@@ -2,16 +2,10 @@
 
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import {
-  DashboardStats,
-  type DashboardStatsData,
-} from "@/components/dashboard/stats";
+import { DashboardStats, type DashboardStatsData } from "@/components/dashboard/stats";
 import { MonitorsTable } from "@/components/dashboard/monitors-table";
 import { MonitorsGrid } from "@/components/dashboard/monitors-grid";
-import {
-  AIInsights,
-  type MonitorInsight,
-} from "@/components/dashboard/ai-insights";
+import { AIInsights, type MonitorInsight } from "@/components/dashboard/ai-insights";
 import { OnboardingChecklist } from "@/components/dashboard/onboarding-checklist";
 import { UsageLimitBanner } from "@/components/dashboard/usage-limit-banner";
 import { useMonitors, useDashboardStats } from "@/hooks/use-monitors";
@@ -22,10 +16,7 @@ import type { UsageSummary } from "@/lib/billing";
 
 // Dynamic import with ssr: false to prevent hydration errors and optimize bundle size
 const GlobeVisualization = dynamic(
-  () =>
-    import("@/components/dashboard/globe-visualization").then(
-      (mod) => mod.GlobeVisualization,
-    ),
+  () => import("@/components/dashboard/globe-visualization").then((mod) => mod.GlobeVisualization),
   {
     ssr: false,
     loading: () => (
@@ -85,9 +76,7 @@ export default function Dashboard({
   return (
     <div className="flex flex-col gap-6">
       {!isDemo && <UsageLimitBanner summary={usageSummary} />}
-      {!isDemo && (
-        <OnboardingChecklist status={onboardingStatus} userEmail={userEmail} />
-      )}
+      {!isDemo && <OnboardingChecklist status={onboardingStatus} userEmail={userEmail} />}
       <AIInsights insights={initialInsights} />
       <DashboardStats stats={stats} />
 

@@ -21,9 +21,7 @@ export const postSchema = z.object({
 });
 
 export function getAllPosts(): BlogPost[] {
-  const files = fs
-    .readdirSync(POSTS_DIR)
-    .filter((file) => file.endsWith(".mdx"));
+  const files = fs.readdirSync(POSTS_DIR).filter((file) => file.endsWith(".mdx"));
 
   const posts = files.map((file) => {
     const slug = file.replace(/\.mdx$/, "");

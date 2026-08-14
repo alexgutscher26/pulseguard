@@ -105,9 +105,7 @@ export default function DesignPartnerClient({
 
   const [redeemingKey, setRedeemingKey] = useState(false);
   const [copiedVip, setCopiedVip] = useState(false);
-  const [activeTab, setActiveTab] = useState<
-    "apply" | "calculator" | "perks" | "status"
-  >("apply");
+  const [activeTab, setActiveTab] = useState<"apply" | "calculator" | "perks" | "status">("apply");
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   const endpointsInputId = useId();
@@ -132,10 +130,7 @@ export default function DesignPartnerClient({
       return;
     }
 
-    if (
-      !formData.website.startsWith("http://") &&
-      !formData.website.startsWith("https://")
-    ) {
+    if (!formData.website.startsWith("http://") && !formData.website.startsWith("https://")) {
       toast.error("Please enter a valid website URL starting with https://");
       return;
     }
@@ -155,9 +150,7 @@ export default function DesignPartnerClient({
       setSubmitted(true);
       toast.success(res.message || "Application submitted successfully!");
     } else {
-      toast.error(
-        res.error || "Failed to submit application. Please check your inputs.",
-      );
+      toast.error(res.error || "Failed to submit application. Please check your inputs.");
     }
   };
 
@@ -187,9 +180,7 @@ export default function DesignPartnerClient({
     setRedeemingKey(false);
 
     if (res.success) {
-      toast.success(
-        res.message || "1-Year Netrunner Pro activated successfully!",
-      );
+      toast.success(res.message || "1-Year Netrunner Pro activated successfully!");
       if (lookupResult?.record) {
         setLookupResult({
           ...lookupResult,
@@ -229,10 +220,7 @@ export default function DesignPartnerClient({
   );
   const pulseguardPartnerCost = 0;
   const netrunnerProRetailValue = 228;
-  const annualSavings = Math.max(
-    netrunnerProRetailValue,
-    betterStackEstimatedCost,
-  );
+  const annualSavings = Math.max(netrunnerProRetailValue, betterStackEstimatedCost);
 
   const faqs = [
     {
@@ -275,17 +263,11 @@ export default function DesignPartnerClient({
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
             </span>
             <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground">
-              <span className="text-foreground font-semibold">
-                PulseGuard Edge Mesh:
-              </span>
-              <span className="hidden sm:inline">
-                7 Sovereign Regions Operational
-              </span>
+              <span className="text-foreground font-semibold">PulseGuard Edge Mesh:</span>
+              <span className="hidden sm:inline">7 Sovereign Regions Operational</span>
               <span className="sm:hidden">7 Regions</span>
               <span className="text-border">|</span>
-              <span className="text-emerald-500 font-bold">
-                4-of-7 Quorum Active
-              </span>
+              <span className="text-emerald-500 font-bold">4-of-7 Quorum Active</span>
             </div>
           </div>
 
@@ -295,9 +277,7 @@ export default function DesignPartnerClient({
               <span className="font-bold text-foreground">
                 {spotsInfo.remainingSpots} of {spotsInfo.totalSpots}
               </span>
-              <span className="text-muted-foreground text-[11px]">
-                Spots Remaining
-              </span>
+              <span className="text-muted-foreground text-[11px]">Spots Remaining</span>
             </div>
 
             <button
@@ -330,47 +310,37 @@ export default function DesignPartnerClient({
 
           <p className="text-sm sm:text-lg text-muted-foreground leading-relaxed max-w-2xl">
             We are selecting{" "}
-            <span className="text-foreground font-semibold">
-              15 fast-moving engineering teams
-            </span>{" "}
+            <span className="text-foreground font-semibold">15 fast-moving engineering teams</span>{" "}
             to receive{" "}
             <span className="text-foreground font-bold font-mono">
               1 full year of Netrunner Pro ($228 value)
             </span>{" "}
-            at zero cost. In exchange, stress-test our Cloudflare edge mesh with
-            real traffic and share your launch feedback.
+            at zero cost. In exchange, stress-test our Cloudflare edge mesh with real traffic and
+            share your launch feedback.
           </p>
 
           {/* Quick Metrics Strip */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 w-full pt-4">
             <div className="p-3.5 rounded-xl bg-card border border-border flex flex-col items-center justify-center text-center">
-              <span className="text-2xl font-black text-foreground font-mono">
-                250
-              </span>
+              <span className="text-2xl font-black text-foreground font-mono">250</span>
               <span className="text-[11px] font-mono text-muted-foreground uppercase tracking-wider mt-0.5">
                 Active Monitors
               </span>
             </div>
             <div className="p-3.5 rounded-xl bg-card border border-border flex flex-col items-center justify-center text-center">
-              <span className="text-2xl font-black text-foreground font-mono">
-                30s
-              </span>
+              <span className="text-2xl font-black text-foreground font-mono">30s</span>
               <span className="text-[11px] font-mono text-muted-foreground uppercase tracking-wider mt-0.5">
                 Global Edge Checks
               </span>
             </div>
             <div className="p-3.5 rounded-xl bg-card border border-border flex flex-col items-center justify-center text-center">
-              <span className="text-2xl font-black text-foreground font-mono">
-                $0
-              </span>
+              <span className="text-2xl font-black text-foreground font-mono">$0</span>
               <span className="text-[11px] font-mono text-muted-foreground uppercase tracking-wider mt-0.5">
                 Full 365-Day License
               </span>
             </div>
             <div className="p-3.5 rounded-xl bg-card border border-border flex flex-col items-center justify-center text-center">
-              <span className="text-2xl font-black text-emerald-500 font-mono">
-                15
-              </span>
+              <span className="text-2xl font-black text-emerald-500 font-mono">15</span>
               <span className="text-[11px] font-mono text-muted-foreground uppercase tracking-wider mt-0.5">
                 Slots Available
               </span>
@@ -465,8 +435,8 @@ export default function DesignPartnerClient({
                   Check Status & Redeem VIP Partner License
                 </h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  Enter your work email or Application Reference ID to retrieve
-                  your review status or activate your 1-Year Pro key.
+                  Enter your work email or Application Reference ID to retrieve your review status
+                  or activate your 1-Year Pro key.
                 </p>
               </div>
 
@@ -479,10 +449,7 @@ export default function DesignPartnerClient({
             </div>
 
             {/* Lookup Input Form */}
-            <form
-              onSubmit={handleLookup}
-              className="flex flex-col sm:flex-row gap-3"
-            >
+            <form onSubmit={handleLookup} className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
                 <Search className="size-4 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
@@ -499,11 +466,7 @@ export default function DesignPartnerClient({
                 disabled={lookupLoading}
                 className="inline-flex items-center justify-center gap-2 h-10 px-6 bg-primary text-primary-foreground font-bold text-xs rounded-xl hover:opacity-90 transition-all cursor-pointer shrink-0 disabled:opacity-50"
               >
-                {lookupLoading ? (
-                  <Loader2 className="size-4 animate-spin" />
-                ) : (
-                  "Check Application"
-                )}
+                {lookupLoading ? <Loader2 className="size-4 animate-spin" /> : "Check Application"}
               </button>
             </form>
 
@@ -525,14 +488,12 @@ export default function DesignPartnerClient({
                       {/* Status Tag */}
                       {lookupResult.record.status === "PENDING" && (
                         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-500 text-xs font-mono font-bold">
-                          <Clock className="size-3.5 animate-pulse" /> PENDING
-                          REVIEW (Under 24h)
+                          <Clock className="size-3.5 animate-pulse" /> PENDING REVIEW (Under 24h)
                         </div>
                       )}
                       {lookupResult.record.status === "APPROVED" && (
                         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 text-xs font-mono font-bold">
-                          <CheckCircle2 className="size-3.5" /> PARTNERSHIP
-                          APPROVED!
+                          <CheckCircle2 className="size-3.5" /> PARTNERSHIP APPROVED!
                         </div>
                       )}
                       {lookupResult.record.status === "REJECTED" && (
@@ -544,93 +505,73 @@ export default function DesignPartnerClient({
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                       <div>
-                        <span className="text-muted-foreground font-mono">
-                          Application ID:{" "}
-                        </span>
+                        <span className="text-muted-foreground font-mono">Application ID: </span>
                         <span className="text-foreground font-mono font-semibold">
                           {lookupResult.record.id}
                         </span>
                       </div>
                       <div>
-                        <span className="text-muted-foreground font-mono">
-                          Submitted:{" "}
-                        </span>
+                        <span className="text-muted-foreground font-mono">Submitted: </span>
                         <span className="text-foreground font-mono">
-                          {new Date(
-                            lookupResult.record.createdAt,
-                          ).toLocaleDateString()}
+                          {new Date(lookupResult.record.createdAt).toLocaleDateString()}
                         </span>
                       </div>
                     </div>
 
                     {/* Approved Actions & VIP Code */}
-                    {lookupResult.record.status === "APPROVED" &&
-                      lookupResult.record.vipCode && (
-                        <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-2">
-                          <div className="flex flex-col gap-1">
-                            <span className="text-[11px] font-mono font-bold uppercase text-emerald-500">
-                              Your 1-Year VIP License Key:
-                            </span>
-                            <div className="flex items-center gap-2">
-                              <code className="text-sm font-mono font-black text-foreground bg-card px-2.5 py-1 rounded-lg border border-border">
-                                {lookupResult.record.vipCode}
-                              </code>
-                              <button
-                                onClick={() =>
-                                  handleCopy(
-                                    lookupResult.record!.vipCode!,
-                                    "vip",
-                                  )
-                                }
-                                className="p-1.5 rounded-lg border border-border hover:bg-card text-muted-foreground hover:text-foreground transition-all cursor-pointer"
-                                title="Copy VIP Key"
-                              >
-                                {copiedVip ? (
-                                  <Check className="size-4 text-emerald-500" />
-                                ) : (
-                                  <Copy className="size-4" />
-                                )}
-                              </button>
-                            </div>
-                          </div>
-
+                    {lookupResult.record.status === "APPROVED" && lookupResult.record.vipCode && (
+                      <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-2">
+                        <div className="flex flex-col gap-1">
+                          <span className="text-[11px] font-mono font-bold uppercase text-emerald-500">
+                            Your 1-Year VIP License Key:
+                          </span>
                           <div className="flex items-center gap-2">
-                            {lookupResult.record.redeemedAt ? (
-                              <div className="inline-flex items-center gap-1.5 text-xs font-mono text-emerald-500 font-bold bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20">
-                                <CheckCheck className="size-4" /> Already
-                                Activated on Account
-                              </div>
-                            ) : (
-                              <button
-                                onClick={() =>
-                                  handleRedeemVipKey(
-                                    lookupResult.record!.vipCode!,
-                                  )
-                                }
-                                disabled={redeemingKey}
-                                className="inline-flex items-center gap-1.5 h-10 px-5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-50"
-                              >
-                                {redeemingKey ? (
-                                  <>
-                                    <Loader2 className="size-3.5 animate-spin" />{" "}
-                                    Activating...
-                                  </>
-                                ) : (
-                                  <>
-                                    <Sparkles className="size-3.5" /> Activate
-                                    1-Year Pro Now
-                                  </>
-                                )}
-                              </button>
-                            )}
+                            <code className="text-sm font-mono font-black text-foreground bg-card px-2.5 py-1 rounded-lg border border-border">
+                              {lookupResult.record.vipCode}
+                            </code>
+                            <button
+                              onClick={() => handleCopy(lookupResult.record!.vipCode!, "vip")}
+                              className="p-1.5 rounded-lg border border-border hover:bg-card text-muted-foreground hover:text-foreground transition-all cursor-pointer"
+                              title="Copy VIP Key"
+                            >
+                              {copiedVip ? (
+                                <Check className="size-4 text-emerald-500" />
+                              ) : (
+                                <Copy className="size-4" />
+                              )}
+                            </button>
                           </div>
                         </div>
-                      )}
+
+                        <div className="flex items-center gap-2">
+                          {lookupResult.record.redeemedAt ? (
+                            <div className="inline-flex items-center gap-1.5 text-xs font-mono text-emerald-500 font-bold bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20">
+                              <CheckCheck className="size-4" /> Already Activated on Account
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => handleRedeemVipKey(lookupResult.record!.vipCode!)}
+                              disabled={redeemingKey}
+                              className="inline-flex items-center gap-1.5 h-10 px-5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-50"
+                            >
+                              {redeemingKey ? (
+                                <>
+                                  <Loader2 className="size-3.5 animate-spin" /> Activating...
+                                </>
+                              ) : (
+                                <>
+                                  <Sparkles className="size-3.5" /> Activate 1-Year Pro Now
+                                </>
+                              )}
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-xs text-red-400 font-mono">
-                    {lookupResult.error ||
-                      "No record found matching this query."}
+                    {lookupResult.error || "No record found matching this query."}
                   </div>
                 )}
               </div>
@@ -653,8 +594,8 @@ export default function DesignPartnerClient({
                 Calculate Your Annual Monitoring Savings
               </h2>
               <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                See how much your engineering team saves with PulseGuard Design
-                Partner status vs legacy uptime vendors.
+                See how much your engineering team saves with PulseGuard Design Partner status vs
+                legacy uptime vendors.
               </p>
             </div>
 
@@ -676,15 +617,10 @@ export default function DesignPartnerClient({
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between items-center text-xs font-mono">
-                  <label
-                    htmlFor={endpointsInputId}
-                    className="font-bold text-foreground"
-                  >
+                  <label htmlFor={endpointsInputId} className="font-bold text-foreground">
                     Active Endpoints / Services
                   </label>
-                  <span className="text-primary font-bold text-sm">
-                    {calcMonitors} Monitors
-                  </span>
+                  <span className="text-primary font-bold text-sm">{calcMonitors} Monitors</span>
                 </div>
                 <input
                   id={endpointsInputId}
@@ -706,12 +642,8 @@ export default function DesignPartnerClient({
 
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between items-center text-xs font-mono">
-                  <span className="font-bold text-foreground">
-                    Edge Check Frequency
-                  </span>
-                  <span className="text-primary font-bold text-sm">
-                    {calcInterval} Seconds
-                  </span>
+                  <span className="font-bold text-foreground">Edge Check Frequency</span>
+                  <span className="text-primary font-bold text-sm">{calcInterval} Seconds</span>
                 </div>
                 <div className="grid grid-cols-4 gap-2">
                   {[30, 60, 180, 300].map((sec) => (
@@ -735,9 +667,7 @@ export default function DesignPartnerClient({
             {/* Vendor Comparison Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="p-4 rounded-2xl bg-background border border-border flex flex-col gap-2">
-                <span className="text-xs font-bold text-muted-foreground">
-                  Datadog
-                </span>
+                <span className="text-xs font-bold text-muted-foreground">Datadog</span>
                 <span className="text-xl font-black font-mono text-foreground">
                   ${datadogEstimatedCost}
                 </span>
@@ -747,9 +677,7 @@ export default function DesignPartnerClient({
               </div>
 
               <div className="p-4 rounded-2xl bg-background border border-border flex flex-col gap-2">
-                <span className="text-xs font-bold text-muted-foreground">
-                  Better Stack
-                </span>
+                <span className="text-xs font-bold text-muted-foreground">Better Stack</span>
                 <span className="text-xl font-black font-mono text-foreground">
                   ${betterStackEstimatedCost}
                 </span>
@@ -762,12 +690,8 @@ export default function DesignPartnerClient({
                 <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-[9px] font-mono font-black uppercase px-2 py-0.5 rounded-bl-lg">
                   VIP PARTNER
                 </div>
-                <span className="text-xs font-bold text-primary">
-                  PulseGuard
-                </span>
-                <span className="text-2xl font-black font-mono text-emerald-500">
-                  $0.00
-                </span>
+                <span className="text-xs font-bold text-primary">PulseGuard</span>
+                <span className="text-2xl font-black font-mono text-emerald-500">$0.00</span>
                 <span className="text-[10px] text-foreground font-semibold leading-tight">
                   1 Year Netrunner Pro ($228 retail) 100% Free.
                 </span>
@@ -783,8 +707,8 @@ export default function DesignPartnerClient({
               What You Unlock as a PulseGuard Design Partner
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground">
-              Everything in our flagship Netrunner Pro tier, plus direct
-              executive access to the engineering team.
+              Everything in our flagship Netrunner Pro tier, plus direct executive access to the
+              engineering team.
             </p>
           </div>
 
@@ -793,13 +717,11 @@ export default function DesignPartnerClient({
               <div className="size-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold">
                 <Globe2 className="size-5" />
               </div>
-              <h3 className="font-bold text-foreground text-sm">
-                7-Region Quorum Consensus
-              </h3>
+              <h3 className="font-bold text-foreground text-sm">7-Region Quorum Consensus</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                4-of-7 multi-region verification eliminates false alarms. If a
-                single region hiccups, independent nodes across North America,
-                Europe, and Asia-Pacific verify before alerting.
+                4-of-7 multi-region verification eliminates false alarms. If a single region
+                hiccups, independent nodes across North America, Europe, and Asia-Pacific verify
+                before alerting.
               </p>
             </div>
 
@@ -807,12 +729,10 @@ export default function DesignPartnerClient({
               <div className="size-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold">
                 <Zap className="size-5" />
               </div>
-              <h3 className="font-bold text-foreground text-sm">
-                250 Monitors & 30-Sec Intervals
-              </h3>
+              <h3 className="font-bold text-foreground text-sm">250 Monitors & 30-Sec Intervals</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                HTTP/S, SSL certificate expiry, DNS propagation, cron job
-                heartbeats, and WebSocket ping monitors with zero throttling.
+                HTTP/S, SSL certificate expiry, DNS propagation, cron job heartbeats, and WebSocket
+                ping monitors with zero throttling.
               </p>
             </div>
 
@@ -820,12 +740,10 @@ export default function DesignPartnerClient({
               <div className="size-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold">
                 <Radio className="size-5" />
               </div>
-              <h3 className="font-bold text-foreground text-sm">
-                Multi-Channel Alert Dispatch
-              </h3>
+              <h3 className="font-bold text-foreground text-sm">Multi-Channel Alert Dispatch</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Instant incident broadcasts across Discord, Slack, Telegram,
-                PagerDuty, Opsgenie, SMS, and custom JSON webhook webhooks.
+                Instant incident broadcasts across Discord, Slack, Telegram, PagerDuty, Opsgenie,
+                SMS, and custom JSON webhook webhooks.
               </p>
             </div>
 
@@ -833,9 +751,7 @@ export default function DesignPartnerClient({
               <div className="size-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold">
                 <Layers className="size-5" />
               </div>
-              <h3 className="font-bold text-foreground text-sm">
-                Custom Status Pages & CNAME
-              </h3>
+              <h3 className="font-bold text-foreground text-sm">Custom Status Pages & CNAME</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 Publish public or private branded status pages at{" "}
                 <code className="text-[11px] font-mono bg-muted px-1.5 py-0.5 rounded">
@@ -849,13 +765,10 @@ export default function DesignPartnerClient({
               <div className="size-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold">
                 <Users className="size-5" />
               </div>
-              <h3 className="font-bold text-foreground text-sm">
-                Private Founder War Room
-              </h3>
+              <h3 className="font-bold text-foreground text-sm">Private Founder War Room</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Direct Telegram / Discord private channel with PulseGuard core
-                maintainers. Request custom features and get priority roadmap
-                execution.
+                Direct Telegram / Discord private channel with PulseGuard core maintainers. Request
+                custom features and get priority roadmap execution.
               </p>
             </div>
 
@@ -863,12 +776,10 @@ export default function DesignPartnerClient({
               <div className="size-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold">
                 <Sparkles className="size-5" />
               </div>
-              <h3 className="font-bold text-foreground text-sm">
-                Launch Spotlight & Backlink
-              </h3>
+              <h3 className="font-bold text-foreground text-sm">Launch Spotlight & Backlink</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Featured partner badge, company logo, and do-follow link on our
-                Product Hunt launch page, social channels, and partner showcase.
+                Featured partner badge, company logo, and do-follow link on our Product Hunt launch
+                page, social channels, and partner showcase.
               </p>
             </div>
           </div>
@@ -888,55 +799,43 @@ export default function DesignPartnerClient({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
             <div className="bg-card border border-border p-6 rounded-2xl flex flex-col gap-3 relative">
               <div className="flex items-center justify-between">
-                <span className="text-2xl font-black font-mono text-primary">
-                  01
-                </span>
+                <span className="text-2xl font-black font-mono text-primary">01</span>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">
                   60 SECONDS
                 </span>
               </div>
-              <h3 className="font-bold text-foreground text-sm">
-                Submit Workload Profile
-              </h3>
+              <h3 className="font-bold text-foreground text-sm">Submit Workload Profile</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Fill in your project URL, endpoint requirements, and monitoring
-                pain points below. Verified within 24 hours.
+                Fill in your project URL, endpoint requirements, and monitoring pain points below.
+                Verified within 24 hours.
               </p>
             </div>
 
             <div className="bg-card border border-border p-6 rounded-2xl flex flex-col gap-3 relative">
               <div className="flex items-center justify-between">
-                <span className="text-2xl font-black font-mono text-primary">
-                  02
-                </span>
+                <span className="text-2xl font-black font-mono text-primary">02</span>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-bold">
                   INSTANT ACCESS
                 </span>
               </div>
-              <h3 className="font-bold text-foreground text-sm">
-                Activate 1-Year VIP License
-              </h3>
+              <h3 className="font-bold text-foreground text-sm">Activate 1-Year VIP License</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Receive your VIP code to instantly unlock 250 Netrunner Pro
-                monitors, 30s checks, and custom status pages for 365 days.
+                Receive your VIP code to instantly unlock 250 Netrunner Pro monitors, 30s checks,
+                and custom status pages for 365 days.
               </p>
             </div>
 
             <div className="bg-card border border-border p-6 rounded-2xl flex flex-col gap-3 relative">
               <div className="flex items-center justify-between">
-                <span className="text-2xl font-black font-mono text-primary">
-                  03
-                </span>
+                <span className="text-2xl font-black font-mono text-primary">03</span>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">
                   LAUNCH DAY
                 </span>
               </div>
-              <h3 className="font-bold text-foreground text-sm">
-                Share Launch Testimonial
-              </h3>
+              <h3 className="font-bold text-foreground text-sm">Share Launch Testimonial</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Provide a quick 2-sentence review or 15-minute sync with the
-                founders. Get featured prominently across our launch channels.
+                Provide a quick 2-sentence review or 15-minute sync with the founders. Get featured
+                prominently across our launch channels.
               </p>
             </div>
           </div>
@@ -958,22 +857,17 @@ export default function DesignPartnerClient({
                   Application Received!
                 </h2>
                 <p className="text-xs sm:text-sm text-muted-foreground mt-2 leading-relaxed">
-                  Thank you for applying to the PulseGuard Design Partner
-                  Program. Our founding team reviews every application within 24
-                  hours.
+                  Thank you for applying to the PulseGuard Design Partner Program. Our founding team
+                  reviews every application within 24 hours.
                 </p>
               </div>
 
               {/* Application Receipt Card */}
               <div className="w-full bg-background border border-border rounded-2xl p-4.5 flex flex-col gap-3 text-left">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-muted-foreground font-mono">
-                    Reference ID:
-                  </span>
+                  <span className="text-muted-foreground font-mono">Reference ID:</span>
                   <div className="flex items-center gap-1.5">
-                    <code className="font-mono font-bold text-foreground">
-                      {submittedId}
-                    </code>
+                    <code className="font-mono font-bold text-foreground">{submittedId}</code>
                     <button
                       onClick={() => handleCopy(submittedId, "id")}
                       className="p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground cursor-pointer"
@@ -989,21 +883,14 @@ export default function DesignPartnerClient({
                 </div>
 
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-muted-foreground font-mono">
-                    Applicant Email:
-                  </span>
-                  <span className="font-mono font-bold text-foreground">
-                    {formData.email}
-                  </span>
+                  <span className="text-muted-foreground font-mono">Applicant Email:</span>
+                  <span className="font-mono font-bold text-foreground">{formData.email}</span>
                 </div>
 
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-muted-foreground font-mono">
-                    Initial Status:
-                  </span>
+                  <span className="text-muted-foreground font-mono">Initial Status:</span>
                   <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">
-                    <Clock className="size-3 animate-pulse" /> PENDING REVIEW
-                    (&lt;24h)
+                    <Clock className="size-3 animate-pulse" /> PENDING REVIEW (&lt;24h)
                   </span>
                 </div>
               </div>
@@ -1011,8 +898,8 @@ export default function DesignPartnerClient({
               <div className="p-3.5 bg-primary/5 border border-primary/20 rounded-xl flex items-center gap-3 text-left text-xs text-muted-foreground">
                 <ShieldCheck className="size-5 text-primary shrink-0" />
                 <span>
-                  Once approved, your 1-Year VIP license key will be generated
-                  and you can redeem it directly on this page or via dashboard.
+                  Once approved, your 1-Year VIP license key will be generated and you can redeem it
+                  directly on this page or via dashboard.
                 </span>
               </div>
 
@@ -1057,8 +944,8 @@ export default function DesignPartnerClient({
                     Apply for 1-Year Free Netrunner Pro
                   </h2>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    Takes ~60 seconds. We review and approve workloads building
-                    modern software products.
+                    Takes ~60 seconds. We review and approve workloads building modern software
+                    products.
                   </p>
                 </div>
 
@@ -1089,9 +976,7 @@ export default function DesignPartnerClient({
                       required
                       placeholder="Sarah Chen"
                       value={formData.name}
-                      onChange={(e) =>
-                        setFormData({ ...formData, name: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       className="bg-background border border-border rounded-xl px-3.5 py-2.5 text-xs text-foreground focus:outline-none focus:border-primary font-sans"
                     />
                   </div>
@@ -1105,9 +990,7 @@ export default function DesignPartnerClient({
                       required
                       placeholder="sarah@yourcompany.com"
                       value={formData.email}
-                      onChange={(e) =>
-                        setFormData({ ...formData, email: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       className="bg-background border border-border rounded-xl px-3.5 py-2.5 text-xs text-foreground focus:outline-none focus:border-primary font-sans"
                     />
                   </div>
@@ -1122,9 +1005,7 @@ export default function DesignPartnerClient({
                       type="text"
                       placeholder="e.g. HyperScale Labs"
                       value={formData.company}
-                      onChange={(e) =>
-                        setFormData({ ...formData, company: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                       className="bg-background border border-border rounded-xl px-3.5 py-2.5 text-xs text-foreground focus:outline-none focus:border-primary font-sans"
                     />
                   </div>
@@ -1138,9 +1019,7 @@ export default function DesignPartnerClient({
                       required
                       placeholder="https://app.yourcompany.com"
                       value={formData.website}
-                      onChange={(e) =>
-                        setFormData({ ...formData, website: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, website: e.target.value })}
                       className="bg-background border border-border rounded-xl px-3.5 py-2.5 text-xs text-foreground focus:outline-none focus:border-primary font-sans"
                     />
                   </div>
@@ -1175,9 +1054,7 @@ export default function DesignPartnerClient({
                       <option value="1-10">1 - 10 microservices</option>
                       <option value="10-50">10 - 50 endpoints</option>
                       <option value="50-100">50 - 100 endpoints</option>
-                      <option value="100-250">
-                        100 - 250 (Full Pro Quota)
-                      </option>
+                      <option value="100-250">100 - 250 (Full Pro Quota)</option>
                     </select>
                   </div>
 
@@ -1200,17 +1077,11 @@ export default function DesignPartnerClient({
                       className="bg-background border border-border rounded-xl px-3.5 py-2.5 text-xs text-foreground focus:outline-none focus:border-primary font-sans cursor-pointer"
                     >
                       <option value="UptimeRobot">UptimeRobot</option>
-                      <option value="Better Stack">
-                        Better Stack / Better Uptime
-                      </option>
+                      <option value="Better Stack">Better Stack / Better Uptime</option>
                       <option value="Checkly">Checkly</option>
-                      <option value="Datadog / Pingdom">
-                        Datadog / Pingdom
-                      </option>
+                      <option value="Datadog / Pingdom">Datadog / Pingdom</option>
                       <option value="Freshping">Former Freshping User</option>
-                      <option value="Custom Scripts">
-                        Custom Scripts / None
-                      </option>
+                      <option value="Custom Scripts">Custom Scripts / None</option>
                     </select>
                   </div>
 
@@ -1224,26 +1095,16 @@ export default function DesignPartnerClient({
                     <select
                       id={techStackInputId}
                       value={formData.techStack}
-                      onChange={(e) =>
-                        setFormData({ ...formData, techStack: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, techStack: e.target.value })}
                       className="bg-background border border-border rounded-xl px-3.5 py-2.5 text-xs text-foreground focus:outline-none focus:border-primary font-sans cursor-pointer"
                     >
                       <option value="Next.js / Cloudflare / Node">
                         Next.js / Cloudflare / Node
                       </option>
-                      <option value="Go / Rust / Microservices">
-                        Go / Rust / Microservices
-                      </option>
-                      <option value="Python / FastAPI / Django">
-                        Python / FastAPI / Django
-                      </option>
-                      <option value="Ruby on Rails / Postgres">
-                        Ruby on Rails / Postgres
-                      </option>
-                      <option value="Docker / Kubernetes / Edge">
-                        Docker / Kubernetes / Edge
-                      </option>
+                      <option value="Go / Rust / Microservices">Go / Rust / Microservices</option>
+                      <option value="Python / FastAPI / Django">Python / FastAPI / Django</option>
+                      <option value="Ruby on Rails / Postgres">Ruby on Rails / Postgres</option>
+                      <option value="Docker / Kubernetes / Edge">Docker / Kubernetes / Edge</option>
                     </select>
                   </div>
                 </div>
@@ -1257,9 +1118,7 @@ export default function DesignPartnerClient({
                       type="text"
                       placeholder="e.g. Eliminating false alarms, SSL alerts, or global latency"
                       value={formData.painPoint}
-                      onChange={(e) =>
-                        setFormData({ ...formData, painPoint: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, painPoint: e.target.value })}
                       className="bg-background border border-border rounded-xl px-3.5 py-2.5 text-xs text-foreground focus:outline-none focus:border-primary font-sans"
                     />
                   </div>
@@ -1302,12 +1161,9 @@ export default function DesignPartnerClient({
                   htmlFor="partner-commitment"
                   className="text-xs text-muted-foreground leading-relaxed cursor-pointer"
                 >
-                  <strong className="text-foreground">
-                    Founder's Agreement:
-                  </strong>{" "}
-                  I agree to use PulseGuard for real uptime monitoring and share
-                  an honest 2-sentence testimonial on launch day in exchange for
-                  1 year of free Netrunner Pro ($228 value).
+                  <strong className="text-foreground">Founder's Agreement:</strong> I agree to use
+                  PulseGuard for real uptime monitoring and share an honest 2-sentence testimonial
+                  on launch day in exchange for 1 year of free Netrunner Pro ($228 value).
                 </label>
               </div>
 
@@ -1319,13 +1175,11 @@ export default function DesignPartnerClient({
               >
                 {loading ? (
                   <>
-                    <Loader2 className="size-4 animate-spin" /> Transmitting
-                    Application...
+                    <Loader2 className="size-4 animate-spin" /> Transmitting Application...
                   </>
                 ) : (
                   <>
-                    Claim 1-Year Free Pro Access ($228 Value){" "}
-                    <ArrowRight className="size-4" />
+                    Claim 1-Year Free Pro Access ($228 Value) <ArrowRight className="size-4" />
                   </>
                 )}
               </button>
@@ -1350,17 +1204,15 @@ export default function DesignPartnerClient({
             </div>
 
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-              "Most uptime monitoring tools are either bloated enterprise
-              dinosaurs or simple hobbyist wrappers around single-server ping
-              scripts. We engineered PulseGuard natively on Cloudflare's global
-              edge workers with distributed quorum consensus to eliminate false
-              alarms forever.
+              "Most uptime monitoring tools are either bloated enterprise dinosaurs or simple
+              hobbyist wrappers around single-server ping scripts. We engineered PulseGuard natively
+              on Cloudflare's global edge workers with distributed quorum consensus to eliminate
+              false alarms forever.
             </p>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-              We are providing 15 engineering teams with full 1-year Netrunner
-              Pro licenses because real production workloads push our edge
-              workers, latency metrics, and WebSocket alert dispatchers to their
-              limit. Your feedback directly shapes our v1.0 launch."
+              We are providing 15 engineering teams with full 1-year Netrunner Pro licenses because
+              real production workloads push our edge workers, latency metrics, and WebSocket alert
+              dispatchers to their limit. Your feedback directly shapes our v1.0 launch."
             </p>
           </div>
         </section>
@@ -1388,9 +1240,7 @@ export default function DesignPartnerClient({
                   onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
                   className="w-full px-5 py-4 flex items-center justify-between text-left gap-4 cursor-pointer"
                 >
-                  <span className="font-bold text-foreground text-sm">
-                    {faq.q}
-                  </span>
+                  <span className="font-bold text-foreground text-sm">{faq.q}</span>
                   <ChevronDown
                     className={`size-4 text-muted-foreground shrink-0 transition-transform duration-200 ${
                       openFaq === idx ? "rotate-180 text-primary" : ""
@@ -1424,17 +1274,11 @@ export default function DesignPartnerClient({
               Read the Docs
             </Link>
             <span>•</span>
-            <Link
-              href={"/comparison" as any}
-              className="hover:text-foreground underline"
-            >
+            <Link href={"/comparison" as any} className="hover:text-foreground underline">
               View Comparison Matrix
             </Link>
             <span>•</span>
-            <a
-              href="mailto:founders@pulseguard.io"
-              className="hover:text-foreground underline"
-            >
+            <a href="mailto:founders@pulseguard.io" className="hover:text-foreground underline">
               Contact Founders
             </a>
           </div>

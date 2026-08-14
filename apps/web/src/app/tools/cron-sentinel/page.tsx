@@ -33,8 +33,8 @@ export default function CronSentinelPage() {
               Cron Pulse Sentinel
             </h1>
             <p className="text-muted-foreground text-lg md:text-xl max-w-3xl mx-auto font-mono">
-              [CALIBRATING EXECUTION ENGINE... ] Generate, debug, and visualize
-              monitoring schedules with sub-second precision.
+              [CALIBRATING EXECUTION ENGINE... ] Generate, debug, and visualize monitoring schedules
+              with sub-second precision.
             </p>
           </div>
 

@@ -28,9 +28,7 @@ export async function runAnomalyScan(prisma: PrismaClient) {
 
   // 1. Find monitors with enough recent UP events
   const monitorIds = await getMonitorsWithRecentData(prisma, now);
-  console.log(
-    `[AnomalyScan] Found ${monitorIds.length} monitors with sufficient data.`,
-  );
+  console.log(`[AnomalyScan] Found ${monitorIds.length} monitors with sufficient data.`);
 
   let anomaliesFound = 0;
 
@@ -49,10 +47,7 @@ export async function runAnomalyScan(prisma: PrismaClient) {
   return { monitorsScanned: monitorIds.length, anomaliesFound };
 }
 
-async function getMonitorsWithRecentData(
-  prisma: PrismaClient,
-  now: Date,
-): Promise<string[]> {
+async function getMonitorsWithRecentData(prisma: PrismaClient, now: Date): Promise<string[]> {
   const cutoff = new Date(now.getTime() - RECENT_WINDOW_MINUTES * 60 * 1000);
 
   const result = await prisma.$queryRaw<{ monitorId: string }[]>`
@@ -70,11 +65,7 @@ async function getMonitorsWithRecentData(
   return result.map((r) => r.monitorId);
 }
 
-async function scanMonitor(
-  prisma: PrismaClient,
-  monitorId: string,
-  now: Date,
-): Promise<number> {
+async function scanMonitor(prisma: PrismaClient, monitorId: string, now: Date): Promise<number> {
   // Build weekday-hour baselines from the last 4 weeks
   const baselines = await buildBaselines(prisma, monitorId, now);
   if (Object.keys(baselines).length === 0) return 0;
@@ -115,15 +106,9 @@ async function scanMonitor(
     if (existingInsight) continue;
 
     const severity = zScore > 5 ? ("CRITICAL" as any) : ("WARNING" as any);
-    const dayName = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ][eventDate.getDay()];
+    const dayName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][
+      eventDate.getDay()
+    ];
     const hour = eventDate.getHours();
 
     await prisma.monitorInsight.create({
@@ -161,9 +146,7 @@ async function buildBaselines(
   monitorId: string,
   now: Date,
 ): Promise<Record<string, WeekdayBaseline>> {
-  const cutoff = new Date(
-    now.getTime() - BASELINE_LOOKBACK_DAYS * 24 * 60 * 60 * 1000,
-  );
+  const cutoff = new Date(now.getTime() - BASELINE_LOOKBACK_DAYS * 24 * 60 * 60 * 1000);
 
   const events = await prisma.monitorEvent.findMany({
     where: {
@@ -192,8 +175,7 @@ async function buildBaselines(
 
     const n = latencies.length;
     const mean = latencies.reduce((a, b) => a + b, 0) / n;
-    const variance =
-      latencies.map((x) => (x - mean) ** 2).reduce((a, b) => a + b, 0) / n;
+    const variance = latencies.map((x) => (x - mean) ** 2).reduce((a, b) => a + b, 0) / n;
     const stdDev = Math.sqrt(variance);
 
     baselines[key] = { mean, stdDev, count: n };
@@ -206,9 +188,7 @@ async function getRecentEvents(
   prisma: PrismaClient,
   monitorId: string,
   now: Date,
-): Promise<
-  { id: string; latency: number; timestamp: Date; region: string | null }[]
-> {
+): Promise<{ id: string; latency: number; timestamp: Date; region: string | null }[]> {
   const cutoff = new Date(now.getTime() - RECENT_WINDOW_MINUTES * 60 * 1000);
 
   return prisma.monitorEvent.findMany({

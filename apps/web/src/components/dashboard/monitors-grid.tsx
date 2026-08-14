@@ -31,9 +31,7 @@ export function MonitorsGrid({ monitors }: MonitorsGridProps) {
 
   // Load layout from localStorage or generate default
   useEffect(() => {
-    const savedLayout = localStorage.getItem(
-      "pulseguard_dashboard_grid_layout",
-    );
+    const savedLayout = localStorage.getItem("pulseguard_dashboard_grid_layout");
     if (savedLayout) {
       try {
         const parsed = JSON.parse(savedLayout) as GridItemConfig[];
@@ -68,16 +66,11 @@ export function MonitorsGrid({ monitors }: MonitorsGridProps) {
   };
 
   const saveLayout = (newLayout: GridItemConfig[]) => {
-    localStorage.setItem(
-      "pulseguard_dashboard_grid_layout",
-      JSON.stringify(newLayout),
-    );
+    localStorage.setItem("pulseguard_dashboard_grid_layout", JSON.stringify(newLayout));
   };
 
   const handleResize = (id: string, size: "1x1" | "2x1" | "2x2") => {
-    const updated = layout.map((item) =>
-      item.id === id ? { ...item, size } : item,
-    );
+    const updated = layout.map((item) => (item.id === id ? { ...item, size } : item));
     setLayout(updated);
     saveLayout(updated);
   };
@@ -170,8 +163,7 @@ export function MonitorsGrid({ monitors }: MonitorsGridProps) {
         <div className="flex items-center gap-2 p-3.5 border border-primary/10 bg-primary/5 rounded-lg">
           <AlertCircle className="size-4 text-primary shrink-0" />
           <p className="text-xs text-primary/80 font-mono">
-            DRAG handles to rearrange nodes. Click RESIZE controls inside cards
-            to resize grids.
+            DRAG handles to rearrange nodes. Click RESIZE controls inside cards to resize grids.
           </p>
         </div>
       )}

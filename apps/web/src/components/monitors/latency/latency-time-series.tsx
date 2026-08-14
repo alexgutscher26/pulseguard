@@ -19,10 +19,7 @@ interface LatencyTimeSeriesProps {
   showPercentiles?: boolean;
 }
 
-export function LatencyTimeSeries({
-  data,
-  showPercentiles = true,
-}: LatencyTimeSeriesProps) {
+export function LatencyTimeSeries({ data, showPercentiles = true }: LatencyTimeSeriesProps) {
   const chartData = useMemo(() => {
     return data.map((point) => ({
       timestamp: point.timestamp * 1000, // Convert to ms
@@ -124,33 +121,23 @@ function CustomTooltip({ active, payload }: any) {
       </div>
       <div className="space-y-1">
         <div className="flex items-center justify-between gap-4">
-          <span className="text-muted-foreground text-xs uppercase tracking-wider">
-            Average:
-          </span>
+          <span className="text-muted-foreground text-xs uppercase tracking-wider">Average:</span>
           <span className="font-medium font-mono">{data.avg}ms</span>
         </div>
         <div className="flex items-center justify-between gap-4">
-          <span className="text-muted-foreground text-xs uppercase tracking-wider">
-            P50:
-          </span>
+          <span className="text-muted-foreground text-xs uppercase tracking-wider">P50:</span>
           <span className="font-medium font-mono">{data.p50}ms</span>
         </div>
         <div className="flex items-center justify-between gap-4">
-          <span className="text-muted-foreground text-xs uppercase tracking-wider">
-            P95:
-          </span>
+          <span className="text-muted-foreground text-xs uppercase tracking-wider">P95:</span>
           <span className="font-medium font-mono">{data.p95}ms</span>
         </div>
         <div className="flex items-center justify-between gap-4">
-          <span className="text-muted-foreground text-xs uppercase tracking-wider">
-            P99:
-          </span>
+          <span className="text-muted-foreground text-xs uppercase tracking-wider">P99:</span>
           <span className="font-medium font-mono">{data.p99}ms</span>
         </div>
         <div className="flex items-center justify-between gap-4 pt-2 mt-1 border-t border-primary/10">
-          <span className="text-muted-foreground text-xs uppercase tracking-wider">
-            Success:
-          </span>
+          <span className="text-muted-foreground text-xs uppercase tracking-wider">Success:</span>
           <span className="font-medium font-mono text-green-500">
             {(data.successRate * 100).toFixed(1)}%
           </span>

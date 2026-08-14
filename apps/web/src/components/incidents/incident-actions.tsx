@@ -16,10 +16,7 @@ interface IncidentActionsProps {
   currentStatus: string;
 }
 
-export function IncidentActions({
-  incidentId,
-  currentStatus,
-}: IncidentActionsProps) {
+export function IncidentActions({ incidentId, currentStatus }: IncidentActionsProps) {
   const [loading, setLoading] = useState(false);
 
   const handleUpdate = async (status: string | null) => {
@@ -41,11 +38,7 @@ export function IncidentActions({
 
   return (
     <div className="flex items-center gap-2">
-      <Select
-        onValueChange={handleUpdate}
-        defaultValue={currentStatus}
-        disabled={loading}
-      >
+      <Select onValueChange={handleUpdate} defaultValue={currentStatus} disabled={loading}>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Update Status" />
         </SelectTrigger>

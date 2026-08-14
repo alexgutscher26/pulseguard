@@ -1,23 +1,12 @@
 import React from "react";
 import { render } from "@react-email/render";
-import {
-  Html,
-  Head,
-  Body,
-  Container,
-  Section,
-  Text,
-  Link,
-  Hr,
-} from "@react-email/components";
+import { Html, Head, Body, Container, Section, Text, Link, Hr } from "@react-email/components";
 import { emailTheme } from "../styles/theme";
 import type { MonitorAlertData } from "../index";
 
 export function MonitorAlert({ data }: { data: MonitorAlertData }) {
   const isDown = data.status === "DOWN";
-  const statusColor = isDown
-    ? emailTheme.colors.destructive
-    : emailTheme.colors.primary;
+  const statusColor = isDown ? emailTheme.colors.destructive : emailTheme.colors.primary;
   const statusText = isDown ? "DOWN" : "UP";
   const dashboardUrl = `https://pulseguard.com/monitors/${data.monitorId}`;
 
@@ -222,8 +211,6 @@ export function MonitorAlert({ data }: { data: MonitorAlertData }) {
   );
 }
 
-export async function renderMonitorAlert(
-  data: MonitorAlertData,
-): Promise<string> {
+export async function renderMonitorAlert(data: MonitorAlertData): Promise<string> {
   return await render(<MonitorAlert data={data} />);
 }

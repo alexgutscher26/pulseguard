@@ -7,22 +7,11 @@ import { auth } from "@pulseguard/auth";
 import { headers } from "next/headers";
 import { sendMonitorAlert } from "@pulseguard/email";
 import { env } from "@pulseguard/env/server";
-import {
-  assertNotificationChannelLimits,
-  checkAndNotifyUsageLimits,
-} from "@/lib/billing-server";
+import { assertNotificationChannelLimits, checkAndNotifyUsageLimits } from "@/lib/billing-server";
 
 const channelSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  type: z.enum([
-    "EMAIL",
-    "DISCORD",
-    "SLACK",
-    "WEBHOOK",
-    "TELEGRAM",
-    "SMS",
-    "PAGERDUTY",
-  ]),
+  type: z.enum(["EMAIL", "DISCORD", "SLACK", "WEBHOOK", "TELEGRAM", "SMS", "PAGERDUTY"]),
   config: z.string().transform((str, ctx) => {
     try {
       return JSON.parse(str);
@@ -36,10 +25,7 @@ const channelSchema = z.object({
   }),
 });
 
-export async function createNotificationChannel(
-  prevState: any,
-  formData: FormData,
-) {
+export async function createNotificationChannel(prevState: any, formData: FormData) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -158,8 +144,7 @@ export async function sendTestNotification(id: string) {
     };
 
     if (channel.type === "EMAIL") {
-      if (!config?.email)
-        return { success: false, error: "Invalid email configuration" };
+      if (!config?.email) return { success: false, error: "Invalid email configuration" };
       const result = await sendMonitorAlert(config.email, testData as any);
       if ("error" in result) return { success: false, error: result.error };
       return { success: true };
@@ -423,9 +408,7 @@ const alertRuleSchema = z.object({
   threshold: z.coerce.number().optional(),
   comparison: z.enum(["GT", "LT"]).optional(),
   targetStatus: z.enum(["UP", "DOWN", "PAUSED", "MAINTENANCE"]).optional(),
-  channelIds: z
-    .array(z.string())
-    .min(1, "At least one notification channel is required"),
+  channelIds: z.array(z.string()).min(1, "At least one notification channel is required"),
 });
 
 export async function createAlertRule(prevState: any, formData: FormData) {
@@ -450,14 +433,9 @@ export async function createAlertRule(prevState: any, formData: FormData) {
       monitorId: formData.get("monitorId") as string,
       trigger: formData.get("trigger") as any,
       threshold: thresholdRaw ? Number(thresholdRaw) : undefined,
-      comparison:
-        comparisonRaw && comparisonRaw !== ""
-          ? (comparisonRaw as any)
-          : undefined,
+      comparison: comparisonRaw && comparisonRaw !== "" ? (comparisonRaw as any) : undefined,
       targetStatus:
-        targetStatusRaw && targetStatusRaw !== ""
-          ? (targetStatusRaw as any)
-          : undefined,
+        targetStatusRaw && targetStatusRaw !== "" ? (targetStatusRaw as any) : undefined,
       channelIds,
     };
 
@@ -517,11 +495,7 @@ export async function createAlertRule(prevState: any, formData: FormData) {
   }
 }
 
-export async function updateAlertRule(
-  id: string,
-  prevState: any,
-  formData: FormData,
-) {
+export async function updateAlertRule(id: string, prevState: any, formData: FormData) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -543,14 +517,9 @@ export async function updateAlertRule(
       monitorId: formData.get("monitorId") as string,
       trigger: formData.get("trigger") as any,
       threshold: thresholdRaw ? Number(thresholdRaw) : undefined,
-      comparison:
-        comparisonRaw && comparisonRaw !== ""
-          ? (comparisonRaw as any)
-          : undefined,
+      comparison: comparisonRaw && comparisonRaw !== "" ? (comparisonRaw as any) : undefined,
       targetStatus:
-        targetStatusRaw && targetStatusRaw !== ""
-          ? (targetStatusRaw as any)
-          : undefined,
+        targetStatusRaw && targetStatusRaw !== "" ? (targetStatusRaw as any) : undefined,
       channelIds,
     };
 

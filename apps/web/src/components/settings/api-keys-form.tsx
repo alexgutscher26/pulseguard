@@ -2,16 +2,7 @@
 // Safe layout comment trigger for UX audit
 
 import { useState, useEffect, useCallback } from "react";
-import {
-  Key,
-  Plus,
-  Trash2,
-  Copy,
-  Check,
-  Eye,
-  EyeOff,
-  Terminal,
-} from "lucide-react";
+import { Key, Plus, Trash2, Copy, Check, Eye, EyeOff, Terminal } from "lucide-react";
 
 interface ApiKey {
   id: string;
@@ -42,10 +33,7 @@ function CopyButton({ text }: { text: string }) {
     setTimeout(() => setCopied(false), 2000);
   };
   return (
-    <button
-      onClick={copy}
-      className="p-1 text-primary/40 hover:text-primary transition-colors"
-    >
+    <button onClick={copy} className="p-1 text-primary/40 hover:text-primary transition-colors">
       {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
     </button>
   );
@@ -76,9 +64,7 @@ export function ApiKeysForm() {
         const data = JSON.parse(text);
         setKeys(data.keys ?? []);
       } catch {
-        setError(
-          "Server returned an unexpected response. Try restarting the dev server.",
-        );
+        setError("Server returned an unexpected response. Try restarting the dev server.");
       }
     } catch {
       setError("Failed to connect to the server.");
@@ -104,8 +90,7 @@ export function ApiKeysForm() {
       const text = await res.text();
       if (!text) throw new Error(`Server error (${res.status})`);
       const data = JSON.parse(text);
-      if (!res.ok)
-        throw new Error(data.error || `Server error (${res.status})`);
+      if (!res.ok) throw new Error(data.error || `Server error (${res.status})`);
       setNewRawKey(data.key.rawKey);
       setShowRawKey(true);
       setNewKeyName("");
@@ -139,8 +124,9 @@ export function ApiKeysForm() {
               API Keys
             </h3>
             <p className="text-xs text-primary/60 font-mono mt-0.5">
-              Authenticate the{" "}
-              <code className="bg-primary/10 px-1 rounded">pulseguard-cli</code>{" "}
+              Authenticate the <code className="bg-primary/10 px-1 rounded">
+                pulseguard-cli
+              </code>{" "}
               and external integrations
             </p>
           </div>
@@ -195,11 +181,7 @@ export function ApiKeysForm() {
                 onClick={() => setShowRawKey((v) => !v)}
                 className="text-primary/40 hover:text-primary"
               >
-                {showRawKey ? (
-                  <EyeOff className="size-3.5" />
-                ) : (
-                  <Eye className="size-3.5" />
-                )}
+                {showRawKey ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
               </button>
               <CopyButton text={newRawKey} />
             </div>
@@ -222,9 +204,7 @@ export function ApiKeysForm() {
             <div className="p-4 bg-primary/5 rounded-full border border-primary/10">
               <Key className="size-8 opacity-50" />
             </div>
-            <p className="font-mono text-sm uppercase tracking-widest">
-              No API keys yet
-            </p>
+            <p className="font-mono text-sm uppercase tracking-widest">No API keys yet</p>
             <p className="font-mono text-xs text-primary/30">
               Create one to use the CLI or integrate with CI/CD pipelines
             </p>
@@ -238,9 +218,7 @@ export function ApiKeysForm() {
               >
                 <div className="flex flex-col gap-0.5">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold font-mono text-foreground">
-                      {key.name}
-                    </span>
+                    <span className="text-sm font-bold font-mono text-foreground">{key.name}</span>
                     <span className="text-xs bg-primary/10 text-primary/60 px-1.5 py-0.5 font-mono rounded">
                       {key.scopes}
                     </span>
@@ -301,13 +279,9 @@ export function ApiKeysForm() {
             },
           ].map(({ label, cmd }) => (
             <div key={label} className="flex items-center gap-3">
-              <span className="text-xs text-primary/40 font-mono w-24 shrink-0">
-                {label}
-              </span>
+              <span className="text-xs text-primary/40 font-mono w-24 shrink-0">{label}</span>
               <div className="flex items-center gap-2 bg-black/60 border border-primary/10 px-3 py-1.5 flex-1 rounded-sm">
-                <code className="text-xs font-mono text-primary/80 flex-1">
-                  {cmd}
-                </code>
+                <code className="text-xs font-mono text-primary/80 flex-1">{cmd}</code>
                 <CopyButton text={cmd} />
               </div>
             </div>
@@ -318,9 +292,9 @@ export function ApiKeysForm() {
       {/* Security note */}
       <section className="border border-primary/10 p-4 bg-amber-950/10 border-amber-500/20">
         <p className="text-xs text-amber-400/70 font-mono leading-relaxed">
-          <strong className="text-amber-400">Security:</strong> API keys grant
-          full read/write access to your monitors. Never commit them to version
-          control. Use environment variables or secret managers in CI/CD.
+          <strong className="text-amber-400">Security:</strong> API keys grant full read/write
+          access to your monitors. Never commit them to version control. Use environment variables
+          or secret managers in CI/CD.
         </p>
       </section>
     </div>

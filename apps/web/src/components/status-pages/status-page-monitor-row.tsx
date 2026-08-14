@@ -47,9 +47,7 @@ export function StatusPageMonitorRow({
   }, [lastEvent, monitor.name]);
 
   // Filter overrides for this specific monitor
-  const monitorOverrides = overrides.filter(
-    (o: any) => o.monitorId === monitor.id,
-  );
+  const monitorOverrides = overrides.filter((o: any) => o.monitorId === monitor.id);
 
   // Derive today's status in manual override mode
   const todayStr = new Date().toISOString().split("T")[0];
@@ -79,8 +77,7 @@ export function StatusPageMonitorRow({
   });
 
   const manualUpCount = manualDays.filter(
-    (d: any) =>
-      !d.override || ["UP", "OPERATIONAL"].includes(d.override.status),
+    (d: any) => !d.override || ["UP", "OPERATIONAL"].includes(d.override.status),
   ).length;
   const manualUptime = Math.round((manualUpCount / 60) * 100);
 
@@ -101,10 +98,7 @@ export function StatusPageMonitorRow({
             <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors flex items-center gap-2">
               {item.displayName || monitor.name}
               {isConnected && (
-                <span
-                  className="relative flex h-2 w-2 ml-1"
-                  title="Live Socket Connected"
-                >
+                <span className="relative flex h-2 w-2 ml-1" title="Live Socket Connected">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                 </span>
@@ -117,9 +111,7 @@ export function StatusPageMonitorRow({
                   : "bg-red-500/10 text-red-500 border-red-500/20"
               }`}
             >
-              {activeStatus === "UP"
-                ? tStatus("monitor_operational")
-                : tStatus("monitor_outage")}
+              {activeStatus === "UP" ? tStatus("monitor_operational") : tStatus("monitor_outage")}
             </div>
           </div>
           <div className="text-right flex items-center gap-4">
@@ -131,13 +123,9 @@ export function StatusPageMonitorRow({
             {cardType === "duration"
               ? visibleUptime &&
                 (activeStatus === "UP" ? (
-                  <span className="text-primary text-sm font-bold">
-                    {displayUptime}%
-                  </span>
+                  <span className="text-primary text-sm font-bold">{displayUptime}%</span>
                 ) : (
-                  <span className="text-red-500 text-sm font-bold">
-                    {tCommon("down")}
-                  </span>
+                  <span className="text-red-500 text-sm font-bold">{tCommon("down")}</span>
                 ))
               : visibleCheckCounts && (
                   <span className="text-primary text-sm font-bold">
@@ -162,8 +150,7 @@ export function StatusPageMonitorRow({
                   if (status === "MAINTENANCE") bgClass = "bg-amber-500";
                   else if (status === "DEGRADED" || status === "PARTIAL_OUTAGE")
                     bgClass = "bg-yellow-500";
-                  else if (status === "MAJOR_OUTAGE" || status === "DOWN")
-                    bgClass = "bg-red-500";
+                  else if (status === "MAJOR_OUTAGE" || status === "DOWN") bgClass = "bg-red-500";
                   else if (status === "PAUSED") bgClass = "bg-gray-500";
                 }
 
@@ -204,9 +191,7 @@ export function StatusPageMonitorRow({
         </div>
 
         <div className="flex justify-between text-[10px] text-primary/40 uppercase tracking-widest font-mono">
-          <span>
-            {barType === "manual" ? "60 days ago" : tCommon("checks_ago")}
-          </span>
+          <span>{barType === "manual" ? "60 days ago" : tCommon("checks_ago")}</span>
           <span>{tCommon("now")}</span>
         </div>
       </div>

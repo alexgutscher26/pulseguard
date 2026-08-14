@@ -67,9 +67,7 @@ export function RegionalForm() {
         <h3 className="text-lg font-bold text-foreground font-mono uppercase tracking-tight">
           Regional Settings
         </h3>
-        <p className="text-xs text-primary/60 font-mono">
-          Synchronize time and date formats
-        </p>
+        <p className="text-xs text-primary/60 font-mono">Synchronize time and date formats</p>
       </div>
 
       <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -83,14 +81,10 @@ export function RegionalForm() {
             className="bg-black border border-primary/20 focus:border-primary/60 text-white text-sm rounded-sm p-2.5 font-mono focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all appearance-none"
           >
             <option value="UTC">(GMT+00:00) UTC</option>
-            <option value="America/Los_Angeles">
-              (GMT-08:00) Pacific Time
-            </option>
+            <option value="America/Los_Angeles">(GMT-08:00) Pacific Time</option>
             <option value="America/New_York">(GMT-05:00) Eastern Time</option>
             <option value="Europe/London">(GMT+00:00) London</option>
-            <option value="Europe/Paris">
-              (GMT+01:00) Central European Time
-            </option>
+            <option value="Europe/Paris">(GMT+01:00) Central European Time</option>
             <option value="Asia/Tokyo">(GMT+09:00) Tokyo</option>
           </select>
         </div>

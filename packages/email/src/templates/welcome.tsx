@@ -1,15 +1,6 @@
 import React from "react";
 import { render } from "@react-email/render";
-import {
-  Html,
-  Head,
-  Body,
-  Container,
-  Section,
-  Text,
-  Link,
-  Hr,
-} from "@react-email/components";
+import { Html, Head, Body, Container, Section, Text, Link, Hr } from "@react-email/components";
 import { emailTheme } from "../styles/theme";
 import type { WelcomeEmailData } from "../index";
 
@@ -82,9 +73,8 @@ export function Welcome({ data }: { data: WelcomeEmailData }) {
                 marginBottom: emailTheme.spacing.md,
               }}
             >
-              Your monitoring station is now online. PulseGuard will keep watch
-              over your services 24/7, alerting you the moment something goes
-              wrong.
+              Your monitoring station is now online. PulseGuard will keep watch over your services
+              24/7, alerting you the moment something goes wrong.
             </Text>
 
             <Hr
@@ -119,8 +109,7 @@ export function Welcome({ data }: { data: WelcomeEmailData }) {
                 1. CREATE YOUR FIRST MONITOR
               </strong>
               <br />
-              Add the URLs you want to track. We support HTTP, TCP, and PING
-              checks.
+              Add the URLs you want to track. We support HTTP, TCP, and PING checks.
             </Text>
 
             <Text
@@ -132,12 +121,9 @@ export function Welcome({ data }: { data: WelcomeEmailData }) {
                 marginBottom: emailTheme.spacing.sm,
               }}
             >
-              <strong style={{ color: emailTheme.colors.primary }}>
-                2. CONFIGURE ALERTS
-              </strong>
+              <strong style={{ color: emailTheme.colors.primary }}>2. CONFIGURE ALERTS</strong>
               <br />
-              Set up notification channels (Email, Discord, Slack, Webhook) to
-              get instant alerts.
+              Set up notification channels (Email, Discord, Slack, Webhook) to get instant alerts.
             </Text>
 
             <Text
@@ -149,12 +135,9 @@ export function Welcome({ data }: { data: WelcomeEmailData }) {
                 marginBottom: emailTheme.spacing.md,
               }}
             >
-              <strong style={{ color: emailTheme.colors.primary }}>
-                3. MONITOR & RESPOND
-              </strong>
+              <strong style={{ color: emailTheme.colors.primary }}>3. MONITOR & RESPOND</strong>
               <br />
-              View real-time status, uptime metrics, and incident history from
-              your dashboard.
+              View real-time status, uptime metrics, and incident history from your dashboard.
             </Text>
 
             {/* CTA Button */}
@@ -194,10 +177,7 @@ export function Welcome({ data }: { data: WelcomeEmailData }) {
               }}
             >
               Need help? Check out our{" "}
-              <Link
-                href="https://pulseguard.com/docs"
-                style={{ color: emailTheme.colors.primary }}
-              >
+              <Link href="https://pulseguard.com/docs" style={{ color: emailTheme.colors.primary }}>
                 documentation
               </Link>
             </Text>

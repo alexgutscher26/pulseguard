@@ -1,18 +1,9 @@
 export function ipToLong(ip: string): number {
-  return (
-    ip
-      .split(".")
-      .reduce((acc, octet) => (acc << 8) + parseInt(octet, 10), 0) >>> 0
-  );
+  return ip.split(".").reduce((acc, octet) => (acc << 8) + parseInt(octet, 10), 0) >>> 0;
 }
 
 export function longToIp(long: number): string {
-  return [
-    (long >>> 24) & 0xff,
-    (long >>> 16) & 0xff,
-    (long >>> 8) & 0xff,
-    long & 0xff,
-  ].join(".");
+  return [(long >>> 24) & 0xff, (long >>> 16) & 0xff, (long >>> 8) & 0xff, long & 0xff].join(".");
 }
 
 export function calculateSubnet(ip: string, cidr: number) {
@@ -38,8 +29,7 @@ export function calculateSubnet(ip: string, cidr: number) {
     numHosts,
     binary: {
       ip: ipLong.toString(2).padStart(32, "0").match(/.{8}/g)?.join(".") || "",
-      mask:
-        maskLong.toString(2).padStart(32, "0").match(/.{8}/g)?.join(".") || "",
+      mask: maskLong.toString(2).padStart(32, "0").match(/.{8}/g)?.join(".") || "",
     },
   };
 }

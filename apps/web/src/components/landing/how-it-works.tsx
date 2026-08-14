@@ -1,11 +1,5 @@
 import Link from "next/link";
-import {
-  Globe,
-  RefreshCw,
-  ShieldCheck,
-  Layers,
-  AlertTriangle,
-} from "lucide-react";
+import { Globe, RefreshCw, ShieldCheck, Layers, AlertTriangle } from "lucide-react";
 
 export default function HowItWorks() {
   const steps = [
@@ -59,10 +53,9 @@ export default function HowItWorks() {
           </h2>
           <div className="space-y-4 text-muted-foreground text-sm sm:text-base leading-relaxed font-sans">
             <p>
-              A single monitoring server sees a dropped packet, a slow TLS
-              handshake, a momentary route flap — and pages you at 3am. Your
-              service was fine the entire time. Do that a few times and your
-              team starts ignoring alerts, which is worse than having none at
+              A single monitoring server sees a dropped packet, a slow TLS handshake, a momentary
+              route flap — and pages you at 3am. Your service was fine the entire time. Do that a
+              few times and your team starts ignoring alerts, which is worse than having none at
               all.
             </p>
             <p className="text-foreground font-semibold font-mono text-sm">
@@ -152,10 +145,8 @@ export default function HowItWorks() {
                 </div>
 
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  &rarr;{" "}
-                  <strong className="text-foreground">3 of 6 counted.</strong>{" "}
-                  Below quorum. No page sent. Logged as regional degradation,
-                  Americas + Western Europe.
+                  &rarr; <strong className="text-foreground">3 of 6 counted.</strong> Below quorum.
+                  No page sent. Logged as regional degradation, Americas + Western Europe.
                 </p>
               </div>
             </div>
@@ -199,10 +190,8 @@ export default function HowItWorks() {
                 </div>
 
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  &rarr;{" "}
-                  <strong className="text-foreground">6 of 7 confirm.</strong>{" "}
-                  Quorum met. Incident opened, on-call paged, status page
-                  updated.
+                  &rarr; <strong className="text-foreground">6 of 7 confirm.</strong> Quorum met.
+                  Incident opened, on-call paged, status page updated.
                 </p>
               </div>
             </div>
@@ -220,15 +209,13 @@ export default function HowItWorks() {
                 Where we don&apos;t check from — yet
               </h3>
               <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                We check from North America, Europe and Asia-Pacific. We do not
-                currently have probes in South America, Africa, the Middle East
-                or Oceania.
+                We check from North America, Europe and Asia-Pacific. We do not currently have
+                probes in South America, Africa, the Middle East or Oceania.
               </p>
               <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                We&apos;d rather tell you that than pad a number. If your users
-                are concentrated in those regions, a global outage will still
-                page you — but region-specific problems there may not surface,
-                and you should know that before you rely on us. Our live
+                We&apos;d rather tell you that than pad a number. If your users are concentrated in
+                those regions, a global outage will still page you — but region-specific problems
+                there may not surface, and you should know that before you rely on us. Our live
                 coverage, including what&apos;s coming, is on the{" "}
                 <Link
                   href="/locations"

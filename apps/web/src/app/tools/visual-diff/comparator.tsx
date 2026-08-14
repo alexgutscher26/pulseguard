@@ -3,13 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -55,9 +49,7 @@ export function VisualDiffComparator() {
   const [progress, setProgress] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [sliderPos, setSliderPos] = useState(50);
-  const [viewMode, setViewMode] = useState<"slider" | "heatmap" | "side">(
-    "slider",
-  );
+  const [viewMode, setViewMode] = useState<"slider" | "heatmap" | "side">("slider");
 
   // Ref for the slider container
   const containerRef = useRef<HTMLDivElement>(null);
@@ -237,8 +229,7 @@ export function VisualDiffComparator() {
                   Mutation Detected
                 </Badge>
                 <div className="text-xs font-mono text-muted-foreground uppercase">
-                  Confidence Score:{" "}
-                  <span className="text-primary italic">99.2%</span>
+                  Confidence Score: <span className="text-primary italic">99.2%</span>
                 </div>
               </div>
 
@@ -277,26 +268,14 @@ export function VisualDiffComparator() {
                     onTouchMove={handleMouseMove}
                   >
                     {/* After Image */}
-                    <Image
-                      src={imgB}
-                      alt="Point B"
-                      fill
-                      sizes="100vw"
-                      className="object-cover"
-                    />
+                    <Image src={imgB} alt="Point B" fill sizes="100vw" className="object-cover" />
 
                     {/* Before Image (Clipped) */}
                     <div
                       className="absolute inset-0 h-full w-full overflow-hidden border-r-2 border-primary z-10"
                       style={{ width: `${sliderPos}%` }}
                     >
-                      <Image
-                        src={imgA}
-                        alt="Point A"
-                        fill
-                        sizes="100vw"
-                        className="object-cover"
-                      />
+                      <Image src={imgA} alt="Point A" fill sizes="100vw" className="object-cover" />
                       <div className="absolute top-4 left-4 z-20">
                         <Badge className="bg-primary/80 backdrop-blur-sm italic uppercase tracking-tighter">
                           Reference
@@ -352,8 +331,7 @@ export function VisualDiffComparator() {
                         variant="destructive"
                         className="italic uppercase tracking-tighter animate-bounce flex gap-1"
                       >
-                        <Zap className="h-3 w-3 fill-current" /> Anomaly Map
-                        Active
+                        <Zap className="h-3 w-3 fill-current" /> Anomaly Map Active
                       </Badge>
                     </div>
                   </div>
@@ -425,9 +403,7 @@ export function VisualDiffComparator() {
                 variant="secondary"
                 className="px-8 uppercase font-mono italic tracking-tight"
                 onClick={() => {
-                  router.push(
-                    `/dashboard/monitors/new?url=${encodeURIComponent(url1)}&type=HTTP`,
-                  );
+                  router.push(`/dashboard/monitors/new?url=${encodeURIComponent(url1)}&type=HTTP`);
                 }}
               >
                 <ShieldCheck className="mr-2 h-4 w-4" /> Save to Monitor
@@ -444,8 +420,8 @@ export function VisualDiffComparator() {
             <Layers className="h-4 w-4" /> Pixel-Perfect
           </CardTitle>
           <p className="text-xs text-muted-foreground font-mono">
-            Our proprietary detection engine identifies anomalies down to the
-            individual pixel coordinate.
+            Our proprietary detection engine identifies anomalies down to the individual pixel
+            coordinate.
           </p>
         </div>
         <div className="space-y-2">
@@ -453,8 +429,7 @@ export function VisualDiffComparator() {
             <Zap className="h-4 w-4" /> Zero False Alarms
           </CardTitle>
           <p className="text-xs text-muted-foreground font-mono">
-            Intelligent noise filtering ignores dynamic content like ads or
-            varying timestamps.
+            Intelligent noise filtering ignores dynamic content like ads or varying timestamps.
           </p>
         </div>
         <div className="space-y-2">
@@ -462,8 +437,7 @@ export function VisualDiffComparator() {
             <Maximize2 className="h-4 w-4" /> Full Page Scope
           </CardTitle>
           <p className="text-xs text-muted-foreground font-mono">
-            Captures full-height scrolls ensuring footer shifts and layout
-            breaks are always caught.
+            Captures full-height scrolls ensuring footer shifts and layout breaks are always caught.
           </p>
         </div>
       </div>

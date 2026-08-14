@@ -1,7 +1,4 @@
-export function getVisiblePages(
-  current: number,
-  total: number,
-): (number | string)[] {
+export function getVisiblePages(current: number, total: number): (number | string)[] {
   if (total <= 7) {
     return Array.from({ length: total }, (_, i) => i + 1);
   }

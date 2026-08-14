@@ -47,8 +47,7 @@ export const USE_CASES: Record<string, UseCaseItem> = {
       },
       {
         title: "Terraform & CLI Integration",
-        description:
-          "Manage monitors as code using our native CLI and Terraform modules.",
+        description: "Manage monitors as code using our native CLI and Terraform modules.",
         iconName: "Code2",
       },
       {
@@ -68,8 +67,7 @@ export const USE_CASES: Record<string, UseCaseItem> = {
       {
         step: "01",
         title: "Global Probe Ping",
-        description:
-          "Edge Workers dispatch synthetic HTTP/Ping requests every 60 seconds.",
+        description: "Edge Workers dispatch synthetic HTTP/Ping requests every 60 seconds.",
       },
       {
         step: "02",
@@ -80,8 +78,7 @@ export const USE_CASES: Record<string, UseCaseItem> = {
       {
         step: "03",
         title: "Instant Notification",
-        description:
-          "Alerts are dispatched within 2 seconds via Webhooks, Slack, or SMS.",
+        description: "Alerts are dispatched within 2 seconds via Webhooks, Slack, or SMS.",
       },
     ],
     quote: {
@@ -126,20 +123,17 @@ export const USE_CASES: Record<string, UseCaseItem> = {
       },
       {
         title: "Multi-Step Shopping Cart Flow",
-        description:
-          "Simulate add-to-cart and checkout API sequences to catch hidden failures.",
+        description: "Simulate add-to-cart and checkout API sequences to catch hidden failures.",
         iconName: "ShoppingCart",
       },
       {
         title: "Public Status Page for Shoppers",
-        description:
-          "Reassure customer support and shoppers with branded status pages.",
+        description: "Reassure customer support and shoppers with branded status pages.",
         iconName: "Globe",
       },
       {
         title: "Peak Traffic Spike Monitoring",
-        description:
-          "Track latency degradation under high concurrency during flash sales.",
+        description: "Track latency degradation under high concurrency during flash sales.",
         iconName: "TrendingUp",
       },
     ],
@@ -147,20 +141,17 @@ export const USE_CASES: Record<string, UseCaseItem> = {
       {
         step: "01",
         title: "Cart API Check",
-        description:
-          "Synthetic browser probes execute checkout actions on 60-second loops.",
+        description: "Synthetic browser probes execute checkout actions on 60-second loops.",
       },
       {
         step: "02",
         title: "Latency Tracking",
-        description:
-          "Alerts fire if payment gateway response exceeds 1500ms threshold.",
+        description: "Alerts fire if payment gateway response exceeds 1500ms threshold.",
       },
       {
         step: "03",
         title: "On-Call Paging",
-        description:
-          "SMS and Slack messages reach store engineers before customers complain.",
+        description: "SMS and Slack messages reach store engineers before customers complain.",
       },
     ],
     quote: {
@@ -226,20 +217,17 @@ export const USE_CASES: Record<string, UseCaseItem> = {
       {
         step: "01",
         title: "Continuous Monitoring",
-        description:
-          "Track core application routes, API gateways, and webhooks.",
+        description: "Track core application routes, API gateways, and webhooks.",
       },
       {
         step: "02",
         title: "Status Page Sync",
-        description:
-          "Component status updates automatically on public status pages.",
+        description: "Component status updates automatically on public status pages.",
       },
       {
         step: "03",
         title: "SLA Export",
-        description:
-          "Monthly uptime percentages calculated automatically for enterprise clients.",
+        description: "Monthly uptime percentages calculated automatically for enterprise clients.",
       },
     ],
     quote: {
@@ -296,8 +284,7 @@ export const USE_CASES: Record<string, UseCaseItem> = {
       },
       {
         title: "DNS & Port Checks",
-        description:
-          "Monitor DNS record propagation (A, AAAA, CNAME, MX) and custom TCP ports.",
+        description: "Monitor DNS record propagation (A, AAAA, CNAME, MX) and custom TCP ports.",
         iconName: "Radio",
       },
     ],
@@ -305,20 +292,17 @@ export const USE_CASES: Record<string, UseCaseItem> = {
       {
         step: "01",
         title: "Sequence Execution",
-        description:
-          "Probes execute multi-step HTTP sequences storing response tokens in memory.",
+        description: "Probes execute multi-step HTTP sequences storing response tokens in memory.",
       },
       {
         step: "02",
         title: "Payload Validation",
-        description:
-          "JSON properties and HTTP headers checked against exact expectations.",
+        description: "JSON properties and HTTP headers checked against exact expectations.",
       },
       {
         step: "03",
         title: "Telemetry Recording",
-        description:
-          "Response times broken down by DNS lookup, TLS handshake, and TTFB.",
+        description: "Response times broken down by DNS lookup, TLS handshake, and TTFB.",
       },
     ],
     quote: {

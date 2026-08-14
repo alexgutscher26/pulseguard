@@ -84,9 +84,7 @@ export function ShowcaseSubmitPanel({
         await updateLeaderboardPrivacy(next, bio);
         setOptedIn(next);
         toast.success(
-          next
-            ? "You're now listed on the Hall of Fame!"
-            : "Removed from Hall of Fame.",
+          next ? "You're now listed on the Hall of Fame!" : "Removed from Hall of Fame.",
         );
       } catch {
         toast.error("Failed to update Hall of Fame settings.");
@@ -107,9 +105,7 @@ export function ShowcaseSubmitPanel({
 
   // Badge embed strings
   const appUrl =
-    typeof window !== "undefined"
-      ? window.location.origin
-      : "https://app.pulseguard.dev";
+    typeof window !== "undefined" ? window.location.origin : "https://app.pulseguard.dev";
 
   const badgeUrl = `${appUrl}/api/badge/powered-by?theme=dark&style=flat&size=sm`;
   const statusBadgeUrl = `${appUrl}/api/badge/${pageSlug}?theme=dark&style=flat`;
@@ -130,9 +126,8 @@ export function ShowcaseSubmitPanel({
         </h3>
 
         <p className="text-[11px] text-muted-foreground font-mono leading-relaxed">
-          Opt this status page into the public Hall of Fame. Your weighted SLA
-          across all monitors will be ranked against the community. Only
-          accounts with 100+ checks qualify.
+          Opt this status page into the public Hall of Fame. Your weighted SLA across all monitors
+          will be ranked against the community. Only accounts with 100+ checks qualify.
         </p>
 
         {/* Toggle */}
@@ -234,9 +229,8 @@ export function ShowcaseSubmitPanel({
         {badgeExpanded && (
           <div className="px-6 pb-6 space-y-5 border-t border-white/5 pt-4">
             <p className="text-[11px] text-muted-foreground font-mono leading-relaxed">
-              Add these badges to your README, website, or docs to show your
-              infrastructure is monitored by PulseGuard. Click any badge to copy
-              the embed code.
+              Add these badges to your README, website, or docs to show your infrastructure is
+              monitored by PulseGuard. Click any badge to copy the embed code.
             </p>
 
             {/* Live previews */}
@@ -246,11 +240,7 @@ export function ShowcaseSubmitPanel({
               </p>
               <div className="flex flex-wrap gap-3 items-center bg-black/40 border border-white/5 rounded-sm p-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={`${badgeUrl}`}
-                  alt="Powered by PulseGuard"
-                  className="h-5"
-                />
+                <img src={`${badgeUrl}`} alt="Powered by PulseGuard" className="h-5" />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={`${badgeUrl}&style=outline`}
@@ -270,18 +260,9 @@ export function ShowcaseSubmitPanel({
 
             {/* Embed codes */}
             <div className="grid gap-4">
-              <CodeBlock
-                label="Powered by PulseGuard — Markdown"
-                code={markdownPowered}
-              />
-              <CodeBlock
-                label="Powered by PulseGuard — HTML"
-                code={htmlPowered}
-              />
-              <CodeBlock
-                label="Live Status Badge — Markdown"
-                code={markdownStatus}
-              />
+              <CodeBlock label="Powered by PulseGuard — Markdown" code={markdownPowered} />
+              <CodeBlock label="Powered by PulseGuard — HTML" code={htmlPowered} />
+              <CodeBlock label="Live Status Badge — Markdown" code={markdownStatus} />
               <CodeBlock label="Live Status Badge — HTML" code={htmlStatus} />
             </div>
 

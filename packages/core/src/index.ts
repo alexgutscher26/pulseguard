@@ -162,11 +162,7 @@ export function diagnoseError(err: any, target: string): string {
   const code = err.code || "";
 
   // 1. Timeout
-  if (
-    name === "TimeoutError" ||
-    msg.includes("Timeout") ||
-    msg.includes("timeout")
-  ) {
+  if (name === "TimeoutError" || msg.includes("Timeout") || msg.includes("timeout")) {
     return `TIMEOUT: Request timed out.
 • Target: ${target}
 • Stage: Response Transmission
@@ -190,11 +186,7 @@ export function diagnoseError(err: any, target: string): string {
   }
 
   // 3. Connection Refused
-  if (
-    code === "ECONNREFUSED" ||
-    msg.includes("ECONNREFUSED") ||
-    msg.includes("refused")
-  ) {
+  if (code === "ECONNREFUSED" || msg.includes("ECONNREFUSED") || msg.includes("refused")) {
     return `CONNECTION_REFUSED: TCP Handshake failed.
 • Target: ${target}
 • Stage: TCP Handshake
@@ -222,11 +214,7 @@ export function diagnoseError(err: any, target: string): string {
   }
 
   // 5. Connection Reset/Aborted
-  if (
-    code === "ECONNRESET" ||
-    msg.includes("ECONNRESET") ||
-    msg.includes("reset")
-  ) {
+  if (code === "ECONNRESET" || msg.includes("ECONNRESET") || msg.includes("reset")) {
     return `CONNECTION_RESET: Connection terminated abruptly.
 • Target: ${target}
 • Stage: TCP Connection
@@ -493,15 +481,12 @@ export async function checkHttpUniversal(
         method: hops === 0 ? method : "GET", // Follow redirects with GET
         redirect: "manual",
         headers: {
-          "User-Agent":
-            "Mozilla/5.0 (compatible; PulseGuard/1.0; +https://pulseguard.io/bot)",
+          "User-Agent": "Mozilla/5.0 (compatible; PulseGuard/1.0; +https://pulseguard.io/bot)",
           Accept: "*/*",
           ...userHeaders,
         },
         body:
-          hops === 0 && ["POST", "PUT", "PATCH"].includes(method)
-            ? (config.body ?? null)
-            : null,
+          hops === 0 && ["POST", "PUT", "PATCH"].includes(method) ? (config.body ?? null) : null,
         signal: AbortSignal.timeout(timeoutMs),
       });
 
@@ -530,8 +515,7 @@ export async function checkHttpUniversal(
     return {
       status: "DOWN",
       latency: Date.now() - start,
-      errorReason:
-        "TOO_MANY_REDIRECTS: Exceeded maximum redirect hop count of 5",
+      errorReason: "TOO_MANY_REDIRECTS: Exceeded maximum redirect hop count of 5",
       bodyText: "",
     };
   }
@@ -552,8 +536,7 @@ export async function checkHttpUniversal(
           return {
             status: "DOWN",
             latency: Date.now() - start,
-            errorReason:
-              "RESPONSE_TOO_LARGE: Exceeded maximum body size limit of 5MB",
+            errorReason: "RESPONSE_TOO_LARGE: Exceeded maximum body size limit of 5MB",
             bodyText: bodyText.substring(0, 1024) + "... [truncated]",
             statusCode: response.status,
           };
@@ -568,17 +551,12 @@ export async function checkHttpUniversal(
   const isRateLimited = statusNum === 429;
   const isIPBlocked = statusNum === 403;
   const isHealthyStatus =
-    response.ok ||
-    (statusNum >= 300 && statusNum < 400) ||
-    isRateLimited ||
-    isIPBlocked;
+    response.ok || (statusNum >= 300 && statusNum < 400) || isRateLimited || isIPBlocked;
 
   return {
     status: isHealthyStatus ? "UP" : "DOWN",
     latency,
-    errorReason: isHealthyStatus
-      ? undefined
-      : diagnoseStatus(response.status, currentUrl),
+    errorReason: isHealthyStatus ? undefined : diagnoseStatus(response.status, currentUrl),
     bodyText,
     statusCode: statusNum,
   };

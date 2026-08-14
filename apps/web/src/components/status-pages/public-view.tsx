@@ -168,9 +168,7 @@ export function PublicView({
                   {page.title.charAt(0).toUpperCase()}
                 </div>
               )}
-              <span className="font-bold tracking-tight hidden md:block">
-                {page.title}
-              </span>
+              <span className="font-bold tracking-tight hidden md:block">{page.title}</span>
             </a>
           ) : (
             <div className="flex items-center gap-3">
@@ -189,9 +187,7 @@ export function PublicView({
                   {page.title.charAt(0).toUpperCase()}
                 </div>
               )}
-              <span className="font-bold tracking-tight hidden md:block">
-                {page.title}
-              </span>
+              <span className="font-bold tracking-tight hidden md:block">{page.title}</span>
             </div>
           )}
 
@@ -301,9 +297,7 @@ export function PublicView({
                 className={`flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-4 ${allUp ? "text-primary/70" : "text-red-500/70"}`}
               >
                 <p className="text-sm font-mono uppercase tracking-[0.2em] font-bold">
-                  {allUp
-                    ? tStatus("system_integrity_100")
-                    : tStatus("critical_failures")}
+                  {allUp ? tStatus("system_integrity_100") : tStatus("critical_failures")}
                 </p>
 
                 <span className="hidden md:inline opacity-30">|</span>
@@ -380,13 +374,10 @@ export function PublicView({
                                 {evt.type.replace("_", " ")}
                               </span>
                               <span className="text-[10px] text-muted-foreground opacity-60">
-                                {new Date(evt.createdAt).toLocaleTimeString(
-                                  [],
-                                  {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                  },
-                                )}
+                                {new Date(evt.createdAt).toLocaleTimeString([], {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
                               </span>
                             </div>
                             <p className="text-muted-foreground text-[11px] mt-0.5 leading-relaxed">
@@ -456,8 +447,7 @@ export function PublicView({
           {resolvedIncidents.length === 0 ? (
             <div className="p-8 border border-dashed border-primary/10 rounded-sm bg-primary/[0.01] text-center">
               <p className="text-[11px] text-primary/50 uppercase tracking-widest font-mono">
-                No incidents reported in the last 7 days. All systems
-                operational.
+                No incidents reported in the last 7 days. All systems operational.
               </p>
             </div>
           ) : (
@@ -475,8 +465,8 @@ export function PublicView({
                         {inc.title}
                       </h4>
                       <p className="text-[10px] text-muted-foreground/60 mt-0.5 uppercase tracking-wider font-mono">
-                        Affected System: {inc.monitor?.name} &middot; Resolved
-                        on {new Date(inc.resolvedAt).toLocaleDateString()}
+                        Affected System: {inc.monitor?.name} &middot; Resolved on{" "}
+                        {new Date(inc.resolvedAt).toLocaleDateString()}
                       </p>
                     </div>
                     <span className="self-start md:self-auto px-2 py-0.5 rounded border border-primary/20 text-primary bg-primary/5 text-[9px] uppercase tracking-widest font-semibold font-mono">
@@ -513,23 +503,21 @@ export function PublicView({
 
         {/* Footer */}
         <div className="mt-24 pt-8 border-t border-primary/10 flex flex-col items-center gap-4 text-center">
-          {page.footerLinks &&
-            Array.isArray(page.footerLinks) &&
-            page.footerLinks.length > 0 && (
-              <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-primary/60 mb-2">
-                {page.footerLinks.map((link: any, idx: number) => (
-                  <a
-                    key={idx}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-primary transition-colors hover:underline decoration-dotted underline-offset-4"
-                  >
-                    {link.label}
-                  </a>
-                ))}
-              </div>
-            )}
+          {page.footerLinks && Array.isArray(page.footerLinks) && page.footerLinks.length > 0 && (
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-primary/60 mb-2">
+              {page.footerLinks.map((link: any, idx: number) => (
+                <a
+                  key={idx}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition-colors hover:underline decoration-dotted underline-offset-4"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          )}
 
           <LanguageSwitcher />
 

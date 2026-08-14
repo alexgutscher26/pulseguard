@@ -10,11 +10,7 @@ type Props = AnimatedProps<ViewProps> & {
   className?: string;
 };
 
-export function Container({
-  children,
-  className,
-  ...props
-}: PropsWithChildren<Props>) {
+export function Container({ children, className, ...props }: PropsWithChildren<Props>) {
   const insets = useSafeAreaInsets();
 
   return (
@@ -25,9 +21,7 @@ export function Container({
       }}
       {...props}
     >
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        {children}
-      </ScrollView>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>{children}</ScrollView>
     </AnimatedView>
   );
 }

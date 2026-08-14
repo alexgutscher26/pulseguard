@@ -3,16 +3,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Globe,
-  Zap,
-  Shield,
-  Activity,
-  Clock,
-  Server,
-  CheckCircle2,
-} from "lucide-react";
+import { ArrowLeft, Globe, Zap, Shield, Activity, Clock, Server, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 const REGIONS = [
@@ -169,9 +160,8 @@ export function LatencyGridClient() {
           Live Latency Grid
         </h1>
         <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
-          High-frequency checking from global edge centers. Measure server
-          responsiveness, regional load times, and payload delivery sizes with
-          millisecond precision.
+          High-frequency checking from global edge centers. Measure server responsiveness, regional
+          load times, and payload delivery sizes with millisecond precision.
         </p>
       </div>
 
@@ -185,9 +175,7 @@ export function LatencyGridClient() {
                 <Globe className="size-4 text-emerald-500 animate-pulse" />
                 Global Surveillance Radar
               </div>
-              <h2 className="text-lg font-bold text-foreground mt-1 font-mono">
-                {targetUrl}
-              </h2>
+              <h2 className="text-lg font-bold text-foreground mt-1 font-mono">{targetUrl}</h2>
             </div>
             <Badge
               variant="outline"
@@ -216,9 +204,7 @@ export function LatencyGridClient() {
                   </div>
                   <div className="text-xl font-bold font-mono text-foreground mt-1 flex items-baseline gap-1">
                     {latencies[r.id] || "--"}
-                    <span className="text-[9px] text-muted-foreground font-normal">
-                      ms
-                    </span>
+                    <span className="text-[9px] text-muted-foreground font-normal">ms</span>
                   </div>
                 </div>
               </div>
@@ -226,10 +212,7 @@ export function LatencyGridClient() {
           </div>
 
           {/* Action Trigger Form */}
-          <form
-            onSubmit={handleTest}
-            className="flex gap-4 pt-4 border-t border-primary/10"
-          >
+          <form onSubmit={handleTest} className="flex gap-4 pt-4 border-t border-primary/10">
             <div className="flex-1">
               <label htmlFor="feature-url" className="sr-only">
                 Test Target URL
@@ -272,13 +255,10 @@ export function LatencyGridClient() {
                 <Activity className="size-4.5" />
               </div>
               <div className="space-y-1">
-                <h4 className="text-sm font-bold text-foreground">
-                  High-Frequency Checks
-                </h4>
+                <h4 className="text-sm font-bold text-foreground">High-Frequency Checks</h4>
                 <p className="text-xs text-foreground/80 leading-relaxed">
-                  Validate availability up to once every 10 seconds. Minimize
-                  detection delay and intercept incidents before users notice
-                  them.
+                  Validate availability up to once every 10 seconds. Minimize detection delay and
+                  intercept incidents before users notice them.
                 </p>
               </div>
             </div>
@@ -289,13 +269,10 @@ export function LatencyGridClient() {
                 <Clock className="size-4.5" />
               </div>
               <div className="space-y-1">
-                <h4 className="text-sm font-bold text-foreground">
-                  Millisecond Resolution
-                </h4>
+                <h4 className="text-sm font-bold text-foreground">Millisecond Resolution</h4>
                 <p className="text-xs text-foreground/80 leading-relaxed">
-                  Track response variations down to single milliseconds.
-                  Establish performance baselines and identify gradual network
-                  regressions.
+                  Track response variations down to single milliseconds. Establish performance
+                  baselines and identify gradual network regressions.
                 </p>
               </div>
             </div>
@@ -306,13 +283,10 @@ export function LatencyGridClient() {
                 <Server className="size-4.5" />
               </div>
               <div className="space-y-1">
-                <h4 className="text-sm font-bold text-foreground">
-                  Response Dissection
-                </h4>
+                <h4 className="text-sm font-bold text-foreground">Response Dissection</h4>
                 <p className="text-xs text-foreground/80 leading-relaxed">
-                  Inspect response payloads, return codes, and header
-                  structures. Confirm not just connectivity, but transaction
-                  integrity.
+                  Inspect response payloads, return codes, and header structures. Confirm not just
+                  connectivity, but transaction integrity.
                 </p>
               </div>
             </div>
@@ -326,8 +300,8 @@ export function LatencyGridClient() {
           Ready for Global Surveillance?
         </h3>
         <p className="text-xs text-muted-foreground leading-relaxed max-w-sm mx-auto">
-          Start monitoring your endpoints from all 10 regions instantly. Setup
-          takes less than 2 minutes.
+          Start monitoring your endpoints from all 10 regions instantly. Setup takes less than 2
+          minutes.
         </p>
         <div className="flex justify-center gap-4">
           <Link

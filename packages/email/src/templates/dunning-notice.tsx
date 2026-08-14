@@ -9,9 +9,7 @@ export interface DunningNoticeEmailProps {
   billingPortalUrl: string;
 }
 
-export const DunningNoticeEmail: React.FC<
-  Readonly<DunningNoticeEmailProps>
-> = ({
+export const DunningNoticeEmail: React.FC<Readonly<DunningNoticeEmailProps>> = ({
   userName = "PulseGuard Operator",
   planName = "The Netrunner",
   amountDue = "$19.00",
@@ -22,8 +20,7 @@ export const DunningNoticeEmail: React.FC<
     style={{
       backgroundColor: "#030712",
       color: "#f3f4f6",
-      fontFamily:
-        "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+      fontFamily: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
       padding: "40px 20px",
     }}
   >
@@ -63,8 +60,8 @@ export const DunningNoticeEmail: React.FC<
       </div>
 
       <p style={{ fontSize: "14px", color: "#9ca3af", lineHeight: "1.6" }}>
-        Hello {userName}, we were unable to process the automatic payment for
-        your <strong>{planName}</strong> plan subscription.
+        Hello {userName}, we were unable to process the automatic payment for your{" "}
+        <strong>{planName}</strong> plan subscription.
       </p>
 
       <div
@@ -84,31 +81,20 @@ export const DunningNoticeEmail: React.FC<
             marginBottom: "8px",
           }}
         >
-          <span style={{ fontSize: "13px", color: "#9ca3af" }}>
-            Invoice Amount Due:
-          </span>
-          <span
-            style={{ fontSize: "14px", fontWeight: "700", color: "#f87171" }}
-          >
-            {amountDue}
-          </span>
+          <span style={{ fontSize: "13px", color: "#9ca3af" }}>Invoice Amount Due:</span>
+          <span style={{ fontSize: "14px", fontWeight: "700", color: "#f87171" }}>{amountDue}</span>
         </div>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <span style={{ fontSize: "13px", color: "#9ca3af" }}>
-            Reason for Failure:
-          </span>
-          <span
-            style={{ fontSize: "13px", fontWeight: "600", color: "#fca5a5" }}
-          >
+          <span style={{ fontSize: "13px", color: "#9ca3af" }}>Reason for Failure:</span>
+          <span style={{ fontSize: "13px", fontWeight: "600", color: "#fca5a5" }}>
             {failureReason}
           </span>
         </div>
       </div>
 
       <p style={{ fontSize: "14px", color: "#9ca3af", lineHeight: "1.6" }}>
-        Don't worry! Your monitoring endpoints remain active during our grace
-        period retry schedule. Please update your payment method to ensure
-        uninterrupted telemetry checks and alerts.
+        Don't worry! Your monitoring endpoints remain active during our grace period retry schedule.
+        Please update your payment method to ensure uninterrupted telemetry checks and alerts.
       </p>
 
       <div style={{ marginTop: "32px", textAlign: "center" }}>
@@ -132,8 +118,6 @@ export const DunningNoticeEmail: React.FC<
   </div>
 );
 
-export async function renderDunningNotice(
-  props: DunningNoticeEmailProps,
-): Promise<string> {
+export async function renderDunningNotice(props: DunningNoticeEmailProps): Promise<string> {
   return await render(<DunningNoticeEmail {...props} />);
 }

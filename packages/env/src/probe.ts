@@ -5,10 +5,7 @@ export const env = createEnv({
   clientPrefix: "PROBE_",
   client: {},
   server: {
-    PULSEGUARD_API_URL: z
-      .string()
-      .url()
-      .default("https://pulseguard-worker.example.com"),
+    PULSEGUARD_API_URL: z.string().url().default("https://pulseguard-worker.example.com"),
     PULSEGUARD_PROBE_TOKEN: z.string().min(1),
     PROBE_POLL_INTERVAL: z.coerce.number().int().positive().default(15),
     PROBE_HEARTBEAT_INTERVAL: z.coerce.number().int().positive().default(30),

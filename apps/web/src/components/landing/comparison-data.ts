@@ -47,8 +47,7 @@ export const competitors: CompetitorInfo[] = [
     name: "UptimeRobot",
     url: "https://uptimerobot.com",
     pricingUrl: "https://uptimerobot.com/pricing",
-    description:
-      "Popular legacy provider with 50 free monitors at 5-min check intervals.",
+    description: "Popular legacy provider with 50 free monitors at 5-min check intervals.",
   },
   {
     id: "betteruptime",
@@ -122,13 +121,14 @@ export const featureComparisons: FeatureComparisonItem[] = [
   },
   {
     category: "Transparency & Allowlisting",
-    name: "Public CIDR Feeds (/ips.json, /ips.txt)",
-    description: "Live machine-readable IPv4 & IPv6 CIDRs for WAF allowlisting",
-    pulseguard: true,
-    uptimerobot: false,
-    betteruptime: false,
-    checkly: false,
-    isBattle: false,
+    name: "Probe identification for WAF allowlisting",
+    description:
+      "Un-spoofable CF-Worker header + User-Agent matching without shared IP allowlist vulnerabilities",
+    pulseguard: "✓ Cryptographic header",
+    uptimerobot: "Static IPs (shared)",
+    betteruptime: "Static IPs only",
+    checkly: "Static IPs (AWS)",
+    isBattle: true,
   },
   {
     category: "Transparency & Allowlisting",
@@ -177,8 +177,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
   {
     category: "Monitor Types & Protocols",
     name: "SSL Certificate & Expiry Monitoring",
-    description:
-      "Full certificate chain verification with 30-day expiry warning",
+    description: "Full certificate chain verification with 30-day expiry warning",
     pulseguard: true,
     uptimerobot: true,
     betteruptime: true,
@@ -198,8 +197,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
   {
     category: "Monitor Types & Protocols",
     name: "TCP Port & Service Reachability",
-    description:
-      "Raw TCP socket handshakes for databases, mail, and custom ports",
+    description: "Raw TCP socket handshakes for databases, mail, and custom ports",
     pulseguard: true,
     uptimerobot: true,
     betteruptime: true,
@@ -231,8 +229,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
   {
     category: "Advanced Platform Capabilities",
     name: "Browser / Synthetic Journey Testing",
-    description:
-      "Multi-step headless browser user journeys with assertion checks",
+    description: "Multi-step headless browser user journeys with assertion checks",
     pulseguard: true,
     uptimerobot: false,
     betteruptime: false,
@@ -328,8 +325,7 @@ export const downtimeScenarios: DowntimeScenario[] = [
   },
   {
     name: "Database Failover",
-    description:
-      "Primary database goes down. Replica promotion takes 15 minutes.",
+    description: "Primary database goes down. Replica promotion takes 15 minutes.",
     downtimeStart: 0,
     recoveryStart: 15,
     competitorLabel: "Competitor (5min check)",
