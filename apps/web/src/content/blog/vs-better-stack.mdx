@@ -53,7 +53,7 @@ Better Stack operates dedicated polling instances across 6 AWS/GCP cloud regions
 
 ### PulseGuard's Edge-Native Mesh
 
-PulseGuard executes synthetic health checks natively on Cloudflare's global edge network across 50+ regions. Because checks run at the edge where your users actually connect, compute overhead is distributed with near-zero transit latency:
+PulseGuard executes synthetic health checks natively on Cloudflare's global edge network across 7 sovereign regions. Because checks run at the edge where your users actually connect, compute overhead is distributed with near-zero transit latency:
 
 ```ts
 // Sample PulseGuard Edge Check Configuration
@@ -62,7 +62,7 @@ export const monitorConfig = {
   method: "GET",
   expectedStatus: 200,
   intervalSeconds: 60,
-  regions: ["iad", "lhr", "nrt", "syd", "fra"], // 50+ edge regions active
+  regions: ["wnam", "enam", "weur", "eeur", "apac", "apac-ne", "apac-se"], // 7 sovereign edge regions active
   timeoutMs: 3000,
   headers: {
     "User-Agent": "PulseGuard-EdgeProbe/2.0 (+https://pulseguard.io)",
@@ -82,8 +82,8 @@ Here is how PulseGuard and Better Stack compare across core monitoring specifica
 | :-------------------------- | :--------------------------: | :-------------------: |
 | **Free Monitor Count**      |    **50 Active Monitors**    |  10 Active Monitors   |
 | **Free Check Interval**     |    **60 Seconds (1 min)**    |  300 Seconds (5 min)  |
-| **Free Region Coverage**    |    **50+ Edge Locations**    |    6 Cloud Regions    |
-| **Multi-Node Verification** |    Included on Free Tier     |       Included        |
+| **Free Region Coverage**    |   **7 Sovereign Regions**    |   4 Cloud Locations   |
+| **Multi-Node Verification** |   4-of-7 Quorum Consensus    |  3-of-4 Quorum Check  |
 | **Custom Status Pages**     |   Included (Custom Domain)   |       Included        |
 | **SSL Expiry Monitoring**   |   Included (30-day alerts)   |       Included        |
 | **DNS Record Watchdog**     |           Included           |       Included        |

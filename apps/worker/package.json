@@ -14,6 +14,7 @@
     "@pulseguard/core": "workspace:*",
     "@pulseguard/db": "workspace:*",
     "@pulseguard/email": "workspace:*",
+    "@pulseguard/shared": "workspace:*",
     "@pulseguard/types": "workspace:*",
     "@upstash/redis": "^1.37.0"
   },

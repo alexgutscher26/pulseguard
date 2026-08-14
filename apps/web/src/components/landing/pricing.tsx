@@ -126,14 +126,19 @@ export default function Pricing() {
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
                   <span className="text-foreground font-semibold">
-                    <span className="font-mono font-bold">50</span> Active Monitors (60s interval)
+                    <span className="font-mono font-bold">50</span> Monitors (3m standard, 1m for
+                    first 10)
                   </span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Activity className="size-4 text-primary shrink-0" />
                   <span className="text-foreground font-semibold">
-                    Multi-Region Consensus (Zero false positives)
+                    3 Edge Regions (2-of-3 Quorum Consensus)
                   </span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check className="size-4 text-primary shrink-0" />
+                  <span>On-demand diagnostics from 100+ countries</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
@@ -236,6 +241,12 @@ export default function Pricing() {
                   <Check className="size-4 text-primary shrink-0" />
                   <span className="text-foreground font-semibold">
                     <span className="font-mono">250</span> Active Monitors (30s interval)
+                  </span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check className="size-4 text-primary shrink-0" />
+                  <span className="text-foreground font-semibold">
+                    Full 7 Sovereign Regions (4-of-7 Quorum)
                   </span>
                 </li>
                 <li className="flex items-center gap-3">

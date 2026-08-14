@@ -261,10 +261,10 @@ export default function DesignPartnerClient({
             </span>
             <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground">
               <span className="text-foreground font-semibold">PulseGuard Edge Mesh:</span>
-              <span className="hidden sm:inline">350+ PoPs Operational</span>
-              <span className="sm:hidden">350+ PoPs</span>
+              <span className="hidden sm:inline">7 Sovereign Regions Operational</span>
+              <span className="sm:hidden">7 Regions</span>
               <span className="text-border">|</span>
-              <span className="text-emerald-500 font-bold">Latency SLA: 99.99%</span>
+              <span className="text-emerald-500 font-bold">4-of-7 Quorum Active</span>
             </div>
           </div>
 
@@ -714,10 +714,11 @@ export default function DesignPartnerClient({
               <div className="size-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold">
                 <Globe2 className="size-5" />
               </div>
-              <h3 className="font-bold text-foreground text-sm">350+ Cloudflare PoP Quorum</h3>
+              <h3 className="font-bold text-foreground text-sm">7-Region Quorum Consensus</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Multi-region verification eliminates false alarms. If Singapore drops, Frankfurt and
-                Silicon Valley re-verify before alerting your on-call.
+                4-of-7 multi-region verification eliminates false alarms. If a single region
+                hiccups, independent nodes across North America, Europe, and Asia-Pacific verify
+                before alerting.
               </p>
             </div>
 

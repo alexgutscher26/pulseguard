@@ -31,6 +31,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/sonner";
 import { MonitorExportModal } from "@/components/monitors/details/export-modal";
+import { GlobalDiagnosticsModal } from "@/components/monitors/details/global-diagnostics-modal";
 import { useHaptic } from "@/hooks/use-haptic";
 
 /**
@@ -179,6 +180,8 @@ export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
               </Button>
             }
           />
+
+          <GlobalDiagnosticsModal url={initialMonitor.url} monitorName={initialMonitor.name} />
 
           <Button
             variant="outline"

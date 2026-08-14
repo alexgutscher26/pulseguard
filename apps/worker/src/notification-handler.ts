@@ -8,7 +8,12 @@ import {
 } from "@pulseguard/email";
 import { MonitorStatus as Status, NotificationType, type NotificationTypeValue } from "./constants";
 import type { Env } from "./env";
-import { runWithLimit, sendDiscordAlert, sendPagerDutyAlert, sendSlackAlert } from "./services/notifications";
+import {
+  runWithLimit,
+  sendDiscordAlert,
+  sendPagerDutyAlert,
+  sendSlackAlert,
+} from "./services/notifications";
 
 export interface NotificationMessage {
   type?: NotificationTypeValue | undefined;

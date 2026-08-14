@@ -39,6 +39,12 @@ export default function LandingFooter() {
                 Pricing
               </Link>
               <Link
+                href={"/locations" as any}
+                className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
+              >
+                Locations & WAF
+              </Link>
+              <Link
                 href={"/comparison" as any}
                 className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
               >

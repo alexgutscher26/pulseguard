@@ -95,8 +95,9 @@ export default function Hero() {
 
         {/* Subheading */}
         <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mb-10 text-balance font-sans">
-          PulseGuard checks your API from {AVAILABLE_REGIONS.length}+ edge locations every 60
-          seconds and alerts your team the moment something breaks — before your customers do.
+          PulseGuard monitors your API across {AVAILABLE_REGIONS.length} global edge regions with
+          4-of-7 quorum consensus — eliminating false positives and alerting your team the moment
+          real outages strike.
         </p>
 
         {/* Probe Input Form */}

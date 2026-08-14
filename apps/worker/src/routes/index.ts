@@ -27,6 +27,7 @@ import {
   probeRegisterRoute,
   probeResultRoute,
 } from "./probes";
+import { locationsRoute } from "./locations";
 
 export type { RouteHandler } from "./types";
 
@@ -51,6 +52,7 @@ export const ROUTES: RouteHandler[] = [
   databaseCheckRoute,
   bgpCheckRoute,
   globalLatencyRoute,
+  locationsRoute,
   probeRegisterRoute,
   probePollRoute,
   probeResultRoute,

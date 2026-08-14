@@ -1,0 +1,253 @@
+import { describe, test, expect } from "bun:test";
+import { evaluateQuorum, QuorumEngine } from "../services/quorum-engine";
+import type { ProbeCheckResult } from "@pulseguard/types";
+
+describe("Quorum Engine — Zero False Positive Consensus Verification", () => {
+  const createMockResults = (overrides: Partial<ProbeCheckResult>[]): ProbeCheckResult[] => {
+    const defaultRegions = [
+      { region: "wnam", asn: "AS13335" },
+      { region: "enam", asn: "AS13335" },
+      { region: "weur", asn: "AS13335" },
+      { region: "eeur", asn: "AS13335" },
+      { region: "apac", asn: "AS13335" },
+      { region: "apac-ne", asn: "AS13335" },
+      { region: "apac-se", asn: "AS13335" },
+    ];
+
+    return defaultRegions.map((dr, index) => {
+      const override = overrides[index] || {};
+      return {
+        monitorId: "mon-123",
+        probeId: `probe-${dr.region}`,
+        region: dr.region,
+        colo: "TEST",
+        asn: dr.asn,
+        timestamp: new Date().toISOString(),
+        statusCode: 200,
+        latency: 45,
+        status: "UP",
+        isVerificationRetry: false,
+        ...override,
+      };
+    });
+  };
+
+  test("Single probe failure is rejected (No false alarm — status remains UP)", () => {
+    // Region 0 (wnam) fails, remaining 6 regions succeed
+    const results = createMockResults([
+      {
+        region: "wnam",
+        status: "DOWN",
+        statusCode: 504,
+        errorReason: "Gateway Timeout",
+        isVerificationRetry: true,
+      },
+    ]);
+
+    const evaluation = evaluateQuorum("mon-123", results);
+
+    expect(evaluation.finalStatus).toBe("DEGRADED");
+    expect(evaluation.isGlobalOutage).toBe(false);
+    expect(evaluation.isRegionalDegradation).toBe(true);
+    expect(evaluation.confirmedDownCount).toBe(1);
+    expect(evaluation.totalEligibleProbes).toBe(7);
+    expect(evaluation.downRegions).toEqual(["wnam"]);
+    expect(evaluation.upRegions).toHaveLength(6);
+  });
+
+  test("Minority regional failure (2 regions fail) is classified as REGIONAL_DEGRADATION, not GLOBAL_OUTAGE", () => {
+    const results = createMockResults([
+      {
+        region: "wnam",
+        status: "DOWN",
+        statusCode: 502,
+        errorReason: "Bad Gateway",
+        isVerificationRetry: true,
+      },
+      {
+        region: "enam",
+        status: "DOWN",
+        statusCode: 502,
+        errorReason: "Bad Gateway",
+        isVerificationRetry: true,
+      },
+    ]);
+
+    const evaluation = evaluateQuorum("mon-123", results);
+
+    expect(evaluation.finalStatus).toBe("DEGRADED");
+    expect(evaluation.isRegionalDegradation).toBe(true);
+    expect(evaluation.isGlobalOutage).toBe(false);
+    expect(evaluation.confirmedDownCount).toBe(2);
+    expect(evaluation.totalEligibleProbes).toBe(7);
+    expect(evaluation.downRegions).toEqual(["wnam", "enam"]);
+  });
+
+  test("4-of-7 quorum reached: Declares verified GLOBAL_OUTAGE", () => {
+    const results = createMockResults([
+      {
+        region: "wnam",
+        status: "DOWN",
+        statusCode: 500,
+        isVerificationRetry: true,
+      },
+      {
+        region: "enam",
+        status: "DOWN",
+        statusCode: 500,
+        isVerificationRetry: true,
+      },
+      {
+        region: "weur",
+        status: "DOWN",
+        statusCode: 500,
+        isVerificationRetry: true,
+      },
+      {
+        region: "eeur",
+        status: "DOWN",
+        statusCode: 500,
+        isVerificationRetry: true,
+      },
+    ]);
+
+    const evaluation = evaluateQuorum("mon-123", results);
+
+    expect(evaluation.isDownConsensus).toBe(true);
+    expect(evaluation.finalStatus).toBe("DOWN");
+    expect(evaluation.isGlobalOutage).toBe(true);
+    expect(evaluation.isRegionalDegradation).toBe(false);
+    expect(evaluation.confirmedDownCount).toBe(4);
+    expect(evaluation.totalEligibleProbes).toBe(7);
+    expect(evaluation.reportingRegions).toHaveLength(7);
+  });
+
+  test("Slow probe exclusion removes anomalous latency outliers from voting pool", () => {
+    // 6 probes report 40ms, 1 probe hangs for 20000ms and fails
+    const results = createMockResults([
+      { region: "wnam", latency: 40 },
+      { region: "enam", latency: 42 },
+      { region: "weur", latency: 38 },
+      { region: "eeur", latency: 45 },
+      { region: "apac", latency: 50 },
+      { region: "apac-ne", latency: 48 },
+      { region: "apac-se", latency: 20000, status: "DOWN", errorReason: "Socket Timeout" },
+    ]);
+
+    const evaluation = evaluateQuorum("mon-123", results);
+
+    expect(evaluation.excludedSlowProbes).toContain("apac-se");
+    expect(evaluation.totalEligibleProbes).toBe(6);
+    expect(evaluation.finalStatus).toBe("UP");
+  });
+
+  test("Flapping detection excludes erratic probe node after 3 transitions in 2 hours", () => {
+    const engine = new QuorumEngine();
+    const now = Date.now();
+
+    // Register 4 rapid state transitions for "probe-wnam" within 30 minutes
+    engine.registerProbeStateTransition("probe-wnam", "UP", now - 1800000);
+    engine.registerProbeStateTransition("probe-wnam", "DOWN", now - 1200000);
+    engine.registerProbeStateTransition("probe-wnam", "UP", now - 600000);
+    engine.registerProbeStateTransition("probe-wnam", "DOWN", now);
+
+    const isFlapping = engine.isProbeFlapping("probe-wnam");
+    expect(isFlapping).toBe(true);
+
+    const health = engine.getProbeHealth("probe-wnam");
+    expect(health.status).toBe("FLAPPING");
+    expect(health.excludedFromQuorum).toBe(true);
+
+    // Evaluate with flapping probe wnam down, but remaining 6 UP
+    const results = createMockResults([
+      { region: "wnam", status: "DOWN" },
+      { region: "enam", status: "UP" },
+      { region: "weur", status: "UP" },
+      { region: "eeur", status: "UP" },
+      { region: "apac", status: "UP" },
+      { region: "apac-ne", status: "UP" },
+      { region: "apac-se", status: "UP" },
+    ]);
+
+    const evaluation = engine.evaluate("mon-123", results);
+    expect(evaluation.excludedFlappingProbes).toContain("wnam");
+    expect(evaluation.totalEligibleProbes).toBe(6);
+    expect(evaluation.finalStatus).toBe("UP");
+  });
+
+  test("ASN distribution tracking verifies independent routing paths", () => {
+    const results = createMockResults([
+      { region: "wnam", asn: "AS13335", status: "DOWN" },
+      { region: "enam", asn: "AS13335", status: "DOWN" },
+      { region: "weur", asn: "AS15169", status: "DOWN" },
+      { region: "eeur", asn: "AS15169", status: "DOWN" },
+      { region: "apac", asn: "AS16509", status: "UP" },
+      { region: "apac-ne", asn: "AS16509", status: "UP" },
+      { region: "apac-se", asn: "AS13335", status: "UP" },
+    ]);
+
+    const evaluation = evaluateQuorum("mon-123", results);
+
+    expect(evaluation.asnDistribution["AS13335"]).toBe(2);
+    expect(evaluation.asnDistribution["AS15169"]).toBe(2);
+  });
+
+  test("Free Tier (3 Primary Regions): Requires 2-of-3 confirming down probes for outage", () => {
+    // Free tier checks 3 primary regions (wnam, weur, apac)
+    const freeTierResults: ProbeCheckResult[] = [
+      {
+        monitorId: "mon-free",
+        probeId: "probe-wnam",
+        region: "wnam",
+        status: "DOWN",
+        latency: 45,
+        timestamp: new Date().toISOString(),
+        isVerificationRetry: true,
+      },
+      {
+        monitorId: "mon-free",
+        probeId: "probe-weur",
+        region: "weur",
+        status: "UP",
+        latency: 35,
+        timestamp: new Date().toISOString(),
+      },
+      {
+        monitorId: "mon-free",
+        probeId: "probe-apac",
+        region: "apac",
+        status: "UP",
+        latency: 65,
+        timestamp: new Date().toISOString(),
+      },
+    ];
+
+    // Single failure among 3 is DEGRADED, not DOWN (Zero false positives!)
+    const singleFailEval = evaluateQuorum("mon-free", freeTierResults);
+    expect(singleFailEval.finalStatus).toBe("DEGRADED");
+    expect(singleFailEval.isGlobalOutage).toBe(false);
+    expect(singleFailEval.totalEligibleProbes).toBe(3);
+    expect(singleFailEval.confirmedDownCount).toBe(1);
+
+    // Two failures among 3 reaches 2-of-3 consensus -> DOWN
+    const twoFailResults: ProbeCheckResult[] = [
+      freeTierResults[0]!,
+      {
+        monitorId: "mon-free",
+        probeId: "probe-weur",
+        region: "weur",
+        status: "DOWN",
+        latency: 40,
+        timestamp: new Date().toISOString(),
+        isVerificationRetry: true,
+      },
+      freeTierResults[2]!,
+    ];
+
+    const twoFailEval = evaluateQuorum("mon-free", twoFailResults);
+    expect(twoFailEval.finalStatus).toBe("DOWN");
+    expect(twoFailEval.isGlobalOutage).toBe(true);
+    expect(twoFailEval.confirmedDownCount).toBe(2);
+    expect(twoFailEval.totalEligibleProbes).toBe(3);
+  });
+});

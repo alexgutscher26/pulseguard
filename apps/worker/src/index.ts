@@ -2,6 +2,8 @@ import { getPrisma } from "@pulseguard/db";
 import type { ExecutionContext, MessageBatch, ScheduledEvent } from "@cloudflare/workers-types";
 export { LatencyAggregator } from "./durable-objects/latency-aggregator";
 export { MonitorChannel } from "./durable-objects/monitor-channel";
+export { RegionalProbe } from "./durable-objects/regional-probe";
+import { CLOUDFLARE_PROBE_REGIONS, type DOLocationHint } from "@pulseguard/shared";
 import type { Env } from "./env";
 export type { Env };
 import { handleFetch } from "./routes";
@@ -87,6 +89,27 @@ export default {
             }
           })
           .catch((err) => console.error("[ProbeHeartbeat] Check failed:", err)),
+      );
+    }
+
+    // --- REGIONAL PROBE DO BOOTSTRAP ---
+    if (env.REGIONAL_PROBE) {
+      ctx.waitUntil(
+        (async () => {
+          for (const reg of CLOUDFLARE_PROBE_REGIONS) {
+            try {
+              const probeId = env.REGIONAL_PROBE.idFromName(`probe-${reg.code}`);
+              const probe = env.REGIONAL_PROBE.get(probeId, {
+                locationHint: reg.code as any,
+              });
+              await probe.fetch("http://internal/init", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ region: reg.code }),
+              });
+            } catch {}
+          }
+        })(),
       );
     }
 

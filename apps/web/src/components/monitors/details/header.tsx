@@ -167,7 +167,20 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
 
         <div className="mt-4 flex items-center gap-2 text-primary text-xs font-bold uppercase tracking-wider font-mono">
           <CheckCircle className="size-4" />
-          Verified from {AVAILABLE_REGIONS.length} Nodes
+          {(() => {
+            let regionCount = 3;
+            if (monitor.checkRegions) {
+              try {
+                const parsed = JSON.parse(monitor.checkRegions);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                  regionCount = parsed.length;
+                }
+              } catch {}
+            }
+            const quorumRule =
+              regionCount >= 7 ? "4-of-7" : regionCount >= 3 ? "2-of-3" : "Multi-Node";
+            return `${quorumRule} Quorum Verified (${regionCount} Regions)`;
+          })()}
         </div>
       </div>
     </div>

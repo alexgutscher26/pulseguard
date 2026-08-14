@@ -1,6 +1,6 @@
 ---
-title: "How We Run Consensus Checks Across 50 Regions at Sub-Second Latency"
-description: "An architectural deep-dive into PulseGuard's edge monitoring mesh: Cloudflare Workers, Durable Objects, global RPC consensus voting, and zero-overhead latency aggregation."
+title: "How We Run Multi-Region Quorum Consensus Checks at Sub-Second Latency"
+description: "An architectural deep-dive into PulseGuard's edge monitoring mesh: Pinned Regional Durable Objects, 4-of-7 quorum consensus voting, and zero-overhead latency aggregation."
 date: "2026-08-06"
 category: "Engineering"
 readTime: "9 min read"
@@ -8,7 +8,7 @@ author: "Alex Gutscher"
 tags: ["Cloudflare Workers", "Durable Objects", "distributed systems", "consensus protocol", "DevOps"]
 ---
 
-Building a global monitoring platform that checks thousands of endpoints every 60 seconds presents a classic distributed systems problem: **How do you execute millions of synthetic pings from 50+ locations without spending tens of thousands of dollars on centralized cloud servers or introducing multi-second consensus delays?**
+Building a global monitoring platform that checks thousands of endpoints every 60 seconds presents a classic distributed systems problem: **How do you execute synthetic pings from geographically pinned edge regions without introducing multi-second consensus delays or false positives?**
 
 Traditional monitoring platforms rely on dedicated fleets of virtual machines in AWS or GCP regions. Centralized pollers execute cron loops, write raw results to centralized Postgres or TimeScale instances, and process alerting queues asynchronously.
 
@@ -16,9 +16,9 @@ At scale, this centralized architecture suffers from three major flaws:
 
 1. **High Infrastructure Costs:** Running idle EC2/Compute instances in 20+ regions just to issue HTTP pings incurs massive fixed compute and egress costs.
 2. **Alert Latency:** Serialized database writes and queue polling add 10 to 30 seconds of latency between failure detection and dispatch.
-3. **Regional Blind Spots:** Adding new geographical probe locations requires provisioning, securing, and maintaining additional cloud infrastructure.
+3. **Rotating Origin False Positives:** Unpinned cron executions jump continents and trigger false degradation alarms on geo-routed targets.
 
-To solve this, we built PulseGuard directly on top of **Cloudflare's global edge network and Durable Objects**. Here is how the architecture works under the hood.
+To solve this, we built PulseGuard directly on top of **Cloudflare's geographically pinned Durable Objects and our 4-of-7 Quorum Consensus Engine**. Here is how the architecture works under the hood.
 
 ---
 
@@ -31,23 +31,23 @@ PulseGuard's monitoring engine consists of three decoupled layers:
        ^             ^             ^
        |             |             |  (Parallel pings)
 +------+-------------+-------------+------+
-| Edge Probe Node    Edge Probe Node      |  (50+ Cloudflare Edge Locations)
-| (Frankfurt)        (Virginia)           |
+| Regional Probe DO  Regional Probe DO    |  (7 Pinned Cloudflare Edge Regions)
+| (weur: London)     (enam: Virginia)     |
 +------+-------------+-------------+------+
        |             |             |  (Internal Edge RPC)
        v             v             v
 +-----------------------------------------+
-| MonitorChannel (Durable Object)         |  (Stateful Quorum Coordinator)
-| - Aggregates 2/3 consensus              |
-| - Manages alert deduplication           |
+| Quorum Consensus Engine (Durable Actor) |  (Stateful Quorum Coordinator)
+| - Aggregates 4-of-7 consensus           |
+| - Manages alert deduplication & flapping|
 +--------------------+--------------------+
                      |
                      v
   [Alert Dispatches: Slack / Webhooks / PagerDuty]
 ```
 
-1. **Edge Probe Workers:** Serverless Cloudflare Workers deployed across 50+ POPs (Points of Presence). They execute lightweight HTTP, SSL, TCP, and DNS checks.
-2. **MonitorChannel Durable Objects:** Stateful, single-instance actors distributed near your primary target location. They maintain rolling latency state and coordinate multi-node quorum voting.
+1. **Regional Probe Durable Objects:** Geographically pinned Cloudflare Durable Objects deployed across 7 verified regions (`wnam`, `enam`, `weur`, `eeur`, `apac`, `apac-ne`, `apac-se`).
+2. **Quorum Consensus Engine:** Stateful actor that maintains rolling latency state, excludes slow/flapping probes, and coordinates 4-of-7 consensus voting.
 3. **Dispatch Engine:** Asynchronous WebCrypto-signed alert pipelines that push notifications to Slack, Discord, PagerDuty, and custom HTTP webhooks in under 300ms.
 
 ---
@@ -187,7 +187,7 @@ No architecture is without trade-offs. Here is where our edge consensus approach
 | :------------------------ | :-------------------------------: | :----------------------------: |
 | **Check Resolution**      |       5 minutes (Standard)        |   **60 seconds (1 minute)**    |
 | **Consensus Latency**     |           15–30 seconds           |    **< 1.2 seconds total**     |
-| **Global Probe POPs**     |          3–8 Datacenters          |      **50+ Edge Regions**      |
+| **Sovereign Probe Nodes** |          3–8 Datacenters          |     **7 Pinned Edge DOs**      |
 | **Compute Overhead / Mo** |      $400–$1,200 (VM Fleets)      |    **$5 (Serverless Edge)**    |
 | **False Positive Rate**   |          ~3.2% of alerts          |  **< 0.02% (Quorum Locked)**   |
 
@@ -195,6 +195,6 @@ No architecture is without trade-offs. Here is where our edge consensus approach
 
 ## Conclusion
 
-By combining Cloudflare's 50+ global edge locations with Durable Object state coordination, PulseGuard achieves sub-second consensus verification without paying the multi-region cloud VM tax.
+By combining Cloudflare's 7 pinned global edge regions with Durable Object state coordination, PulseGuard achieves sub-second consensus verification without paying the multi-region cloud VM tax or suffering from rotating origin jitter.
 
 If you are interested in exploring the codebase or deploying private edge probes in your own homelab or VPC, **[check out PulseGuard on GitHub](https://github.com/alexgutscher26/pulseguard)** or **[start monitoring for free](https://pulseguard.io/signup)**.

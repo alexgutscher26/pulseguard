@@ -19,7 +19,7 @@ export const USE_CASES: Record<string, UseCaseItem> = {
       "Eliminate 3 AM pager noise with multi-region consensus validation and native Docker probes.",
     badge: "For DevOps & SREs",
     description:
-      "PulseGuard executes multi-region edge checks across 50+ global locations. When an endpoint fails in one region, alternative edge nodes immediately perform consensus validation to filter out localized ISP glitches.",
+      "PulseGuard executes multi-region edge checks across 7 sovereign global regions. When an endpoint fails in one region, our 4-of-7 quorum consensus engine verifies the outage across independent vantage points to eliminate localized ISP glitches.",
     heroGraphic: "terminal",
     keyMetrics: [
       {
@@ -240,7 +240,7 @@ export const USE_CASES: Record<string, UseCaseItem> = {
         value: "Sub-10ms",
         detail: "Fast regex & JSON evaluation",
       },
-      { label: "Global Edge Locations", value: "50+", detail: "Worldwide latency matrix" },
+      { label: "Sovereign Regions", value: "7 Global", detail: "4-of-7 Quorum consensus" },
       { label: "SSL Expiry Warning", value: "30 Days", detail: "Proactive certificate watchdog" },
     ],
     features: [

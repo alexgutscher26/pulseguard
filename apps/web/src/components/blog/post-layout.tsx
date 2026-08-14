@@ -223,7 +223,8 @@ export default function PostLayout({
                     <span>PulseGuard Free</span>
                   </div>
                   <p className="text-[11px] text-muted-foreground leading-relaxed mb-3">
-                    50 monitors, 60s intervals, 50+ edge regions, and multi-node quorum consensus.
+                    50 monitors, 60s intervals, 7 global edge regions, and multi-node quorum
+                    consensus.
                   </p>
                   <Link
                     href={"/auth/sign-up" as any}

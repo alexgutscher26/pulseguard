@@ -1,6 +1,6 @@
 ---
 title: "Building a Global Monitoring Mesh: Architecture Deep Dive"
-description: "How we designed PulseGuard's distributed check infrastructure for reliability, low latency, and horizontal scalability across 50+ global edge locations."
+description: "How we designed PulseGuard's distributed check infrastructure for reliability, low latency, and horizontal scalability across 7 pinned global edge regions."
 date: "2026-06-05"
 category: "Engineering"
 readTime: "12 min read"
@@ -8,27 +8,27 @@ author: "Alex Gutscher"
 tags: ["monitoring architecture", "distributed systems", "Cloudflare Workers", "Durable Objects", "infrastructure"]
 ---
 
-PulseGuard's monitoring infrastructure is built as a distributed mesh — a network of lightweight check nodes spread across 50+ global edge locations that coordinate to verify endpoint availability and response times. Here's how it works under the hood.
+PulseGuard's monitoring infrastructure is built as a distributed mesh — a network of lightweight check nodes pinned across 7 global edge regions via Cloudflare Durable Object location hints that coordinate to verify endpoint availability and response times. Here's how it works under the hood.
 
 ---
 
 ## High-Level Architecture Overview
 
-At a high level, the system decouples into three distinct operational layers: **Edge Probes**, **Quorum State Coordinators**, and **Alert Dispatch Pipelines**:
+At a high level, the system decouples into three distinct operational layers: **Regional Probe DOs**, **Quorum Consensus Engine**, and **Alert Dispatch Pipelines**:
 
 ```
 [Target Application / API]
        ^             ^             ^
        |             |             |  (Parallel 60s Edge Checks)
 +------+-------------+-------------+------+
-| Edge Probe Node    Edge Probe Node      |  (50+ Cloudflare Locations)
-| (Frankfurt)        (Virginia)           |
+| Regional Probe DO  Regional Probe DO    |  (7 Pinned Cloudflare DO Regions)
+| (weur: London)     (enam: Virginia)     |
 +------+-------------+-------------+------+
        |             |             |  (Sub-30ms RPC Consensus)
        v             v             v
 +-----------------------------------------+
-| MonitorChannel (Durable Object Actor)   |  (Quorum State Manager)
-| - Aggregates 2/3 multi-region voting    |
+| Quorum Consensus Engine (Durable Actor) |  (Consensus & Flapping Manager)
+| - Aggregates 4-of-7 multi-region voting |
 | - Computes rolling P50/P95/P99 latency  |
 +--------------------+--------------------+
                      |
@@ -36,13 +36,13 @@ At a high level, the system decouples into three distinct operational layers: **
   [Alert Dispatch: Slack, Webhooks, PagerDuty]
 ```
 
-Each layer is horizontally scalable, stateless at the edge, and coordinate via stateful actors to maintain high-throughput check aggregation.
+Each layer is horizontally scalable, geographically pinned at the edge, and coordinates via stateful actors to maintain high-throughput check aggregation.
 
 ---
 
-## 1. Edge Probe Nodes
+## 1. Regional Probe Durable Objects
 
-Each check probe is executed by an ephemeral Cloudflare Worker located at one of 50+ Points of Presence (POPs). When scheduled:
+Each check probe is executed by a geographically pinned Cloudflare Durable Object located at one of 7 verified regions (`wnam`, `enam`, `weur`, `eeur`, `apac`, `apac-ne`, `apac-se`). When scheduled:
 
 - Probes pull target configurations cached locally in memory or fast KV stores.
 - Probes issue non-blocking HTTP, DNS, SSL, or TCP probes with strict timeout budgets.

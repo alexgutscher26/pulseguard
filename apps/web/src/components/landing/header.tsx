@@ -178,6 +178,7 @@ export default function LandingHeader() {
 
           {[
             { name: "Features", href: "/#features" },
+            { name: "Locations", href: "/locations" },
             { name: "Use Cases", href: "/use-cases" },
             { name: "Demo", href: "/demo" },
             { name: "Pricing", href: "/#pricing" },

@@ -544,8 +544,6 @@ export function IntegrationsManager() {
                 {resources.length === 0 ? (
                   /* Credential Entry Mode */
                   <div className="space-y-4">
-
-
                     {/* Vercel Specific Live Token Integration Flow */}
                     {activeProvider === "vercel" && (
                       <div className="space-y-4">

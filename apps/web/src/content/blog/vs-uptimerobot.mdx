@@ -55,36 +55,39 @@ UptimeRobot polls targets sequentially from a primary regional worker node. If t
 
 ### PulseGuard's Edge Quorum Architecture
 
-PulseGuard operates natively on Cloudflare's global edge runtime across 50+ locations. When an edge worker detects a non-2xx status code or TCP timeout:
+PulseGuard operates natively on Cloudflare's global edge runtime across 7 sovereign regions. When an edge probe detects a non-2xx status code or TCP timeout:
 
-1. It immediately triggers a **quorum request** to two independent edge nodes in different geographical regions (e.g., Frankfurt and Singapore).
-2. All nodes execute simultaneous parallel pings against your target endpoint.
-3. An alert is dispatched **only if a 2/3 multi-region consensus** confirms the failure.
+1. It immediately executes a local verification re-check to rule out single-packet glitches.
+2. If confirmed, the **Quorum Consensus Engine** tallies results across independent edge regions (North America, Europe, Asia-Pacific).
+3. An incident is opened **only if a 4-of-7 multi-region consensus** confirms the failure, while minority failures are classified as regional degradation.
 
 ```ts
 // PulseGuard Edge Quorum Consensus Logic (Simplified)
 async function verifyTargetHealth(targetUrl: string): Promise<HealthStatus> {
-  const localResult = await pingTarget(targetUrl);
-  if (localResult.ok) return { status: "UP", latencyMs: localResult.latency };
-
-  // Local probe failed — dispatch parallel verification to secondary edge regions
-  const [regionA, regionB] = await Promise.all([
-    dispatchEdgeProbe("iad-us-east", targetUrl),
-    dispatchEdgeProbe("fra-eu-central", targetUrl),
+  const probeResults = await Promise.all([
+    probeWnam.check(targetUrl),
+    probeEnam.check(targetUrl),
+    probeWeur.check(targetUrl),
+    probeEeur.check(targetUrl),
+    probeApac.check(targetUrl),
+    probeApacNe.check(targetUrl),
+    probeApacSe.check(targetUrl),
   ]);
 
-  const failures = [localResult, regionA, regionB].filter((r) => !r.ok).length;
+  const failures = probeResults.filter((r) => !r.ok).length;
 
-  // Require 2/3 consensus before declaring an incident
-  if (failures >= 2) {
+  // Require 4-of-7 consensus before declaring a global incident
+  if (failures >= 4) {
     return { status: "DOWN", verifiedBy: failures, timestamp: Date.now() };
+  } else if (failures > 0) {
+    return { status: "DEGRADED", note: "Regional degradation detected without global outage" };
   }
 
-  return { status: "DEGRADED", note: "Transient regional routing noise ignored" };
+  return { status: "UP", latencyMs: calculateAverage(probeResults) };
 }
 ```
 
-This multi-region voting pipeline executes in under 800ms, completely eliminating false alarms caused by regional CDN drops or ISP routing hiccups.
+This multi-region voting pipeline executes rapidly across geographically pinned Durable Objects, completely eliminating false alarms caused by localized routing hiccups.
 
 ---
 
@@ -96,8 +99,8 @@ To be scrupulous, UptimeRobot deserves credit where it's due: their free tier of
 | :---------------------------- | :------------------------: | :-----------------: |
 | **Free Monitor Count**        |      **50 Monitors**       |   **50 Monitors**   |
 | **Check Interval**            |   **60 Seconds (1 min)**   | 300 Seconds (5 min) |
-| **Check Locations**           | **50+ Global Edge Nodes**  |  3 Regional Probes  |
-| **Verification Method**       |    Multi-Region Quorum     |  Sequential Retry   |
+| **Check Locations**           | **7 Pinned Edge Regions**  |  4 Regional Probes  |
+| **Verification Method**       |     4-of-7 Edge Quorum     |  Sequential Retry   |
 | **SSL Expiry Alerts**         | Included (30-day warning)  |      Included       |
 | **DNS Record Monitoring**     | Included (A, MX, TXT, CAA) |      Paid Only      |
 | **Status Page Custom Domain** |  Included (With Free SSL)  | Paid Only ($7/mo+)  |

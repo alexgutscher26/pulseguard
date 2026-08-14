@@ -16,14 +16,14 @@ Here is an objective comparison of how PulseGuard compares to the most popular m
 
 ## Free Tier Comparison Matrix
 
-| Feature / Platform     |     PulseGuard      | UptimeRobot | Better Stack | StatusCake  |
-| :--------------------- | :-----------------: | :---------: | :----------: | :---------: |
-| **Free Monitors**      |   **50 Monitors**   | 50 Monitors | 10 Monitors  | 10 Monitors |
-| **Free Interval**      |   **60 Seconds**    | 300 Seconds | 300 Seconds  | 300 Seconds |
-| **Edge Locations**     |   **50+ Regions**   |  3 Regions  |  6 Regions   |  8 Regions  |
-| **Consensus Quorum**   |    **Included**     | Sequential  |   Limited    |    None     |
-| **Custom Status Page** | **Included (Free)** |  Paid Only  |   Included   |  Paid Only  |
-| **Commercial Use**     |   **Guaranteed**    |     Yes     |     Yes      |     Yes     |
+| Feature / Platform     |     PulseGuard      | UptimeRobot | Better Stack  | StatusCake  |
+| :--------------------- | :-----------------: | :---------: | :-----------: | :---------: |
+| **Free Monitors**      |   **50 Monitors**   | 50 Monitors |  10 Monitors  | 10 Monitors |
+| **Free Interval**      |   **60 Seconds**    | 300 Seconds |  300 Seconds  | 300 Seconds |
+| **Edge Locations**     |    **7 Regions**    |  4 Regions  |  4 Locations  |  8 Regions  |
+| **Consensus Quorum**   |  **4-of-7 Quorum**  | Sequential  | 3-of-4 Quorum |    None     |
+| **Custom Status Page** | **Included (Free)** |  Paid Only  |   Included    |  Paid Only  |
+| **Commercial Use**     |   **Guaranteed**    |     Yes     |      Yes      |     Yes     |
 
 ---
 
@@ -35,7 +35,7 @@ While legacy competitors restrict free accounts to 5-minute sampling (300 second
 
 ### 2. Edge Quorum Consensus Voting
 
-Instead of relying on a single probe node, PulseGuard verifies failures across multiple independent Cloudflare edge regions in parallel. An alert is only dispatched when a **2/3 majority** confirms the failure, eliminating false alarm fatigue.
+Instead of relying on a single probe node, PulseGuard verifies failures across geographically pinned Cloudflare edge Durable Objects in parallel. An alert is only dispatched when multi-region quorum confirms the failure, eliminating false alarm fatigue.
 
 ### 3. Flat, Developer-Friendly Pricing
 
