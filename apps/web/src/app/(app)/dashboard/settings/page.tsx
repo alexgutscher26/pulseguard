@@ -12,6 +12,7 @@ import { PrivacyForm } from "@/components/settings/privacy-form";
 import { BillingForm } from "@/components/settings/billing-form";
 import { ReferralForm } from "@/components/settings/referral-form";
 import { getUserUsageSummary } from "@/lib/billing-server";
+import { verifyAndApplyCheckoutSession } from "@/lib/stripe";
 
 export const dynamic = "force-dynamic";
 
@@ -24,12 +25,12 @@ export const dynamic = "force-dynamic";
  * profile, regional settings, security, and API keys forms.
  *
  * @param {Object} params - The parameters for the function.
- * @param {Promise<{ tab?: string }>} params.searchParams - A promise that resolves to an object containing the selected tab.
+ * @param {Promise<{ tab?: string; session_id?: string }>} params.searchParams - Search params.
  */
 export default async function SettingsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string }>;
+  searchParams: Promise<{ tab?: string; session_id?: string }>;
 }) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -39,7 +40,22 @@ export default async function SettingsPage({
     redirect("/login");
   }
 
-  const { tab = "general" } = await searchParams;
+  const resolvedParams = await searchParams;
+  const rawTab = resolvedParams.tab || "general";
+  const sessionId = resolvedParams.session_id;
+
+  // If returning from Stripe checkout with a session_id, verify and apply plan immediately!
+  if (sessionId && sessionId.startsWith("cs_")) {
+    await verifyAndApplyCheckoutSession({
+      userId: session.user.id,
+      sessionId,
+    });
+  }
+
+  // Clean tab parameter in case query parameters were concatenated (e.g. "billing?session_id=...")
+  const cleanTab = rawTab.split("?")[0].split("&")[0];
+  const validTabs = ["general", "billing", "security", "api-keys", "migration", "privacy"];
+  const tab = validTabs.includes(cleanTab) ? cleanTab : "general";
   const usageSummary = tab === "billing" ? await getUserUsageSummary(session.user.id) : undefined;
 
   return (

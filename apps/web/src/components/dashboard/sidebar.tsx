@@ -191,9 +191,16 @@ export function Sidebar() {
                 <span className="text-[9px] text-muted-foreground tracking-wider uppercase">
                   LICENSE TIER
                 </span>
-                <span className={`text-[9px] font-bold px-1.5 py-0.5 border ${tierColorClass}`}>
-                  {displayTier}
-                </span>
+                <div className="flex items-center gap-1.5">
+                  {telemetry?.isAdmin && (
+                    <span className="text-[8px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/40">
+                      ADMIN
+                    </span>
+                  )}
+                  <span className={`text-[9px] font-bold px-1.5 py-0.5 border ${tierColorClass}`}>
+                    {displayTier}
+                  </span>
+                </div>
               </div>
               <div className="flex items-center justify-between text-[9px]">
                 <span className="text-muted-foreground tracking-wider uppercase">EDGE NODES</span>
@@ -242,12 +249,19 @@ export function Sidebar() {
           </>
         ) : (
           <div className="flex flex-col items-center gap-2">
-            <span
-              className={`text-[8px] font-bold px-1 py-0.5 border ${tierColorClass}`}
-              title={`License Tier: ${displayTier}`}
-            >
-              {displayTier.slice(0, 4)}
-            </span>
+            <div className="flex flex-col items-center gap-1">
+              {telemetry?.isAdmin && (
+                <span className="text-[7px] font-bold px-1 py-0.2 bg-amber-500/20 text-amber-400 border border-amber-500/40">
+                  ADM
+                </span>
+              )}
+              <span
+                className={`text-[8px] font-bold px-1 py-0.5 border ${tierColorClass}`}
+                title={`License Tier: ${displayTier}${telemetry?.isAdmin ? " (Admin)" : ""}`}
+              >
+                {displayTier.slice(0, 4)}
+              </span>
+            </div>
             <Link
               href="/dashboard/settings?tab=billing"
               title="Upgrade License"

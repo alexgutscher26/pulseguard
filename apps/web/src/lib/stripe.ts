@@ -11,6 +11,16 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_mock_
   },
 });
 
+function appendQueryParams(url: string, params: Record<string, string>): string {
+  const [base, query] = url.split("?");
+  const searchParams = new URLSearchParams(query || "");
+  for (const [key, value] of Object.entries(params)) {
+    searchParams.set(key, value);
+  }
+  const qs = searchParams.toString();
+  return qs ? `${base}?${qs}` : base;
+}
+
 /**
  * Ensures a Stripe customer exists for a user and returns the Stripe customer ID.
  */
@@ -377,8 +387,13 @@ export async function createCheckoutSession({
         customer_update: { name: "auto", address: "auto" },
         line_items: [lineItem],
         mode: "subscription",
-        success_url: `${returnUrl}?session_id={CHECKOUT_SESSION_ID}&success=true`,
-        cancel_url: `${returnUrl}?canceled=true`,
+        success_url: appendQueryParams(returnUrl, {
+          session_id: "{CHECKOUT_SESSION_ID}",
+          success: "true",
+        }),
+        cancel_url: appendQueryParams(returnUrl, {
+          canceled: "true",
+        }),
         metadata: {
           userId,
           plan,
@@ -464,9 +479,16 @@ export async function createCheckoutSession({
   }
 
   // Fallback demo/mock mode response when STRIPE_SECRET_KEY is not configured
-  const promoQuery = promoCode ? `&promo_code=${encodeURIComponent(promoCode)}` : "";
+  const mockParams: Record<string, string> = {
+    mock_checkout: "true",
+    plan,
+    interval,
+  };
+  if (promoCode) {
+    mockParams.promo_code = promoCode;
+  }
   return {
-    url: `${returnUrl}?mock_checkout=true&plan=${plan}&interval=${interval}${promoQuery}`,
+    url: appendQueryParams(returnUrl, mockParams),
   };
 }
 
@@ -495,6 +517,88 @@ export async function createPortalSession({
 
   // Fallback demo/mock mode portal URL
   return {
-    url: `${returnUrl}?mock_portal=true`,
+    url: appendQueryParams(returnUrl, { mock_portal: "true" }),
   };
+}
+
+/**
+ * Verifies a completed Stripe checkout session by ID and updates the user's subscription in DB.
+ */
+export async function verifyAndApplyCheckoutSession({
+  userId,
+  sessionId,
+}: {
+  userId: string;
+  sessionId: string;
+}): Promise<{ success: boolean; plan?: string; error?: string }> {
+  try {
+    if (!sessionId || !sessionId.startsWith("cs_")) {
+      return { success: false, error: "Invalid session ID" };
+    }
+
+    const stripeKey = process.env.STRIPE_SECRET_KEY || "";
+    if (!stripeKey || stripeKey.includes("mock")) {
+      return { success: false, error: "Stripe in mock mode" };
+    }
+
+    const session = await stripe.checkout.sessions.retrieve(sessionId, {
+      expand: ["subscription", "customer"],
+    });
+
+    if (session.payment_status !== "paid" && session.status !== "complete") {
+      return { success: false, error: `Checkout not completed: ${session.status}` };
+    }
+
+    // Verify user ID matches if present in session metadata
+    const sessionUserId = session.metadata?.userId;
+    if (sessionUserId && sessionUserId !== userId) {
+      return { success: false, error: "Session does not belong to this user" };
+    }
+
+    const rawPlan = (session.metadata?.plan || "CONSTRUCT").toUpperCase();
+    const plan = rawPlan in PLANS ? rawPlan : "CONSTRUCT";
+    const customerId =
+      typeof session.customer === "string" ? session.customer : session.customer?.id;
+    const subscriptionId =
+      typeof session.subscription === "string" ? session.subscription : session.subscription?.id;
+
+    console.log(
+      `[Stripe] Syncing checkout session ${sessionId} for user ${userId} -> Plan: ${plan}`,
+    );
+
+    const oneYearFromNow = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+
+    await db.subscription.upsert({
+      where: { userId },
+      create: {
+        userId,
+        stripeCustomerId: customerId || undefined,
+        stripeSubscriptionId: subscriptionId || undefined,
+        plan,
+        status: "ACTIVE",
+        currentPeriodStart: new Date(),
+        currentPeriodEnd: oneYearFromNow,
+        tierVersion: "stripe_live",
+      },
+      update: {
+        stripeCustomerId: customerId || undefined,
+        stripeSubscriptionId: subscriptionId || undefined,
+        plan,
+        status: "ACTIVE",
+        currentPeriodStart: new Date(),
+        currentPeriodEnd: oneYearFromNow,
+        tierVersion: "stripe_live",
+      },
+    });
+
+    await db.user.update({
+      where: { id: userId },
+      data: { tier: plan },
+    });
+
+    return { success: true, plan };
+  } catch (error: any) {
+    console.error("[Stripe] Failed to verify and apply checkout session:", error);
+    return { success: false, error: error?.message || "Failed to verify session" };
+  }
 }

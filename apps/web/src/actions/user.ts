@@ -82,7 +82,16 @@ export async function getLicenseTelemetry() {
       select: { tier: true, email: true },
     });
 
-    const userTier = (dbUser?.tier || (session.user as any).tier || "INITIATE").toUpperCase();
+    const subscription = await prisma.subscription.findUnique({
+      where: { userId: session.user.id },
+    });
+
+    const userTier = (
+      subscription?.plan ||
+      dbUser?.tier ||
+      (session.user as any).tier ||
+      "INITIATE"
+    ).toUpperCase();
     const adminEmails = (process.env.ADMIN_EMAILS || "")
       .split(",")
       .map((e) => e.trim().toLowerCase())

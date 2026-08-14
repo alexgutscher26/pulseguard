@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   Check,
   CreditCard,
@@ -19,11 +20,26 @@ interface BillingFormProps {
 }
 
 export function BillingForm({ initialUsage }: BillingFormProps) {
+  const searchParams = useSearchParams();
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("annual");
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [loadingPortal, setLoadingPortal] = useState(false);
   const [promoCode, setPromoCode] = useState("");
   const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
+
+  useEffect(() => {
+    const success = searchParams.get("success");
+    const canceled = searchParams.get("canceled");
+    const sessionId = searchParams.get("session_id");
+
+    if (success === "true" || sessionId) {
+      toast.success("Payment successful! Your subscription is now active.", {
+        description: "Thank you for upgrading with PulseGuard.",
+      });
+    } else if (canceled === "true") {
+      toast.info("Checkout was canceled. No charges were made.");
+    }
+  }, [searchParams]);
 
   const usage = initialUsage || {
     monitorsUsed: 3,

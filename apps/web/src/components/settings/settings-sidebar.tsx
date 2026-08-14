@@ -31,7 +31,8 @@ const items = [
  */
 export function SettingsSidebar() {
   const searchParams = useSearchParams();
-  const currentTab = searchParams.get("tab") || "general";
+  const rawTab = searchParams.get("tab") || "general";
+  const currentTab = rawTab.split("?")[0].split("&")[0];
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   // Restore saved collapse preference from localStorage
