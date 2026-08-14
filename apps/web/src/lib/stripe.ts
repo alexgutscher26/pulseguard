@@ -23,13 +23,19 @@ export async function getOrCreateStripeCustomer(
     where: { userId },
   });
 
-  if (existingSub?.stripeCustomerId) {
+  const stripeKey = process.env.STRIPE_SECRET_KEY || "";
+  const isRealStripeKey = Boolean(stripeKey) && !stripeKey.includes("mock");
+
+  if (
+    existingSub?.stripeCustomerId &&
+    (!isRealStripeKey || !existingSub.stripeCustomerId.startsWith("cus_mock_"))
+  ) {
     return existingSub.stripeCustomerId;
   }
 
   // Create Stripe customer
   let customerId = `cus_mock_${userId}`;
-  if (process.env.STRIPE_SECRET_KEY && !process.env.STRIPE_SECRET_KEY.includes("mock")) {
+  if (isRealStripeKey) {
     const customer = await stripe.customers.create({
       email,
       name: name || undefined,
@@ -72,45 +78,85 @@ export async function createStripePromotionCode({
   metadata?: Record<string, string>;
 }): Promise<{ id: string; code: string; isMock: boolean }> {
   const cleanCode = code.trim().toUpperCase();
+  const stripeKey = process.env.STRIPE_SECRET_KEY || "";
 
-  if (!process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY.includes("mock")) {
+  if (!stripeKey || stripeKey.includes("mock")) {
     console.log(`[Stripe Mock] Created mock promotion code: ${cleanCode} (${percentOff}% off)`);
     return { id: `promo_mock_${cleanCode}`, code: cleanCode, isMock: true };
   }
 
-  const couponId = `VIP_PARTNER_${percentOff}PCT_${durationMonths}M`;
-
-  // 1. Ensure the parent coupon exists in Stripe
+  // 1. Ensure the underlying Stripe Coupon exists
+  let couponExists = false;
   try {
-    await stripe.coupons.retrieve(couponId);
+    const existing = await stripe.coupons.retrieve(cleanCode);
+    if (existing && existing.valid) {
+      couponExists = true;
+    }
   } catch (err: any) {
-    if (err.statusCode === 404 || err.code === "resource_missing") {
-      try {
-        await stripe.coupons.create({
-          id: couponId,
-          name: `PulseGuard Partner VIP (${percentOff}% Off ${durationMonths} Months)`,
-          percent_off: percentOff,
-          duration: durationMonths > 1 ? "repeating" : "once",
-          duration_in_months: durationMonths > 1 ? durationMonths : undefined,
-          metadata: { system: "pulseguard_vip", durationMonths: String(durationMonths) },
-        });
-      } catch (createErr) {
-        console.warn(`[Stripe] Note on coupon creation for ${couponId}:`, createErr);
+    // Coupon doesn't exist or retrieve returned 404/invalid_request_error
+    couponExists = false;
+  }
+
+  if (!couponExists) {
+    try {
+      await stripe.coupons.create({
+        id: cleanCode,
+        name: `PulseGuard VIP (${cleanCode})`.slice(0, 40),
+        percent_off: percentOff,
+        duration: durationMonths > 1 ? "repeating" : "once",
+        duration_in_months: durationMonths > 1 ? durationMonths : undefined,
+        max_redemptions: maxRedemptions,
+        metadata: {
+          ...metadata,
+          system: "pulseguard_vip",
+          vip_code: cleanCode,
+          durationMonths: String(durationMonths),
+        },
+      });
+      couponExists = true;
+      console.log(`[Stripe] Successfully created coupon in Stripe: ${cleanCode}`);
+    } catch (createErr: any) {
+      if (
+        createErr.code === "resource_already_exists" ||
+        createErr.message?.includes("already exists")
+      ) {
+        couponExists = true;
+        console.log(`[Stripe] Coupon ${cleanCode} already exists in Stripe`);
+      } else {
+        console.error(`[Stripe] Error creating coupon ${cleanCode}:`, createErr);
+        throw createErr;
       }
-    } else {
-      console.warn(`[Stripe] Error checking coupon ${couponId}:`, err);
     }
   }
 
-  // 2. Create the unique promotion code in Stripe
+  // 2. Ensure customer-facing Promotion Code linked to this coupon exists
+  try {
+    const promoList = await stripe.promotionCodes.list({
+      code: cleanCode,
+      active: true,
+      limit: 1,
+    });
+
+    if (promoList.data && promoList.data.length > 0) {
+      const existingPromo = promoList.data[0];
+      console.log(
+        `[Stripe] Found existing promotion code in Stripe: ${existingPromo.code} (ID: ${existingPromo.id})`,
+      );
+      return { id: existingPromo.id, code: existingPromo.code, isMock: false };
+    }
+  } catch (listErr: any) {
+    console.warn(`[Stripe] Note checking existing promotion code ${cleanCode}:`, listErr?.message);
+  }
+
   try {
     const promo = await stripe.promotionCodes.create({
-      coupon: couponId,
+      coupon: cleanCode,
       code: cleanCode,
       max_redemptions: maxRedemptions,
       metadata: {
         ...metadata,
         created_via: "pulseguard_design_partners",
+        vip_code: cleanCode,
       },
     });
 
@@ -118,13 +164,24 @@ export async function createStripePromotionCode({
       `[Stripe] Successfully created promotion code in Stripe: ${promo.code} (ID: ${promo.id})`,
     );
     return { id: promo.id, code: promo.code, isMock: false };
-  } catch (error: any) {
-    console.error(`[Stripe] Failed to create promotion code ${cleanCode}:`, error);
-    // If it already exists, attempt to return existing
-    if (error.code === "resource_already_exists") {
-      return { id: `promo_existing_${cleanCode}`, code: cleanCode, isMock: false };
+  } catch (promoErr: any) {
+    console.log(`[Stripe] Promotion code creation notice for ${cleanCode}:`, promoErr?.message);
+    if (
+      promoErr.code === "resource_already_exists" ||
+      promoErr.message?.includes("already exists")
+    ) {
+      try {
+        const promoList = await stripe.promotionCodes.list({
+          code: cleanCode,
+          limit: 1,
+        });
+        if (promoList.data && promoList.data.length > 0) {
+          return { id: promoList.data[0].id, code: promoList.data[0].code, isMock: false };
+        }
+      } catch {}
+      return { id: `promo_${cleanCode}`, code: cleanCode, isMock: false };
     }
-    throw error;
+    throw promoErr;
   }
 }
 
@@ -183,7 +240,7 @@ export async function createCheckoutSession({
   returnUrl: string;
   promoCode?: string;
 }): Promise<{ url: string }> {
-  const customerId = await getOrCreateStripeCustomer(userId, email);
+  let customerId = await getOrCreateStripeCustomer(userId, email);
   const planDetails = PLANS[plan];
 
   const priceId =
@@ -192,58 +249,218 @@ export async function createCheckoutSession({
   if (process.env.STRIPE_SECRET_KEY && !process.env.STRIPE_SECRET_KEY.includes("mock")) {
     const cleanPromo = promoCode?.trim().toUpperCase();
 
-    const sessionParams: Stripe.Checkout.SessionCreateParams = {
-      customer: customerId,
-      payment_method_types: ["card"],
-      automatic_tax: { enabled: true },
-      tax_id_collection: { enabled: true },
-      customer_update: { name: "auto", address: "auto" },
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
-      mode: "subscription",
-      success_url: `${returnUrl}?session_id={CHECKOUT_SESSION_ID}&success=true`,
-      cancel_url: `${returnUrl}?canceled=true`,
-      metadata: {
-        userId,
-        plan,
-        interval,
-        promoCode: cleanPromo || "",
-      },
-    };
+    // Check if the price ID is a real pre-configured Stripe price ID or placeholder
+    const isPreconfiguredPriceId =
+      Boolean(priceId) &&
+      (priceId?.startsWith("price_") ?? false) &&
+      !priceId?.includes("netrunner") &&
+      !priceId?.includes("construct");
 
-    // Handle promo codes dynamically:
-    // In Stripe API, allow_promotion_codes cannot be true if discounts is provided.
+    const lineItem: Stripe.Checkout.SessionCreateParams.LineItem =
+      isPreconfiguredPriceId && priceId
+        ? { price: priceId, quantity: 1 }
+        : {
+            price_data: {
+              currency: "usd",
+              product_data: {
+                name: `PulseGuard ${planDetails.name}`,
+                description: planDetails.description,
+              },
+              unit_amount:
+                (interval === "annual"
+                  ? planDetails.annualPriceMonthly * 12
+                  : planDetails.monthlyPrice) * 100,
+              recurring: {
+                interval: interval === "annual" ? "year" : "month",
+              },
+            },
+            quantity: 1,
+          };
+
+    let discountConfig: { promotion_code?: string; coupon?: string } | null = null;
+
     if (cleanPromo) {
+      // 1. Check if it's an active Promotion Code in Stripe
       try {
         const promoList = await stripe.promotionCodes.list({
           code: cleanPromo,
           active: true,
           limit: 1,
         });
-
         if (promoList.data.length > 0) {
-          sessionParams.discounts = [{ promotion_code: promoList.data[0].id }];
-        } else {
-          sessionParams.discounts = [{ coupon: cleanPromo }];
+          discountConfig = { promotion_code: promoList.data[0].id };
         }
-      } catch (promoErr) {
-        console.warn(
-          `[Stripe] Could not resolve promo code ${cleanPromo}, falling back to direct coupon:`,
-          promoErr,
-        );
-        sessionParams.discounts = [{ coupon: cleanPromo }];
+      } catch (err: any) {
+        console.warn("[Stripe] Note on promo code lookup:", err.message);
       }
-    } else {
-      // Allow user to type promo code manually on Stripe's hosted checkout page
-      sessionParams.allow_promotion_codes = true;
+
+      // 2. Check if it's a direct Coupon in Stripe
+      if (!discountConfig) {
+        try {
+          const couponObj = await stripe.coupons.retrieve(cleanPromo);
+          if (couponObj && couponObj.valid) {
+            discountConfig = { coupon: couponObj.id };
+          }
+        } catch {
+          // 3. If not yet in Stripe, check if it's a VIP code from our database to create on the fly!
+          try {
+            const records = await db.verification.findMany({
+              where: {
+                identifier: "DESIGN_PARTNER",
+              },
+            });
+
+            for (const r of records) {
+              try {
+                const partnerData = JSON.parse(r.value);
+                const matchesVip =
+                  partnerData.vipCode && partnerData.vipCode.trim().toUpperCase() === cleanPromo;
+                const matchesRenewal =
+                  partnerData.renewalDiscountCode &&
+                  partnerData.renewalDiscountCode.trim().toUpperCase() === cleanPromo;
+                const matchesId = r.id.trim().toUpperCase() === cleanPromo;
+
+                if (matchesVip || matchesRenewal || matchesId) {
+                  const isRenewal = matchesRenewal;
+                  const percent = isRenewal ? partnerData.renewalDiscountPercent || 50 : 100;
+                  const promoResult = await createStripePromotionCode({
+                    code: cleanPromo,
+                    percentOff: percent,
+                    durationMonths: 12,
+                    maxRedemptions: 1,
+                    metadata: {
+                      partnerId: r.id,
+                      applicantEmail: partnerData.email || "",
+                    },
+                  });
+
+                  if (
+                    promoResult.id &&
+                    promoResult.id.startsWith("promo_") &&
+                    !promoResult.isMock &&
+                    promoResult.id !== `promo_${cleanPromo}`
+                  ) {
+                    discountConfig = { promotion_code: promoResult.id };
+                  } else {
+                    discountConfig = { coupon: cleanPromo };
+                  }
+
+                  // Update verification record to reflect Stripe sync
+                  partnerData.stripePromoId = promoResult.id;
+                  partnerData.stripeSynced = !promoResult.isMock;
+                  if (!partnerData.vipCode && !isRenewal) {
+                    partnerData.vipCode = cleanPromo;
+                  }
+                  await db.verification.update({
+                    where: { id: r.id },
+                    data: { value: JSON.stringify(partnerData) },
+                  });
+                  break;
+                }
+              } catch {}
+            }
+          } catch (dbErr: any) {
+            console.warn("[Stripe] On-demand VIP coupon creation check:", dbErr?.message);
+          }
+        }
+      }
     }
 
-    const session = await stripe.checkout.sessions.create(sessionParams);
-    return { url: session.url || returnUrl };
+    const buildSessionParams = (
+      includeTax: boolean,
+      custId: string,
+      includeDiscount: boolean = true,
+    ): Stripe.Checkout.SessionCreateParams => {
+      const params: Stripe.Checkout.SessionCreateParams = {
+        customer: custId,
+        payment_method_types: ["card"],
+        customer_update: { name: "auto", address: "auto" },
+        line_items: [lineItem],
+        mode: "subscription",
+        success_url: `${returnUrl}?session_id={CHECKOUT_SESSION_ID}&success=true`,
+        cancel_url: `${returnUrl}?canceled=true`,
+        metadata: {
+          userId,
+          plan,
+          interval,
+          promoCode: cleanPromo || "",
+        },
+      };
+
+      if (includeTax) {
+        params.automatic_tax = { enabled: true };
+        params.tax_id_collection = { enabled: true };
+      }
+
+      if (includeDiscount && discountConfig) {
+        params.discounts = [discountConfig];
+      } else {
+        params.allow_promotion_codes = true;
+      }
+
+      return params;
+    };
+
+    // Helper to attempt creation with intelligent retry
+    const tryCreate = async (
+      withTax: boolean,
+      custId: string,
+      withDiscount: boolean = true,
+    ): Promise<Stripe.Checkout.Session> => {
+      const params = buildSessionParams(withTax, custId, withDiscount);
+      return await stripe.checkout.sessions.create(params);
+    };
+
+    try {
+      const session = await tryCreate(true, customerId, Boolean(discountConfig));
+      return { url: session.url || returnUrl };
+    } catch (err: any) {
+      console.warn(
+        "[Stripe] Initial checkout session creation failed, analyzing fallback:",
+        err.message,
+      );
+
+      // If customer doesn't exist in current Stripe account, recreate customer and retry
+      if (err.message?.includes("No such customer") || err.code === "resource_missing") {
+        console.log("[Stripe] Recreating customer for user:", userId);
+        const newCustomer = await stripe.customers.create({
+          email,
+          metadata: { userId },
+        });
+        customerId = newCustomer.id;
+        await db.subscription.upsert({
+          where: { userId },
+          create: {
+            userId,
+            stripeCustomerId: customerId,
+            plan: "INITIATE",
+            status: "ACTIVE",
+          },
+          update: {
+            stripeCustomerId: customerId,
+          },
+        });
+
+        const retrySession = await tryCreate(false, customerId, Boolean(discountConfig));
+        return { url: retrySession.url || returnUrl };
+      }
+
+      // If coupon doesn't exist in Stripe, retry without preset discount and enable manual promo code entry
+      if (err.message?.includes("No such coupon") || err.message?.includes("coupon")) {
+        console.log("[Stripe] Retrying checkout session without invalid preset coupon...");
+        const retrySession = await tryCreate(false, customerId, false);
+        return { url: retrySession.url || returnUrl };
+      }
+
+      // If automatic tax is not configured in Stripe dashboard, retry without automatic tax
+      if (err.message?.includes("automatic tax") || err.message?.includes("tax")) {
+        console.log("[Stripe] Retrying without automatic tax requirement...");
+        const retrySession = await tryCreate(false, customerId, Boolean(discountConfig));
+        return { url: retrySession.url || returnUrl };
+      }
+
+      throw err;
+    }
   }
 
   // Fallback demo/mock mode response when STRIPE_SECRET_KEY is not configured

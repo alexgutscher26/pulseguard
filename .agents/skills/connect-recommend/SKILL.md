@@ -247,7 +247,6 @@ Read the decision matrix at <references/decision-matrix.md> and apply it to the 
 Read <references/compatibility-matrix.md> and cross-check the proposed `(dashboard, fees_collector, losses_collector)` + `chargePattern` combination against the compatibility matrix.
 
 1. **BLOCKED combination?** Do NOT present it. Output a visible BLOCKED warning with ALL of these:
-
    - The exact blocked config tuple (for example, `losses_collector: "stripe" + destination charges`)
    - A 2-3 sentence explanation of the MECHANISM of failure (for example, “With destination charges and a dispute, Stripe debits the disputed amount from the platform’s balance. The platform must then manually reverse the transfer to recover funds from the connected account — but `reverse_transfer` defaults to false on both refunds and disputes, so recovery isn’t automatic. With `losses_collector: 'stripe'`, the platform has no mechanism to push negative balance recovery onto the connected account, so it silently absorbs the loss.”)
    - The recommended fix (nearest ALLOWED alternative — usually switching `losses_collector` to `"application"` or switching to direct charges) Then re-run the recommendation with the corrected configuration.
@@ -255,7 +254,6 @@ Read <references/compatibility-matrix.md> and cross-check the proposed `(dashboa
 2. **CAUTION combination?** Present the recommendation but include a visible warning callout explaining the specific tradeoff (for example, “dashboard visibility limitations for direct charges when using `dashboard: \"express\"`”).
 
 3. **Additional compatibility checks (include concise warnings when triggered):**
-
    - If the user mentioned **OAuth** for connecting accounts, include a 1-2 sentence warning that accounts can disconnect and recommend embedded onboarding for stronger platform control.
    - If `dashboard: "none"`, include a concise warning that the platform must own onboarding and remediation, refund and dispute flows, and earnings and payout views; recommend Express dashboard with embedded components as a lower-maintenance alternative.
    - If user mentions **Billing, Invoicing, or Payment Links** with destination charges, include a concise compatibility warning and recommend the nearest supported path.

@@ -82,11 +82,13 @@ export async function getLicenseTelemetry() {
       select: { tier: true, email: true },
     });
 
-    const userTier = dbUser?.tier || session.user.tier || "INITIATE";
+    const userTier = (dbUser?.tier || (session.user as any).tier || "INITIATE").toUpperCase();
     const adminEmails = (process.env.ADMIN_EMAILS || "")
       .split(",")
-      .map((e) => e.trim().toLowerCase());
-    const isEmailAdmin = Boolean(dbUser?.email && adminEmails.includes(dbUser.email.toLowerCase()));
+      .map((e) => e.trim().toLowerCase())
+      .filter(Boolean);
+    const userEmail = (dbUser?.email || session.user.email || "").trim().toLowerCase();
+    const isEmailAdmin = Boolean(userEmail && adminEmails.includes(userEmail));
     const isAdmin = userTier === "ADMIN" || isEmailAdmin;
 
     const probeCount = await prisma.probe.count({

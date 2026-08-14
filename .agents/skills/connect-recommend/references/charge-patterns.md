@@ -6,17 +6,17 @@ Connect offers three ways to create charges involving connected accounts. The ch
 
 ### Comparison Table
 
-| Feature | Direct Charges | Destination Charges | Separate Charges & Transfers |
-| --- | --- | --- | --- |
-| **Merchant of record** | Connected account | Platform | Platform |
-| **Payment created on** | Connected account | Platform account | Platform account |
-| **Statement descriptor** | Connected account’s | Platform’s (can set connected account’s) | Platform’s |
-| **Platform fee** | `application_fee_amount` | `application_fee_amount` or calculate using `transfer_data.amount` | Manual calculation |
-| **Refund source** | Connected account’s balance | Platform’s balance | Platform’s balance |
-| **Multi-seller split** | No (one seller per charge) | No (one destination per charge) | Yes (multiple transfers) |
-| **Account requirements** | Most v2 configs — see BLOCKED combinations in the controller compatibility note below; the only charge type safe with `losses_collector: 'stripe'` | Requires `losses_collector: 'application'` | Requires `losses_collector: 'application'` |
-| **Complexity** | Low | Low | High |
-| **Best for** | SaaS, seller-owned transactions | Marketplaces, on-demand | Multi-seller carts, complex splits |
+| Feature                  | Direct Charges                                                                                                                                     | Destination Charges                                                | Separate Charges & Transfers               |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------ |
+| **Merchant of record**   | Connected account                                                                                                                                  | Platform                                                           | Platform                                   |
+| **Payment created on**   | Connected account                                                                                                                                  | Platform account                                                   | Platform account                           |
+| **Statement descriptor** | Connected account’s                                                                                                                                | Platform’s (can set connected account’s)                           | Platform’s                                 |
+| **Platform fee**         | `application_fee_amount`                                                                                                                           | `application_fee_amount` or calculate using `transfer_data.amount` | Manual calculation                         |
+| **Refund source**        | Connected account’s balance                                                                                                                        | Platform’s balance                                                 | Platform’s balance                         |
+| **Multi-seller split**   | No (one seller per charge)                                                                                                                         | No (one destination per charge)                                    | Yes (multiple transfers)                   |
+| **Account requirements** | Most v2 configs — see BLOCKED combinations in the controller compatibility note below; the only charge type safe with `losses_collector: 'stripe'` | Requires `losses_collector: 'application'`                         | Requires `losses_collector: 'application'` |
+| **Complexity**           | Low                                                                                                                                                | Low                                                                | High                                       |
+| **Best for**             | SaaS, seller-owned transactions                                                                                                                    | Marketplaces, on-demand                                            | Multi-seller carts, complex splits         |
 
 ### Direct Charges
 
@@ -183,9 +183,9 @@ const refund = await stripe.refunds.create({
 #### Destination Charges with `on_behalf_of`
 
 > **Not covered by this guide.** `on_behalf_of` is an advanced variant that changes the merchant of record to the connected account while the charge lives on the platform. It has narrow use cases and significant complexity.
-> 
+>
 > If your integration requires `on_behalf_of`, consult the [Stripe Connect documentation](https://docs.stripe.com/connect/charges.md) or [contact Stripe sales](https://stripe.com/contact/sales).
-> 
+>
 > **Do NOT use `on_behalf_of` for marketplace use cases** — the platform should be the merchant of record. Use regular destination charges instead.
 
 ### Separate Charges and Transfers

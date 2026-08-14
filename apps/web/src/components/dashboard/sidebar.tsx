@@ -134,7 +134,14 @@ export function Sidebar() {
 
         {/* Navigation Items */}
         <nav className="flex flex-col gap-1">
-          {navigation.map((item) => {
+          {(telemetry?.isAdmin
+            ? [
+                ...navigation.slice(0, 7),
+                { name: "Design Partners", href: "/dashboard/design-partners", icon: Award },
+                ...navigation.slice(7),
+              ]
+            : navigation
+          ).map((item) => {
             const isActive = pathname === item.href;
             const Icon = item.icon;
 

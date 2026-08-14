@@ -15,12 +15,15 @@ import {
   Award,
   Filter,
   Sparkles,
+  RefreshCw,
 } from "lucide-react";
 import { toast } from "@/components/ui/sonner";
 import {
   approveDesignPartnerApplication,
   rejectDesignPartnerApplication,
   generatePartnerRenewalDiscount,
+  syncPartnerToStripe,
+  syncAllPartnersToStripe,
 } from "@/actions/design-partners";
 import type { DesignPartnerRecord } from "@/actions/design-partners";
 import { grantSelfAdminAccess } from "@/actions/admin";
@@ -37,8 +40,54 @@ export default function AdminDesignPartnersClient({
   const [applications, setApplications] = useState<DesignPartnerRecord[]>(initialApplications);
   const [filter, setFilter] = useState<"ALL" | "PENDING" | "APPROVED" | "REJECTED">("PENDING");
   const [processingId, setProcessingId] = useState<string | null>(null);
+  const [syncingStripeId, setSyncingStripeId] = useState<string | null>(null);
+  const [batchSyncing, setBatchSyncing] = useState(false);
   const [generatingRenewalId, setGeneratingRenewalId] = useState<string | null>(null);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+
+  const handleSyncStripe = async (id: string) => {
+    try {
+      setSyncingStripeId(id);
+      const res = await syncPartnerToStripe(id);
+      if (res.success) {
+        toast.success(
+          res.isMock
+            ? "Stripe is in mock/dev mode (no live secret key). Code saved locally."
+            : "Successfully synced Coupon & Promotion Code to Stripe!",
+        );
+        setApplications((prev) =>
+          prev.map((app) => (app.id === id ? { ...app, stripeSynced: !res.isMock } : app)),
+        );
+      } else {
+        toast.error(res.error || "Failed to sync to Stripe");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to sync to Stripe");
+    } finally {
+      setSyncingStripeId(null);
+    }
+  };
+
+  const handleSyncAllStripe = async () => {
+    try {
+      setBatchSyncing(true);
+      const res = await syncAllPartnersToStripe();
+      if (res.success) {
+        toast.success(
+          `Batch sync complete! ${res.syncedCount} partner coupons synced to Stripe (${res.failedCount} failed).`,
+        );
+        setApplications((prev) =>
+          prev.map((app) => (app.status === "APPROVED" ? { ...app, stripeSynced: true } : app)),
+        );
+      } else {
+        toast.error(res.error || "Failed to batch sync to Stripe");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to batch sync to Stripe");
+    } finally {
+      setBatchSyncing(false);
+    }
+  };
 
   const handleGrantAdmin = async () => {
     setGrantingAdmin(true);
@@ -210,22 +259,40 @@ export default function AdminDesignPartnersClient({
         </div>
       )}
 
-      {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-border pb-4">
-        <Filter className="size-4 text-muted-foreground mr-1" />
-        {(["PENDING", "APPROVED", "REJECTED", "ALL"] as const).map((tab) => (
+      {/* Filter Tabs & Batch Actions */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-4">
+        <div className="flex items-center gap-2">
+          <Filter className="size-4 text-muted-foreground mr-1" />
+          {(["PENDING", "APPROVED", "REJECTED", "ALL"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setFilter(tab)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer ${
+                filter === tab
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "bg-muted/40 text-muted-foreground hover:bg-muted"
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+
+        {approvedCount > 0 && (
           <button
-            key={tab}
-            onClick={() => setFilter(tab)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer ${
-              filter === tab
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "bg-muted/40 text-muted-foreground hover:bg-muted"
-            }`}
+            onClick={handleSyncAllStripe}
+            disabled={batchSyncing}
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 text-xs font-mono font-bold transition-all cursor-pointer disabled:opacity-50 self-start sm:self-auto"
+            title="Sync all approved partner VIP promo codes into Stripe"
           >
-            {tab}
+            {batchSyncing ? (
+              <Loader2 className="size-3.5 animate-spin" />
+            ) : (
+              <RefreshCw className="size-3.5" />
+            )}
+            Sync All Approved to Stripe
           </button>
-        ))}
+        )}
       </div>
 
       {/* Application List */}
@@ -318,8 +385,14 @@ export default function AdminDesignPartnersClient({
                         <span className="text-xs font-mono font-bold text-emerald-400">
                           {app.vipCode}
                         </span>
-                        <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
-                          Stripe SDK
+                        <span
+                          className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${
+                            app.stripeSynced
+                              ? "bg-emerald-500/20 text-emerald-300"
+                              : "bg-amber-500/20 text-amber-300"
+                          }`}
+                        >
+                          {app.stripeSynced ? "Stripe Synced" : "Unsynced"}
                         </span>
                         <button
                           onClick={() => handleCopyCode(app.vipCode!, "VIP Code")}
@@ -330,6 +403,18 @@ export default function AdminDesignPartnersClient({
                             <Check className="size-3.5" />
                           ) : (
                             <Copy className="size-3.5" />
+                          )}
+                        </button>
+                        <button
+                          onClick={() => handleSyncStripe(app.id)}
+                          disabled={syncingStripeId === app.id}
+                          className="p-1 text-emerald-400 hover:text-emerald-300 transition-all cursor-pointer disabled:opacity-50"
+                          title="Sync/Re-sync Coupon to Stripe"
+                        >
+                          {syncingStripeId === app.id ? (
+                            <Loader2 className="size-3.5 animate-spin" />
+                          ) : (
+                            <RefreshCw className="size-3.5" />
                           )}
                         </button>
                       </div>

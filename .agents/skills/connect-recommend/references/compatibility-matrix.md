@@ -16,29 +16,29 @@ Significant compatibility issues arise when account controller properties (dashb
 #### Core Rule
 
 > **For GA configurations with `losses_collector: "stripe"`, ONLY direct charges are safe.**
-> 
+>
 > For destination charges and separate charges and transfers, use `losses_collector: "application"` so responsibility aligns with dispute and transfer-reversal flows. In this guide, combinations that pair these charge patterns with `losses_collector: "stripe"` are marked BLOCKED.
-> 
+>
 > **Exception:** Express dashboard with `losses_collector: "stripe"` (regardless of fees_collector) is blocked for ALL charge types including direct — these configs are still in beta. Don’t recommend them.
 
 > **Note:** `on_behalf_of` configurations aren’t supported by this guide. `on_behalf_of` columns are retained in the matrix for compatibility detection only — if the assistant encounters `on_behalf_of` requirements, it should redirect to Stripe docs or sales.
 
 #### Full Matrix (v2 field names)
 
-| Dashboard | Fees Collector | Losses Collector | Direct | Destination | Destination `on_behalf_of` | Separate charges and transfers | Separate charges and transfers `on_behalf_of` |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `full` | `stripe` | `stripe` | ALLOWED | BLOCKED | OUT OF SCOPE | BLOCKED | OUT OF SCOPE |
-| `full` | `stripe` | `application` | BLOCKED | BLOCKED | OUT OF SCOPE | BLOCKED | OUT OF SCOPE |
-| `full` | `application` | `application` | SALES-GATED | SALES-GATED | OUT OF SCOPE | SALES-GATED | OUT OF SCOPE |
-| `full` | `application` | `stripe` | SALES-GATED | SALES-GATED | OUT OF SCOPE | SALES-GATED | OUT OF SCOPE |
-| `express` | `application` | `application` | ALLOWED | CAUTION | OUT OF SCOPE | CAUTION | OUT OF SCOPE |
-| `express` | `stripe` | `stripe` | BLOCKED* | BLOCKED | OUT OF SCOPE | BLOCKED | OUT OF SCOPE |
-| `express` | `stripe` | `application` | BLOCKED | BLOCKED | OUT OF SCOPE | BLOCKED | OUT OF SCOPE |
-| `express` | `application` | `stripe` | BLOCKED* | BLOCKED | OUT OF SCOPE | BLOCKED | OUT OF SCOPE |
-| `none` | `stripe` | `stripe` | BLOCKED | BLOCKED | OUT OF SCOPE | BLOCKED | OUT OF SCOPE |
-| `none` | `stripe` | `application` | BLOCKED | BLOCKED | OUT OF SCOPE | BLOCKED | OUT OF SCOPE |
-| `none` | `application` | `stripe` | BLOCKED | BLOCKED | OUT OF SCOPE | BLOCKED | OUT OF SCOPE |
-| `none` | `application` | `application` | ALLOWED | ALLOWED | OUT OF SCOPE | ALLOWED | OUT OF SCOPE |
+| Dashboard | Fees Collector | Losses Collector | Direct      | Destination | Destination `on_behalf_of` | Separate charges and transfers | Separate charges and transfers `on_behalf_of` |
+| --------- | -------------- | ---------------- | ----------- | ----------- | -------------------------- | ------------------------------ | --------------------------------------------- |
+| `full`    | `stripe`       | `stripe`         | ALLOWED     | BLOCKED     | OUT OF SCOPE               | BLOCKED                        | OUT OF SCOPE                                  |
+| `full`    | `stripe`       | `application`    | BLOCKED     | BLOCKED     | OUT OF SCOPE               | BLOCKED                        | OUT OF SCOPE                                  |
+| `full`    | `application`  | `application`    | SALES-GATED | SALES-GATED | OUT OF SCOPE               | SALES-GATED                    | OUT OF SCOPE                                  |
+| `full`    | `application`  | `stripe`         | SALES-GATED | SALES-GATED | OUT OF SCOPE               | SALES-GATED                    | OUT OF SCOPE                                  |
+| `express` | `application`  | `application`    | ALLOWED     | CAUTION     | OUT OF SCOPE               | CAUTION                        | OUT OF SCOPE                                  |
+| `express` | `stripe`       | `stripe`         | BLOCKED\*   | BLOCKED     | OUT OF SCOPE               | BLOCKED                        | OUT OF SCOPE                                  |
+| `express` | `stripe`       | `application`    | BLOCKED     | BLOCKED     | OUT OF SCOPE               | BLOCKED                        | OUT OF SCOPE                                  |
+| `express` | `application`  | `stripe`         | BLOCKED\*   | BLOCKED     | OUT OF SCOPE               | BLOCKED                        | OUT OF SCOPE                                  |
+| `none`    | `stripe`       | `stripe`         | BLOCKED     | BLOCKED     | OUT OF SCOPE               | BLOCKED                        | OUT OF SCOPE                                  |
+| `none`    | `stripe`       | `application`    | BLOCKED     | BLOCKED     | OUT OF SCOPE               | BLOCKED                        | OUT OF SCOPE                                  |
+| `none`    | `application`  | `stripe`         | BLOCKED     | BLOCKED     | OUT OF SCOPE               | BLOCKED                        | OUT OF SCOPE                                  |
+| `none`    | `application`  | `application`    | ALLOWED     | ALLOWED     | OUT OF SCOPE               | ALLOWED                        | OUT OF SCOPE                                  |
 
 \*Express dashboard with `losses_collector: "stripe"` configs are still in beta. Even when GA, destination charges and separate charges and transfers still require platform-run dispute or refund recovery (including transfer reversals), which aligns with `losses_collector: "application"` instead.
 
@@ -54,11 +54,11 @@ Significant compatibility issues arise when account controller properties (dashb
 
 #### Blessed Paths (Safe Defaults)
 
-| Business Model | Dashboard | Fees | Losses | Charge Type | Rating | Notes |
-| --- | --- | --- | --- | --- | --- | --- |
-| **Marketplace** | `express` | `application` | `application` | Destination | CAUTION | Recommended path — CAUTION applies: connected accounts have limited dispute or refund visibility from their Express dashboard; platform must run webhook-driven recovery workflows. Always include the Express dispute-visibility warning. |
-| **SaaS** | `full` | `stripe` | `stripe` | Direct | ALLOWED | Stripe-managed fee and loss defaults; connected accounts are independent merchants |
-| **Enterprise or White-label** | `none` | `application` | `application` | Destination or Direct | ALLOWED | Full platform control |
+| Business Model                | Dashboard | Fees          | Losses        | Charge Type           | Rating  | Notes                                                                                                                                                                                                                                      |
+| ----------------------------- | --------- | ------------- | ------------- | --------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Marketplace**               | `express` | `application` | `application` | Destination           | CAUTION | Recommended path — CAUTION applies: connected accounts have limited dispute or refund visibility from their Express dashboard; platform must run webhook-driven recovery workflows. Always include the Express dispute-visibility warning. |
+| **SaaS**                      | `full`    | `stripe`      | `stripe`      | Direct                | ALLOWED | Stripe-managed fee and loss defaults; connected accounts are independent merchants                                                                                                                                                         |
+| **Enterprise or White-label** | `none`    | `application` | `application` | Destination or Direct | ALLOWED | Full platform control                                                                                                                                                                                                                      |
 
 ### 2. Why Blocked Combos Fail
 

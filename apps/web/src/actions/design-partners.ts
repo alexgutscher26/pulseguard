@@ -695,3 +695,137 @@ export async function redeemDesignPartnerCode(
     };
   }
 }
+
+/**
+ * Force sync/re-sync a partner's VIP code into Stripe as a live Coupon and Promotion Code
+ */
+export async function syncPartnerToStripe(
+  id: string,
+): Promise<{ success: boolean; stripePromoId?: string; isMock?: boolean; error?: string }> {
+  try {
+    const admin = await getAdminStatus();
+    if (!admin.isAdmin) {
+      return { success: false, error: "Unauthorized: Admin access required" };
+    }
+
+    const record = await prisma.verification.findUnique({
+      where: { id },
+    });
+
+    if (!record) {
+      return { success: false, error: "Application not found" };
+    }
+
+    const data: DesignPartnerRecord = JSON.parse(record.value);
+    const vipCode = data.vipCode || generateVipCode();
+
+    const stripePromo = await createStripePromotionCode({
+      code: vipCode,
+      percentOff: 100,
+      durationMonths: 12,
+      maxRedemptions: 1,
+      metadata: {
+        partnerId: record.id,
+        applicantEmail: data.email,
+        applicantName: data.name,
+      },
+    });
+
+    data.vipCode = vipCode;
+    data.stripePromoId = stripePromo.id;
+    data.stripeSynced = !stripePromo.isMock;
+
+    await prisma.verification.update({
+      where: { id },
+      data: {
+        value: JSON.stringify(data),
+      },
+    });
+
+    revalidatePath("/dashboard/design-partners");
+
+    return {
+      success: true,
+      stripePromoId: stripePromo.id,
+      isMock: stripePromo.isMock,
+    };
+  } catch (error: any) {
+    console.error("Failed to sync partner to Stripe:", error);
+    return { success: false, error: error.message || "Failed to sync coupon to Stripe" };
+  }
+}
+
+/**
+ * Force sync all approved partners' VIP codes into Stripe in batch
+ */
+export async function syncAllPartnersToStripe(): Promise<{
+  success: boolean;
+  syncedCount: number;
+  failedCount: number;
+  error?: string;
+}> {
+  try {
+    const admin = await getAdminStatus();
+    if (!admin.isAdmin) {
+      return {
+        success: false,
+        syncedCount: 0,
+        failedCount: 0,
+        error: "Unauthorized: Admin access required",
+      };
+    }
+
+    const records = await prisma.verification.findMany({
+      where: { identifier: DESIGN_PARTNER_IDENTIFIER },
+    });
+
+    let syncedCount = 0;
+    let failedCount = 0;
+
+    for (const record of records) {
+      try {
+        const data: DesignPartnerRecord = JSON.parse(record.value);
+        if (data.status === "APPROVED") {
+          const vipCode = data.vipCode || generateVipCode();
+          const stripePromo = await createStripePromotionCode({
+            code: vipCode,
+            percentOff: 100,
+            durationMonths: 12,
+            maxRedemptions: 1,
+            metadata: {
+              partnerId: record.id,
+              applicantEmail: data.email,
+              applicantName: data.name,
+            },
+          });
+
+          data.vipCode = vipCode;
+          data.stripePromoId = stripePromo.id;
+          data.stripeSynced = !stripePromo.isMock;
+
+          await prisma.verification.update({
+            where: { id: record.id },
+            data: {
+              value: JSON.stringify(data),
+            },
+          });
+          syncedCount++;
+        }
+      } catch (err) {
+        console.error(`Failed to sync partner ${record.id} to Stripe:`, err);
+        failedCount++;
+      }
+    }
+
+    revalidatePath("/dashboard/design-partners");
+    return { success: true, syncedCount, failedCount };
+  } catch (error: any) {
+    console.error("Failed to batch sync partners to Stripe:", error);
+    return {
+      success: false,
+      syncedCount: 0,
+      failedCount: 0,
+      error: error.message || "Failed to batch sync to Stripe",
+    };
+  }
+}
