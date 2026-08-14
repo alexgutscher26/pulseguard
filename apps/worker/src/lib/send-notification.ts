@@ -34,7 +34,8 @@ export async function queueNotification(
   while (attempts < maxAttempts) {
     try {
       attempts++;
-      const { default: notificationHandler } = await import("../notification-handler");
+      const { default: notificationHandler } =
+        await import("../notification-handler");
       const batch = {
         queue: "notifications",
         messages: [
@@ -57,7 +58,9 @@ export async function queueNotification(
         notifError,
       );
       if (attempts < maxAttempts) {
-        await new Promise((resolve) => setTimeout(resolve, Math.pow(2, attempts) * 500));
+        await new Promise((resolve) =>
+          setTimeout(resolve, Math.pow(2, attempts) * 500),
+        );
       }
     }
   }

@@ -4,7 +4,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Wand2,
@@ -116,7 +122,10 @@ export function PostMortemEditor({
 
         const header =
           "| Time | Region | Status | Latency | Detail |\n| :--- | :--- | :--- | :--- | :--- |\n";
-        setFormData((prev) => ({ ...prev, timeline: header + timelineEntries }));
+        setFormData((prev) => ({
+          ...prev,
+          timeline: header + timelineEntries,
+        }));
         toast.success(`Populated ${logs.length} events from system logs`);
       } else {
         toast.info("No recorded system logs found for this window");
@@ -247,7 +256,10 @@ ${formData.actionItems || "(No action items provided)"}
         </TabsList>
 
         <div className="mt-6">
-          <TabsContent value="analysis" className="space-y-6 focus-visible:outline-none">
+          <TabsContent
+            value="analysis"
+            className="space-y-6 focus-visible:outline-none"
+          >
             <div className="grid gap-6">
               <Card className="bg-card/40 border-primary/10 backdrop-blur-sm">
                 <CardHeader className="pb-3 border-b border-primary/5">
@@ -277,7 +289,9 @@ ${formData.actionItems || "(No action items provided)"}
                     placeholder="Describe the high-level impact and core issue..."
                     className="min-h-[150px] bg-background/50 border-primary/20 font-mono text-sm leading-relaxed focus-visible:ring-primary/30"
                     value={formData.summary}
-                    onChange={(e) => handleInputChange("summary", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("summary", e.target.value)
+                    }
                   />
                   <p className="text-[10px] text-muted-foreground mt-2 font-mono uppercase tracking-widest italic">
                     AI generated summaries are based on incident audit events.
@@ -288,28 +302,36 @@ ${formData.actionItems || "(No action items provided)"}
               <div className="grid gap-6 md:grid-cols-2">
                 <Card className="bg-card/40 border-primary/10">
                   <CardHeader className="pb-3 border-b border-primary/5">
-                    <CardTitle className="text-sm font-mono">ROOT CAUSE ANALYSIS</CardTitle>
+                    <CardTitle className="text-sm font-mono">
+                      ROOT CAUSE ANALYSIS
+                    </CardTitle>
                   </CardHeader>
                   <CardContent className="pt-4">
                     <Textarea
                       placeholder="Why did this happen? Drill down to the primary failure vector."
                       className="min-h-[120px] bg-background/50 border-primary/20 font-mono text-sm"
                       value={formData.rootCause}
-                      onChange={(e) => handleInputChange("rootCause", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("rootCause", e.target.value)
+                      }
                     />
                   </CardContent>
                 </Card>
 
                 <Card className="bg-card/40 border-primary/10">
                   <CardHeader className="pb-3 border-b border-primary/5">
-                    <CardTitle className="text-sm font-mono">IMPACT & SCOPE</CardTitle>
+                    <CardTitle className="text-sm font-mono">
+                      IMPACT & SCOPE
+                    </CardTitle>
                   </CardHeader>
                   <CardContent className="pt-4">
                     <Textarea
                       placeholder="Quantify the blast radius. affected users, regions, and duration."
                       className="min-h-[120px] bg-background/50 border-primary/20 font-mono text-sm"
                       value={formData.impactScope}
-                      onChange={(e) => handleInputChange("impactScope", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("impactScope", e.target.value)
+                      }
                     />
                   </CardContent>
                 </Card>
@@ -317,7 +339,10 @@ ${formData.actionItems || "(No action items provided)"}
             </div>
           </TabsContent>
 
-          <TabsContent value="timeline" className="space-y-6 focus-visible:outline-none">
+          <TabsContent
+            value="timeline"
+            className="space-y-6 focus-visible:outline-none"
+          >
             <Card className="bg-card/40 border-primary/10">
               <CardHeader className="pb-3 border-b border-primary/5">
                 <div className="flex items-center justify-between">
@@ -346,17 +371,23 @@ ${formData.actionItems || "(No action items provided)"}
                   placeholder="Chronological sequence of events. Use the 'Pull Ping Logs' button to auto-fill based on system health checks."
                   className="min-h-[300px] bg-background/50 border-primary/20 font-mono text-sm leading-relaxed"
                   value={formData.timeline}
-                  onChange={(e) => handleInputChange("timeline", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("timeline", e.target.value)
+                  }
                 />
                 <div className="mt-4 p-4 bg-muted/20 border border-dashed border-primary/20 rounded font-mono text-xs text-muted-foreground">
-                  TIP: You can manually format this as a table for better readability. The
-                  auto-populate tool uses downtime window metrics (StartedAt &rarr; ResolvedAt).
+                  TIP: You can manually format this as a table for better
+                  readability. The auto-populate tool uses downtime window
+                  metrics (StartedAt &rarr; ResolvedAt).
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
 
-          <TabsContent value="corrective" className="space-y-6 focus-visible:outline-none">
+          <TabsContent
+            value="corrective"
+            className="space-y-6 focus-visible:outline-none"
+          >
             <div className="grid gap-6">
               <Card className="bg-card/40 border-primary/10">
                 <CardHeader className="pb-3 border-b border-primary/5">
@@ -369,21 +400,27 @@ ${formData.actionItems || "(No action items provided)"}
                     placeholder="- [ ] Implement automatic failover&#10;- [ ] Increase monitoring granularity for Region X"
                     className="min-h-[200px] bg-background/50 border-primary/20 font-mono text-sm leading-8"
                     value={formData.actionItems}
-                    onChange={(e) => handleInputChange("actionItems", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("actionItems", e.target.value)
+                    }
                   />
                 </CardContent>
               </Card>
 
               <Card className="bg-card/40 border-primary/10">
                 <CardHeader className="pb-3 border-b border-primary/5">
-                  <CardTitle className="text-sm font-mono">DETECTION STRATEGY</CardTitle>
+                  <CardTitle className="text-sm font-mono">
+                    DETECTION STRATEGY
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="pt-4">
                   <Textarea
                     placeholder="How was this caught? How can we detect it faster next time?"
                     className="min-h-[100px] bg-background/50 border-primary/20 font-mono text-sm"
                     value={formData.detectionMethod}
-                    onChange={(e) => handleInputChange("detectionMethod", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("detectionMethod", e.target.value)
+                    }
                   />
                 </CardContent>
               </Card>

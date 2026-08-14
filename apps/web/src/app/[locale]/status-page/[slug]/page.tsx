@@ -77,7 +77,11 @@ export default async function PublicStatusPage({ params }: Props) {
           <label className="sr-only" aria-label="Status Page Label">
             Status Page
           </label>
-          <PublicView page={page} isAdmin={false} initialIncidents={incidents} />
+          <PublicView
+            page={page}
+            isAdmin={false}
+            initialIncidents={incidents}
+          />
         </>
       </NextIntlClientProvider>
     );
@@ -95,13 +99,17 @@ export default async function PublicStatusPage({ params }: Props) {
   // 1. IP Whitelist Check
   if (page.ipWhitelist && page.ipWhitelist.trim() !== "") {
     const forwardedFor = headerStore.get("x-forwarded-for");
-    const clientIp = forwardedFor ? forwardedFor.split(",")[0].trim() : "127.0.0.1";
+    const clientIp = forwardedFor
+      ? forwardedFor.split(",")[0].trim()
+      : "127.0.0.1";
 
     const allowedIps = page.ipWhitelist.split(",").map((ip) => ip.trim());
     if (!allowedIps.includes(clientIp)) {
       return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-black text-white font-mono p-4 text-center">
-          <h1 className="text-4xl font-bold text-red-500 mb-4">403 Forbidden</h1>
+          <h1 className="text-4xl font-bold text-red-500 mb-4">
+            403 Forbidden
+          </h1>
           <p className="opacity-50 uppercase tracking-widest">
             Access Denied: IP {clientIp} Not authorized
           </p>
@@ -160,7 +168,11 @@ export default async function PublicStatusPage({ params }: Props) {
         <label className="sr-only" aria-label="Status Page Label">
           Status Page
         </label>
-        <PublicView page={page} isAdmin={isAdmin} initialIncidents={incidents} />
+        <PublicView
+          page={page}
+          isAdmin={isAdmin}
+          initialIncidents={incidents}
+        />
       </>
     </NextIntlClientProvider>
   );

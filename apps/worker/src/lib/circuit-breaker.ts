@@ -40,9 +40,13 @@ export class DatabaseCircuitBreaker {
     } catch (err) {
       // If Redis is unreachable (incl. wrangler dev local proxy errors), still allow work.
       const errStr = String(err);
-      const isLocalProxyError = errStr.includes("1016") || errStr.includes("error code");
+      const isLocalProxyError =
+        errStr.includes("1016") || errStr.includes("error code");
       if (!isLocalProxyError) {
-        console.error(`[CircuitBreaker] Failed to fetch state from Redis:`, err);
+        console.error(
+          `[CircuitBreaker] Failed to fetch state from Redis:`,
+          err,
+        );
       }
       return "CLOSED";
     }
@@ -73,7 +77,10 @@ export class DatabaseCircuitBreaker {
     } catch (err) {
       const errStr = String(err);
       if (!errStr.includes("1016") && !errStr.includes("error code")) {
-        console.error(`[CircuitBreaker] Failed to record failure to Redis:`, err);
+        console.error(
+          `[CircuitBreaker] Failed to record failure to Redis:`,
+          err,
+        );
       }
     }
   }
@@ -88,7 +95,9 @@ export class DatabaseCircuitBreaker {
       if (existing) {
         await this.redis.del(this.STATE_KEY);
         await this.redis.del(this.FAIL_COUNT_KEY);
-        console.log(`[CircuitBreaker] Circuit CLOSED. Database connection recovered.`);
+        console.log(
+          `[CircuitBreaker] Circuit CLOSED. Database connection recovered.`,
+        );
       }
     } catch (err) {
       // Ignore Redis failures here

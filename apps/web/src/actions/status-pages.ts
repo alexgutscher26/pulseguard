@@ -6,7 +6,10 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@pulseguard/auth";
 import { headers, cookies } from "next/headers";
 import { env } from "@pulseguard/env/server";
-import { assertStatusPageLimits, checkAndNotifyUsageLimits } from "@/lib/billing-server";
+import {
+  assertStatusPageLimits,
+  checkAndNotifyUsageLimits,
+} from "@/lib/billing-server";
 
 /**
  * Adds a custom domain to a Vercel project via their API.
@@ -77,13 +80,19 @@ const statusPageSchema = z.object({
     .string()
     .min(3)
     .max(50)
-    .regex(/^[a-z0-9-]+$/, "Slug must be lowercase, alphanumeric, and hyphens only"),
+    .regex(
+      /^[a-z0-9-]+$/,
+      "Slug must be lowercase, alphanumeric, and hyphens only",
+    ),
   title: z.string().min(1, "Title is required"),
   description: z.string().optional(),
   customDomain: z
     .string()
     .optional()
-    .refine((val) => !val || !val.includes("http"), "Enter domain only (e.g. status.example.com)"),
+    .refine(
+      (val) => !val || !val.includes("http"),
+      "Enter domain only (e.g. status.example.com)",
+    ),
   password: z.string().optional(),
   theme: z.string().optional(),
 
@@ -194,7 +203,9 @@ export async function createStatusPage(prevState: any, formData: FormData) {
         customJs: data.customJs,
         homepageUrl: data.homepageUrl,
         contactUrl: data.contactUrl,
-        footerLinks: data.footerLinks ? JSON.parse(data.footerLinks) : undefined,
+        footerLinks: data.footerLinks
+          ? JSON.parse(data.footerLinks)
+          : undefined,
         metaTitle: data.metaTitle,
         metaDescription: data.metaDescription,
         ogImageUrl: data.ogImageUrl,
@@ -207,7 +218,10 @@ export async function createStatusPage(prevState: any, formData: FormData) {
     return { success: true, id: page.id };
   } catch (e: any) {
     console.error("Failed to create status page:", e);
-    return { success: false, error: `Failed to create status page: ${e.message || String(e)}` };
+    return {
+      success: false,
+      error: `Failed to create status page: ${e.message || String(e)}`,
+    };
   }
 }
 
@@ -281,7 +295,11 @@ export async function getStatusPage(id: string) {
  * @param formData - The FormData object containing the updated status page information.
  * @returns An object indicating the success of the update operation.
  */
-export async function updateStatusPage(id: string, prevState: any, formData: FormData) {
+export async function updateStatusPage(
+  id: string,
+  prevState: any,
+  formData: FormData,
+) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
@@ -331,7 +349,10 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
     });
 
     if (!limitCheck.allowed) {
-      return { success: false, error: limitCheck.error || "Plan limit exceeded" };
+      return {
+        success: false,
+        error: limitCheck.error || "Plan limit exceeded",
+      };
     }
 
     // Domain logic commented out
@@ -362,7 +383,9 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
         customJs: rawData.customJs,
         homepageUrl: rawData.homepageUrl,
         contactUrl: rawData.contactUrl,
-        footerLinks: rawData.footerLinks ? JSON.parse(rawData.footerLinks) : Prisma.JsonNull,
+        footerLinks: rawData.footerLinks
+          ? JSON.parse(rawData.footerLinks)
+          : Prisma.JsonNull,
         metaTitle: rawData.metaTitle,
         metaDescription: rawData.metaDescription,
         ogImageUrl: rawData.ogImageUrl,
@@ -375,7 +398,10 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
     return { success: true };
   } catch (e: any) {
     console.error("Failed to update status page:", e);
-    return { success: false, error: `Update failed: ${e.message || String(e)}` };
+    return {
+      success: false,
+      error: `Update failed: ${e.message || String(e)}`,
+    };
   }
 }
 
@@ -407,7 +433,8 @@ export async function addMonitorToPage(pageId: string, monitorId: string) {
     const monitor = await prisma.monitor.findFirst({
       where: { id: monitorId, userId: session.user.id },
     });
-    if (!monitor) return { success: false, error: "Monitor not found or unauthorized" };
+    if (!monitor)
+      return { success: false, error: "Monitor not found or unauthorized" };
 
     await prisma.statusPageMonitor.create({
       data: {
@@ -470,9 +497,13 @@ export async function removeMonitorFromPage(pageId: string, monitorId: string) {
  * @param {string} pageId - The ID of the status page to verify.
  * @param {string} password - The password to validate against the status page.
  */
-export async function verifyStatusPagePassword(pageId: string, password: string) {
+export async function verifyStatusPagePassword(
+  pageId: string,
+  password: string,
+) {
   const page = await prisma.statusPage.findUnique({ where: { id: pageId } });
-  if (!page || !page.password) return { success: false, error: "Page not found or no password" };
+  if (!page || !page.password)
+    return { success: false, error: "Page not found or no password" };
 
   if (page.password === password) {
     // Set a cookie manually.
@@ -519,7 +550,8 @@ function validateDomainFormat(domains: string | null | undefined): boolean {
   if (domains === "*") return true;
 
   const domainList = domains.split(",").map((d) => d.trim());
-  const domainRegex = /^(\*\.)?[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z]{2,})+$/;
+  const domainRegex =
+    /^(\*\.)?[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z]{2,})+$/;
 
   return domainList.every((domain) => domainRegex.test(domain));
 }
@@ -545,7 +577,8 @@ export async function updateWidgetConfig(
   if (!validateDomainFormat(data.widgetAllowedDomains)) {
     return {
       success: false,
-      error: "Invalid domain format. Use comma-separated domains like: example.com, *.example.org",
+      error:
+        "Invalid domain format. Use comma-separated domains like: example.com, *.example.org",
     };
   }
 
@@ -614,7 +647,10 @@ export async function updateHistoryDays(pageId: string, historyDays: number) {
 /**
  * Get incidents for status page monitors within a time range
  */
-export async function getStatusPageIncidents(pageId: string, days: number = 90) {
+export async function getStatusPageIncidents(
+  pageId: string,
+  days: number = 90,
+) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) return [];
 
@@ -682,7 +718,12 @@ export async function getStatusPageMaintenance(pageId: string) {
         // Upcoming or active maintenance
         { endAt: { gte: now } },
         // Recently completed (last 7 days)
-        { endAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), lt: now } },
+        {
+          endAt: {
+            gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+            lt: now,
+          },
+        },
       ],
     },
     orderBy: { startAt: "asc" },
@@ -697,7 +738,10 @@ export async function getStatusPageMaintenance(pageId: string) {
 /**
  * Get uptime data for status page monitors
  */
-export async function getStatusPageUptimeData(pageId: string, days: number = 90) {
+export async function getStatusPageUptimeData(
+  pageId: string,
+  days: number = 90,
+) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) {
     return {
@@ -767,7 +811,9 @@ export async function getStatusPageUptimeData(pageId: string, days: number = 90)
 
     const uptimeMs = totalDurationMs - downtimeMs;
     current =
-      Math.round(Math.max(0, Math.min(100, (uptimeMs / totalDurationMs) * 100)) * 100) / 100;
+      Math.round(
+        Math.max(0, Math.min(100, (uptimeMs / totalDurationMs) * 100)) * 100,
+      ) / 100;
   }
 
   // Calculate previous period
@@ -812,7 +858,10 @@ export async function getStatusPageUptimeData(pageId: string, days: number = 90)
     }
 
     const uptimeMs = periodMs - downtimeMs;
-    previous = Math.round(Math.max(0, Math.min(100, (uptimeMs / periodMs) * 100)) * 100) / 100;
+    previous =
+      Math.round(
+        Math.max(0, Math.min(100, (uptimeMs / periodMs) * 100)) * 100,
+      ) / 100;
   }
 
   const difference = Math.round((current - previous) * 100) / 100;
@@ -856,7 +905,8 @@ export async function createStatusPageOverride(
   const monitor = await prisma.monitor.findFirst({
     where: { id: monitorId, userId: session.user.id },
   });
-  if (!monitor) return { success: false, error: "Monitor not found or unauthorized" };
+  if (!monitor)
+    return { success: false, error: "Monitor not found or unauthorized" };
 
   const date = new Date(dateStr);
   date.setUTCHours(0, 0, 0, 0);
@@ -895,7 +945,10 @@ export async function createStatusPageOverride(
 /**
  * Deletes a manual override.
  */
-export async function deleteStatusPageOverride(statusPageId: string, overrideId: string) {
+export async function deleteStatusPageOverride(
+  statusPageId: string,
+  overrideId: string,
+) {
   let reqHeaders: any;
   try {
     reqHeaders = await headers();
@@ -911,9 +964,14 @@ export async function deleteStatusPageOverride(statusPageId: string, overrideId:
   if (!page) return { success: false, error: "Status page not found" };
 
   const override = await prisma.statusPageOverride.findFirst({
-    where: { id: overrideId, statusPageId, statusPage: { userId: session.user.id } },
+    where: {
+      id: overrideId,
+      statusPageId,
+      statusPage: { userId: session.user.id },
+    },
   });
-  if (!override) return { success: false, error: "Override not found or unauthorized" };
+  if (!override)
+    return { success: false, error: "Override not found or unauthorized" };
 
   try {
     await prisma.statusPageOverride.delete({
@@ -994,6 +1052,9 @@ export async function updateStatusPageMonitorSettings(
     return { success: true };
   } catch (err: any) {
     console.error("Failed to update status page monitor settings:", err);
-    return { success: false, error: err.message || "Failed to update monitor settings" };
+    return {
+      success: false,
+      error: err.message || "Failed to update monitor settings",
+    };
   }
 }

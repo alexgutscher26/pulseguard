@@ -37,7 +37,10 @@ export function LatencyHeatmap({
 
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
 
-  const { data, isLoading, error, refetch } = useLatencyData(monitorId, timeRange);
+  const { data, isLoading, error, refetch } = useLatencyData(
+    monitorId,
+    timeRange,
+  );
 
   return (
     <div className="space-y-6">
@@ -55,8 +58,10 @@ export function LatencyHeatmap({
 
         {data && (
           <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-            <span className="font-extrabold text-foreground">{data.regions.length}</span> regions
-            monitored
+            <span className="font-extrabold text-foreground">
+              {data.regions.length}
+            </span>{" "}
+            regions monitored
           </div>
         )}
       </div>
@@ -75,7 +80,10 @@ export function LatencyHeatmap({
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             Failed to load latency data: {error.message}
-            <button onClick={() => refetch()} className="ml-2 underline hover:no-underline">
+            <button
+              onClick={() => refetch()}
+              className="ml-2 underline hover:no-underline"
+            >
               Retry
             </button>
           </AlertDescription>
@@ -95,7 +103,11 @@ export function LatencyHeatmap({
       {data && !isLoading && (
         <>
           <div className="rounded-xl border border-border bg-card overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.02)]">
-            <HeatmapGrid data={data} metricType={metricType} onRegionClick={setSelectedRegion} />
+            <HeatmapGrid
+              data={data}
+              metricType={metricType}
+              onRegionClick={setSelectedRegion}
+            />
           </div>
 
           {/* Legend */}
@@ -105,13 +117,24 @@ export function LatencyHeatmap({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <StatCard
               label="Total Data Points"
-              value={data.regions.reduce((sum, r) => sum + r.data.length, 0).toString()}
+              value={data.regions
+                .reduce((sum, r) => sum + r.data.length, 0)
+                .toString()}
             />
-            <StatCard label="Granularity" value={getGranularityLabel(data.granularity)} />
+            <StatCard
+              label="Granularity"
+              value={getGranularityLabel(data.granularity)}
+            />
             <StatCard
               label="Active Incidents"
-              value={data.regions.filter((r) => r.currentIncident).length.toString()}
-              variant={data.regions.some((r) => r.currentIncident) ? "destructive" : "default"}
+              value={data.regions
+                .filter((r) => r.currentIncident)
+                .length.toString()}
+              variant={
+                data.regions.some((r) => r.currentIncident)
+                  ? "destructive"
+                  : "default"
+              }
             />
           </div>
         </>
@@ -165,7 +188,9 @@ function StatCard({
 /**
  * Get human-readable granularity label
  */
-function getGranularityLabel(granularity: "ONE_MINUTE" | "FIVE_MINUTE" | "ONE_HOUR"): string {
+function getGranularityLabel(
+  granularity: "ONE_MINUTE" | "FIVE_MINUTE" | "ONE_HOUR",
+): string {
   const labels = {
     ONE_MINUTE: "1 Minute",
     FIVE_MINUTE: "5 Minutes",

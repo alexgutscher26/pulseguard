@@ -5,7 +5,14 @@ date: "2026-06-05"
 category: "Engineering"
 readTime: "12 min read"
 author: "Alex Gutscher"
-tags: ["monitoring architecture", "distributed systems", "Cloudflare Workers", "Durable Objects", "infrastructure"]
+tags:
+  [
+    "monitoring architecture",
+    "distributed systems",
+    "Cloudflare Workers",
+    "Durable Objects",
+    "infrastructure",
+  ]
 ---
 
 PulseGuard's monitoring infrastructure is built as a distributed mesh — a network of lightweight check nodes pinned across 7 global edge regions via Cloudflare Durable Object location hints that coordinate to verify endpoint availability and response times. Here's how it works under the hood.
@@ -61,7 +68,7 @@ When an edge node detects a non-2xx status code or a connection timeout, it does
 export async function verifyFailure(
   targetId: string,
   originFailure: ProbeResult,
-  env: Env
+  env: Env,
 ): Promise<ConsensusResult> {
   // Dispatch parallel verification to two geographically distinct edge nodes
   const [probeA, probeB] = await Promise.all([

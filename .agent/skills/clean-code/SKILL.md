@@ -180,13 +180,16 @@ File to edit: UserService.ts
 ## Script Results: [script_name.py]
 
 ### ❌ Errors Found (X items)
+
 - [File:Line] Error description 1
 - [File:Line] Error description 2
 
 ### ⚠️ Warnings (Y items)
+
 - [File:Line] Warning description
 
 ### ✅ Passed (Z items)
+
 - Check 1 passed
 - Check 2 passed
 

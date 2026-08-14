@@ -69,7 +69,11 @@ export class LatencyAggregator extends DurableObject {
 
     try {
       const aggregates = [];
-      const baselineUpdates: { monitorId: string; region: string; currentAvg: number }[] = [];
+      const baselineUpdates: {
+        monitorId: string;
+        region: string;
+        currentAvg: number;
+      }[] = [];
 
       for (const [key, buffer] of this.buffers.entries()) {
         const [monitorId, region] = key.split(":");
@@ -93,7 +97,11 @@ export class LatencyAggregator extends DurableObject {
           });
 
           // Collect regional baseline update
-          baselineUpdates.push({ monitorId, region, currentAvg: data.avgLatency });
+          baselineUpdates.push({
+            monitorId,
+            region,
+            currentAvg: data.avgLatency,
+          });
         }
 
         buffer.reset();
@@ -108,7 +116,9 @@ export class LatencyAggregator extends DurableObject {
         // Update regional baselines in batch
         await this.updateBaselinesBatched(prisma, baselineUpdates);
 
-        console.log(`[LatencyAggregator] Flushed ${aggregates.length} aggregates`);
+        console.log(
+          `[LatencyAggregator] Flushed ${aggregates.length} aggregates`,
+        );
 
         // Notify subscribers
         this.notifySubscribers({
@@ -156,7 +166,8 @@ export class LatencyAggregator extends DurableObject {
 
         if (existing) {
           // Exponential moving average (alpha = 0.1 for ~30-day equivalent)
-          const newBaseline = existing.baselineLatency * 0.9 + u.currentAvg * 0.1;
+          const newBaseline =
+            existing.baselineLatency * 0.9 + u.currentAvg * 0.1;
 
           updatePromises.push(
             prisma.regionalBaseline.update({
@@ -212,7 +223,10 @@ export class LatencyAggregator extends DurableObject {
       try {
         callback(data);
       } catch (error) {
-        console.error("[LatencyAggregator] Subscriber notification error:", error);
+        console.error(
+          "[LatencyAggregator] Subscriber notification error:",
+          error,
+        );
       }
     }
   }

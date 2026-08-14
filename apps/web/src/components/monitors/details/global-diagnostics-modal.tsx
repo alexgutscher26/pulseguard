@@ -33,7 +33,11 @@ interface GlobalDiagnosticsModalProps {
   trigger?: React.ReactNode;
 }
 
-export function GlobalDiagnosticsModal({ url, monitorName, trigger }: GlobalDiagnosticsModalProps) {
+export function GlobalDiagnosticsModal({
+  url,
+  monitorName,
+  trigger,
+}: GlobalDiagnosticsModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [report, setReport] = useState<GlobalpingDiagnosticReport | null>(null);
@@ -44,7 +48,9 @@ export function GlobalDiagnosticsModal({ url, monitorName, trigger }: GlobalDiag
       const res = await runGlobalpingDiagnostics(url);
       if (res.success && res.data) {
         setReport(res.data);
-        toast.success(`Global diagnostics completed across ${res.data.totalProbes} locations`);
+        toast.success(
+          `Global diagnostics completed across ${res.data.totalProbes} locations`,
+        );
       } else {
         toast.error(res.error || "Diagnostics failed to complete");
       }
@@ -87,9 +93,9 @@ export function GlobalDiagnosticsModal({ url, monitorName, trigger }: GlobalDiag
           </DialogTitle>
 
           <DialogDescription className="text-xs text-muted-foreground leading-relaxed">
-            Test reachability, TLS handshake times, and DNS latency from public vantage points
-            across every continent. Use this ad-hoc tool for debugging CDN propagation and ISP
-            routing issues.
+            Test reachability, TLS handshake times, and DNS latency from public
+            vantage points across every continent. Use this ad-hoc tool for
+            debugging CDN propagation and ISP routing issues.
           </DialogDescription>
         </DialogHeader>
 
@@ -97,12 +103,15 @@ export function GlobalDiagnosticsModal({ url, monitorName, trigger }: GlobalDiag
         <div className="p-3.5 rounded-xl bg-muted/40 border border-border text-xs flex items-start gap-3">
           <ShieldCheck className="size-4 text-primary shrink-0 mt-0.5" />
           <div className="space-y-1">
-            <p className="font-semibold text-foreground">PulseGuard Architectural Guarantee</p>
+            <p className="font-semibold text-foreground">
+              PulseGuard Architectural Guarantee
+            </p>
             <p className="text-[11px] text-muted-foreground leading-normal">
-              Automated critical alerts, quorum consensus, and uptime SLAs run exclusively on
-              PulseGuard&apos;s <strong>deterministic, geographically pinned edge mesh</strong>.
-              Globalping is used strictly for manual, on-demand debugging to prevent external
-              telemetry noise.
+              Automated critical alerts, quorum consensus, and uptime SLAs run
+              exclusively on PulseGuard&apos;s{" "}
+              <strong>deterministic, geographically pinned edge mesh</strong>.
+              Globalping is used strictly for manual, on-demand debugging to
+              prevent external telemetry noise.
             </p>
           </div>
         </div>
@@ -113,7 +122,9 @@ export function GlobalDiagnosticsModal({ url, monitorName, trigger }: GlobalDiag
             <span className="text-[10px] uppercase font-mono text-muted-foreground font-semibold">
               Target Endpoint
             </span>
-            <p className="text-xs font-mono text-foreground font-medium truncate">{url}</p>
+            <p className="text-xs font-mono text-foreground font-medium truncate">
+              {url}
+            </p>
           </div>
 
           <Button
@@ -192,13 +203,21 @@ export function GlobalDiagnosticsModal({ url, monitorName, trigger }: GlobalDiag
                     className="p-3 flex items-center justify-between gap-4 hover:bg-muted/20 transition-colors"
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <span className="text-base" role="img" aria-label={r.country}>
+                      <span
+                        className="text-base"
+                        role="img"
+                        aria-label={r.country}
+                      >
                         {r.flag}
                       </span>
                       <div className="min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="font-semibold text-foreground truncate">{r.city}</span>
-                          <span className="text-[10px] text-muted-foreground">({r.country})</span>
+                          <span className="font-semibold text-foreground truncate">
+                            {r.city}
+                          </span>
+                          <span className="text-[10px] text-muted-foreground">
+                            ({r.country})
+                          </span>
                         </div>
                         <div className="text-[10px] text-muted-foreground/80 truncate">
                           {r.asn} • {r.network}
@@ -217,19 +236,28 @@ export function GlobalDiagnosticsModal({ url, monitorName, trigger }: GlobalDiag
                                 : "text-red-500"
                           }`}
                         >
-                          {r.status === "FAILED" ? "Failed" : `${r.latencyMs} ms`}
+                          {r.status === "FAILED"
+                            ? "Failed"
+                            : `${r.latencyMs} ms`}
                         </span>
                         {r.dnsMs !== undefined && (
                           <div className="text-[10px] text-muted-foreground">
-                            DNS {r.dnsMs}ms {r.tlsMs !== undefined ? `• TLS ${r.tlsMs}ms` : ""}
+                            DNS {r.dnsMs}ms{" "}
+                            {r.tlsMs !== undefined ? `• TLS ${r.tlsMs}ms` : ""}
                           </div>
                         )}
                       </div>
 
                       <div className="w-5 flex justify-center">
-                        {r.status === "OK" && <CheckCircle2 className="size-4 text-emerald-500" />}
-                        {r.status === "SLOW" && <AlertTriangle className="size-4 text-amber-500" />}
-                        {r.status === "FAILED" && <XCircle className="size-4 text-red-500" />}
+                        {r.status === "OK" && (
+                          <CheckCircle2 className="size-4 text-emerald-500" />
+                        )}
+                        {r.status === "SLOW" && (
+                          <AlertTriangle className="size-4 text-amber-500" />
+                        )}
+                        {r.status === "FAILED" && (
+                          <XCircle className="size-4 text-red-500" />
+                        )}
                       </div>
                     </div>
                   </div>

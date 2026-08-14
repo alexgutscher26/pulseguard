@@ -1,7 +1,11 @@
 import type { ExecutionContext } from "@cloudflare/workers-types";
 import type { MonitorStatus } from "@pulseguard/types";
 import { checkHttpUniversal, checkPortUniversal } from "@pulseguard/core";
-import { CheckErrorReason, MonitorStatus as Status, MonitorType } from "./constants";
+import {
+  CheckErrorReason,
+  MonitorStatus as Status,
+  MonitorType,
+} from "./constants";
 import type { Env } from "./env";
 
 /** Base cooldown (ms) between duplicate alerts for the same monitor. */
@@ -31,7 +35,11 @@ export interface CheckOutcome {
  * @param prisma - Optional database client (used by heartbeat checks).
  * @returns An object containing the status ("UP", "DOWN", or "MAINTENANCE"), the latency in milliseconds, and an optional error reason.
  */
-export async function performCheck(monitor: any, env?: Env, prisma?: any): Promise<CheckOutcome> {
+export async function performCheck(
+  monitor: any,
+  env?: Env,
+  prisma?: any,
+): Promise<CheckOutcome> {
   // If explicitly in maintenance (passed from caller), skip check
   if (monitor.status === Status.MAINTENANCE) {
     return { status: Status.MAINTENANCE, latency: 0 };
@@ -55,7 +63,10 @@ export async function performCheck(monitor: any, env?: Env, prisma?: any): Promi
         return { status: Status.MAINTENANCE, latency: 0 };
       }
     } catch (dbErr) {
-      console.error(`[Maintenance] Failed to check maintenance window for ${monitor.id}:`, dbErr);
+      console.error(
+        `[Maintenance] Failed to check maintenance window for ${monitor.id}:`,
+        dbErr,
+      );
       // On DB failure, proceed with the check (fail-open)
     }
   }
@@ -82,7 +93,10 @@ export async function performCheck(monitor: any, env?: Env, prisma?: any): Promi
       if (sslResult.status !== "VALID") {
         currentStatus = Status.DOWN;
         errorReason = `SSL_${sslResult.status}`;
-      } else if (sslResult.protocol === "TLSv1.0" || sslResult.protocol === "TLSv1.1") {
+      } else if (
+        sslResult.protocol === "TLSv1.0" ||
+        sslResult.protocol === "TLSv1.1"
+      ) {
         currentStatus = Status.DOWN;
         errorReason = CheckErrorReason.LEGACY_TLS_PROTOCOL;
       }
@@ -96,7 +110,11 @@ export async function performCheck(monitor: any, env?: Env, prisma?: any): Promi
         protocol: sslResult.protocol,
       };
     } catch (e: any) {
-      return { status: Status.DOWN, latency: 0, errorReason: CheckErrorReason.SSL_CHECK_FAILED };
+      return {
+        status: Status.DOWN,
+        latency: 0,
+        errorReason: CheckErrorReason.SSL_CHECK_FAILED,
+      };
     }
   }
 
@@ -114,15 +132,22 @@ export async function performCheck(monitor: any, env?: Env, prisma?: any): Promi
       return {
         status: isHealthy ? Status.UP : Status.DOWN,
         latency: dnsLatency,
-        errorReason: isHealthy ? undefined : `DNS_ANOMALY: ${dnsResult.anomalies.join("; ")}`,
+        errorReason: isHealthy
+          ? undefined
+          : `DNS_ANOMALY: ${dnsResult.anomalies.join("; ")}`,
       };
     } catch (e: any) {
-      return { status: Status.DOWN, latency: 0, errorReason: CheckErrorReason.DNS_CHECK_FAILED };
+      return {
+        status: Status.DOWN,
+        latency: 0,
+        errorReason: CheckErrorReason.DNS_CHECK_FAILED,
+      };
     }
   }
 
   if (monitor.type === MonitorType.DOMAIN) {
-    const { checkDomainExpiration } = await import("./services/domain-expiration");
+    const { checkDomainExpiration } =
+      await import("./services/domain-expiration");
     try {
       const startDom = performance.now();
       const domainResult = await checkDomainExpiration(monitor.url);
@@ -138,14 +163,22 @@ export async function performCheck(monitor: any, env?: Env, prisma?: any): Promi
         registrar: domainResult.registrar ?? undefined,
       };
     } catch (e: any) {
-      return { status: Status.DOWN, latency: 0, errorReason: CheckErrorReason.DOMAIN_CHECK_FAILED };
+      return {
+        status: Status.DOWN,
+        latency: 0,
+        errorReason: CheckErrorReason.DOMAIN_CHECK_FAILED,
+      };
     }
   }
 
   if (monitor.type === MonitorType.HEARTBEAT) {
     const { checkHeartbeat } = await import("./services/heartbeat");
     try {
-      const result = await checkHeartbeat(prisma, monitor.id, monitor.interval || 300);
+      const result = await checkHeartbeat(
+        prisma,
+        monitor.id,
+        monitor.interval || 300,
+      );
       return {
         status: result.status,
         latency: result.latency,
@@ -167,19 +200,29 @@ export async function performCheck(monitor: any, env?: Env, prisma?: any): Promi
         ? (JSON.parse(monitor.script).method as string) || "tools/list"
         : "tools/list";
       const mcpParams = monitor.script
-        ? (JSON.parse(monitor.script).params as Record<string, unknown> | undefined)
+        ? (JSON.parse(monitor.script).params as
+            Record<string, unknown> | undefined)
         : undefined;
       const mcpAssertions = monitor.expectation
         ? (JSON.parse(monitor.expectation).assertions as any[]) || []
         : [];
-      const result = await checkMCP(monitor.url, mcpAssertions, mcpMethod, mcpParams);
+      const result = await checkMCP(
+        monitor.url,
+        mcpAssertions,
+        mcpMethod,
+        mcpParams,
+      );
       return {
         status: result.status,
         latency: result.latency,
         errorReason: result.errorReason,
       };
     } catch (e: any) {
-      return { status: Status.DOWN, latency: 0, errorReason: CheckErrorReason.MCP_CHECK_FAILED };
+      return {
+        status: Status.DOWN,
+        latency: 0,
+        errorReason: CheckErrorReason.MCP_CHECK_FAILED,
+      };
     }
   }
 
@@ -190,7 +233,12 @@ export async function performCheck(monitor: any, env?: Env, prisma?: any): Promi
       const gqlAssertions = monitor.expectation
         ? (JSON.parse(monitor.expectation).assertions as any[]) || []
         : [];
-      const result = await checkGraphQL(monitor.url, gqlQuery, undefined, gqlAssertions);
+      const result = await checkGraphQL(
+        monitor.url,
+        gqlQuery,
+        undefined,
+        gqlAssertions,
+      );
       return {
         status: result.status,
         latency: result.latency,
@@ -212,7 +260,11 @@ export async function performCheck(monitor: any, env?: Env, prisma?: any): Promi
       const wsAssertion = monitor.expectation
         ? (JSON.parse(monitor.expectation) as any)
         : undefined;
-      const result = await checkWebSocket(monitor.url, listenSeconds, wsAssertion);
+      const result = await checkWebSocket(
+        monitor.url,
+        listenSeconds,
+        wsAssertion,
+      );
       return {
         status: result.status,
         latency: result.latency,
@@ -265,7 +317,11 @@ export async function performCheck(monitor: any, env?: Env, prisma?: any): Promi
         errorReason: result.errorReason,
       };
     } catch (e: any) {
-      return { status: Status.DOWN, latency: 0, errorReason: CheckErrorReason.BGP_CHECK_FAILED };
+      return {
+        status: Status.DOWN,
+        latency: 0,
+        errorReason: CheckErrorReason.BGP_CHECK_FAILED,
+      };
     }
   }
 
@@ -287,11 +343,15 @@ export async function performCheck(monitor: any, env?: Env, prisma?: any): Promi
       const cachedValue = await env.DNS_CACHE.get(`dns:${hostname}`);
       if (cachedValue) {
         const { ip } = JSON.parse(cachedValue) as { ip: string };
-        console.warn(`[DNSFallback] DNS failed for ${hostname}. Retrying via IP ${ip}...`);
+        console.warn(
+          `[DNSFallback] DNS failed for ${hostname}. Retrying via IP ${ip}...`,
+        );
 
         // Re-map the hostname to IP for the fetch
         const ipUrl = urlStr.replace(hostname, ip);
-        const fallbackResult = await performInternalRequest(monitor, ipUrl, { Host: hostname });
+        const fallbackResult = await performInternalRequest(monitor, ipUrl, {
+          Host: hostname,
+        });
 
         if (fallbackResult.status === Status.UP) {
           console.log(
@@ -315,7 +375,11 @@ export async function performInternalRequest(
   monitor: any,
   urlStr: string,
   extraHeaders?: Record<string, string>,
-): Promise<{ status: MonitorStatus; latency: number; errorReason?: string | undefined }> {
+): Promise<{
+  status: MonitorStatus;
+  latency: number;
+  errorReason?: string | undefined;
+}> {
   const start = performance.now();
   let currentStatus: MonitorStatus = Status.DOWN;
   let latency = 0;
@@ -361,7 +425,8 @@ export async function performInternalRequest(
         );
         if (!validation.success) {
           currentStatus = Status.DOWN;
-          errorReason = validation.errorMessage || `HTTP_${checkResult.statusCode || 200}`;
+          errorReason =
+            validation.errorMessage || `HTTP_${checkResult.statusCode || 200}`;
         }
       }
     } else if (urlStr.startsWith("tcp://")) {
@@ -385,7 +450,11 @@ export async function performInternalRequest(
       }
     } else if (urlStr.startsWith("ping://")) {
       const hostname = urlStr.replace("ping://", "");
-      const checkResult = await checkPortUniversal(hostname, 80, (monitor.timeout || 10) * 1000);
+      const checkResult = await checkPortUniversal(
+        hostname,
+        80,
+        (monitor.timeout || 10) * 1000,
+      );
 
       if (checkResult.isOpen) {
         currentStatus = Status.UP;
@@ -407,7 +476,10 @@ export async function performInternalRequest(
     currentStatus = Status.DOWN;
 
     // Classify Error
-    if (err.name === "TimeoutError" || (err.message && err.message.includes("Stats"))) {
+    if (
+      err.name === "TimeoutError" ||
+      (err.message && err.message.includes("Stats"))
+    ) {
       errorReason = CheckErrorReason.TIMEOUT;
     } else if (
       err.code === "ECONNREFUSED" ||
@@ -438,7 +510,9 @@ export async function shouldSendAlert(
 
   // If > 3 events in 5 mins (e.g. DOWN -> UP -> DOWN -> ...), suppress
   if (recentEvents > 3) {
-    console.warn(`[RateLimit] Flapping detected for ${monitorId}. Suppressing alert.`);
+    console.warn(
+      `[RateLimit] Flapping detected for ${monitorId}. Suppressing alert.`,
+    );
     return false;
   }
 
@@ -487,7 +561,10 @@ export async function shouldSendAlert(
  * Record that an alert was sent for a monitor, updating the cooldown tracker
  * in Redis for future de-duplication.
  */
-export async function recordAlertSent(monitorId: string, env?: Env): Promise<void> {
+export async function recordAlertSent(
+  monitorId: string,
+  env?: Env,
+): Promise<void> {
   if (!env?.UPSTASH_REDIS_REST_URL || !env?.UPSTASH_REDIS_REST_TOKEN) return;
 
   try {
@@ -501,7 +578,10 @@ export async function recordAlertSent(monitorId: string, env?: Env): Promise<voi
     if (redisRes.ok) {
       const redisData = (await redisRes.json()) as any;
       if (redisData.result) {
-        const parsed = JSON.parse(redisData.result) as { lastAlertAt: number; alertCount: number };
+        const parsed = JSON.parse(redisData.result) as {
+          lastAlertAt: number;
+          alertCount: number;
+        };
         alertCount = parsed.alertCount;
       }
     }

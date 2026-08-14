@@ -9,8 +9,15 @@ import {
   SSL_ALERT_MILESTONES,
 } from "./constants";
 import { ProxyMesh, QuantumAnomalyDetector } from "./services/mesh";
-import { InsightService, InsightType, InsightSeverity } from "./lib/insight-service";
-import { performRegionalChecks, getAverageLatency } from "./services/regional-monitor";
+import {
+  InsightService,
+  InsightType,
+  InsightSeverity,
+} from "./lib/insight-service";
+import {
+  performRegionalChecks,
+  getAverageLatency,
+} from "./services/regional-monitor";
 import {
   broadcastLiveEvent,
   performCheck,
@@ -41,7 +48,10 @@ export async function processBatch(
   const { FallbackQueue } = await import("./lib/fallback-queue");
   const { DatabaseCircuitBreaker } = await import("./lib/circuit-breaker");
 
-  const fallbackQueue = new FallbackQueue(env.UPSTASH_REDIS_REST_URL, env.UPSTASH_REDIS_REST_TOKEN);
+  const fallbackQueue = new FallbackQueue(
+    env.UPSTASH_REDIS_REST_URL,
+    env.UPSTASH_REDIS_REST_TOKEN,
+  );
   const circuitBreaker = new DatabaseCircuitBreaker(
     env.UPSTASH_REDIS_REST_URL,
     env.UPSTASH_REDIS_REST_TOKEN,
@@ -67,7 +77,8 @@ export async function processBatch(
   const eventCountsMap = new Map<string, number>();
 
   // 1. Fetch Active Incidents
-  const activeIncidents = await incidentService.findActiveIncidentsForMonitors(monitorIds);
+  const activeIncidents =
+    await incidentService.findActiveIncidentsForMonitors(monitorIds);
   for (const incident of activeIncidents) {
     // The service returns list ordered by createdAt desc.
     // We want to map monitorId -> latest incident.
@@ -130,7 +141,10 @@ export async function processBatch(
           );
         }
       } catch (calcErr) {
-        console.error(`[DynamicThreshold] Failed to calculate for ${monitor.name}:`, calcErr);
+        console.error(
+          `[DynamicThreshold] Failed to calculate for ${monitor.name}:`,
+          calcErr,
+        );
       }
     }
 
@@ -155,7 +169,11 @@ export async function processBatch(
       let failedRegions: string[] = [];
 
       if (maintenanceActive) {
-        result = { status: Status.MAINTENANCE, latency: 0, errorReason: undefined };
+        result = {
+          status: Status.MAINTENANCE,
+          latency: 0,
+          errorReason: undefined,
+        };
       } else {
         // Check if regional monitoring is enabled
         if (monitor.checkRegions) {
@@ -193,7 +211,9 @@ export async function processBatch(
               monitorId: monitor.id,
               status: overallStatus as any,
               latency: avgLatency,
-              errorReason: isMajorOutage ? `${failedRegions.length} regions failing` : undefined,
+              errorReason: isMajorOutage
+                ? `${failedRegions.length} regions failing`
+                : undefined,
               region: "global",
               timestamp: new Date(),
             });
@@ -222,15 +242,21 @@ export async function processBatch(
                 });
 
                 // Manage Regional Incidents
-                await incidentService.createRegionalIncident(monitor.id, regionalResult.region);
-              } else {
-                // Auto-resolve regional incident if previously down
-                const activeRegional = await incidentService.findActiveRegionalIncident(
+                await incidentService.createRegionalIncident(
                   monitor.id,
                   regionalResult.region,
                 );
+              } else {
+                // Auto-resolve regional incident if previously down
+                const activeRegional =
+                  await incidentService.findActiveRegionalIncident(
+                    monitor.id,
+                    regionalResult.region,
+                  );
                 if (activeRegional) {
-                  await incidentService.resolveRegionalIncident(activeRegional.id);
+                  await incidentService.resolveRegionalIncident(
+                    activeRegional.id,
+                  );
                 }
               }
             }
@@ -245,7 +271,9 @@ export async function processBatch(
             result = {
               status: overallStatus,
               latency: avgLatency,
-              errorReason: isMajorOutage ? `${failedRegions.length} regions failing` : undefined,
+              errorReason: isMajorOutage
+                ? `${failedRegions.length} regions failing`
+                : undefined,
             };
           } catch (regionalError) {
             console.error(
@@ -286,7 +314,10 @@ export async function processBatch(
               console.log(
                 `[MultiVector] Local check confirmed DOWN. Attempting fallback via Component 18-1-0 (Proxy Mesh)...`,
               );
-              const proxyResult = await mesh.component_18_1_0(monitor.url, 5000);
+              const proxyResult = await mesh.component_18_1_0(
+                monitor.url,
+                5000,
+              );
 
               if (proxyResult.status === Status.UP) {
                 console.log(
@@ -315,7 +346,10 @@ export async function processBatch(
                   );
                 }
 
-                const secondaryProxy = await mesh.component_18_1_1(monitor.url, 5000);
+                const secondaryProxy = await mesh.component_18_1_1(
+                  monitor.url,
+                  5000,
+                );
                 if (secondaryProxy.status === Status.UP) {
                   console.log(
                     `[MultiVector] Component 18-1-1 reported UP! False positive averted for ${monitor.name}.`,
@@ -326,7 +360,8 @@ export async function processBatch(
                   // Check if secondary proxy also just failed at the proxy level
                   const isSecondaryProxyFailure =
                     secondaryProxy.error === ProxyError.MESH_TIMEOUT ||
-                    secondaryProxy.error === ProxyError.MESH_CONGESTION_FAILSAFE;
+                    secondaryProxy.error ===
+                      ProxyError.MESH_CONGESTION_FAILSAFE;
 
                   if (isProxyFailure && isSecondaryProxyFailure) {
                     // BOTH proxies failed at the infrastructure level — this is a proxy network
@@ -362,7 +397,10 @@ export async function processBatch(
                 }
               }
             } catch (err) {
-              console.warn(`[MultiVector] Mesh verification failed, preserving DOWN state:`, err);
+              console.warn(
+                `[MultiVector] Mesh verification failed, preserving DOWN state:`,
+                err,
+              );
             }
           }
 
@@ -373,11 +411,20 @@ export async function processBatch(
         }
       }
 
-      const { status: currentStatus, latency, errorReason, daysRemaining, issuer } = result;
+      const {
+        status: currentStatus,
+        latency,
+        errorReason,
+        daysRemaining,
+        issuer,
+      } = result;
 
       // --- QUANTUM ANOMALY DETECTION (Invisible AI) ---
       if (capturedLatencies) {
-        const anomaly = QuantumAnomalyDetector.detect(latency, capturedLatencies);
+        const anomaly = QuantumAnomalyDetector.detect(
+          latency,
+          capturedLatencies,
+        );
         if (anomaly.isAnomaly) {
           console.warn(
             `[Mesh] QUANTUM ANOMALY detected for ${monitor.name}! Z-Score: ${anomaly.score}`,
@@ -387,7 +434,10 @@ export async function processBatch(
           await insightService.createInsight({
             monitorId: monitor.id,
             type: InsightType.ANOMALY,
-            severity: anomaly.score > 5 ? InsightSeverity.CRITICAL : InsightSeverity.WARNING,
+            severity:
+              anomaly.score > 5
+                ? InsightSeverity.CRITICAL
+                : InsightSeverity.WARNING,
             message: `Latency Anomaly Detected: ${monitor.name} is performing significantly outside expected baseline (Z-Score: ${anomaly.score}).`,
             metadata: { score: anomaly.score, latency },
           });
@@ -401,7 +451,11 @@ export async function processBatch(
               orderBy: { timestamp: "desc" },
               take: 20,
             });
-            await insightService.analyzeAndProvideAdvice(monitor.id, monitor.name, recentEvents);
+            await insightService.analyzeAndProvideAdvice(
+              monitor.id,
+              monitor.name,
+              recentEvents,
+            );
           } catch (e) {
             console.error(`[InsightAdvice] Failed for ${monitor.name}:`, e);
           }
@@ -409,13 +463,18 @@ export async function processBatch(
       }
 
       // Circuit Breaker Calculation
-      let nextCheckTime = new Date(Date.now() + (monitor.interval || 60) * 1000);
+      let nextCheckTime = new Date(
+        Date.now() + (monitor.interval || 60) * 1000,
+      );
 
       if (currentStatus === Status.DOWN) {
         try {
-          const activeIncident = await incidentService.findActiveIncident(monitor.id);
+          const activeIncident = await incidentService.findActiveIncident(
+            monitor.id,
+          );
           if (activeIncident) {
-            const downtimeDuration = Date.now() - activeIncident.createdAt.getTime();
+            const downtimeDuration =
+              Date.now() - activeIncident.createdAt.getTime();
             const ONE_HOUR = 60 * 60 * 1000;
 
             if (downtimeDuration > ONE_HOUR) {
@@ -427,7 +486,10 @@ export async function processBatch(
             }
           }
         } catch (cbError) {
-          console.error(`[CircuitBreaker] Error checking incident duration:`, cbError);
+          console.error(
+            `[CircuitBreaker] Error checking incident duration:`,
+            cbError,
+          );
         }
       }
 
@@ -463,7 +525,10 @@ export async function processBatch(
             await circuitBreaker.recordSuccess();
           }
         } catch (dbErr: any) {
-          console.error(`[Persistence] Primary DB failure for ${monitor.name}:`, dbErr.message);
+          console.error(
+            `[Persistence] Primary DB failure for ${monitor.name}:`,
+            dbErr.message,
+          );
 
           // Record failure to circuit breaker (may trip)
           await circuitBreaker.recordFailure(dbErr);
@@ -501,7 +566,9 @@ export async function processBatch(
 
       // --- SSL EXPIRY ALERTS ---
       if (daysRemaining !== undefined && env) {
-        const matchingMilestone = SSL_ALERT_MILESTONES.find((m) => daysRemaining <= m);
+        const matchingMilestone = SSL_ALERT_MILESTONES.find(
+          (m) => daysRemaining <= m,
+        );
 
         if (matchingMilestone !== undefined) {
           const redisKey = `ssl_alert:${monitor.id}:${matchingMilestone}`;
@@ -511,7 +578,9 @@ export async function processBatch(
             try {
               const redisUrl = `${env.UPSTASH_REDIS_REST_URL}/get/${redisKey}`;
               const redisRes = await fetch(redisUrl, {
-                headers: { Authorization: `Bearer ${env.UPSTASH_REDIS_REST_TOKEN}` },
+                headers: {
+                  Authorization: `Bearer ${env.UPSTASH_REDIS_REST_TOKEN}`,
+                },
               });
               if (redisRes.ok) {
                 const redisData = (await redisRes.json()) as any;
@@ -531,7 +600,8 @@ export async function processBatch(
 
             // Trigger if custom rules exist or by default if days remaining <= 7
             const shouldAlert =
-              sslRules.length > 0 || daysRemaining <= DEFAULT_SSL_EXPIRY_ALERT_DAYS;
+              sslRules.length > 0 ||
+              daysRemaining <= DEFAULT_SSL_EXPIRY_ALERT_DAYS;
 
             if (shouldAlert) {
               console.log(
@@ -559,10 +629,15 @@ export async function processBatch(
                 try {
                   const setUrl = `${env.UPSTASH_REDIS_REST_URL}/set/${redisKey}/sent/EX/604800`;
                   await fetch(setUrl, {
-                    headers: { Authorization: `Bearer ${env.UPSTASH_REDIS_REST_TOKEN}` },
+                    headers: {
+                      Authorization: `Bearer ${env.UPSTASH_REDIS_REST_TOKEN}`,
+                    },
                   });
                 } catch (err) {
-                  console.error("[SSL Expiry] Failed to save to Redis cache:", err);
+                  console.error(
+                    "[SSL Expiry] Failed to save to Redis cache:",
+                    err,
+                  );
                 }
               }
             }
@@ -573,14 +648,20 @@ export async function processBatch(
       // --- INCIDENT MANAGEMENT ---
       if (currentStatus === Status.DOWN && !maintenanceActive) {
         const activeIncident = activeIncidentsMap.get(monitor.id);
-        const alertable = await shouldSendAlert(monitor.id, eventCountsMap, env);
+        const alertable = await shouldSendAlert(
+          monitor.id,
+          eventCountsMap,
+          env,
+        );
 
         if (!activeIncident && alertable) {
           // CREATE NEW INCIDENT
           const incident = await incidentService.createIncident(
             monitor.id,
             `Monitor is DOWN: ${monitor.name}`,
-            errorReason ? `Reason: ${errorReason}` : "No error details provided.",
+            errorReason
+              ? `Reason: ${errorReason}`
+              : "No error details provided.",
           );
 
           // Notify (CREATED)
@@ -596,7 +677,8 @@ export async function processBatch(
               reason: errorReason,
               runbookUrl: monitor.runbookUrl,
               timestamp: new Date().toISOString(),
-              failedRegions: failedRegions.length > 0 ? failedRegions : undefined,
+              failedRegions:
+                failedRegions.length > 0 ? failedRegions : undefined,
             },
             ctx,
           );
@@ -635,10 +717,12 @@ export async function processBatch(
             (r: any) => r.trigger === "LATENCY" && r.enabled,
           );
 
-          const threshold = latencyRule?.threshold || DEFAULT_LATENCY_THRESHOLD_MS; // Default to 1000ms if no rule
+          const threshold =
+            latencyRule?.threshold || DEFAULT_LATENCY_THRESHOLD_MS; // Default to 1000ms if no rule
           const comparison = latencyRule?.comparison || "GT";
 
-          const isHighLatency = comparison === "GT" ? latency > threshold : latency < threshold;
+          const isHighLatency =
+            comparison === "GT" ? latency > threshold : latency < threshold;
 
           if (isHighLatency) {
             // HIGH LATENCY ALERT

@@ -49,16 +49,21 @@ export async function checkSSL(targetUrl: string): Promise<SSLResult> {
 
   const hstsHeader = response?.headers.get("Strict-Transport-Security");
   const hasHSTS = !!hstsHeader && hstsHeader.includes("max-age");
-  const maxAge = hasHSTS ? parseInt(hstsHeader.split("max-age=")[1] || "0", 10) : 0;
+  const maxAge = hasHSTS
+    ? parseInt(hstsHeader.split("max-age=")[1] || "0", 10)
+    : 0;
   const isLongHSTS = maxAge >= 15552000; // > 6 months
 
   // 2. Fetch Deep SSL details from External API
   let certData: any = null;
   try {
-    apiResponse = await fetch(`https://networkcalc.com/api/security/certificate/${domain}`, {
-      headers: { "User-Agent": "PulseGuard-Worker/1.0" },
-      signal: AbortSignal.timeout(10000),
-    });
+    apiResponse = await fetch(
+      `https://networkcalc.com/api/security/certificate/${domain}`,
+      {
+        headers: { "User-Agent": "PulseGuard-Worker/1.0" },
+        signal: AbortSignal.timeout(10000),
+      },
+    );
 
     if (apiResponse.ok) {
       const json: any = await apiResponse.json();
@@ -74,7 +79,8 @@ export async function checkSSL(targetUrl: string): Promise<SSLResult> {
   if (!certData) {
     if (!response) {
       const isExpired =
-        errorReason.includes("expired") || errorReason.includes("CERT_DATE_INVALID");
+        errorReason.includes("expired") ||
+        errorReason.includes("CERT_DATE_INVALID");
       return {
         domain,
         grade: "F",
@@ -87,7 +93,13 @@ export async function checkSSL(targetUrl: string): Promise<SSLResult> {
         protocol: "Unknown",
         cipher: "Unknown",
         chain: [],
-        details: { tls13: false, tls12: false, tls11: false, tls10: false, pfs: false },
+        details: {
+          tls13: false,
+          tls12: false,
+          tls11: false,
+          tls10: false,
+          pfs: false,
+        },
       };
     } else {
       // Site is reachable but 3rd party API failed. Return best-effort safe estimation.
@@ -103,7 +115,13 @@ export async function checkSSL(targetUrl: string): Promise<SSLResult> {
         protocol: "Unknown",
         cipher: "Unknown",
         chain: [],
-        details: { tls13: true, tls12: true, tls11: false, tls10: false, pfs: true },
+        details: {
+          tls13: true,
+          tls12: true,
+          tls11: false,
+          tls10: false,
+          pfs: true,
+        },
       };
     }
   }
@@ -150,7 +168,10 @@ export async function checkSSL(targetUrl: string): Promise<SSLResult> {
       tls11: false,
       tls10: false,
       // Estimation for PFS since cipher dictates it
-      pfs: !!certData.cipher?.includes("GCM") || !!certData.cipher?.includes("CHACHA") || true,
+      pfs:
+        !!certData.cipher?.includes("GCM") ||
+        !!certData.cipher?.includes("CHACHA") ||
+        true,
     },
   };
 }

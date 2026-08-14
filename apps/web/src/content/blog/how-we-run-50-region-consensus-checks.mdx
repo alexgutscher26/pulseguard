@@ -5,7 +5,14 @@ date: "2026-08-06"
 category: "Engineering"
 readTime: "9 min read"
 author: "Alex Gutscher"
-tags: ["Cloudflare Workers", "Durable Objects", "distributed systems", "consensus protocol", "DevOps"]
+tags:
+  [
+    "Cloudflare Workers",
+    "Durable Objects",
+    "distributed systems",
+    "consensus protocol",
+    "DevOps",
+  ]
 ---
 
 Building a global monitoring platform that checks thousands of endpoints every 60 seconds presents a classic distributed systems problem: **How do you execute synthetic pings from geographically pinned edge regions without introducing multi-second consensus delays or false positives?**
@@ -61,9 +68,16 @@ Each minute, scheduled edge workers pull target configurations cached in **Cloud
 ```typescript
 // Edge Worker Scheduled Handler
 export default {
-  async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
+  async scheduled(
+    event: ScheduledEvent,
+    env: Env,
+    ctx: ExecutionContext,
+  ): Promise<void> {
     // 1. Fetch cached target batch assigned to this edge POP
-    const targets = await env.DNS_CACHE.get<MonitorTarget[]>("targets:batch:pop", "json");
+    const targets = await env.DNS_CACHE.get<MonitorTarget[]>(
+      "targets:batch:pop",
+      "json",
+    );
 
     if (!targets || targets.length === 0) return;
 
@@ -77,7 +91,10 @@ export default {
 
 async function executeEdgePing(target: MonitorTarget, env: Env): Promise<void> {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), target.timeoutMs || 5000);
+  const timeoutId = setTimeout(
+    () => controller.abort(),
+    target.timeoutMs || 5000,
+  );
   const startTime = performance.now();
 
   try {
@@ -92,15 +109,27 @@ async function executeEdgePing(target: MonitorTarget, env: Env): Promise<void> {
 
     if (!isSuccess) {
       // Initiate RPC quorum check to Durable Object Coordinator
-      await triggerQuorumVote(target, { success: false, statusCode: response.status, latencyMs }, env);
+      await triggerQuorumVote(
+        target,
+        { success: false, statusCode: response.status, latencyMs },
+        env,
+      );
     } else {
       // Report success telemetry to state coordinator
-      await reportTelemetry(target.id, { success: true, statusCode: response.status, latencyMs }, env);
+      await reportTelemetry(
+        target.id,
+        { success: true, statusCode: response.status, latencyMs },
+        env,
+      );
     }
   } catch (err: any) {
     const latencyMs = Math.round(performance.now() - startTime);
     // Timeout or network error — trigger consensus validation
-    await triggerQuorumVote(target, { success: false, error: err.name, latencyMs }, env);
+    await triggerQuorumVote(
+      target,
+      { success: false, error: err.name, latencyMs },
+      env,
+    );
   } finally {
     clearTimeout(timeoutId);
   }

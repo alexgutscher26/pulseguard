@@ -8,8 +8,15 @@ import {
 import { getVerifiedSubscribers } from "../subscriptions";
 import { getMonitor, toggleMonitor, deleteMonitor } from "../monitors";
 import { getIncident, updateIncidentStatus } from "../incidents";
-import { deleteAlertRule, deleteNotificationChannel, sendTestNotification } from "../notifications";
-import { createMaintenanceWindow, deleteMaintenanceWindow } from "../maintenance";
+import {
+  deleteAlertRule,
+  deleteNotificationChannel,
+  sendTestNotification,
+} from "../notifications";
+import {
+  createMaintenanceWindow,
+  deleteMaintenanceWindow,
+} from "../maintenance";
 import { disconnectIntegration } from "../integrations";
 
 describe("Comprehensive Multi-Tenant Isolation Tests", () => {
@@ -20,7 +27,10 @@ describe("Comprehensive Multi-Tenant Isolation Tests", () => {
     });
 
     test("deleteStatusPageOverride rejects cross-tenant override deletion", async () => {
-      const res = await deleteStatusPageOverride("user-b-page-id", "user-a-override-id");
+      const res = await deleteStatusPageOverride(
+        "user-b-page-id",
+        "user-a-override-id",
+      );
       expect(res.success).toBe(false);
     });
 

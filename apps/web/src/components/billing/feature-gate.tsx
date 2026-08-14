@@ -3,7 +3,11 @@
 import React from "react";
 import Link from "next/link";
 import { Lock, Sparkles, ArrowRight } from "lucide-react";
-import { isFeatureEnabled, getFeatureError, type FeatureFlag } from "@/lib/feature-flags";
+import {
+  isFeatureEnabled,
+  getFeatureError,
+  type FeatureFlag,
+} from "@/lib/feature-flags";
 import type { PlanTier } from "@/lib/billing";
 
 interface FeatureGateProps {
@@ -45,12 +49,16 @@ export function FeatureGate({
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h4 className="font-semibold text-slate-100">Pro Feature Locked</h4>
+              <h4 className="font-semibold text-slate-100">
+                Pro Feature Locked
+              </h4>
               <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-400 border border-amber-500/20">
                 <Sparkles className="h-3 w-3" /> Upgrade Required
               </span>
             </div>
-            <p className="mt-1 text-sm text-slate-400">{getFeatureError(flag)}</p>
+            <p className="mt-1 text-sm text-slate-400">
+              {getFeatureError(flag)}
+            </p>
           </div>
         </div>
         <Link

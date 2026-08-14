@@ -27,7 +27,9 @@ export async function getLeaderboard(limit = 50): Promise<LeaderboardEntry[]> {
     }
 
     const allowedUserIds = privacySettings.map((p) => p.userId);
-    const bioMap = new Map(privacySettings.map((p) => [p.userId, p.leaderboardBio]));
+    const bioMap = new Map(
+      privacySettings.map((p) => [p.userId, p.leaderboardBio]),
+    );
 
     // Fetch users, monitors, summaries, and public status pages
     const [users, monitors, summaries, pages] = await Promise.all([
@@ -63,7 +65,11 @@ export async function getLeaderboard(limit = 50): Promise<LeaderboardEntry[]> {
 
     for (const m of monitors) {
       if (!userStats.has(m.userId)) {
-        userStats.set(m.userId, { totalUp: 0, totalDown: 0, monitorIds: new Set() });
+        userStats.set(m.userId, {
+          totalUp: 0,
+          totalDown: 0,
+          monitorIds: new Set(),
+        });
       }
       const stat = userStats.get(m.userId)!;
       stat.monitorIds.add(m.id);

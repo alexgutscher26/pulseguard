@@ -25,8 +25,12 @@ export async function verifySession(
   let rawToken: string | null | undefined = url.searchParams.get("token");
 
   if (!rawToken && cookieHeader) {
-    const secureMatch = cookieHeader.match(/__Secure-better-auth\.session_token=([^;]+)/);
-    const regularMatch = cookieHeader.match(/better-auth\.session_token=([^;]+)/);
+    const secureMatch = cookieHeader.match(
+      /__Secure-better-auth\.session_token=([^;]+)/,
+    );
+    const regularMatch = cookieHeader.match(
+      /better-auth\.session_token=([^;]+)/,
+    );
     rawToken = secureMatch?.[1] || regularMatch?.[1] || null;
   }
 

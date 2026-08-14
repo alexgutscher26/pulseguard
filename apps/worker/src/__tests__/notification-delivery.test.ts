@@ -10,7 +10,10 @@ describe("Alert Notification Resilience & Failure Modes", () => {
     // Mock fetch to simulate 500 status
     globalThis.fetch = (async () => {
       callCount++;
-      return new Response("Internal Error", { status: 500, statusText: "Internal Server Error" });
+      return new Response("Internal Error", {
+        status: 500,
+        statusText: "Internal Server Error",
+      });
     }) as any;
 
     try {
@@ -39,7 +42,10 @@ describe("Alert Notification Resilience & Failure Modes", () => {
     globalThis.fetch = (async () => {
       callCount++;
       if (callCount === 1) {
-        return new Response("Rate limited", { status: 429, statusText: "Too Many Requests" });
+        return new Response("Rate limited", {
+          status: 429,
+          statusText: "Too Many Requests",
+        });
       }
       return new Response("ok", { status: 200 });
     }) as any;

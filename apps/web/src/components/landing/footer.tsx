@@ -13,7 +13,9 @@ export default function LandingFooter() {
               <div className="p-1 bg-primary/5 border border-primary/10 rounded-lg">
                 <Activity className="size-4 text-primary" />
               </div>
-              <span className="text-foreground font-bold tracking-tight text-base">PulseGuard</span>
+              <span className="text-foreground font-bold tracking-tight text-base">
+                PulseGuard
+              </span>
             </div>
             <p className="text-muted-foreground text-xs font-medium max-w-xs leading-relaxed">
               Global infrastructure uptime and latency surveillance made simple.
@@ -72,7 +74,9 @@ export default function LandingFooter() {
                 </span>
               </Link>
               <Link
-                href={"https://pulse-41cf5b0d.mintlify.site/introduction" as any}
+                href={
+                  "https://pulse-41cf5b0d.mintlify.site/introduction" as any
+                }
                 className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
               >
                 Docs

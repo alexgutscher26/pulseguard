@@ -4,7 +4,9 @@ import { slugify, extractHeadings } from "@/lib/markdown";
 describe("markdown utilities", () => {
   describe("slugify", () => {
     it("converts strings to clean URL slugs", () => {
-      expect(slugify("Why 60-Second Checks Matter")).toBe("why-60-second-checks-matter");
+      expect(slugify("Why 60-Second Checks Matter")).toBe(
+        "why-60-second-checks-matter",
+      );
       expect(slugify("Consensus Across 50 Regions (Sub-Second Latency!)")).toBe(
         "consensus-across-50-regions-sub-second-latency",
       );

@@ -62,7 +62,10 @@ export class QuorumEngine {
     return list.filter((t) => t >= windowStart).length >= 3;
   }
 
-  getProbeHealth(probeId: string): { status: ProbeHealthState; excludedFromQuorum: boolean } {
+  getProbeHealth(probeId: string): {
+    status: ProbeHealthState;
+    excludedFromQuorum: boolean;
+  } {
     const isFlapping = this.isProbeFlapping(probeId);
     const status: ProbeHealthState = isFlapping
       ? "FLAPPING"
@@ -123,7 +126,8 @@ export function evaluateQuorum(
 
   // 2. Exclude Flapping Probes & Slow Probes
   for (const r of distinctResults) {
-    const health = probeHealthMap.get(r.probeId) || probeHealthMap.get(r.region) || "ONLINE";
+    const health =
+      probeHealthMap.get(r.probeId) || probeHealthMap.get(r.region) || "ONLINE";
 
     if (health === "FLAPPING") {
       excludedFlappingProbes.push(r.region);
@@ -157,7 +161,8 @@ export function evaluateQuorum(
 
   // 4. Calculate Average Latency from UP probes
   const totalLatency = upResults.reduce((acc, r) => acc + r.latency, 0);
-  const averageLatency = upResults.length > 0 ? Math.round(totalLatency / upResults.length) : 0;
+  const averageLatency =
+    upResults.length > 0 ? Math.round(totalLatency / upResults.length) : 0;
 
   // Dynamic consensus threshold based on eligible probes:
   // If all 7 probes are eligible, threshold is 4 (4-of-7).
@@ -168,7 +173,8 @@ export function evaluateQuorum(
       : Math.max(2, Math.ceil((totalEligible + 1) / 2));
 
   const confirmedDownCount = downResults.length;
-  const isDownConsensus = confirmedDownCount >= requiredDownCount && totalEligible >= 2;
+  const isDownConsensus =
+    confirmedDownCount >= requiredDownCount && totalEligible >= 2;
   const isRegionalDegradation = confirmedDownCount > 0 && !isDownConsensus;
   const isGlobalOutage = isDownConsensus;
 
@@ -315,7 +321,8 @@ export async function processProbeResultsBatch(
         try {
           const { IncidentService } = await import("../lib/incident-service");
           const incidentService = new IncidentService(prisma);
-          const activeIncident = await incidentService.findActiveIncident(monitorId);
+          const activeIncident =
+            await incidentService.findActiveIncident(monitorId);
           if (activeIncident) {
             await incidentService.resolveIncident(activeIncident.id);
           }
@@ -337,7 +344,9 @@ export async function processProbeResultsBatch(
     // 5. Record 1-minute aggregates to LatencyAggregator DO
     if (env.LATENCY_AGGREGATOR) {
       try {
-        const aggregatorId = env.LATENCY_AGGREGATOR.idFromName("global-latency-aggregator");
+        const aggregatorId = env.LATENCY_AGGREGATOR.idFromName(
+          "global-latency-aggregator",
+        );
         const aggregator = env.LATENCY_AGGREGATOR.get(aggregatorId);
 
         for (const r of results.filter((res) => res.monitorId === monitorId)) {

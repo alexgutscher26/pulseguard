@@ -14,8 +14,8 @@ export default function NotFound() {
           SYSTEM FAILURE // PAGE NOT FOUND
         </h1>
         <p className="text-muted-foreground max-w-md mx-auto font-mono text-sm leading-relaxed">
-          The requested resource has been disconnected from the neural network. Please recalibrate
-          your coordinates.
+          The requested resource has been disconnected from the neural network.
+          Please recalibrate your coordinates.
         </p>
       </div>
       <a

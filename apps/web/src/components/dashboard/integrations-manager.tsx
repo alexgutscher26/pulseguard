@@ -13,7 +13,13 @@ import {
   Link as LinkIcon,
   AlertTriangle,
 } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -79,19 +85,25 @@ export function IntegrationsManager() {
       router.replace("/dashboard/integrations");
       loadIntegrations();
     } else if (error) {
-      toast.error(`Integration failed: ${error} ${details ? `(${details})` : ""}`);
+      toast.error(
+        `Integration failed: ${error} ${details ? `(${details})` : ""}`,
+      );
       router.replace("/dashboard/integrations");
     }
   }, [searchParams]);
 
   useEffect(() => {
     if (activeProvider) {
-      const savedToken = localStorage.getItem(`pulseguard_token_${activeProvider}`);
+      const savedToken = localStorage.getItem(
+        `pulseguard_token_${activeProvider}`,
+      );
       if (savedToken) {
         setToken(savedToken);
         setHasSavedToken(true);
       } else {
-        const hasDbConfig = connectedIntegrations.some((ci) => ci.provider === activeProvider);
+        const hasDbConfig = connectedIntegrations.some(
+          (ci) => ci.provider === activeProvider,
+        );
         const isDbProvider =
           activeProvider === "vercel" ||
           activeProvider === "netlify" ||
@@ -144,7 +156,9 @@ export function IntegrationsManager() {
       if (res.success && res.personalName) {
         toast.success(
           `Successfully connected personal scope "${res.personalName}"${
-            res.teamsCount && res.teamsCount > 0 ? ` and ${res.teamsCount} team scopes!` : "!"
+            res.teamsCount && res.teamsCount > 0
+              ? ` and ${res.teamsCount} team scopes!`
+              : "!"
           }`,
         );
         setToken("db");
@@ -345,8 +359,8 @@ export function IntegrationsManager() {
           Zero-Code Integrations
         </h2>
         <p className="text-xs text-muted-foreground">
-          Import websites, repos, and cloud deployments automatically. PulseGuard connects directly
-          to your providers.
+          Import websites, repos, and cloud deployments automatically.
+          PulseGuard connects directly to your providers.
         </p>
       </div>
 
@@ -367,7 +381,13 @@ export function IntegrationsManager() {
                   variant="outline"
                   className="text-emerald-500 border-emerald-500/20 bg-emerald-500/5 text-[10px]"
                 >
-                  Active ({connectedIntegrations.filter((ci) => ci.provider === "vercel").length})
+                  Active (
+                  {
+                    connectedIntegrations.filter(
+                      (ci) => ci.provider === "vercel",
+                    ).length
+                  }
+                  )
                 </Badge>
               ) : (
                 <Badge
@@ -378,10 +398,12 @@ export function IntegrationsManager() {
                 </Badge>
               )}
             </div>
-            <CardTitle className="text-sm font-bold">Vercel Integration</CardTitle>
+            <CardTitle className="text-sm font-bold">
+              Vercel Integration
+            </CardTitle>
             <CardDescription className="text-[11px] leading-relaxed">
-              Auto-sync and import Vercel projects and production domains straight into your active
-              monitors list.
+              Auto-sync and import Vercel projects and production domains
+              straight into your active monitors list.
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-2">
@@ -438,10 +460,12 @@ export function IntegrationsManager() {
                 </Badge>
               )}
             </div>
-            <CardTitle className="text-sm font-bold">Netlify Integration</CardTitle>
+            <CardTitle className="text-sm font-bold">
+              Netlify Integration
+            </CardTitle>
             <CardDescription className="text-[11px] leading-relaxed">
-              Auto-discover Netlify static deployment sites, custom proxy configs, and subdomains
-              automatically.
+              Auto-discover Netlify static deployment sites, custom proxy
+              configs, and subdomains automatically.
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-2">
@@ -492,10 +516,12 @@ export function IntegrationsManager() {
                 </Badge>
               )}
             </div>
-            <CardTitle className="text-sm font-bold">GitHub Pages & Repos</CardTitle>
+            <CardTitle className="text-sm font-bold">
+              GitHub Pages & Repos
+            </CardTitle>
             <CardDescription className="text-[11px] leading-relaxed">
-              Link codebases directly and deploy HTTP or raw PING check targets for documentation
-              and landing projects.
+              Link codebases directly and deploy HTTP or raw PING check targets
+              for documentation and landing projects.
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-2">
@@ -524,15 +550,24 @@ export function IntegrationsManager() {
       </div>
 
       {/* Integration Setup Dialog */}
-      <Dialog open={activeProvider !== null} onOpenChange={() => setActiveProvider(null)}>
+      <Dialog
+        open={activeProvider !== null}
+        onOpenChange={() => setActiveProvider(null)}
+      >
         <DialogContent className="sm:max-w-[500px] border-border bg-card/90 backdrop-blur-md text-foreground rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
           {activeProvider && (
             <>
               <DialogHeader className="space-y-2">
                 <DialogTitle className="text-base font-bold flex items-center gap-2">
-                  {activeProvider === "vercel" && <Cloud className="size-5 text-white" />}
-                  {activeProvider === "netlify" && <LinkIcon className="size-5 text-[#00F5D4]" />}
-                  {activeProvider === "github" && <Github className="size-5 text-[#4078c0]" />}
+                  {activeProvider === "vercel" && (
+                    <Cloud className="size-5 text-white" />
+                  )}
+                  {activeProvider === "netlify" && (
+                    <LinkIcon className="size-5 text-[#00F5D4]" />
+                  )}
+                  {activeProvider === "github" && (
+                    <Github className="size-5 text-[#4078c0]" />
+                  )}
                   {providerMeta[activeProvider].title}
                 </DialogTitle>
                 <DialogDescription className="text-[11px]">
@@ -547,7 +582,9 @@ export function IntegrationsManager() {
                     {/* Vercel Specific Live Token Integration Flow */}
                     {activeProvider === "vercel" && (
                       <div className="space-y-4">
-                        {connectedIntegrations.some((ci) => ci.provider === "vercel") && (
+                        {connectedIntegrations.some(
+                          (ci) => ci.provider === "vercel",
+                        ) && (
                           /* Connected Scopes */
                           <div className="space-y-2">
                             <label className="text-xs font-bold text-foreground">
@@ -577,7 +614,9 @@ export function IntegrationsManager() {
                                     <Button
                                       size="sm"
                                       variant="ghost"
-                                      onClick={() => handleVercelDisconnect(ci.id)}
+                                      onClick={() =>
+                                        handleVercelDisconnect(ci.id)
+                                      }
                                       className="text-red-500 hover:text-red-400 hover:bg-red-500/10 text-[10px] h-7 px-2.5 rounded-lg border border-red-500/10"
                                     >
                                       Disconnect
@@ -591,14 +630,17 @@ export function IntegrationsManager() {
                         {/* Direct Token Input for Connecting */}
                         <div className="space-y-3 p-4 rounded-xl border border-border bg-accent/10">
                           <label className="text-xs font-bold text-foreground">
-                            {connectedIntegrations.some((ci) => ci.provider === "vercel")
+                            {connectedIntegrations.some(
+                              (ci) => ci.provider === "vercel",
+                            )
                               ? "Connect Another Account / Token"
                               : "Vercel Personal Access Token"}
                           </label>
                           <p className="text-[10px] text-muted-foreground leading-relaxed">
-                            Create a token in your Vercel Account Settings and paste it below.
-                            PulseGuard will persistently link your personal account and all
-                            accessible teams to your database account.
+                            Create a token in your Vercel Account Settings and
+                            paste it below. PulseGuard will persistently link
+                            your personal account and all accessible teams to
+                            your database account.
                           </p>
                           <div className="flex gap-2">
                             <Input
@@ -641,7 +683,9 @@ export function IntegrationsManager() {
                     {/* Netlify Specific Live Token Integration Flow */}
                     {activeProvider === "netlify" && (
                       <div className="space-y-4">
-                        {connectedIntegrations.some((ci) => ci.provider === "netlify") && (
+                        {connectedIntegrations.some(
+                          (ci) => ci.provider === "netlify",
+                        ) && (
                           /* Connected Scopes */
                           <div className="space-y-2">
                             <label className="text-xs font-bold text-foreground">
@@ -671,7 +715,9 @@ export function IntegrationsManager() {
                                     <Button
                                       size="sm"
                                       variant="ghost"
-                                      onClick={() => handleVercelDisconnect(ci.id)}
+                                      onClick={() =>
+                                        handleVercelDisconnect(ci.id)
+                                      }
                                       className="text-red-500 hover:text-red-400 hover:bg-red-500/10 text-[10px] h-7 px-2.5 rounded-lg border border-red-500/10"
                                     >
                                       Disconnect
@@ -685,14 +731,17 @@ export function IntegrationsManager() {
                         {/* Direct Token Input for Connecting */}
                         <div className="space-y-3 p-4 rounded-xl border border-border bg-accent/10">
                           <label className="text-xs font-bold text-foreground">
-                            {connectedIntegrations.some((ci) => ci.provider === "netlify")
+                            {connectedIntegrations.some(
+                              (ci) => ci.provider === "netlify",
+                            )
                               ? "Connect Another Account / Token"
                               : "Netlify Personal Access Token"}
                           </label>
                           <p className="text-[10px] text-muted-foreground leading-relaxed">
-                            Create a Personal Access Token in your Netlify User Settings and paste
-                            it below. PulseGuard will persistently link your site index to your
-                            database account.
+                            Create a Personal Access Token in your Netlify User
+                            Settings and paste it below. PulseGuard will
+                            persistently link your site index to your database
+                            account.
                           </p>
                           <div className="flex gap-2">
                             <Input
@@ -735,7 +784,9 @@ export function IntegrationsManager() {
                     {/* GitHub Specific Live Token Integration Flow */}
                     {activeProvider === "github" && (
                       <div className="space-y-4">
-                        {connectedIntegrations.some((ci) => ci.provider === "github") && (
+                        {connectedIntegrations.some(
+                          (ci) => ci.provider === "github",
+                        ) && (
                           /* Connected Scopes */
                           <div className="space-y-2">
                             <label className="text-xs font-bold text-foreground">
@@ -765,7 +816,9 @@ export function IntegrationsManager() {
                                     <Button
                                       size="sm"
                                       variant="ghost"
-                                      onClick={() => handleVercelDisconnect(ci.id)}
+                                      onClick={() =>
+                                        handleVercelDisconnect(ci.id)
+                                      }
                                       className="text-red-500 hover:text-red-400 hover:bg-red-500/10 text-[10px] h-7 px-2.5 rounded-lg border border-red-500/10"
                                     >
                                       Disconnect
@@ -779,14 +832,17 @@ export function IntegrationsManager() {
                         {/* Direct Token Input for Connecting */}
                         <div className="space-y-3 p-4 rounded-xl border border-border bg-accent/10">
                           <label className="text-xs font-bold text-foreground">
-                            {connectedIntegrations.some((ci) => ci.provider === "github")
+                            {connectedIntegrations.some(
+                              (ci) => ci.provider === "github",
+                            )
                               ? "Connect Another Account / Token"
                               : "GitHub Personal Access Token"}
                           </label>
                           <p className="text-[10px] text-muted-foreground leading-relaxed">
-                            Create a Personal Access Token (PAT) with `repo` scope in your GitHub
-                            Developer Settings and paste it below. PulseGuard will persistently link
-                            your repository targets to your database account.
+                            Create a Personal Access Token (PAT) with `repo`
+                            scope in your GitHub Developer Settings and paste it
+                            below. PulseGuard will persistently link your
+                            repository targets to your database account.
                           </p>
                           <div className="flex gap-2">
                             <Input
@@ -826,7 +882,9 @@ export function IntegrationsManager() {
                       </div>
                     )}
 
-                    {connectedIntegrations.some((ci) => ci.provider === activeProvider) && (
+                    {connectedIntegrations.some(
+                      (ci) => ci.provider === activeProvider,
+                    ) && (
                       <Button
                         onClick={handleFetchResources}
                         disabled={loading}
@@ -886,7 +944,8 @@ export function IntegrationsManager() {
                     <div className="flex items-center gap-2 justify-between text-[11px] text-muted-foreground bg-accent/10 p-3 border border-border rounded-xl">
                       <span className="flex items-center gap-1">
                         <AlertTriangle className="size-3.5 text-yellow-500" />
-                        Monitors will check in every 60 seconds (Initiate Tier limit).
+                        Monitors will check in every 60 seconds (Initiate Tier
+                        limit).
                       </span>
                     </div>
 

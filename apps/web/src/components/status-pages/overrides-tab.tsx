@@ -90,7 +90,13 @@ export function OverridesTab({ page }: OverridesTabProps) {
     }
 
     startTransition(async () => {
-      const res = await createStatusPageOverride(page.id, selectedMonitorId, date, status, message);
+      const res = await createStatusPageOverride(
+        page.id,
+        selectedMonitorId,
+        date,
+        status,
+        message,
+      );
       if (res.success) {
         toast.success("Manual override saved");
         setMessage("");
@@ -175,7 +181,8 @@ export function OverridesTab({ page }: OverridesTabProps) {
                     onClick={() => setStatus(opt.value)}
                     className={`flex items-center gap-2 p-2.5 rounded-sm border transition-all text-left text-xs font-mono font-bold uppercase ${
                       isSelected
-                        ? opt.color + " border-current shadow-[0_0_15px_rgba(34,197,94,0.1)]"
+                        ? opt.color +
+                          " border-current shadow-[0_0_15px_rgba(34,197,94,0.1)]"
                         : "border-white/5 bg-black/20 text-muted-foreground hover:border-white/10 hover:text-foreground"
                     }`}
                   >
@@ -244,15 +251,22 @@ export function OverridesTab({ page }: OverridesTabProps) {
               </thead>
               <tbody className="divide-y divide-white/5 text-xs">
                 {overrides.map((override) => {
-                  const opt = statusOptions.find((o) => o.value === override.status);
+                  const opt = statusOptions.find(
+                    (o) => o.value === override.status,
+                  );
                   const Icon = opt?.icon || AlertTriangle;
                   return (
-                    <tr key={override.id} className="group hover:bg-white/[0.01]">
+                    <tr
+                      key={override.id}
+                      className="group hover:bg-white/[0.01]"
+                    >
                       <td className="py-4 pr-3 font-bold text-foreground">
                         {override.monitor.name}
                       </td>
                       <td className="py-4 pr-3 text-muted-foreground">
-                        {new Date(override.date).toLocaleDateString(undefined, { timeZone: "UTC" })}
+                        {new Date(override.date).toLocaleDateString(undefined, {
+                          timeZone: "UTC",
+                        })}
                       </td>
                       <td className="py-4 pr-3">
                         <span
@@ -266,7 +280,9 @@ export function OverridesTab({ page }: OverridesTabProps) {
                         className="py-4 pr-3 text-muted-foreground max-w-[200px] truncate"
                         title={override.message}
                       >
-                        {override.message || <span className="italic opacity-50">No message</span>}
+                        {override.message || (
+                          <span className="italic opacity-50">No message</span>
+                        )}
                       </td>
                       <td className="py-4 text-right">
                         <button

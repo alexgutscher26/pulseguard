@@ -11,7 +11,10 @@ export interface PortResult {
 /**
  * Check if a port is open using the universal checker
  */
-export async function checkPort(host: string, port: number): Promise<PortResult> {
+export async function checkPort(
+  host: string,
+  port: number,
+): Promise<PortResult> {
   const result = await checkPortUniversal(host, port);
   return {
     host,

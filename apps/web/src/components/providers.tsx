@@ -30,7 +30,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       >
         {children}
         {mounted && <Toaster />}
-        {mounted && process.env.NODE_ENV !== "production" && <ReactQueryDevtools />}
+        {mounted && process.env.NODE_ENV !== "production" && (
+          <ReactQueryDevtools />
+        )}
       </ThemeProvider>
     </QueryClientProvider>
   );

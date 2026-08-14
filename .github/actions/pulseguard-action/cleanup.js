@@ -25,10 +25,14 @@ async function run() {
   });
 
   if (response.ok) {
-    console.log(`Successfully deleted transient monitor: ${transientMonitorId}`);
+    console.log(
+      `Successfully deleted transient monitor: ${transientMonitorId}`,
+    );
   } else {
     const text = await response.text();
-    console.error(`Failed to delete transient monitor (${response.status}): ${text}`);
+    console.error(
+      `Failed to delete transient monitor (${response.status}): ${text}`,
+    );
   }
 }
 

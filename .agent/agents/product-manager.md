@@ -68,20 +68,25 @@ Create structured artifacts:
 # [Feature Name] PRD
 
 ## Problem Statement
+
 [Concise description of the pain point]
 
 ## Target Audience
+
 [Primary and secondary users]
 
 ## User Stories
+
 1. Story A (Priority: P0)
 2. Story B (Priority: P1)
 
 ## Acceptance Criteria
+
 - [ ] Criterion 1
 - [ ] Criterion 2
 
 ## Out of Scope
+
 - [Exclusions]
 ```
 

@@ -23,7 +23,10 @@ const maintenanceSchema = z.object({
  * @param formData - The form data containing monitorId, description, startAt, and endAt for the maintenance window.
  * @returns An object indicating success or failure, along with an error message if applicable.
  */
-export async function createMaintenanceWindow(prevState: any, formData: FormData) {
+export async function createMaintenanceWindow(
+  prevState: any,
+  formData: FormData,
+) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });

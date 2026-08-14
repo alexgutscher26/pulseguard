@@ -137,7 +137,11 @@ export function Sidebar() {
           {(telemetry?.isAdmin
             ? [
                 ...navigation.slice(0, 7),
-                { name: "Design Partners", href: "/dashboard/design-partners", icon: Award },
+                {
+                  name: "Design Partners",
+                  href: "/dashboard/design-partners",
+                  icon: Award,
+                },
                 ...navigation.slice(7),
               ]
             : navigation
@@ -161,7 +165,9 @@ export function Sidebar() {
                 <Icon
                   className={cn(
                     "size-4 shrink-0 transition-transform duration-200 group-hover:scale-110",
-                    isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground",
+                    isActive
+                      ? "text-primary"
+                      : "text-muted-foreground group-hover:text-foreground",
                   )}
                 />
                 {!isCollapsed && (
@@ -197,13 +203,17 @@ export function Sidebar() {
                       ADMIN
                     </span>
                   )}
-                  <span className={`text-[9px] font-bold px-1.5 py-0.5 border ${tierColorClass}`}>
+                  <span
+                    className={`text-[9px] font-bold px-1.5 py-0.5 border ${tierColorClass}`}
+                  >
                     {displayTier}
                   </span>
                 </div>
               </div>
               <div className="flex items-center justify-between text-[9px]">
-                <span className="text-muted-foreground tracking-wider uppercase">EDGE NODES</span>
+                <span className="text-muted-foreground tracking-wider uppercase">
+                  EDGE NODES
+                </span>
                 <span className="text-foreground font-semibold">
                   {telemetry ? telemetry.edgeNodes : "3 Nodes (2-of-3)"}
                 </span>
@@ -217,14 +227,18 @@ export function Sidebar() {
                 </span>
               </div>
               <div className="flex items-center justify-between text-[9px]">
-                <span className="text-muted-foreground tracking-wider uppercase">REGIONS</span>
+                <span className="text-muted-foreground tracking-wider uppercase">
+                  REGIONS
+                </span>
                 <span className="text-foreground font-semibold">
                   {telemetry ? telemetry.regions : "3 Primary Regions"}
                 </span>
               </div>
               {telemetry && telemetry.maxVpcProbes > 0 && (
                 <div className="flex items-center justify-between text-[9px]">
-                  <span className="text-muted-foreground tracking-wider uppercase">VPC AGENTS</span>
+                  <span className="text-muted-foreground tracking-wider uppercase">
+                    VPC AGENTS
+                  </span>
                   <span className="text-foreground font-semibold">
                     {telemetry.vpcProbeCount} / {telemetry.maxVpcProbes} Active
                   </span>

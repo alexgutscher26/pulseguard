@@ -39,7 +39,15 @@ interface MonitorFormProps {
     id: string;
     name: string;
     url: string;
-    type: "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL" | "DNS" | "HEARTBEAT";
+    type:
+      | "HTTP"
+      | "PING"
+      | "PORT"
+      | "BROWSER"
+      | "SEQUENCE"
+      | "SSL"
+      | "DNS"
+      | "HEARTBEAT";
     interval: number;
     timeout: number;
     checkRegions?: string | null;
@@ -71,8 +79,15 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
     | null;
 
   // Parse initial values
-  let initialType: "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL" | "DNS" | "HEARTBEAT" =
-    monitor?.type || typeParam || "HTTP";
+  let initialType:
+    | "HTTP"
+    | "PING"
+    | "PORT"
+    | "BROWSER"
+    | "SEQUENCE"
+    | "SSL"
+    | "DNS"
+    | "HEARTBEAT" = monitor?.type || typeParam || "HTTP";
   let initialUrl = monitor?.url || "";
   let initialPort = "";
   let initialRegions: string[] = [];
@@ -94,21 +109,34 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
       const [host, port] = trimmed.split(":");
       initialUrl = host;
       initialPort = port;
-    } else if (monitor.type === "HEARTBEAT" && initialUrl.startsWith("heartbeat://")) {
+    } else if (
+      monitor.type === "HEARTBEAT" &&
+      initialUrl.startsWith("heartbeat://")
+    ) {
       initialUrl = "";
     }
   }
 
   const [monitorType, setMonitorType] = useState<
-    "HTTP" | "PING" | "PORT" | "BROWSER" | "SEQUENCE" | "SSL" | "DNS" | "HEARTBEAT"
+    | "HTTP"
+    | "PING"
+    | "PORT"
+    | "BROWSER"
+    | "SEQUENCE"
+    | "SSL"
+    | "DNS"
+    | "HEARTBEAT"
   >(initialType);
-  const [selectedRegions, setSelectedRegions] = useState<string[]>(initialRegions);
+  const [selectedRegions, setSelectedRegions] =
+    useState<string[]>(initialRegions);
   const [threshold, setThreshold] = useState(monitor?.alertThreshold || 1);
   const [runbookUrl, setRunbookUrl] = useState(monitor?.runbookUrl || "");
 
   // HTTP Customization State
   const [method, setMethod] = useState(monitor?.method || "GET");
-  const [headersList, setHeadersList] = useState<{ key: string; value: string }[]>(() => {
+  const [headersList, setHeadersList] = useState<
+    { key: string; value: string }[]
+  >(() => {
     if (monitor?.headers) {
       try {
         const parsed = JSON.parse(monitor.headers);
@@ -152,7 +180,8 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
     if (monitor?.expectation) {
       try {
         const parsed = JSON.parse(monitor.expectation);
-        if (Array.isArray(parsed.json_assertions)) return parsed.json_assertions;
+        if (Array.isArray(parsed.json_assertions))
+          return parsed.json_assertions;
       } catch (e) {
         console.error("Failed to parse json_assertions:", e);
       }
@@ -175,7 +204,9 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
   });
 
   // Browser Steps State
-  const [steps, setSteps] = useState<{ action: string; value: string; selector: string }[]>(() => {
+  const [steps, setSteps] = useState<
+    { action: string; value: string; selector: string }[]
+  >(() => {
     if (monitor?.script) {
       try {
         const parsed = JSON.parse(monitor.script);
@@ -193,9 +224,15 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
     return [{ action: "goto", value: "", selector: "" }];
   });
 
-  const addStep = () => setSteps([...steps, { action: "goto", value: "", selector: "" }]);
-  const removeStep = (index: number) => setSteps(steps.filter((_, i) => i !== index));
-  const updateStep = (index: number, field: "action" | "value" | "selector", val: string) => {
+  const addStep = () =>
+    setSteps([...steps, { action: "goto", value: "", selector: "" }]);
+  const removeStep = (index: number) =>
+    setSteps(steps.filter((_, i) => i !== index));
+  const updateStep = (
+    index: number,
+    field: "action" | "value" | "selector",
+    val: string,
+  ) => {
     const newSteps = [...steps];
     newSteps[index][field] = val;
     setSteps(newSteps);
@@ -284,9 +321,15 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
     setSequenceSteps(next);
   };
 
-  const addHeader = () => setHeadersList([...headersList, { key: "", value: "" }]);
-  const removeHeader = (index: number) => setHeadersList(headersList.filter((_, i) => i !== index));
-  const updateHeader = (index: number, field: "key" | "value", value: string) => {
+  const addHeader = () =>
+    setHeadersList([...headersList, { key: "", value: "" }]);
+  const removeHeader = (index: number) =>
+    setHeadersList(headersList.filter((_, i) => i !== index));
+  const updateHeader = (
+    index: number,
+    field: "key" | "value",
+    value: string,
+  ) => {
     const newList = [...headersList];
     newList[index][field] = value;
     setHeadersList(newList);
@@ -298,7 +341,11 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
 
   useEffect(() => {
     if (state.success) {
-      toast.success(monitor ? "Monitor updated successfully" : "Monitor created successfully");
+      toast.success(
+        monitor
+          ? "Monitor updated successfully"
+          : "Monitor created successfully",
+      );
       router.push("/dashboard/monitors");
       router.refresh();
     } else if (state.error) {
@@ -307,7 +354,10 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
   }, [state, router, monitor]);
 
   const isQuotaExceeded =
-    !monitor && Boolean(usageSummary && usageSummary.monitorsUsed >= usageSummary.monitorsLimit);
+    !monitor &&
+    Boolean(
+      usageSummary && usageSummary.monitorsUsed >= usageSummary.monitorsLimit,
+    );
 
   return (
     <div className="max-w-2xl mx-auto flex flex-col gap-6">
@@ -330,11 +380,14 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
               <Lock className="h-5 w-5" />
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-red-200">Monitor Quota Limit Reached</h4>
+              <h4 className="text-sm font-semibold text-red-200">
+                Monitor Quota Limit Reached
+              </h4>
               <p className="text-xs text-zinc-300 mt-0.5">
-                You have used {usageSummary?.monitorsUsed} of {usageSummary?.monitorsLimit} monitors
-                on your {usageSummary?.plan} plan. Hard limits block creating new monitors until you
-                upgrade.
+                You have used {usageSummary?.monitorsUsed} of{" "}
+                {usageSummary?.monitorsLimit} monitors on your{" "}
+                {usageSummary?.plan} plan. Hard limits block creating new
+                monitors until you upgrade.
               </p>
             </div>
           </div>
@@ -374,7 +427,9 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                   onChange={() => setMonitorType("HTTP")}
                 />
                 <Globe className="size-5" />
-                <span className="text-[11px] font-bold uppercase tracking-wider">HTTP/HTTPS</span>
+                <span className="text-[11px] font-bold uppercase tracking-wider">
+                  HTTP/HTTPS
+                </span>
               </label>
 
               <label
@@ -393,7 +448,9 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                   onChange={() => setMonitorType("PING")}
                 />
                 <Activity className="size-5" />
-                <span className="text-[11px] font-bold uppercase tracking-wider">Ping</span>
+                <span className="text-[11px] font-bold uppercase tracking-wider">
+                  Ping
+                </span>
               </label>
 
               <label
@@ -412,7 +469,9 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                   onChange={() => setMonitorType("PORT")}
                 />
                 <Server className="size-5" />
-                <span className="text-[11px] font-bold uppercase tracking-wider">Port</span>
+                <span className="text-[11px] font-bold uppercase tracking-wider">
+                  Port
+                </span>
               </label>
 
               <label
@@ -431,7 +490,9 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                   onChange={() => setMonitorType("BROWSER")}
                 />
                 <Chrome className="size-5" />
-                <span className="text-[11px] font-bold uppercase tracking-wider">Browser</span>
+                <span className="text-[11px] font-bold uppercase tracking-wider">
+                  Browser
+                </span>
               </label>
 
               <label
@@ -450,7 +511,9 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                   onChange={() => setMonitorType("SEQUENCE")}
                 />
                 <Layers className="size-5" />
-                <span className="text-[11px] font-bold uppercase tracking-wider">Sequence</span>
+                <span className="text-[11px] font-bold uppercase tracking-wider">
+                  Sequence
+                </span>
               </label>
 
               <label
@@ -469,7 +532,9 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                   onChange={() => setMonitorType("SSL")}
                 />
                 <ShieldCheck className="size-5" />
-                <span className="text-[11px] font-bold uppercase tracking-wider">SSL/TLS</span>
+                <span className="text-[11px] font-bold uppercase tracking-wider">
+                  SSL/TLS
+                </span>
               </label>
 
               <label
@@ -488,7 +553,9 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                   onChange={() => setMonitorType("DNS")}
                 />
                 <Server className="size-5" />
-                <span className="text-[11px] font-bold uppercase tracking-wider">DNS</span>
+                <span className="text-[11px] font-bold uppercase tracking-wider">
+                  DNS
+                </span>
               </label>
 
               <label
@@ -507,7 +574,9 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                   onChange={() => setMonitorType("HEARTBEAT")}
                 />
                 <Heart className="size-5" />
-                <span className="text-[11px] font-bold uppercase tracking-wider">Heartbeat</span>
+                <span className="text-[11px] font-bold uppercase tracking-wider">
+                  Heartbeat
+                </span>
               </label>
             </div>
           </div>
@@ -523,7 +592,11 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
               defaultValue={monitor?.name}
               className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-3 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full"
               type="text"
-              placeholder={monitorType === "HTTP" ? "e.g. Production API" : "e.g. Game Server"}
+              placeholder={
+                monitorType === "HTTP"
+                  ? "e.g. Production API"
+                  : "e.g. Game Server"
+              }
             />
           </div>
 
@@ -585,7 +658,11 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
             </div>
           ) : (
             <>
-              <input type="hidden" name="url" value={monitor?.url || "heartbeat://placeholder"} />
+              <input
+                type="hidden"
+                name="url"
+                value={monitor?.url || "heartbeat://placeholder"}
+              />
 
               {monitor ? (
                 <div className="flex flex-col gap-2 rounded-xl border border-primary/20 bg-primary/5 p-5 relative overflow-hidden">
@@ -620,8 +697,8 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                     </button>
                   </div>
                   <p className="text-[10px] text-muted-foreground leading-normal mt-2.5">
-                    💡 Send a GET or POST request to this URL from your script or cron job at least
-                    once every check interval.
+                    💡 Send a GET or POST request to this URL from your script
+                    or cron job at least once every check interval.
                   </p>
                 </div>
               ) : (
@@ -631,12 +708,12 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                     Heartbeat Webhook URL
                   </label>
                   <p className="text-xs text-primary/80 leading-relaxed font-mono">
-                    Your unique heartbeat webhook URL will be generated immediately once you create
-                    this monitor.
+                    Your unique heartbeat webhook URL will be generated
+                    immediately once you create this monitor.
                   </p>
                   <p className="text-[10px] text-muted-foreground leading-normal mt-1.5">
-                    💡 You will be able to view and copy the webhook URL from the monitor dashboard
-                    or settings view.
+                    💡 You will be able to view and copy the webhook URL from
+                    the monitor dashboard or settings view.
                   </p>
                 </div>
               )}
@@ -657,8 +734,20 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                     onChange={(e) => setMethod(e.target.value)}
                     className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-3 pr-10 text-foreground focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full appearance-none cursor-pointer"
                   >
-                    {["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"].map((m) => (
-                      <option key={m} value={m} className="bg-popover text-foreground">
+                    {[
+                      "GET",
+                      "POST",
+                      "PUT",
+                      "PATCH",
+                      "DELETE",
+                      "HEAD",
+                      "OPTIONS",
+                    ].map((m) => (
+                      <option
+                        key={m}
+                        value={m}
+                        className="bg-popover text-foreground"
+                      >
                         {m}
                       </option>
                     ))}
@@ -686,13 +775,17 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                       <input
                         placeholder="Key"
                         value={header.key}
-                        onChange={(e) => updateHeader(index, "key", e.target.value)}
+                        onChange={(e) =>
+                          updateHeader(index, "key", e.target.value)
+                        }
                         className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-2.5 text-foreground focus:outline-none flex-1"
                       />
                       <input
                         placeholder="Value"
                         value={header.value}
-                        onChange={(e) => updateHeader(index, "value", e.target.value)}
+                        onChange={(e) =>
+                          updateHeader(index, "value", e.target.value)
+                        }
                         className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-2.5 text-foreground focus:outline-none flex-1"
                       />
                       {headersList.length > 1 && (
@@ -710,7 +803,9 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                 <input
                   type="hidden"
                   name="headers"
-                  value={JSON.stringify(headersList.filter((h) => h.key || h.value))}
+                  value={JSON.stringify(
+                    headersList.filter((h) => h.key || h.value),
+                  )}
                 />
               </div>
 
@@ -739,7 +834,8 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                     Response Validation (Expectations)
                   </label>
                   <p className="text-[9px] text-muted-foreground font-semibold uppercase mt-0.5 tracking-wider">
-                    Verify response payloads and match custom content expectations
+                    Verify response payloads and match custom content
+                    expectations
                   </p>
                 </div>
 
@@ -782,7 +878,11 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                       onClick={() => {
                         setJsonAssertions([
                           ...jsonAssertions,
-                          { path: "$.status", operator: "==", value: "healthy" },
+                          {
+                            path: "$.status",
+                            operator: "==",
+                            value: "healthy",
+                          },
                         ]);
                       }}
                       className="text-[10px] font-bold text-primary hover:underline uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1"
@@ -837,7 +937,9 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                         <button
                           type="button"
                           onClick={() => {
-                            setJsonAssertions(jsonAssertions.filter((_, i) => i !== index));
+                            setJsonAssertions(
+                              jsonAssertions.filter((_, i) => i !== index),
+                            );
                           }}
                           className="p-2 text-muted-foreground hover:text-red-500 transition-colors cursor-pointer"
                         >
@@ -882,8 +984,8 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                   className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-3 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full"
                 />
                 <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-wider mt-0.5 animate-pulse">
-                  Enter comma-separated IP addresses that this domain is expected to resolve to.
-                  Leave blank to accept any resolution.
+                  Enter comma-separated IP addresses that this domain is
+                  expected to resolve to. Leave blank to accept any resolution.
                 </p>
               </div>
 
@@ -953,14 +1055,20 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                         <div className="relative group/select">
                           <select
                             value={step.action}
-                            onChange={(e) => updateStep(index, "action", e.target.value)}
+                            onChange={(e) =>
+                              updateStep(index, "action", e.target.value)
+                            }
                             className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-2.5 pr-8 text-foreground focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full appearance-none cursor-pointer"
                           >
                             <option value="goto">GOTO (Navigate)</option>
                             <option value="click">CLICK (Selector)</option>
-                            <option value="fill">FILL (Input selector & value)</option>
+                            <option value="fill">
+                              FILL (Input selector & value)
+                            </option>
                             <option value="wait">WAIT (Selector or ms)</option>
-                            <option value="assert_text">ASSERT TEXT (Check text)</option>
+                            <option value="assert_text">
+                              ASSERT TEXT (Check text)
+                            </option>
                           </select>
                           <ChevronDown className="absolute top-3 right-2.5 size-3.5 text-muted-foreground/60 pointer-events-none" />
                         </div>
@@ -976,14 +1084,18 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                             type="text"
                             placeholder="e.g. #login-button or input[name='username']"
                             value={step.selector}
-                            onChange={(e) => updateStep(index, "selector", e.target.value)}
+                            onChange={(e) =>
+                              updateStep(index, "selector", e.target.value)
+                            }
                             className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-2.5 text-foreground focus:outline-none w-full"
                           />
                         </div>
                       )}
 
                       {/* Value field (only if goto, fill, wait ms, or assert_text) */}
-                      {["goto", "fill", "wait", "assert_text"].includes(step.action) && (
+                      {["goto", "fill", "wait", "assert_text"].includes(
+                        step.action,
+                      ) && (
                         <div
                           className={`flex flex-col gap-1.5 ${
                             ["click", "fill", "wait"].includes(step.action)
@@ -1012,7 +1124,9 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                                     : "e.g. text to type"
                             }
                             value={step.value}
-                            onChange={(e) => updateStep(index, "value", e.target.value)}
+                            onChange={(e) =>
+                              updateStep(index, "value", e.target.value)
+                            }
                             className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-2.5 text-foreground focus:outline-none w-full"
                           />
                         </div>
@@ -1022,7 +1136,11 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                 ))}
               </div>
 
-              <input type="hidden" name="script" value={JSON.stringify(steps)} />
+              <input
+                type="hidden"
+                name="script"
+                value={JSON.stringify(steps)}
+              />
             </div>
           )}
 
@@ -1035,8 +1153,8 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                     API Request Chain Steps
                   </label>
                   <p className="text-[9px] text-muted-foreground font-semibold uppercase mt-0.5 tracking-wider">
-                    Configure chained HTTP requests. Values starting with slash / append to the
-                    Target URL.
+                    Configure chained HTTP requests. Values starting with slash
+                    / append to the Target URL.
                   </p>
                 </div>
                 <button
@@ -1063,7 +1181,9 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                         <input
                           type="text"
                           value={step.name}
-                          onChange={(e) => updateSequenceStep(sIdx, { name: e.target.value })}
+                          onChange={(e) =>
+                            updateSequenceStep(sIdx, { name: e.target.value })
+                          }
                           placeholder={`e.g. Login User`}
                           className="bg-transparent border-b border-transparent hover:border-muted-foreground/20 focus:border-primary text-xs font-bold text-foreground focus:outline-none py-0.5 px-1 min-w-[150px]"
                         />
@@ -1106,11 +1226,26 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                         <div className="relative group/select">
                           <select
                             value={step.method}
-                            onChange={(e) => updateSequenceStep(sIdx, { method: e.target.value })}
+                            onChange={(e) =>
+                              updateSequenceStep(sIdx, {
+                                method: e.target.value,
+                              })
+                            }
                             className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-2.5 pr-8 text-foreground focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full appearance-none cursor-pointer"
                           >
-                            {["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"].map((m) => (
-                              <option key={m} value={m} className="bg-popover text-foreground">
+                            {[
+                              "GET",
+                              "POST",
+                              "PUT",
+                              "PATCH",
+                              "DELETE",
+                              "HEAD",
+                            ].map((m) => (
+                              <option
+                                key={m}
+                                value={m}
+                                className="bg-popover text-foreground"
+                              >
                                 {m}
                               </option>
                             ))}
@@ -1128,7 +1263,9 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                           type="text"
                           placeholder="e.g. /api/v1/auth/login or {{custom_url}}"
                           value={step.url}
-                          onChange={(e) => updateSequenceStep(sIdx, { url: e.target.value })}
+                          onChange={(e) =>
+                            updateSequenceStep(sIdx, { url: e.target.value })
+                          }
                           className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-2.5 text-foreground focus:outline-none w-full"
                         />
                       </div>
@@ -1143,7 +1280,10 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                         <button
                           type="button"
                           onClick={() => {
-                            const newHeaders = [...(step.headers || []), { key: "", value: "" }];
+                            const newHeaders = [
+                              ...(step.headers || []),
+                              { key: "", value: "" },
+                            ];
                             updateSequenceStep(sIdx, { headers: newHeaders });
                           }}
                           className="text-[9px] font-bold text-primary hover:underline uppercase tracking-wider transition-all cursor-pointer"
@@ -1160,7 +1300,9 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                               onChange={(e) => {
                                 const newHeaders = [...(step.headers || [])];
                                 newHeaders[hIdx].key = e.target.value;
-                                updateSequenceStep(sIdx, { headers: newHeaders });
+                                updateSequenceStep(sIdx, {
+                                  headers: newHeaders,
+                                });
                               }}
                               className="bg-accent/30 border border-border focus:border-primary/20 text-[11px] font-semibold rounded-lg p-2 text-foreground focus:outline-none flex-1"
                             />
@@ -1170,7 +1312,9 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                               onChange={(e) => {
                                 const newHeaders = [...(step.headers || [])];
                                 newHeaders[hIdx].value = e.target.value;
-                                updateSequenceStep(sIdx, { headers: newHeaders });
+                                updateSequenceStep(sIdx, {
+                                  headers: newHeaders,
+                                });
                               }}
                               className="bg-accent/30 border border-border focus:border-primary/20 text-[11px] font-semibold rounded-lg p-2 text-foreground focus:outline-none flex-1"
                             />
@@ -1180,7 +1324,9 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                                 const newHeaders = (step.headers || []).filter(
                                   (_, idx) => idx !== hIdx,
                                 );
-                                updateSequenceStep(sIdx, { headers: newHeaders });
+                                updateSequenceStep(sIdx, {
+                                  headers: newHeaders,
+                                });
                               }}
                               className="p-1.5 text-muted-foreground hover:text-red-500 transition-colors cursor-pointer"
                             >
@@ -1192,7 +1338,9 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                     </div>
 
                     {/* Step Body */}
-                    {["POST", "PUT", "PATCH", "DELETE"].includes(step.method.toUpperCase()) && (
+                    {["POST", "PUT", "PATCH", "DELETE"].includes(
+                      step.method.toUpperCase(),
+                    ) && (
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">
                           Request Body (JSON / text)
@@ -1200,7 +1348,9 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                         <textarea
                           placeholder='{"username": "admin", "password": "{{admin_password}}"}'
                           value={step.body}
-                          onChange={(e) => updateSequenceStep(sIdx, { body: e.target.value })}
+                          onChange={(e) =>
+                            updateSequenceStep(sIdx, { body: e.target.value })
+                          }
                           className="bg-accent/30 border border-border focus:border-primary/20 text-xs font-semibold rounded-lg p-2.5 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/10 transition-all w-full min-h-[70px] resize-y animate-in fade-in duration-200"
                         />
                       </div>
@@ -1219,7 +1369,9 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                               ...(step.assertions || []),
                               { type: "status_code", path: "", value: "200" },
                             ];
-                            updateSequenceStep(sIdx, { assertions: newAssertions });
+                            updateSequenceStep(sIdx, {
+                              assertions: newAssertions,
+                            });
                           }}
                           className="text-[9px] font-bold text-primary hover:underline uppercase tracking-wider transition-all cursor-pointer"
                         >
@@ -1236,13 +1388,21 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                               <select
                                 value={ast.type}
                                 onChange={(e) => {
-                                  const newAssertions = [...(step.assertions || [])];
-                                  newAssertions[aIdx].type = e.target.value as any;
-                                  updateSequenceStep(sIdx, { assertions: newAssertions });
+                                  const newAssertions = [
+                                    ...(step.assertions || []),
+                                  ];
+                                  newAssertions[aIdx].type = e.target
+                                    .value as any;
+                                  updateSequenceStep(sIdx, {
+                                    assertions: newAssertions,
+                                  });
                                 }}
                                 className="bg-accent/30 border border-border focus:border-primary/20 text-[11px] font-semibold rounded-lg p-2 pr-7 text-foreground focus:outline-none w-full appearance-none cursor-pointer"
                               >
-                                <option value="status_code" className="bg-popover text-foreground">
+                                <option
+                                  value="status_code"
+                                  className="bg-popover text-foreground"
+                                >
                                   Status Code
                                 </option>
                                 <option
@@ -1251,7 +1411,10 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                                 >
                                   Body Contains
                                 </option>
-                                <option value="json_path" className="bg-popover text-foreground">
+                                <option
+                                  value="json_path"
+                                  className="bg-popover text-foreground"
+                                >
                                   JSON Path
                                 </option>
                               </select>
@@ -1264,9 +1427,13 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                                 placeholder="JSON path (e.g. data.id)"
                                 value={ast.path}
                                 onChange={(e) => {
-                                  const newAssertions = [...(step.assertions || [])];
+                                  const newAssertions = [
+                                    ...(step.assertions || []),
+                                  ];
                                   newAssertions[aIdx].path = e.target.value;
-                                  updateSequenceStep(sIdx, { assertions: newAssertions });
+                                  updateSequenceStep(sIdx, {
+                                    assertions: newAssertions,
+                                  });
                                 }}
                                 className="bg-accent/30 border border-border focus:border-primary/20 text-[11px] font-semibold rounded-lg p-2 text-foreground focus:outline-none w-full"
                               />
@@ -1278,9 +1445,13 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                                 placeholder="Expected value (e.g. 200 or true)"
                                 value={ast.value}
                                 onChange={(e) => {
-                                  const newAssertions = [...(step.assertions || [])];
+                                  const newAssertions = [
+                                    ...(step.assertions || []),
+                                  ];
                                   newAssertions[aIdx].value = e.target.value;
-                                  updateSequenceStep(sIdx, { assertions: newAssertions });
+                                  updateSequenceStep(sIdx, {
+                                    assertions: newAssertions,
+                                  });
                                 }}
                                 className="bg-accent/30 border border-border focus:border-primary/20 text-[11px] font-semibold rounded-lg p-2 text-foreground focus:outline-none w-full"
                               />
@@ -1289,10 +1460,12 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                               <button
                                 type="button"
                                 onClick={() => {
-                                  const newAssertions = (step.assertions || []).filter(
-                                    (_, idx) => idx !== aIdx,
-                                  );
-                                  updateSequenceStep(sIdx, { assertions: newAssertions });
+                                  const newAssertions = (
+                                    step.assertions || []
+                                  ).filter((_, idx) => idx !== aIdx);
+                                  updateSequenceStep(sIdx, {
+                                    assertions: newAssertions,
+                                  });
                                 }}
                                 className="p-1 text-muted-foreground hover:text-red-500 transition-colors cursor-pointer"
                               >
@@ -1317,7 +1490,9 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                               ...(step.extractions || []),
                               { name: "", source: "body", path: "" },
                             ];
-                            updateSequenceStep(sIdx, { extractions: newExtractions });
+                            updateSequenceStep(sIdx, {
+                              extractions: newExtractions,
+                            });
                           }}
                           className="text-[9px] font-bold text-primary hover:underline uppercase tracking-wider transition-all cursor-pointer"
                         >
@@ -1335,9 +1510,13 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                                 placeholder="Var Name"
                                 value={ext.name}
                                 onChange={(e) => {
-                                  const newExtractions = [...(step.extractions || [])];
+                                  const newExtractions = [
+                                    ...(step.extractions || []),
+                                  ];
                                   newExtractions[eIdx].name = e.target.value;
-                                  updateSequenceStep(sIdx, { extractions: newExtractions });
+                                  updateSequenceStep(sIdx, {
+                                    extractions: newExtractions,
+                                  });
                                 }}
                                 className="bg-accent/30 border border-border focus:border-primary/20 text-[11px] font-semibold rounded-lg p-2 text-foreground focus:outline-none w-full"
                               />
@@ -1346,16 +1525,27 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                               <select
                                 value={ext.source}
                                 onChange={(e) => {
-                                  const newExtractions = [...(step.extractions || [])];
-                                  newExtractions[eIdx].source = e.target.value as any;
-                                  updateSequenceStep(sIdx, { extractions: newExtractions });
+                                  const newExtractions = [
+                                    ...(step.extractions || []),
+                                  ];
+                                  newExtractions[eIdx].source = e.target
+                                    .value as any;
+                                  updateSequenceStep(sIdx, {
+                                    extractions: newExtractions,
+                                  });
                                 }}
                                 className="bg-accent/30 border border-border focus:border-primary/20 text-[11px] font-semibold rounded-lg p-2 pr-7 text-foreground focus:outline-none w-full appearance-none cursor-pointer"
                               >
-                                <option value="body" className="bg-popover text-foreground">
+                                <option
+                                  value="body"
+                                  className="bg-popover text-foreground"
+                                >
                                   JSON Body
                                 </option>
-                                <option value="header" className="bg-popover text-foreground">
+                                <option
+                                  value="header"
+                                  className="bg-popover text-foreground"
+                                >
                                   Header
                                 </option>
                               </select>
@@ -1370,9 +1560,13 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                                 }
                                 value={ext.path}
                                 onChange={(e) => {
-                                  const newExtractions = [...(step.extractions || [])];
+                                  const newExtractions = [
+                                    ...(step.extractions || []),
+                                  ];
                                   newExtractions[eIdx].path = e.target.value;
-                                  updateSequenceStep(sIdx, { extractions: newExtractions });
+                                  updateSequenceStep(sIdx, {
+                                    extractions: newExtractions,
+                                  });
                                 }}
                                 className="bg-accent/30 border border-border focus:border-primary/20 text-[11px] font-semibold rounded-lg p-2 text-foreground focus:outline-none w-full"
                               />
@@ -1381,10 +1575,12 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                               <button
                                 type="button"
                                 onClick={() => {
-                                  const newExtractions = (step.extractions || []).filter(
-                                    (_, idx) => idx !== eIdx,
-                                  );
-                                  updateSequenceStep(sIdx, { extractions: newExtractions });
+                                  const newExtractions = (
+                                    step.extractions || []
+                                  ).filter((_, idx) => idx !== eIdx);
+                                  updateSequenceStep(sIdx, {
+                                    extractions: newExtractions,
+                                  });
                                 }}
                                 className="p-1 text-muted-foreground hover:text-red-500 transition-colors cursor-pointer"
                               >
@@ -1399,14 +1595,21 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                 ))}
               </div>
 
-              <input type="hidden" name="script" value={JSON.stringify(sequenceSteps)} />
+              <input
+                type="hidden"
+                name="script"
+                value={JSON.stringify(sequenceSteps)}
+              />
             </div>
           )}
 
           {/* Region Selector */}
           {monitorType !== "HEARTBEAT" ? (
             <>
-              <RegionSelector selectedRegions={selectedRegions} onChange={setSelectedRegions} />
+              <RegionSelector
+                selectedRegions={selectedRegions}
+                onChange={setSelectedRegions}
+              />
 
               {/* Alert Threshold */}
               {selectedRegions.length > 0 && (
@@ -1421,13 +1624,17 @@ export function MonitorForm({ monitor, usageSummary }: MonitorFormProps) {
                       min="1"
                       max={selectedRegions.length}
                       value={threshold}
-                      onChange={(e) => setThreshold(parseInt(e.target.value) || 1)}
+                      onChange={(e) =>
+                        setThreshold(parseInt(e.target.value) || 1)
+                      }
                       className="bg-card border border-border focus:border-primary/20 text-xs font-bold rounded-lg p-2 w-20 text-center text-foreground focus:outline-none"
                     />
                     <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider leading-relaxed">
                       Only alert when at least{" "}
-                      <span className="text-foreground font-extrabold">{threshold}</span> regions
-                      are down
+                      <span className="text-foreground font-extrabold">
+                        {threshold}
+                      </span>{" "}
+                      regions are down
                     </p>
                   </div>
                 </div>

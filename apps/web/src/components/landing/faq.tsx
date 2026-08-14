@@ -5,11 +5,11 @@ export default function FAQ() {
   const faqs = [
     {
       q: "How fast are the checks performed, and are there interval limits per tier?",
-      a: `Verification checks execute natively at the edge. The check frequency depends on your subscription tier: the Initiate (Free) tier supports intervals down to 60 seconds, the Netrunner plan supports down to 30 seconds, and the Construct (Enterprise) plan supports high-frequency telemetry checks down to 10 seconds. Checks are distributed across our ${AVAILABLE_REGIONS.length}+ concurrent global edge regions using sandboxed headless agents.`,
+      a: `Verification checks execute natively at the edge. The check frequency depends on your subscription tier: the Initiate (Free) tier supports 60-second check intervals across all 50 monitors, the Netrunner plan supports down to 30 seconds, and the Construct (Enterprise) plan supports high-frequency telemetry checks down to 10 seconds. Checks run concurrently across all ${AVAILABLE_REGIONS.length} sovereign global edge regions.`,
     },
     {
       q: "What is multi-region consensus verification, and how does it prevent false alerts?",
-      a: "Outages on the Internet are often localized due to routing anomalies or regional network drops. When a PulseGuard edge probe detects that your monitor is DOWN, it does not immediately trigger an alert. Instead, it queries other global zones to establish a 2/3 consensus. If multiple nodes confirm the target is unreachable, it escalates to an incident. This voting system completely eliminates false positives caused by regional CDN drops or localized route flapping.",
+      a: "Outages on the Internet are often localized due to routing anomalies or regional network drops. When a PulseGuard edge probe detects that your monitor is DOWN, it triggers an immediate local re-check and queries our other sovereign regions. PulseGuard requires 4 of 7 global regions to independently confirm the failure before opening an incident. This voting system isolates regional route flaps from true global outages.",
     },
     {
       q: "How do private probes monitor internal infrastructure behind firewalls?",
@@ -21,7 +21,7 @@ export default function FAQ() {
     },
     {
       q: "What are the exact capabilities and limits of the Initiate (Free) plan?",
-      a: `The Initiate plan is designed for side projects, indie developers, and commercial applications. Free plan includes commercial use with 50 active monitors (3-minute checks, 1-minute for up to 10 monitors), 3 primary edge regions with 2-of-3 quorum consensus, 1 public status page, and ad-hoc global diagnostics from 100+ countries. It requires no credit card and supports HTTP, SSL/TLS, DNS, and Heartbeat checks with 3 days of log retention.`,
+      a: `The Initiate plan is designed for side projects, indie developers, and commercial applications. Free plan includes commercial use permitted in writing with 50 active monitors, 60-second check intervals, 7-region verification with 4-of-7 quorum consensus, 1 public status page, and transparent probe telemetry. It requires no credit card and supports HTTP, SSL/TLS, DNS, and Heartbeat checks with 3 days of log retention.`,
     },
     {
       q: "Can I monitor protocols other than standard web pages?",
@@ -73,17 +73,22 @@ export default function FAQ() {
             Frequently asked questions
           </h2>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-md">
-            Find immediate answers regarding PulseGuard's global network, subscription models, and
-            telemetry configurations.
+            Find immediate answers regarding PulseGuard's global network,
+            subscription models, and telemetry configurations.
           </p>
         </div>
 
         {/* Minimalist Separator Layout */}
         <div className="divide-y divide-border border-t border-b border-border">
           {faqs.map((item, i) => (
-            <details key={i} className="group overflow-hidden transition-all duration-300">
+            <details
+              key={i}
+              className="group overflow-hidden transition-all duration-300"
+            >
               <summary className="flex items-center justify-between py-5 cursor-pointer font-semibold text-foreground hover:text-primary transition-colors list-none outline-none focus-visible:ring-1 focus-visible:ring-primary/50 [&::-webkit-details-marker]:hidden">
-                <span className="text-sm sm:text-base tracking-tight">{item.q}</span>
+                <span className="text-sm sm:text-base tracking-tight">
+                  {item.q}
+                </span>
                 <ChevronDown className="size-4 text-muted-foreground/60 group-open:rotate-180 group-open:text-primary transition-all duration-300 shrink-0 ml-4" />
               </summary>
               <div className="pb-5 text-muted-foreground text-xs leading-relaxed transition-all duration-300">

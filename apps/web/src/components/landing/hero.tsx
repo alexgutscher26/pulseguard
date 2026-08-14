@@ -1,7 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Activity, ShieldCheck, Zap, Server, RefreshCw } from "lucide-react";
+import {
+  ArrowRight,
+  Activity,
+  ShieldCheck,
+  Zap,
+  Server,
+  RefreshCw,
+} from "lucide-react";
 import { AVAILABLE_REGIONS } from "@pulseguard/shared";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
@@ -9,10 +16,17 @@ import { motion } from "framer-motion";
 export default function Hero() {
   const [inputUrl, setInputUrl] = useState("");
   const [displayUrl, setDisplayUrl] = useState("api.your-app.com/health");
-  const [latencies, setLatencies] = useState({ us: 18, eu: 42, ap: 88, sa: 110 });
+  const [latencies, setLatencies] = useState({
+    wnam: 18,
+    enam: 24,
+    weur: 42,
+    apac: 88,
+  });
   const [isScanning, setIsScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState(100);
-  const [activeNodes, setActiveNodes] = useState<number[]>(Array.from({ length: 30 }, (_, i) => i));
+  const [activeNodes, setActiveNodes] = useState<number[]>(
+    Array.from({ length: 30 }, (_, i) => i),
+  );
 
   // Simulate continuous background telemetry fluctuations
   useEffect(() => {
@@ -20,10 +34,10 @@ export default function Hero() {
 
     const interval = setInterval(() => {
       setLatencies({
-        us: Math.floor(Math.random() * 10) + 14,
-        eu: Math.floor(Math.random() * 15) + 38,
-        ap: Math.floor(Math.random() * 18) + 82,
-        sa: Math.floor(Math.random() * 22) + 105,
+        wnam: Math.floor(Math.random() * 8) + 14,
+        enam: Math.floor(Math.random() * 10) + 20,
+        weur: Math.floor(Math.random() * 15) + 38,
+        apac: Math.floor(Math.random() * 18) + 82,
       });
     }, 3500);
 
@@ -63,10 +77,10 @@ export default function Hero() {
       }, 25);
 
       setLatencies({
-        us: Math.floor(Math.random() * 8) + 12,
-        eu: Math.floor(Math.random() * 12) + 34,
-        ap: Math.floor(Math.random() * 15) + 76,
-        sa: Math.floor(Math.random() * 18) + 98,
+        wnam: Math.floor(Math.random() * 6) + 12,
+        enam: Math.floor(Math.random() * 8) + 18,
+        weur: Math.floor(Math.random() * 12) + 34,
+        apac: Math.floor(Math.random() * 15) + 76,
       });
       setIsScanning(false);
     }, 1800);
@@ -78,32 +92,33 @@ export default function Hero() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-b from-primary/10 via-primary/5 to-transparent rounded-full blur-[100px] pointer-events-none" />
 
       <div className="max-w-5xl mx-auto px-6 md:px-12 relative z-20 w-full text-center flex flex-col items-center">
-        {/* Animated Pill Badge */}
-        <div className="animate-[heroBadge_0.5s_ease-out] inline-flex items-center gap-2 mb-8 text-[11px] font-bold tracking-wider text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-400/10 border border-emerald-500/20 dark:border-emerald-400/20 px-3.5 py-1.5 rounded-full uppercase shadow-[0_0_12px_rgba(16,185,129,0.05)] dark:shadow-[0_0_12px_rgba(52,211,153,0.15)]">
+        {/* Badge */}
+        <div className="animate-[heroBadge_0.5s_ease-out] inline-flex items-center gap-2 mb-8 text-[11px] font-bold tracking-wider text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-400/10 border border-emerald-500/20 dark:border-emerald-400/20 px-3.5 py-1.5 rounded-full uppercase shadow-[0_0_12px_rgba(16,185,129,0.05)] dark:shadow-[0_0_12px_rgba(52,211,153,0.15)] font-mono">
           <span className="relative flex size-1.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
             <span className="relative inline-flex rounded-full size-1.5 bg-emerald-500 dark:bg-emerald-400" />
           </span>
-          <span>Mesh network monitoring deployed • 1-Min Checks</span>
+          <span>Free for commercial use · No credit card</span>
         </div>
 
-        {/* Header */}
+        {/* H1 */}
         <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-[1.05] mb-8 text-balance text-foreground max-w-4xl">
-          Critical Uptime. <br className="hidden sm:inline" />
-          <span className="text-muted-foreground">Zero False Positives.</span>
+          Four regions have to agree <br className="hidden sm:inline" />
+          <span className="text-muted-foreground">before we wake you.</span>
         </h1>
 
-        {/* Subheading */}
-        <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mb-10 text-balance font-sans">
-          PulseGuard monitors your API across {AVAILABLE_REGIONS.length} global edge regions with
-          4-of-7 quorum consensus — eliminating false positives and alerting your team the moment
-          real outages strike.
+        {/* Subhead */}
+        <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mb-8 text-balance font-sans">
+          PulseGuard checks your endpoints every 60 seconds from seven global
+          regions. One region seeing a failure is a network blip, and we ignore
+          it. When four regions independently agree, you get paged. Every alert
+          you receive has already been confirmed four times over.
         </p>
 
         {/* Probe Input Form */}
         <form
           onSubmit={handleScan}
-          className="relative w-full max-w-xl mb-14 bg-background/50 border border-border p-1.5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)] rounded-xl flex items-center transition-all duration-300 hover:border-primary/30 focus-within:border-primary/40"
+          className="relative w-full max-w-xl mb-8 bg-background/50 border border-border p-1.5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)] rounded-xl flex items-center transition-all duration-300 hover:border-primary/30 focus-within:border-primary/40"
         >
           <input
             type="text"
@@ -117,7 +132,7 @@ export default function Hero() {
           <button
             type="submit"
             disabled={isScanning || !inputUrl}
-            className="bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-semibold px-4.5 py-2.5 rounded-lg transition-colors flex items-center gap-1.5 shrink-0 disabled:opacity-40 font-mono uppercase tracking-wider"
+            className="bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-semibold px-4.5 py-2.5 rounded-lg transition-colors flex items-center gap-1.5 shrink-0 disabled:opacity-40 font-mono uppercase tracking-wider cursor-pointer"
           >
             {isScanning ? (
               <>
@@ -134,19 +149,35 @@ export default function Hero() {
         </form>
 
         {/* CTAs */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-16">
+        <div className="flex flex-col sm:flex-row gap-4 mb-10">
           <Link
             href="/signup"
             className="flex items-center justify-center h-11 px-6 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold rounded-lg transition-colors font-mono uppercase tracking-wider"
           >
-            Start Free Trial <ArrowRight className="ml-1.5 size-3.5" />
+            Start free — 50 monitors &rarr;
           </Link>
           <Link
-            href="#features"
+            href="#how-it-works"
             className="flex items-center justify-center h-11 px-6 bg-transparent border border-border text-foreground hover:bg-accent text-xs font-semibold rounded-lg transition-colors font-mono uppercase tracking-wider"
           >
-            Explore Features
+            See how verification works
           </Link>
+        </div>
+
+        {/* Trust Row */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl mb-16 text-xs font-mono text-muted-foreground/90 border-y border-border/60 py-4 bg-muted/20 rounded-xl px-4">
+          <div className="flex items-center justify-center gap-2">
+            <span className="text-emerald-500 font-bold">✓</span> 60-second
+            checks on the free tier
+          </div>
+          <div className="flex items-center justify-center gap-2">
+            <span className="text-emerald-500 font-bold">✓</span> 7-region
+            verification, included free
+          </div>
+          <div className="flex items-center justify-center gap-2">
+            <span className="text-emerald-500 font-bold">✓</span> Commercial use
+            permitted, in writing
+          </div>
         </div>
 
         {/* Interactive Animated Dashboard Visualization */}
@@ -168,11 +199,11 @@ export default function Hero() {
             </div>
             <div className="text-[10px] font-bold text-muted-foreground tracking-widest font-mono uppercase flex items-center gap-1.5">
               <Server className="size-3 text-emerald-400" />
-              PULSEGUARD_EDGE_NODE_TELEMETRY
+              PULSEGUARD_7_REGION_CONSENSUS_TELEMETRY
             </div>
             <div className="flex items-center gap-2 text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
               <span className="size-1.5 rounded-full bg-emerald-400 animate-ping" />
-              200 OK (100% SLA)
+              200 OK (4/7 Quorum Active)
             </div>
           </div>
 
@@ -197,7 +228,7 @@ export default function Hero() {
                 </div>
               </div>
 
-              {/* Animated Latency Wave Chart (Borderless & Transparent Background) */}
+              {/* Animated Latency Wave Chart */}
               <div className="relative h-20 w-full overflow-hidden flex items-end">
                 <svg
                   className="w-full h-full overflow-visible"
@@ -205,9 +236,19 @@ export default function Hero() {
                   preserveAspectRatio="none"
                 >
                   <defs>
-                    <linearGradient id="waveGradient" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient
+                      id="waveGradient"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
                       <stop offset="0%" stopColor="#10b981" stopOpacity="0.4" />
-                      <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
+                      <stop
+                        offset="100%"
+                        stopColor="#10b981"
+                        stopOpacity="0.0"
+                      />
                     </linearGradient>
                   </defs>
                   <path
@@ -221,11 +262,15 @@ export default function Hero() {
                     strokeWidth="2"
                     initial={{ pathLength: 0 }}
                     animate={{ pathLength: 1 }}
-                    transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      repeatType: "reverse",
+                    }}
                   />
                 </svg>
                 <div className="absolute top-2 right-2 text-[9px] font-mono text-emerald-400 bg-emerald-950/80 border border-emerald-500/30 px-1.5 py-0.5 rounded">
-                  Avg: {latencies.us}ms
+                  Avg: {latencies.wnam}ms
                 </div>
               </div>
 
@@ -233,7 +278,9 @@ export default function Hero() {
               <div>
                 <div className="flex justify-between items-center text-[10px] text-muted-foreground font-mono font-bold mb-2">
                   <span>30-DAY OPERATIONAL MATRIX</span>
-                  <span className="text-emerald-400 font-bold">100.0% UPTIME</span>
+                  <span className="text-emerald-400 font-bold">
+                    100.0% UPTIME
+                  </span>
                 </div>
                 <div className="flex items-center gap-1">
                   {Array.from({ length: 30 }).map((_, idx) => (
@@ -257,51 +304,61 @@ export default function Hero() {
             <div className="md:col-span-5 border-t md:border-t-0 md:border-l border-border/80 pt-6 md:pt-0 md:pl-6 flex flex-col justify-between font-mono">
               <div>
                 <div className="flex items-center justify-between text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-3">
-                  <span>Global Edge Probes</span>
+                  <span>Sovereign Edge Probes</span>
                   <Zap className="size-3.5 text-amber-400" />
                 </div>
 
-                <div className="flex flex-col gap-3">
-                  {/* Region 1: US East */}
+                <div className="flex flex-col gap-2.5">
+                  {/* Region 1: US West */}
                   <div className="flex items-center justify-between p-2 rounded bg-zinc-950/40 border border-zinc-800/80">
                     <div className="flex items-center gap-2 text-xs">
                       <span className="size-2 bg-emerald-400 rounded-full animate-pulse" />
                       <span className="text-zinc-300 font-sans text-[11px]">
-                        US-East (Virginia)
+                        wnam (San Jose)
                       </span>
                     </div>
-                    <span className="text-xs font-bold text-emerald-400">{latencies.us}ms</span>
+                    <span className="text-xs font-bold text-emerald-400">
+                      {latencies.wnam}ms
+                    </span>
                   </div>
 
-                  {/* Region 2: EU Central */}
+                  {/* Region 2: US East */}
                   <div className="flex items-center justify-between p-2 rounded bg-zinc-950/40 border border-zinc-800/80">
                     <div className="flex items-center gap-2 text-xs">
                       <span className="size-2 bg-emerald-400 rounded-full animate-pulse" />
                       <span className="text-zinc-300 font-sans text-[11px]">
-                        EU-Central (Frankfurt)
+                        enam (Ashburn)
                       </span>
                     </div>
-                    <span className="text-xs font-bold text-emerald-400">{latencies.eu}ms</span>
+                    <span className="text-xs font-bold text-emerald-400">
+                      {latencies.enam}ms
+                    </span>
                   </div>
 
-                  {/* Region 3: Asia Pacific */}
-                  <div className="flex items-center justify-between p-2 rounded bg-zinc-950/40 border border-zinc-800/80">
-                    <div className="flex items-center gap-2 text-xs">
-                      <span className="size-2 bg-emerald-400 rounded-full animate-pulse" />
-                      <span className="text-zinc-300 font-sans text-[11px]">AP-North (Tokyo)</span>
-                    </div>
-                    <span className="text-xs font-bold text-emerald-400">{latencies.ap}ms</span>
-                  </div>
-
-                  {/* Region 4: South America */}
+                  {/* Region 3: Western Europe */}
                   <div className="flex items-center justify-between p-2 rounded bg-zinc-950/40 border border-zinc-800/80">
                     <div className="flex items-center gap-2 text-xs">
                       <span className="size-2 bg-emerald-400 rounded-full animate-pulse" />
                       <span className="text-zinc-300 font-sans text-[11px]">
-                        SA-East (São Paulo)
+                        weur (London)
                       </span>
                     </div>
-                    <span className="text-xs font-bold text-emerald-400">{latencies.sa}ms</span>
+                    <span className="text-xs font-bold text-emerald-400">
+                      {latencies.weur}ms
+                    </span>
+                  </div>
+
+                  {/* Region 4: Asia Pacific */}
+                  <div className="flex items-center justify-between p-2 rounded bg-zinc-950/40 border border-zinc-800/80">
+                    <div className="flex items-center gap-2 text-xs">
+                      <span className="size-2 bg-emerald-400 rounded-full animate-pulse" />
+                      <span className="text-zinc-300 font-sans text-[11px]">
+                        apac-ne (Tokyo)
+                      </span>
+                    </div>
+                    <span className="text-xs font-bold text-emerald-400">
+                      {latencies.apac}ms
+                    </span>
                   </div>
                 </div>
               </div>
@@ -309,9 +366,11 @@ export default function Hero() {
               <div className="mt-4 pt-3 border-t border-zinc-900 flex items-center justify-between text-[10px] text-zinc-500">
                 <span className="flex items-center gap-1">
                   <ShieldCheck className="size-3 text-emerald-400" />
-                  Cloudflare Edge Workers
+                  Cloudflare Edge DOs
                 </span>
-                <span className="text-emerald-400/80">Continuous Validation</span>
+                <span className="text-emerald-400/80 font-mono">
+                  4-of-7 Quorum
+                </span>
               </div>
             </div>
           </div>

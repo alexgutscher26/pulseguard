@@ -1,9 +1,16 @@
 import { getPrisma } from "@pulseguard/db";
-import type { ExecutionContext, MessageBatch, ScheduledEvent } from "@cloudflare/workers-types";
+import type {
+  ExecutionContext,
+  MessageBatch,
+  ScheduledEvent,
+} from "@cloudflare/workers-types";
 export { LatencyAggregator } from "./durable-objects/latency-aggregator";
 export { MonitorChannel } from "./durable-objects/monitor-channel";
 export { RegionalProbe } from "./durable-objects/regional-probe";
-import { CLOUDFLARE_PROBE_REGIONS, type DOLocationHint } from "@pulseguard/shared";
+import {
+  CLOUDFLARE_PROBE_REGIONS,
+  type DOLocationHint,
+} from "@pulseguard/shared";
 import type { Env } from "./env";
 export type { Env };
 import { handleFetch } from "./routes";
@@ -17,7 +24,9 @@ export default {
       return await handleFetch(request, env, ctx, url);
     } catch (globalErr: any) {
       console.error(`[GLOBAL WORKER ERROR]`, globalErr);
-      return new Response(`Global Worker Error: ${globalErr.message}`, { status: 500 });
+      return new Response(`Global Worker Error: ${globalErr.message}`, {
+        status: 500,
+      });
     }
   },
 
@@ -48,7 +57,8 @@ export default {
         (async () => {
           try {
             const scanPrisma = getPrisma(env.DATABASE_URL);
-            const { runAnomalyScan } = await import("./services/anomaly-scanner");
+            const { runAnomalyScan } =
+              await import("./services/anomaly-scanner");
             await runAnomalyScan(scanPrisma);
             const { resetPrisma } = await import("@pulseguard/db");
             await resetPrisma(env.DATABASE_URL);
@@ -98,7 +108,9 @@ export default {
         (async () => {
           for (const reg of CLOUDFLARE_PROBE_REGIONS) {
             try {
-              const probeId = env.REGIONAL_PROBE.idFromName(`probe-${reg.code}`);
+              const probeId = env.REGIONAL_PROBE.idFromName(
+                `probe-${reg.code}`,
+              );
               const probe = env.REGIONAL_PROBE.get(probeId, {
                 locationHint: reg.code as any,
               });
@@ -199,7 +211,9 @@ export default {
 
         if (monitors.length === 0) break;
 
-        console.log(`[Cron Chunk ${chunkIdx + 1}] Processing ${monitors.length} monitors...`);
+        console.log(
+          `[Cron Chunk ${chunkIdx + 1}] Processing ${monitors.length} monitors...`,
+        );
         const { remaining } = await processBatch(monitors, prisma, env, ctx);
         totalProcessedCount += monitors.length - remaining.length;
 
@@ -222,14 +236,18 @@ export default {
         if (targetIds.length < CHUNK_SIZE) break;
       }
 
-      console.log(`Cron execution completed. Total monitors checked: ${totalProcessedCount}.`);
+      console.log(
+        `Cron execution completed. Total monitors checked: ${totalProcessedCount}.`,
+      );
     } catch (error) {
       console.error("Error in scheduled handler:", error);
     } finally {
       try {
         const { resetPrisma } = await import("@pulseguard/db");
         await resetPrisma(env.DATABASE_URL);
-        console.log("[Sync] Cleaned up database connection pool after cron execution.");
+        console.log(
+          "[Sync] Cleaned up database connection pool after cron execution.",
+        );
       } catch (err) {
         console.error("Failed to reset Prisma pool in finally:", err);
       }
@@ -243,19 +261,27 @@ export default {
     if (env.CHAOS_ENGINEERING === "true") {
       // 1. Simulate batch/isolate level crash (10% chance)
       if (Math.random() < 0.1) {
-        console.warn("[Chaos Mode] Simulating fatal worker instance crash / V8 isolate eviction!");
-        throw new Error("IsolateEvictionError: Cloudflare Worker instance killed by Chaos Engine");
+        console.warn(
+          "[Chaos Mode] Simulating fatal worker instance crash / V8 isolate eviction!",
+        );
+        throw new Error(
+          "IsolateEvictionError: Cloudflare Worker instance killed by Chaos Engine",
+        );
       }
 
       // 2. Simulate message level failure (10% chance per message)
       const failedMessageIds = new Set<string>();
       for (const msg of batch.messages) {
-        const msgId = msg.id || (msg.body && msg.body.id) || `mock_${Math.random()}`;
+        const msgId =
+          msg.id || (msg.body && msg.body.id) || `mock_${Math.random()}`;
         // Systematic failure for 1 in 15 messages (e.g. msg_event_0, 15, 30...) to force DLQ escalation
         const shouldSystematicFail =
-          msgId.startsWith("msg_event_") && parseInt(msgId.replace("msg_event_", "")) % 15 === 0;
+          msgId.startsWith("msg_event_") &&
+          parseInt(msgId.replace("msg_event_", "")) % 15 === 0;
         if (Math.random() < 0.1 || shouldSystematicFail) {
-          console.warn(`[Chaos Mode] Simulating message processing failure for message: ${msgId}`);
+          console.warn(
+            `[Chaos Mode] Simulating message processing failure for message: ${msgId}`,
+          );
           msg.retry();
           failedMessageIds.add(msgId);
         }
@@ -265,7 +291,9 @@ export default {
         // Construct a filtered batch inheriting prototype methods from original batch
         activeBatch = Object.create(batch);
         (
-          activeBatch as { -readonly [K in keyof MessageBatch<any>]: MessageBatch<any>[K] }
+          activeBatch as {
+            -readonly [K in keyof MessageBatch<any>]: MessageBatch<any>[K];
+          }
         ).messages = batch.messages.filter((msg) => {
           const msgId = msg.id || (msg.body && msg.body.id);
           return !failedMessageIds.has(msgId);
@@ -280,7 +308,8 @@ export default {
 
     // Dispatch based on queue name
     if (activeBatch.queue === "notifications") {
-      const { default: notificationHandler } = await import("./notification-handler");
+      const { default: notificationHandler } =
+        await import("./notification-handler");
       await notificationHandler.queue(activeBatch, env, ctx);
       return;
     }

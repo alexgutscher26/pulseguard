@@ -33,12 +33,15 @@ async function runWithBoundedConcurrency<T, R>(
   const results: R[] = [];
   let currentIndex = 0;
 
-  const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
-    while (currentIndex < items.length) {
-      const index = currentIndex++;
-      results[index] = await fn(items[index]!);
-    }
-  });
+  const workers = Array.from(
+    { length: Math.min(limit, items.length) },
+    async () => {
+      while (currentIndex < items.length) {
+        const index = currentIndex++;
+        results[index] = await fn(items[index]!);
+      }
+    },
+  );
 
   await Promise.all(workers);
   return results;
@@ -159,12 +162,14 @@ export class RegionalProbe extends DurableObject {
         }
 
         const hasBody =
-          ["POST", "PUT", "PATCH"].includes(monitor.method || "GET") && Boolean(monitor.body);
+          ["POST", "PUT", "PATCH"].includes(monitor.method || "GET") &&
+          Boolean(monitor.body);
 
         const res = await fetch(monitor.url, {
           method: monitor.method || "GET",
           headers: {
-            "User-Agent": "PulseGuard-Synthetic-Monitor/2.0 (+https://pulseguard.io/bot)",
+            "User-Agent":
+              "PulseGuard-Synthetic-Monitor/2.0 (+https://pulseguard.io/bot)",
             Accept: "*/*",
             ...userHeaders,
           },
@@ -179,14 +184,19 @@ export class RegionalProbe extends DurableObject {
         const latency = Math.round(performance.now() - reqStart);
         const code = res.status;
         // Treat 2xx, 3xx as UP. 429 and 403 are server responses (endpoint is up/alive)
-        const isUp = res.ok || (code >= 300 && code < 400) || code === 429 || code === 403;
+        const isUp =
+          res.ok || (code >= 300 && code < 400) || code === 429 || code === 403;
 
         return {
           status: isUp ? "UP" : "DOWN",
           statusCode: code,
           latency,
           errorReason: isUp ? undefined : `HTTP ${code}`,
-          errorClass: isUp ? undefined : code >= 500 ? "SERVER_ERROR" : "CLIENT_ERROR",
+          errorClass: isUp
+            ? undefined
+            : code >= 500
+              ? "SERVER_ERROR"
+              : "CLIENT_ERROR",
         };
       } catch (err: any) {
         const latency = Math.round(performance.now() - reqStart);
@@ -260,7 +270,8 @@ export class RegionalProbe extends DurableObject {
 
     // DEFENSIVE RESCHEDULING: Schedule next alarm BEFORE executing batch
     // This prevents orphan probes if an uncaught exception occurs mid-execution.
-    const nextAlarmTime = Date.now() + (state.alarmIntervalMs || DEFAULT_ALARM_INTERVAL_MS);
+    const nextAlarmTime =
+      Date.now() + (state.alarmIntervalMs || DEFAULT_ALARM_INTERVAL_MS);
     await this.ctx.storage.setAlarm(nextAlarmTime);
 
     try {
@@ -297,7 +308,8 @@ export class RegionalProbe extends DurableObject {
           const results = await this.executeBatch(monitors);
 
           // Submit results to central Quorum Engine
-          const { processProbeResultsBatch } = await import("../services/quorum-engine");
+          const { processProbeResultsBatch } =
+            await import("../services/quorum-engine");
           await processProbeResultsBatch(prisma, env, results);
         }
       }
@@ -307,7 +319,10 @@ export class RegionalProbe extends DurableObject {
       state.consecutiveFailures = 0;
       await this.ctx.storage.put("probe_state", state);
     } catch (err) {
-      console.error(`[RegionalProbe:${state.region}] Alarm execution error:`, err);
+      console.error(
+        `[RegionalProbe:${state.region}] Alarm execution error:`,
+        err,
+      );
       state.consecutiveFailures = (state.consecutiveFailures || 0) + 1;
       if (state.consecutiveFailures >= 3 && state.healthState !== "FLAPPING") {
         state.healthState = "DEGRADED";
@@ -398,7 +413,9 @@ export class RegionalProbe extends DurableObject {
       const twoHoursAgo = now - 2 * 60 * 60 * 1000;
 
       // Filter old transitions
-      state.stateTransitions = state.stateTransitions.filter((t) => t > twoHoursAgo);
+      state.stateTransitions = state.stateTransitions.filter(
+        (t) => t > twoHoursAgo,
+      );
 
       // Flapping exclusion: 3+ transitions in 2 hours = FLAPPING
       if (state.stateTransitions.length >= 3) {
@@ -408,9 +425,12 @@ export class RegionalProbe extends DurableObject {
       }
 
       await this.ctx.storage.put("probe_state", state);
-      return new Response(JSON.stringify({ ok: true, healthState: state.healthState }), {
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({ ok: true, healthState: state.healthState }),
+        {
+          headers: { "Content-Type": "application/json" },
+        },
+      );
     }
 
     return new Response("Not Found", { status: 404 });

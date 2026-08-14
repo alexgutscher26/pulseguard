@@ -51,12 +51,19 @@ export async function GET(req: NextRequest, { params }: Ctx) {
       events: {
         take: 10,
         orderBy: { timestamp: "desc" },
-        select: { status: true, latency: true, errorReason: true, timestamp: true, region: true },
+        select: {
+          status: true,
+          latency: true,
+          errorReason: true,
+          timestamp: true,
+          region: true,
+        },
       },
     },
   });
 
-  if (!monitor) return NextResponse.json({ error: "Monitor not found" }, { status: 404 });
+  if (!monitor)
+    return NextResponse.json({ error: "Monitor not found" }, { status: 404 });
 
   return NextResponse.json({ monitor });
 }
@@ -69,7 +76,10 @@ export async function PUT(req: NextRequest, { params }: Ctx) {
   const user = await verifyApiKey(req);
   if (!user) return unauthorized();
   if (!user.scopes.includes("write")) {
-    return NextResponse.json({ error: "Write scope required" }, { status: 403 });
+    return NextResponse.json(
+      { error: "Write scope required" },
+      { status: 403 },
+    );
   }
 
   const { id } = await params;
@@ -77,7 +87,8 @@ export async function PUT(req: NextRequest, { params }: Ctx) {
     where: { id, userId: user.userId },
     select: { id: true },
   });
-  if (!existing) return NextResponse.json({ error: "Monitor not found" }, { status: 404 });
+  if (!existing)
+    return NextResponse.json({ error: "Monitor not found" }, { status: 404 });
 
   const body = (await req.json()) as any;
   const updateData: Record<string, any> = {};
@@ -87,16 +98,27 @@ export async function PUT(req: NextRequest, { params }: Ctx) {
   if (body.interval !== undefined) updateData.interval = Number(body.interval);
   if (body.timeout !== undefined) updateData.timeout = Number(body.timeout);
   if (body.method !== undefined) updateData.method = body.method;
-  if (body.alertThreshold !== undefined) updateData.alertThreshold = Number(body.alertThreshold);
+  if (body.alertThreshold !== undefined)
+    updateData.alertThreshold = Number(body.alertThreshold);
   if (body.runbookUrl !== undefined) updateData.runbookUrl = body.runbookUrl;
-  if (body.headers !== undefined) updateData.headers = JSON.stringify(body.headers);
-  if (body.expectation !== undefined) updateData.expectation = JSON.stringify(body.expectation);
-  if (body.checkRegions !== undefined) updateData.checkRegions = JSON.stringify(body.checkRegions);
+  if (body.headers !== undefined)
+    updateData.headers = JSON.stringify(body.headers);
+  if (body.expectation !== undefined)
+    updateData.expectation = JSON.stringify(body.expectation);
+  if (body.checkRegions !== undefined)
+    updateData.checkRegions = JSON.stringify(body.checkRegions);
 
   const monitor = await prisma.monitor.update({
     where: { id },
     data: updateData,
-    select: { id: true, name: true, url: true, type: true, status: true, updatedAt: true },
+    select: {
+      id: true,
+      name: true,
+      url: true,
+      type: true,
+      status: true,
+      updatedAt: true,
+    },
   });
 
   return NextResponse.json({ monitor });
@@ -107,7 +129,10 @@ export async function DELETE(req: NextRequest, { params }: Ctx) {
   const user = await verifyApiKey(req);
   if (!user) return unauthorized();
   if (!user.scopes.includes("write")) {
-    return NextResponse.json({ error: "Write scope required" }, { status: 403 });
+    return NextResponse.json(
+      { error: "Write scope required" },
+      { status: 403 },
+    );
   }
 
   const { id } = await params;
@@ -115,7 +140,8 @@ export async function DELETE(req: NextRequest, { params }: Ctx) {
     where: { id, userId: user.userId },
     select: { id: true },
   });
-  if (!existing) return NextResponse.json({ error: "Monitor not found" }, { status: 404 });
+  if (!existing)
+    return NextResponse.json({ error: "Monitor not found" }, { status: 404 });
 
   await prisma.monitor.delete({ where: { id } });
   return NextResponse.json({ success: true });

@@ -12,7 +12,9 @@ import type { Env } from "../env";
 export function getCorsHeaders(env?: Env): Record<string, string> {
   const origin =
     env?.CORS_ORIGIN ||
-    (typeof process !== "undefined" && process.env.NODE_ENV !== "production" ? "*" : "null");
+    (typeof process !== "undefined" && process.env.NODE_ENV !== "production"
+      ? "*"
+      : "null");
 
   return {
     "Access-Control-Allow-Origin": origin,
@@ -32,7 +34,11 @@ export function json(
 ): Response {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { "Content-Type": "application/json", ...getCorsHeaders(env), ...extraHeaders },
+    headers: {
+      "Content-Type": "application/json",
+      ...getCorsHeaders(env),
+      ...extraHeaders,
+    },
   });
 }
 

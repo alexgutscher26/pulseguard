@@ -18,7 +18,11 @@ interface MonitorSelectorProps {
   onChange: (ids: string[]) => void;
 }
 
-export function MonitorSelector({ monitors, selectedIds, onChange }: MonitorSelectorProps) {
+export function MonitorSelector({
+  monitors,
+  selectedIds,
+  onChange,
+}: MonitorSelectorProps) {
   const allSelected = selectedIds.length === monitors.length;
   const noneSelected = selectedIds.length === 0;
 
@@ -99,7 +103,9 @@ export function MonitorSelector({ monitors, selectedIds, onChange }: MonitorSele
 
       {/* Empty State */}
       {monitors.length === 0 && (
-        <div className="p-4 text-center text-primary/40 text-sm">No monitors available</div>
+        <div className="p-4 text-center text-primary/40 text-sm">
+          No monitors available
+        </div>
       )}
     </div>
   );

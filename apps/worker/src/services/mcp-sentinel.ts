@@ -96,7 +96,8 @@ export async function checkMCP(
   method: string = "tools/list",
   params?: Record<string, unknown>,
 ): Promise<MCPCheckResult> {
-  const domain = (url.replace(/^https?:\/\//, "").split("/")[0] || "").split(":")[0] || url;
+  const domain =
+    (url.replace(/^https?:\/\//, "").split("/")[0] || "").split(":")[0] || url;
   const start = performance.now();
 
   const body: JsonRpcRequest = {
@@ -204,7 +205,8 @@ export async function checkMCP(
     : { count: 0, names: [] };
 
   // Run deep property assertions
-  const assertionResults: { path: string; passed: boolean; actual: unknown }[] = [];
+  const assertionResults: { path: string; passed: boolean; actual: unknown }[] =
+    [];
   let assertionsPassed = 0;
   let assertionsFailed = 0;
 

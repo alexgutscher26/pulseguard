@@ -283,18 +283,22 @@ Combine findings into structured report:
 ### Task: [Original Task]
 
 ### Agents Invoked
+
 1. agent-name: [brief finding]
 2. agent-name: [brief finding]
 
 ### Key Findings
+
 - Finding 1 (from agent X)
 - Finding 2 (from agent Y)
 
 ### Recommendations
+
 1. Priority recommendation
 2. Secondary recommendation
 
 ### Next Steps
+
 - [ ] Action item 1
 - [ ] Action item 2
 ```

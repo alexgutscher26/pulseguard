@@ -19,7 +19,8 @@ export async function GET(req: NextRequest, { params }: Ctx) {
     where: { id, userId: user.userId },
     select: { id: true, name: true },
   });
-  if (!monitor) return NextResponse.json({ error: "Monitor not found" }, { status: 404 });
+  if (!monitor)
+    return NextResponse.json({ error: "Monitor not found" }, { status: 404 });
 
   const searchParams = req.nextUrl.searchParams;
   const limit = Math.min(Number(searchParams.get("limit") || "50"), 500);

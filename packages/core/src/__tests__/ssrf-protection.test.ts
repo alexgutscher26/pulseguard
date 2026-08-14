@@ -1,5 +1,9 @@
 import { describe, test, expect } from "bun:test";
-import { isPrivateOrInternalUrl, isPrivateOrInternalIp, checkHttpUniversal } from "../index";
+import {
+  isPrivateOrInternalUrl,
+  isPrivateOrInternalIp,
+  checkHttpUniversal,
+} from "../index";
 
 describe("Probe Layer SSRF Security & Resource Abuse Protection Tests", () => {
   describe("IP & Hostname Validation (isPrivateOrInternalUrl / isPrivateOrInternalIp)", () => {
@@ -10,14 +14,24 @@ describe("Probe Layer SSRF Security & Resource Abuse Protection Tests", () => {
 
     test("blocks private IPv4 CIDR ranges (10.0.0.1, 172.16.0.1, 192.168.1.1)", () => {
       expect(isPrivateOrInternalUrl("http://10.0.0.1").isForbidden).toBe(true);
-      expect(isPrivateOrInternalUrl("http://172.16.0.1").isForbidden).toBe(true);
-      expect(isPrivateOrInternalUrl("http://172.31.255.255").isForbidden).toBe(true);
-      expect(isPrivateOrInternalUrl("http://192.168.1.1").isForbidden).toBe(true);
+      expect(isPrivateOrInternalUrl("http://172.16.0.1").isForbidden).toBe(
+        true,
+      );
+      expect(isPrivateOrInternalUrl("http://172.31.255.255").isForbidden).toBe(
+        true,
+      );
+      expect(isPrivateOrInternalUrl("http://192.168.1.1").isForbidden).toBe(
+        true,
+      );
     });
 
     test("blocks link-local & AWS IMDS cloud metadata (169.254.169.254)", () => {
-      expect(isPrivateOrInternalUrl("http://169.254.169.254").isForbidden).toBe(true);
-      expect(isPrivateOrInternalUrl("http://169.254.1.1").isForbidden).toBe(true);
+      expect(isPrivateOrInternalUrl("http://169.254.169.254").isForbidden).toBe(
+        true,
+      );
+      expect(isPrivateOrInternalUrl("http://169.254.1.1").isForbidden).toBe(
+        true,
+      );
     });
 
     test("blocks IPv6 loopback & link-local (::1, fe80::1, fc00::1)", () => {
@@ -37,7 +51,9 @@ describe("Probe Layer SSRF Security & Resource Abuse Protection Tests", () => {
     });
 
     test("allows legitimate public domains and IPs", () => {
-      expect(isPrivateOrInternalUrl("https://example.com").isForbidden).toBe(false);
+      expect(isPrivateOrInternalUrl("https://example.com").isForbidden).toBe(
+        false,
+      );
       expect(isPrivateOrInternalUrl("https://8.8.8.8").isForbidden).toBe(false);
       expect(isPrivateOrInternalUrl("https://1.1.1.1").isForbidden).toBe(false);
     });
@@ -45,13 +61,17 @@ describe("Probe Layer SSRF Security & Resource Abuse Protection Tests", () => {
 
   describe("HTTP Check Hop & Stream Boundary Protection (checkHttpUniversal)", () => {
     test("rejects direct SSRF target with status DOWN", async () => {
-      const res = await checkHttpUniversal("http://169.254.169.254/latest/meta-data/");
+      const res = await checkHttpUniversal(
+        "http://169.254.169.254/latest/meta-data/",
+      );
       expect(res.status).toBe("DOWN");
       expect(res.errorReason).toContain("SSRF_PROTECTION");
     });
 
     test("enforces timeout signal limit", async () => {
-      const res = await checkHttpUniversal("https://httpbin.org/delay/10", { timeoutSeconds: 1 });
+      const res = await checkHttpUniversal("https://httpbin.org/delay/10", {
+        timeoutSeconds: 1,
+      });
       expect(res.status).toBe("DOWN");
     });
   });

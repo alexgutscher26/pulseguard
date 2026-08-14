@@ -3,39 +3,41 @@
 import { useState } from "react";
 import { CLOUDFLARE_PROBE_REGIONS, type Region } from "@pulseguard/shared";
 import {
-  Activity,
-  CheckCircle2,
   Copy,
   Check,
-  Download,
-  Globe2,
   ShieldCheck,
   Radio,
-  Server,
+  AlertTriangle,
+  Activity,
   Terminal,
   ExternalLink,
 } from "lucide-react";
-import Link from "next/link";
 
 interface LocationsClientProps {
   probes: (Region & {
     status: string;
     currentLatency: number;
     measuredColo: string;
+    lastCheck?: string;
   })[];
 }
 
 export default function LocationsClient({ probes }: LocationsClientProps) {
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
-  const [filterContinent, setFilterContinent] = useState<string>("ALL");
 
-  const continents = ["ALL", "North America", "Europe", "Asia Pacific"];
+  const allIpv4 = Array.from(
+    new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv4Ranges)),
+  );
+  const allIpv6 = Array.from(
+    new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv6Ranges)),
+  );
 
-  const filteredProbes =
-    filterContinent === "ALL" ? probes : probes.filter((p) => p.continent === filterContinent);
-
-  const allIpv4 = Array.from(new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv4Ranges)));
-  const allIpv6 = Array.from(new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv6Ranges)));
+  const healthyCount = probes.filter((p) => p.status === "ONLINE").length;
+  const flappingProbes = probes.filter((p) => p.status === "FLAPPING");
+  const excludedRegionText =
+    flappingProbes.length > 0
+      ? flappingProbes.map((p) => p.code).join(", ")
+      : null;
 
   const handleCopy = (text: string, section: string) => {
     navigator.clipboard.writeText(text);
@@ -43,300 +45,266 @@ export default function LocationsClient({ probes }: LocationsClientProps) {
     setTimeout(() => setCopiedSection(null), 2000);
   };
 
+  const allowlistSnippet = `# Machine-readable, always current
+GET https://pulseguard.io/ips.json
+GET https://pulseguard.io/ips.txt      # newline-delimited CIDRs
+GET https://pulseguard.io/ips-v6.txt   # IPv6 — don't forget these
+
+# Our probes always identify themselves
+User-Agent: PulseGuard-Monitor/1.0 (+https://pulseguard.io/locations)`;
+
   return (
     <div className="min-h-screen bg-background text-foreground pt-32 pb-24 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto space-y-12">
-        {/* Header & Mission Banner */}
-        <div className="space-y-4 text-center max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-semibold bg-primary/10 border border-primary/20 text-primary uppercase tracking-wider">
-            <Radio className="size-3.5 animate-pulse text-primary" />
-            <span>Radical Transparency • Live Telemetry</span>
+      <div className="max-w-5xl mx-auto space-y-16">
+        {/* Header Section */}
+        <div className="space-y-4 text-left max-w-3xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-primary/10 border border-primary/20 text-primary uppercase tracking-wider">
+            <Radio className="size-3.5 text-primary animate-pulse" />
+            <span>Transparency</span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight">
-            Global Probe Locations & Allowlist
+            Every place we check from.
           </h1>
 
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-            PulseGuard executes synthetic health checks from 7 geographically pinned Cloudflare edge
-            regions. We publish our exact vantage points, ASNs, and IP ranges so you can allowlist
-            our monitoring nodes in your firewall or WAF.
+            Live status of all seven probe regions, the networks they run on,
+            and the IP ranges to allowlist. Updated continuously. If a probe is
+            unhealthy, you&apos;ll see it here before it can affect your alerts.
           </p>
+        </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-            <a
-              href="/api/locations"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-card border border-border text-xs font-mono font-medium hover:border-primary/40 hover:bg-primary/5 transition-colors"
-            >
-              <Terminal className="size-3.5 text-primary" />
-              <span>Raw JSON Endpoint (/api/locations)</span>
-              <ExternalLink className="size-3 text-muted-foreground" />
-            </a>
-            <button
-              onClick={() => handleCopy([...allIpv4, ...allIpv6].join("\n"), "all-ips")}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors shadow-xs"
-            >
-              {copiedSection === "all-ips" ? (
-                <Check className="size-3.5 text-primary-foreground" />
-              ) : (
-                <Copy className="size-3.5" />
-              )}
-              <span>
-                {copiedSection === "all-ips" ? "Copied All Ranges!" : "Copy All CIDR Ranges"}
-              </span>
-            </button>
+        {/* Live Probe Table */}
+        <div className="space-y-4">
+          <div className="border border-border bg-card/80 backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden">
+            <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-border">
+              <table className="w-full text-left border-collapse min-w-[650px]">
+                <thead>
+                  <tr className="border-b border-border bg-muted/40 font-mono text-xs uppercase tracking-wider text-muted-foreground">
+                    <th className="p-4 sm:p-5">Region</th>
+                    <th className="p-4 sm:p-5">Covers</th>
+                    <th className="p-4 sm:p-5">Network</th>
+                    <th className="p-4 sm:p-5">Status</th>
+                    <th className="p-4 sm:p-5">Last check</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/40 font-sans text-xs">
+                  {probes.map((probe) => {
+                    const isOnline = probe.status === "ONLINE";
+                    const isFlapping = probe.status === "FLAPPING";
+
+                    return (
+                      <tr
+                        key={probe.code}
+                        className="hover:bg-muted/30 transition-colors"
+                      >
+                        <td className="p-4 sm:p-5 font-mono font-bold text-foreground">
+                          <div className="flex items-center gap-2">
+                            <span>{probe.flag}</span>
+                            <span>{probe.code}</span>
+                          </div>
+                        </td>
+                        <td className="p-4 sm:p-5 text-foreground font-medium">
+                          {probe.covers}
+                        </td>
+                        <td className="p-4 sm:p-5 font-mono text-muted-foreground text-[11px]">
+                          {probe.asn} ({probe.provider})
+                        </td>
+                        <td className="p-4 sm:p-5">
+                          <span
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider ${
+                              isOnline
+                                ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
+                                : isFlapping
+                                  ? "bg-amber-500/10 text-amber-500 border border-amber-500/20"
+                                  : "bg-red-500/10 text-red-500 border border-red-500/20"
+                            }`}
+                          >
+                            <span
+                              className={`size-1.5 rounded-full ${
+                                isOnline
+                                  ? "bg-emerald-500"
+                                  : isFlapping
+                                    ? "bg-amber-500"
+                                    : "bg-red-500"
+                              }`}
+                            />
+                            {probe.status}
+                          </span>
+                        </td>
+                        <td className="p-4 sm:p-5 font-mono text-muted-foreground text-[11px]">
+                          {probe.lastCheck || "Just now"}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Dynamic Live Quorum Note */}
+            <div className="p-4 sm:p-5 bg-muted/20 border-t border-border font-mono text-xs text-muted-foreground flex items-start gap-2.5">
+              <ShieldCheck className="size-4 text-emerald-500 shrink-0 mt-0.5" />
+              <div className="leading-relaxed">
+                <strong className="text-foreground">Current quorum:</strong> 4
+                of {healthyCount} healthy regions must confirm a failure before
+                an incident opens.{" "}
+                {excludedRegionText ? (
+                  <span>
+                    <strong className="text-amber-500">
+                      {excludedRegionText}
+                    </strong>{" "}
+                    is excluded automatically until it stabilises — a probe that
+                    can&apos;t agree with itself doesn&apos;t get a vote.
+                  </span>
+                ) : (
+                  <span>
+                    All 7 regions are currently healthy and participating in
+                    active quorum.
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Quorum Mechanism Explainer Card */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-card border border-border relative overflow-hidden shadow-sm">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
-            <div className="space-y-3">
-              <div className="size-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
-                <ShieldCheck className="size-5" />
-              </div>
-              <h3 className="text-lg font-bold">The 4-of-7 Quorum Rule</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                A customer endpoint is only declared <strong>DOWN</strong> when at least 4
-                independent geographic regions confirm the failure within a 90-second window.
-                Single-region packet loss or local transit drops are isolated as regional
-                degradation.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              <div className="size-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
-                <Server className="size-5" />
-              </div>
-              <h3 className="text-lg font-bold">Durable Object Pinning</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Unlike random cron rotators, our probe nodes run inside geographically pinned
-                Cloudflare Durable Objects. Alarms self-schedule with defensive early rescheduling
-                to guarantee zero dropped cycles.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              <div className="size-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
-                <Activity className="size-5" />
-              </div>
-              <h3 className="text-lg font-bold">ASN & Flapping Isolation</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Any probe experiencing 3 or more state transitions within 2 hours is classified as{" "}
-                <span className="font-mono text-amber-500 font-semibold">FLAPPING</span> and
-                automatically removed from the quorum consensus pool until transit stabilizes.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Region Filter Tabs */}
-        <div className="flex items-center justify-between gap-4 flex-wrap border-b border-border pb-4">
-          <div className="flex items-center gap-2">
-            <Globe2 className="size-4 text-primary" />
-            <span className="text-sm font-bold">
-              Active Edge Probe Matrix ({filteredProbes.length} Nodes)
-            </span>
+        {/* Allowlist Section */}
+        <div className="p-6 sm:p-8 rounded-3xl bg-card border border-border space-y-6 shadow-sm">
+          <div className="space-y-2">
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+              Allowlist our probes
+            </h2>
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+              If your WAF, CDN or bot manager challenges datacenter traffic, our
+              probes can be blocked before they ever reach your service — and on
+              some platforms those challenges don&apos;t appear in your event
+              log. That looks exactly like downtime, and it isn&apos;t.
+              Allowlist these ranges, or permit our User-Agent.
+            </p>
           </div>
 
-          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-muted/40 border border-border text-xs font-medium">
-            {continents.map((c) => (
+          <div className="relative rounded-2xl bg-zinc-950 border border-zinc-800 p-5 font-mono text-xs text-zinc-300 overflow-x-auto">
+            <div className="flex justify-between items-center pb-3 mb-3 border-b border-zinc-800 text-[11px] text-zinc-500">
+              <span>Allowlist Configuration Spec</span>
               <button
-                key={c}
-                onClick={() => setFilterContinent(c)}
-                className={`px-3 py-1 rounded-lg transition-colors ${
-                  filterContinent === c
-                    ? "bg-card text-foreground shadow-xs font-semibold"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
+                onClick={() => handleCopy(allowlistSnippet, "spec")}
+                className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline cursor-pointer"
               >
-                {c}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Probe Node Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProbes.map((probe) => {
-            const isOnline = probe.status === "ONLINE";
-            const isFlapping = probe.status === "FLAPPING";
-
-            return (
-              <div
-                key={probe.code}
-                className="p-6 rounded-2xl bg-card border border-border hover:border-primary/30 transition-all flex flex-col justify-between gap-5 group shadow-xs"
-              >
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <span className="text-2xl" role="img" aria-label={probe.name}>
-                        {probe.flag}
-                      </span>
-                      <div>
-                        <h4 className="font-bold text-sm text-foreground">{probe.name}</h4>
-                        <span className="text-[11px] font-mono text-muted-foreground">
-                          {probe.city}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider ${
-                        isOnline
-                          ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
-                          : isFlapping
-                            ? "bg-amber-500/10 text-amber-500 border border-amber-500/20"
-                            : "bg-red-500/10 text-red-500 border border-red-500/20"
-                      }`}
-                    >
-                      <span
-                        className={`size-1.5 rounded-full ${
-                          isOnline ? "bg-emerald-500" : isFlapping ? "bg-amber-500" : "bg-red-500"
-                        }`}
-                      />
-                      <span>{probe.status}</span>
-                    </div>
-                  </div>
-
-                  {/* Metadata Grid */}
-                  <div className="grid grid-cols-2 gap-2 text-xs font-mono pt-2 border-t border-border/60">
-                    <div className="space-y-0.5">
-                      <span className="text-[10px] text-muted-foreground uppercase">DO Hint</span>
-                      <p className="font-bold text-foreground">{probe.code}</p>
-                    </div>
-                    <div className="space-y-0.5">
-                      <span className="text-[10px] text-muted-foreground uppercase">
-                        Measured POP
-                      </span>
-                      <p className="font-bold text-primary">{probe.measuredColo}</p>
-                    </div>
-                    <div className="space-y-0.5">
-                      <span className="text-[10px] text-muted-foreground uppercase">
-                        Network ASN
-                      </span>
-                      <p className="font-medium text-foreground">{probe.asn}</p>
-                    </div>
-                    <div className="space-y-0.5">
-                      <span className="text-[10px] text-muted-foreground uppercase">Provider</span>
-                      <p className="font-medium text-foreground">{probe.provider}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* CIDR Allowlist Box */}
-                <div className="space-y-2 pt-2 border-t border-border/60">
-                  <div className="flex items-center justify-between text-[11px] font-mono text-muted-foreground">
-                    <span>IPv4 / IPv6 Allowlist</span>
-                    <button
-                      onClick={() =>
-                        handleCopy(
-                          [...probe.ipv4Ranges, ...probe.ipv6Ranges].join("\n"),
-                          `probe-${probe.code}`,
-                        )
-                      }
-                      className="hover:text-foreground transition-colors inline-flex items-center gap-1 text-[10px]"
-                    >
-                      {copiedSection === `probe-${probe.code}` ? (
-                        <Check className="size-3 text-primary" />
-                      ) : (
-                        <Copy className="size-3" />
-                      )}
-                      <span>{copiedSection === `probe-${probe.code}` ? "Copied" : "Copy"}</span>
-                    </button>
-                  </div>
-                  <div className="p-2.5 rounded-xl bg-muted/40 border border-border text-[11px] font-mono text-foreground/80 space-y-1 overflow-x-auto">
-                    {probe.ipv4Ranges.map((ip) => (
-                      <div key={ip}>{ip}</div>
-                    ))}
-                    {probe.ipv6Ranges.map((ip) => (
-                      <div key={ip} className="text-muted-foreground">
-                        {ip}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Complete WAF Allowlist Section */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-card border border-border space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="space-y-1">
-              <h3 className="text-lg font-bold">WAF & Firewall Allowlist (Consolidated)</h3>
-              <p className="text-xs text-muted-foreground">
-                Add these CIDR ranges and User-Agent signature to Cloudflare WAF, AWS WAF, or Nginx:
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() =>
-                  handleCopy(
-                    JSON.stringify(
-                      {
-                        userAgent: "PulseGuard-Synthetic-Monitor/2.0 (+https://pulseguard.io/bot)",
-                        ipv4: allIpv4,
-                        ipv6: allIpv6,
-                      },
-                      null,
-                      2,
-                    ),
-                    "full-json",
-                  )
-                }
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted border border-border text-xs font-mono hover:bg-muted/80 transition-colors"
-              >
-                {copiedSection === "full-json" ? (
+                {copiedSection === "spec" ? (
                   <Check className="size-3.5 text-primary" />
                 ) : (
                   <Copy className="size-3.5" />
                 )}
-                <span>Copy JSON Spec</span>
+                <span>{copiedSection === "spec" ? "Copied" : "Copy Spec"}</span>
               </button>
+            </div>
+            <pre className="whitespace-pre-wrap break-all leading-relaxed text-zinc-200">
+              {allowlistSnippet}
+            </pre>
+          </div>
+
+          {/* Quick Copy CIDR Buttons */}
+          <div className="flex flex-wrap items-center gap-3 pt-2">
+            <button
+              onClick={() => handleCopy(allIpv4.join("\n"), "ipv4")}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-muted/60 border border-border text-xs font-mono font-medium hover:bg-muted transition-colors cursor-pointer"
+            >
+              {copiedSection === "ipv4" ? (
+                <Check className="size-3.5 text-emerald-500" />
+              ) : (
+                <Copy className="size-3.5" />
+              )}
+              <span>
+                {copiedSection === "ipv4"
+                  ? "Copied IPv4 CIDRs"
+                  : "Copy IPv4 CIDRs"}
+              </span>
+            </button>
+
+            <button
+              onClick={() => handleCopy(allIpv6.join("\n"), "ipv6")}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-muted/60 border border-border text-xs font-mono font-medium hover:bg-muted transition-colors cursor-pointer"
+            >
+              {copiedSection === "ipv6" ? (
+                <Check className="size-3.5 text-emerald-500" />
+              ) : (
+                <Copy className="size-3.5" />
+              )}
+              <span>
+                {copiedSection === "ipv6"
+                  ? "Copied IPv6 CIDRs"
+                  : "Copy IPv6 CIDRs"}
+              </span>
+            </button>
+
+            <a
+              href="/ips.json"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-card border border-border text-xs font-mono font-medium hover:border-primary/40 hover:bg-primary/5 transition-colors"
+            >
+              <Terminal className="size-3.5 text-primary" />
+              <span>/ips.json</span>
+              <ExternalLink className="size-3 text-muted-foreground" />
+            </a>
+          </div>
+        </div>
+
+        {/* Coverage Gap & Probe Health Disclosures */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Coverage Gap Section */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-card border border-border flex flex-col justify-between space-y-4 shadow-sm">
+            <div className="space-y-3">
+              <div className="size-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500">
+                <AlertTriangle className="size-5" />
+              </div>
+              <h3 className="text-xl font-bold text-foreground">
+                Coverage we don&apos;t have
+              </h3>
+              <div className="space-y-3 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                <p>
+                  South America, Africa, the Middle East, Oceania. Our probe
+                  regions run on Cloudflare&apos;s network, which does not
+                  currently place workloads in those regions — so we don&apos;t
+                  claim them.
+                </p>
+                <p>
+                  What this means practically: a genuine outage still pages you,
+                  because your endpoint will fail from all seven regions
+                  regardless of where it&apos;s hosted. What we&apos;d miss is a
+                  problem affecting only users in those regions — a São Paulo
+                  CDN edge, an African transit route. If that&apos;s a real risk
+                  for your traffic, tell us; it moves our roadmap, and
+                  we&apos;ll say so here when it ships.
+                </p>
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <span className="text-xs font-mono font-semibold text-muted-foreground uppercase">
-                IPv4 CIDR Blocks
-              </span>
-              <div className="p-4 rounded-2xl bg-muted/40 border border-border font-mono text-xs space-y-1.5">
-                {allIpv4.map((cidr) => (
-                  <div key={cidr} className="text-foreground">
-                    {cidr}
-                  </div>
-                ))}
+          {/* Probe Health Section */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-card border border-border flex flex-col justify-between space-y-4 shadow-sm">
+            <div className="space-y-3">
+              <div className="size-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
+                <Activity className="size-5" />
               </div>
-            </div>
-
-            <div className="space-y-2">
-              <span className="text-xs font-mono font-semibold text-muted-foreground uppercase">
-                IPv6 CIDR Blocks & Bot Header
-              </span>
-              <div className="p-4 rounded-2xl bg-muted/40 border border-border font-mono text-xs space-y-3">
-                <div className="space-y-1.5">
-                  {allIpv6.map((cidr) => (
-                    <div key={cidr} className="text-foreground">
-                      {cidr}
-                    </div>
-                  ))}
-                </div>
-                <div className="pt-2 border-t border-border space-y-1">
-                  <span className="text-[10px] text-muted-foreground uppercase">
-                    User-Agent Header
-                  </span>
-                  <div className="text-[11px] text-primary break-all">
-                    Mozilla/5.0 (compatible; PulseGuard-Synthetic-Monitor/2.0;
-                    +https://pulseguard.io/bot)
-                  </div>
-                </div>
+              <h3 className="text-xl font-bold text-foreground">
+                When a probe goes bad, we say so
+              </h3>
+              <div className="space-y-3 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                <p>
+                  A monitoring probe with a bad network path reports failures
+                  that aren&apos;t real — the industry&apos;s most common source
+                  of false alarms. Any probe with three or more state
+                  transitions in two hours is marked Flapping and automatically
+                  removed from quorum until it stabilises.
+                </p>
+                <p>
+                  Every probe also reports on a heartbeat channel separate from
+                  its measurement path, so a probe that&apos;s blocked is
+                  distinguishable from one that&apos;s crashed. All of it is
+                  visible above, in real time, including when it&apos;s our
+                  fault.
+                </p>
               </div>
             </div>
           </div>

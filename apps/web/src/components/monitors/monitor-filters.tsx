@@ -123,10 +123,14 @@ export function MonitorFilters({
                   availableTags.map((tag) => (
                     <DropdownMenuItem
                       key={tag}
-                      onClick={() => setSelectedTag(tag === selectedTag ? null : tag)}
+                      onClick={() =>
+                        setSelectedTag(tag === selectedTag ? null : tag)
+                      }
                       className={cn(
                         "focus:bg-primary/10 cursor-pointer uppercase",
-                        tag === selectedTag ? "bg-primary/10 text-primary font-bold" : "",
+                        tag === selectedTag
+                          ? "bg-primary/10 text-primary font-bold"
+                          : "",
                       )}
                     >
                       {tag}

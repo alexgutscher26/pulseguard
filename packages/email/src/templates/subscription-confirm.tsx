@@ -1,6 +1,14 @@
 import React from "react";
 import { render } from "@react-email/render";
-import { Html, Head, Body, Container, Section, Text, Link } from "@react-email/components";
+import {
+  Html,
+  Head,
+  Body,
+  Container,
+  Section,
+  Text,
+  Link,
+} from "@react-email/components";
 import { emailTheme } from "../styles/theme";
 
 export interface SubscriptionConfirmData {
@@ -8,7 +16,11 @@ export interface SubscriptionConfirmData {
   verifyUrl: string;
 }
 
-export function SubscriptionConfirm({ data }: { data: SubscriptionConfirmData }) {
+export function SubscriptionConfirm({
+  data,
+}: {
+  data: SubscriptionConfirmData;
+}) {
   return (
     <Html>
       <Head>
@@ -57,7 +69,9 @@ export function SubscriptionConfirm({ data }: { data: SubscriptionConfirmData })
           </Section>
 
           {/* Content */}
-          <Section style={{ padding: emailTheme.spacing.lg, textAlign: "center" }}>
+          <Section
+            style={{ padding: emailTheme.spacing.lg, textAlign: "center" }}
+          >
             <Text
               style={{
                 margin: "0 0 24px",
@@ -87,8 +101,8 @@ export function SubscriptionConfirm({ data }: { data: SubscriptionConfirmData })
                 color: emailTheme.colors.muted,
               }}
             >
-              Please confirm your email address to start receiving notifications about incidents and
-              maintenance.
+              Please confirm your email address to start receiving notifications
+              about incidents and maintenance.
             </Text>
 
             {/* CTA Button */}
@@ -126,7 +140,8 @@ export function SubscriptionConfirm({ data }: { data: SubscriptionConfirmData })
                 textAlign: "center",
               }}
             >
-              If you didn't request this subscription, you can safely ignore this email.
+              If you didn't request this subscription, you can safely ignore
+              this email.
             </Text>
             <Text
               style={{
@@ -145,6 +160,8 @@ export function SubscriptionConfirm({ data }: { data: SubscriptionConfirmData })
   );
 }
 
-export async function renderSubscriptionConfirm(data: SubscriptionConfirmData): Promise<string> {
+export async function renderSubscriptionConfirm(
+  data: SubscriptionConfirmData,
+): Promise<string> {
   return await render(<SubscriptionConfirm data={data} />);
 }

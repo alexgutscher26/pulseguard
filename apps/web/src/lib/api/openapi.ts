@@ -19,11 +19,19 @@ export const openApiSpec = {
     version: "1.0.0",
     contact: { url: "https://github.com/alexgutscher26/pulseguard" },
   },
-  servers: [{ url: "/", description: "Same origin (self-hosted or pulseguard.com)" }],
+  servers: [
+    { url: "/", description: "Same origin (self-hosted or pulseguard.com)" },
+  ],
   tags: [
-    { name: "Monitors", description: "Monitor CRUD, instant checks, stats, and events" },
+    {
+      name: "Monitors",
+      description: "Monitor CRUD, instant checks, stats, and events",
+    },
     { name: "API Keys", description: "Manage API keys for CLI and automation" },
-    { name: "Status Pages", description: "Public status endpoints — badges, widgets, feeds" },
+    {
+      name: "Status Pages",
+      description: "Public status endpoints — badges, widgets, feeds",
+    },
     { name: "Workspace", description: "Export and account data" },
     { name: "System", description: "Health and diagnostic endpoints" },
   ],
@@ -36,7 +44,11 @@ export const openApiSpec = {
         responses: {
           "200": {
             description: "Service is running",
-            content: { "application/json": { schema: { $ref: "#/components/schemas/Health" } } },
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Health" },
+              },
+            },
           },
         },
       },
@@ -158,7 +170,9 @@ export const openApiSpec = {
               "application/json": {
                 schema: {
                   type: "object",
-                  properties: { monitor: { $ref: "#/components/schemas/MonitorDetail" } },
+                  properties: {
+                    monitor: { $ref: "#/components/schemas/MonitorDetail" },
+                  },
                 },
               },
             },
@@ -187,7 +201,9 @@ export const openApiSpec = {
               "application/json": {
                 schema: {
                   type: "object",
-                  properties: { monitor: { $ref: "#/components/schemas/MonitorUpdated" } },
+                  properties: {
+                    monitor: { $ref: "#/components/schemas/MonitorUpdated" },
+                  },
                 },
               },
             },
@@ -207,7 +223,10 @@ export const openApiSpec = {
             description: "Monitor deleted",
             content: {
               "application/json": {
-                schema: { type: "object", properties: { success: { type: "boolean" } } },
+                schema: {
+                  type: "object",
+                  properties: { success: { type: "boolean" } },
+                },
               },
             },
           },
@@ -267,7 +286,9 @@ export const openApiSpec = {
           "422": {
             description: "Monitor is not an HTTP monitor",
             content: {
-              "application/json": { schema: { $ref: "#/components/schemas/Error" } },
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
             },
           },
         },
@@ -320,7 +341,11 @@ export const openApiSpec = {
                     monitorId: { type: "string" },
                     name: { type: "string" },
                     status: { type: "string", enum: ["UP"] },
-                    lastCheck: { type: "string", format: "date-time", nullable: true },
+                    lastCheck: {
+                      type: "string",
+                      format: "date-time",
+                      nullable: true,
+                    },
                     message: { type: "string" },
                   },
                 },
@@ -331,7 +356,11 @@ export const openApiSpec = {
           "404": { $ref: "#/components/responses/NotFound" },
           "504": {
             description: "Monitor did not recover within the timeout window",
-            content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } },
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
           },
         },
       },
@@ -373,7 +402,10 @@ export const openApiSpec = {
                 schema: {
                   type: "object",
                   properties: {
-                    events: { type: "array", items: { $ref: "#/components/schemas/MonitorEvent" } },
+                    events: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/MonitorEvent" },
+                    },
                   },
                 },
               },
@@ -435,7 +467,10 @@ export const openApiSpec = {
                 schema: {
                   type: "object",
                   properties: {
-                    keys: { type: "array", items: { $ref: "#/components/schemas/ApiKey" } },
+                    keys: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/ApiKey" },
+                    },
                   },
                 },
               },
@@ -460,7 +495,11 @@ export const openApiSpec = {
                 required: ["name"],
                 properties: {
                   name: { type: "string", minLength: 1 },
-                  expiresAt: { type: "string", format: "date-time", nullable: true },
+                  expiresAt: {
+                    type: "string",
+                    format: "date-time",
+                    nullable: true,
+                  },
                 },
               },
             },
@@ -473,7 +512,9 @@ export const openApiSpec = {
               "application/json": {
                 schema: {
                   type: "object",
-                  properties: { key: { $ref: "#/components/schemas/ApiKeyCreated" } },
+                  properties: {
+                    key: { $ref: "#/components/schemas/ApiKeyCreated" },
+                  },
                 },
               },
             },
@@ -503,7 +544,10 @@ export const openApiSpec = {
             description: "Key revoked",
             content: {
               "application/json": {
-                schema: { type: "object", properties: { success: { type: "boolean" } } },
+                schema: {
+                  type: "object",
+                  properties: { success: { type: "boolean" } },
+                },
               },
             },
           },
@@ -525,12 +569,15 @@ export const openApiSpec = {
       get: {
         tags: ["Status Pages"],
         summary: "Uptime badge (SVG)",
-        description: "Public shields.io-style badge. The `.svg` suffix is optional.",
+        description:
+          "Public shields.io-style badge. The `.svg` suffix is optional.",
         operationId: "getBadge",
         responses: {
           "200": {
             description: "SVG badge",
-            content: { "image/svg+xml": { schema: { type: "string", format: "binary" } } },
+            content: {
+              "image/svg+xml": { schema: { type: "string", format: "binary" } },
+            },
           },
           "404": { $ref: "#/components/responses/NotFound" },
         },
@@ -554,7 +601,9 @@ export const openApiSpec = {
           "200": {
             description: "Widget payload",
             content: {
-              "application/json": { schema: { type: "object", additionalProperties: true } },
+              "application/json": {
+                schema: { type: "object", additionalProperties: true },
+              },
             },
           },
           "404": { $ref: "#/components/responses/NotFound" },
@@ -589,7 +638,13 @@ export const openApiSpec = {
                     slug: { type: "string" },
                     status: {
                       type: "string",
-                      enum: ["UP", "DOWN", "DEGRADED", "MAINTENANCE", "UNKNOWN"],
+                      enum: [
+                        "UP",
+                        "DOWN",
+                        "DEGRADED",
+                        "MAINTENANCE",
+                        "UNKNOWN",
+                      ],
                     },
                     message: { type: "string" },
                   },
@@ -620,7 +675,11 @@ export const openApiSpec = {
         responses: {
           "200": {
             description: "RSS XML document",
-            content: { "application/xml": { schema: { type: "string", format: "binary" } } },
+            content: {
+              "application/xml": {
+                schema: { type: "string", format: "binary" },
+              },
+            },
           },
           "404": { $ref: "#/components/responses/NotFound" },
         },
@@ -643,7 +702,11 @@ export const openApiSpec = {
         responses: {
           "200": {
             description: "Atom XML document",
-            content: { "application/xml": { schema: { type: "string", format: "binary" } } },
+            content: {
+              "application/xml": {
+                schema: { type: "string", format: "binary" },
+              },
+            },
           },
           "404": { $ref: "#/components/responses/NotFound" },
         },
@@ -669,7 +732,9 @@ export const openApiSpec = {
           "200": {
             description: "Exported data",
             content: {
-              "application/json": { schema: { type: "object", additionalProperties: true } },
+              "application/json": {
+                schema: { type: "object", additionalProperties: true },
+              },
               "application/x-yaml": { schema: { type: "string" } },
             },
           },
@@ -690,19 +755,35 @@ export const openApiSpec = {
     responses: {
       Unauthorized: {
         description: "Missing or invalid credentials",
-        content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } },
+        content: {
+          "application/json": {
+            schema: { $ref: "#/components/schemas/Error" },
+          },
+        },
       },
       Forbidden: {
         description: "The key lacks the required scope (write)",
-        content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } },
+        content: {
+          "application/json": {
+            schema: { $ref: "#/components/schemas/Error" },
+          },
+        },
       },
       NotFound: {
         description: "Resource not found",
-        content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } },
+        content: {
+          "application/json": {
+            schema: { $ref: "#/components/schemas/Error" },
+          },
+        },
       },
       BadRequest: {
         description: "Invalid request body or parameters",
-        content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } },
+        content: {
+          "application/json": {
+            schema: { $ref: "#/components/schemas/Error" },
+          },
+        },
       },
     },
     schemas: {
@@ -744,8 +825,16 @@ export const openApiSpec = {
           name: { type: "string", description: "Monitor name" },
           url: { type: "string", format: "uri", description: "Target URL" },
           type: { type: "string", enum: ["HTTP"], default: "HTTP" },
-          interval: { type: "integer", default: 60, description: "Check interval in seconds" },
-          timeout: { type: "integer", default: 10, description: "Timeout in seconds" },
+          interval: {
+            type: "integer",
+            default: 60,
+            description: "Check interval in seconds",
+          },
+          timeout: {
+            type: "integer",
+            default: 10,
+            description: "Timeout in seconds",
+          },
           method: {
             type: "string",
             enum: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"],
@@ -755,12 +844,22 @@ export const openApiSpec = {
             type: "array",
             items: {
               type: "object",
-              properties: { key: { type: "string" }, value: { type: "string" } },
+              properties: {
+                key: { type: "string" },
+                value: { type: "string" },
+              },
             },
           },
-          body: { type: "string", description: "Request body for POST/PUT/PATCH" },
+          body: {
+            type: "string",
+            description: "Request body for POST/PUT/PATCH",
+          },
           expectation: { type: "object", additionalProperties: true },
-          alertThreshold: { type: "integer", default: 1, description: "Failures before alerting" },
+          alertThreshold: {
+            type: "integer",
+            default: 1,
+            description: "Failures before alerting",
+          },
           checkRegions: { type: "array", items: { type: "string" } },
           runbookUrl: { type: "string", format: "uri" },
         },
@@ -800,7 +899,8 @@ export const openApiSpec = {
       },
       MonitorUpdate: {
         type: "object",
-        description: "All properties optional — only provided fields are updated",
+        description:
+          "All properties optional — only provided fields are updated",
         properties: {
           name: { type: "string" },
           url: { type: "string", format: "uri" },
@@ -848,7 +948,13 @@ export const openApiSpec = {
           since: { type: "string", format: "date-time" },
           stats: {
             type: "object",
-            required: ["uptimePct", "avgLatency", "checksTotal", "checksUp", "checksDown"],
+            required: [
+              "uptimePct",
+              "avgLatency",
+              "checksTotal",
+              "checksUp",
+              "checksDown",
+            ],
             properties: {
               uptimePct: { type: "number" },
               avgLatency: { type: "integer" },
@@ -875,7 +981,13 @@ export const openApiSpec = {
           errorReason: {
             type: "string",
             nullable: true,
-            enum: ["HTTP_*", "TIMEOUT", "DNS_ERROR", "CONNECTION_REFUSED", "UNKNOWN_ERROR"],
+            enum: [
+              "HTTP_*",
+              "TIMEOUT",
+              "DNS_ERROR",
+              "CONNECTION_REFUSED",
+              "UNKNOWN_ERROR",
+            ],
           },
           checkedAt: { type: "string", format: "date-time" },
         },
@@ -886,7 +998,10 @@ export const openApiSpec = {
         properties: {
           id: { type: "string" },
           name: { type: "string" },
-          prefix: { type: "string", description: "First 15 chars of the key for identification" },
+          prefix: {
+            type: "string",
+            description: "First 15 chars of the key for identification",
+          },
           scopes: { type: "string" },
           expiresAt: { type: "string", format: "date-time", nullable: true },
           lastUsedAt: { type: "string", format: "date-time", nullable: true },
@@ -901,7 +1016,10 @@ export const openApiSpec = {
             type: "object",
             required: ["rawKey"],
             properties: {
-              rawKey: { type: "string", description: "Returned exactly once — store it securely" },
+              rawKey: {
+                type: "string",
+                description: "Returned exactly once — store it securely",
+              },
             },
           },
         ],

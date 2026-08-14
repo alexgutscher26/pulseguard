@@ -26,7 +26,10 @@ function getValueByPath(obj: any, path: string): any {
 /**
  * Interpolates variables formatted as {{varName}} in a template string.
  */
-function interpolate(template: string, variables: Record<string, string>): string {
+function interpolate(
+  template: string,
+  variables: Record<string, string>,
+): string {
   return template.replace(/\{\{([^}]+)\}\}/g, (_, key) => {
     const trimKey = key.trim();
     return variables[trimKey] !== undefined ? variables[trimKey] : `{{${key}}}`;
@@ -76,7 +79,9 @@ export async function performSequenceCheck(
       let stepUrl = interpolate(step.url, variables);
       if (!isAbsoluteUrl(stepUrl)) {
         // Prepend base monitor URL
-        const base = monitor.url.endsWith("/") ? monitor.url.slice(0, -1) : monitor.url;
+        const base = monitor.url.endsWith("/")
+          ? monitor.url.slice(0, -1)
+          : monitor.url;
         const relative = stepUrl.startsWith("/") ? stepUrl : `/${stepUrl}`;
         stepUrl = `${base}${relative}`;
       }
@@ -96,7 +101,12 @@ export async function performSequenceCheck(
 
       // 3. Resolve Request Body
       let stepBody: string | undefined = undefined;
-      if (["POST", "PUT", "PATCH", "DELETE"].includes(step.method.toUpperCase()) && step.body) {
+      if (
+        ["POST", "PUT", "PATCH", "DELETE"].includes(
+          step.method.toUpperCase(),
+        ) &&
+        step.body
+      ) {
         stepBody = interpolate(step.body, variables);
       }
 
@@ -113,7 +123,8 @@ export async function performSequenceCheck(
       } catch (err: any) {
         const stepLatency = Math.round(performance.now() - startStep);
         totalLatency += stepLatency;
-        const isTimeout = err.name === "AbortError" || controller.signal.aborted;
+        const isTimeout =
+          err.name === "AbortError" || controller.signal.aborted;
         return {
           status: "DOWN",
           latency: totalLatency,
@@ -218,7 +229,9 @@ export async function performSequenceCheck(
     return {
       status: "DOWN",
       latency: totalLatency,
-      errorReason: err.message ? err.message.substring(0, 100) : "SEQUENCE_CHECK_FAILED",
+      errorReason: err.message
+        ? err.message.substring(0, 100)
+        : "SEQUENCE_CHECK_FAILED",
     };
   } finally {
     clearTimeout(globalTimeout);

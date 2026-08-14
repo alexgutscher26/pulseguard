@@ -62,13 +62,15 @@ allowed-tools: Read, Glob, Grep
 **Question:** [Clear question]
 
 **Why This Matters:**
+
 - [Architectural consequence]
 - [Affects: cost/complexity/timeline/scale]
 
 **Options:**
-| Option | Pros | Cons | Best For |
-|--------|------|------|----------|
-| A | [+] | [-] | [Use case] |
+
+| Option | Pros | Cons | Best For   |
+| ------ | ---- | ---- | ---------- |
+| A      | [+]  | [-]  | [Use case] |
 
 **If Not Specified:** [Default + rationale]
 ```

@@ -74,10 +74,10 @@ Create a connected account using Accounts v2:
 
 ```javascript
 const account = await stripe.v2.core.accounts.create({
-  contact_email: 'seller@example.com',
-  display_name: 'Seller Name',
-  dashboard: 'express',
-  identity: { country: 'us', entity_type: 'individual' },
+  contact_email: "seller@example.com",
+  display_name: "Seller Name",
+  dashboard: "express",
+  identity: { country: "us", entity_type: "individual" },
   configuration: {
     recipient: {
       capabilities: {
@@ -86,10 +86,10 @@ const account = await stripe.v2.core.accounts.create({
     },
   },
   defaults: {
-    currency: 'usd',
+    currency: "usd",
     responsibilities: {
-      fees_collector: 'application',
-      losses_collector: 'application',
+      fees_collector: "application",
+      losses_collector: "application",
     },
   },
 });
@@ -99,10 +99,10 @@ const account = await stripe.v2.core.accounts.create({
 
 ```javascript
 const account = await stripe.v2.core.accounts.create({
-  contact_email: 'merchant@example.com',
-  display_name: 'Merchant Name',
-  dashboard: 'full',
-  identity: { country: 'us', entity_type: 'individual' },
+  contact_email: "merchant@example.com",
+  display_name: "Merchant Name",
+  dashboard: "full",
+  identity: { country: "us", entity_type: "individual" },
   configuration: {
     merchant: {
       capabilities: {
@@ -111,10 +111,10 @@ const account = await stripe.v2.core.accounts.create({
     },
   },
   defaults: {
-    currency: 'usd',
+    currency: "usd",
     responsibilities: {
-      fees_collector: 'stripe',
-      losses_collector: 'stripe',
+      fees_collector: "stripe",
+      losses_collector: "stripe",
     },
   },
 });

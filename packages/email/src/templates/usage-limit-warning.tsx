@@ -14,7 +14,9 @@ export interface UsageLimitWarningEmailProps {
   upgradeUrl: string;
 }
 
-export const UsageLimitWarningEmail: React.FC<Readonly<UsageLimitWarningEmailProps>> = ({
+export const UsageLimitWarningEmail: React.FC<
+  Readonly<UsageLimitWarningEmailProps>
+> = ({
   userName = "PulseGuard Operator",
   planName = "The Initiate",
   warnings = [
@@ -32,7 +34,8 @@ export const UsageLimitWarningEmail: React.FC<Readonly<UsageLimitWarningEmailPro
     style={{
       backgroundColor: "#030712",
       color: "#f3f4f6",
-      fontFamily: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+      fontFamily:
+        "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
       padding: "40px 20px",
     }}
   >
@@ -59,14 +62,21 @@ export const UsageLimitWarningEmail: React.FC<Readonly<UsageLimitWarningEmailPro
         >
           PulseGuard Alert
         </span>
-        <h2 style={{ fontSize: "22px", fontWeight: "700", color: "#ffffff", marginTop: "4px" }}>
+        <h2
+          style={{
+            fontSize: "22px",
+            fontWeight: "700",
+            color: "#ffffff",
+            marginTop: "4px",
+          }}
+        >
           Workspace Approaching Plan Limits
         </h2>
       </div>
 
       <p style={{ fontSize: "14px", color: "#9ca3af", lineHeight: "1.6" }}>
-        Hello {userName}, your workspace on <strong>{planName}</strong> plan is approaching resource
-        limits.
+        Hello {userName}, your workspace on <strong>{planName}</strong> plan is
+        approaching resource limits.
       </p>
 
       <div style={{ marginTop: "24px", marginBottom: "24px" }}>
@@ -89,10 +99,22 @@ export const UsageLimitWarningEmail: React.FC<Readonly<UsageLimitWarningEmailPro
                 marginBottom: "8px",
               }}
             >
-              <span style={{ fontWeight: "600", fontSize: "14px", color: "#f3f4f6" }}>
+              <span
+                style={{
+                  fontWeight: "600",
+                  fontSize: "14px",
+                  color: "#f3f4f6",
+                }}
+              >
                 {w.label}
               </span>
-              <span style={{ fontSize: "12px", fontWeight: "700", color: "#f59e0b" }}>
+              <span
+                style={{
+                  fontSize: "12px",
+                  fontWeight: "700",
+                  color: "#f59e0b",
+                }}
+              >
                 {w.used} / {w.limit} ({w.percentage}%)
               </span>
             </div>
@@ -117,8 +139,8 @@ export const UsageLimitWarningEmail: React.FC<Readonly<UsageLimitWarningEmailPro
       </div>
 
       <p style={{ fontSize: "14px", color: "#9ca3af", lineHeight: "1.6" }}>
-        To prevent monitor or integration creation blocks when reaching 100% capacity, upgrade your
-        plan.
+        To prevent monitor or integration creation blocks when reaching 100%
+        capacity, upgrade your plan.
       </p>
 
       <div style={{ marginTop: "32px", textAlign: "center" }}>
@@ -142,6 +164,8 @@ export const UsageLimitWarningEmail: React.FC<Readonly<UsageLimitWarningEmailPro
   </div>
 );
 
-export async function renderUsageLimitWarning(props: UsageLimitWarningEmailProps): Promise<string> {
+export async function renderUsageLimitWarning(
+  props: UsageLimitWarningEmailProps,
+): Promise<string> {
   return await render(<UsageLimitWarningEmail {...props} />);
 }

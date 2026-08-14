@@ -16,7 +16,9 @@ export async function GET(req: NextRequest) {
   }
 
   if (!code) {
-    return NextResponse.redirect(new URL("/dashboard/integrations?error=no_code", req.url));
+    return NextResponse.redirect(
+      new URL("/dashboard/integrations?error=no_code", req.url),
+    );
   }
 
   // 1. Identify and verify User session matches the state parameter
@@ -39,22 +41,28 @@ export async function GET(req: NextRequest) {
   if (!clientId || !clientSecret || !redirectUri) {
     console.error("Vercel OAuth credentials missing in environment");
     return NextResponse.redirect(
-      new URL("/dashboard/integrations?error=vercel_credentials_missing", req.url),
+      new URL(
+        "/dashboard/integrations?error=vercel_credentials_missing",
+        req.url,
+      ),
     );
   }
 
   try {
     // 2. Exchange code for access token
-    const tokenResponse = await fetch("https://api.vercel.com/v2/oauth/access_token", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        client_id: clientId,
-        client_secret: clientSecret,
-        code,
-        redirect_uri: redirectUri,
-      }),
-    });
+    const tokenResponse = await fetch(
+      "https://api.vercel.com/v2/oauth/access_token",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          client_id: clientId,
+          client_secret: clientSecret,
+          code,
+          redirect_uri: redirectUri,
+        }),
+      },
+    );
 
     if (!tokenResponse.ok) {
       const errorText = await tokenResponse.text();
@@ -85,9 +93,12 @@ export async function GET(req: NextRequest) {
 
     if (teamId && teamId !== "personal") {
       try {
-        const teamResponse = await fetch(`https://api.vercel.com/v2/teams/${teamId}`, {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
+        const teamResponse = await fetch(
+          `https://api.vercel.com/v2/teams/${teamId}`,
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          },
+        );
         if (teamResponse.ok) {
           const teamData = (await teamResponse.json()) as any;
           teamName = teamData.name || teamData.slug;
@@ -143,6 +154,8 @@ export async function GET(req: NextRequest) {
     );
   } catch (err) {
     console.error("Vercel OAuth Exception:", err);
-    return NextResponse.redirect(new URL("/dashboard/integrations?error=internal_error", req.url));
+    return NextResponse.redirect(
+      new URL("/dashboard/integrations?error=internal_error", req.url),
+    );
   }
 }

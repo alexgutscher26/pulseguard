@@ -1,7 +1,12 @@
 "use client";
 
 import { useActionState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { createStatusPage } from "@/actions/status-pages";
 import { toast } from "@/components/ui/sonner";
 import { useRouter } from "next/navigation";
@@ -16,7 +21,10 @@ const initialState = { success: false, error: "" };
 
 export function CreateStatusPageModal({ isOpen, onClose }: Props) {
   const router = useRouter();
-  const [state, formAction, isPending] = useActionState(createStatusPage, initialState);
+  const [state, formAction, isPending] = useActionState(
+    createStatusPage,
+    initialState,
+  );
 
   useEffect(() => {
     if (state.success) {
@@ -48,7 +56,9 @@ export function CreateStatusPageModal({ isOpen, onClose }: Props) {
               Slug (URL)
             </label>
             <div className="flex items-center border border-primary/20 bg-secondary/10 rounded-sm">
-              <span className="pl-3 text-xs text-muted-foreground font-mono">/status-page/</span>
+              <span className="pl-3 text-xs text-muted-foreground font-mono">
+                /status-page/
+              </span>
               <input
                 name="slug"
                 required

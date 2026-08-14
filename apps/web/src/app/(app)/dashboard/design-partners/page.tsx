@@ -18,5 +18,10 @@ export default async function AdminDesignPartnersPage() {
   }
 
   const applications = await getAllDesignPartnerApplications();
-  return <AdminDesignPartnersClient initialApplications={applications} isAdmin={admin.isAdmin} />;
+  return (
+    <AdminDesignPartnersClient
+      initialApplications={applications}
+      isAdmin={admin.isAdmin}
+    />
+  );
 }

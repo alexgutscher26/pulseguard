@@ -46,7 +46,8 @@ export async function importThirdPartyMonitors(projects: IntegrationProject[]) {
       where: { userId },
     });
 
-    const maxMonitors = userTier === "INITIATE" ? 50 : userTier === "NETRUNNER" ? 200 : 9999;
+    const maxMonitors =
+      userTier === "INITIATE" ? 50 : userTier === "NETRUNNER" ? 200 : 9999;
     const defaultInterval = 60;
     const defaultRegions = JSON.stringify(["us-east"]);
 
@@ -63,7 +64,10 @@ export async function importThirdPartyMonitors(projects: IntegrationProject[]) {
       // Ensure the URL is valid HTTP/S if not ping
       let finalUrl = project.url;
       if (!finalUrl.includes("://")) {
-        finalUrl = project.type === "PING" ? `ping://${finalUrl}` : `https://${finalUrl}`;
+        finalUrl =
+          project.type === "PING"
+            ? `ping://${finalUrl}`
+            : `https://${finalUrl}`;
       }
 
       const monitor = await prisma.monitor.create({
@@ -114,7 +118,10 @@ export async function importThirdPartyMonitors(projects: IntegrationProject[]) {
     return { success: true, count: createdMonitors.length };
   } catch (error: any) {
     console.error("Failed to import monitors:", error);
-    return { success: false, error: error.message || "Failed to import monitors" };
+    return {
+      success: false,
+      error: error.message || "Failed to import monitors",
+    };
   }
 }
 
@@ -132,9 +139,12 @@ export async function fetchVercelProjects(
       };
 
       // 1. Fetch personal projects
-      const personalProjectsPromise = fetch("https://api.vercel.com/v9/projects?limit=100", {
-        headers,
-      })
+      const personalProjectsPromise = fetch(
+        "https://api.vercel.com/v9/projects?limit=100",
+        {
+          headers,
+        },
+      )
         .then(async (res) => {
           if (!res.ok) {
             const text = await res.text();
@@ -183,7 +193,10 @@ export async function fetchVercelProjects(
       const teams = teamsResult.teams || [];
       if (teams.length > 0) {
         const teamProjectsPromises = teams.map((team) =>
-          fetch(`https://api.vercel.com/v9/projects?teamId=${team.id}&limit=100`, { headers })
+          fetch(
+            `https://api.vercel.com/v9/projects?teamId=${team.id}&limit=100`,
+            { headers },
+          )
             .then(async (res) => {
               if (!res.ok) {
                 const text = await res.text();
@@ -195,11 +208,18 @@ export async function fetchVercelProjects(
               const data = (await res.json()) as any;
               return (data.projects || []).map((p: any) => ({
                 project: p,
-                scope: { type: "team" as const, slug: team.slug, name: team.name },
+                scope: {
+                  type: "team" as const,
+                  slug: team.slug,
+                  name: team.name,
+                },
               }));
             })
             .catch((err) => {
-              console.error(`Error fetching projects for team ${team.slug}:`, err);
+              console.error(
+                `Error fetching projects for team ${team.slug}:`,
+                err,
+              );
               return [];
             }),
         );
@@ -216,11 +236,13 @@ export async function fetchVercelProjects(
 
       for (const { project, scope } of allProjects) {
         const aliases = project.targets?.production?.alias || [];
-        const prefix = scope.type === "team" ? `[${scope.slug}] ` : "[personal] ";
+        const prefix =
+          scope.type === "team" ? `[${scope.slug}] ` : "[personal] ";
 
         if (aliases.length === 0) {
           const latestAlias =
-            project.latestDeployments?.[0]?.alias?.[0] || `${project.name}.vercel.app`;
+            project.latestDeployments?.[0]?.alias?.[0] ||
+            `${project.name}.vercel.app`;
           const key = `${latestAlias}`.toLowerCase();
           if (!seenUrls.has(key)) {
             seenUrls.add(key);
@@ -252,7 +274,10 @@ export async function fetchVercelProjects(
 
       return { success: true, data };
     } catch (err: any) {
-      return { success: false, error: err.message || "Failed to fetch from Vercel" };
+      return {
+        success: false,
+        error: err.message || "Failed to fetch from Vercel",
+      };
     }
   }
 
@@ -299,19 +324,30 @@ export async function fetchVercelProjects(
           continue;
         }
         const data = (await res.json()) as any;
-        const scopeSlug = isPersonal ? "personal" : integration.teamSlug || "team";
-        const scopeName = isPersonal ? "Personal" : integration.teamName || "Team";
+        const scopeSlug = isPersonal
+          ? "personal"
+          : integration.teamSlug || "team";
+        const scopeName = isPersonal
+          ? "Personal"
+          : integration.teamName || "Team";
 
         if (data.projects) {
           for (const p of data.projects) {
             allProjects.push({
               project: p,
-              scope: { type: isPersonal ? "personal" : "team", slug: scopeSlug, name: scopeName },
+              scope: {
+                type: isPersonal ? "personal" : "team",
+                slug: scopeSlug,
+                name: scopeName,
+              },
             });
           }
         }
       } catch (err) {
-        console.error(`Error fetching projects for integration ${integration.id}:`, err);
+        console.error(
+          `Error fetching projects for integration ${integration.id}:`,
+          err,
+        );
       }
     }
 
@@ -324,7 +360,8 @@ export async function fetchVercelProjects(
 
       if (aliases.length === 0) {
         const latestAlias =
-          project.latestDeployments?.[0]?.alias?.[0] || `${project.name}.vercel.app`;
+          project.latestDeployments?.[0]?.alias?.[0] ||
+          `${project.name}.vercel.app`;
         const key = `${latestAlias}`.toLowerCase();
         if (!seenUrls.has(key)) {
           seenUrls.add(key);
@@ -356,7 +393,10 @@ export async function fetchVercelProjects(
 
     return { success: true, data };
   } catch (err: any) {
-    return { success: false, error: err.message || "Failed to fetch from Vercel" };
+    return {
+      success: false,
+      error: err.message || "Failed to fetch from Vercel",
+    };
   }
 }
 
@@ -369,13 +409,31 @@ export async function fetchNetlifySites(
   const tokenToUse = token || "db";
 
   // Handle mock credentials
-  if (tokenToUse.toLowerCase().trim() === "mock" || tokenToUse.toLowerCase().trim() === "demo") {
+  if (
+    tokenToUse.toLowerCase().trim() === "mock" ||
+    tokenToUse.toLowerCase().trim() === "demo"
+  ) {
     return {
       success: true,
       data: [
-        { id: "n1", name: "sveltekit-portfolio", url: "portfolio.netlify.app", type: "HTTP" },
-        { id: "n2", name: "static-docs-site", url: "docs.maker.io", type: "HTTP" },
-        { id: "n3", name: "landing-page-v2", url: "promo.netlify.app", type: "HTTP" },
+        {
+          id: "n1",
+          name: "sveltekit-portfolio",
+          url: "portfolio.netlify.app",
+          type: "HTTP",
+        },
+        {
+          id: "n2",
+          name: "static-docs-site",
+          url: "docs.maker.io",
+          type: "HTTP",
+        },
+        {
+          id: "n3",
+          name: "landing-page-v2",
+          url: "promo.netlify.app",
+          type: "HTTP",
+        },
       ],
     };
   }
@@ -412,12 +470,16 @@ export async function fetchNetlifySites(
 
     if (!res.ok) {
       const errorText = await res.text();
-      return { success: false, error: `Netlify API returned status ${res.status}: ${errorText}` };
+      return {
+        success: false,
+        error: `Netlify API returned status ${res.status}: ${errorText}`,
+      };
     }
 
     const sites = (await res.json()) as any[];
     const data = sites.map((s: any) => {
-      const domain = s.custom_domain || s.ssl_url || s.url || `${s.name}.netlify.app`;
+      const domain =
+        s.custom_domain || s.ssl_url || s.url || `${s.name}.netlify.app`;
       // Clean up protocol for display url
       const cleanUrl = domain.replace(/^https?:\/\//, "");
       return {
@@ -430,7 +492,10 @@ export async function fetchNetlifySites(
 
     return { success: true, data };
   } catch (err: any) {
-    return { success: false, error: err.message || "Failed to fetch from Netlify" };
+    return {
+      success: false,
+      error: err.message || "Failed to fetch from Netlify",
+    };
   }
 }
 
@@ -459,7 +524,8 @@ export async function connectNetlifyWithToken(token: string) {
     if (!userRes.ok) {
       return {
         success: false,
-        error: "Invalid Netlify API token. Please check your token and try again.",
+        error:
+          "Invalid Netlify API token. Please check your token and try again.",
       };
     }
 
@@ -499,7 +565,10 @@ export async function connectNetlifyWithToken(token: string) {
     };
   } catch (err: any) {
     console.error("Netlify token integration error:", err);
-    return { success: false, error: err.message || "An unexpected error occurred." };
+    return {
+      success: false,
+      error: err.message || "An unexpected error occurred.",
+    };
   }
 }
 
@@ -511,7 +580,10 @@ export async function fetchGitHubRepos(
 ): Promise<{ success: boolean; data?: ExternalResource[]; error?: string }> {
   const tokenToUse = token || "db";
 
-  if (tokenToUse.toLowerCase().trim() === "mock" || tokenToUse.toLowerCase().trim() === "demo") {
+  if (
+    tokenToUse.toLowerCase().trim() === "mock" ||
+    tokenToUse.toLowerCase().trim() === "demo"
+  ) {
     return {
       success: true,
       data: [
@@ -561,17 +633,23 @@ export async function fetchGitHubRepos(
   }
 
   try {
-    const res = await fetch("https://api.github.com/user/repos?per_page=100&sort=updated", {
-      headers: {
-        Authorization: `Bearer ${finalToken}`,
-        Accept: "application/vnd.github.v3+json",
-        "User-Agent": "PulseGuard",
+    const res = await fetch(
+      "https://api.github.com/user/repos?per_page=100&sort=updated",
+      {
+        headers: {
+          Authorization: `Bearer ${finalToken}`,
+          Accept: "application/vnd.github.v3+json",
+          "User-Agent": "PulseGuard",
+        },
       },
-    });
+    );
 
     if (!res.ok) {
       const errorText = await res.text();
-      return { success: false, error: `GitHub API returned status ${res.status}: ${errorText}` };
+      return {
+        success: false,
+        error: `GitHub API returned status ${res.status}: ${errorText}`,
+      };
     }
 
     const repos = (await res.json()) as any[];
@@ -589,7 +667,10 @@ export async function fetchGitHubRepos(
 
     return { success: true, data };
   } catch (err: any) {
-    return { success: false, error: err.message || "Failed to fetch from GitHub" };
+    return {
+      success: false,
+      error: err.message || "Failed to fetch from GitHub",
+    };
   }
 }
 
@@ -622,7 +703,8 @@ export async function connectGitHubWithToken(token: string) {
     if (!userRes.ok) {
       return {
         success: false,
-        error: "Invalid GitHub API token. Please check your token and try again.",
+        error:
+          "Invalid GitHub API token. Please check your token and try again.",
       };
     }
 
@@ -662,7 +744,10 @@ export async function connectGitHubWithToken(token: string) {
     };
   } catch (err: any) {
     console.error("GitHub token integration error:", err);
-    return { success: false, error: err.message || "An unexpected error occurred." };
+    return {
+      success: false,
+      error: err.message || "An unexpected error occurred.",
+    };
   }
 }
 
@@ -694,7 +779,10 @@ export async function getConnectedIntegrations() {
     return { success: true, data: integrations };
   } catch (err: any) {
     console.error("Failed to fetch connected integrations:", err);
-    return { success: false, error: err.message || "Failed to retrieve integrations" };
+    return {
+      success: false,
+      error: err.message || "Failed to retrieve integrations",
+    };
   }
 }
 
@@ -717,7 +805,10 @@ export async function disconnectIntegration(integrationId: string) {
     });
 
     if (!integration) {
-      return { success: false, error: "Integration not found or access denied" };
+      return {
+        success: false,
+        error: "Integration not found or access denied",
+      };
     }
 
     await prisma.userIntegration.delete({
@@ -729,7 +820,10 @@ export async function disconnectIntegration(integrationId: string) {
     return { success: true };
   } catch (err: any) {
     console.error("Failed to disconnect integration:", err);
-    return { success: false, error: err.message || "Failed to disconnect integration" };
+    return {
+      success: false,
+      error: err.message || "Failed to disconnect integration",
+    };
   }
 }
 
@@ -791,7 +885,8 @@ export async function connectVercelWithToken(token: string) {
     if (!userRes.ok) {
       return {
         success: false,
-        error: "Invalid Vercel API token. Please check your token and try again.",
+        error:
+          "Invalid Vercel API token. Please check your token and try again.",
       };
     }
 
@@ -865,7 +960,10 @@ export async function connectVercelWithToken(token: string) {
         }
       }
     } catch (err) {
-      console.error("Failed to fetch teams during Vercel token verification:", err);
+      console.error(
+        "Failed to fetch teams during Vercel token verification:",
+        err,
+      );
     }
 
     revalidatePath("/dashboard/integrations");
@@ -877,6 +975,9 @@ export async function connectVercelWithToken(token: string) {
     };
   } catch (err: any) {
     console.error("Vercel token integration error:", err);
-    return { success: false, error: err.message || "An unexpected error occurred." };
+    return {
+      success: false,
+      error: err.message || "An unexpected error occurred.",
+    };
   }
 }

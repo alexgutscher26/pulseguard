@@ -40,16 +40,17 @@ export async function getPrivacyReport(): Promise<PrivacyReport> {
 
   const userId = session.user.id;
 
-  const [monitorCount, eventCount, incidentCount, statusPageCount] = await Promise.all([
-    prisma.monitor.count({ where: { userId } }),
-    prisma.monitorEvent.count({
-      where: { monitor: { userId } },
-    }),
-    prisma.incident.count({
-      where: { monitor: { userId } },
-    }),
-    prisma.statusPage.count({ where: { userId } }),
-  ]);
+  const [monitorCount, eventCount, incidentCount, statusPageCount] =
+    await Promise.all([
+      prisma.monitor.count({ where: { userId } }),
+      prisma.monitorEvent.count({
+        where: { monitor: { userId } },
+      }),
+      prisma.incident.count({
+        where: { monitor: { userId } },
+      }),
+      prisma.statusPage.count({ where: { userId } }),
+    ]);
 
   let privacy = await prisma.userPrivacy.findUnique({
     where: { userId },
@@ -80,7 +81,8 @@ export async function getPrivacyReport(): Promise<PrivacyReport> {
     },
     {
       category: "Monitor Configuration",
-      description: "URLs, check intervals, headers, request bodies, scripts, alert rules",
+      description:
+        "URLs, check intervals, headers, request bodies, scripts, alert rules",
       collected: true,
       retention: "Until monitor deletion or account deletion",
       purpose: "Core monitoring functionality",
@@ -89,7 +91,8 @@ export async function getPrivacyReport(): Promise<PrivacyReport> {
     },
     {
       category: "Check Results (MonitorEvents)",
-      description: "Latency, status codes, error reasons, timestamps, probe region",
+      description:
+        "Latency, status codes, error reasons, timestamps, probe region",
       collected: true,
       retention: "90 days (Initiate), 1 year (Netrunner), 1 year+ (Construct)",
       purpose: "Uptime tracking, incident detection, SLA reports",
@@ -107,7 +110,8 @@ export async function getPrivacyReport(): Promise<PrivacyReport> {
     },
     {
       category: "Incident Data",
-      description: "Incident timelines, severity, post-mortems, resolution notes",
+      description:
+        "Incident timelines, severity, post-mortems, resolution notes",
       collected: true,
       retention: "Until incident deletion or account deletion",
       purpose: "Incident management, post-mortem analysis",
@@ -223,75 +227,76 @@ export async function exportPersonalData() {
 
   const userId = session.user.id;
 
-  const [user, monitors, events, incidents, channels, statusPages] = await Promise.all([
-    prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        timezone: true,
-        dateFormat: true,
-        timeFormat: true,
-        tier: true,
-        createdAt: true,
-      },
-    }),
-    prisma.monitor.findMany({
-      where: { userId },
-      select: {
-        id: true,
-        name: true,
-        url: true,
-        type: true,
-        interval: true,
-        timeout: true,
-        createdAt: true,
-      },
-    }),
-    prisma.monitorEvent.findMany({
-      where: { monitor: { userId } },
-      take: 10000,
-      orderBy: { timestamp: "desc" },
-      select: {
-        id: true,
-        status: true,
-        latency: true,
-        errorReason: true,
-        timestamp: true,
-        region: true,
-      },
-    }),
-    prisma.incident.findMany({
-      where: { monitor: { userId } },
-      select: {
-        id: true,
-        title: true,
-        status: true,
-        severity: true,
-        startedAt: true,
-        resolvedAt: true,
-      },
-    }),
-    prisma.notificationChannel.findMany({
-      where: { userId },
-      select: {
-        id: true,
-        name: true,
-        type: true,
-        createdAt: true,
-      },
-    }),
-    prisma.statusPage.findMany({
-      where: { userId },
-      select: {
-        id: true,
-        slug: true,
-        title: true,
-        createdAt: true,
-      },
-    }),
-  ]);
+  const [user, monitors, events, incidents, channels, statusPages] =
+    await Promise.all([
+      prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          timezone: true,
+          dateFormat: true,
+          timeFormat: true,
+          tier: true,
+          createdAt: true,
+        },
+      }),
+      prisma.monitor.findMany({
+        where: { userId },
+        select: {
+          id: true,
+          name: true,
+          url: true,
+          type: true,
+          interval: true,
+          timeout: true,
+          createdAt: true,
+        },
+      }),
+      prisma.monitorEvent.findMany({
+        where: { monitor: { userId } },
+        take: 10000,
+        orderBy: { timestamp: "desc" },
+        select: {
+          id: true,
+          status: true,
+          latency: true,
+          errorReason: true,
+          timestamp: true,
+          region: true,
+        },
+      }),
+      prisma.incident.findMany({
+        where: { monitor: { userId } },
+        select: {
+          id: true,
+          title: true,
+          status: true,
+          severity: true,
+          startedAt: true,
+          resolvedAt: true,
+        },
+      }),
+      prisma.notificationChannel.findMany({
+        where: { userId },
+        select: {
+          id: true,
+          name: true,
+          type: true,
+          createdAt: true,
+        },
+      }),
+      prisma.statusPage.findMany({
+        where: { userId },
+        select: {
+          id: true,
+          slug: true,
+          title: true,
+          createdAt: true,
+        },
+      }),
+    ]);
 
   return {
     exportedAt: new Date().toISOString(),

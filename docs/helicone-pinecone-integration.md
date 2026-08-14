@@ -257,7 +257,10 @@ import { generateText } from "ai";
 import { getHeliconeOpenAI } from "@/lib/ai/helicone-client";
 import { querySimilarIncidents } from "@/lib/ai/pinecone-client";
 
-export async function generateEnhancedPostMortem(incidentId: string, workspaceId: string) {
+export async function generateEnhancedPostMortem(
+  incidentId: string,
+  workspaceId: string,
+) {
   // 1. Fetch incident details & failure log
   const incident = await getIncidentDetails(incidentId);
 
@@ -271,7 +274,7 @@ export async function generateEnhancedPostMortem(incidentId: string, workspaceId
   const ragContext = similarIncidents
     .map(
       (inc) =>
-        `- Similar Incident: "${inc.metadata.title}" | Root Cause: ${inc.metadata.rootCause} | Resolution: ${inc.metadata.resolution}`
+        `- Similar Incident: "${inc.metadata.title}" | Root Cause: ${inc.metadata.rootCause} | Resolution: ${inc.metadata.resolution}`,
     )
     .join("\n");
 

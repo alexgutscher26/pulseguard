@@ -31,7 +31,9 @@ function ThemeToggleButton() {
   }, []);
 
   if (!mounted) {
-    return <div className="size-8 rounded-lg border border-border bg-background/50" />;
+    return (
+      <div className="size-8 rounded-lg border border-border bg-background/50" />
+    );
   }
 
   const theme = themeContext?.theme || "dark";
@@ -74,7 +76,9 @@ export default function LandingHeader() {
             <div className="p-1.5 bg-primary/5 border border-primary/10 rounded-lg group-hover:border-primary/30 group-hover:bg-primary/10 transition-all duration-300">
               <Activity className="size-4.5 text-primary" />
             </div>
-            <span className="font-bold text-foreground text-sm tracking-tight">PulseGuard</span>
+            <span className="font-bold text-foreground text-sm tracking-tight">
+              PulseGuard
+            </span>
           </Link>
         </div>
 
@@ -182,7 +186,10 @@ export default function LandingHeader() {
             { name: "Use Cases", href: "/use-cases" },
             { name: "Demo", href: "/demo" },
             { name: "Pricing", href: "/#pricing" },
-            { name: "Docs", href: "https://pulse-41cf5b0d.mintlify.site/introduction" },
+            {
+              name: "Docs",
+              href: "https://pulse-41cf5b0d.mintlify.site/introduction",
+            },
           ].map((item) => (
             <Link
               key={item.name}

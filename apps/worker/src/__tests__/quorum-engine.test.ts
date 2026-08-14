@@ -3,7 +3,9 @@ import { evaluateQuorum, QuorumEngine } from "../services/quorum-engine";
 import type { ProbeCheckResult } from "@pulseguard/types";
 
 describe("Quorum Engine — Zero False Positive Consensus Verification", () => {
-  const createMockResults = (overrides: Partial<ProbeCheckResult>[]): ProbeCheckResult[] => {
+  const createMockResults = (
+    overrides: Partial<ProbeCheckResult>[],
+  ): ProbeCheckResult[] => {
     const defaultRegions = [
       { region: "wnam", asn: "AS13335" },
       { region: "enam", asn: "AS13335" },
@@ -131,7 +133,12 @@ describe("Quorum Engine — Zero False Positive Consensus Verification", () => {
       { region: "eeur", latency: 45 },
       { region: "apac", latency: 50 },
       { region: "apac-ne", latency: 48 },
-      { region: "apac-se", latency: 20000, status: "DOWN", errorReason: "Socket Timeout" },
+      {
+        region: "apac-se",
+        latency: 20000,
+        status: "DOWN",
+        errorReason: "Socket Timeout",
+      },
     ]);
 
     const evaluation = evaluateQuorum("mon-123", results);

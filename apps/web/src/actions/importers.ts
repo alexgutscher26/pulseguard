@@ -28,12 +28,15 @@ export async function fetchBetterStackMonitors(apiKey: string): Promise<{
   }
 
   try {
-    const response = await fetch("https://uptime.betterstack.com/api/v2/monitors", {
-      headers: {
-        Authorization: `Bearer ${cleanKey}`,
-        "Content-Type": "application/json",
+    const response = await fetch(
+      "https://uptime.betterstack.com/api/v2/monitors",
+      {
+        headers: {
+          Authorization: `Bearer ${cleanKey}`,
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
 
     if (!response.ok) {
       return {
@@ -54,7 +57,10 @@ export async function fetchBetterStackMonitors(apiKey: string): Promise<{
       const targetUrl = attrs.url || attrs.pronounceable_name || "";
 
       return {
-        name: attrs.pronounceable_name || targetUrl || `BetterStack Monitor ${item.id}`,
+        name:
+          attrs.pronounceable_name ||
+          targetUrl ||
+          `BetterStack Monitor ${item.id}`,
         url: targetUrl,
         type: mappedType,
         interval: 60,
@@ -160,20 +166,27 @@ export async function parseCsvOrJsonMonitors(content: string): Promise<{
     try {
       const parsed = JSON.parse(raw);
       const list = Array.isArray(parsed) ? parsed : parsed.monitors || [parsed];
-      const normalized: NormalizedImportMonitor[] = list.map((item: any, idx: number) => {
-        let type: "HTTP" | "PING" | "PORT" = "HTTP";
-        const rawType = (item.type || "").toUpperCase();
-        if (rawType.includes("PING")) type = "PING";
-        else if (rawType.includes("PORT") || rawType.includes("TCP")) type = "PORT";
+      const normalized: NormalizedImportMonitor[] = list.map(
+        (item: any, idx: number) => {
+          let type: "HTTP" | "PING" | "PORT" = "HTTP";
+          const rawType = (item.type || "").toUpperCase();
+          if (rawType.includes("PING")) type = "PING";
+          else if (rawType.includes("PORT") || rawType.includes("TCP"))
+            type = "PORT";
 
-        return {
-          name: item.name || item.friendly_name || item.url || `Imported Monitor ${idx + 1}`,
-          url: item.url || item.website_url || item.hostname || "",
-          type,
-          interval: 60,
-          selected: true,
-        };
-      });
+          return {
+            name:
+              item.name ||
+              item.friendly_name ||
+              item.url ||
+              `Imported Monitor ${idx + 1}`,
+            url: item.url || item.website_url || item.hostname || "",
+            type,
+            interval: 60,
+            selected: true,
+          };
+        },
+      );
 
       return { success: true, monitors: normalized };
     } catch {
@@ -184,7 +197,8 @@ export async function parseCsvOrJsonMonitors(content: string): Promise<{
   // Parse CSV
   try {
     const lines = raw.split(/\r?\n/).filter((l) => l.trim().length > 0);
-    if (lines.length === 0) return { success: false, error: "Empty CSV content." };
+    if (lines.length === 0)
+      return { success: false, error: "Empty CSV content." };
 
     const firstLine = lines[0].toLowerCase();
     const hasHeader = firstLine.includes("url") || firstLine.includes("name");
@@ -192,7 +206,9 @@ export async function parseCsvOrJsonMonitors(content: string): Promise<{
 
     const normalized: NormalizedImportMonitor[] = [];
     for (let i = startIndex; i < lines.length; i++) {
-      const parts = lines[i].split(",").map((p) => p.trim().replace(/^["']|["']$/g, ""));
+      const parts = lines[i]
+        .split(",")
+        .map((p) => p.trim().replace(/^["']|["']$/g, ""));
       if (parts.length === 0) continue;
 
       let name = parts[0];
@@ -202,10 +218,15 @@ export async function parseCsvOrJsonMonitors(content: string): Promise<{
       if (parts.length >= 3) {
         const rawType = parts[2].toUpperCase();
         if (rawType.includes("PING")) type = "PING";
-        else if (rawType.includes("PORT") || rawType.includes("TCP")) type = "PORT";
+        else if (rawType.includes("PORT") || rawType.includes("TCP"))
+          type = "PORT";
       }
 
-      if (url.startsWith("http://") || url.startsWith("https://") || url.includes(".")) {
+      if (
+        url.startsWith("http://") ||
+        url.startsWith("https://") ||
+        url.includes(".")
+      ) {
         normalized.push({
           name: name || url,
           url,
@@ -217,11 +238,17 @@ export async function parseCsvOrJsonMonitors(content: string): Promise<{
     }
 
     if (normalized.length === 0) {
-      return { success: false, error: "Could not detect valid monitor URLs in CSV/JSON data." };
+      return {
+        success: false,
+        error: "Could not detect valid monitor URLs in CSV/JSON data.",
+      };
     }
 
     return { success: true, monitors: normalized };
   } catch (e: any) {
-    return { success: false, error: "Failed to parse CSV/JSON format: " + e.message };
+    return {
+      success: false,
+      error: "Failed to parse CSV/JSON format: " + e.message,
+    };
   }
 }

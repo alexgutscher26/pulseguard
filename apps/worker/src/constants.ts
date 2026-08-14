@@ -24,7 +24,8 @@ export const MonitorStatus = {
   MAINTENANCE: "MAINTENANCE",
 } as const;
 
-export type MonitorStatusValue = (typeof MonitorStatus)[keyof typeof MonitorStatus];
+export type MonitorStatusValue =
+  (typeof MonitorStatus)[keyof typeof MonitorStatus];
 
 export const CheckErrorReason = {
   TIMEOUT: "TIMEOUT",
@@ -45,7 +46,8 @@ export const CheckErrorReason = {
   BGP_CHECK_FAILED: "BGP_CHECK_FAILED",
 } as const;
 
-export type CheckErrorReasonValue = (typeof CheckErrorReason)[keyof typeof CheckErrorReason];
+export type CheckErrorReasonValue =
+  (typeof CheckErrorReason)[keyof typeof CheckErrorReason];
 
 export const NotificationType = {
   INCIDENT_CREATED: "INCIDENT_CREATED",
@@ -55,7 +57,8 @@ export const NotificationType = {
   CHECK_RESULT: "check_result",
 } as const;
 
-export type NotificationTypeValue = (typeof NotificationType)[keyof typeof NotificationType];
+export type NotificationTypeValue =
+  (typeof NotificationType)[keyof typeof NotificationType];
 
 export const AlertRuleTrigger = {
   LATENCY: "LATENCY",
@@ -63,7 +66,8 @@ export const AlertRuleTrigger = {
   SSL_EXPIRY: "SSL_EXPIRY",
 } as const;
 
-export type AlertRuleTriggerValue = (typeof AlertRuleTrigger)[keyof typeof AlertRuleTrigger];
+export type AlertRuleTriggerValue =
+  (typeof AlertRuleTrigger)[keyof typeof AlertRuleTrigger];
 
 export const ProxyError = {
   PROXY_UNAVAILABLE: "PROXY_UNAVAILABLE",
@@ -90,4 +94,5 @@ export const CircuitState = {
   CLOSED: "CLOSED",
 } as const;
 
-export type CircuitStateValue = (typeof CircuitState)[keyof typeof CircuitState];
+export type CircuitStateValue =
+  (typeof CircuitState)[keyof typeof CircuitState];

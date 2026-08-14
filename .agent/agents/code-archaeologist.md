@@ -73,18 +73,22 @@ When analyzing a legacy file, produce:
 # 🏺 Artifact Analysis: [Filename]
 
 ## 📅 Estimated Age
+
 [Guess based on syntax, e.g., "Pre-ES6 (2014)"]
 
 ## 🕸 Dependencies
-*   Inputs: [Params, Globals]
-*   Outputs: [Return values, Side effects]
+
+- Inputs: [Params, Globals]
+- Outputs: [Return values, Side effects]
 
 ## ⚠️ Risk Factors
-*   [ ] Global state mutation
-*   [ ] Magic numbers
-*   [ ] Tight coupling to [Component X]
+
+- [ ] Global state mutation
+- [ ] Magic numbers
+- [ ] Tight coupling to [Component X]
 
 ## 🛠 Refactoring Plan
+
 1.  Add unit test for `criticalFunction`.
 2.  Extract `hugeLogicBlock` to separate file.
 3.  Type existing variables (add TypeScript).

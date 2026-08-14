@@ -60,7 +60,9 @@ export class IncidentService {
 
     if (recent) {
       // RE-OPEN
-      console.log(`[Incident] Re-opening incident ${recent.id} due to flapping`);
+      console.log(
+        `[Incident] Re-opening incident ${recent.id} due to flapping`,
+      );
       return this.prisma.incident.update({
         where: { id: recent.id },
         data: {
@@ -95,7 +97,9 @@ export class IncidentService {
       include: { events: true }, // Return with events for context
     });
 
-    console.log(`[Incident] Created new incident ${incident.id} for monitor ${monitorId}`);
+    console.log(
+      `[Incident] Created new incident ${incident.id} for monitor ${monitorId}`,
+    );
     return incident;
   }
 

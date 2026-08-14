@@ -91,7 +91,10 @@ interface BGPViewPrefixResponse {
 }
 
 function extractHostname(domain: string): string {
-  return (domain.replace(/^https?:\/\//, "").split("/")[0] || "").split(":")[0] || domain;
+  return (
+    (domain.replace(/^https?:\/\//, "").split("/")[0] || "").split(":")[0] ||
+    domain
+  );
 }
 
 async function resolveToIP(hostname: string): Promise<string | null> {
@@ -116,7 +119,10 @@ async function resolveToIP(hostname: string): Promise<string | null> {
 async function fetchBGPViewIP(ip: string): Promise<BGPViewIPResponse | null> {
   try {
     const response = await fetch(`https://api.bgpview.io/ip/${ip}`, {
-      headers: { Accept: "application/json", "User-Agent": "PulseGuard-BGP-Monitor/1.0" },
+      headers: {
+        Accept: "application/json",
+        "User-Agent": "PulseGuard-BGP-Monitor/1.0",
+      },
       signal: AbortSignal.timeout(10000),
     });
     if (!response.ok) return null;
@@ -126,10 +132,15 @@ async function fetchBGPViewIP(ip: string): Promise<BGPViewIPResponse | null> {
   }
 }
 
-async function fetchBGPViewPrefix(prefix: string): Promise<BGPViewPrefixResponse | null> {
+async function fetchBGPViewPrefix(
+  prefix: string,
+): Promise<BGPViewPrefixResponse | null> {
   try {
     const response = await fetch(`https://api.bgpview.io/prefix/${prefix}`, {
-      headers: { Accept: "application/json", "User-Agent": "PulseGuard-BGP-Monitor/1.0" },
+      headers: {
+        Accept: "application/json",
+        "User-Agent": "PulseGuard-BGP-Monitor/1.0",
+      },
       signal: AbortSignal.timeout(10000),
     });
     if (!response.ok) return null;
@@ -145,7 +156,10 @@ async function fetchRIPEVisibility(ip: string): Promise<number | null> {
     const response = await fetch(
       `https://stat.ripe.net/data/routing-status/data.json?resource=${ip}`,
       {
-        headers: { Accept: "application/json", "User-Agent": "PulseGuard-BGP-Monitor/1.0" },
+        headers: {
+          Accept: "application/json",
+          "User-Agent": "PulseGuard-BGP-Monitor/1.0",
+        },
         signal: AbortSignal.timeout(5000),
       },
     );
@@ -264,7 +278,9 @@ export async function checkBGPTRoute(
   const prefixHijackRisk = prefixLen >= 24;
   if (prefixHijackRisk && prefixLen >= 24) {
     // Very specific prefixes (> /24 for IPv4) may indicate hijacking
-    anomalies.push(`Highly specific prefix (/${prefixLen}) — verify this is intentional`);
+    anomalies.push(
+      `Highly specific prefix (/${prefixLen}) — verify this is intentional`,
+    );
   }
 
   // 5. Check against expected ASN/prefix
@@ -289,7 +305,9 @@ export async function checkBGPTRoute(
   // 6. Check route visibility via RIPE RIS
   const visibilityCount = await fetchRIPEVisibility(resolvedIp);
   if (visibilityCount !== null && visibilityCount < 5) {
-    anomalies.push(`Limited route visibility: seen by only ${visibilityCount} RIPE RIS collectors`);
+    anomalies.push(
+      `Limited route visibility: seen by only ${visibilityCount} RIPE RIS collectors`,
+    );
   }
 
   const latency = Math.round(performance.now() - start);
@@ -305,7 +323,16 @@ export async function checkBGPTRoute(
 
   score = Math.max(0, Math.min(100, score));
 
-  const grade = score >= 90 ? "A" : score >= 75 ? "B" : score >= 60 ? "C" : score >= 40 ? "D" : "F";
+  const grade =
+    score >= 90
+      ? "A"
+      : score >= 75
+        ? "B"
+        : score >= 60
+          ? "C"
+          : score >= 40
+            ? "D"
+            : "F";
 
   const status = anomalies.length === 0 ? "UP" : "DOWN";
 

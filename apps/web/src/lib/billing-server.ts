@@ -1,6 +1,15 @@
 import db, { resetPrisma } from "@pulseguard/db";
-import { PLANS, type PlanTier, type UsageSummary, type UsageWarning } from "./billing";
-import { isFeatureEnabled, getFeatureError, type FeatureFlag } from "./feature-flags";
+import {
+  PLANS,
+  type PlanTier,
+  type UsageSummary,
+  type UsageWarning,
+} from "./billing";
+import {
+  isFeatureEnabled,
+  getFeatureError,
+  type FeatureFlag,
+} from "./feature-flags";
 import { sendUsageLimitWarning } from "@pulseguard/email";
 
 /**
@@ -67,7 +76,11 @@ export async function getUserPlan(userId: string): Promise<PlanTier> {
     return "INITIATE";
   }
 
-  const rawPlan = (subscription?.plan || user?.tier || "INITIATE").toUpperCase();
+  const rawPlan = (
+    subscription?.plan ||
+    user?.tier ||
+    "INITIATE"
+  ).toUpperCase();
   if (rawPlan === "ADMIN" || rawPlan === "ENTERPRISE") return "CONSTRUCT";
   if (rawPlan === "PRO") return "NETRUNNER";
   return rawPlan in PLANS ? (rawPlan as PlanTier) : "INITIATE";
@@ -76,30 +89,39 @@ export async function getUserPlan(userId: string): Promise<PlanTier> {
 /**
  * Fetch usage stats and quota limits for a given user (Server-only).
  */
-export async function getUserUsageSummary(userId: string): Promise<UsageSummary> {
+export async function getUserUsageSummary(
+  userId: string,
+): Promise<UsageSummary> {
   const plan = await getUserPlan(userId);
 
-  const [monitorsCount, alertChannelsCount, statusPagesCount, eventsCount, subscription] =
-    await Promise.all([
-      db.monitor.count({ where: { userId } }),
-      db.notificationChannel.count({ where: { userId } }),
-      db.statusPage.count({ where: { userId } }),
-      db.monitorEvent.count({
-        where: {
-          monitor: { userId },
-          timestamp: {
-            gte: new Date(new Date().setDate(1)), // Beginning of current month
-          },
+  const [
+    monitorsCount,
+    alertChannelsCount,
+    statusPagesCount,
+    eventsCount,
+    subscription,
+  ] = await Promise.all([
+    db.monitor.count({ where: { userId } }),
+    db.notificationChannel.count({ where: { userId } }),
+    db.statusPage.count({ where: { userId } }),
+    db.monitorEvent.count({
+      where: {
+        monitor: { userId },
+        timestamp: {
+          gte: new Date(new Date().setDate(1)), // Beginning of current month
         },
-      }),
-      db.subscription.findUnique({ where: { userId } }).catch(() => null),
-    ]);
+      },
+    }),
+    db.subscription.findUnique({ where: { userId } }).catch(() => null),
+  ]);
 
   const details = PLANS[plan];
 
   const warnings: UsageWarning[] = [];
 
-  const monitorPct = Math.round((monitorsCount / details.limits.maxMonitors) * 100);
+  const monitorPct = Math.round(
+    (monitorsCount / details.limits.maxMonitors) * 100,
+  );
   if (monitorPct >= 80) {
     warnings.push({
       resource: "monitors",
@@ -110,7 +132,9 @@ export async function getUserUsageSummary(userId: string): Promise<UsageSummary>
     });
   }
 
-  const alertChannelPct = Math.round((alertChannelsCount / details.limits.maxAlertChannels) * 100);
+  const alertChannelPct = Math.round(
+    (alertChannelsCount / details.limits.maxAlertChannels) * 100,
+  );
   if (alertChannelPct >= 80) {
     warnings.push({
       resource: "alertChannels",
@@ -121,7 +145,9 @@ export async function getUserUsageSummary(userId: string): Promise<UsageSummary>
     });
   }
 
-  const statusPagePct = Math.round((statusPagesCount / details.limits.maxStatusPages) * 100);
+  const statusPagePct = Math.round(
+    (statusPagesCount / details.limits.maxStatusPages) * 100,
+  );
   if (statusPagePct >= 80) {
     warnings.push({
       resource: "statusPages",
@@ -141,7 +167,10 @@ export async function getUserUsageSummary(userId: string): Promise<UsageSummary>
       const msRemaining = new Date(trialEnd).getTime() - Date.now();
       if (msRemaining > 0) {
         isTrialActive = true;
-        trialDaysRemaining = Math.max(1, Math.ceil(msRemaining / (1000 * 60 * 60 * 24)));
+        trialDaysRemaining = Math.max(
+          1,
+          Math.ceil(msRemaining / (1000 * 60 * 60 * 24)),
+        );
       }
     }
   }
@@ -230,18 +259,27 @@ export async function assertMonitorLimits(
     };
   }
 
-  if (params.interval !== undefined && params.interval < limits.minIntervalSeconds) {
+  if (
+    params.interval !== undefined &&
+    params.interval < limits.minIntervalSeconds
+  ) {
     return {
       allowed: false,
       error: `Minimum check interval for your current plan (${plan}) is ${limits.minIntervalSeconds}s.`,
     };
   }
 
-  if (params.type === "BROWSER" && !isFeatureEnabled(plan, "browser_monitors")) {
+  if (
+    params.type === "BROWSER" &&
+    !isFeatureEnabled(plan, "browser_monitors")
+  ) {
     return { allowed: false, error: getFeatureError("browser_monitors") };
   }
 
-  if (params.type === "SEQUENCE" && !isFeatureEnabled(plan, "sequence_monitors")) {
+  if (
+    params.type === "SEQUENCE" &&
+    !isFeatureEnabled(plan, "sequence_monitors")
+  ) {
     return { allowed: false, error: getFeatureError("sequence_monitors") };
   }
 
@@ -252,11 +290,17 @@ export async function assertMonitorLimits(
     return { allowed: false, error: getFeatureError("mcp_database_monitors") };
   }
 
-  if ((params.checkRegionsCount ?? 0) > 1 && !isFeatureEnabled(plan, "multi_region")) {
+  if (
+    (params.checkRegionsCount ?? 0) > 1 &&
+    !isFeatureEnabled(plan, "multi_region")
+  ) {
     return { allowed: false, error: getFeatureError("multi_region") };
   }
 
-  if (params.dynamicThresholding && !isFeatureEnabled(plan, "dynamic_thresholding")) {
+  if (
+    params.dynamicThresholding &&
+    !isFeatureEnabled(plan, "dynamic_thresholding")
+  ) {
     return { allowed: false, error: getFeatureError("dynamic_thresholding") };
   }
 
@@ -290,12 +334,21 @@ export async function assertStatusPageLimits(
     return { allowed: false, error: getFeatureError("custom_domains") };
   }
 
-  if (params.isPasswordProtected && !isFeatureEnabled(plan, "private_status_pages")) {
+  if (
+    params.isPasswordProtected &&
+    !isFeatureEnabled(plan, "private_status_pages")
+  ) {
     return { allowed: false, error: getFeatureError("private_status_pages") };
   }
 
-  if (params.isWhiteLabeled && !isFeatureEnabled(plan, "white_label_status_pages")) {
-    return { allowed: false, error: getFeatureError("white_label_status_pages") };
+  if (
+    params.isWhiteLabeled &&
+    !isFeatureEnabled(plan, "white_label_status_pages")
+  ) {
+    return {
+      allowed: false,
+      error: getFeatureError("white_label_status_pages"),
+    };
   }
 
   return { allowed: true };
@@ -326,11 +379,20 @@ export async function assertNotificationChannelLimits(
     return { allowed: false, error: getFeatureError("sms_alerts") };
   }
 
-  if (params.type === "WEBHOOK" && !isFeatureEnabled(plan, "custom_webhooks_pagerduty")) {
-    return { allowed: false, error: getFeatureError("custom_webhooks_pagerduty") };
+  if (
+    params.type === "WEBHOOK" &&
+    !isFeatureEnabled(plan, "custom_webhooks_pagerduty")
+  ) {
+    return {
+      allowed: false,
+      error: getFeatureError("custom_webhooks_pagerduty"),
+    };
   }
 
-  if (params.type === "PAGERDUTY" && !isFeatureEnabled(plan, "pagerduty_integration")) {
+  if (
+    params.type === "PAGERDUTY" &&
+    !isFeatureEnabled(plan, "pagerduty_integration")
+  ) {
     return { allowed: false, error: getFeatureError("pagerduty_integration") };
   }
 
@@ -368,11 +430,15 @@ export async function assertManualCheckRateLimit(
   const now = Date.now();
   const windowStart = now - windowMs;
 
-  const timestamps = (g.__mcStore!.get(key) ?? []).filter((ts) => ts > windowStart);
+  const timestamps = (g.__mcStore!.get(key) ?? []).filter(
+    (ts) => ts > windowStart,
+  );
 
   if (timestamps.length >= maxChecks) {
     const oldestInWindow = timestamps[0]!;
-    const retryAfterSeconds = Math.ceil((oldestInWindow + windowMs - now) / 1000);
+    const retryAfterSeconds = Math.ceil(
+      (oldestInWindow + windowMs - now) / 1000,
+    );
     const windowMinutes = limits.manualCheckWindowSeconds / 60;
     return {
       allowed: false,

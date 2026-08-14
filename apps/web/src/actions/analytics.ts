@@ -55,7 +55,10 @@ export async function recordStatusPageView(pageId: string) {
  * @param {string} pageId - The ID of the status page for which analytics are being fetched.
  * @param {number} [days=30] - The number of days to look back for analytics data.
  */
-export async function getStatusPageAnalytics(pageId: string, days: number = 30) {
+export async function getStatusPageAnalytics(
+  pageId: string,
+  days: number = 30,
+) {
   // Basic verification of ownership should happen in the parent component or here if we pass session.
   // Assuming caller checks permissions for now as this is detailed data.
 
@@ -80,7 +83,10 @@ export async function getStatusPageAnalytics(pageId: string, days: number = 30) 
     });
 
     // Process data for Chart (Group by Day)
-    const groupedMap = new Map<string, { date: string; views: number; uniques: Set<string> }>();
+    const groupedMap = new Map<
+      string,
+      { date: string; views: number; uniques: Set<string> }
+    >();
 
     // Fill empty days? Ideally yes, but let's start with raw data.
     // Actually, charts look better with 0s.

@@ -49,13 +49,11 @@ A typical changeset file looks like this:
 
 ```yaml
 ---
-
 "@pulseguard/core": minor
 
 "@pulseguard/worker": minor
 
 ---
-
 ## Added
 
 - New API endpoint /auth/signup-invite for invite-based registration.

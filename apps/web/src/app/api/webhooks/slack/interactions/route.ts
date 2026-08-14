@@ -33,7 +33,10 @@ export async function POST(req: NextRequest) {
     const signature = headers.get("x-slack-signature");
 
     if (!timestamp || !signature) {
-      return NextResponse.json({ error: "Missing Slack verification headers" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing Slack verification headers" },
+        { status: 400 },
+      );
     }
 
     // Prevent replay attacks (5 minute window)
@@ -45,18 +48,27 @@ export async function POST(req: NextRequest) {
     const signingSecret = env.SLACK_SIGNING_SECRET;
     if (!signingSecret) {
       console.error("SLACK_SIGNING_SECRET is not configured");
-      return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
+      return NextResponse.json(
+        { error: "Server configuration error" },
+        { status: 500 },
+      );
     }
 
     const baseString = `v0:${timestamp}:${text}`;
-    const hmac = crypto.createHmac("sha256", signingSecret).update(baseString).digest("hex");
+    const hmac = crypto
+      .createHmac("sha256", signingSecret)
+      .update(baseString)
+      .digest("hex");
     const calculatedSignature = `v0=${hmac}`;
 
     // Secure comparison to prevent timing attacks
     const target = Buffer.from(signature);
     const calculated = Buffer.from(calculatedSignature);
 
-    if (target.length !== calculated.length || !crypto.timingSafeEqual(target, calculated)) {
+    if (
+      target.length !== calculated.length ||
+      !crypto.timingSafeEqual(target, calculated)
+    ) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
     }
 
@@ -129,6 +141,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ status: "ok" });
   } catch (error) {
     console.error("Slack Interaction Error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
 }

@@ -13,13 +13,20 @@ export function UsageLimitBanner({ summary }: UsageLimitBannerProps) {
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
-    const isDismissed = sessionStorage.getItem("pulseguard_dismissed_usage_alert");
+    const isDismissed = sessionStorage.getItem(
+      "pulseguard_dismissed_usage_alert",
+    );
     if (isDismissed === "true") {
       setDismissed(true);
     }
   }, []);
 
-  if (dismissed || !summary || !summary.isApproachingLimit || summary.warnings.length === 0) {
+  if (
+    dismissed ||
+    !summary ||
+    !summary.isApproachingLimit ||
+    summary.warnings.length === 0
+  ) {
     return null;
   }
 
@@ -47,7 +54,10 @@ export function UsageLimitBanner({ summary }: UsageLimitBannerProps) {
 
             <div className="mt-2 flex flex-wrap items-center gap-4 text-xs text-zinc-300">
               {summary.warnings.map((w) => (
-                <div key={w.resource} className="flex items-center gap-2 min-w-[180px]">
+                <div
+                  key={w.resource}
+                  className="flex items-center gap-2 min-w-[180px]"
+                >
                   <span className="font-mono text-zinc-400">{w.label}:</span>
                   <span className="font-mono font-bold text-amber-300">
                     {w.used}/{w.limit} ({w.percentage}%)

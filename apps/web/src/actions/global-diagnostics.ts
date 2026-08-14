@@ -58,7 +58,11 @@ const COUNTRY_FLAGS: Record<string, string> = {
  */
 export async function runGlobalpingDiagnostics(
   targetUrl: string,
-): Promise<{ success: boolean; data?: GlobalpingDiagnosticReport; error?: string }> {
+): Promise<{
+  success: boolean;
+  data?: GlobalpingDiagnosticReport;
+  error?: string;
+}> {
   try {
     if (!targetUrl) {
       return { success: false, error: "Target URL is required" };
@@ -93,7 +97,8 @@ export async function runGlobalpingDiagnostics(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "User-Agent": "PulseGuard-AdHoc-Diagnostics/2.0 (+https://pulseguard.io)",
+        "User-Agent":
+          "PulseGuard-AdHoc-Diagnostics/2.0 (+https://pulseguard.io)",
       },
       body: JSON.stringify(reqBody),
       signal: AbortSignal.timeout(10_000),
@@ -109,7 +114,10 @@ export async function runGlobalpingDiagnostics(
 
     const { id } = (await postRes.json()) as { id: string };
     if (!id) {
-      return { success: false, error: "Failed to allocate measurement ID from Globalping" };
+      return {
+        success: false,
+        error: "Failed to allocate measurement ID from Globalping",
+      };
     }
 
     // Poll for measurement completion (up to 8 iterations, ~12s max)
@@ -119,12 +127,16 @@ export async function runGlobalpingDiagnostics(
     for (let i = 0; i < 8; i++) {
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      const pollRes = await fetch(`https://api.globalping.io/v1/measurements/${id}`, {
-        headers: {
-          "User-Agent": "PulseGuard-AdHoc-Diagnostics/2.0 (+https://pulseguard.io)",
+      const pollRes = await fetch(
+        `https://api.globalping.io/v1/measurements/${id}`,
+        {
+          headers: {
+            "User-Agent":
+              "PulseGuard-AdHoc-Diagnostics/2.0 (+https://pulseguard.io)",
+          },
+          signal: AbortSignal.timeout(6000),
         },
-        signal: AbortSignal.timeout(6000),
-      });
+      );
 
       if (pollRes.ok) {
         const data = (await pollRes.json()) as any;
@@ -137,7 +149,10 @@ export async function runGlobalpingDiagnostics(
     }
 
     if (!isComplete && rawResults.length === 0) {
-      return { success: false, error: "Globalping measurement timed out waiting for probes" };
+      return {
+        success: false,
+        error: "Globalping measurement timed out waiting for probes",
+      };
     }
 
     const probeResults: GlobalpingProbeResult[] = rawResults.map((r: any) => {
@@ -145,12 +160,16 @@ export async function runGlobalpingDiagnostics(
       const result = r.result || {};
       const timings = result.timings || {};
 
-      const totalLatency = Math.round(timings.total || result.rawOutput?.length || 0);
+      const totalLatency = Math.round(
+        timings.total || result.rawOutput?.length || 0,
+      );
       const dnsTime = timings.dns ? Math.round(timings.dns) : undefined;
       const tlsTime = timings.tls ? Math.round(timings.tls) : undefined;
-      const statusCode = result.statusCode || (result.status === "finished" ? 200 : undefined);
+      const statusCode =
+        result.statusCode || (result.status === "finished" ? 200 : undefined);
       const isOk =
-        result.status === "finished" && (!statusCode || (statusCode >= 200 && statusCode < 400));
+        result.status === "finished" &&
+        (!statusCode || (statusCode >= 200 && statusCode < 400));
       const isSlow = totalLatency > 800;
 
       const countryCode = probe.country || "US";
@@ -169,12 +188,16 @@ export async function runGlobalpingDiagnostics(
         statusCode,
         status: isOk ? (isSlow ? "SLOW" : "OK") : "FAILED",
         resolvedIp: result.resolvedAddress || probe.resolvers?.[0],
-        error: isOk ? undefined : result.rawOutput?.slice(0, 100) || "Probe Connection Failed",
+        error: isOk
+          ? undefined
+          : result.rawOutput?.slice(0, 100) || "Probe Connection Failed",
       };
     });
 
     const successfulProbes = probeResults.filter((p) => p.status !== "FAILED");
-    const latencies = successfulProbes.map((p) => p.latencyMs).filter((l) => l > 0);
+    const latencies = successfulProbes
+      .map((p) => p.latencyMs)
+      .filter((l) => l > 0);
 
     const averageLatencyMs =
       latencies.length > 0
@@ -199,7 +222,9 @@ export async function runGlobalpingDiagnostics(
   } catch (err: any) {
     return {
       success: false,
-      error: err.message || "An unexpected error occurred executing Globalping diagnostics",
+      error:
+        err.message ||
+        "An unexpected error occurred executing Globalping diagnostics",
     };
   }
 }

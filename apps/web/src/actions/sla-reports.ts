@@ -47,7 +47,11 @@ export async function getSlaReport(
   const startDate = new Date();
   startDate.setDate(startDate.getDate() - (days - 1));
   const startUtc = new Date(
-    Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()),
+    Date.UTC(
+      startDate.getFullYear(),
+      startDate.getMonth(),
+      startDate.getDate(),
+    ),
   );
 
   // 1. Fetch completed days from DailyMonitorSummary
@@ -60,7 +64,9 @@ export async function getSlaReport(
   });
 
   // 2. Calculate "Today" (or partial day since last summary)
-  const todayUtc = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  const todayUtc = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
+  );
 
   // Check if we already have today in history
   const hasToday = history.some((h) => h.date.getTime() === todayUtc.getTime());
@@ -125,7 +131,9 @@ export async function getSlaReport(
   }
 
   // Sort again just in case
-  allDays.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  allDays.sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+  );
 
   // 4. Aggregate
   const totalUp = allDays.reduce((sum, d) => sum + d.checksUp, 0);
@@ -136,7 +144,8 @@ export async function getSlaReport(
   // Weighted Average Uptime
   // If we have 0 checks, we default to 100% (innocent until proven guilty) or 0%?
   // Usually "No Data" is handled by UI, but here we return 100 if no checksDown.
-  const overallUptime = totalUp + totalDown > 0 ? (totalUp / (totalUp + totalDown)) * 100 : 100;
+  const overallUptime =
+    totalUp + totalDown > 0 ? (totalUp / (totalUp + totalDown)) * 100 : 100;
 
   return {
     monitorId,

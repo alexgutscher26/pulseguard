@@ -15,7 +15,8 @@ interface LogLine {
 
 type TerminalTheme = "cyan" | "matrix" | "amber" | "red";
 
-const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";
+const WORKER_URL =
+  process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";
 
 const THEME_STYLES: Record<
   TerminalTheme,
@@ -123,7 +124,11 @@ export function TerminalView() {
           type: "output",
           timestamp: getTimestamp(),
         },
-        { text: "TERMINAL CONNECTION ONLINE.", type: "success", timestamp: getTimestamp() },
+        {
+          text: "TERMINAL CONNECTION ONLINE.",
+          type: "success",
+          timestamp: getTimestamp(),
+        },
         {
           text: "Type 'help' to review operators database. Press 'Tab' to autocomplete.",
           type: "info",
@@ -180,7 +185,8 @@ export function TerminalView() {
       } else if (wsBaseUrl.startsWith("https://")) {
         wsBaseUrl = wsBaseUrl.replace("https://", "wss://");
       } else if (!wsBaseUrl.includes("://")) {
-        const protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+        const protocol =
+          window.location.protocol === "https:" ? "wss://" : "ws://";
         wsBaseUrl = `${protocol}${wsBaseUrl}`;
       }
 
@@ -198,7 +204,10 @@ export function TerminalView() {
               if (data.type === "check_result") {
                 const time = getTimestamp();
                 const logText = `[STREAM] Target "${monitor.name}" (${monitor.id.substring(0, 8)}) check: ${data.status} (${data.latency}ms) [Region: ${data.region || "Global"}]`;
-                setHistory((prev) => [...prev, { text: logText, type: "stream", timestamp: time }]);
+                setHistory((prev) => [
+                  ...prev,
+                  { text: logText, type: "stream", timestamp: time },
+                ]);
               }
             } catch {
               // Silently catch parsing failures
@@ -207,7 +216,11 @@ export function TerminalView() {
 
           sockets.push(ws);
         } catch (err) {
-          console.warn("Failed to open WebSocket in Terminal Mode:", monitor.id, err);
+          console.warn(
+            "Failed to open WebSocket in Terminal Mode:",
+            monitor.id,
+            err,
+          );
         }
       });
     }
@@ -270,14 +283,38 @@ export function TerminalView() {
     switch (command) {
       case "help":
         addLog("PulseGuard Cybernetic System Console Commands:", "info");
-        addLog("  list / ls              List all active monitors and statuses", "info");
-        addLog("  check <id/name>        Query diagnostic check sequence on monitor", "info");
-        addLog("  ping <url/id>          Execute live HTTP ping probe latency test", "info");
-        addLog("  logs <id/name>         Fetch last 10 latency log sequences", "info");
-        addLog("  status                 Display global system health matrix summary", "info");
-        addLog("  stats                  Display node process & websocket metrics", "info");
-        addLog("  theme <matrix|amber|cyan|red> Switch terminal color aesthetic", "info");
-        addLog("  curl <url>             Perform quick HTTP HEAD request diagnostics", "info");
+        addLog(
+          "  list / ls              List all active monitors and statuses",
+          "info",
+        );
+        addLog(
+          "  check <id/name>        Query diagnostic check sequence on monitor",
+          "info",
+        );
+        addLog(
+          "  ping <url/id>          Execute live HTTP ping probe latency test",
+          "info",
+        );
+        addLog(
+          "  logs <id/name>         Fetch last 10 latency log sequences",
+          "info",
+        );
+        addLog(
+          "  status                 Display global system health matrix summary",
+          "info",
+        );
+        addLog(
+          "  stats                  Display node process & websocket metrics",
+          "info",
+        );
+        addLog(
+          "  theme <matrix|amber|cyan|red> Switch terminal color aesthetic",
+          "info",
+        );
+        addLog(
+          "  curl <url>             Perform quick HTTP HEAD request diagnostics",
+          "info",
+        );
         addLog("  clear                  Reset console screen buffer", "info");
         addLog("  exit                   Return to standard interface", "info");
         break;
@@ -285,7 +322,10 @@ export function TerminalView() {
       case "list":
       case "ls":
         if (monitors.length === 0) {
-          addLog("No active monitor targets detected in configuration.", "error");
+          addLog(
+            "No active monitor targets detected in configuration.",
+            "error",
+          );
           break;
         }
         addLog(
@@ -303,7 +343,11 @@ export function TerminalView() {
           const status = m.status.padEnd(9);
           addLog(
             `${shortId}   ${name} ${status} ${m.url}`,
-            m.status === "UP" ? "success" : m.status === "DOWN" ? "error" : "output",
+            m.status === "UP"
+              ? "success"
+              : m.status === "DOWN"
+                ? "error"
+                : "output",
           );
         });
         addLog(
@@ -314,16 +358,24 @@ export function TerminalView() {
 
       case "check": {
         if (args.length === 0) {
-          addLog("Syntax error: check <id/name>. Specify monitor node ID or name.", "error");
+          addLog(
+            "Syntax error: check <id/name>. Specify monitor node ID or name.",
+            "error",
+          );
           break;
         }
         const searchArg = args.join(" ").toLowerCase();
         const target = monitors.find(
-          (m: any) => m.id.startsWith(searchArg) || m.name.toLowerCase().includes(searchArg),
+          (m: any) =>
+            m.id.startsWith(searchArg) ||
+            m.name.toLowerCase().includes(searchArg),
         );
 
         if (!target) {
-          addLog(`Target check error: Monitor matching "${searchArg}" not found.`, "error");
+          addLog(
+            `Target check error: Monitor matching "${searchArg}" not found.`,
+            "error",
+          );
           break;
         }
 
@@ -334,7 +386,10 @@ export function TerminalView() {
         try {
           const result = await checkMonitor(target.id);
           if (result.success) {
-            addLog(`[SUCCESS] Ping complete. Target online. Status: UP.`, "success");
+            addLog(
+              `[SUCCESS] Ping complete. Target online. Status: UP.`,
+              "success",
+            );
           } else {
             addLog(
               `[FAIL] Target unreachable. Reason: ${result.error || "Timeout"}. Status: DOWN.`,
@@ -349,18 +404,26 @@ export function TerminalView() {
 
       case "ping": {
         if (args.length === 0) {
-          addLog("Syntax error: ping <url/id>. Example: ping https://google.com", "error");
+          addLog(
+            "Syntax error: ping <url/id>. Example: ping https://google.com",
+            "error",
+          );
           break;
         }
         const targetInput = args[0];
         let targetUrl = targetInput;
         const matchingMon = monitors.find(
-          (m: any) => m.id.startsWith(targetInput) || m.name.toLowerCase().includes(targetInput),
+          (m: any) =>
+            m.id.startsWith(targetInput) ||
+            m.name.toLowerCase().includes(targetInput),
         );
         if (matchingMon) {
           targetUrl = matchingMon.url;
         }
-        if (!targetUrl.startsWith("http://") && !targetUrl.startsWith("https://")) {
+        if (
+          !targetUrl.startsWith("http://") &&
+          !targetUrl.startsWith("https://")
+        ) {
           targetUrl = `https://${targetUrl}`;
         }
 
@@ -372,16 +435,24 @@ export function TerminalView() {
             await fetch(targetUrl, { method: "HEAD", mode: "no-cors" });
             const duration = Math.round(performance.now() - start);
             latencies.push(duration);
-            addLog(`Reply from ${targetUrl}: seq=${i} time=${duration}ms status=200 OK`, "success");
+            addLog(
+              `Reply from ${targetUrl}: seq=${i} time=${duration}ms status=200 OK`,
+              "success",
+            );
           } catch {
             const duration = Math.round(performance.now() - start);
             latencies.push(duration);
-            addLog(`Reply from ${targetUrl}: seq=${i} time=${duration}ms (no-cors mode)`, "info");
+            addLog(
+              `Reply from ${targetUrl}: seq=${i} time=${duration}ms (no-cors mode)`,
+              "info",
+            );
           }
           await new Promise((res) => setTimeout(res, 400));
         }
 
-        const avg = Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length);
+        const avg = Math.round(
+          latencies.reduce((a, b) => a + b, 0) / latencies.length,
+        );
         const min = Math.min(...latencies);
         const max = Math.max(...latencies);
         addLog(
@@ -393,37 +464,62 @@ export function TerminalView() {
 
       case "logs": {
         if (args.length === 0) {
-          addLog("Syntax error: logs <id/name>. Specify monitor node ID or name.", "error");
+          addLog(
+            "Syntax error: logs <id/name>. Specify monitor node ID or name.",
+            "error",
+          );
           break;
         }
         const searchArg = args.join(" ").toLowerCase();
         const target = monitors.find(
-          (m: any) => m.id.startsWith(searchArg) || m.name.toLowerCase().includes(searchArg),
+          (m: any) =>
+            m.id.startsWith(searchArg) ||
+            m.name.toLowerCase().includes(searchArg),
         );
 
         if (!target) {
-          addLog(`Logs fetch error: Monitor matching "${searchArg}" not found.`, "error");
+          addLog(
+            `Logs fetch error: Monitor matching "${searchArg}" not found.`,
+            "error",
+          );
           break;
         }
 
-        addLog(`[FETCH] Loading latency history segments for "${target.name}"...`, "output");
+        addLog(
+          `[FETCH] Loading latency history segments for "${target.name}"...`,
+          "output",
+        );
         try {
           const historyLogs = await getMonitorLatencyHistory(target.id);
           if (!historyLogs || historyLogs.length === 0) {
             addLog("No history events available for this monitor.", "info");
             break;
           }
-          addLog("--------------------------------------------------", "output");
+          addLog(
+            "--------------------------------------------------",
+            "output",
+          );
           addLog("TIMESTAMP             AVG       P95       STATUS", "info");
-          addLog("--------------------------------------------------", "output");
+          addLog(
+            "--------------------------------------------------",
+            "output",
+          );
           historyLogs.slice(0, 10).forEach((h: any) => {
-            const time = new Date(h.timestamp).toLocaleString().substring(0, 19);
+            const time = new Date(h.timestamp)
+              .toLocaleString()
+              .substring(0, 19);
             const avg = `${h.avgLatency}ms`.padEnd(9);
             const p95 = `${h.p95Latency}ms`.padEnd(9);
             const status = h.avgLatency > 1000 ? "DOWN" : "UP";
-            addLog(`${time}   ${avg} ${p95} ${status}`, status === "UP" ? "success" : "error");
+            addLog(
+              `${time}   ${avg} ${p95} ${status}`,
+              status === "UP" ? "success" : "error",
+            );
           });
-          addLog("--------------------------------------------------", "output");
+          addLog(
+            "--------------------------------------------------",
+            "output",
+          );
         } catch (e: any) {
           addLog(`[ERROR] Failed to fetch metrics: ${e.message || e}`, "error");
         }
@@ -432,12 +528,20 @@ export function TerminalView() {
 
       case "status": {
         const upCount = monitors.filter((m: any) => m.status === "UP").length;
-        const downCount = monitors.filter((m: any) => m.status === "DOWN").length;
+        const downCount = monitors.filter(
+          (m: any) => m.status === "DOWN",
+        ).length;
         addLog("=== PULSEGUARD GLOBAL SYSTEM HEALTH MATRIX ===", "info");
         addLog(`Active Monitors Count : ${monitors.length}`, "output");
         addLog(`Operational Nodes     : ${upCount}`, "success");
-        addLog(`Degraded / Down Nodes : ${downCount}`, downCount > 0 ? "error" : "output");
-        addLog(`Edge Region Residents : 6 Active (EU, US-East, US-West, APAC, OCE, SA)`, "info");
+        addLog(
+          `Degraded / Down Nodes : ${downCount}`,
+          downCount > 0 ? "error" : "output",
+        );
+        addLog(
+          `Edge Region Residents : 6 Active (EU, US-East, US-West, APAC, OCE, SA)`,
+          "info",
+        );
         addLog(`System Status        : 100% OPERATIONAL`, "success");
         break;
       }
@@ -447,7 +551,10 @@ export function TerminalView() {
         addLog(`Client Runtime   : Next.js 16.1.4 (Turbopack)`, "output");
         addLog(`WebSocket Worker : ${WORKER_URL}`, "output");
         addLog(`Active WebSockets: ${monitors.length} streams`, "success");
-        addLog(`Environment Mode : ${process.env.NODE_ENV || "development"}`, "info");
+        addLog(
+          `Environment Mode : ${process.env.NODE_ENV || "development"}`,
+          "info",
+        );
         break;
       }
 
@@ -459,7 +566,10 @@ export function TerminalView() {
         const selected = args[0].toLowerCase() as TerminalTheme;
         if (selected in THEME_STYLES) {
           setTheme(selected);
-          addLog(`Terminal theme updated to [${selected.toUpperCase()}].`, "success");
+          addLog(
+            `Terminal theme updated to [${selected.toUpperCase()}].`,
+            "success",
+          );
         } else {
           addLog(
             `Invalid theme "${selected}". Available themes: cyan, matrix, amber, red`,
@@ -471,7 +581,10 @@ export function TerminalView() {
 
       case "curl": {
         if (args.length === 0) {
-          addLog("Syntax error: curl <url>. Example: curl https://api.pulseguard.io", "error");
+          addLog(
+            "Syntax error: curl <url>. Example: curl https://api.pulseguard.io",
+            "error",
+          );
           break;
         }
         let url = args[0];
@@ -570,22 +683,24 @@ export function TerminalView() {
         <div className="flex items-center gap-2">
           {/* Quick theme toggles */}
           <div className="hidden md:flex items-center gap-1.5 mr-2">
-            {(["cyan", "matrix", "amber", "red"] as TerminalTheme[]).map((t) => (
-              <button
-                key={t}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setTheme(t);
-                }}
-                className={`px-1.5 py-0.5 text-[9px] uppercase font-bold rounded border cursor-pointer transition-all ${
-                  theme === t
-                    ? "bg-zinc-800 text-white border-primary"
-                    : "text-zinc-500 border-zinc-800 hover:text-zinc-300"
-                }`}
-              >
-                {t}
-              </button>
-            ))}
+            {(["cyan", "matrix", "amber", "red"] as TerminalTheme[]).map(
+              (t) => (
+                <button
+                  key={t}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setTheme(t);
+                  }}
+                  className={`px-1.5 py-0.5 text-[9px] uppercase font-bold rounded border cursor-pointer transition-all ${
+                    theme === t
+                      ? "bg-zinc-800 text-white border-primary"
+                      : "text-zinc-500 border-zinc-800 hover:text-zinc-300"
+                  }`}
+                >
+                  {t}
+                </button>
+              ),
+            )}
           </div>
 
           <button
@@ -635,7 +750,9 @@ export function TerminalView() {
         className={`flex items-center gap-2 border-t ${currentTheme.border} pt-3 mt-3 relative z-30 shrink-0`}
       >
         <ArrowRight className={`size-3.5 ${currentTheme.accent} shrink-0`} />
-        <span className={`font-bold ${currentTheme.accent} tracking-tight shrink-0 text-xs`}>
+        <span
+          className={`font-bold ${currentTheme.accent} tracking-tight shrink-0 text-xs`}
+        >
           guest@pulseguard:~$
         </span>
         <div className="flex-1 relative flex items-center">

@@ -1,7 +1,10 @@
 "use client";
 
 import { useActionState, useState, useEffect } from "react";
-import { createMaintenanceWindow, deleteMaintenanceWindow } from "@/actions/maintenance";
+import {
+  createMaintenanceWindow,
+  deleteMaintenanceWindow,
+} from "@/actions/maintenance";
 import { toast } from "@/components/ui/sonner";
 import { Loader2, Plus, Calendar, Trash2, Construction } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -25,7 +28,10 @@ export function MaintenanceManager({
   monitorId: string;
   windows: MaintenanceWindow[];
 }) {
-  const [state, formAction, isPending] = useActionState(createMaintenanceWindow, initialState);
+  const [state, formAction, isPending] = useActionState(
+    createMaintenanceWindow,
+    initialState,
+  );
   const router = useRouter();
 
   // Reset form on success? Controlled inputs needed.

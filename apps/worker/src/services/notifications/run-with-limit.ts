@@ -5,7 +5,10 @@
  * @param limit - Maximum number of tasks running at the same time.
  * @returns The results of all tasks in input order.
  */
-export async function runWithLimit<T>(tasks: (() => Promise<T>)[], limit: number): Promise<T[]> {
+export async function runWithLimit<T>(
+  tasks: (() => Promise<T>)[],
+  limit: number,
+): Promise<T[]> {
   const results: T[] = new Array(tasks.length);
   let currentIndex = 0;
 
@@ -19,7 +22,9 @@ export async function runWithLimit<T>(tasks: (() => Promise<T>)[], limit: number
     }
   }
 
-  const workers = Array.from({ length: Math.min(limit, tasks.length) }).map(worker);
+  const workers = Array.from({ length: Math.min(limit, tasks.length) }).map(
+    worker,
+  );
   await Promise.all(workers);
   return results;
 }

@@ -37,7 +37,8 @@ export default function VisualDiffPage() {
             <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto font-mono">
               [ANALYZING DESIGN INTEGRITY...]
               <br />
-              Compare two URLs to detect UI mutations with pixel-perfect precision.
+              Compare two URLs to detect UI mutations with pixel-perfect
+              precision.
             </p>
           </div>
 

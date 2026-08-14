@@ -14,7 +14,8 @@ export default function NewsletterForm() {
           Get monitoring insights delivered
         </h2>
         <p className="text-muted-foreground text-sm leading-relaxed max-w-md mx-auto mb-8">
-          Engineering deep dives, product updates, and industry analysis. No spam — we promise.
+          Engineering deep dives, product updates, and industry analysis. No
+          spam — we promise.
         </p>
         <form
           onSubmit={(e) => e.preventDefault()}

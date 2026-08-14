@@ -20,6 +20,7 @@ export type ProbeHealthStatus = "ONLINE" | "DEGRADED" | "OFFLINE" | "FLAPPING";
 export interface Region {
   code: string;
   name: string;
+  covers: string;
   city: string;
   continent: string;
   flag: string;
@@ -36,6 +37,7 @@ export const CLOUDFLARE_PROBE_REGIONS: Region[] = [
   {
     code: "wnam",
     name: "North America West",
+    covers: "Western North America",
     city: "San Jose / Seattle",
     continent: "North America",
     flag: "🇺🇸",
@@ -50,6 +52,7 @@ export const CLOUDFLARE_PROBE_REGIONS: Region[] = [
   {
     code: "enam",
     name: "North America East",
+    covers: "Eastern North America",
     city: "Ashburn / New York",
     continent: "North America",
     flag: "🇺🇸",
@@ -64,6 +67,7 @@ export const CLOUDFLARE_PROBE_REGIONS: Region[] = [
   {
     code: "weur",
     name: "Western Europe",
+    covers: "Western Europe",
     city: "London / Frankfurt / Paris",
     continent: "Europe",
     flag: "🇬🇧",
@@ -78,6 +82,7 @@ export const CLOUDFLARE_PROBE_REGIONS: Region[] = [
   {
     code: "eeur",
     name: "Eastern Europe",
+    covers: "Eastern Europe",
     city: "Warsaw / Vienna / Helsinki",
     continent: "Europe",
     flag: "🇵🇱",
@@ -91,13 +96,14 @@ export const CLOUDFLARE_PROBE_REGIONS: Region[] = [
   },
   {
     code: "apac",
-    name: "Asia-Pacific South/Central",
-    city: "Singapore / Hong Kong / Mumbai",
+    name: "Asia-Pacific (wider)",
+    covers: "Asia-Pacific (wider)",
+    city: "Hong Kong / Mumbai",
     continent: "Asia Pacific",
-    flag: "🇸🇬",
+    flag: "🌏",
     provider: "Cloudflare Edge",
     asn: "AS13335",
-    primaryColos: ["SIN", "HKG", "BOM", "DEL"],
+    primaryColos: ["HKG", "BOM", "DEL"],
     ipv4Ranges: ["104.18.0.0/15", "172.67.0.0/16"],
     ipv6Ranges: ["2606:4700::/32"],
     isCloudflareDO: true,
@@ -106,6 +112,7 @@ export const CLOUDFLARE_PROBE_REGIONS: Region[] = [
   {
     code: "apac-ne",
     name: "Asia-Pacific Northeast",
+    covers: "Japan, Korea",
     city: "Tokyo / Seoul / Osaka",
     continent: "Asia Pacific",
     flag: "🇯🇵",
@@ -120,12 +127,13 @@ export const CLOUDFLARE_PROBE_REGIONS: Region[] = [
   {
     code: "apac-se",
     name: "Asia-Pacific Southeast",
-    city: "Sydney / Melbourne / Auckland",
+    covers: "Singapore, Indonesia",
+    city: "Singapore / Jakarta / Kuala Lumpur",
     continent: "Asia Pacific",
-    flag: "🇦🇺",
+    flag: "🇸🇬",
     provider: "Cloudflare Edge",
     asn: "AS13335",
-    primaryColos: ["SYD", "MEL", "BNE", "AKL"],
+    primaryColos: ["SIN", "CGK", "KUL", "BKK"],
     ipv4Ranges: ["104.30.0.0/15", "172.71.0.0/16"],
     ipv6Ranges: ["2606:4700::/32"],
     isCloudflareDO: true,
@@ -147,10 +155,17 @@ export const VALID_DO_LOCATION_HINTS = [
 
 export type DOLocationHint = (typeof VALID_DO_LOCATION_HINTS)[number];
 
-/** Primary 3 probe regions for Free tier (2-of-3 quorum consensus) */
-export const FREE_TIER_PROBE_REGIONS: DOLocationHint[] = ["wnam", "weur", "apac"];
+/** Complete 7 sovereign probe regions (4-of-7 quorum consensus) included across all tiers */
+export const FREE_TIER_PROBE_REGIONS: DOLocationHint[] = [
+  "wnam",
+  "enam",
+  "weur",
+  "eeur",
+  "apac",
+  "apac-ne",
+  "apac-se",
+];
 
-/** Complete 7 sovereign probe regions for Pro / Enterprise tiers (4-of-7 quorum consensus) */
 export const PAID_TIER_PROBE_REGIONS: DOLocationHint[] = [
   "wnam",
   "enam",
@@ -164,11 +179,10 @@ export const PAID_TIER_PROBE_REGIONS: DOLocationHint[] = [
 /**
  * Returns the assigned probe regions based on subscription plan
  */
-export function getProbeRegionsForPlan(plan?: string | null): DOLocationHint[] {
-  if (plan === "PRO" || plan === "ENTERPRISE" || plan === "NETRUNNER_PRO") {
-    return [...PAID_TIER_PROBE_REGIONS];
-  }
-  return [...FREE_TIER_PROBE_REGIONS];
+export function getProbeRegionsForPlan(
+  _plan?: string | null,
+): DOLocationHint[] {
+  return [...PAID_TIER_PROBE_REGIONS];
 }
 
 export const REGION_MAP = new Map<string, Region>(
@@ -212,4 +226,6 @@ export function getRegionsByContinent(continent: string): Region[] {
   return AVAILABLE_REGIONS.filter((r) => r.continent === continent);
 }
 
-export const CONTINENTS = Array.from(new Set(AVAILABLE_REGIONS.map((r) => r.continent)));
+export const CONTINENTS = Array.from(
+  new Set(AVAILABLE_REGIONS.map((r) => r.continent)),
+);

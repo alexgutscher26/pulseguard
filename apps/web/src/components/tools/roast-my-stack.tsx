@@ -20,7 +20,8 @@ import {
 import { toast } from "@/components/ui/sonner";
 import { motion, AnimatePresence } from "framer-motion";
 
-const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";
+const WORKER_URL =
+  process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";
 
 interface RoastReport {
   url: string;
@@ -46,7 +47,12 @@ const ICON_MAP = {
 };
 
 const OVERALL_LABELS = [
-  { max: 30, label: "Yikes", color: "text-red-500", bg: "bg-red-500/10 border-red-500/30" },
+  {
+    max: 30,
+    label: "Yikes",
+    color: "text-red-500",
+    bg: "bg-red-500/10 border-red-500/30",
+  },
   {
     max: 50,
     label: "Needs Work",
@@ -59,12 +65,25 @@ const OVERALL_LABELS = [
     color: "text-yellow-500",
     bg: "bg-yellow-500/10 border-yellow-500/30",
   },
-  { max: 90, label: "Solid", color: "text-lime-500", bg: "bg-lime-500/10 border-lime-500/30" },
-  { max: 100, label: "S-tier", color: "text-green-500", bg: "bg-green-500/10 border-green-500/30" },
+  {
+    max: 90,
+    label: "Solid",
+    color: "text-lime-500",
+    bg: "bg-lime-500/10 border-lime-500/30",
+  },
+  {
+    max: 100,
+    label: "S-tier",
+    color: "text-green-500",
+    bg: "bg-green-500/10 border-green-500/30",
+  },
 ];
 
 function getOverallLabel(score: number) {
-  return OVERALL_LABELS.find((l) => score <= l.max) ?? OVERALL_LABELS[OVERALL_LABELS.length - 1];
+  return (
+    OVERALL_LABELS.find((l) => score <= l.max) ??
+    OVERALL_LABELS[OVERALL_LABELS.length - 1]
+  );
 }
 
 function ScoreGauge({ score }: { score: number }) {
@@ -98,7 +117,9 @@ function ScoreGauge({ score }: { score: number }) {
           style={{ transition: "stroke-dashoffset 0.8s ease" }}
         />
       </svg>
-      <span className={`text-2xl font-extrabold font-mono ${label.color}`}>{score}</span>
+      <span className={`text-2xl font-extrabold font-mono ${label.color}`}>
+        {score}
+      </span>
       <span
         className={`text-[9px] font-bold font-mono uppercase tracking-widest px-2 py-0.5 border ${label.bg} ${label.color}`}
       >
@@ -168,7 +189,10 @@ export function RoastMyStack() {
     // SSL check via fetch
     try {
       const start = Date.now();
-      const sslRes = await fetch(`https://${domain}`, { method: "HEAD", mode: "no-cors" });
+      const sslRes = await fetch(`https://${domain}`, {
+        method: "HEAD",
+        mode: "no-cors",
+      });
       const ms = Date.now() - start;
       if (sslRes.type === "opaque" || sslRes.status < 400) {
         checks.push({
@@ -206,7 +230,10 @@ export function RoastMyStack() {
     // TTFB check via image timing
     try {
       const imgStart = performance.now();
-      await fetch(`https://${domain}/favicon.ico`, { method: "GET", mode: "no-cors" });
+      await fetch(`https://${domain}/favicon.ico`, {
+        method: "GET",
+        mode: "no-cors",
+      });
       const ttfb = Math.round(performance.now() - imgStart);
       if (ttfb < 300) {
         checks.push({
@@ -252,9 +279,12 @@ export function RoastMyStack() {
 
     // DNS check
     try {
-      const dnsRes = await fetch(`${WORKER_URL}/api/dns-lookup?domain=${domain}`, {
-        signal: AbortSignal.timeout(5000),
-      });
+      const dnsRes = await fetch(
+        `${WORKER_URL}/api/dns-lookup?domain=${domain}`,
+        {
+          signal: AbortSignal.timeout(5000),
+        },
+      );
       if (dnsRes.ok) {
         const dnsData = (await dnsRes.json()) as { records?: unknown[] };
         if (dnsData.records && dnsData.records.length > 0) {
@@ -295,7 +325,10 @@ export function RoastMyStack() {
 
     // Headers check
     try {
-      const hRes = await fetch(`https://${domain}`, { method: "GET", mode: "no-cors" });
+      const hRes = await fetch(`https://${domain}`, {
+        method: "GET",
+        mode: "no-cors",
+      });
       const headers = hRes.headers;
       const hasSecurityHeaders =
         headers.get("strict-transport-security") ||
@@ -347,7 +380,8 @@ export function RoastMyStack() {
 
     let summary: string;
     if (totalScore >= 80) summary = "Your stack passes the vibe check.";
-    else if (totalScore >= 50) summary = "Not terrible, but not great. You have room to improve.";
+    else if (totalScore >= 50)
+      summary = "Not terrible, but not great. You have room to improve.";
     else summary = "This stack needs an intervention.";
 
     return { url: domain, overall: totalScore, summary, roast, checks };
@@ -374,7 +408,11 @@ export function RoastMyStack() {
           disabled={loading}
           className="h-11 px-5 gap-1.5 text-xs font-bold uppercase tracking-wider"
         >
-          {loading ? <Loader2 className="size-4 animate-spin" /> : <Flame className="size-4" />}
+          {loading ? (
+            <Loader2 className="size-4 animate-spin" />
+          ) : (
+            <Flame className="size-4" />
+          )}
           {loading ? "Roasting..." : "Roast It"}
         </Button>
       </div>
@@ -391,8 +429,12 @@ export function RoastMyStack() {
             <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start">
               <ScoreGauge score={report.overall} />
               <div className="flex-1 text-center sm:text-left">
-                <p className="text-sm font-medium text-foreground mb-1">{report.summary}</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">{report.roast}</p>
+                <p className="text-sm font-medium text-foreground mb-1">
+                  {report.summary}
+                </p>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  {report.roast}
+                </p>
               </div>
             </div>
 
@@ -430,7 +472,9 @@ export function RoastMyStack() {
                           <span className="text-[10px] font-mono text-muted-foreground">
                             {check.value}
                           </span>
-                          <span className="text-[9px] text-muted-foreground/60">·</span>
+                          <span className="text-[9px] text-muted-foreground/60">
+                            ·
+                          </span>
                           <span className="text-[10px] text-muted-foreground/70 truncate">
                             {check.detail}
                           </span>
@@ -445,8 +489,12 @@ export function RoastMyStack() {
             {/* CTA */}
             <div className="border border-dashed border-primary/20 bg-primary/[0.02] p-5 text-center">
               <p className="text-[10px] font-mono text-muted-foreground mb-3">
-                Want <span className="text-primary font-bold">real-time monitoring</span> for{" "}
-                {report.url}? PulseGuard checks every 30 seconds and alerts you before users notice.
+                Want{" "}
+                <span className="text-primary font-bold">
+                  real-time monitoring
+                </span>{" "}
+                for {report.url}? PulseGuard checks every 30 seconds and alerts
+                you before users notice.
               </p>
               <a
                 href="/signup"

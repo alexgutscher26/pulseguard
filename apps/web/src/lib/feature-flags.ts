@@ -15,7 +15,10 @@ export type FeatureFlag =
   | "pagerduty_integration"
   | "sms_alerts";
 
-export const PLAN_FEATURE_FLAGS: Record<PlanTier, Record<FeatureFlag, boolean>> = {
+export const PLAN_FEATURE_FLAGS: Record<
+  PlanTier,
+  Record<FeatureFlag, boolean>
+> = {
   INITIATE: {
     custom_domains: false,
     browser_monitors: false,
@@ -63,19 +66,43 @@ export const PLAN_FEATURE_FLAGS: Record<PlanTier, Record<FeatureFlag, boolean>> 
   },
 };
 
-const FEATURE_DESCRIPTIONS: Record<FeatureFlag, { name: string; requiredPlan: PlanTier }> = {
+const FEATURE_DESCRIPTIONS: Record<
+  FeatureFlag,
+  { name: string; requiredPlan: PlanTier }
+> = {
   custom_domains: { name: "Custom CNAME Domains", requiredPlan: "NETRUNNER" },
-  browser_monitors: { name: "Browser Synthetic Checks", requiredPlan: "NETRUNNER" },
+  browser_monitors: {
+    name: "Browser Synthetic Checks",
+    requiredPlan: "NETRUNNER",
+  },
   sequence_monitors: { name: "API Sequence Checks", requiredPlan: "NETRUNNER" },
-  mcp_database_monitors: { name: "MCP & Database Monitoring", requiredPlan: "CONSTRUCT" },
+  mcp_database_monitors: {
+    name: "MCP & Database Monitoring",
+    requiredPlan: "CONSTRUCT",
+  },
   multi_region: { name: "Multi-Region Monitoring", requiredPlan: "NETRUNNER" },
-  dynamic_thresholding: { name: "Dynamic Anomaly Thresholds", requiredPlan: "NETRUNNER" },
-  white_label_status_pages: { name: "White-Label Status Pages", requiredPlan: "NETRUNNER" },
-  private_status_pages: { name: "Password-Protected Portals", requiredPlan: "CONSTRUCT" },
+  dynamic_thresholding: {
+    name: "Dynamic Anomaly Thresholds",
+    requiredPlan: "NETRUNNER",
+  },
+  white_label_status_pages: {
+    name: "White-Label Status Pages",
+    requiredPlan: "NETRUNNER",
+  },
+  private_status_pages: {
+    name: "Password-Protected Portals",
+    requiredPlan: "CONSTRUCT",
+  },
   sla_pdf_export: { name: "SLA PDF Export Reports", requiredPlan: "NETRUNNER" },
   saml_sso: { name: "SAML SSO & Workspaces", requiredPlan: "CONSTRUCT" },
-  custom_webhooks_pagerduty: { name: "Custom Webhook Integrations", requiredPlan: "CONSTRUCT" },
-  pagerduty_integration: { name: "PagerDuty Integration", requiredPlan: "INITIATE" },
+  custom_webhooks_pagerduty: {
+    name: "Custom Webhook Integrations",
+    requiredPlan: "CONSTRUCT",
+  },
+  pagerduty_integration: {
+    name: "PagerDuty Integration",
+    requiredPlan: "INITIATE",
+  },
   sms_alerts: { name: "SMS Notification Alerts", requiredPlan: "CONSTRUCT" },
 };
 

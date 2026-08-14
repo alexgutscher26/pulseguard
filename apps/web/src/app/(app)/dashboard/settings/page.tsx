@@ -54,9 +54,17 @@ export default async function SettingsPage({
 
   // Clean tab parameter in case query parameters were concatenated (e.g. "billing?session_id=...")
   const cleanTab = rawTab.split("?")[0].split("&")[0];
-  const validTabs = ["general", "billing", "security", "api-keys", "migration", "privacy"];
+  const validTabs = [
+    "general",
+    "billing",
+    "security",
+    "api-keys",
+    "migration",
+    "privacy",
+  ];
   const tab = validTabs.includes(cleanTab) ? cleanTab : "general";
-  const usageSummary = tab === "billing" ? await getUserUsageSummary(session.user.id) : undefined;
+  const usageSummary =
+    tab === "billing" ? await getUserUsageSummary(session.user.id) : undefined;
 
   return (
     <div className="flex flex-col md:flex-row gap-8 max-w-6xl">

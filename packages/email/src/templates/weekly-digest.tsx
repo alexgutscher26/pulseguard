@@ -1,6 +1,15 @@
 import React from "react";
 import { render } from "@react-email/render";
-import { Html, Head, Body, Container, Section, Text, Link, Hr } from "@react-email/components";
+import {
+  Html,
+  Head,
+  Body,
+  Container,
+  Section,
+  Text,
+  Link,
+  Hr,
+} from "@react-email/components";
 import { emailTheme } from "../styles/theme";
 import type { WeeklyDigestData } from "../index";
 
@@ -301,6 +310,8 @@ export function WeeklyDigest({ data }: { data: WeeklyDigestData }) {
   );
 }
 
-export async function renderWeeklyDigest(data: WeeklyDigestData): Promise<string> {
+export async function renderWeeklyDigest(
+  data: WeeklyDigestData,
+): Promise<string> {
   return await render(<WeeklyDigest data={data} />);
 }

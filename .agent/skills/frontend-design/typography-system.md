@@ -179,11 +179,7 @@ Fixed sizes don't scale well:
 
 ```css
 /* Syntax: clamp(MIN, PREFERRED, MAX) */
-font-size: clamp(
-  MINIMUM_SIZE,
-  FLUID_CALCULATION,
-  MAXIMUM_SIZE
-);
+font-size: clamp(MINIMUM_SIZE, FLUID_CALCULATION, MAXIMUM_SIZE);
 
 /* FLUID_CALCULATION typically:
    base + viewport-relative-unit */

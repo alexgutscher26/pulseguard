@@ -2,7 +2,10 @@ import { NextRequest } from "next/server";
 import prisma from "@pulseguard/db";
 import { getOverallStatus } from "@/lib/uptime-calculator";
 
-export async function GET(request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ slug: string }> },
+) {
   const { slug } = await params;
 
   // Trim .svg suffix if it was requested (e.g. /api/badge/my-slug.svg)
@@ -32,7 +35,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       {
         headers: {
           "Content-Type": "image/svg+xml",
-          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+          "Cache-Control":
+            "no-store, no-cache, must-revalidate, proxy-revalidate",
         },
       },
     );
@@ -123,7 +127,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   return new Response(svgContent.trim(), {
     headers: {
       "Content-Type": "image/svg+xml",
-      "Cache-Control": "public, max-age=10, s-maxage=10, stale-while-revalidate=5",
+      "Cache-Control":
+        "public, max-age=10, s-maxage=10, stale-while-revalidate=5",
     },
   });
 }

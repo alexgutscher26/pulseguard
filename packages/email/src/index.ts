@@ -66,7 +66,10 @@ export async function sendMonitorAlert(
         ? `🔴 [CRITICAL] ${data.monitorName} is DOWN`
         : `✅ [RESOLVED] ${data.monitorName} is UP`;
 
-    if (data.reason?.includes("expires in") || data.reason?.includes("SSL certificate expires")) {
+    if (
+      data.reason?.includes("expires in") ||
+      data.reason?.includes("SSL certificate expires")
+    ) {
       subject = `⚠️ [EXPIRY WARNING] ${data.monitorName} SSL Certificate Expires Soon`;
     }
 
@@ -152,7 +155,10 @@ export async function sendPasswordResetEmail(
 ): Promise<{ id: string } | { error: string }> {
   try {
     const key = apiKey ?? env.RESEND_API_KEY;
-    if (!key && (process.env.NODE_ENV === "development" || !process.env.NODE_ENV)) {
+    if (
+      !key &&
+      (process.env.NODE_ENV === "development" || !process.env.NODE_ENV)
+    ) {
       console.log(`\n==================================================`);
       console.log(`📧 [DEV EMAIL FALLBACK] Password Reset Email to: ${to}`);
       console.log(`🔗 Reset Link: ${data.resetUrl}`);
@@ -221,7 +227,8 @@ export async function sendSubscriptionConfirm(
 ): Promise<{ id: string } | { error: string }> {
   try {
     const resend = getResendClient(apiKey);
-    const { renderSubscriptionConfirm } = await import("./templates/subscription-confirm");
+    const { renderSubscriptionConfirm } =
+      await import("./templates/subscription-confirm");
 
     const html = await renderSubscriptionConfirm(data);
 
@@ -298,7 +305,9 @@ export async function sendStatusUpdate(
 export async function renderMonthlyReportToBuffer(stats: any): Promise<Buffer> {
   const { renderToStream } = await import("@react-pdf/renderer");
   const { MonthlyReportDocument } = await import("./templates/monthly-report");
-  const stream = await renderToStream(React.createElement(MonthlyReportDocument, { stats }) as any);
+  const stream = await renderToStream(
+    React.createElement(MonthlyReportDocument, { stats }) as any,
+  );
   const chunks: Uint8Array[] = [];
   // @ts-ignore - ReadableStream iteration
   for await (const chunk of stream) {
@@ -359,13 +368,16 @@ export async function sendUsageLimitWarning(
 ): Promise<{ id: string } | { error: string }> {
   try {
     const resend = getResendClient(apiKey);
-    const { renderUsageLimitWarning } = await import("./templates/usage-limit-warning");
+    const { renderUsageLimitWarning } =
+      await import("./templates/usage-limit-warning");
 
     const html = await renderUsageLimitWarning({
       userName: data.userName,
       planName: data.planName,
       warnings: data.warnings,
-      upgradeUrl: data.upgradeUrl ?? "https://pulseguard.io/dashboard/settings?tab=billing",
+      upgradeUrl:
+        data.upgradeUrl ??
+        "https://pulseguard.io/dashboard/settings?tab=billing",
     });
 
     const result = await resend.emails.send({
@@ -408,13 +420,15 @@ export async function sendDunningNotice(
       amountDue: data.amountDue,
       failureReason: data.failureReason ?? "Card declined",
       billingPortalUrl:
-        data.billingPortalUrl ?? "https://pulseguard.io/dashboard/settings?tab=billing",
+        data.billingPortalUrl ??
+        "https://pulseguard.io/dashboard/settings?tab=billing",
     });
 
     const result = await resend.emails.send({
       from: "PulseGuard Billing <billing@pulseguard.io>",
       to,
-      subject: "⚠️ Payment Failed: Action Required for Your PulseGuard Subscription",
+      subject:
+        "⚠️ Payment Failed: Action Required for Your PulseGuard Subscription",
       html,
     });
 

@@ -22,11 +22,12 @@ const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://pulseguard.io";
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "PulseGuard | Website Monitoring & Real-time Uptime Platform",
+    default:
+      "PulseGuard — Uptime monitoring that confirms failures from 7 regions before alerting",
     template: "%s | PulseGuard",
   },
   description:
-    "24/7 web monitoring, multi-region checks, and instant notifications. Monitor website latency, SSL certificates, cron jobs, and DNS performance in minutes.",
+    "Four of seven global regions must agree before PulseGuard pages you. 60-second checks, 50 monitors, multi-region verification — free, and free for commercial use.",
   applicationName: "PulseGuard",
   alternates: {
     canonical: "./",
@@ -40,6 +41,8 @@ export const metadata: Metadata = {
     "dns monitor",
     "status page",
     "SaaS dashboard",
+    "multi-region monitoring",
+    "quorum verification",
   ],
   authors: [{ name: "PulseGuard Team", url: BASE_URL }],
   creator: "PulseGuard",
@@ -48,15 +51,17 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: BASE_URL,
     siteName: "PulseGuard",
-    title: "PulseGuard | Website Monitoring & Real-time Uptime Platform",
+    title:
+      "PulseGuard — Uptime monitoring that confirms failures from 7 regions before alerting",
     description:
-      "24/7 website monitoring, multi-region voting consensus, and instant notifications. Setup latency, SSL, port, and cron checkers in minutes.",
+      "Four of seven global regions must agree before PulseGuard pages you. 60-second checks, 50 monitors, multi-region verification — free, and free for commercial use.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "PulseGuard | Website Monitoring & Real-time Uptime Platform",
+    title:
+      "PulseGuard — Uptime monitoring that confirms failures from 7 regions before alerting",
     description:
-      "24/7 web monitoring, multi-region checks, and instant notifications. Monitor website latency, SSL certificates, cron jobs, and DNS performance in minutes.",
+      "Four of seven global regions must agree before PulseGuard pages you. 60-second checks, 50 monitors, multi-region verification — free, and free for commercial use.",
     creator: "@pulseguard",
   },
   robots: {
@@ -81,7 +86,10 @@ const jsonLd = {
       name: "PulseGuard",
       url: BASE_URL,
       logo: `${BASE_URL}/logo.png`,
-      sameAs: ["https://github.com/alexgutscher26/pulseguard", "https://twitter.com/pulseguard"],
+      sameAs: [
+        "https://github.com/alexgutscher26/pulseguard",
+        "https://twitter.com/pulseguard",
+      ],
     },
     {
       "@type": "WebSite",
@@ -97,7 +105,7 @@ const jsonLd = {
       operatingSystem: "All",
       applicationCategory: "DeveloperApplication",
       description:
-        "Cloudflare edge-native monitoring platform with sub-minute check intervals, multi-region verification, and zero false positives.",
+        "Cloudflare edge-native monitoring platform with 60-second checks, 7-region verification, and 4-of-7 quorum failure confirmation.",
       offers: {
         "@type": "AggregateOffer",
         priceCurrency: "USD",

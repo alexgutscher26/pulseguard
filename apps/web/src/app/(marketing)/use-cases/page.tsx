@@ -1,5 +1,12 @@
 import Link from "next/link";
-import { ArrowRight, Server, ShoppingCart, Layers, Code, ShieldCheck } from "lucide-react";
+import {
+  ArrowRight,
+  Server,
+  ShoppingCart,
+  Layers,
+  Code,
+  ShieldCheck,
+} from "lucide-react";
 import { USE_CASES } from "@/content/use-cases-data";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -35,12 +42,13 @@ export default function UseCasesIndexPage() {
             Tailored Monitoring Solutions
           </div>
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight mb-4">
-            Built for Your Specific <span className="text-primary">Engineering Workflow</span>
+            Built for Your Specific{" "}
+            <span className="text-primary">Engineering Workflow</span>
           </h1>
           <p className="text-muted-foreground text-base sm:text-lg leading-relaxed font-sans">
-            Whether you&apos;re managing cloud microservices, operating an e-commerce platform, or
-            running an enterprise SaaS, PulseGuard delivers zero false-positive edge monitoring
-            tailored to your stack.
+            Whether you&apos;re managing cloud microservices, operating an
+            e-commerce platform, or running an enterprise SaaS, PulseGuard
+            delivers zero false-positive edge monitoring tailored to your stack.
           </p>
         </div>
 
@@ -102,7 +110,8 @@ export default function UseCasesIndexPage() {
               Ready to Monitor Your Infrastructure?
             </h3>
             <p className="text-xs text-muted-foreground font-sans">
-              Get started with 50 free monitors and 1-minute check intervals in under 60 seconds.
+              Get started with 50 free monitors and 1-minute check intervals in
+              under 60 seconds.
             </p>
           </div>
           <Link

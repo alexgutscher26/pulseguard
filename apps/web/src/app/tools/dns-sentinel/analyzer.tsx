@@ -3,7 +3,13 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   ShieldCheck,
@@ -28,7 +34,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";
+const WORKER_URL =
+  process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";
 
 interface DNSResult {
   key: string;
@@ -112,7 +119,10 @@ export function DNSAnalyzer() {
           </div>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleAudit} className="flex flex-col md:flex-row gap-4">
+          <form
+            onSubmit={handleAudit}
+            className="flex flex-col md:flex-row gap-4"
+          >
             <div className="relative flex-1 group">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40 group-focus-within:text-primary transition-colors" />
               <Input
@@ -154,7 +164,9 @@ export function DNSAnalyzer() {
                   animate={{
                     height: activeStep >= i ? [8, 32, 8] : 8,
                     backgroundColor:
-                      activeStep >= i ? ["#22c55e", "#16a34a", "#22c55e"] : "#22c55e33",
+                      activeStep >= i
+                        ? ["#22c55e", "#16a34a", "#22c55e"]
+                        : "#22c55e33",
                   }}
                   transition={{ duration: 1.5, repeat: Infinity }}
                 />
@@ -199,7 +211,8 @@ export function DNSAnalyzer() {
                   },
                   {
                     label: "Security Nodes",
-                    val: auditData.results.filter((r) => r.status === "SECURE").length,
+                    val: auditData.results.filter((r) => r.status === "SECURE")
+                      .length,
                     icon: <ShieldCheck className="w-4 h-4 text-primary" />,
                   },
                   {
@@ -296,14 +309,18 @@ export function DNSAnalyzer() {
                     Initialize Domain Watcher
                   </h3>
                   <p className="text-xs text-muted-foreground font-mono uppercase tracking-widest leading-relaxed">
-                    Continuous DNS monitoring. Get alerted the microsecond your MX/SPF/DMARC records
-                    are tampered with or expire.
+                    Continuous DNS monitoring. Get alerted the microsecond your
+                    MX/SPF/DMARC records are tampered with or expire.
                   </p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button
                     className="px-8 h-12 uppercase font-mono font-bold tracking-tighter group/cta"
-                    onClick={() => router.push(`/dashboard/monitors/new?url=${domain}&type=DNS`)}
+                    onClick={() =>
+                      router.push(
+                        `/dashboard/monitors/new?url=${domain}&type=DNS`,
+                      )
+                    }
                   >
                     Setup DNS Sentinel
                     <ArrowRight className="ml-2 w-4 h-4 group-hover/cta:translate-x-1 transition-transform" />

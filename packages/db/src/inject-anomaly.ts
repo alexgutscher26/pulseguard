@@ -27,7 +27,9 @@ async function main() {
   });
 
   console.log("✅ Anomaly Insight Injected!");
-  console.log("👉 Refresh your dashboard to see the 'Invisible AI' layer in action.");
+  console.log(
+    "👉 Refresh your dashboard to see the 'Invisible AI' layer in action.",
+  );
 }
 
 main()

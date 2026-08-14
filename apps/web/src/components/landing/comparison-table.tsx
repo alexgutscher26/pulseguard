@@ -1,7 +1,15 @@
 "use client";
 
+import { Fragment } from "react";
 import Link from "next/link";
-import { Check, X, Sparkles, ArrowRight, ShieldCheck, ExternalLink } from "lucide-react";
+import {
+  Check,
+  X,
+  Sparkles,
+  ArrowRight,
+  ShieldCheck,
+  ExternalLink,
+} from "lucide-react";
 import { competitors, featureComparisons } from "./comparison-data";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -49,11 +57,13 @@ export default function ComparisonTable() {
             Competitive Analysis
           </div>
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-4">
-            Why Engineering Teams Choose <span className="text-primary">PulseGuard</span>
+            Why Engineering Teams Choose{" "}
+            <span className="text-primary">PulseGuard</span>
           </h2>
           <p className="text-muted-foreground text-sm sm:text-base leading-relaxed font-sans">
-            Compare PulseGuard head-to-head against legacy uptime tools. Faster checks, broader
-            global edge coverage, and native synthetic testing out of the box.
+            Compare PulseGuard head-to-head against legacy uptime tools. Faster
+            checks, broader global edge coverage, and native synthetic testing
+            out of the box.
           </p>
         </div>
 
@@ -114,82 +124,93 @@ export default function ComparisonTable() {
 
               {/* Table Body */}
               <tbody className="divide-y divide-border/40 font-sans text-xs">
-                {featureComparisons.map((feature, idx) => (
-                  <tr key={idx} className="hover:bg-muted/40 transition-colors group">
-                    {/* Feature Name & Description */}
-                    <td className="p-4 sm:p-5">
-                      <div className="font-semibold text-foreground text-sm font-sans flex items-center gap-2">
-                        {feature.name}
-                        {feature.name.includes("AI") && (
-                          <Sparkles className="size-3.5 text-primary animate-pulse" />
-                        )}
-                      </div>
-                      {feature.description && (
-                        <div className="text-[11px] text-muted-foreground font-normal mt-0.5">
-                          {feature.description}
-                        </div>
+                {featureComparisons.map((feature, idx) => {
+                  const isNewCategory =
+                    idx === 0 ||
+                    featureComparisons[idx - 1]?.category !== feature.category;
+
+                  return (
+                    <Fragment key={idx}>
+                      {isNewCategory && (
+                        <tr className="bg-muted/60 border-y border-border/80">
+                          <td
+                            colSpan={5}
+                            className="px-5 py-2.5 text-[11px] font-mono font-bold uppercase tracking-wider text-primary"
+                          >
+                            // {feature.category}
+                          </td>
+                        </tr>
                       )}
-                    </td>
+                      <tr className="hover:bg-muted/40 transition-colors group">
+                        {/* Feature Name & Description */}
+                        <td className="p-4 sm:p-5">
+                          <div className="font-semibold text-foreground text-sm font-sans flex items-center gap-2">
+                            {feature.name}
+                            {feature.name.includes("AI") && (
+                              <Sparkles className="size-3.5 text-primary animate-pulse" />
+                            )}
+                          </div>
+                          {feature.description && (
+                            <div className="text-[11px] text-muted-foreground font-normal mt-0.5">
+                              {feature.description}
+                            </div>
+                          )}
+                        </td>
 
-                    {/* PulseGuard Value Cell */}
-                    <td className="p-4 sm:p-5 text-center bg-primary/5 border-x border-primary/15 group-hover:bg-primary/10 transition-colors">
-                      {renderValue(feature.pulseguard, true)}
-                    </td>
+                        {/* PulseGuard Value Cell */}
+                        <td className="p-4 sm:p-5 text-center bg-primary/5 border-x border-primary/15 group-hover:bg-primary/10 transition-colors">
+                          {renderValue(feature.pulseguard, true)}
+                        </td>
 
-                    {/* UptimeRobot Cell */}
-                    <td className="p-4 sm:p-5 text-center">{renderValue(feature.uptimerobot)}</td>
+                        {/* UptimeRobot Cell */}
+                        <td className="p-4 sm:p-5 text-center">
+                          {renderValue(feature.uptimerobot)}
+                        </td>
 
-                    {/* Checkly Cell */}
-                    <td className="p-4 sm:p-5 text-center">{renderValue(feature.checkly)}</td>
+                        {/* Better Uptime Cell */}
+                        <td className="p-4 sm:p-5 text-center">
+                          {renderValue(feature.betteruptime)}
+                        </td>
 
-                    {/* Better Uptime Cell */}
-                    <td className="p-4 sm:p-5 text-center">{renderValue(feature.betteruptime)}</td>
-                  </tr>
-                ))}
+                        {/* Checkly Cell */}
+                        <td className="p-4 sm:p-5 text-center">
+                          {renderValue(feature.checkly)}
+                        </td>
+                      </tr>
+                    </Fragment>
+                  );
+                })}
               </tbody>
             </table>
           </div>
 
-          {/* Verification & Disclaimer Note */}
-          <div className="px-5 py-3 bg-muted/20 border-t border-border/50 text-[11px] font-mono text-muted-foreground flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-            <div>
-              <span className="font-bold text-foreground">Last verified August 2026.</span> All
-              pricing and feature claims are verified against official competitor pricing pages:{" "}
-              <a
-                href="https://uptimerobot.com/pricing"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline hover:text-primary transition-colors"
-              >
-                UptimeRobot Pricing
-              </a>
-              {", "}
-              <a
-                href="https://www.checklyhq.com/pricing"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline hover:text-primary transition-colors"
-              >
-                Checkly Pricing
-              </a>
-              {" (2-min interval, 10 monitors, 6 locations)"}
-              {", and "}
-              <a
-                href="https://betterstack.com/uptime/pricing"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline hover:text-primary transition-colors"
-              >
-                Better Stack Pricing
-              </a>
-              {"."}
-            </div>
+          {/* Footnotes Section */}
+          <div className="p-5 sm:p-6 bg-muted/20 border-t border-border/60 space-y-4 text-xs font-sans text-muted-foreground leading-relaxed">
+            <p>
+              <strong className="text-foreground font-mono font-bold uppercase text-[11px] mr-1.5">
+                Note 1:
+              </strong>
+              Being straight with you: Checkly runs 22 locations to our 7, and
+              Better Uptime&apos;s 3-of-4 quorum is a genuinely good design that
+              solves the same problem we do. We think 4-of-7 across published,
+              health-monitored regions is better — and unlike anyone else here,
+              we publish enough detail for you to verify it yourself. Pingdom
+              runs 100+ locations and still gets false-positive complaints,
+              which is rather the point: the confirmation rule matters more than
+              the count.
+            </p>
+            <p className="pt-2 border-t border-border/40 text-[11px] font-mono text-muted-foreground/80">
+              <strong className="text-foreground">Note 2:</strong> Last verified
+              August 2026 against vendor pricing pages and public documentation.
+              Found something out of date? Tell us and we&apos;ll fix it.
+            </p>
           </div>
 
           {/* Table Footer Banner */}
           <div className="p-4 sm:p-6 bg-muted/30 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-xs text-muted-foreground font-mono">
-              ⚡ Free 1-minute monitoring checks for up to 50 endpoints. No credit card required.
+              ⚡ Free 60-second monitoring checks for up to 50 endpoints. No
+              credit card required.
             </div>
             <Link
               href="/signup"
@@ -198,7 +219,7 @@ export default function ComparisonTable() {
                 "h-8 px-4 text-xs font-mono font-bold border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 uppercase tracking-wider",
               )}
             >
-              Start Monitoring Now &rarr;
+              Start free — 50 monitors &rarr;
             </Link>
           </div>
         </div>

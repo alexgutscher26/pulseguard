@@ -7,7 +7,10 @@ import type { MonitorStatus } from "@pulseguard/types";
 /**
  * Checks whether an IP string (v4 or v6) belongs to a private, loopback, link-local, or cloud metadata range.
  */
-export function isPrivateOrInternalIp(ip: string): { isForbidden: boolean; reason?: string } {
+export function isPrivateOrInternalIp(ip: string): {
+  isForbidden: boolean;
+  reason?: string;
+} {
   const normalized = ip
     .trim()
     .toLowerCase()
@@ -15,16 +18,28 @@ export function isPrivateOrInternalIp(ip: string): { isForbidden: boolean; reaso
 
   // IPv6 checks
   if (normalized === "::1" || normalized === "0:0:0:0:0:0:0:1") {
-    return { isForbidden: true, reason: "IPv6 loopback address (::1) is forbidden" };
+    return {
+      isForbidden: true,
+      reason: "IPv6 loopback address (::1) is forbidden",
+    };
   }
   if (normalized === "::" || normalized === "0:0:0:0:0:0:0:0") {
-    return { isForbidden: true, reason: "IPv6 unspecified address (::) is forbidden" };
+    return {
+      isForbidden: true,
+      reason: "IPv6 unspecified address (::) is forbidden",
+    };
   }
   if (normalized.startsWith("fe80:") || normalized.startsWith("fe80::")) {
-    return { isForbidden: true, reason: "IPv6 link-local address range (fe80::/10) is forbidden" };
+    return {
+      isForbidden: true,
+      reason: "IPv6 link-local address range (fe80::/10) is forbidden",
+    };
   }
   if (normalized.startsWith("fc") || normalized.startsWith("fd")) {
-    return { isForbidden: true, reason: "IPv6 unique local address range (fc00::/7) is forbidden" };
+    return {
+      isForbidden: true,
+      reason: "IPv6 unique local address range (fc00::/7) is forbidden",
+    };
   }
   // IPv4-mapped IPv6 (::ffff:127.0.0.1)
   if (normalized.startsWith("::ffff:")) {
@@ -57,22 +72,40 @@ export function isPrivateOrInternalIp(ip: string): { isForbidden: boolean; reaso
 
   // 127.0.0.0/8 (Loopback)
   if (p1 === 127)
-    return { isForbidden: true, reason: "Loopback address range (127.0.0.0/8) is forbidden" };
+    return {
+      isForbidden: true,
+      reason: "Loopback address range (127.0.0.0/8) is forbidden",
+    };
   // 10.0.0.0/8 (Private)
   if (p1 === 10)
-    return { isForbidden: true, reason: "Private network range (10.0.0.0/8) is forbidden" };
+    return {
+      isForbidden: true,
+      reason: "Private network range (10.0.0.0/8) is forbidden",
+    };
   // 172.16.0.0/12 (Private)
   if (p1 === 172 && p2 >= 16 && p2 <= 31)
-    return { isForbidden: true, reason: "Private network range (172.16.0.0/12) is forbidden" };
+    return {
+      isForbidden: true,
+      reason: "Private network range (172.16.0.0/12) is forbidden",
+    };
   // 192.168.0.0/16 (Private)
   if (p1 === 192 && p2 === 168)
-    return { isForbidden: true, reason: "Private network range (192.168.0.0/16) is forbidden" };
+    return {
+      isForbidden: true,
+      reason: "Private network range (192.168.0.0/16) is forbidden",
+    };
   // 169.254.0.0/16 (Link-Local / AWS Metadata)
   if (p1 === 169 && p2 === 254)
-    return { isForbidden: true, reason: "Link-local/metadata range (169.254.0.0/16) is forbidden" };
+    return {
+      isForbidden: true,
+      reason: "Link-local/metadata range (169.254.0.0/16) is forbidden",
+    };
   // 0.0.0.0/8
   if (p1 === 0)
-    return { isForbidden: true, reason: "Unspecified/invalid target IP address (0.0.0.0/8)" };
+    return {
+      isForbidden: true,
+      reason: "Unspecified/invalid target IP address (0.0.0.0/8)",
+    };
 
   return { isForbidden: false };
 }
@@ -81,7 +114,10 @@ export function isPrivateOrInternalIp(ip: string): { isForbidden: boolean; reaso
  * Validates a target URL string to prevent Server-Side Request Forgery (SSRF)
  * against private IP ranges, local loopbacks, link-local addresses, and cloud metadata endpoints.
  */
-export function isPrivateOrInternalUrl(urlStr: string): { isForbidden: boolean; reason?: string } {
+export function isPrivateOrInternalUrl(urlStr: string): {
+  isForbidden: boolean;
+  reason?: string;
+} {
   try {
     const url = new URL(urlStr);
     const hostname = url.hostname.toLowerCase().replace(/^\[|\]$/g, "");
@@ -96,7 +132,10 @@ export function isPrivateOrInternalUrl(urlStr: string): { isForbidden: boolean; 
       hostname === "metadata.google.internal" ||
       hostname === "instance-data"
     ) {
-      return { isForbidden: true, reason: `Forbidden target host: ${hostname}` };
+      return {
+        isForbidden: true,
+        reason: `Forbidden target host: ${hostname}`,
+      };
     }
 
     return isPrivateOrInternalIp(hostname);
@@ -123,7 +162,11 @@ export function diagnoseError(err: any, target: string): string {
   const code = err.code || "";
 
   // 1. Timeout
-  if (name === "TimeoutError" || msg.includes("Timeout") || msg.includes("timeout")) {
+  if (
+    name === "TimeoutError" ||
+    msg.includes("Timeout") ||
+    msg.includes("timeout")
+  ) {
     return `TIMEOUT: Request timed out.
 • Target: ${target}
 • Stage: Response Transmission
@@ -147,7 +190,11 @@ export function diagnoseError(err: any, target: string): string {
   }
 
   // 3. Connection Refused
-  if (code === "ECONNREFUSED" || msg.includes("ECONNREFUSED") || msg.includes("refused")) {
+  if (
+    code === "ECONNREFUSED" ||
+    msg.includes("ECONNREFUSED") ||
+    msg.includes("refused")
+  ) {
     return `CONNECTION_REFUSED: TCP Handshake failed.
 • Target: ${target}
 • Stage: TCP Handshake
@@ -175,7 +222,11 @@ export function diagnoseError(err: any, target: string): string {
   }
 
   // 5. Connection Reset/Aborted
-  if (code === "ECONNRESET" || msg.includes("ECONNRESET") || msg.includes("reset")) {
+  if (
+    code === "ECONNRESET" ||
+    msg.includes("ECONNRESET") ||
+    msg.includes("reset")
+  ) {
     return `CONNECTION_RESET: Connection terminated abruptly.
 • Target: ${target}
 • Stage: TCP Connection
@@ -266,7 +317,12 @@ export async function checkPortUniversal(
   host: string,
   port: number,
   timeoutMs = 3000,
-): Promise<{ isOpen: boolean; latency: number; status: string; errorReason?: string }> {
+): Promise<{
+  isOpen: boolean;
+  latency: number;
+  status: string;
+  errorReason?: string;
+}> {
   const start = Date.now();
   const targetStr = `${host}:${port}`;
 
@@ -350,10 +406,20 @@ export async function checkPortUniversal(
     } else if (err.message && err.message.includes("not permitted")) {
       status = "BLOCKED";
     }
-    return { isOpen: false, latency: 0, status, errorReason: diagnoseError(err, targetStr) };
+    return {
+      isOpen: false,
+      latency: 0,
+      status,
+      errorReason: diagnoseError(err, targetStr),
+    };
   }
 
-  return { isOpen: false, latency: 0, status: "CLOSED", errorReason: "NO_COMPATIBLE_RUNTIME" };
+  return {
+    isOpen: false,
+    latency: 0,
+    status: "CLOSED",
+    errorReason: "NO_COMPATIBLE_RUNTIME",
+  };
 }
 
 /**
@@ -427,12 +493,15 @@ export async function checkHttpUniversal(
         method: hops === 0 ? method : "GET", // Follow redirects with GET
         redirect: "manual",
         headers: {
-          "User-Agent": "Mozilla/5.0 (compatible; PulseGuard/1.0; +https://pulseguard.io/bot)",
+          "User-Agent":
+            "Mozilla/5.0 (compatible; PulseGuard/1.0; +https://pulseguard.io/bot)",
           Accept: "*/*",
           ...userHeaders,
         },
         body:
-          hops === 0 && ["POST", "PUT", "PATCH"].includes(method) ? (config.body ?? null) : null,
+          hops === 0 && ["POST", "PUT", "PATCH"].includes(method)
+            ? (config.body ?? null)
+            : null,
         signal: AbortSignal.timeout(timeoutMs),
       });
 
@@ -461,7 +530,8 @@ export async function checkHttpUniversal(
     return {
       status: "DOWN",
       latency: Date.now() - start,
-      errorReason: "TOO_MANY_REDIRECTS: Exceeded maximum redirect hop count of 5",
+      errorReason:
+        "TOO_MANY_REDIRECTS: Exceeded maximum redirect hop count of 5",
       bodyText: "",
     };
   }
@@ -482,7 +552,8 @@ export async function checkHttpUniversal(
           return {
             status: "DOWN",
             latency: Date.now() - start,
-            errorReason: "RESPONSE_TOO_LARGE: Exceeded maximum body size limit of 5MB",
+            errorReason:
+              "RESPONSE_TOO_LARGE: Exceeded maximum body size limit of 5MB",
             bodyText: bodyText.substring(0, 1024) + "... [truncated]",
             statusCode: response.status,
           };
@@ -497,12 +568,17 @@ export async function checkHttpUniversal(
   const isRateLimited = statusNum === 429;
   const isIPBlocked = statusNum === 403;
   const isHealthyStatus =
-    response.ok || (statusNum >= 300 && statusNum < 400) || isRateLimited || isIPBlocked;
+    response.ok ||
+    (statusNum >= 300 && statusNum < 400) ||
+    isRateLimited ||
+    isIPBlocked;
 
   return {
     status: isHealthyStatus ? "UP" : "DOWN",
     latency,
-    errorReason: isHealthyStatus ? undefined : diagnoseStatus(response.status, currentUrl),
+    errorReason: isHealthyStatus
+      ? undefined
+      : diagnoseStatus(response.status, currentUrl),
     bodyText,
     statusCode: statusNum,
   };

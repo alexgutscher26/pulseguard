@@ -4,7 +4,10 @@ import { auth } from "@pulseguard/auth";
 import { headers } from "next/headers";
 import prisma from "@pulseguard/db";
 import { revalidatePath } from "next/cache";
-import { assertMonitorLimits, checkAndNotifyUsageLimits } from "@/lib/billing-server";
+import {
+  assertMonitorLimits,
+  checkAndNotifyUsageLimits,
+} from "@/lib/billing-server";
 
 export interface UptimeRobotMonitorItem {
   id: number;
@@ -81,25 +84,27 @@ export async function fetchUptimeRobotMonitors(apiKey: string): Promise<{
 
     const rawMonitors: UptimeRobotMonitorItem[] = data.monitors || [];
 
-    const normalizedMonitors: NormalizedImportMonitor[] = rawMonitors.map((m) => {
-      let mappedType: "HTTP" | "PING" | "PORT" = "HTTP";
-      if (m.type === 3) mappedType = "PING";
-      else if (m.type === 4) mappedType = "PORT";
+    const normalizedMonitors: NormalizedImportMonitor[] = rawMonitors.map(
+      (m) => {
+        let mappedType: "HTTP" | "PING" | "PORT" = "HTTP";
+        if (m.type === 3) mappedType = "PING";
+        else if (m.type === 4) mappedType = "PORT";
 
-      let parsedPort: number | undefined = undefined;
-      if (m.port && !isNaN(parseInt(m.port, 10))) {
-        parsedPort = parseInt(m.port, 10);
-      }
+        let parsedPort: number | undefined = undefined;
+        if (m.port && !isNaN(parseInt(m.port, 10))) {
+          parsedPort = parseInt(m.port, 10);
+        }
 
-      return {
-        name: m.friendly_name || m.url || `Monitor ${m.id}`,
-        url: m.url || "",
-        type: mappedType,
-        interval: 60, // Upgrade to PulseGuard standard 60-second polling!
-        port: parsedPort,
-        selected: true,
-      };
-    });
+        return {
+          name: m.friendly_name || m.url || `Monitor ${m.id}`,
+          url: m.url || "",
+          type: mappedType,
+          interval: 60, // Upgrade to PulseGuard standard 60-second polling!
+          port: parsedPort,
+          selected: true,
+        };
+      },
+    );
 
     return {
       success: true,
@@ -138,7 +143,9 @@ export async function importUptimeRobotMonitors(
   }
 
   try {
-    const limitCheck = await assertMonitorLimits(session.user.id, { isNew: true });
+    const limitCheck = await assertMonitorLimits(session.user.id, {
+      isNew: true,
+    });
     if (!limitCheck.allowed) {
       return {
         success: false,
@@ -155,9 +162,14 @@ export async function importUptimeRobotMonitors(
           : `ping://${targetUrl.replace(/^ping:\/\//, "")}`;
       } else if (item.type === "PORT" && targetUrl) {
         const portNum = item.port || 80;
-        targetUrl = targetUrl.startsWith("tcp://") ? targetUrl : `tcp://${targetUrl}:${portNum}`;
+        targetUrl = targetUrl.startsWith("tcp://")
+          ? targetUrl
+          : `tcp://${targetUrl}:${portNum}`;
       } else if (item.type === "HTTP" && targetUrl) {
-        if (!targetUrl.startsWith("http://") && !targetUrl.startsWith("https://")) {
+        if (
+          !targetUrl.startsWith("http://") &&
+          !targetUrl.startsWith("https://")
+        ) {
           targetUrl = `https://${targetUrl}`;
         }
       }

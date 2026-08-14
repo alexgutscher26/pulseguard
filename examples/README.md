@@ -41,14 +41,14 @@ pulse monitors diff monitors.yml
 Every monitor shares these top-level fields:
 
 ```yaml
-name: string          # Required — unique monitor name (used as identifier)
-type: string          # Required — monitor type (see below)
-url: string           # Required for most types
-interval: number      # Check interval in seconds (30–86400). Default: 60
-regions: string[]     # Probe regions. Default: ["us-east", "eu-west", "ap-southeast"]
-alerts: string[]      # Alert channel names from your workspace
-tags: string[]        # Arbitrary tags for filtering
-enabled: boolean      # Default: true
+name: string # Required — unique monitor name (used as identifier)
+type: string # Required — monitor type (see below)
+url: string # Required for most types
+interval: number # Check interval in seconds (30–86400). Default: 60
+regions: string[] # Probe regions. Default: ["us-east", "eu-west", "ap-southeast"]
+alerts: string[] # Alert channel names from your workspace
+tags: string[] # Arbitrary tags for filtering
+enabled: boolean # Default: true
 ```
 
 **Supported types**: `HTTP`, `HTTPS`, `TCP`, `SSL`, `DNS`, `DOMAIN`, `HEARTBEAT`, `PING`, `WEBSOCKET`, `GRAPHQL`, `DATABASE`, `BGP`, `BROWSER`, `SEQUENCE`, `MCP`

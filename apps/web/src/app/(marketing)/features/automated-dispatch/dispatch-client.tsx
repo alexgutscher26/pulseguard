@@ -150,8 +150,9 @@ export function DispatchClient() {
           Automated Dispatch
         </h1>
         <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
-          Zero delay integration pipeline. Automatically dispatch alerts, invoke custom webhooks,
-          and page on-call engineering schedules the instant an outage signature is validated.
+          Zero delay integration pipeline. Automatically dispatch alerts, invoke
+          custom webhooks, and page on-call engineering schedules the instant an
+          outage signature is validated.
         </p>
       </div>
 
@@ -187,9 +188,13 @@ export function DispatchClient() {
                   </div>
                 </div>
                 <div className="flex-1">
-                  <div className="text-xs font-bold text-foreground">Outage Event Triggered</div>
+                  <div className="text-xs font-bold text-foreground">
+                    Outage Event Triggered
+                  </div>
                   <div className="text-[10px] text-muted-foreground font-mono mt-0.5">
-                    {dispatchStep >= 1 ? "[Sentinel Status: FAIL]" : "[Sentinel Status: WAIT]"}
+                    {dispatchStep >= 1
+                      ? "[Sentinel Status: FAIL]"
+                      : "[Sentinel Status: WAIT]"}
                   </div>
                 </div>
               </div>
@@ -309,8 +314,9 @@ export function DispatchClient() {
             Signed Webhooks
           </h3>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            All POST payload calls contain a custom sha256 signature header, allowing your endpoint
-            to verify the integrity and origin of the request.
+            All POST payload calls contain a custom sha256 signature header,
+            allowing your endpoint to verify the integrity and origin of the
+            request.
           </p>
         </div>
         <div className="space-y-2">
@@ -319,8 +325,9 @@ export function DispatchClient() {
             Retry Backoff
           </h3>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Automatic retry with exponential backoff ensures delivery even during temporary network
-            interruptions on third-party webhook receivers.
+            Automatic retry with exponential backoff ensures delivery even
+            during temporary network interruptions on third-party webhook
+            receivers.
           </p>
         </div>
         <div className="space-y-2">
@@ -329,8 +336,8 @@ export function DispatchClient() {
             Payload Customization
           </h3>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Customize JSON schemas to match your internal format requirements directly inside our
-            integrations panel.
+            Customize JSON schemas to match your internal format requirements
+            directly inside our integrations panel.
           </p>
         </div>
       </div>

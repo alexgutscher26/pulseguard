@@ -56,7 +56,11 @@ interface OnboardingWizardProps {
   onboardingStatus?: OnboardingStatus;
 }
 
-export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: OnboardingWizardProps) {
+export function OnboardingWizard({
+  open,
+  onOpenChange,
+  userEmail = "",
+}: OnboardingWizardProps) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [tab, setTab] = useState<"quick" | "import">("quick");
   const [importProvider, setImportProvider] = useState<
@@ -66,7 +70,9 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
   // Step 1 Quick Form State
   const [url, setUrl] = useState("");
   const [name, setName] = useState("");
-  const [monitorType, setMonitorType] = useState<"HTTP" | "PING" | "PORT" | "SSL">("HTTP");
+  const [monitorType, setMonitorType] = useState<
+    "HTTP" | "PING" | "PORT" | "SSL"
+  >("HTTP");
   const [isPrefilledFromDemo, setIsPrefilledFromDemo] = useState(false);
   const [isCreatingMonitor, setIsCreatingMonitor] = useState(false);
   const [monitorError, setMonitorError] = useState("");
@@ -75,9 +81,13 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
   const [apiKeyInput, setApiKeyInput] = useState("");
   const [rawContentInput, setRawContentInput] = useState("");
   const [isFetchingImport, setIsFetchingImport] = useState(false);
-  const [importedCandidates, setImportedCandidates] = useState<NormalizedImportMonitor[]>([]);
+  const [importedCandidates, setImportedCandidates] = useState<
+    NormalizedImportMonitor[]
+  >([]);
   const [isImportingMonitors, setIsImportingMonitors] = useState(false);
-  const [importSuccessCount, setImportSuccessCount] = useState<number | null>(null);
+  const [importSuccessCount, setImportSuccessCount] = useState<number | null>(
+    null,
+  );
 
   // Step 2 Alert Channel State
   const [channelType, setChannelType] = useState<
@@ -96,7 +106,9 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
     if (!open) return;
 
     try {
-      const storedDemoPrefill = localStorage.getItem("pulseguard_prefill_monitor");
+      const storedDemoPrefill = localStorage.getItem(
+        "pulseguard_prefill_monitor",
+      );
       if (storedDemoPrefill) {
         const parsed = JSON.parse(storedDemoPrefill);
         if (parsed.url) {
@@ -261,7 +273,11 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
         return;
       }
       configObj = { email: emailAddress.trim() };
-    } else if (channelType === "DISCORD" || channelType === "SLACK" || channelType === "WEBHOOK") {
+    } else if (
+      channelType === "DISCORD" ||
+      channelType === "SLACK" ||
+      channelType === "WEBHOOK"
+    ) {
       if (!webhookUrl.trim()) {
         setChannelError("Webhook URL is required.");
         return;
@@ -272,7 +288,10 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
         setChannelError("Telegram bot token and chat ID are required.");
         return;
       }
-      configObj = { botToken: telegramToken.trim(), chatId: telegramChatId.trim() };
+      configObj = {
+        botToken: telegramToken.trim(),
+        chatId: telegramChatId.trim(),
+      };
     }
 
     setIsSavingChannel(true);
@@ -300,7 +319,8 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
           <DialogDescription>
             {step === 1 &&
               "Create monitor or 1-click import from UptimeRobot, Better Stack, or StatusCake."}
-            {step === 2 && "Connect your alert channel — never leave a monitor unnotified."}
+            {step === 2 &&
+              "Connect your alert channel — never leave a monitor unnotified."}
             {step === 3 && "Live Multi-Region Edge Consensus Verification."}
           </DialogDescription>
         </DialogHeader>
@@ -323,7 +343,8 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
               <p className="text-xs text-zinc-400 font-mono mt-0.5">
                 {step === 1 &&
                   "Create monitor or 1-click import from UptimeRobot, Better Stack, or StatusCake."}
-                {step === 2 && "Connect your alert channel — never leave a monitor unnotified."}
+                {step === 2 &&
+                  "Connect your alert channel — never leave a monitor unnotified."}
                 {step === 3 && "Live Multi-Region Edge Consensus Verification."}
               </p>
             </div>
@@ -421,7 +442,10 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
 
                 {/* TAB 1: QUICK SINGLE MONITOR */}
                 {tab === "quick" && (
-                  <form onSubmit={handleQuickCreateMonitor} className="space-y-4">
+                  <form
+                    onSubmit={handleQuickCreateMonitor}
+                    className="space-y-4"
+                  >
                     {isPrefilledFromDemo && (
                       <div className="p-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 flex items-center justify-between text-xs font-mono text-emerald-400">
                         <span className="flex items-center gap-2">
@@ -435,7 +459,9 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                     )}
 
                     <div className="space-y-1.5">
-                      <Label className="text-xs font-mono text-zinc-300">Target Endpoint URL</Label>
+                      <Label className="text-xs font-mono text-zinc-300">
+                        Target Endpoint URL
+                      </Label>
                       <Input
                         type="text"
                         placeholder="https://api.yourdomain.com/health"
@@ -445,8 +471,8 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                         autoFocus
                       />
                       <p className="text-[11px] text-zinc-500 font-mono">
-                        PulseGuard will probe this URL every 60 seconds across multi-region edge
-                        nodes.
+                        PulseGuard will probe this URL every 60 seconds across
+                        multi-region edge nodes.
                       </p>
                     </div>
 
@@ -465,16 +491,22 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                       </div>
 
                       <div className="space-y-1.5">
-                        <Label className="text-xs font-mono text-zinc-300">Check Protocol</Label>
+                        <Label className="text-xs font-mono text-zinc-300">
+                          Check Protocol
+                        </Label>
                         <select
                           value={monitorType}
-                          onChange={(e) => setMonitorType(e.target.value as any)}
+                          onChange={(e) =>
+                            setMonitorType(e.target.value as any)
+                          }
                           className="w-full h-10 px-3 rounded-md bg-zinc-900 border border-zinc-800 font-mono text-sm text-zinc-100 focus:outline-none focus:border-emerald-500"
                         >
                           <option value="HTTP">HTTP / HTTPS (Rest API)</option>
                           <option value="PING">PING (ICMP Echo)</option>
                           <option value="PORT">PORT (TCP Service)</option>
-                          <option value="SSL">SSL Certificate Monitoring</option>
+                          <option value="SSL">
+                            SSL Certificate Monitoring
+                          </option>
                         </select>
                       </div>
                     </div>
@@ -502,7 +534,11 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                     {/* Provider Selection Grid */}
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                       {[
-                        { id: "uptimerobot", label: "UptimeRobot", icon: Boxes },
+                        {
+                          id: "uptimerobot",
+                          label: "UptimeRobot",
+                          icon: Boxes,
+                        },
                         { id: "betterstack", label: "Better Stack", icon: Zap },
                         { id: "statuscake", label: "StatusCake", icon: Cpu },
                         { id: "csv", label: "CSV / JSON", icon: FileText },
@@ -559,7 +595,9 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                               rows={4}
                               placeholder={`name,url,type\nMy Web Service,https://api.example.com,HTTP\n...`}
                               value={rawContentInput}
-                              onChange={(e) => setRawContentInput(e.target.value)}
+                              onChange={(e) =>
+                                setRawContentInput(e.target.value)
+                              }
                               className="w-full p-3 rounded-xl bg-zinc-900/90 border border-zinc-800 font-mono text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500"
                             />
                           </div>
@@ -576,7 +614,8 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                           ) : (
                             <Download className="size-4 mr-2" />
                           )}
-                          Fetch & Preview {importProvider.toUpperCase()} Monitors
+                          Fetch & Preview {importProvider.toUpperCase()}{" "}
+                          Monitors
                         </Button>
                       </div>
                     ) : (
@@ -586,8 +625,11 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                             Found {importedCandidates.length} Monitors
                           </span>
                           <span className="text-emerald-400 font-bold">
-                            {importedCandidates.filter((m) => m.selected).length} Selected for
-                            1-Click Import
+                            {
+                              importedCandidates.filter((m) => m.selected)
+                                .length
+                            }{" "}
+                            Selected for 1-Click Import
                           </span>
                         </div>
 
@@ -610,7 +652,9 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                                   onChange={() => {}}
                                   className="accent-emerald-500 size-4 rounded"
                                 />
-                                <span className="font-bold truncate">{mon.name}</span>
+                                <span className="font-bold truncate">
+                                  {mon.name}
+                                </span>
                                 <span className="text-[10px] text-zinc-500 truncate">
                                   {mon.url}
                                 </span>
@@ -625,8 +669,8 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                         {importSuccessCount !== null ? (
                           <div className="p-3.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 font-mono text-xs text-center font-bold flex items-center justify-center gap-2">
                             <CheckCircle2 className="size-4 text-emerald-400" />
-                            Successfully imported {importSuccessCount} monitors into PulseGuard!
-                            Proceeding to alert setup...
+                            Successfully imported {importSuccessCount} monitors
+                            into PulseGuard! Proceeding to alert setup...
                           </div>
                         ) : (
                           <Button
@@ -664,8 +708,9 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                     <Bell className="size-4 text-emerald-400" />
                     Step 2 Mandate: Alert Channel Setup
                   </p>
-                  A monitor without an alert channel is a monitor that never proves its value.
-                  Connect your alert channel now to ensure instantaneous incident notifications.
+                  A monitor without an alert channel is a monitor that never
+                  proves its value. Connect your alert channel now to ensure
+                  instantaneous incident notifications.
                 </div>
 
                 {channelError && (
@@ -706,7 +751,9 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
 
                 <form onSubmit={handleCreateChannel} className="space-y-4">
                   <div className="space-y-1.5">
-                    <Label className="text-xs font-mono text-zinc-300">Channel Name</Label>
+                    <Label className="text-xs font-mono text-zinc-300">
+                      Channel Name
+                    </Label>
                     <Input
                       type="text"
                       value={channelName}
@@ -734,7 +781,9 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                     channelType === "SLACK" ||
                     channelType === "WEBHOOK") && (
                     <div className="space-y-1.5">
-                      <Label className="text-xs font-mono text-zinc-300">Webhook URL</Label>
+                      <Label className="text-xs font-mono text-zinc-300">
+                        Webhook URL
+                      </Label>
                       <Input
                         type="url"
                         placeholder="https://discord.com/api/webhooks/..."
@@ -760,7 +809,9 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <Label className="text-xs font-mono text-zinc-300">Chat ID</Label>
+                        <Label className="text-xs font-mono text-zinc-300">
+                          Chat ID
+                        </Label>
                         <Input
                           type="text"
                           placeholder="-100123456789"
@@ -818,8 +869,8 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                     Edge Monitoring Active & Verified
                   </h3>
                   <p className="text-xs font-mono text-zinc-400 mt-1">
-                    Your target monitor is live with 60-second multi-region probe consensus and
-                    active alert dispatch.
+                    Your target monitor is live with 60-second multi-region
+                    probe consensus and active alert dispatch.
                   </p>
                 </div>
 
@@ -827,15 +878,23 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                 <div className="grid grid-cols-3 gap-3 p-4 rounded-xl border border-zinc-800 bg-zinc-900/60 font-mono text-xs">
                   <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800">
                     <div className="text-[10px] text-zinc-500">US-EAST-1</div>
-                    <div className="text-emerald-400 font-bold mt-1">14ms • UP</div>
+                    <div className="text-emerald-400 font-bold mt-1">
+                      14ms • UP
+                    </div>
                   </div>
                   <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800">
-                    <div className="text-[10px] text-zinc-500">EU-CENTRAL-1</div>
-                    <div className="text-emerald-400 font-bold mt-1">38ms • UP</div>
+                    <div className="text-[10px] text-zinc-500">
+                      EU-CENTRAL-1
+                    </div>
+                    <div className="text-emerald-400 font-bold mt-1">
+                      38ms • UP
+                    </div>
                   </div>
                   <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800">
                     <div className="text-[10px] text-zinc-500">AP-TOKYO-1</div>
-                    <div className="text-emerald-400 font-bold mt-1">112ms • UP</div>
+                    <div className="text-emerald-400 font-bold mt-1">
+                      112ms • UP
+                    </div>
                   </div>
                 </div>
 
@@ -848,7 +907,8 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                     }}
                     className="w-full bg-gradient-to-r from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 text-zinc-950 font-mono font-bold uppercase tracking-wider text-xs h-11 shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all"
                   >
-                    Go to Dashboard & Monitor Pulse <ArrowRight className="size-4 ml-2" />
+                    Go to Dashboard & Monitor Pulse{" "}
+                    <ArrowRight className="size-4 ml-2" />
                   </Button>
                 </div>
               </motion.div>

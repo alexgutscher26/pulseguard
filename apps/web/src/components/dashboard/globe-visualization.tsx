@@ -13,8 +13,20 @@ interface GlobeVisualizationProps {
 // Regional coordinates mapping on Globe
 const REGIONS = [
   { name: "Frankfurt", code: "EU", lat: 50.11, lng: 8.68, color: 0x10b981 }, // Emerald Green
-  { name: "Oregon", code: "US-West", lat: 45.52, lng: -122.68, color: 0x10b981 },
-  { name: "Virginia", code: "US-East", lat: 37.43, lng: -78.65, color: 0x10b981 },
+  {
+    name: "Oregon",
+    code: "US-West",
+    lat: 45.52,
+    lng: -122.68,
+    color: 0x10b981,
+  },
+  {
+    name: "Virginia",
+    code: "US-East",
+    lat: 37.43,
+    lng: -78.65,
+    color: 0x10b981,
+  },
   { name: "Singapore", code: "APAC", lat: 1.35, lng: 103.82, color: 0x10b981 },
   { name: "Sydney", code: "OCE", lat: -33.86, lng: 151.2, color: 0x10b981 },
   { name: "São Paulo", code: "SA", lat: -23.55, lng: -46.63, color: 0x10b981 },
@@ -32,15 +44,20 @@ export function GlobeVisualization({ monitors }: GlobeVisualizationProps) {
   const animationFrameRef = useRef<number | null>(null);
 
   // Keep a ref to push check events dynamically to the Three.js loop
-  const eventQueueRef = useRef<{ region: string; status: string; latency: number }[]>([]);
+  const eventQueueRef = useRef<
+    { region: string; status: string; latency: number }[]
+  >([]);
 
   const dataRegionCode = (region: string) => {
     const r = region.toLowerCase();
     if (r.includes("eu") || r.includes("frankfurt")) return "EU";
-    if (r.includes("sg") || r.includes("singapore") || r.includes("apac")) return "APAC";
-    if (r.includes("oregon") || r.includes("west") || r.includes("us-west")) return "US-West";
+    if (r.includes("sg") || r.includes("singapore") || r.includes("apac"))
+      return "APAC";
+    if (r.includes("oregon") || r.includes("west") || r.includes("us-west"))
+      return "US-West";
     if (r.includes("sydney") || r.includes("oce")) return "OCE";
-    if (r.includes("sao") || r.includes("brazil") || r.includes("sa")) return "SA";
+    if (r.includes("sao") || r.includes("brazil") || r.includes("sa"))
+      return "SA";
     return "US-East"; // Fallback
   };
 
@@ -64,7 +81,9 @@ export function GlobeVisualization({ monitors }: GlobeVisualizationProps) {
     const telemetryTimer = setInterval(() => {
       if (!active) return;
       const randomMonitor =
-        activeMonitorsList[Math.floor(Math.random() * activeMonitorsList.length)];
+        activeMonitorsList[
+          Math.floor(Math.random() * activeMonitorsList.length)
+        ];
       const regions = ["EU", "US-West", "US-East", "APAC", "OCE", "SA"];
       const randomRegion = regions[Math.floor(Math.random() * regions.length)];
       const isUp = Math.random() > 0.05;
@@ -78,7 +97,10 @@ export function GlobeVisualization({ monitors }: GlobeVisualizationProps) {
         SA: 120,
       };
       const baseMs = baseLatencies[randomRegion] || 25;
-      const latency = Math.max(8, Math.round(baseMs + (Math.random() * 14 - 7)));
+      const latency = Math.max(
+        8,
+        Math.round(baseMs + (Math.random() * 14 - 7)),
+      );
 
       eventQueueRef.current.push({
         region: randomRegion,
@@ -97,13 +119,15 @@ export function GlobeVisualization({ monitors }: GlobeVisualizationProps) {
       if (!active) return;
 
       // Determine WebSocket base URL
-      let wsBaseUrl = process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";
+      let wsBaseUrl =
+        process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";
       if (wsBaseUrl.startsWith("http://")) {
         wsBaseUrl = wsBaseUrl.replace("http://", "ws://");
       } else if (wsBaseUrl.startsWith("https://")) {
         wsBaseUrl = wsBaseUrl.replace("https://", "wss://");
       } else if (!wsBaseUrl.includes("://")) {
-        const protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+        const protocol =
+          window.location.protocol === "https:" ? "wss://" : "ws://";
         wsBaseUrl = `${protocol}${wsBaseUrl}`;
       }
 
@@ -136,7 +160,11 @@ export function GlobeVisualization({ monitors }: GlobeVisualizationProps) {
 
           sockets.push(ws);
         } catch (err) {
-          console.warn("Failed to open WebSocket in Globe Visualization:", monitor.id, err);
+          console.warn(
+            "Failed to open WebSocket in Globe Visualization:",
+            monitor.id,
+            err,
+          );
         }
       });
     }
@@ -221,7 +249,10 @@ export function GlobeVisualization({ monitors }: GlobeVisualizationProps) {
       colors[i * 3 + 2] = 0.5;
     }
 
-    pointsGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    pointsGeometry.setAttribute(
+      "position",
+      new THREE.BufferAttribute(positions, 3),
+    );
     pointsGeometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
     const pointsMaterial = new THREE.PointsMaterial({
@@ -307,13 +338,16 @@ export function GlobeVisualization({ monitors }: GlobeVisualizationProps) {
 
     // Spawns a laser arc from origin region to target New York destination
     const spawnLaserArc = (regionCode: string, status: string) => {
-      const startPos = regionPositions[regionCode] || regionPositions["US-East"];
+      const startPos =
+        regionPositions[regionCode] || regionPositions["US-East"];
       const endPos = targetPositions[0]; // New York
 
       if (!startPos || !endPos) return;
 
       // Calculate bezier curve
-      const mid = new THREE.Vector3().addVectors(startPos, endPos).multiplyScalar(0.5);
+      const mid = new THREE.Vector3()
+        .addVectors(startPos, endPos)
+        .multiplyScalar(0.5);
       const dist = startPos.distanceTo(endPos);
       const height = dist * 0.35;
       const ctrl = mid
@@ -442,7 +476,8 @@ export function GlobeVisualization({ monitors }: GlobeVisualizationProps) {
 
     // Cleanup
     return () => {
-      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+      if (animationFrameRef.current)
+        cancelAnimationFrame(animationFrameRef.current);
       window.removeEventListener("resize", handleResize);
       canvas.removeEventListener("mousedown", handleMouseDown);
       canvas.removeEventListener("mousemove", handleMouseMove);
@@ -531,7 +566,9 @@ export function GlobeVisualization({ monitors }: GlobeVisualizationProps) {
                   </div>
                 ))}
                 {activeChecks.length === 0 && (
-                  <div className="text-zinc-600 italic">Listening for websocket pings...</div>
+                  <div className="text-zinc-600 italic">
+                    Listening for websocket pings...
+                  </div>
                 )}
               </div>
             </div>
@@ -544,7 +581,10 @@ export function GlobeVisualization({ monitors }: GlobeVisualizationProps) {
                   STREAMING
                 </span>
               </div>
-              <p>Drag to spin globe. Ping events spawn laser arcs from origins to targets.</p>
+              <p>
+                Drag to spin globe. Ping events spawn laser arcs from origins to
+                targets.
+              </p>
             </div>
           </div>
         </div>

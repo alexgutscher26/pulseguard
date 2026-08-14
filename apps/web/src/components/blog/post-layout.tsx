@@ -1,9 +1,20 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { ArrowLeft, Clock, Calendar, Tag, ArrowRight, ShieldCheck, Zap } from "lucide-react";
+import {
+  ArrowLeft,
+  Clock,
+  Calendar,
+  Tag,
+  ArrowRight,
+  ShieldCheck,
+  Zap,
+} from "lucide-react";
 import { ReadingProgress } from "@/components/blog/reading-progress";
 import { ShareButtons } from "@/components/blog/share-buttons";
-import { TableOfContents, type TocItem } from "@/components/blog/table-of-contents";
+import {
+  TableOfContents,
+  type TocItem,
+} from "@/components/blog/table-of-contents";
 
 export interface RelatedPost {
   slug: string;
@@ -99,7 +110,9 @@ export default function PostLayout({
                 <span className="text-xs font-semibold text-foreground flex items-center gap-1">
                   {author}
                 </span>
-                <span className="text-[11px] text-muted-foreground">PulseGuard Engineering</span>
+                <span className="text-[11px] text-muted-foreground">
+                  PulseGuard Engineering
+                </span>
               </div>
             </div>
 
@@ -156,15 +169,17 @@ export default function PostLayout({
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <div className="flex items-center gap-2">
-                    <h2 className="text-sm font-bold text-foreground m-0">{author}</h2>
+                    <h2 className="text-sm font-bold text-foreground m-0">
+                      {author}
+                    </h2>
                     <span className="text-[10px] px-2 py-0.5 rounded bg-primary/10 text-primary font-mono font-semibold">
                       Author
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground leading-relaxed m-0">
-                    Core engineer and distributed systems enthusiast at PulseGuard. Building
-                    50-region edge monitoring mesh networks and zero-false-positive incident alert
-                    pipelines.
+                    Core engineer and distributed systems enthusiast at
+                    PulseGuard. Building global edge monitoring mesh networks
+                    and 4-of-7 quorum incident alert pipelines.
                   </p>
                 </div>
               </div>
@@ -183,15 +198,15 @@ export default function PostLayout({
                 <div className="relative flex flex-col gap-4">
                   <div className="inline-flex items-center gap-1.5 text-[10px] font-bold font-mono text-primary uppercase tracking-widest">
                     <Zap className="size-3.5" />
-                    Zero-Noise Monitoring
+                    Quorum-Verified Monitoring
                   </div>
                   <h3 className="text-xl sm:text-2xl font-extrabold text-foreground tracking-tight m-0">
                     Stop 3 AM false alarms with PulseGuard
                   </h3>
                   <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed m-0 max-w-xl">
-                    Get 60-second checks across 50 global edge regions, 2/3 multi-region consensus
-                    verification, and custom branded status pages — completely free for up to 50
-                    monitors.
+                    Get 60-second checks across 7 global regions, 4-of-7
+                    multi-region consensus verification, and custom branded
+                    status pages — completely free for up to 50 monitors.
                   </p>
                   <div className="flex flex-wrap items-center gap-3 pt-2">
                     <Link
@@ -223,8 +238,8 @@ export default function PostLayout({
                     <span>PulseGuard Free</span>
                   </div>
                   <p className="text-[11px] text-muted-foreground leading-relaxed mb-3">
-                    50 monitors, 60s intervals, 7 global edge regions, and multi-node quorum
-                    consensus.
+                    50 monitors, 60s intervals, 7 global edge regions, and
+                    multi-node quorum consensus.
                   </p>
                   <Link
                     href={"/auth/sign-up" as any}

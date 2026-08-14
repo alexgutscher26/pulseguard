@@ -38,15 +38,18 @@ export async function getOnboardingStatus(): Promise<OnboardingStatus> {
   }
 
   try {
-    const [user, monitorsCount, channelsCount, statusPagesCount] = await Promise.all([
-      prisma.user.findUnique({
-        where: { id: session.user.id },
-        select: { onboardingCompleted: true },
-      }),
-      prisma.monitor.count({ where: { userId: session.user.id } }),
-      prisma.notificationChannel.count({ where: { userId: session.user.id } }),
-      prisma.statusPage.count({ where: { userId: session.user.id } }),
-    ]);
+    const [user, monitorsCount, channelsCount, statusPagesCount] =
+      await Promise.all([
+        prisma.user.findUnique({
+          where: { id: session.user.id },
+          select: { onboardingCompleted: true },
+        }),
+        prisma.monitor.count({ where: { userId: session.user.id } }),
+        prisma.notificationChannel.count({
+          where: { userId: session.user.id },
+        }),
+        prisma.statusPage.count({ where: { userId: session.user.id } }),
+      ]);
 
     const hasCreatedMonitor = monitorsCount > 0;
     const hasConfiguredAlert = channelsCount > 0;
@@ -89,7 +92,10 @@ export async function getOnboardingStatus(): Promise<OnboardingStatus> {
   }
 }
 
-export async function completeOnboarding(): Promise<{ success: boolean; error?: string }> {
+export async function completeOnboarding(): Promise<{
+  success: boolean;
+  error?: string;
+}> {
   const session = await auth.api.getSession({
     headers: await headers(),
   });

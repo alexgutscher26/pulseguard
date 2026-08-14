@@ -24,8 +24,13 @@ export async function POST(req: Request) {
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : "Unknown error";
-    console.error(`Stripe Webhook Signature Verification Failed: ${errorMessage}`);
-    return NextResponse.json({ error: `Webhook Error: ${errorMessage}` }, { status: 400 });
+    console.error(
+      `Stripe Webhook Signature Verification Failed: ${errorMessage}`,
+    );
+    return NextResponse.json(
+      { error: `Webhook Error: ${errorMessage}` },
+      { status: 400 },
+    );
   }
 
   try {
@@ -73,8 +78,10 @@ export async function POST(req: Request) {
         });
 
         if (subRecord) {
-          const effectiveStatus = subscription.status === "active" ? "ACTIVE" : status;
-          const currentPlan = subscription.status === "canceled" ? "INITIATE" : subRecord.plan;
+          const effectiveStatus =
+            subscription.status === "active" ? "ACTIVE" : status;
+          const currentPlan =
+            subscription.status === "canceled" ? "INITIATE" : subRecord.plan;
 
           await db.subscription.update({
             where: { id: subRecord.id },
@@ -143,6 +150,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ received: true });
   } catch (error) {
     console.error("Error processing Stripe webhook event:", error);
-    return NextResponse.json({ error: "Webhook handler failed" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Webhook handler failed" },
+      { status: 500 },
+    );
   }
 }

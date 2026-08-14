@@ -1,7 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -183,7 +189,9 @@ export function CronSentinel() {
             <Button
               className="w-full h-11 uppercase font-mono font-bold tracking-tighter group"
               onClick={() => {
-                router.push(`/dashboard/monitors/new?cron=${encodeURIComponent(cron)}`);
+                router.push(
+                  `/dashboard/monitors/new?cron=${encodeURIComponent(cron)}`,
+                );
               }}
             >
               Initialize Monitor
@@ -257,8 +265,9 @@ export function CronSentinel() {
                   <Info className="w-4 h-4 text-primary mt-1 shrink-0" />
                   <div className="space-y-2">
                     <p className="text-[10px] font-mono text-foreground/60 leading-relaxed uppercase tracking-tighter italic">
-                      Execution nodes are distributed across sovereign global edge regions.
-                      Timestamps reflect multi-node synchronization.
+                      Execution nodes are distributed across sovereign global
+                      edge regions. Timestamps reflect multi-node
+                      synchronization.
                     </p>
                     <div className="flex gap-1.5 h-1 items-end">
                       {[...Array(12)].map((_, i) => (
@@ -266,7 +275,11 @@ export function CronSentinel() {
                           key={i}
                           className="flex-1 bg-primary/20"
                           animate={{ height: [4, 8, 4] }}
-                          transition={{ duration: 1, repeat: Infinity, delay: i * 0.1 }}
+                          transition={{
+                            duration: 1,
+                            repeat: Infinity,
+                            delay: i * 0.1,
+                          }}
                         />
                       ))}
                     </div>
@@ -304,7 +317,9 @@ export function CronSentinel() {
               {feat.icon}
               {feat.title}
             </div>
-            <p className="text-xs text-muted-foreground font-mono leading-relaxed">{feat.desc}</p>
+            <p className="text-xs text-muted-foreground font-mono leading-relaxed">
+              {feat.desc}
+            </p>
           </div>
         ))}
       </div>

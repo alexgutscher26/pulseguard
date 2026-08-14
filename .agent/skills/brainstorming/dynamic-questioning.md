@@ -16,11 +16,12 @@ A good question is not "What color do you want?" but:
 ❌ BAD: "What authentication method?"
 ✅ GOOD: "Should users sign up with email/password or social login?
 
-   Impact:
-   - Email/Pass → Need password reset, hashing, 2FA infrastructure
-   - Social → OAuth providers, user profile mapping, less control
+Impact:
 
-   Trade-off: Security vs. Development time vs. User friction"
+- Email/Pass → Need password reset, hashing, 2FA infrastructure
+- Social → OAuth providers, user profile mapping, less control
+
+Trade-off: Security vs. Development time vs. User friction"
 ```
 
 ### 2. Context Before Content
@@ -56,9 +57,9 @@ If a question doesn't reduce implementation paths → **DELETE IT**.
 ❌ ASSUMPTION: "User probably wants Stripe for payments"
 ✅ QUESTION: "Which payment provider fits your needs?
 
-   Stripe → Best documentation, 2.9% + $0.30, US-centric
+Stripe → Best documentation, 2.9% + $0.30, US-centric
    LemonSqueezy → Merchant of Record, 5% + $0.50, global taxes
-   Paddle → Complex pricing, handles EU VAT, enterprise focus"
+Paddle → Complex pricing, handles EU VAT, enterprise focus"
 ```
 
 ---
@@ -145,14 +146,16 @@ Based on your request for [DOMAIN] [FEATURE]:
 **Question:** [Clear, specific question]
 
 **Why This Matters:**
+
 - [Explain architectural consequence]
 - [Affects: cost / complexity / timeline / scale]
 
 **Options:**
-| Option | Pros | Cons | Best For |
-|--------|------|------|----------|
-| A | [Advantage] | [Disadvantage] | [Use case] |
-| B | [Advantage] | [Disadvantage] | [Use case] |
+
+| Option | Pros        | Cons           | Best For   |
+| ------ | ----------- | -------------- | ---------- |
+| A      | [Advantage] | [Disadvantage] | [Use case] |
+| B      | [Advantage] | [Disadvantage] | [Use case] |
 
 **If Not Specified:** [Default choice + rationale]
 
@@ -161,6 +164,7 @@ Based on your request for [DOMAIN] [FEATURE]:
 ## 🟡 HIGH-LEVERAGE (Affects Implementation)
 
 ### 2. **[DECISION POINT]**
+
 [Same format]
 
 ---
@@ -168,6 +172,7 @@ Based on your request for [DOMAIN] [FEATURE]:
 ## 🟢 NICE-TO-HAVE (Edge Cases)
 
 ### 3. **[DECISION POINT]**
+
 [Same format]
 ```
 

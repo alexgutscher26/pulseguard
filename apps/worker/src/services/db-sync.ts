@@ -5,12 +5,17 @@ import { FallbackQueue } from "../lib/fallback-queue";
  * This should be called by a background cron job once the DB is presumed healthy.
  */
 export async function syncFallbackToDatabase(prisma: any, env: any) {
-  const fallback = new FallbackQueue(env.UPSTASH_REDIS_REST_URL, env.UPSTASH_REDIS_REST_TOKEN);
+  const fallback = new FallbackQueue(
+    env.UPSTASH_REDIS_REST_URL,
+    env.UPSTASH_REDIS_REST_TOKEN,
+  );
 
   const totalCount = await fallback.getQueueLength();
   if (totalCount === 0) return;
 
-  console.log(`[Sync] Detected ${totalCount} items in fallback queue. Starting drain...`);
+  console.log(
+    `[Sync] Detected ${totalCount} items in fallback queue. Starting drain...`,
+  );
 
   // Drain a sizeable batch. We limit this to ensure we don't exceed Worker execution time limits.
   const BATCH_SIZE = 50;
@@ -43,7 +48,10 @@ export async function syncFallbackToDatabase(prisma: any, env: any) {
       ]);
       successCount++;
     } catch (err: any) {
-      console.error(`[Sync] Failed to sync item for monitor ${item.monitorId}:`, err.message);
+      console.error(
+        `[Sync] Failed to sync item for monitor ${item.monitorId}:`,
+        err.message,
+      );
 
       // If it's a transient DB error, we could ideally put it back, but that risks a loop.
       // For now, we rely on the next cron run for other items.

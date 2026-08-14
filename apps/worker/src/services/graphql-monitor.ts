@@ -81,7 +81,8 @@ export async function checkGraphQL(
   assertions: GraphQLAssertion[] = [],
   variables?: Record<string, unknown>,
 ): Promise<GraphQLResult> {
-  const domain = (url.replace(/^https?:\/\//, "").split("/")[0] || "").split(":")[0] || url;
+  const domain =
+    (url.replace(/^https?:\/\//, "").split("/")[0] || "").split(":")[0] || url;
   const start = performance.now();
 
   const bodyObj: Record<string, unknown> = { query };
@@ -140,7 +141,8 @@ export async function checkGraphQL(
     }
 
     const hasData = data.data !== undefined && data.data !== null;
-    const hasErrors = !!data.errors && Array.isArray(data.errors) && data.errors.length > 0;
+    const hasErrors =
+      !!data.errors && Array.isArray(data.errors) && data.errors.length > 0;
     const errorMessages: string[] = [];
     if (hasErrors) {
       for (const err of data.errors) {
@@ -158,7 +160,11 @@ export async function checkGraphQL(
       );
     }
 
-    const assertionResults: { path: string; passed: boolean; actual: unknown }[] = [];
+    const assertionResults: {
+      path: string;
+      passed: boolean;
+      actual: unknown;
+    }[] = [];
     let assertionsPassed = 0;
     let assertionsFailed = 0;
 

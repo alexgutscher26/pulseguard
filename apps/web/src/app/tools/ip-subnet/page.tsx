@@ -33,8 +33,8 @@ export default function IPSubnetPage() {
               Network Pulse Sentinel
             </h1>
             <p className="text-muted-foreground text-lg md:text-xl max-w-3xl mx-auto font-mono">
-              [DECOMPOSING TOPOLOGY BITSETS... ] Instantly resolve address ranges, masks, and
-              network geometry.
+              [DECOMPOSING TOPOLOGY BITSETS... ] Instantly resolve address
+              ranges, masks, and network geometry.
             </p>
           </div>
 

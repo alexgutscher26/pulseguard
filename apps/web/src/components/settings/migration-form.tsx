@@ -1,8 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { Download, Database, Layers, Radio, FileCode, CheckCircle2 } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import {
+  Download,
+  Database,
+  Layers,
+  Radio,
+  FileCode,
+  CheckCircle2,
+} from "lucide-react";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 export function MigrationForm() {
@@ -81,9 +94,9 @@ export function MigrationForm() {
           Migration & Export
         </h2>
         <p className="text-xs text-muted-foreground leading-relaxed">
-          PulseGuard runs on a zero-vendor-lock-in philosophy. Your configurations belong to you.
-          Use the tools below to dump your workspace configuration or instantly migrate to
-          self-hosted stacks.
+          PulseGuard runs on a zero-vendor-lock-in philosophy. Your
+          configurations belong to you. Use the tools below to dump your
+          workspace configuration or instantly migrate to self-hosted stacks.
         </p>
       </div>
 
@@ -148,10 +161,11 @@ export function MigrationForm() {
                 Migration Guarantee
               </h4>
               <p className="text-[11px] text-muted-foreground leading-relaxed">
-                All exporter formats generate structural JSON or YAML configurations. PulseGuard
-                checks comply with the latest industry monitoring schemas, letting you easily
-                self-host a Blackbox exporter daemon or standard container should you choose to
-                change platforms.
+                All exporter formats generate structural JSON or YAML
+                configurations. PulseGuard checks comply with the latest
+                industry monitoring schemas, letting you easily self-host a
+                Blackbox exporter daemon or standard container should you choose
+                to change platforms.
               </p>
             </div>
           </div>

@@ -35,8 +35,12 @@ export class MonitorChannel extends DurableObject {
       let rawToken = url.searchParams.get("token");
 
       if (!rawToken && cookieHeader) {
-        const secureMatch = cookieHeader.match(/__Secure-better-auth\.session_token=([^;]+)/);
-        const regularMatch = cookieHeader.match(/better-auth\.session_token=([^;]+)/);
+        const secureMatch = cookieHeader.match(
+          /__Secure-better-auth\.session_token=([^;]+)/,
+        );
+        const regularMatch = cookieHeader.match(
+          /better-auth\.session_token=([^;]+)/,
+        );
         rawToken = secureMatch?.[1] || regularMatch?.[1] || null;
       }
 
@@ -48,7 +52,9 @@ export class MonitorChannel extends DurableObject {
       if (env.DATABASE_URL) {
         let prisma = getPrisma(env.DATABASE_URL);
 
-        const performHandshake = async (retry: boolean = true): Promise<Response | null> => {
+        const performHandshake = async (
+          retry: boolean = true,
+        ): Promise<Response | null> => {
           try {
             if (rawToken) {
               const token = decodeURIComponent(rawToken);
@@ -107,7 +113,9 @@ export class MonitorChannel extends DurableObject {
         if (authResponse) return authResponse;
       } else {
         // Fallback or warning if no DB URL is provided in the DO env
-        console.warn("[MonitorChannel] No DATABASE_URL provided in Env, skipping deep DO auth.");
+        console.warn(
+          "[MonitorChannel] No DATABASE_URL provided in Env, skipping deep DO auth.",
+        );
         // We'll trust the Worker Gateway if we can't check
         isAuthenticated = true;
       }
@@ -136,9 +144,12 @@ export class MonitorChannel extends DurableObject {
         const payload = await request.json();
         const activeConnections = this.broadcast(payload);
 
-        return new Response(JSON.stringify({ success: true, receivers: activeConnections }), {
-          headers: { "Content-Type": "application/json" },
-        });
+        return new Response(
+          JSON.stringify({ success: true, receivers: activeConnections }),
+          {
+            headers: { "Content-Type": "application/json" },
+          },
+        );
       } catch (e) {
         return new Response("Invalid JSON", { status: 400 });
       }

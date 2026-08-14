@@ -39,9 +39,11 @@ export function MonitorManager({ initialMonitors }: MonitorManagerProps) {
         monitor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         monitor.url.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const matchesStatus = statusFilter === "ALL" || monitor.status === statusFilter;
+      const matchesStatus =
+        statusFilter === "ALL" || monitor.status === statusFilter;
 
-      const matchesTag = !selectedTag || (monitor.tags && monitor.tags.includes(selectedTag));
+      const matchesTag =
+        !selectedTag || (monitor.tags && monitor.tags.includes(selectedTag));
 
       return matchesSearch && matchesStatus && matchesTag;
     });

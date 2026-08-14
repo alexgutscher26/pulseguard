@@ -8,40 +8,132 @@ export interface LatencyResult {
 
 export const REGIONS = [
   // North America
-  { id: "iad", city: "Ashburn", name: "US East (N. Virginia)", coords: [-77.48, 39.04] },
-  { id: "sjc", city: "San Jose", name: "US West (California)", coords: [-121.88, 37.33] },
-  { id: "pdx", city: "Portland", name: "US West (Oregon)", coords: [-122.67, 45.52] },
-  { id: "dfw", city: "Dallas", name: "US Central (Texas)", coords: [-96.79, 32.77] },
-  { id: "yyz", city: "Toronto", name: "Canada (East)", coords: [-79.38, 43.65] },
-  { id: "yvr", city: "Vancouver", name: "Canada (West)", coords: [-123.12, 49.28] },
+  {
+    id: "iad",
+    city: "Ashburn",
+    name: "US East (N. Virginia)",
+    coords: [-77.48, 39.04],
+  },
+  {
+    id: "sjc",
+    city: "San Jose",
+    name: "US West (California)",
+    coords: [-121.88, 37.33],
+  },
+  {
+    id: "pdx",
+    city: "Portland",
+    name: "US West (Oregon)",
+    coords: [-122.67, 45.52],
+  },
+  {
+    id: "dfw",
+    city: "Dallas",
+    name: "US Central (Texas)",
+    coords: [-96.79, 32.77],
+  },
+  {
+    id: "yyz",
+    city: "Toronto",
+    name: "Canada (East)",
+    coords: [-79.38, 43.65],
+  },
+  {
+    id: "yvr",
+    city: "Vancouver",
+    name: "Canada (West)",
+    coords: [-123.12, 49.28],
+  },
 
   // Europe
   { id: "lhr", city: "London", name: "Europe (UK)", coords: [-0.12, 51.5] },
-  { id: "fra", city: "Frankfurt", name: "Europe (Germany)", coords: [8.68, 50.11] },
+  {
+    id: "fra",
+    city: "Frankfurt",
+    name: "Europe (Germany)",
+    coords: [8.68, 50.11],
+  },
   { id: "cdg", city: "Paris", name: "Europe (France)", coords: [2.35, 48.85] },
-  { id: "ams", city: "Amsterdam", name: "Europe (Netherlands)", coords: [4.89, 52.37] },
-  { id: "sto", city: "Stockholm", name: "Europe (Sweden)", coords: [18.06, 59.32] },
+  {
+    id: "ams",
+    city: "Amsterdam",
+    name: "Europe (Netherlands)",
+    coords: [4.89, 52.37],
+  },
+  {
+    id: "sto",
+    city: "Stockholm",
+    name: "Europe (Sweden)",
+    coords: [18.06, 59.32],
+  },
   { id: "mxp", city: "Milan", name: "Europe (Italy)", coords: [9.19, 45.46] },
 
   // Asia / Oceania
-  { id: "sin", city: "Singapore", name: "Asia (Singapore)", coords: [103.81, 1.35] },
-  { id: "hkg", city: "Hong Kong", name: "Asia (Hong Kong)", coords: [114.16, 22.31] },
+  {
+    id: "sin",
+    city: "Singapore",
+    name: "Asia (Singapore)",
+    coords: [103.81, 1.35],
+  },
+  {
+    id: "hkg",
+    city: "Hong Kong",
+    name: "Asia (Hong Kong)",
+    coords: [114.16, 22.31],
+  },
   { id: "nrt", city: "Tokyo", name: "Asia (Japan)", coords: [139.69, 35.68] },
-  { id: "icn", city: "Seoul", name: "Asia (S. Korea)", coords: [126.97, 37.56] },
+  {
+    id: "icn",
+    city: "Seoul",
+    name: "Asia (S. Korea)",
+    coords: [126.97, 37.56],
+  },
   { id: "bom", city: "Mumbai", name: "Asia (India)", coords: [72.87, 19.07] },
-  { id: "syd", city: "Sydney", name: "Oceania (Australia)", coords: [151.2, -33.86] },
-  { id: "mel", city: "Melbourne", name: "Oceania (Australia)", coords: [144.96, -37.81] },
+  {
+    id: "syd",
+    city: "Sydney",
+    name: "Oceania (Australia)",
+    coords: [151.2, -33.86],
+  },
+  {
+    id: "mel",
+    city: "Melbourne",
+    name: "Oceania (Australia)",
+    coords: [144.96, -37.81],
+  },
 
   // S. America / Africa / M. East
-  { id: "gru", city: "São Paulo", name: "S. America (Brazil)", coords: [-46.63, -23.55] },
-  { id: "scl", city: "Santiago", name: "S. America (Chile)", coords: [-70.64, -33.44] },
-  { id: "jnb", city: "Johannesburg", name: "Africa (S. Africa)", coords: [28.04, -26.2] },
+  {
+    id: "gru",
+    city: "São Paulo",
+    name: "S. America (Brazil)",
+    coords: [-46.63, -23.55],
+  },
+  {
+    id: "scl",
+    city: "Santiago",
+    name: "S. America (Chile)",
+    coords: [-70.64, -33.44],
+  },
+  {
+    id: "jnb",
+    city: "Johannesburg",
+    name: "Africa (S. Africa)",
+    coords: [28.04, -26.2],
+  },
   { id: "los", city: "Lagos", name: "Africa (Nigeria)", coords: [3.37, 6.52] },
   { id: "dxb", city: "Dubai", name: "M. East (UAE)", coords: [55.27, 25.2] },
-  { id: "tlv", city: "Tel Aviv", name: "M. East (Israel)", coords: [34.78, 32.08] },
+  {
+    id: "tlv",
+    city: "Tel Aviv",
+    name: "M. East (Israel)",
+    coords: [34.78, 32.08],
+  },
 ];
 
-export async function checkGlobalLatency(targetUrl: string): Promise<LatencyResult[]> {
+export async function checkGlobalLatency(
+  targetUrl: string,
+): Promise<LatencyResult[]> {
   const start = Date.now();
   const url = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
 
@@ -112,10 +204,13 @@ export async function checkGlobalLatency(targetUrl: string): Promise<LatencyResu
         // Wait 2s before polling
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        const getRes = await fetch(`https://api.globalping.io/v1/measurements/${id}`, {
-          headers: { "User-Agent": "PulseGuard-Global-Latency-Checker" },
-          signal: AbortSignal.timeout(5000),
-        });
+        const getRes = await fetch(
+          `https://api.globalping.io/v1/measurements/${id}`,
+          {
+            headers: { "User-Agent": "PulseGuard-Global-Latency-Checker" },
+            signal: AbortSignal.timeout(5000),
+          },
+        );
 
         if (getRes.ok) {
           const getData = (await getRes.json()) as any;

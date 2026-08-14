@@ -5,7 +5,14 @@ date: "2026-08-06"
 category: "Engineering"
 readTime: "8 min read"
 author: "Alex Gutscher"
-tags: ["false alarm fatigue", "uptime monitoring", "incident response", "multi-region consensus", "DevOps"]
+tags:
+  [
+    "false alarm fatigue",
+    "uptime monitoring",
+    "incident response",
+    "multi-region consensus",
+    "DevOps",
+  ]
 ---
 
 It's 3:14 AM. Your phone violently buzzes on the nightstand. PagerDuty is blasting a high-severity alert: `CRITICAL: api.yourcompany.com HTTP 504 Gateway Timeout`.
@@ -104,7 +111,7 @@ interface ProbeResult {
 
 export async function evaluateConsensus(
   targetUrl: string,
-  primaryResult: ProbeResult
+  primaryResult: ProbeResult,
 ): Promise<{ shouldPage: boolean; consensusRatio: string }> {
   // Primary probe succeeded — no action required
   if (primaryResult.success) {
@@ -124,7 +131,9 @@ export async function evaluateConsensus(
   const isHardOutage = failureCount >= 2;
 
   if (!isHardOutage) {
-    logger.info(`[False Alarm Suppressed] Target: ${targetUrl}. Failures: ${failureCount}/3 (Transient routing noise)`);
+    logger.info(
+      `[False Alarm Suppressed] Target: ${targetUrl}. Failures: ${failureCount}/3 (Transient routing noise)`,
+    );
   }
 
   return {

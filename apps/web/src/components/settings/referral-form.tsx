@@ -53,7 +53,10 @@ export function ReferralForm() {
   const handleShareLinkedin = () => {
     if (!summary?.referralLink) return;
     const url = encodeURIComponent(summary.referralLink);
-    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, "_blank");
+    window.open(
+      `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
+      "_blank",
+    );
   };
 
   const handleShareEmail = () => {
@@ -69,7 +72,9 @@ export function ReferralForm() {
     return (
       <div className="flex flex-col items-center justify-center p-12 space-y-3 bg-card border border-border rounded-xl">
         <Loader2 className="size-6 animate-spin text-primary" />
-        <p className="text-xs text-muted-foreground font-mono">Loading affiliate telemetry...</p>
+        <p className="text-xs text-muted-foreground font-mono">
+          Loading affiliate telemetry...
+        </p>
       </div>
     );
   }
@@ -93,8 +98,8 @@ export function ReferralForm() {
               Earn $10 for every teammate you refer
             </h2>
             <p className="text-xs text-slate-400 font-mono">
-              Share your link with engineers & founders. They get extended trial access, and you
-              earn $10 credit per paid subscriber.
+              Share your link with engineers & founders. They get extended trial
+              access, and you earn $10 credit per paid subscriber.
             </p>
           </div>
         </div>
@@ -124,14 +129,20 @@ export function ReferralForm() {
             onClick={handleCopyLink}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/95 text-xs font-bold transition-all shadow-sm shrink-0 cursor-pointer"
           >
-            {copied ? <Check className="size-4 text-emerald-300" /> : <Copy className="size-4" />}
+            {copied ? (
+              <Check className="size-4 text-emerald-300" />
+            ) : (
+              <Copy className="size-4" />
+            )}
             {copied ? "Copied!" : "Copy Link"}
           </button>
         </div>
 
         {/* Social Share Buttons */}
         <div className="flex items-center gap-2 pt-2">
-          <span className="text-xs font-mono text-muted-foreground mr-2">Quick Share:</span>
+          <span className="text-xs font-mono text-muted-foreground mr-2">
+            Quick Share:
+          </span>
           <button
             onClick={handleShareTwitter}
             className="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-cyan-400 transition-all cursor-pointer"
@@ -163,7 +174,9 @@ export function ReferralForm() {
             <span className="text-xs font-mono">Total Link Clicks</span>
             <MousePointer className="size-4 text-cyan-400" />
           </div>
-          <p className="text-2xl font-bold text-slate-100 font-mono">{summary?.clicks || 0}</p>
+          <p className="text-2xl font-bold text-slate-100 font-mono">
+            {summary?.clicks || 0}
+          </p>
         </div>
 
         <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-4 space-y-1">
@@ -221,7 +234,9 @@ export function ReferralForm() {
                     REF
                   </div>
                   <div>
-                    <p className="font-semibold text-foreground">{item.maskedEmail}</p>
+                    <p className="font-semibold text-foreground">
+                      {item.maskedEmail}
+                    </p>
                     <p className="text-[10px] text-muted-foreground">
                       Joined {new Date(item.createdAt).toLocaleDateString()}
                     </p>
@@ -248,7 +263,9 @@ export function ReferralForm() {
         ) : (
           <div className="p-8 text-center space-y-2">
             <Users className="size-8 text-muted-foreground/40 mx-auto" />
-            <p className="text-xs font-bold text-foreground">No referrals recorded yet</p>
+            <p className="text-xs font-bold text-foreground">
+              No referrals recorded yet
+            </p>
             <p className="text-xs text-muted-foreground">
               Share your referral link above to start earning account credits!
             </p>

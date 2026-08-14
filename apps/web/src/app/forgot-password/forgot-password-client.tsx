@@ -66,11 +66,15 @@ export default function ForgotPasswordClient() {
             </div>
           </div>
           <div className="space-y-2">
-            <h2 className="text-xl font-bold text-foreground">Check your inbox</h2>
+            <h2 className="text-xl font-bold text-foreground">
+              Check your inbox
+            </h2>
             <p className="text-sm text-muted-foreground leading-relaxed">
               We sent a password reset link to{" "}
-              <span className="font-semibold text-foreground">{submittedEmail}</span>. Please check
-              your email and follow the instructions.
+              <span className="font-semibold text-foreground">
+                {submittedEmail}
+              </span>
+              . Please check your email and follow the instructions.
             </p>
           </div>
           <div className="pt-4">
@@ -118,7 +122,10 @@ export default function ForgotPasswordClient() {
                     <Mail className="size-5 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   </div>
                   {field.state.meta.errors.map((error) => (
-                    <p key={error?.message} className="text-red-500 font-medium text-xs mt-1">
+                    <p
+                      key={error?.message}
+                      className="text-red-500 font-medium text-xs mt-1"
+                    >
                       {error?.message}
                     </p>
                   ))}

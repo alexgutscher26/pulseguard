@@ -53,7 +53,8 @@ export function IncidentHistory({ monitor }: { monitor: any }) {
     ]);
 
     const csvContent =
-      "data:text/csv;charset=utf-8," + [headers, ...rows].map((row) => row.join(",")).join("\n");
+      "data:text/csv;charset=utf-8," +
+      [headers, ...rows].map((row) => row.join(",")).join("\n");
 
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
@@ -71,7 +72,9 @@ export function IncidentHistory({ monitor }: { monitor: any }) {
           <h3 className="text-foreground text-lg font-bold font-mono uppercase tracking-tight">
             Event Log
           </h3>
-          <p className="text-muted-foreground/60 text-xs font-mono">Recent heartbeat activity</p>
+          <p className="text-muted-foreground/60 text-xs font-mono">
+            Recent heartbeat activity
+          </p>
         </div>
         <button
           onClick={exportToCSV}
@@ -115,7 +118,10 @@ export function IncidentHistory({ monitor }: { monitor: any }) {
               </tr>
             )}
             {paginatedHistory.map((event: any) => (
-              <tr key={event.id} className="hover:bg-primary/5 transition-colors group font-mono">
+              <tr
+                key={event.id}
+                className="hover:bg-primary/5 transition-colors group font-mono"
+              >
                 <td className="py-4 px-4">
                   {event.status === "UP" ? (
                     <span className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider">
@@ -203,7 +209,10 @@ export function IncidentHistory({ monitor }: { monitor: any }) {
       )}
 
       {/* Event Details Modal */}
-      <Dialog open={!!selectedEvent} onOpenChange={(open) => !open && setSelectedEvent(null)}>
+      <Dialog
+        open={!!selectedEvent}
+        onOpenChange={(open) => !open && setSelectedEvent(null)}
+      >
         <DialogContent className="sm:max-w-[600px] border-primary/20 bg-background/95 backdrop-blur-md shadow-2xl font-mono text-xs text-foreground">
           <DialogHeader className="border-b border-primary/20 pb-4">
             <DialogTitle className="text-foreground text-sm font-bold font-mono uppercase tracking-widest flex items-center gap-2">
@@ -245,7 +254,9 @@ export function IncidentHistory({ monitor }: { monitor: any }) {
                     Latency
                   </span>
                   <span className="font-bold text-[11px] text-foreground">
-                    {selectedEvent.latency ? `${selectedEvent.latency}ms` : "Timeout"}
+                    {selectedEvent.latency
+                      ? `${selectedEvent.latency}ms`
+                      : "Timeout"}
                   </span>
                 </div>
 
@@ -261,7 +272,9 @@ export function IncidentHistory({ monitor }: { monitor: any }) {
                   <span
                     className={cn(
                       "font-bold text-[11px] uppercase tracking-wider",
-                      selectedEvent.status === "UP" ? "text-primary" : "text-red-500",
+                      selectedEvent.status === "UP"
+                        ? "text-primary"
+                        : "text-red-500",
                     )}
                   >
                     {selectedEvent.status === "UP" ? "Operational" : "Downtime"}
@@ -291,7 +304,9 @@ export function IncidentHistory({ monitor }: { monitor: any }) {
                   </span>
                   <button
                     onClick={() => {
-                      navigator.clipboard.writeText(JSON.stringify(selectedEvent, null, 2));
+                      navigator.clipboard.writeText(
+                        JSON.stringify(selectedEvent, null, 2),
+                      );
                       setIsCopied(true);
                       setTimeout(() => setIsCopied(false), 2000);
                     }}

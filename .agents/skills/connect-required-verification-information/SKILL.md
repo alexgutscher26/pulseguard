@@ -7,7 +7,6 @@ description: >-
   setups; or when they ask which verification fields, documents, or business
   details are required for a particular platform country, account country,
   business type, dashboard, service agreement, or capability.
-
 ---
 
 ## Instructions
@@ -376,9 +375,7 @@ person: Name: `/(first|last)_name/` Name (kana): `/(first|last)_name_kana/` Name
         "company.name",
         "representative.first_name"
       ],
-      "eventually_due": [
-        "business_profile.url"
-      ]
+      "eventually_due": ["business_profile.url"]
     }
   }
   ```

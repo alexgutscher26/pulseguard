@@ -150,12 +150,13 @@ export function SleepModeClient() {
             </span>
           </h1>
           <p className="text-muted-foreground text-sm sm:text-base leading-relaxed max-w-lg">
-            Solo devs hate waking up for false alarms. PulseGuard runs every check through a{" "}
+            Solo devs hate waking up for false alarms. PulseGuard runs every
+            check through a{" "}
             <strong className="text-foreground font-semibold">
               5-vector verification pipeline
             </strong>{" "}
-            before alerting you. Two-second blips, regional ISP hiccups, and flapping containers get
-            filtered. Real outages break through.
+            before alerting you. Two-second blips, regional ISP hiccups, and
+            flapping containers get filtered. Real outages break through.
           </p>
           <div className="flex flex-wrap gap-4 pt-2">
             <Link
@@ -215,8 +216,9 @@ export function SleepModeClient() {
 
               <div className="border-t border-border/40 pt-3 mt-1">
                 <p className="text-[11px] text-muted-foreground font-mono leading-relaxed text-center">
-                  PulseGuard&apos;s 5-vector verification completes in &lt;1.8s before any alert is
-                  dispatched. If your phone buzzes, your origin is genuinely down.
+                  PulseGuard&apos;s 5-vector verification completes in &lt;1.8s
+                  before any alert is dispatched. If your phone buzzes, your
+                  origin is genuinely down.
                 </p>
               </div>
             </div>
@@ -239,8 +241,9 @@ export function SleepModeClient() {
             The 5-Vector Verification Stack
           </h2>
           <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
-            Every potential failure is cross-examined across five distinct, non-correlated vectors.
-            An alert is only triggered when true global consensus confirms the outage.
+            Every potential failure is cross-examined across five distinct,
+            non-correlated vectors. An alert is only triggered when true global
+            consensus confirms the outage.
           </p>
         </div>
 
@@ -283,7 +286,9 @@ export function SleepModeClient() {
                     </div>
                   </div>
 
-                  <h3 className="text-base font-bold text-foreground mb-2">{step.title}</h3>
+                  <h3 className="text-base font-bold text-foreground mb-2">
+                    {step.title}
+                  </h3>
                   <p className="text-xs text-muted-foreground leading-relaxed mb-4">
                     {step.description}
                   </p>
@@ -311,8 +316,9 @@ export function SleepModeClient() {
             Multi-Layer Noise Defense
           </h2>
           <p className="text-muted-foreground text-sm leading-relaxed">
-            Beyond vector verification, PulseGuard deploys intelligent dampers so unstable
-            microservices and flapping containers don&apos;t spam your phone.
+            Beyond vector verification, PulseGuard deploys intelligent dampers
+            so unstable microservices and flapping containers don&apos;t spam
+            your phone.
           </p>
         </div>
 
@@ -329,7 +335,9 @@ export function SleepModeClient() {
                     <div className="p-2 bg-muted/30 border border-border/60 rounded-lg text-primary">
                       <Icon className="size-4" />
                     </div>
-                    <h3 className="text-sm font-bold text-foreground">{layer.title}</h3>
+                    <h3 className="text-sm font-bold text-foreground">
+                      {layer.title}
+                    </h3>
                   </div>
                   <p className="text-xs text-muted-foreground leading-relaxed mb-4">
                     {layer.description}
@@ -337,7 +345,9 @@ export function SleepModeClient() {
                 </div>
                 <div className="flex items-center gap-1.5 pt-2 border-t border-border/30">
                   <CheckCircle2 className="size-3.5 text-primary" />
-                  <span className="text-[11px] font-mono text-primary">{layer.benefit}</span>
+                  <span className="text-[11px] font-mono text-primary">
+                    {layer.benefit}
+                  </span>
                 </div>
               </div>
             );
@@ -357,9 +367,10 @@ export function SleepModeClient() {
             Upgrade to Netrunner — <span className="text-primary">$19/mo</span>
           </h3>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-lg mx-auto mb-6">
-            The Sleep Plan isn&apos;t a gimmick — it&apos;s our Netrunner tier with 30-second
-            checks, 5-vector verification, anomaly detection, and flapping suppression. You get
-            alerts accurate enough to trust with your sleep.
+            The Sleep Plan isn&apos;t a gimmick — it&apos;s our Netrunner tier
+            with 30-second checks, 5-vector verification, anomaly detection, and
+            flapping suppression. You get alerts accurate enough to trust with
+            your sleep.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
             {[

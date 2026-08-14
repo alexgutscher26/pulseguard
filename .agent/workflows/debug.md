@@ -46,14 +46,17 @@ When `/debug` is triggered:
 ## 🔍 Debug: [Issue]
 
 ### 1. Symptom
+
 [What's happening]
 
 ### 2. Information Gathered
+
 - Error: `[error message]`
 - File: `[filepath]`
 - Line: [line number]
 
 ### 3. Hypotheses
+
 1. ❓ [Most likely cause]
 2. ❓ [Second possibility]
 3. ❓ [Less likely cause]
@@ -67,15 +70,18 @@ When `/debug` is triggered:
 [What I checked] → [Result]
 
 ### 5. Root Cause
+
 🎯 **[Explanation of why this happened]**
 
 ### 6. Fix
+
 ```[language]
 // Before
 [broken code]
 
 // After
 [fixed code]
+```
 ````
 
 ### 7. Prevention

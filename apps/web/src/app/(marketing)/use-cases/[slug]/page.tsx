@@ -44,7 +44,11 @@ const iconMap: Record<string, any> = {
   Radio,
 };
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
   const useCase = USE_CASES[slug];
   if (!useCase) return { title: "Use Case Not Found | PulseGuard" };
@@ -55,7 +59,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-export default async function UseCasePage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function UseCasePage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
   const useCase = USE_CASES[slug];
 
@@ -71,7 +79,10 @@ export default async function UseCasePage({ params }: { params: Promise<{ slug: 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 relative z-10">
         {/* Breadcrumb Navigation */}
         <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground mb-8">
-          <Link href={"/use-cases" as any} className="hover:text-primary transition-colors">
+          <Link
+            href={"/use-cases" as any}
+            className="hover:text-primary transition-colors"
+          >
             Use Cases
           </Link>
           <span>/</span>
@@ -116,14 +127,19 @@ export default async function UseCasePage({ params }: { params: Promise<{ slug: 
         {/* Key Metrics Bar */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 rounded-2xl border border-border bg-card/80 backdrop-blur-xl mb-16 shadow-xl">
           {useCase.keyMetrics.map((metric, idx) => (
-            <div key={idx} className="p-4 rounded-xl bg-muted/40 border border-border">
+            <div
+              key={idx}
+              className="p-4 rounded-xl bg-muted/40 border border-border"
+            >
               <div className="text-2xl sm:text-3xl font-extrabold font-mono text-primary mb-1">
                 {metric.value}
               </div>
               <div className="text-xs font-bold font-mono text-foreground uppercase tracking-wider mb-1">
                 {metric.label}
               </div>
-              <div className="text-[11px] text-muted-foreground font-sans">{metric.detail}</div>
+              <div className="text-[11px] text-muted-foreground font-sans">
+                {metric.detail}
+              </div>
             </div>
           ))}
         </div>
@@ -165,11 +181,16 @@ export default async function UseCasePage({ params }: { params: Promise<{ slug: 
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {useCase.architecturePoints.map((point, idx) => (
-              <div key={idx} className="relative p-5 rounded-xl border border-border bg-muted/40">
+              <div
+                key={idx}
+                className="relative p-5 rounded-xl border border-border bg-muted/40"
+              >
                 <div className="text-xs font-mono font-bold text-primary px-2.5 py-0.5 rounded border border-primary/30 bg-primary/10 inline-block mb-3">
                   {point.step}
                 </div>
-                <h3 className="text-sm font-bold font-mono text-foreground mb-1">{point.title}</h3>
+                <h3 className="text-sm font-bold font-mono text-foreground mb-1">
+                  {point.title}
+                </h3>
                 <p className="text-xs text-muted-foreground font-sans leading-relaxed">
                   {point.description}
                 </p>
@@ -205,8 +226,8 @@ export default async function UseCasePage({ params }: { params: Promise<{ slug: 
             Get Started with PulseGuard Today
           </h2>
           <p className="text-sm text-muted-foreground font-sans max-w-xl mx-auto mb-8">
-            Deploy 1-minute monitoring checks for your endpoints in less than 60 seconds. Free
-            forever up to 50 endpoints.
+            Deploy 1-minute monitoring checks for your endpoints in less than 60
+            seconds. Free forever up to 50 endpoints.
           </p>
           <Link
             href="/signup"

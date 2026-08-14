@@ -44,12 +44,17 @@ export async function generateMetadata({
   };
 }
 
-export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function BlogPostPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post) notFound();
 
-  const { title, description, date, category, readTime, author, tags } = post.meta;
+  const { title, description, date, category, readTime, author, tags } =
+    post.meta;
 
   const tocItems = extractHeadings(post.content);
 

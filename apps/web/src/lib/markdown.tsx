@@ -37,13 +37,25 @@ export function extractHeadings(content: string): TocItem[] {
 
     const trimmed = line.trim();
     if (trimmed.startsWith("## ")) {
-      const text = trimmed.slice(3).replace(/\*\*/g, "").replace(/`/g, "").trim();
+      const text = trimmed
+        .slice(3)
+        .replace(/\*\*/g, "")
+        .replace(/`/g, "")
+        .trim();
       headings.push({ id: slugify(text), text, level: 2 });
     } else if (trimmed.startsWith("### ")) {
-      const text = trimmed.slice(4).replace(/\*\*/g, "").replace(/`/g, "").trim();
+      const text = trimmed
+        .slice(4)
+        .replace(/\*\*/g, "")
+        .replace(/`/g, "")
+        .trim();
       headings.push({ id: slugify(text), text, level: 3 });
     } else if (trimmed.startsWith("#### ")) {
-      const text = trimmed.slice(5).replace(/\*\*/g, "").replace(/`/g, "").trim();
+      const text = trimmed
+        .slice(5)
+        .replace(/\*\*/g, "")
+        .replace(/`/g, "")
+        .trim();
       headings.push({ id: slugify(text), text, level: 4 });
     }
   }
@@ -58,7 +70,8 @@ export function renderInline(text: string): React.ReactNode {
   // 3: inline code (`text`)
   // 4: links ([text](url))
   // 5: italic (*text* or _text_)
-  const tokenRegex = /(\*\*.*?\*\*|__.*?__|~~.*?~~|`.*?`|\[.*?\]\(.*?\)|\*[^*]+?\*|_[^_]+?_)/g;
+  const tokenRegex =
+    /(\*\*.*?\*\*|__.*?__|~~.*?~~|`.*?`|\[.*?\]\(.*?\)|\*[^*]+?\*|_[^_]+?_)/g;
 
   const parts = text.split(tokenRegex);
 
@@ -164,7 +177,8 @@ export function MarkdownRenderer({ content }: { content: string }) {
 
   let inBlockquote = false;
   let blockquoteBuffer: string[] = [];
-  let calloutType: "NOTE" | "TIP" | "IMPORTANT" | "WARNING" | "CAUTION" | null = null;
+  let calloutType: "NOTE" | "TIP" | "IMPORTANT" | "WARNING" | "CAUTION" | null =
+    null;
 
   const flushList = (key: number) => {
     if (listType && listItems.length > 0) {
@@ -183,7 +197,11 @@ export function MarkdownRenderer({ content }: { content: string }) {
                     <Square className="size-4 text-muted-foreground/60" />
                   )}
                 </span>
-                <span className={item.checked ? "line-through text-muted-foreground/60" : ""}>
+                <span
+                  className={
+                    item.checked ? "line-through text-muted-foreground/60" : ""
+                  }
+                >
                   {renderInline(item.text)}
                 </span>
               </li>
@@ -263,7 +281,10 @@ export function MarkdownRenderer({ content }: { content: string }) {
                           ? "text-right"
                           : "text-left";
                     return (
-                      <td key={cIdx} className={`px-4 py-3 text-muted-foreground ${alignClass}`}>
+                      <td
+                        key={cIdx}
+                        className={`px-4 py-3 text-muted-foreground ${alignClass}`}
+                      >
                         {renderInline(cell)}
                       </td>
                     );
@@ -292,7 +313,8 @@ export function MarkdownRenderer({ content }: { content: string }) {
 
         if (calloutType === "TIP") {
           badgeIcon = <Lightbulb className="size-4" />;
-          badgeColor = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
+          badgeColor =
+            "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
           title = "Tip";
         } else if (calloutType === "IMPORTANT") {
           badgeIcon = <CheckCircle2 className="size-4" />;
@@ -350,7 +372,11 @@ export function MarkdownRenderer({ content }: { content: string }) {
 
       if (inCodeBlock) {
         elements.push(
-          <CodeBlock key={`code-${i}`} code={codeBuffer.join("\n")} language={codeLang} />,
+          <CodeBlock
+            key={`code-${i}`}
+            code={codeBuffer.join("\n")}
+            language={codeLang}
+          />,
         );
         codeBuffer = [];
         inCodeBlock = false;
@@ -409,7 +435,9 @@ export function MarkdownRenderer({ content }: { content: string }) {
       if (!inBlockquote) {
         inBlockquote = true;
         // Check for GitHub style alert header
-        const alertMatch = quoteLine.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i);
+        const alertMatch = quoteLine.match(
+          /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i,
+        );
         if (alertMatch) {
           calloutType = alertMatch[1].toUpperCase() as any;
           continue; // Skip the [!TYPE] line
@@ -425,7 +453,9 @@ export function MarkdownRenderer({ content }: { content: string }) {
     // 4. Horizontal Rules
     if (/^(\*\*\*|---|___)$/.test(line.trim())) {
       flushList(i);
-      elements.push(<hr key={`hr-${i}`} className="border-t border-border/80 my-8" />);
+      elements.push(
+        <hr key={`hr-${i}`} className="border-t border-border/80 my-8" />,
+      );
       continue;
     }
 
@@ -565,7 +595,10 @@ export function MarkdownRenderer({ content }: { content: string }) {
 
     // Regular paragraphs
     elements.push(
-      <p key={`p-${i}`} className="text-muted-foreground text-sm sm:text-base leading-relaxed my-3">
+      <p
+        key={`p-${i}`}
+        className="text-muted-foreground text-sm sm:text-base leading-relaxed my-3"
+      >
         {renderInline(line)}
       </p>,
     );

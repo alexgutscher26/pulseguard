@@ -1,16 +1,23 @@
 ---
-title: "How We Verify Uptime Across 50 Global Edge Regions with Zero False Positives"
-description: "False alarms destroy engineering on-call trust. Our multi-node edge consensus pipeline eliminates transient network noise while keeping detection latency under 30 seconds."
+title: "How We Verify Uptime Across 7 Global Regions with 4-of-7 Quorum Consensus"
+description: "False alarms destroy engineering on-call trust. Our 4-of-7 multi-region consensus pipeline eliminates transient network noise before alerting."
 date: "2026-06-28"
 category: "Engineering"
 readTime: "8 min read"
 author: "Alex Gutscher"
-tags: ["false positives", "multi-region monitoring", "alerting", "uptime verification", "Cloudflare Workers"]
+tags:
+  [
+    "quorum consensus",
+    "multi-region monitoring",
+    "alerting",
+    "uptime verification",
+    "Cloudflare Workers",
+  ]
 ---
 
-False positives are the silent killer of on-call trust. When alerts fire for phantom network blips, engineers start muting notifications. Eventually, a real production outage slips through unnoticed because everyone assumed it was another false alarm.
+False alarms are the silent killer of on-call trust. When alerts fire for phantom network blips, engineers start muting notifications. Eventually, a real production outage slips through unnoticed because everyone assumed it was another false alarm.
 
-We built PulseGuard's edge verification mesh to solve this permanently: **zero false positives**, no matter how many endpoints you monitor.
+We built PulseGuard's edge verification mesh to solve this directly: **four regions must independently agree on a failure before we ever page you**.
 
 ---
 
@@ -29,27 +36,27 @@ One poller server in one region issues an HTTP request. If that probe experience
 
 ---
 
-## PulseGuard's 2/3 Multi-Region Quorum Pipeline
+## PulseGuard's 4-of-7 Multi-Region Quorum Pipeline
 
-PulseGuard takes a distributed consensus approach. When an edge probe detects an issue:
+PulseGuard takes a distributed consensus approach. When edge probes execute their 60-second cycle across all seven sovereign regions:
 
 | Step                      | Action                                                                     | Execution Window |
 | :------------------------ | :------------------------------------------------------------------------- | :--------------- |
-| **1. Origin Detection**   | Local edge worker detects non-2xx status or timeout                        | Immediate (0ms)  |
-| **2. Parallel Dispatch**  | Dispatches verification pings to 2 secondary global regions                | < 200ms          |
-| **3. Quorum Vote**        | Durable Object Actor aggregates votes across all 3 probes                  | < 400ms          |
-| **4. Dispatch / Resolve** | Alert triggers only if at least 2 of 3 independent regions confirm failure | < 600ms total    |
+| **1. Breadth**            | Every monitor is checked from all 7 sovereign regions every 60s            | Baseline cycle   |
+| **2. Immediate Re-check** | A region seeing a failure triggers an immediate re-check to kill blips     | < 500ms          |
+| **3. Quorum Vote**        | Durable Object Actor aggregates votes across all healthy probe regions     | < 800ms          |
+| **4. Dispatch / Resolve** | Alert triggers only if at least 4 of 7 independent regions confirm failure | Immediate        |
 
-If a transient ISP drop only affects Virginia, the secondary probes in Frankfurt and Singapore report `200 OK`. The transient blip is recorded as degraded regional noise, and your on-call engineer sleeps undisturbed.
+If a transient ISP drop only affects Virginia (`enam`), the secondary probes in Frankfurt, London, Tokyo, and Singapore report `200 OK`. The transient blip is recorded as degraded regional noise, and your on-call engineer sleeps undisturbed.
 
 ---
 
 ## Real-World Reliability Metrics
 
-Since deploying our multi-region edge quorum mesh:
+Since deploying our 7-region quorum mesh:
 
 - **Over 50 million synthetic checks executed**
-- **Zero confirmed false alarm escalations**
-- **Average consensus resolution time: 380 milliseconds**
+- **4-of-7 consensus confirmation on every incident page**
+- **Transparent public locations and probe health telemetry**
 
-When PulseGuard pages your engineering team, you can trust with 100% certainty that the target service is genuinely experiencing an outage.
+When PulseGuard pages your engineering team, you know every alert has already been confirmed four times over across independent global regions.

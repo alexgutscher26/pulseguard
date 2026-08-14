@@ -14,9 +14,9 @@ export type UseCaseItem = {
 export const USE_CASES: Record<string, UseCaseItem> = {
   devops: {
     slug: "devops",
-    title: "Zero False-Positive Monitoring for DevOps & SRE Teams",
+    title: "4-of-7 Quorum-Verified Monitoring for DevOps & SRE Teams",
     subtitle:
-      "Eliminate 3 AM pager noise with multi-region consensus validation and native Docker probes.",
+      "Eliminate 3 AM pager noise with 4-of-7 multi-region consensus validation and native Docker probes.",
     badge: "For DevOps & SREs",
     description:
       "PulseGuard executes multi-region edge checks across 7 sovereign global regions. When an endpoint fails in one region, our 4-of-7 quorum consensus engine verifies the outage across independent vantage points to eliminate localized ISP glitches.",
@@ -27,8 +27,16 @@ export const USE_CASES: Record<string, UseCaseItem> = {
         value: "99.4%",
         detail: "Consensus-based regional validation",
       },
-      { label: "Deployment Speed", value: "< 60s", detail: "Single Docker command probe setup" },
-      { label: "Check Granularity", value: "1 Minute", detail: "Included on free tier" },
+      {
+        label: "Deployment Speed",
+        value: "< 60s",
+        detail: "Single Docker command probe setup",
+      },
+      {
+        label: "Check Granularity",
+        value: "1 Minute",
+        detail: "Included on free tier",
+      },
     ],
     features: [
       {
@@ -39,7 +47,8 @@ export const USE_CASES: Record<string, UseCaseItem> = {
       },
       {
         title: "Terraform & CLI Integration",
-        description: "Manage monitors as code using our native CLI and Terraform modules.",
+        description:
+          "Manage monitors as code using our native CLI and Terraform modules.",
         iconName: "Code2",
       },
       {
@@ -59,7 +68,8 @@ export const USE_CASES: Record<string, UseCaseItem> = {
       {
         step: "01",
         title: "Global Probe Ping",
-        description: "Edge Workers dispatch synthetic HTTP/Ping requests every 60 seconds.",
+        description:
+          "Edge Workers dispatch synthetic HTTP/Ping requests every 60 seconds.",
       },
       {
         step: "02",
@@ -70,7 +80,8 @@ export const USE_CASES: Record<string, UseCaseItem> = {
       {
         step: "03",
         title: "Instant Notification",
-        description: "Alerts are dispatched within 2 seconds via Webhooks, Slack, or SMS.",
+        description:
+          "Alerts are dispatched within 2 seconds via Webhooks, Slack, or SMS.",
       },
     ],
     quote: {
@@ -100,7 +111,11 @@ export const USE_CASES: Record<string, UseCaseItem> = {
         value: "100%",
         detail: "Multi-step cart flow verification",
       },
-      { label: "SLA Uptime Assurance", value: "99.99%", detail: "Continuous uptime tracking" },
+      {
+        label: "SLA Uptime Assurance",
+        value: "99.99%",
+        detail: "Continuous uptime tracking",
+      },
     ],
     features: [
       {
@@ -111,17 +126,20 @@ export const USE_CASES: Record<string, UseCaseItem> = {
       },
       {
         title: "Multi-Step Shopping Cart Flow",
-        description: "Simulate add-to-cart and checkout API sequences to catch hidden failures.",
+        description:
+          "Simulate add-to-cart and checkout API sequences to catch hidden failures.",
         iconName: "ShoppingCart",
       },
       {
         title: "Public Status Page for Shoppers",
-        description: "Reassure customer support and shoppers with branded status pages.",
+        description:
+          "Reassure customer support and shoppers with branded status pages.",
         iconName: "Globe",
       },
       {
         title: "Peak Traffic Spike Monitoring",
-        description: "Track latency degradation under high concurrency during flash sales.",
+        description:
+          "Track latency degradation under high concurrency during flash sales.",
         iconName: "TrendingUp",
       },
     ],
@@ -129,17 +147,20 @@ export const USE_CASES: Record<string, UseCaseItem> = {
       {
         step: "01",
         title: "Cart API Check",
-        description: "Synthetic browser probes execute checkout actions on 60-second loops.",
+        description:
+          "Synthetic browser probes execute checkout actions on 60-second loops.",
       },
       {
         step: "02",
         title: "Latency Tracking",
-        description: "Alerts fire if payment gateway response exceeds 1500ms threshold.",
+        description:
+          "Alerts fire if payment gateway response exceeds 1500ms threshold.",
       },
       {
         step: "03",
         title: "On-Call Paging",
-        description: "SMS and Slack messages reach store engineers before customers complain.",
+        description:
+          "SMS and Slack messages reach store engineers before customers complain.",
       },
     ],
     quote: {
@@ -205,17 +226,20 @@ export const USE_CASES: Record<string, UseCaseItem> = {
       {
         step: "01",
         title: "Continuous Monitoring",
-        description: "Track core application routes, API gateways, and webhooks.",
+        description:
+          "Track core application routes, API gateways, and webhooks.",
       },
       {
         step: "02",
         title: "Status Page Sync",
-        description: "Component status updates automatically on public status pages.",
+        description:
+          "Component status updates automatically on public status pages.",
       },
       {
         step: "03",
         title: "SLA Export",
-        description: "Monthly uptime percentages calculated automatically for enterprise clients.",
+        description:
+          "Monthly uptime percentages calculated automatically for enterprise clients.",
       },
     ],
     quote: {
@@ -240,8 +264,16 @@ export const USE_CASES: Record<string, UseCaseItem> = {
         value: "Sub-10ms",
         detail: "Fast regex & JSON evaluation",
       },
-      { label: "Sovereign Regions", value: "7 Global", detail: "4-of-7 Quorum consensus" },
-      { label: "SSL Expiry Warning", value: "30 Days", detail: "Proactive certificate watchdog" },
+      {
+        label: "Sovereign Regions",
+        value: "7 Global",
+        detail: "4-of-7 Quorum consensus",
+      },
+      {
+        label: "SSL Expiry Warning",
+        value: "30 Days",
+        detail: "Proactive certificate watchdog",
+      },
     ],
     features: [
       {
@@ -264,7 +296,8 @@ export const USE_CASES: Record<string, UseCaseItem> = {
       },
       {
         title: "DNS & Port Checks",
-        description: "Monitor DNS record propagation (A, AAAA, CNAME, MX) and custom TCP ports.",
+        description:
+          "Monitor DNS record propagation (A, AAAA, CNAME, MX) and custom TCP ports.",
         iconName: "Radio",
       },
     ],
@@ -272,17 +305,20 @@ export const USE_CASES: Record<string, UseCaseItem> = {
       {
         step: "01",
         title: "Sequence Execution",
-        description: "Probes execute multi-step HTTP sequences storing response tokens in memory.",
+        description:
+          "Probes execute multi-step HTTP sequences storing response tokens in memory.",
       },
       {
         step: "02",
         title: "Payload Validation",
-        description: "JSON properties and HTTP headers checked against exact expectations.",
+        description:
+          "JSON properties and HTTP headers checked against exact expectations.",
       },
       {
         step: "03",
         title: "Telemetry Recording",
-        description: "Response times broken down by DNS lookup, TLS handshake, and TTFB.",
+        description:
+          "Response times broken down by DNS lookup, TLS handshake, and TTFB.",
       },
     ],
     quote: {

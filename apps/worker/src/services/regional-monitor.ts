@@ -53,7 +53,9 @@ async function checkFromRegion(
   if (env?.REGIONAL_PROBE) {
     try {
       const probeId = env.REGIONAL_PROBE.idFromName(`probe-${resolvedRegion}`);
-      const probe = env.REGIONAL_PROBE.get(probeId, { locationHint: resolvedRegion as any });
+      const probe = env.REGIONAL_PROBE.get(probeId, {
+        locationHint: resolvedRegion as any,
+      });
 
       const res = await probe.fetch("http://internal/check-batch", {
         method: "POST",
@@ -125,12 +127,14 @@ async function checkFromRegion(
     }
 
     const hasBody =
-      ["POST", "PUT", "PATCH"].includes(monitor.method || "GET") && Boolean(monitor.body);
+      ["POST", "PUT", "PATCH"].includes(monitor.method || "GET") &&
+      Boolean(monitor.body);
 
     const response = await fetch(monitor.url, {
       method: monitor.method || "GET",
       headers: {
-        "User-Agent": "PulseGuard-Synthetic-Monitor/2.0 (+https://pulseguard.io/bot)",
+        "User-Agent":
+          "PulseGuard-Synthetic-Monitor/2.0 (+https://pulseguard.io/bot)",
         Accept: "*/*",
         ...userHeaders,
       },
@@ -144,7 +148,9 @@ async function checkFromRegion(
     const latency = Math.round(performance.now() - start);
     const statusNum = Number(response.status);
     const isUp =
-      response.ok || (statusNum >= 300 && statusNum < 400) || [403, 429].includes(statusNum);
+      response.ok ||
+      (statusNum >= 300 && statusNum < 400) ||
+      [403, 429].includes(statusNum);
 
     return {
       region: resolvedRegion,
@@ -152,7 +158,11 @@ async function checkFromRegion(
       latency,
       timestamp: new Date(),
       errorReason: isUp ? undefined : `HTTP ${response.status}`,
-      errorClass: isUp ? undefined : statusNum >= 500 ? "SERVER_ERROR" : "CLIENT_ERROR",
+      errorClass: isUp
+        ? undefined
+        : statusNum >= 500
+          ? "SERVER_ERROR"
+          : "CLIENT_ERROR",
     };
   } catch (error: any) {
     return {
@@ -189,7 +199,9 @@ export async function performRegionalChecks(
   }
 
   // Execute checks concurrently across distinct probe regions
-  const checkPromises = targetRegions.map((region) => checkFromRegion(monitor, region, env));
+  const checkPromises = targetRegions.map((region) =>
+    checkFromRegion(monitor, region, env),
+  );
   return await Promise.all(checkPromises);
 }
 

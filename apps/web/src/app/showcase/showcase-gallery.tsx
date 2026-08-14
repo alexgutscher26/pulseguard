@@ -1,17 +1,32 @@
 "use client";
 
 import { useState } from "react";
-import { ExternalLink, ArrowUpRight, Globe, Sparkles, Shield, Activity } from "lucide-react";
+import {
+  ExternalLink,
+  ArrowUpRight,
+  Globe,
+  Sparkles,
+  Shield,
+  Activity,
+} from "lucide-react";
 import Link from "next/link";
 import type { ShowcaseEntry } from "@/actions/showcase";
 
-function StatusBadge({ status }: { status: ShowcaseEntry["preview"]["status"] }) {
+function StatusBadge({
+  status,
+}: {
+  status: ShowcaseEntry["preview"]["status"];
+}) {
   const colors = {
     operational: "text-green-500 bg-green-500/10 border-green-500/20",
     degraded: "text-yellow-500 bg-yellow-500/10 border-yellow-500/20",
     outage: "text-red-500 bg-red-500/10 border-red-500/20",
   };
-  const labels = { operational: "Operational", degraded: "Degraded", outage: "Outage" };
+  const labels = {
+    operational: "Operational",
+    degraded: "Degraded",
+    outage: "Outage",
+  };
 
   return (
     <span
@@ -23,7 +38,9 @@ function StatusBadge({ status }: { status: ShowcaseEntry["preview"]["status"] })
 }
 
 function PreviewMockup({ entry }: { entry: ShowcaseEntry }) {
-  const monitors = Array.from({ length: Math.min(entry.preview.monitors || 3, 6) });
+  const monitors = Array.from({
+    length: Math.min(entry.preview.monitors || 3, 6),
+  });
   const serviceNames = [
     "API Gateway",
     "Auth Service",
@@ -76,7 +93,9 @@ function PreviewMockup({ entry }: { entry: ShowcaseEntry }) {
                       : entry.themeColors.primary,
                 }}
               />
-              <span style={{ color: entry.themeColors.text }}>{entry.preview.uptime}</span>
+              <span style={{ color: entry.themeColors.text }}>
+                {entry.preview.uptime}
+              </span>
             </span>
           </div>
         ))}
@@ -97,13 +116,26 @@ function PreviewMockup({ entry }: { entry: ShowcaseEntry }) {
   );
 }
 
-export function ShowcaseGallery({ initialEntries }: { initialEntries: ShowcaseEntry[] }) {
+export function ShowcaseGallery({
+  initialEntries,
+}: {
+  initialEntries: ShowcaseEntry[];
+}) {
   const [filterTheme, setFilterTheme] = useState<string>("all");
 
-  const themes = ["all", "Cyberpunk", "Midnight", "Dracula", "Monochrome", "Custom"];
+  const themes = [
+    "all",
+    "Cyberpunk",
+    "Midnight",
+    "Dracula",
+    "Monochrome",
+    "Custom",
+  ];
 
   const filtered =
-    filterTheme === "all" ? initialEntries : initialEntries.filter((e) => e.theme === filterTheme);
+    filterTheme === "all"
+      ? initialEntries
+      : initialEntries.filter((e) => e.theme === filterTheme);
 
   return (
     <div className="flex flex-col gap-8">
@@ -121,8 +153,8 @@ export function ShowcaseGallery({ initialEntries }: { initialEntries: ShowcaseEn
           Status Pages
         </h1>
         <p className="text-muted-foreground text-sm leading-relaxed max-w-xl">
-          PulseGuard status pages come alive with cyberpunk aesthetics. Browse featured pages from
-          the community, then build your own with one click.
+          PulseGuard status pages come alive with cyberpunk aesthetics. Browse
+          featured pages from the community, then build your own with one click.
         </p>
       </div>
 
@@ -153,7 +185,8 @@ export function ShowcaseGallery({ initialEntries }: { initialEntries: ShowcaseEn
               : `No "${filterTheme}" theme pages in the showcase yet.`}
           </p>
           <p className="text-[10px] text-muted-foreground/60 font-mono mb-4">
-            Be the first — enable "Feature in Community Showcase" in your status page settings.
+            Be the first — enable "Feature in Community Showcase" in your status
+            page settings.
           </p>
           <Link
             href="/dashboard/pages"
@@ -178,8 +211,12 @@ export function ShowcaseGallery({ initialEntries }: { initialEntries: ShowcaseEn
               <div className="p-4 flex flex-col gap-3 flex-1">
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="text-sm font-bold text-foreground font-mono">{entry.name}</h3>
-                    <p className="text-[10px] text-muted-foreground font-mono">{entry.tagline}</p>
+                    <h3 className="text-sm font-bold text-foreground font-mono">
+                      {entry.name}
+                    </h3>
+                    <p className="text-[10px] text-muted-foreground font-mono">
+                      {entry.tagline}
+                    </p>
                   </div>
                   <span
                     className="text-[9px] font-mono px-1.5 py-0.5 border"
@@ -229,8 +266,8 @@ export function ShowcaseGallery({ initialEntries }: { initialEntries: ShowcaseEn
           </span>
         </div>
         <p className="text-[11px] text-muted-foreground font-mono max-w-md mx-auto mb-4">
-          Open your status page editor → Settings → enable "Feature in Community Showcase". Your
-          page appears here instantly after saving.
+          Open your status page editor → Settings → enable "Feature in Community
+          Showcase". Your page appears here instantly after saving.
         </p>
         <Link
           href="/dashboard/pages"
