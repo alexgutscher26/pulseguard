@@ -40,17 +40,23 @@ const CHANGELOG_DATA: ChangelogEntry[] = [
   {
     version: "v1.2.0",
     date: "August 2026",
-    title: "Uptime Kuma Migration Suite, Quorum Consensus v2 & Public Roadmap",
+    title: "Uptime Kuma Migration Suite, SLA Reports & Quorum Consensus v2",
     badge: "Latest Release",
     badgeColor: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
     description:
-      "Seamless 1-command migration from Uptime Kuma, improved 4-of-7 edge quorum consensus engine, public product roadmap, and production self-hosting tooling.",
+      "Seamless 1-command migration from Uptime Kuma, automated SLA compliance report exports (PDF & JSON), improved 4-of-7 edge quorum consensus engine, and public roadmap.",
     highlights: [
       {
         category: "CLI",
         title: "One-Command Uptime Kuma Importer (pulse import kuma)",
         description:
           "Instantly migrate entire monitor fleets, intervals, custom headers, and alert triggers from Uptime Kuma backup JSON files into PulseGuard via CLI or Web Dashboard.",
+      },
+      {
+        category: "Feature",
+        title: "SLA Compliance Report Exports (PDF, JSON & Web)",
+        description:
+          "Generate and download executive-grade SLA uptime reports with exact downtime accounting, SLA breach projections, and custom branding.",
       },
       {
         category: "Feature",
@@ -64,23 +70,29 @@ const CHANGELOG_DATA: ChangelogEntry[] = [
         description:
           "Published comprehensive single-server Docker Compose with auto-HTTPS Caddy, PostgreSQL, and Blackbox Prometheus YAML exporter.",
       },
-      {
-        category: "Performance",
-        title: "WASM-Accelerated JSONPath Assertions",
-        description:
-          "Rust-compiled WebAssembly regex and JSONPath validator running in <1ms on Cloudflare Workers edge nodes.",
-      },
     ],
   },
   {
     version: "v1.1.0",
     date: "July 2026",
-    title: "Monitoring as Code (pulse CLI) & Private Docker Probes",
+    title: "Team Management & RBAC, PagerDuty Alerts & pulse CLI",
     badge: "Major Update",
     badgeColor: "bg-primary/10 text-primary border-primary/20",
     description:
-      "Full GitOps workflows for infrastructure teams. Define monitors in declarative YAML, apply in CI/CD pipelines, and monitor internal VPCs with private Docker probes.",
+      "Enterprise team collaboration with fine-grained RBAC, PagerDuty incident routing, Monitoring as Code (pulse CLI), and private on-premise Docker probes.",
     highlights: [
+      {
+        category: "Security",
+        title: "Team Management & Granular RBAC",
+        description:
+          "Multi-tenant organizations, workspace invitations, and role-based permissions (Owner, Admin, Member, Viewer) for engineering teams.",
+      },
+      {
+        category: "Feature",
+        title: "PagerDuty & Multi-Channel Incident Routing",
+        description:
+          "Direct integration with PagerDuty routing keys, interactive Slack blocks, Discord rich embeds, SMS, Telegram, and Webhooks.",
+      },
       {
         category: "CLI",
         title: "pulse monitors apply & CI/CD Gates",
@@ -92,12 +104,6 @@ const CHANGELOG_DATA: ChangelogEntry[] = [
         title: "Private On-Premise Docker Probes",
         description:
           "Lightweight outbound WebSocket agents to monitor private subnets, Kubernetes clusters, and databases behind corporate firewalls.",
-      },
-      {
-        category: "Security",
-        title: "Scoped API Keys & Hash Verification",
-        description:
-          "Granular read/write API key scopes with SHA-256 server-side hashing and expiration timestamps.",
       },
     ],
   },

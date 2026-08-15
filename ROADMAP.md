@@ -29,10 +29,13 @@
 
 ---
 
-## 🟢 Now (Q3 2026 — In Active Development)
+## 🟢 Shipped & Active Features
 
 - [x] **7-Region Sovereign Edge Probes**: Pinned execution across North America (`wnam`, `enam`), Europe (`weur`, `eeur`), and Asia-Pacific (`apac`, `apac-ne`, `apac-se`).
-- [x] **4-of-7 Quorum Consensus Voting Engine**: Require majority multi-region consensus before declaring global outages; eliminate localized ISP false alarms.
+- [x] **4-of-7 Quorum Consensus Voting Engine**: Majority multi-region consensus before declaring global outages; eliminate localized ISP false alarms.
+- [x] **Team Management & Organization RBAC**: Multi-tenant organizations, team invitations, member management, and granular role permissions (`Owner`, `Admin`, `Member`, `Viewer`).
+- [x] **Comprehensive SLA Report Exports (PDF, JSON, Web)**: Automated monthly uptime and downtime accounting, contractual SLA breach detection, and downloadable branded PDF/JSON reports.
+- [x] **PagerDuty & Multi-Channel Alerting**: Direct PagerDuty routing integration, interactive Slack blocks, Discord rich embeds, Telegram, SMS, Email (React Email), and custom Webhooks.
 - [x] **One-Command Uptime Kuma Importer**:
   - CLI: `pulse import kuma backup.json`
   - Web: Instant drag-and-drop backup import with live dry-run preview table.
@@ -50,9 +53,8 @@
 - [ ] **OpenTelemetry (OTel) Native Ingestion**:
   - Accept OpenTelemetry metrics, traces, and logs directly into PulseGuard edge receivers.
   - Prometheus remote-write compatibility (`/api/v1/write`).
-- [ ] **Enterprise Multi-Tenant RBAC & Teams**:
-  - Fine-grained role-based access control (`Admin`, `Engineer`, `Viewer`, `Billing`).
-  - SAML 2.0 / Okta / Google Workspace SSO integration.
+- [ ] **SAML 2.0 & Enterprise SSO**:
+  - Okta, Google Workspace, Azure AD, and Keycloak single sign-on for organization accounts.
 - [ ] **Automated Incident Post-Mortem Synthesis**:
   - AI-assisted root cause analysis synthesizing timeline events, response headers, and traceroute logs into clean markdown post-mortems.
 

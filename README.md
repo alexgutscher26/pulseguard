@@ -246,9 +246,15 @@ docker compose -f docker-compose.prod.yml up -d
 
 ### Incident Management & Alerting
 
-- **Multi-Channel Dispatch**: Slack, Discord, Telegram, SMS, Email (React Email / Resend), Webhooks, and PagerDuty.
-- **Incident Lifecycle**: `Investigating` → `Identified` → `Monitoring` → `Resolved` with full audit logs.
+- **Multi-Channel Dispatch**: PagerDuty (native routing key integration), Slack (interactive blocks), Discord (rich embeds), Telegram, SMS, Email (React Email / Resend), and Webhooks.
+- **Incident Lifecycle**: `Investigating` → `Identified` → `Monitoring` → `Resolved` with full audit logs and timeline tracking.
 - **Flapping Detection**: Intelligent exponential backoff suppresses noisy notification storms.
+
+### Team Management, RBAC & SLA Compliance
+
+- **Multi-Tenant Organizations & RBAC**: Granular role-based access control (`Owner`, `Admin`, `Member`, `Viewer`), workspace invitations, and team audit logs.
+- **Automated SLA Report Exports**: Generate executive-ready SLA compliance reports in PDF, JSON, and Web format with contractual downtime accounting and breach projections.
+- **API Keys & Granular Scopes**: SHA-256 hashed API keys with scoped read/write permissions for CI/CD automation.
 
 ### Developer Tools & CLI (`pulse`)
 
