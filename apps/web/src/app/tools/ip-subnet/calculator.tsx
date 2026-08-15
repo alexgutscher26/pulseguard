@@ -138,7 +138,10 @@ export function SubnetCalculator() {
                     { label: "IP ADDRESS", val: result.ip + "/" + result.cidr },
                     { label: "NETWORK ADDR", val: result.network },
                     { label: "BROADCAST ADDR", val: result.broadcast },
-                    { label: "HOST RANGE", val: `${result.firstHost} — ${result.lastHost}` },
+                    {
+                      label: "HOST RANGE",
+                      val: `${result.firstHost} — ${result.lastHost}`,
+                    },
                   ].map((item) => (
                     <div
                       key={item.label}

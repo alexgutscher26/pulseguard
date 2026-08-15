@@ -56,7 +56,9 @@ async function sendHeartbeat(): Promise<void> {
 
 async function pollJobs(): Promise<ProbeJob[]> {
   try {
-    const response = await apiPost<PollResponse>("/api/probes/poll", { maxJobs: 10 });
+    const response = await apiPost<PollResponse>("/api/probes/poll", {
+      maxJobs: 10,
+    });
     return response.jobs;
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);

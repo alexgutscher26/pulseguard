@@ -60,6 +60,9 @@ export async function verifySession(
       );
       const { resetPrisma } = await import("@pulseguard/db");
       await resetPrisma(env.DATABASE_URL);
+      // Brief pause so the new pool's first connect() doesn't race against
+      // the OS releasing the previous socket.
+      await new Promise((r) => setTimeout(r, 150));
       return verifySession(request, env, false);
     }
     throw err;
@@ -108,6 +111,9 @@ export async function verifyMonitorAccess(
       );
       const { resetPrisma } = await import("@pulseguard/db");
       await resetPrisma(env.DATABASE_URL);
+      // Brief pause so the new pool's first connect() doesn't race against
+      // the OS releasing the previous socket.
+      await new Promise((r) => setTimeout(r, 150));
       return verifyMonitorAccess(userId, monitorId, env, false);
     }
     throw err;

@@ -90,7 +90,9 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
       if (res.success) {
         toast.success(`Check completed for ${name}`, { id: toastId });
       } else {
-        toast.error(res.error || `Failed to trigger check for ${name}`, { id: toastId });
+        toast.error(res.error || `Failed to trigger check for ${name}`, {
+          id: toastId,
+        });
       }
     } catch (err: any) {
       toast.error(err.message || "An error occurred", { id: toastId });

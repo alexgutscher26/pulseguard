@@ -264,10 +264,19 @@ export function ApiKeysForm() {
         <div className="space-y-3">
           {[
             { label: "Install", cmd: "npm install -g pulseguard-cli" },
-            { label: "Login with key", cmd: "pulse auth login --key pg_live_..." },
+            {
+              label: "Login with key",
+              cmd: "pulse auth login --key pg_live_...",
+            },
             { label: "List monitors", cmd: "pulse monitors list" },
-            { label: "Apply from YAML", cmd: "pulse monitors apply -f pulseguard.yaml" },
-            { label: "CI/CD gate", cmd: "pulse wait <monitor-id> --timeout 300" },
+            {
+              label: "Apply from YAML",
+              cmd: "pulse monitors apply -f pulseguard.yaml",
+            },
+            {
+              label: "CI/CD gate",
+              cmd: "pulse wait <monitor-id> --timeout 300",
+            },
           ].map(({ label, cmd }) => (
             <div key={label} className="flex items-center gap-3">
               <span className="text-xs text-primary/40 font-mono w-24 shrink-0">{label}</span>

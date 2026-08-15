@@ -5,11 +5,11 @@ export default function FAQ() {
   const faqs = [
     {
       q: "How fast are the checks performed, and are there interval limits per tier?",
-      a: `Verification checks execute natively at the edge. The check frequency depends on your subscription tier: the Initiate (Free) tier supports intervals down to 60 seconds, the Netrunner plan supports down to 30 seconds, and the Construct (Enterprise) plan supports high-frequency telemetry checks down to 10 seconds. Checks are distributed across our ${AVAILABLE_REGIONS.length}+ concurrent global edge regions using sandboxed headless agents.`,
+      a: `Verification checks execute natively at the edge. The check frequency depends on your subscription tier: the Initiate (Free) tier supports 60-second check intervals across all 50 monitors, the Netrunner plan supports down to 30 seconds, and the Construct (Enterprise) plan supports high-frequency telemetry checks down to 10 seconds. Checks run concurrently across all ${AVAILABLE_REGIONS.length} sovereign global edge regions.`,
     },
     {
       q: "What is multi-region consensus verification, and how does it prevent false alerts?",
-      a: "Outages on the Internet are often localized due to routing anomalies or regional network drops. When a PulseGuard edge probe detects that your monitor is DOWN, it does not immediately trigger an alert. Instead, it queries other global zones to establish a 2/3 consensus. If multiple nodes confirm the target is unreachable, it escalates to an incident. This voting system completely eliminates false positives caused by regional CDN drops or localized route flapping.",
+      a: "Outages on the Internet are often localized due to routing anomalies or regional network drops. When a PulseGuard edge probe detects that your monitor is DOWN, it triggers an immediate local re-check and queries our other sovereign regions. PulseGuard requires 4 of 7 global regions to independently confirm the failure before opening an incident. This voting system isolates regional route flaps from true global outages.",
     },
     {
       q: "How do private probes monitor internal infrastructure behind firewalls?",
@@ -21,7 +21,7 @@ export default function FAQ() {
     },
     {
       q: "What are the exact capabilities and limits of the Initiate (Free) plan?",
-      a: `The Initiate plan is designed for side projects, indie developers, and commercial applications. Free plan includes commercial use with 50 active monitors, 60-second checks, 1 public status page, and up to ${PRODUCT_CONFIG.FREE_CHECKS_LIMIT.toLocaleString()} free checks per month. It requires no credit card and supports HTTP, SSL/TLS, DNS, and Heartbeat checks with 3 days of log retention.`,
+      a: `The Initiate plan is designed for side projects, indie developers, and commercial applications. Free plan includes commercial use permitted in writing with 50 active monitors, 60-second check intervals, 7-region verification with 4-of-7 quorum consensus, 1 public status page, and transparent probe telemetry. It requires no credit card and supports HTTP, SSL/TLS, DNS, and Heartbeat checks with 3 days of log retention.`,
     },
     {
       q: "Can I monitor protocols other than standard web pages?",
@@ -41,11 +41,28 @@ export default function FAQ() {
     },
   ];
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a,
+      },
+    })),
+  };
+
   return (
     <section
       className="py-28 bg-background relative overflow-hidden content-visibility-auto"
       id="faq"
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       <div className="max-w-3xl mx-auto px-6">
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-16">

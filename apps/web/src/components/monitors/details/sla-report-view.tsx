@@ -23,7 +23,9 @@ import {
 } from "recharts";
 import { format } from "date-fns";
 import { useState } from "react";
-import { AlertTriangle, CheckCircle2 } from "lucide-react";
+import { AlertTriangle, CheckCircle2, FileText, FileSpreadsheet, ExternalLink } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 /**
@@ -65,19 +67,63 @@ export function SlaReportView({ monitorId }: { monitorId: string }) {
   const minUptime = Math.min(...dailyBreakdown.map((d) => d.uptimePct));
   const domainMin = Math.max(0, Math.floor(minUptime - 0.5));
 
+  const handleDownloadPdf = () => {
+    window.location.href = `/api/reports/sla?monitorId=${monitorId}&range=${range}&format=pdf&targetSla=99.9`;
+  };
+
+  const handleDownloadCsv = () => {
+    window.location.href = `/api/reports/sla?monitorId=${monitorId}&range=${range}&format=csv&targetSla=99.9`;
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-medium text-foreground">SLA & Uptime Report</h3>
-        <Select value={range} onValueChange={(v: "7d" | "30d") => setRange(v)}>
-          <SelectTrigger className="w-[180px] bg-zinc-950/50 border-zinc-800">
-            <SelectValue placeholder="Select period" />
-          </SelectTrigger>
-          <SelectContent className="bg-zinc-950 border-zinc-800">
-            <SelectItem value="7d">Last 7 Days</SelectItem>
-            <SelectItem value="30d">Last 30 Days</SelectItem>
-          </SelectContent>
-        </Select>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h3 className="text-lg font-medium text-foreground">SLA & Uptime Report</h3>
+          <p className="text-xs text-muted-foreground font-mono">
+            Contractual uptime compliance and delivery metrics for this service.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <Select value={range} onValueChange={(v: "7d" | "30d") => setRange(v)}>
+            <SelectTrigger className="w-[140px] bg-zinc-950/50 border-zinc-800 font-mono text-xs h-8">
+              <SelectValue placeholder="Select period" />
+            </SelectTrigger>
+            <SelectContent className="bg-zinc-950 border-zinc-800 font-mono text-xs">
+              <SelectItem value="7d">Last 7 Days</SelectItem>
+              <SelectItem value="30d">Last 30 Days</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleDownloadPdf}
+            className="h-8 font-mono text-xs gap-1.5 border-primary/30 text-primary hover:bg-primary/10"
+          >
+            <FileText className="size-3.5" />
+            PDF
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleDownloadCsv}
+            className="h-8 font-mono text-xs gap-1.5"
+          >
+            <FileSpreadsheet className="size-3.5 text-emerald-400" />
+            CSV
+          </Button>
+
+          <Link
+            href={`/dashboard/reports?scope=monitor:${monitorId}`}
+            className="inline-flex items-center gap-1 text-xs font-mono text-muted-foreground hover:text-foreground pl-2"
+          >
+            Full Hub
+            <ExternalLink className="size-3" />
+          </Link>
+        </div>
       </div>
 
       {/* Summary Cards */}

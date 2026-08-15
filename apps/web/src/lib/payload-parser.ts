@@ -69,7 +69,10 @@ export function validatePayload(
           for (const [path, expectedValue] of Object.entries(expectations.json_path)) {
             const actualValue = getValueByPath(json, path);
             if (String(actualValue) !== String(expectedValue)) {
-              return { success: false, errorMessage: `JSON_VALUE_MISMATCH: ${path}` };
+              return {
+                success: false,
+                errorMessage: `JSON_VALUE_MISMATCH: ${path}`,
+              };
             }
           }
         }

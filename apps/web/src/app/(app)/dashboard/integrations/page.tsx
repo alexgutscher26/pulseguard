@@ -3,6 +3,8 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { IntegrationsManager } from "@/components/dashboard/integrations-manager";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "PulseGuard | Integrations",
   description: "Zero-code setups for Vercel, Netlify, and GitHub.",

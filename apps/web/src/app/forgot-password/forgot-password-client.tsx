@@ -17,7 +17,7 @@ import { authClient } from "@/lib/auth-client";
 export default function ForgotPasswordClient() {
   const [submitted, setSubmitted] = useState(false);
   const [submittedEmail, setSubmittedEmail] = useState("");
-  const { isPending } = authClient.useSession();
+  const [isPending, setIsPending] = useState(false);
 
   const form = useForm({
     defaultValues: {

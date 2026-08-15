@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   Check,
   CreditCard,
@@ -19,11 +20,26 @@ interface BillingFormProps {
 }
 
 export function BillingForm({ initialUsage }: BillingFormProps) {
+  const searchParams = useSearchParams();
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("annual");
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [loadingPortal, setLoadingPortal] = useState(false);
   const [promoCode, setPromoCode] = useState("");
   const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
+
+  useEffect(() => {
+    const success = searchParams.get("success");
+    const canceled = searchParams.get("canceled");
+    const sessionId = searchParams.get("session_id");
+
+    if (success === "true" || sessionId) {
+      toast.success("Payment successful! Your subscription is now active.", {
+        description: "Thank you for upgrading with PulseGuard.",
+      });
+    } else if (canceled === "true") {
+      toast.info("Checkout was canceled. No charges were made.");
+    }
+  }, [searchParams]);
 
   const usage = initialUsage || {
     monitorsUsed: 3,
@@ -289,7 +305,7 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
           >
             Annual Billing
             <span className="px-1.5 py-0.5 rounded text-[10px] uppercase font-mono font-bold bg-slate-950 text-emerald-400">
-              Save 20% OFF
+              Save 17% OFF
             </span>
           </button>
         </div>
@@ -349,8 +365,8 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
                   {billingCycle === "annual" && plan.monthlyPrice > 0 && (
                     <span className="text-[10px] text-emerald-400/90 font-mono font-bold uppercase tracking-wider">
                       {tierKey === "NETRUNNER"
-                        ? "Billed $134.40 annually — Save $33.60/yr"
-                        : "Billed $662.40 annually — Save $165.60/yr"}
+                        ? "Billed $180 annually — Save $48/yr"
+                        : "Billed $780 annually — Save $168/yr"}
                     </span>
                   )}
                 </div>

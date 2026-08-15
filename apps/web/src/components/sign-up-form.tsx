@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm } from "@tanstack/react-form";
 import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/sonner";
@@ -12,7 +13,7 @@ import { Label } from "./ui/label";
 
 export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () => void }) {
   const router = useRouter();
-  const { isPending } = authClient.useSession();
+  const [isPending, setIsPending] = useState(false);
 
   const form = useForm({
     defaultValues: {

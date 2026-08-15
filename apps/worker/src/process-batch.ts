@@ -155,7 +155,11 @@ export async function processBatch(
       let failedRegions: string[] = [];
 
       if (maintenanceActive) {
-        result = { status: Status.MAINTENANCE, latency: 0, errorReason: undefined };
+        result = {
+          status: Status.MAINTENANCE,
+          latency: 0,
+          errorReason: undefined,
+        };
       } else {
         // Check if regional monitoring is enabled
         if (monitor.checkRegions) {
@@ -511,7 +515,9 @@ export async function processBatch(
             try {
               const redisUrl = `${env.UPSTASH_REDIS_REST_URL}/get/${redisKey}`;
               const redisRes = await fetch(redisUrl, {
-                headers: { Authorization: `Bearer ${env.UPSTASH_REDIS_REST_TOKEN}` },
+                headers: {
+                  Authorization: `Bearer ${env.UPSTASH_REDIS_REST_TOKEN}`,
+                },
               });
               if (redisRes.ok) {
                 const redisData = (await redisRes.json()) as any;
@@ -559,7 +565,9 @@ export async function processBatch(
                 try {
                   const setUrl = `${env.UPSTASH_REDIS_REST_URL}/set/${redisKey}/sent/EX/604800`;
                   await fetch(setUrl, {
-                    headers: { Authorization: `Bearer ${env.UPSTASH_REDIS_REST_TOKEN}` },
+                    headers: {
+                      Authorization: `Bearer ${env.UPSTASH_REDIS_REST_TOKEN}`,
+                    },
                   });
                 } catch (err) {
                   console.error("[SSL Expiry] Failed to save to Redis cache:", err);

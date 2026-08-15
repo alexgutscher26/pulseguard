@@ -207,12 +207,6 @@ function ResetPasswordFormContent() {
 }
 
 export default function ResetPasswordClient() {
-  const { isPending } = authClient.useSession();
-
-  if (isPending) {
-    return <Loader />;
-  }
-
   return (
     <AuthLayout
       title="Set New Password"

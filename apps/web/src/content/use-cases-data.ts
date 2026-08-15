@@ -14,12 +14,12 @@ export type UseCaseItem = {
 export const USE_CASES: Record<string, UseCaseItem> = {
   devops: {
     slug: "devops",
-    title: "Zero False-Positive Monitoring for DevOps & SRE Teams",
+    title: "4-of-7 Quorum-Verified Monitoring for DevOps & SRE Teams",
     subtitle:
-      "Eliminate 3 AM pager noise with multi-region consensus validation and native Docker probes.",
+      "Eliminate 3 AM pager noise with 4-of-7 multi-region consensus validation and native Docker probes.",
     badge: "For DevOps & SREs",
     description:
-      "PulseGuard executes multi-region edge checks across 50+ global locations. When an endpoint fails in one region, alternative edge nodes immediately perform consensus validation to filter out localized ISP glitches.",
+      "PulseGuard executes multi-region edge checks across 7 sovereign global regions. When an endpoint fails in one region, our 4-of-7 quorum consensus engine verifies the outage across independent vantage points to eliminate localized ISP glitches.",
     heroGraphic: "terminal",
     keyMetrics: [
       {
@@ -27,8 +27,16 @@ export const USE_CASES: Record<string, UseCaseItem> = {
         value: "99.4%",
         detail: "Consensus-based regional validation",
       },
-      { label: "Deployment Speed", value: "< 60s", detail: "Single Docker command probe setup" },
-      { label: "Check Granularity", value: "1 Minute", detail: "Included on free tier" },
+      {
+        label: "Deployment Speed",
+        value: "< 60s",
+        detail: "Single Docker command probe setup",
+      },
+      {
+        label: "Check Granularity",
+        value: "1 Minute",
+        detail: "Included on free tier",
+      },
     ],
     features: [
       {
@@ -100,7 +108,11 @@ export const USE_CASES: Record<string, UseCaseItem> = {
         value: "100%",
         detail: "Multi-step cart flow verification",
       },
-      { label: "SLA Uptime Assurance", value: "99.99%", detail: "Continuous uptime tracking" },
+      {
+        label: "SLA Uptime Assurance",
+        value: "99.99%",
+        detail: "Continuous uptime tracking",
+      },
     ],
     features: [
       {
@@ -240,8 +252,16 @@ export const USE_CASES: Record<string, UseCaseItem> = {
         value: "Sub-10ms",
         detail: "Fast regex & JSON evaluation",
       },
-      { label: "Global Edge Locations", value: "50+", detail: "Worldwide latency matrix" },
-      { label: "SSL Expiry Warning", value: "30 Days", detail: "Proactive certificate watchdog" },
+      {
+        label: "Sovereign Regions",
+        value: "7 Global",
+        detail: "4-of-7 Quorum consensus",
+      },
+      {
+        label: "SSL Expiry Warning",
+        value: "30 Days",
+        detail: "Proactive certificate watchdog",
+      },
     ],
     features: [
       {

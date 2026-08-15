@@ -100,7 +100,13 @@ export async function auditDNS(domain: string) {
     });
   }
 
-  const grades: Record<number, string> = { 100: "A+", 90: "A", 80: "B", 70: "C", 60: "D" };
+  const grades: Record<number, string> = {
+    100: "A+",
+    90: "A",
+    80: "B",
+    70: "C",
+    60: "D",
+  };
   const grade = grades[Math.floor(score / 10) * 10] || "F";
 
   return {

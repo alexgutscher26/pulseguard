@@ -3,6 +3,8 @@ import { Activity, Globe, Shield, Bell, Brain, Cpu, ArrowRight } from "lucide-re
 import Link from "next/link";
 import { PRODUCT_CONFIG, AVAILABLE_REGIONS } from "@pulseguard/shared";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "About PulseGuard | Global Uptime Monitoring",
   description:
@@ -17,13 +19,13 @@ const values = [
   {
     icon: Brain,
     title: "Detect Faster",
-    description: `${PRODUCT_CONFIG.DEFAULT_CHECK_INTERVAL_SECONDS}-second check intervals from ${AVAILABLE_REGIONS.length}+ global nodes. We catch failures before your users do.`,
+    description: `${PRODUCT_CONFIG.DEFAULT_CHECK_INTERVAL_SECONDS}-second check intervals across ${AVAILABLE_REGIONS.length} global regions. We catch failures before your users do.`,
   },
   {
     icon: Shield,
-    title: "Zero False Positives",
+    title: "4-of-7 Quorum Verification",
     description:
-      "Multi-node verification ensures alerts are real. No noise, no wasted midnight callouts.",
+      "4-of-7 multi-region consensus verification ensures alerts are real. No noise, no wasted midnight callouts.",
   },
   {
     icon: Bell,
@@ -34,7 +36,7 @@ const values = [
   {
     icon: Globe,
     title: "Global by Default",
-    description: `${AVAILABLE_REGIONS.length} regions across every continent. Monitor from where your users are.`,
+    description: `${AVAILABLE_REGIONS.length} sovereign edge regions across North America, Europe, and Asia-Pacific.`,
   },
   {
     icon: Cpu,
@@ -50,12 +52,15 @@ const values = [
 ];
 
 const stats = [
-  { label: "Global Nodes", value: `${AVAILABLE_REGIONS.length}+` },
+  { label: "Sovereign Regions", value: `${AVAILABLE_REGIONS.length}` },
   {
     label: "Free Checks / Mo",
     value: `${(PRODUCT_CONFIG.FREE_CHECKS_LIMIT / 1000).toLocaleString()}k`,
   },
-  { label: "Check Interval", value: `${PRODUCT_CONFIG.DEFAULT_CHECK_INTERVAL_SECONDS}s` },
+  {
+    label: "Check Interval",
+    value: `${PRODUCT_CONFIG.DEFAULT_CHECK_INTERVAL_SECONDS}s`,
+  },
   { label: "Latency Goal", value: `<${PRODUCT_CONFIG.LATENCY_GOAL_MS}ms` },
 ];
 

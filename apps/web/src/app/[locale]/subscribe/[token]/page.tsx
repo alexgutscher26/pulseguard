@@ -2,6 +2,8 @@ import { verifySubscription } from "@/actions/subscriptions";
 import { CheckCircle, XCircle, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 interface VerifyPageProps {
   params: Promise<{ token: string }>;
 }
@@ -80,5 +82,3 @@ export default async function VerifySubscriptionPage({ params }: VerifyPageProps
     </div>
   );
 }
-
-export const dynamic = "force-dynamic";

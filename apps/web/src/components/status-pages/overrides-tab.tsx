@@ -252,7 +252,9 @@ export function OverridesTab({ page }: OverridesTabProps) {
                         {override.monitor.name}
                       </td>
                       <td className="py-4 pr-3 text-muted-foreground">
-                        {new Date(override.date).toLocaleDateString(undefined, { timeZone: "UTC" })}
+                        {new Date(override.date).toLocaleDateString(undefined, {
+                          timeZone: "UTC",
+                        })}
                       </td>
                       <td className="py-4 pr-3">
                         <span

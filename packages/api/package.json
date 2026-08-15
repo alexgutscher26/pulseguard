@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@pulseguard/auth": "workspace:*",
+    "@pulseguard/db": "workspace:*",
     "@trpc/server": "catalog:",
     "next": "catalog:"
   },

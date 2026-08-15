@@ -5,6 +5,8 @@ import { getStatusPage } from "@/actions/status-pages";
 import { getMonitors } from "@/actions/monitors";
 import { StatusPageEditor } from "@/components/status-pages/status-page-editor";
 
+export const dynamic = "force-dynamic";
+
 type Props = {
   params: Promise<{ id: string }>;
 };

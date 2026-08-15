@@ -104,6 +104,7 @@ model StatusPageMonitor {
   @@unique([statusPageId, monitorId])
   @@index([statusPageId])
   @@index([monitorId])
+  @@index([groupId])
 }
 
 model StatusPageView {

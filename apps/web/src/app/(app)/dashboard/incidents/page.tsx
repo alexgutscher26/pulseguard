@@ -9,6 +9,8 @@ import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/
 import { Button } from "@/components/ui/button";
 import { LayoutTemplate } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Incidents | PulseGuard",
   description: "Manage system incidents",

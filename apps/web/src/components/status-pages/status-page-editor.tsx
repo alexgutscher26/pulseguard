@@ -159,10 +159,18 @@ export function StatusPageEditor({ page, allMonitors }: { page: any; allMonitors
     { id: "monitors", label: "Monitors" },
     { id: "history", label: "History", icon: <History className="size-3" /> },
     { id: "widget", label: "Widget", icon: <Code2 className="size-3" /> },
-    { id: "overrides", label: "Overrides", icon: <Calendar className="size-3" /> },
+    {
+      id: "overrides",
+      label: "Overrides",
+      icon: <Calendar className="size-3" />,
+    },
     { id: "analytics", label: "Analytics" },
     { id: "settings", label: "Settings" },
-    { id: "showcase", label: "Showcase", icon: <Trophy className="size-3 text-yellow-500" /> },
+    {
+      id: "showcase",
+      label: "Showcase",
+      icon: <Trophy className="size-3 text-yellow-500" />,
+    },
   ];
 
   return (
@@ -185,7 +193,8 @@ export function StatusPageEditor({ page, allMonitors }: { page: any; allMonitors
               target="_blank"
               className="flex items-center gap-2 text-sm text-primary hover:underline font-mono"
             >
-              {env.NEXT_PUBLIC_APP_URL.replace("https://", "").replace("http://", "")}/status-page/
+              {env.NEXT_PUBLIC_APP_URL.replace("https://", "").replace("http://", "")}
+              /status-page/
               {page.slug} <ExternalLink className="size-3" />
             </a>
           </div>

@@ -9,7 +9,13 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@pulseguard/auth";
 import { headers, cookies } from "next/headers";
 import { sendMonitorAlert, type MonitorAlertData } from "@pulseguard/email";
-import { assertMonitorLimits, checkAndNotifyUsageLimits } from "@/lib/billing-server";
+import {
+  assertMonitorLimits,
+  assertManualCheckRateLimit,
+  checkAndNotifyUsageLimits,
+} from "@/lib/billing-server";
+import { generateDeepInsightAnalysis, getAIProviderClient } from "@/lib/ai";
+import { getActiveWorkspace } from "@/actions/team";
 
 // Helper Types for Incident Management
 enum IncidentEventType {
@@ -292,7 +298,10 @@ export async function createMonitor(prevState: any, formData: FormData) {
     });
 
     if (!limitCheck.allowed) {
-      return { success: false, error: limitCheck.error || "Plan limit exceeded" };
+      return {
+        success: false,
+        error: limitCheck.error || "Plan limit exceeded",
+      };
     }
 
     let finalUrl = data.url || "";
@@ -308,6 +317,8 @@ export async function createMonitor(prevState: any, formData: FormData) {
       finalUrl = `heartbeat://${heartbeatToken}`;
     }
 
+    const active = await getActiveWorkspace();
+
     // Create monitor
     const monitor = await prisma.monitor.create({
       data: {
@@ -317,6 +328,7 @@ export async function createMonitor(prevState: any, formData: FormData) {
         interval: data.interval,
         timeout: data.timeout,
         userId: session.user.id,
+        organizationId: active?.id || null,
         checkRegions: data.checkRegions,
         alertThreshold: data.alertThreshold,
         dynamicThresholding: data.dynamicThresholding,
@@ -390,9 +402,14 @@ export async function quickCreateMonitor(data: {
   }
 
   try {
-    const limitCheck = await assertMonitorLimits(session.user.id, { isNew: true });
+    const limitCheck = await assertMonitorLimits(session.user.id, {
+      isNew: true,
+    });
     if (!limitCheck.allowed) {
-      return { success: false, error: limitCheck.error || "Plan limit reached" };
+      return {
+        success: false,
+        error: limitCheck.error || "Plan limit reached",
+      };
     }
 
     const monitorType = data.type || "HTTP";
@@ -431,7 +448,10 @@ export async function quickCreateMonitor(data: {
     return { success: true, monitor: newMonitor };
   } catch (error: any) {
     console.error("Failed to quick create monitor:", error);
-    return { success: false, error: error.message || "Failed to create monitor" };
+    return {
+      success: false,
+      error: error.message || "Failed to create monitor",
+    };
   }
 }
 
@@ -593,12 +613,18 @@ export async function getMonitors() {
 
   if (!session?.user) return [];
 
+  const active = await getActiveWorkspace();
+
   // Use try/catch in case DB not ready
   try {
     const monitors = await prisma.monitor.findMany({
-      where: {
-        userId: session.user.id,
-      },
+      where: active?.id
+        ? {
+            organizationId: active.id,
+          }
+        : {
+            userId: session.user.id,
+          },
       orderBy: {
         createdAt: "desc",
       },
@@ -624,10 +650,10 @@ export async function getMonitors() {
  * @param id - The unique identifier of the monitor to retrieve.
  * @returns The monitor object if found, or null if the user is not authenticated or an error occurs.
  */
+import { getSafeSession } from "@/lib/safe-session";
+
 export async function getMonitor(id: string) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSafeSession();
 
   if (!session?.user) return null;
 
@@ -635,7 +661,10 @@ export async function getMonitor(id: string) {
     const monitor = await prisma.monitor.findFirst({
       where: {
         id,
-        userId: session.user.id,
+        OR: [
+          { organization: { members: { some: { userId: session.user.id } } } },
+          { userId: session.user.id },
+        ],
       },
       include: {
         events: {
@@ -670,7 +699,11 @@ export async function checkMonitor(
 
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
-  /* Updated to include maintenance check */
+  const rateLimit = await assertManualCheckRateLimit(session.user.id, id);
+  if (!rateLimit.allowed) {
+    return { success: false, error: rateLimit.error };
+  }
+
   const monitor = await prisma.monitor.findFirst({
     where: { id, userId: session.user.id },
     include: {
@@ -1073,7 +1106,10 @@ async function dispatchNotifications(
       const config = channel.config as any;
       if (channel.type === "EMAIL" && config?.email) emailChannels.add(config.email);
       else if (channel.type === "SLACK" && config?.webhookUrl)
-        slackChannels.add({ url: config.webhookUrl, token: config.accessToken });
+        slackChannels.add({
+          url: config.webhookUrl,
+          token: config.accessToken,
+        });
       else if (channel.type === "DISCORD" && config?.webhookUrl)
         discordChannels.add({ url: config.webhookUrl });
     });
@@ -1145,7 +1181,11 @@ async function sendDiscordAlert(url: string, data: MonitorAlertData, type?: stri
           color: color,
           fields: [
             { name: "Target", value: data.url, inline: true },
-            { name: "Timestamp", value: new Date(data.timestamp).toLocaleString(), inline: true },
+            {
+              name: "Timestamp",
+              value: new Date(data.timestamp).toLocaleString(),
+              inline: true,
+            },
             ...(data.failedRegions && data.failedRegions.length > 0
               ? [
                   {
@@ -1194,17 +1234,26 @@ async function sendSlackAlert(
     const payload = {
       text: headerText,
       blocks: [
-        { type: "header", text: { type: "plain_text", text: headerText, emoji: true } },
+        {
+          type: "header",
+          text: { type: "plain_text", text: headerText, emoji: true },
+        },
         {
           type: "section",
           fields: [
-            { type: "mrkdwn", text: "*Target:*\n<" + data.url + "|" + data.url + ">" },
+            {
+              type: "mrkdwn",
+              text: "*Target:*\n<" + data.url + "|" + data.url + ">",
+            },
             { type: "mrkdwn", text: "*Status:*\n" + data.status },
           ],
         },
         {
           type: "section",
-          text: { type: "mrkdwn", text: "*Details:* " + (data.reason || "No detail provided") },
+          text: {
+            type: "mrkdwn",
+            text: "*Details:* " + (data.reason || "No detail provided"),
+          },
         },
         {
           type: "context",
@@ -1255,9 +1304,7 @@ async function sendSlackAlert(
 }
 
 export async function toggleMonitor(id: string, enabled: boolean) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSafeSession();
 
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
@@ -1293,8 +1340,10 @@ export async function getDashboardStats() {
     };
   }
 
+  const active = await getActiveWorkspace();
+  const monitorScope = active?.id ? { organizationId: active.id } : { userId: session.user.id };
+
   try {
-    const userId = session.user.id;
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
     const [activeMonitorsCount, activeAlertsCount, totalEventsCount, upEventsCount, latencyAgg] =
@@ -1302,28 +1351,28 @@ export async function getDashboardStats() {
         // 1. Active Monitors
         prisma.monitor.count({
           where: {
-            userId,
+            ...monitorScope,
             status: { not: "PAUSED" },
           },
         }),
         // 2. Active Alerts (Monitors currently DOWN)
         prisma.monitor.count({
           where: {
-            userId,
+            ...monitorScope,
             status: "DOWN",
           },
         }),
         // 3. Total Events (Last 24h)
         prisma.monitorEvent.count({
           where: {
-            monitor: { userId },
+            monitor: monitorScope,
             timestamp: { gte: oneDayAgo },
           },
         }),
         // 4. UP Events (Last 24h)
         prisma.monitorEvent.count({
           where: {
-            monitor: { userId },
+            monitor: monitorScope,
             timestamp: { gte: oneDayAgo },
             status: "UP",
           },
@@ -1331,7 +1380,7 @@ export async function getDashboardStats() {
         // 5. Avg Latency for UP events (Last 24h)
         prisma.monitorEvent.aggregate({
           where: {
-            monitor: { userId },
+            monitor: monitorScope,
             timestamp: { gte: oneDayAgo },
             status: "UP",
             latency: { gt: 0 },
@@ -1376,12 +1425,15 @@ export async function getMonitorInsights(monitorId?: string) {
 
   if (!session?.user) return [];
 
+  const active = await getActiveWorkspace();
+  const monitorScope = active?.id ? { organizationId: active.id } : { userId: session.user.id };
+
   try {
     const insights = await prisma.monitorInsight.findMany({
       where: {
         monitor: {
           id: monitorId,
-          userId: session.user.id,
+          ...monitorScope,
         },
         dismissed: false,
       },
@@ -1446,9 +1498,7 @@ export async function getSessionToken() {
 }
 
 export async function deleteMonitor(id: string) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSafeSession();
 
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
@@ -1463,5 +1513,190 @@ export async function deleteMonitor(id: string) {
   } catch (error) {
     console.error("Failed to delete monitor", error);
     return { success: false, error: "Failed to delete monitor" };
+  }
+}
+
+/**
+ * Triggers deep SRE Root-Cause AI Analysis on a specific Insight
+ * utilizing OpenRouter or Ollama.
+ */
+export async function analyzeInsightWithAI(insightId: string) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) return { success: false, error: "Unauthorized" };
+
+  try {
+    const insight = await prisma.monitorInsight.findFirst({
+      where: {
+        id: insightId,
+        monitor: {
+          userId: session.user.id,
+        },
+      },
+      include: {
+        monitor: {
+          include: {
+            events: {
+              orderBy: { timestamp: "desc" },
+              take: 20,
+            },
+          },
+        },
+      },
+    });
+
+    if (!insight) return { success: false, error: "Insight not found" };
+
+    const analysisResult = await generateDeepInsightAnalysis({
+      monitorName: insight.monitor.name,
+      monitorUrl: insight.monitor.url,
+      monitorType: insight.monitor.type,
+      insightType: insight.type as any,
+      severity: insight.severity as any,
+      message: insight.message,
+      metadata: (insight.metadata as any) || {},
+      recentEvents: insight.monitor.events.map((e) => ({
+        latency: e.latency,
+        status: e.status,
+        timestamp: e.timestamp,
+        region: e.region || undefined,
+        errorReason: e.errorReason || undefined,
+      })),
+    });
+
+    // Persist AI analysis inside the insight metadata
+    const existingMetadata =
+      typeof insight.metadata === "object" && insight.metadata !== null
+        ? (insight.metadata as Record<string, any>)
+        : {};
+    const updatedMetadata = {
+      ...existingMetadata,
+      aiAnalysis: analysisResult,
+      analyzedAt: new Date().toISOString(),
+    };
+
+    const updated = await prisma.monitorInsight.update({
+      where: { id: insight.id },
+      data: {
+        metadata: updatedMetadata as any,
+      },
+      include: {
+        monitor: {
+          select: { name: true },
+        },
+      },
+    });
+
+    revalidatePath("/dashboard");
+    return { success: true, insight: updated, analysis: analysisResult };
+  } catch (error: any) {
+    console.error("[AI Insights] Failed to analyze insight:", error);
+    return {
+      success: false,
+      error: error.message || "Failed to analyze insight",
+    };
+  }
+}
+
+/**
+ * On-demand generation/refresh of AI insights across all user monitors.
+ */
+export async function generateLiveAIInsights() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) return { success: false, error: "Unauthorized" };
+
+  try {
+    const userMonitors = await prisma.monitor.findMany({
+      where: { userId: session.user.id },
+      include: {
+        events: {
+          orderBy: { timestamp: "desc" },
+          take: 25,
+        },
+      },
+    });
+
+    if (userMonitors.length === 0) {
+      return { success: false, error: "No monitors found to analyze" };
+    }
+
+    const aiClient = getAIProviderClient();
+    let generatedCount = 0;
+
+    for (const monitor of userMonitors.slice(0, 5)) {
+      const recent = monitor.events;
+      if (recent.length === 0) continue;
+
+      const avgLatency = Math.round(recent.reduce((a, b) => a + b.latency, 0) / recent.length);
+      const failures = recent.filter((e) => e.status === "DOWN").length;
+
+      // Anomaly detection criteria
+      if (failures > 0 || avgLatency > 200) {
+        const severity = failures > 2 ? "CRITICAL" : "WARNING";
+        const message =
+          failures > 0
+            ? `Elevated Outage Rate: ${monitor.name} encountered ${failures} failure(s) in recent telemetry window.`
+            : `High Latency Drift: Average response time (${avgLatency}ms) exceeds target performance tier.`;
+
+        const existing = await prisma.monitorInsight.findFirst({
+          where: {
+            monitorId: monitor.id,
+            dismissed: false,
+            createdAt: { gt: new Date(Date.now() - 10 * 60 * 1000) },
+          },
+        });
+
+        if (!existing) {
+          const analysisResult = await generateDeepInsightAnalysis({
+            monitorName: monitor.name,
+            monitorUrl: monitor.url,
+            monitorType: monitor.type,
+            insightType: "ANOMALY",
+            severity,
+            message,
+            metadata: { avgLatency, failures, sampleCount: recent.length },
+            recentEvents: recent.map((e) => ({
+              latency: e.latency,
+              status: e.status,
+              timestamp: e.timestamp,
+              region: e.region || undefined,
+            })),
+          });
+
+          await prisma.monitorInsight.create({
+            data: {
+              monitorId: monitor.id,
+              type: "ANOMALY",
+              severity,
+              message,
+              metadata: {
+                avgLatency,
+                failures,
+                aiAnalysis: analysisResult,
+                provider: aiClient?.provider || "heuristic",
+              } as any,
+            },
+          });
+          generatedCount++;
+        }
+      }
+    }
+
+    revalidatePath("/dashboard");
+    return {
+      success: true,
+      message: `Generated ${generatedCount} new AI insights using ${aiClient ? aiClient.provider.toUpperCase() : "Heuristic SRE Engine"}.`,
+    };
+  } catch (error: any) {
+    console.error("[AI Insights] Failed to generate live insights:", error);
+    return {
+      success: false,
+      error: error.message || "Failed to generate AI insights",
+    };
   }
 }

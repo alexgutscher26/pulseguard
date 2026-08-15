@@ -68,7 +68,8 @@ export async function getUserPlan(userId: string): Promise<PlanTier> {
   }
 
   const rawPlan = (subscription?.plan || user?.tier || "INITIATE").toUpperCase();
-  if (rawPlan === "ADMIN") return "CONSTRUCT";
+  if (rawPlan === "ADMIN" || rawPlan === "ENTERPRISE") return "CONSTRUCT";
+  if (rawPlan === "PRO") return "NETRUNNER";
   return rawPlan in PLANS ? (rawPlan as PlanTier) : "INITIATE";
 }
 
@@ -294,7 +295,10 @@ export async function assertStatusPageLimits(
   }
 
   if (params.isWhiteLabeled && !isFeatureEnabled(plan, "white_label_status_pages")) {
-    return { allowed: false, error: getFeatureError("white_label_status_pages") };
+    return {
+      allowed: false,
+      error: getFeatureError("white_label_status_pages"),
+    };
   }
 
   return { allowed: true };
@@ -325,12 +329,120 @@ export async function assertNotificationChannelLimits(
     return { allowed: false, error: getFeatureError("sms_alerts") };
   }
 
-  if (
-    (params.type === "WEBHOOK" || params.type === "PAGERDUTY") &&
-    !isFeatureEnabled(plan, "custom_webhooks_pagerduty")
-  ) {
-    return { allowed: false, error: getFeatureError("custom_webhooks_pagerduty") };
+  if (params.type === "WEBHOOK" && !isFeatureEnabled(plan, "custom_webhooks_pagerduty")) {
+    return {
+      allowed: false,
+      error: getFeatureError("custom_webhooks_pagerduty"),
+    };
+  }
+
+  if (params.type === "PAGERDUTY" && !isFeatureEnabled(plan, "pagerduty_integration")) {
+    return { allowed: false, error: getFeatureError("pagerduty_integration") };
   }
 
   return { allowed: true };
+}
+
+// ─── Manual check sliding-window store ───────────────────────────────────────
+// Keyed by "<userId>:<monitorId>". Per-isolate; resets on cold-start.
+type ManualCheckStore = Map<string, number[]>;
+const g = globalThis as typeof globalThis & { __mcStore?: ManualCheckStore };
+if (!g.__mcStore) g.__mcStore = new Map();
+
+/**
+ * Rate-limits on-demand (manual) monitor checks per user per monitor.
+ *
+ * - INITIATE : 3 checks / 5 min
+ * - NETRUNNER: 10 checks / 5 min
+ * - CONSTRUCT : unlimited
+ *
+ * Uses an in-process sliding window; state resets on Worker cold-start.
+ */
+export async function assertManualCheckRateLimit(
+  userId: string,
+  monitorId: string,
+): Promise<{ allowed: boolean; error?: string; retryAfterSeconds?: number }> {
+  const plan = await getUserPlan(userId);
+  const limits = PLANS[plan].limits;
+
+  // 0 = unlimited (CONSTRUCT)
+  if (limits.maxManualChecksPerWindow === 0) return { allowed: true };
+
+  const windowMs = limits.manualCheckWindowSeconds * 1000;
+  const maxChecks = limits.maxManualChecksPerWindow;
+  const key = `${userId}:${monitorId}`;
+  const now = Date.now();
+  const windowStart = now - windowMs;
+
+  const timestamps = (g.__mcStore!.get(key) ?? []).filter((ts) => ts > windowStart);
+
+  if (timestamps.length >= maxChecks) {
+    const oldestInWindow = timestamps[0]!;
+    const retryAfterSeconds = Math.ceil((oldestInWindow + windowMs - now) / 1000);
+    const windowMinutes = limits.manualCheckWindowSeconds / 60;
+    return {
+      allowed: false,
+      error: `Manual check limit reached (${maxChecks} per ${windowMinutes} min). Try again in ${retryAfterSeconds}s.`,
+      retryAfterSeconds,
+    };
+  }
+
+  timestamps.push(now);
+  g.__mcStore!.set(key, timestamps);
+  return { allowed: true };
+}
+
+/**
+ * Server-side check before creating a team workspace or inviting a new team member.
+ */
+export async function assertTeamLimits(
+  userId: string,
+  organizationId?: string,
+): Promise<{
+  allowed: boolean;
+  error?: string;
+  plan: PlanTier;
+  currentSeats?: number;
+  maxSeats?: number;
+}> {
+  const plan = await getUserPlan(userId);
+  const limits = PLANS[plan].limits;
+
+  // If checking an existing organization (e.g. inviting a member or adding seats)
+  if (organizationId) {
+    if (!limits.multiSeatAllowed || !isFeatureEnabled(plan, "multi_seat_teams")) {
+      return {
+        allowed: false,
+        error:
+          "Multi-seat team collaboration and member invitations require The Construct plan ($79/mo). Upgrade to invite team members and collaborate.",
+        plan,
+        maxSeats: limits.maxSeats,
+      };
+    }
+
+    const [memberCount, pendingInvitesCount] = await Promise.all([
+      db.member.count({ where: { organizationId } }),
+      db.invitation.count({ where: { organizationId, status: "pending" } }),
+    ]);
+
+    const totalUsedSeats = memberCount + pendingInvitesCount;
+    if (totalUsedSeats >= limits.maxSeats) {
+      return {
+        allowed: false,
+        error: `Workspace seat limit reached (${totalUsedSeats}/${limits.maxSeats} seats used). Upgrade to expand team seats.`,
+        plan,
+        currentSeats: totalUsedSeats,
+        maxSeats: limits.maxSeats,
+      };
+    }
+
+    return {
+      allowed: true,
+      plan,
+      currentSeats: totalUsedSeats,
+      maxSeats: limits.maxSeats,
+    };
+  }
+
+  return { allowed: true, plan, maxSeats: limits.maxSeats };
 }

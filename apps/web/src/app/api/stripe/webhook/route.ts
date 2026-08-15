@@ -12,12 +12,16 @@ export async function POST(req: Request) {
 
   try {
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-    if (webhookSecret && signature) {
-      event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
-    } else {
-      // In dev / unconfigured secret mode, parse payload directly
-      event = JSON.parse(body) as Stripe.Event;
+    if (!webhookSecret || !signature) {
+      console.error(
+        "Stripe Webhook Error: Missing STRIPE_WEBHOOK_SECRET or stripe-signature header",
+      );
+      return NextResponse.json(
+        { error: "Webhook Error: Missing webhook secret or signature header" },
+        { status: 400 },
+      );
     }
+    event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : "Unknown error";
     console.error(`Stripe Webhook Signature Verification Failed: ${errorMessage}`);
@@ -114,7 +118,7 @@ export async function POST(req: Request) {
           const userName = subRecord.user?.name || "PulseGuard Operator";
           const amountDue = invoice.amount_due
             ? `$${(invoice.amount_due / 100).toFixed(2)}`
-            : "$14.00";
+            : "$19.00";
           const failureReason =
             invoice.last_finalization_error?.message ||
             invoice.payment_intent?.last_payment_error?.message ||

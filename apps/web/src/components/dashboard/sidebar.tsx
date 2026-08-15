@@ -17,6 +17,7 @@ import {
   PanelLeftOpen,
   Zap,
   Award,
+  FileCheck2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
@@ -26,6 +27,7 @@ const navigation = [
   { name: "Monitors", href: "/dashboard/monitors", icon: Monitor },
   { name: "Templates", href: "/dashboard/templates", icon: Layers },
   { name: "Status Pages", href: "/dashboard/pages", icon: Globe },
+  { name: "SLA Reports", href: "/dashboard/reports", icon: FileCheck2 },
   { name: "Integrations", href: "/dashboard/integrations", icon: Blocks },
   { name: "Incidents", href: "/dashboard/incidents", icon: TriangleAlert },
   { name: "Alerts", href: "/dashboard/alerts", icon: Bell },
@@ -38,8 +40,9 @@ export function Sidebar() {
   const [telemetry, setTelemetry] = useState<{
     tier: string;
     isAdmin?: boolean;
-    probeCount: number;
-    maxProbes: number;
+    edgeNodes: string;
+    vpcProbeCount: number;
+    maxVpcProbes: number;
     pingInterval: string;
     regions: string;
   } | null>(null);
@@ -99,17 +102,16 @@ export function Sidebar() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
               </span>
-              <Activity className="size-5 text-emerald-400 animate-pulse duration-[2000ms]" />
+              <Activity className="size-5" />
             </div>
 
             {!isCollapsed && (
               <div className="flex flex-col">
-                <h1 className="text-foreground text-xs font-black uppercase tracking-[0.15em] leading-none">
-                  PulseGuard
-                </h1>
-                <span className="text-[9px] font-mono text-emerald-400/70 tracking-wider mt-1.5 uppercase flex items-center gap-1">
-                  <span className="size-1 bg-emerald-400 rounded-full animate-ping shrink-0" />
-                  TELEMETRY ACTIVE
+                <span className="font-mono text-sm font-bold tracking-wider text-foreground">
+                  PULSEGUARD
+                </span>
+                <span className="font-mono text-[9px] text-muted-foreground tracking-widest uppercase">
+                  ZERO_FP_MESH
                 </span>
               </div>
             )}
@@ -117,8 +119,12 @@ export function Sidebar() {
 
           <button
             onClick={toggleCollapse}
+            className={cn(
+              "text-muted-foreground hover:text-foreground transition-colors p-1.5 hover:bg-muted/50 rounded-md cursor-pointer",
+              isCollapsed && "mt-1",
+            )}
             title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-card/50 transition-colors"
+            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             {isCollapsed ? (
               <PanelLeftOpen className="size-4" />
@@ -128,54 +134,47 @@ export function Sidebar() {
           </button>
         </div>
 
-        {/* Navigation Links */}
-        <nav className="flex flex-col gap-1.5 mt-2">
+        {/* Navigation Items */}
+        <nav className="flex flex-col gap-1">
           {(telemetry?.isAdmin
             ? [
                 ...navigation.slice(0, 7),
-                { name: "Design Partners", href: "/dashboard/design-partners", icon: Award },
+                {
+                  name: "Design Partners",
+                  href: "/dashboard/design-partners",
+                  icon: Award,
+                },
                 ...navigation.slice(7),
               ]
             : navigation
           ).map((item) => {
             const isActive = pathname === item.href;
+            const Icon = item.icon;
+
             return (
               <Link
                 key={item.name}
                 href={item.href as any}
-                title={isCollapsed ? item.name : undefined}
                 className={cn(
-                  "flex items-center gap-3.5 px-3.5 py-3 rounded-none border-l-2 transition-all duration-300 group text-xs font-bold tracking-wider uppercase relative overflow-hidden",
-                  isCollapsed ? "justify-center px-2" : "",
+                  "flex items-center gap-3 px-3 py-2 text-xs font-mono tracking-wider transition-all duration-200 border rounded-none group cursor-pointer",
                   isActive
-                    ? "border-primary bg-primary/5 text-foreground"
-                    : "border-transparent text-muted-foreground hover:text-foreground hover:bg-card/30 hover:border-border/60",
+                    ? "border-primary/40 bg-primary/10 text-primary font-bold shadow-sm"
+                    : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/40 hover:border-border/60",
+                  isCollapsed ? "justify-center px-0" : "",
                 )}
+                title={isCollapsed ? item.name : undefined}
               >
-                {isActive && (
-                  <div className="absolute inset-y-0 left-0 w-[40px] bg-gradient-to-r from-primary/10 to-transparent pointer-events-none" />
-                )}
-
-                <item.icon
+                <Icon
                   className={cn(
-                    "size-4.5 transition-all duration-300 shrink-0",
-                    isActive
-                      ? "text-primary scale-110"
-                      : "text-muted-foreground group-hover:text-foreground group-hover:scale-105",
+                    "size-4 shrink-0 transition-transform duration-200 group-hover:scale-110",
+                    isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground",
                   )}
                 />
-
                 {!isCollapsed && (
                   <>
                     <span className="transition-transform duration-300 group-hover:translate-x-0.5 truncate">
                       {item.name}
                     </span>
-
-                    {isActive && (
-                      <span className="ml-auto font-mono text-[9px] text-primary/70 bg-primary/10 px-1.5 py-0.5 border border-primary/20">
-                        ACTIVE
-                      </span>
-                    )}
                   </>
                 )}
               </Link>
@@ -198,35 +197,50 @@ export function Sidebar() {
                 <span className="text-[9px] text-muted-foreground tracking-wider uppercase">
                   LICENSE TIER
                 </span>
-                <span className={`text-[9px] font-bold px-1.5 py-0.5 border ${tierColorClass}`}>
-                  {displayTier}
-                </span>
+                <div className="flex items-center gap-1.5">
+                  {telemetry?.isAdmin && (
+                    <span className="text-[8px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/40">
+                      ADMIN
+                    </span>
+                  )}
+                  <span className={`text-[9px] font-bold px-1.5 py-0.5 border ${tierColorClass}`}>
+                    {displayTier}
+                  </span>
+                </div>
               </div>
               <div className="flex items-center justify-between text-[9px]">
-                <span className="text-muted-foreground tracking-wider uppercase">PROBE NODES</span>
+                <span className="text-muted-foreground tracking-wider uppercase">EDGE NODES</span>
                 <span className="text-foreground font-semibold">
-                  {telemetry ? `${telemetry.probeCount} / ${telemetry.maxProbes}` : "0 / 0"} Enabled
+                  {telemetry ? telemetry.edgeNodes : "3 Nodes (2-of-3)"}
                 </span>
               </div>
               <div className="flex items-center justify-between text-[9px]">
                 <span className="text-muted-foreground tracking-wider uppercase">
-                  PING INTERVAL
+                  CHECK INTERVAL
                 </span>
                 <span className="text-foreground font-semibold">
-                  {telemetry ? telemetry.pingInterval : "60s Min"}
+                  {telemetry ? telemetry.pingInterval : "3m / 1m Fast"}
                 </span>
               </div>
               <div className="flex items-center justify-between text-[9px]">
                 <span className="text-muted-foreground tracking-wider uppercase">REGIONS</span>
                 <span className="text-foreground font-semibold">
-                  {telemetry ? telemetry.regions : "US-East Only"}
+                  {telemetry ? telemetry.regions : "3 Primary Regions"}
                 </span>
               </div>
+              {telemetry && telemetry.maxVpcProbes > 0 && (
+                <div className="flex items-center justify-between text-[9px]">
+                  <span className="text-muted-foreground tracking-wider uppercase">VPC AGENTS</span>
+                  <span className="text-foreground font-semibold">
+                    {telemetry.vpcProbeCount} / {telemetry.maxVpcProbes} Active
+                  </span>
+                </div>
+              )}
             </div>
 
             {currentTier === "INITIATE" && (
               <div className="text-[10px] text-muted-foreground leading-relaxed border-l border-amber-500/50 pl-2 py-0.5">
-                Unlock global checks & latency maps.
+                Upgrade to Pro for 7-region quorum & 30s checks.
               </div>
             )}
 
@@ -241,12 +255,19 @@ export function Sidebar() {
           </>
         ) : (
           <div className="flex flex-col items-center gap-2">
-            <span
-              className={`text-[8px] font-bold px-1 py-0.5 border ${tierColorClass}`}
-              title={`License Tier: ${displayTier}`}
-            >
-              {displayTier.slice(0, 4)}
-            </span>
+            <div className="flex flex-col items-center gap-1">
+              {telemetry?.isAdmin && (
+                <span className="text-[7px] font-bold px-1 py-0.2 bg-amber-500/20 text-amber-400 border border-amber-500/40">
+                  ADM
+                </span>
+              )}
+              <span
+                className={`text-[8px] font-bold px-1 py-0.5 border ${tierColorClass}`}
+                title={`License Tier: ${displayTier}${telemetry?.isAdmin ? " (Admin)" : ""}`}
+              >
+                {displayTier.slice(0, 4)}
+              </span>
+            </div>
             <Link
               href="/dashboard/settings?tab=billing"
               title="Upgrade License"

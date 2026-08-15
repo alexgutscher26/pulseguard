@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { MonitorManager } from "@/components/monitors/monitor-manager";
 import { getMonitors } from "@/actions/monitors";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Renders the Monitors page after validating user authentication.
  *

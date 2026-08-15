@@ -53,7 +53,10 @@ export async function generateAndSendMonthlyReports(
   }
 
   // 4. Send Emails
-  const monthName = stats.startDate.toLocaleString("default", { month: "long", year: "numeric" });
+  const monthName = stats.startDate.toLocaleString("default", {
+    month: "long",
+    year: "numeric",
+  });
 
   for (const user of recipients) {
     console.log(`[ReportGenerator] Sending to ${user.email}...`);

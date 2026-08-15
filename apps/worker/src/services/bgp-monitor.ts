@@ -116,7 +116,10 @@ async function resolveToIP(hostname: string): Promise<string | null> {
 async function fetchBGPViewIP(ip: string): Promise<BGPViewIPResponse | null> {
   try {
     const response = await fetch(`https://api.bgpview.io/ip/${ip}`, {
-      headers: { Accept: "application/json", "User-Agent": "PulseGuard-BGP-Monitor/1.0" },
+      headers: {
+        Accept: "application/json",
+        "User-Agent": "PulseGuard-BGP-Monitor/1.0",
+      },
       signal: AbortSignal.timeout(10000),
     });
     if (!response.ok) return null;
@@ -129,7 +132,10 @@ async function fetchBGPViewIP(ip: string): Promise<BGPViewIPResponse | null> {
 async function fetchBGPViewPrefix(prefix: string): Promise<BGPViewPrefixResponse | null> {
   try {
     const response = await fetch(`https://api.bgpview.io/prefix/${prefix}`, {
-      headers: { Accept: "application/json", "User-Agent": "PulseGuard-BGP-Monitor/1.0" },
+      headers: {
+        Accept: "application/json",
+        "User-Agent": "PulseGuard-BGP-Monitor/1.0",
+      },
       signal: AbortSignal.timeout(10000),
     });
     if (!response.ok) return null;
@@ -145,7 +151,10 @@ async function fetchRIPEVisibility(ip: string): Promise<number | null> {
     const response = await fetch(
       `https://stat.ripe.net/data/routing-status/data.json?resource=${ip}`,
       {
-        headers: { Accept: "application/json", "User-Agent": "PulseGuard-BGP-Monitor/1.0" },
+        headers: {
+          Accept: "application/json",
+          "User-Agent": "PulseGuard-BGP-Monitor/1.0",
+        },
         signal: AbortSignal.timeout(5000),
       },
     );

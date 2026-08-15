@@ -8,37 +8,127 @@ export interface LatencyResult {
 
 export const REGIONS = [
   // North America
-  { id: "iad", city: "Ashburn", name: "US East (N. Virginia)", coords: [-77.48, 39.04] },
-  { id: "sjc", city: "San Jose", name: "US West (California)", coords: [-121.88, 37.33] },
-  { id: "pdx", city: "Portland", name: "US West (Oregon)", coords: [-122.67, 45.52] },
-  { id: "dfw", city: "Dallas", name: "US Central (Texas)", coords: [-96.79, 32.77] },
-  { id: "yyz", city: "Toronto", name: "Canada (East)", coords: [-79.38, 43.65] },
-  { id: "yvr", city: "Vancouver", name: "Canada (West)", coords: [-123.12, 49.28] },
+  {
+    id: "iad",
+    city: "Ashburn",
+    name: "US East (N. Virginia)",
+    coords: [-77.48, 39.04],
+  },
+  {
+    id: "sjc",
+    city: "San Jose",
+    name: "US West (California)",
+    coords: [-121.88, 37.33],
+  },
+  {
+    id: "pdx",
+    city: "Portland",
+    name: "US West (Oregon)",
+    coords: [-122.67, 45.52],
+  },
+  {
+    id: "dfw",
+    city: "Dallas",
+    name: "US Central (Texas)",
+    coords: [-96.79, 32.77],
+  },
+  {
+    id: "yyz",
+    city: "Toronto",
+    name: "Canada (East)",
+    coords: [-79.38, 43.65],
+  },
+  {
+    id: "yvr",
+    city: "Vancouver",
+    name: "Canada (West)",
+    coords: [-123.12, 49.28],
+  },
 
   // Europe
   { id: "lhr", city: "London", name: "Europe (UK)", coords: [-0.12, 51.5] },
-  { id: "fra", city: "Frankfurt", name: "Europe (Germany)", coords: [8.68, 50.11] },
+  {
+    id: "fra",
+    city: "Frankfurt",
+    name: "Europe (Germany)",
+    coords: [8.68, 50.11],
+  },
   { id: "cdg", city: "Paris", name: "Europe (France)", coords: [2.35, 48.85] },
-  { id: "ams", city: "Amsterdam", name: "Europe (Netherlands)", coords: [4.89, 52.37] },
-  { id: "sto", city: "Stockholm", name: "Europe (Sweden)", coords: [18.06, 59.32] },
+  {
+    id: "ams",
+    city: "Amsterdam",
+    name: "Europe (Netherlands)",
+    coords: [4.89, 52.37],
+  },
+  {
+    id: "sto",
+    city: "Stockholm",
+    name: "Europe (Sweden)",
+    coords: [18.06, 59.32],
+  },
   { id: "mxp", city: "Milan", name: "Europe (Italy)", coords: [9.19, 45.46] },
 
   // Asia / Oceania
-  { id: "sin", city: "Singapore", name: "Asia (Singapore)", coords: [103.81, 1.35] },
-  { id: "hkg", city: "Hong Kong", name: "Asia (Hong Kong)", coords: [114.16, 22.31] },
+  {
+    id: "sin",
+    city: "Singapore",
+    name: "Asia (Singapore)",
+    coords: [103.81, 1.35],
+  },
+  {
+    id: "hkg",
+    city: "Hong Kong",
+    name: "Asia (Hong Kong)",
+    coords: [114.16, 22.31],
+  },
   { id: "nrt", city: "Tokyo", name: "Asia (Japan)", coords: [139.69, 35.68] },
-  { id: "icn", city: "Seoul", name: "Asia (S. Korea)", coords: [126.97, 37.56] },
+  {
+    id: "icn",
+    city: "Seoul",
+    name: "Asia (S. Korea)",
+    coords: [126.97, 37.56],
+  },
   { id: "bom", city: "Mumbai", name: "Asia (India)", coords: [72.87, 19.07] },
-  { id: "syd", city: "Sydney", name: "Oceania (Australia)", coords: [151.2, -33.86] },
-  { id: "mel", city: "Melbourne", name: "Oceania (Australia)", coords: [144.96, -37.81] },
+  {
+    id: "syd",
+    city: "Sydney",
+    name: "Oceania (Australia)",
+    coords: [151.2, -33.86],
+  },
+  {
+    id: "mel",
+    city: "Melbourne",
+    name: "Oceania (Australia)",
+    coords: [144.96, -37.81],
+  },
 
   // S. America / Africa / M. East
-  { id: "gru", city: "São Paulo", name: "S. America (Brazil)", coords: [-46.63, -23.55] },
-  { id: "scl", city: "Santiago", name: "S. America (Chile)", coords: [-70.64, -33.44] },
-  { id: "jnb", city: "Johannesburg", name: "Africa (S. Africa)", coords: [28.04, -26.2] },
+  {
+    id: "gru",
+    city: "São Paulo",
+    name: "S. America (Brazil)",
+    coords: [-46.63, -23.55],
+  },
+  {
+    id: "scl",
+    city: "Santiago",
+    name: "S. America (Chile)",
+    coords: [-70.64, -33.44],
+  },
+  {
+    id: "jnb",
+    city: "Johannesburg",
+    name: "Africa (S. Africa)",
+    coords: [28.04, -26.2],
+  },
   { id: "los", city: "Lagos", name: "Africa (Nigeria)", coords: [3.37, 6.52] },
   { id: "dxb", city: "Dubai", name: "M. East (UAE)", coords: [55.27, 25.2] },
-  { id: "tlv", city: "Tel Aviv", name: "M. East (Israel)", coords: [34.78, 32.08] },
+  {
+    id: "tlv",
+    city: "Tel Aviv",
+    name: "M. East (Israel)",
+    coords: [34.78, 32.08],
+  },
 ];
 
 export async function checkGlobalLatency(targetUrl: string): Promise<LatencyResult[]> {
@@ -75,9 +165,47 @@ export async function checkGlobalLatency(targetUrl: string): Promise<LatencyResu
 
   // 2. Perform Real Global Latency checks via the Globalping API (jsDelivr)
   try {
+    let hostname = url.trim();
+    let protocol: "HTTP" | "HTTPS" = "HTTPS";
+    let port: number | undefined;
+    let path = "/";
+    let query: string | undefined;
+
+    try {
+      const parsed = new URL(url.includes("://") ? url : `https://${url}`);
+      hostname = parsed.hostname;
+      protocol = parsed.protocol === "http:" ? "HTTP" : "HTTPS";
+      if (parsed.port) {
+        const p = Number.parseInt(parsed.port, 10);
+        if (!Number.isNaN(p)) port = p;
+      }
+      path = parsed.pathname || "/";
+      if (parsed.search) {
+        query = parsed.search.replace(/^\?/, "") || undefined;
+      }
+    } catch {
+      hostname =
+        url
+          .replace(/^[a-zA-Z]+:\/\//, "")
+          .split("/")[0]
+          ?.split(":")[0] || url;
+    }
+
+    const measurementOptions: Record<string, any> = {
+      protocol,
+      request: {
+        method: "HEAD",
+        path: path || "/",
+        ...(query ? { query } : {}),
+      },
+    };
+    if (port) {
+      measurementOptions.port = port;
+    }
+
     const reqBody = {
       type: "http",
-      target: url,
+      target: hostname,
       locations: [
         { continent: "NA" }, // North America
         { continent: "EU" }, // Europe
@@ -85,9 +213,7 @@ export async function checkGlobalLatency(targetUrl: string): Promise<LatencyResu
         { continent: "SA" }, // South America
         { continent: "OC" }, // Oceania
       ],
-      measurementOptions: {
-        method: "HEAD",
-      },
+      measurementOptions,
       limit: 6, // Fetch a few probes
     };
 

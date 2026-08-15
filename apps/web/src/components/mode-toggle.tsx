@@ -16,8 +16,8 @@ import {
  * Renders a theme toggle dropdown menu.
  */
 export function ModeToggle() {
-  const { setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
+  const themeContext = useTheme();
 
   React.useEffect(() => {
     setMounted(true);
@@ -31,6 +31,8 @@ export function ModeToggle() {
       </Button>
     );
   }
+
+  const setTheme = themeContext?.setTheme || (() => {});
 
   return (
     <DropdownMenu>

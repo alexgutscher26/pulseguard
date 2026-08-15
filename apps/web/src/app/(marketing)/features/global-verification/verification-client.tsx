@@ -51,7 +51,11 @@ export function VerificationClient() {
         if (mode === "local") {
           // Only Singapore fails
           if (currentIndex === 4) {
-            next[currentIndex] = { ...next[currentIndex], status: "DOWN", latency: 0 };
+            next[currentIndex] = {
+              ...next[currentIndex],
+              status: "DOWN",
+              latency: 0,
+            };
           } else {
             next[currentIndex] = {
               ...next[currentIndex],
@@ -61,7 +65,11 @@ export function VerificationClient() {
           }
         } else {
           // All nodes fail
-          next[currentIndex] = { ...next[currentIndex], status: "DOWN", latency: 0 };
+          next[currentIndex] = {
+            ...next[currentIndex],
+            status: "DOWN",
+            latency: 0,
+          };
         }
         return next;
       });
@@ -152,7 +160,9 @@ export function VerificationClient() {
                     {/* Visual connection line to center */}
                     <svg
                       className="absolute w-[200px] h-[200px] pointer-events-none -z-10 overflow-visible"
-                      style={{ transform: `rotate(${(angle * 180) / Math.PI + 90}deg)` }}
+                      style={{
+                        transform: `rotate(${(angle * 180) / Math.PI + 90}deg)`,
+                      }}
                     >
                       <line
                         x1="100"

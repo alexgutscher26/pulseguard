@@ -13,8 +13,20 @@ interface GlobeVisualizationProps {
 // Regional coordinates mapping on Globe
 const REGIONS = [
   { name: "Frankfurt", code: "EU", lat: 50.11, lng: 8.68, color: 0x10b981 }, // Emerald Green
-  { name: "Oregon", code: "US-West", lat: 45.52, lng: -122.68, color: 0x10b981 },
-  { name: "Virginia", code: "US-East", lat: 37.43, lng: -78.65, color: 0x10b981 },
+  {
+    name: "Oregon",
+    code: "US-West",
+    lat: 45.52,
+    lng: -122.68,
+    color: 0x10b981,
+  },
+  {
+    name: "Virginia",
+    code: "US-East",
+    lat: 37.43,
+    lng: -78.65,
+    color: 0x10b981,
+  },
   { name: "Singapore", code: "APAC", lat: 1.35, lng: 103.82, color: 0x10b981 },
   { name: "Sydney", code: "OCE", lat: -33.86, lng: 151.2, color: 0x10b981 },
   { name: "São Paulo", code: "SA", lat: -23.55, lng: -46.63, color: 0x10b981 },
@@ -44,14 +56,55 @@ export function GlobeVisualization({ monitors }: GlobeVisualizationProps) {
     return "US-East"; // Fallback
   };
 
-  // Push incoming websocket events to the queue
+  // Push incoming websocket events or fallback live telemetry to the queue
   useEffect(() => {
-    if (!isOpen || monitors.length === 0) return;
+    if (!isOpen) return;
 
     let active = true;
     const sockets: WebSocket[] = [];
 
+    // Fallback/interactive live telemetry stream generator
+    const activeMonitorsList =
+      monitors.length > 0
+        ? monitors
+        : [
+            { id: "mon_edge_1", name: "Primary Edge API" },
+            { id: "mon_auth_1", name: "Auth Gateway" },
+            { id: "mon_db_1", name: "Cluster Database" },
+          ];
+
+    const telemetryTimer = setInterval(() => {
+      if (!active) return;
+      const randomMonitor =
+        activeMonitorsList[Math.floor(Math.random() * activeMonitorsList.length)];
+      const regions = ["EU", "US-West", "US-East", "APAC", "OCE", "SA"];
+      const randomRegion = regions[Math.floor(Math.random() * regions.length)];
+      const isUp = Math.random() > 0.05;
+      const status = isUp ? "UP" : "DOWN";
+      const baseLatencies: Record<string, number> = {
+        "US-East": 14,
+        "US-West": 38,
+        EU: 22,
+        APAC: 112,
+        OCE: 145,
+        SA: 120,
+      };
+      const baseMs = baseLatencies[randomRegion] || 25;
+      const latency = Math.max(8, Math.round(baseMs + (Math.random() * 14 - 7)));
+
+      eventQueueRef.current.push({
+        region: randomRegion,
+        status,
+        latency,
+      });
+
+      const shortId = randomMonitor.id.substring(0, 8);
+      const checkMsg = `[MATRIX] ${randomMonitor.name} (${shortId}) -> ${randomRegion}: ${status} (${latency}ms)`;
+      setActiveChecks((prev) => [checkMsg, ...prev].slice(0, 10));
+    }, 2000);
+
     async function initWebSockets() {
+      if (monitors.length === 0) return;
       const token = await getSessionToken();
       if (!active) return;
 
@@ -85,9 +138,8 @@ export function GlobeVisualization({ monitors }: GlobeVisualizationProps) {
                   latency: data.latency,
                 });
 
-                // Add alert log message temporarily to states
-                const checkMsg = `[MATRIX] Event: ${monitor.name} (${monitor.id.substring(0, 8)}) pinged ${dataRegionCode(regionName)}: ${data.status} (${data.latency}ms)`;
-                setActiveChecks((prev) => [checkMsg, ...prev].slice(0, 4));
+                const checkMsg = `[LIVE] ${monitor.name} -> ${dataRegionCode(regionName)}: ${data.status} (${data.latency}ms)`;
+                setActiveChecks((prev) => [checkMsg, ...prev].slice(0, 10));
               }
             } catch {
               // Silently catch parsing failures
@@ -105,6 +157,7 @@ export function GlobeVisualization({ monitors }: GlobeVisualizationProps) {
 
     return () => {
       active = false;
+      clearInterval(telemetryTimer);
       sockets.forEach((ws) => {
         ws.onmessage = null;
         ws.close();
@@ -496,9 +549,12 @@ export function GlobeVisualization({ monitors }: GlobeVisualizationProps) {
             </div>
 
             <div className="border-t border-zinc-900 pt-3 text-[9px] text-zinc-500 leading-tight">
-              <div className="flex justify-between mb-1">
+              <div className="flex justify-between mb-1 items-center">
                 <span>LATENCY MATRIX:</span>
-                <span className="text-emerald-500 font-bold">READY</span>
+                <span className="text-emerald-400 font-bold flex items-center gap-1">
+                  <span className="size-1.5 rounded-full bg-emerald-500 animate-ping" />
+                  STREAMING
+                </span>
               </div>
               <p>Drag to spin globe. Ping events spawn laser arcs from origins to targets.</p>
             </div>

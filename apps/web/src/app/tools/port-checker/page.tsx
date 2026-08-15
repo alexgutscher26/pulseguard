@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { PortChecker } from "@/components/tools/port-checker";
 import LandingHeader from "@/components/landing/header";
+import { ToolSchema } from "@/components/seo/tool-schema";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Open Port Checker Tool | PulseGuard",
@@ -21,6 +24,11 @@ export const metadata: Metadata = {
 export default function PortCheckerPage() {
   return (
     <div className="min-h-screen bg-background">
+      <ToolSchema
+        name="Open Port Checker Tool"
+        description="Test if your ports are open and accessible from the internet. Check Minecraft (25565), SSH (22), Plex (32400) and more."
+        url="https://pulseguard.io/tools/port-checker"
+      />
       <LandingHeader />
       <main className="container mx-auto pt-32 pb-12 px-4 md:px-6">
         <div className="max-w-4xl mx-auto space-y-6">

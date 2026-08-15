@@ -156,7 +156,9 @@ export function HeaderAnalyzer() {
                 <motion.div
                   className="h-full bg-primary"
                   initial={{ width: 0 }}
-                  animate={{ width: `${(scanStep + 1) * (100 / scanSteps.length)}%` }}
+                  animate={{
+                    width: `${(scanStep + 1) * (100 / scanSteps.length)}%`,
+                  }}
                 />
               </div>
             </div>

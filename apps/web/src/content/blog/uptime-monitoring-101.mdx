@@ -1,67 +1,74 @@
 ---
-title: "Uptime monitoring 101: what it is, how it works, and why you need it"
-description: "A beginner's guide to uptime monitoring: how checks work, the metrics that matter, check intervals, alerting, and how to choose a monitoring tool for your site."
+title: "Uptime Monitoring 101: Fundamentals, Metrics, and Check Strategies"
+description: "A complete beginner-to-intermediate guide to uptime monitoring: probe types, critical metrics, check intervals, alert routing, and multi-region consensus."
 date: "2026-07-28"
 category: "Guides"
 readTime: "9 min read"
-tags: ["uptime monitoring", "uptime monitoring guide", "website monitoring", "check interval"]
+author: "Alex Gutscher"
+tags:
+  [
+    "uptime monitoring",
+    "uptime monitoring guide",
+    "website monitoring",
+    "check interval",
+    "DevOps",
+  ]
 ---
 
-If your website or API is down right now, would you know within a minute — or would you find out from a customer? Uptime monitoring is the practice of automatically testing your services from the outside, so you detect problems before your users do. This guide covers the fundamentals.
+If your production API or website drops right now, would your engineering team know within 60 seconds — or would you find out from an angry customer on Twitter?
 
-## What uptime monitoring actually does
+Uptime monitoring is the practice of continuously testing your digital endpoints from outside your network perimeter to detect outages, latency spikes, and SSL issues before your users encounter them. This guide covers the essential principles of modern synthetic monitoring.
 
-An uptime monitor is a program that periodically sends a request to your service and verifies the response. The simplest form is an **HTTP check**: request `https://yoursite.com/health` and confirm it returns a success status code within a timeout.
+---
 
-Checks come in several flavors:
+## The 6 Types of Synthetic Checks
 
-- **HTTP/HTTPS checks** — verify status codes, response times, and page content
-- **TCP port checks** — confirm a port is accepting connections (useful for databases, SSH, message queues)
-- **Ping (ICMP) checks** — test network reachability
-- **SSL certificate checks** — warn before your TLS certificate expires
-- **DNS checks** — verify your records resolve from public resolvers
-- **Cron/API checks** — confirm scheduled jobs or background workers actually ran
+Different parts of your architecture require different inspection protocols:
 
-## The metrics that matter
+| Check Type           | Protocol / Target     | What It Verifies                       | Best Used For             |
+| :------------------- | :-------------------- | :------------------------------------- | :------------------------ |
+| **HTTP / HTTPS**     | `GET`, `POST`, `HEAD` | Status codes, body assertions, headers | Web apps & REST APIs      |
+| **TCP Port**         | Raw TCP handshake     | Socket connectivity & listener health  | Redis, Postgres, SSH      |
+| **ICMP Ping**        | Packet round-trip     | Network reachability & packet drop     | Bare-metal hosts & VPNs   |
+| **SSL / TLS**        | X.509 Certificate     | Certificate validity & expiration days | Public domains & origins  |
+| **DNS Record**       | `A`, `CNAME`, `TXT`   | Global DNS propagation & consistency   | Nameservers & CDN edges   |
+| **Heartbeat / Cron** | Incoming HTTP ping    | Background job completion deadlines    | Queue workers & cron jobs |
 
-Raw "up or down" is only the start. The metrics that tell you the full story:
+---
 
-| Metric            | What it measures                    | Why it matters                                     |
-| ----------------- | ----------------------------------- | -------------------------------------------------- |
-| Availability      | Percentage of checks that succeeded | The headline number for SLAs and status pages      |
-| Response time     | Latency of each check               | Slow is a failure mode too; users leave slow sites |
-| Time to detection | Delay between failure and alert     | The most underrated number in monitoring           |
-| Error rate        | Failed checks / total checks        | Spiky error rates suggest flaky infrastructure     |
-| SSL expiry        | Days until certificate expiry       | A silent killer — no downtime, just a hard failure |
+## 4 Core Metrics That Tell the Real Story
 
-## Check intervals: how fast is fast enough?
+Availability is more than a binary "up or down" flag:
 
-Your check interval is a trade-off between detection speed and cost:
+1. **Uptime Percentage:** Overall percentage of successful checks over a rolling 30/90-day window (e.g. 99.95%).
+2. **Mean Time to Detect (MTTD):** How many seconds elapse between when a service crashes and when an alert triggers.
+3. **P95 / P99 Latency:** 95th-percentile response time. A service that takes 10 seconds to respond is functionally unavailable for users.
+4. **SSL Expiration Horizon:** Number of days remaining before an SSL/TLS certificate expires.
 
-- **5 minutes** — the industry default; detects problems in minutes, misses short outages entirely
-- **60 seconds** — real-time awareness; catches most brief disruptions
-- **30 seconds or less** — critical-path services with revenue impact
+---
 
-The math is brutal: with a 5-minute interval you cannot detect any outage shorter than 5 minutes, and the average detection time is 2.5 minutes. That's why PulseGuard runs [60-second checks](/blog/60-second-checks-standard) as standard.
+## Why Check Frequency Dictates Detection Speed
 
-## What a good monitoring workflow looks like
+Your check interval sets the mathematical limit for how quickly you can discover an incident:
 
-1. **Set up checks for every public endpoint** — website, API, status page, checkout flow
-2. **Add synthetic transaction checks** for critical journeys (login, add-to-cart, payment)
-3. **Configure alert channels** — email and Slack first, then PagerDuty or SMS for production
-4. **Verify false alarms** — a single failed check should not page anyone; require confirmation from multiple regions
-5. **Review monthly** — compare monitored uptime against vendor SLAs and incident reports
+- **5-Minute Interval (300s):** Worst-case detection latency is 5 minutes; completely misses transient micro-outages lasting 2–4 minutes.
+- **60-Second Interval (60s):** Real-time awareness; worst-case detection time is 60 seconds.
+- **30-Second Interval:** Used for high-frequency payment gateways and critical financial APIs.
 
-## Choosing a monitoring tool
+```
+5-Minute Poller (UptimeRobot Free):
+00:00 [200 OK] ------------------ 5 mins ------------------ 00:05 [200 OK]
+                     ^-- 3-min outage occurs here --^
+                     (Customer checkout fails; zero alerts)
 
-What to look for in an uptime monitoring service:
+PulseGuard 60-Second Poller:
+00:00 [200 OK] - 1m - 00:01 [200 OK] - 1m - 00:02 [500 DOWN] ==> Paged in 60s
+```
 
-- **Multi-region checks** — if all checks come from one datacenter, you only know the service is down _for that datacenter_
-- **Fast intervals on free tiers** — cheap detection is the whole point
-- **Real alerting** — webhooks, Slack, PagerDuty, SMS; not just email
-- **Public status pages** — so you can communicate during incidents without scrambling
-- **History and reporting** — uptime percentages you can export for SLA discussions
+---
 
-## Getting started
+## The Golden Rule: Avoid Single-Probe False Alarms
 
-You don't need to plan for weeks. Start by monitoring your landing page and API health endpoint today, add Slack alerts, and let it run. The first time you get an alert about something you didn't already know about, it pays for itself.
+Never configure your alerts to page an engineer on a single failed ping from a single location. Internet routing anomalies, local ISP packet loss, and CDN edge refreshes happen continuously.
+
+Require **multi-region quorum verification** (such as PulseGuard's 2/3 edge consensus) to confirm failures before triggering high-priority notification channels.

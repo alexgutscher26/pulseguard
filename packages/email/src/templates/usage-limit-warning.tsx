@@ -1,5 +1,5 @@
 import * as React from "react";
-import { render } from "@react-email/render";
+import { render } from "../primitives";
 
 export interface UsageLimitWarningEmailProps {
   userName: string;
@@ -59,7 +59,14 @@ export const UsageLimitWarningEmail: React.FC<Readonly<UsageLimitWarningEmailPro
         >
           PulseGuard Alert
         </span>
-        <h2 style={{ fontSize: "22px", fontWeight: "700", color: "#ffffff", marginTop: "4px" }}>
+        <h2
+          style={{
+            fontSize: "22px",
+            fontWeight: "700",
+            color: "#ffffff",
+            marginTop: "4px",
+          }}
+        >
           Workspace Approaching Plan Limits
         </h2>
       </div>
@@ -89,10 +96,22 @@ export const UsageLimitWarningEmail: React.FC<Readonly<UsageLimitWarningEmailPro
                 marginBottom: "8px",
               }}
             >
-              <span style={{ fontWeight: "600", fontSize: "14px", color: "#f3f4f6" }}>
+              <span
+                style={{
+                  fontWeight: "600",
+                  fontSize: "14px",
+                  color: "#f3f4f6",
+                }}
+              >
                 {w.label}
               </span>
-              <span style={{ fontSize: "12px", fontWeight: "700", color: "#f59e0b" }}>
+              <span
+                style={{
+                  fontSize: "12px",
+                  fontWeight: "700",
+                  color: "#f59e0b",
+                }}
+              >
                 {w.used} / {w.limit} ({w.percentage}%)
               </span>
             </div>

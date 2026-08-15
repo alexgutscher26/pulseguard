@@ -369,7 +369,10 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                       value={customColors.bg}
                       onChange={(e) => {
                         setSelectedTheme("custom");
-                        setCustomColors((prev) => ({ ...prev, bg: e.target.value }));
+                        setCustomColors((prev) => ({
+                          ...prev,
+                          bg: e.target.value,
+                        }));
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />
@@ -385,7 +388,10 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                       value={customColors.text}
                       onChange={(e) => {
                         setSelectedTheme("custom");
-                        setCustomColors((prev) => ({ ...prev, text: e.target.value }));
+                        setCustomColors((prev) => ({
+                          ...prev,
+                          text: e.target.value,
+                        }));
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />
@@ -403,7 +409,10 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                       value={customColors.primary}
                       onChange={(e) => {
                         setSelectedTheme("custom");
-                        setCustomColors((prev) => ({ ...prev, primary: e.target.value }));
+                        setCustomColors((prev) => ({
+                          ...prev,
+                          primary: e.target.value,
+                        }));
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />
@@ -421,7 +430,10 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                       value={customColors.degraded}
                       onChange={(e) => {
                         setSelectedTheme("custom");
-                        setCustomColors((prev) => ({ ...prev, degraded: e.target.value }));
+                        setCustomColors((prev) => ({
+                          ...prev,
+                          degraded: e.target.value,
+                        }));
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />
@@ -437,7 +449,10 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                       value={customColors.error}
                       onChange={(e) => {
                         setSelectedTheme("custom");
-                        setCustomColors((prev) => ({ ...prev, error: e.target.value }));
+                        setCustomColors((prev) => ({
+                          ...prev,
+                          error: e.target.value,
+                        }));
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />

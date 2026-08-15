@@ -36,8 +36,14 @@ export async function middleware(request: NextRequest) {
   const appUrl = new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000");
   const appHost = appUrl.host;
   const isStatusPageDomain = hostname.startsWith("status.");
+  const isLocalhost =
+    hostname.startsWith("localhost") ||
+    hostname.startsWith("127.0.0.1") ||
+    hostname.startsWith("0.0.0.0") ||
+    hostname.startsWith("[::1]");
+
   const isCustomDomain =
-    hostname !== "localhost:3000" &&
+    !isLocalhost &&
     hostname !== `app.${appHost}` &&
     hostname !== appHost &&
     !hostname.includes("vercel.app");

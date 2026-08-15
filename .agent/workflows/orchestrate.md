@@ -198,34 +198,41 @@ Combine all agent outputs into unified report.
 ## 🎼 Orchestration Report
 
 ### Task
+
 [Original task summary]
 
 ### Mode
+
 [Current Antigravity Agent mode: plan/edit/ask]
 
 ### Agents Invoked (MINIMUM 3)
-| # | Agent | Focus Area | Status |
-|---|-------|------------|--------|
-| 1 | project-planner | Task breakdown | ✅ |
-| 2 | frontend-specialist | UI implementation | ✅ |
-| 3 | test-engineer | Verification scripts | ✅ |
+
+| #   | Agent               | Focus Area           | Status |
+| --- | ------------------- | -------------------- | ------ |
+| 1   | project-planner     | Task breakdown       | ✅     |
+| 2   | frontend-specialist | UI implementation    | ✅     |
+| 3   | test-engineer       | Verification scripts | ✅     |
 
 ### Verification Scripts Executed
+
 - [x] security_scan.py → Pass/Fail
 - [x] lint_runner.py → Pass/Fail
 
 ### Key Findings
+
 1. **[Agent 1]**: Finding
 2. **[Agent 2]**: Finding
 3. **[Agent 3]**: Finding
 
 ### Deliverables
+
 - [ ] PLAN.md created
 - [ ] Code implemented
 - [ ] Tests passing
 - [ ] Scripts verified
 
 ### Summary
+
 [One paragraph synthesis of all agent work]
 ```
 

@@ -186,7 +186,8 @@ export function ProfileForm() {
             <input
               className="bg-black/50 border border-primary/20 focus:border-primary/60 text-primary text-sm rounded-sm p-2.5 font-mono placeholder:text-primary/20 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
               type="email"
-              defaultValue={session?.user?.email || "alex@pulseguard.io"}
+              value={session?.user?.email ?? ""}
+              readOnly
             />
           </div>
         </div>

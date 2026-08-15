@@ -96,7 +96,11 @@ export async function performCheck(monitor: any, env?: Env, prisma?: any): Promi
         protocol: sslResult.protocol,
       };
     } catch (e: any) {
-      return { status: Status.DOWN, latency: 0, errorReason: CheckErrorReason.SSL_CHECK_FAILED };
+      return {
+        status: Status.DOWN,
+        latency: 0,
+        errorReason: CheckErrorReason.SSL_CHECK_FAILED,
+      };
     }
   }
 
@@ -117,7 +121,11 @@ export async function performCheck(monitor: any, env?: Env, prisma?: any): Promi
         errorReason: isHealthy ? undefined : `DNS_ANOMALY: ${dnsResult.anomalies.join("; ")}`,
       };
     } catch (e: any) {
-      return { status: Status.DOWN, latency: 0, errorReason: CheckErrorReason.DNS_CHECK_FAILED };
+      return {
+        status: Status.DOWN,
+        latency: 0,
+        errorReason: CheckErrorReason.DNS_CHECK_FAILED,
+      };
     }
   }
 
@@ -138,7 +146,11 @@ export async function performCheck(monitor: any, env?: Env, prisma?: any): Promi
         registrar: domainResult.registrar ?? undefined,
       };
     } catch (e: any) {
-      return { status: Status.DOWN, latency: 0, errorReason: CheckErrorReason.DOMAIN_CHECK_FAILED };
+      return {
+        status: Status.DOWN,
+        latency: 0,
+        errorReason: CheckErrorReason.DOMAIN_CHECK_FAILED,
+      };
     }
   }
 
@@ -179,7 +191,11 @@ export async function performCheck(monitor: any, env?: Env, prisma?: any): Promi
         errorReason: result.errorReason,
       };
     } catch (e: any) {
-      return { status: Status.DOWN, latency: 0, errorReason: CheckErrorReason.MCP_CHECK_FAILED };
+      return {
+        status: Status.DOWN,
+        latency: 0,
+        errorReason: CheckErrorReason.MCP_CHECK_FAILED,
+      };
     }
   }
 
@@ -265,7 +281,11 @@ export async function performCheck(monitor: any, env?: Env, prisma?: any): Promi
         errorReason: result.errorReason,
       };
     } catch (e: any) {
-      return { status: Status.DOWN, latency: 0, errorReason: CheckErrorReason.BGP_CHECK_FAILED };
+      return {
+        status: Status.DOWN,
+        latency: 0,
+        errorReason: CheckErrorReason.BGP_CHECK_FAILED,
+      };
     }
   }
 
@@ -291,7 +311,9 @@ export async function performCheck(monitor: any, env?: Env, prisma?: any): Promi
 
         // Re-map the hostname to IP for the fetch
         const ipUrl = urlStr.replace(hostname, ip);
-        const fallbackResult = await performInternalRequest(monitor, ipUrl, { Host: hostname });
+        const fallbackResult = await performInternalRequest(monitor, ipUrl, {
+          Host: hostname,
+        });
 
         if (fallbackResult.status === Status.UP) {
           console.log(
@@ -315,7 +337,11 @@ export async function performInternalRequest(
   monitor: any,
   urlStr: string,
   extraHeaders?: Record<string, string>,
-): Promise<{ status: MonitorStatus; latency: number; errorReason?: string | undefined }> {
+): Promise<{
+  status: MonitorStatus;
+  latency: number;
+  errorReason?: string | undefined;
+}> {
   const start = performance.now();
   let currentStatus: MonitorStatus = Status.DOWN;
   let latency = 0;
@@ -501,7 +527,10 @@ export async function recordAlertSent(monitorId: string, env?: Env): Promise<voi
     if (redisRes.ok) {
       const redisData = (await redisRes.json()) as any;
       if (redisData.result) {
-        const parsed = JSON.parse(redisData.result) as { lastAlertAt: number; alertCount: number };
+        const parsed = JSON.parse(redisData.result) as {
+          lastAlertAt: number;
+          alertCount: number;
+        };
         alertCount = parsed.alertCount;
       }
     }

@@ -116,7 +116,10 @@ export function PostMortemEditor({
 
         const header =
           "| Time | Region | Status | Latency | Detail |\n| :--- | :--- | :--- | :--- | :--- |\n";
-        setFormData((prev) => ({ ...prev, timeline: header + timelineEntries }));
+        setFormData((prev) => ({
+          ...prev,
+          timeline: header + timelineEntries,
+        }));
         toast.success(`Populated ${logs.length} events from system logs`);
       } else {
         toast.info("No recorded system logs found for this window");

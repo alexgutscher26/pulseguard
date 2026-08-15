@@ -22,16 +22,20 @@ import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
 
-export default function LandingHeader() {
-  const session = authClient.useSession();
-  const [isToolsOpen, setIsToolsOpen] = useState(false);
-  const { theme, setTheme } = useTheme();
+function ThemeToggleButton() {
   const [mounted, setMounted] = useState(false);
+  const themeContext = useTheme();
 
-  // Avoid hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  if (!mounted) {
+    return <div className="size-8 rounded-lg border border-border bg-background/50" />;
+  }
+
+  const theme = themeContext?.theme || "dark";
+  const setTheme = themeContext?.setTheme || (() => {});
 
   const cycleTheme = () => {
     const themes = ["dark", "light", "matrix", "cyberpunk", "blade"];
@@ -39,6 +43,27 @@ export default function LandingHeader() {
     const nextIdx = (currentIdx + 1) % themes.length;
     setTheme(themes[nextIdx]);
   };
+
+  return (
+    <button
+      onClick={cycleTheme}
+      className="flex items-center justify-center size-8 rounded-lg border border-border bg-background/50 hover:bg-accent text-muted-foreground hover:text-foreground transition-all"
+      title={`Active Theme: ${theme || "dark"}. Click to change.`}
+    >
+      {theme === "light" ? (
+        <Sun className="size-4" />
+      ) : theme === "dark" ? (
+        <Moon className="size-4" />
+      ) : (
+        <Monitor className="size-4 text-primary" />
+      )}
+    </button>
+  );
+}
+
+export default function LandingHeader() {
+  const { data: session } = authClient.useSession();
+  const [isToolsOpen, setIsToolsOpen] = useState(false);
 
   return (
     <header className="fixed top-5 left-0 right-0 z-50 flex justify-center px-4 w-full">
@@ -82,6 +107,11 @@ export default function LandingHeader() {
                 >
                   <div className="bg-popover border border-border p-2 rounded-xl shadow-[0_12px_38px_rgba(0,0,0,0.125)] dark:shadow-[0_12px_38px_rgba(0,0,0,0.5)] grid grid-cols-1 gap-1 relative overflow-hidden">
                     {[
+                      {
+                        name: "Is It Down? (300+ Services)",
+                        href: "/is-down",
+                        icon: <Activity className="h-4 w-4 text-emerald-500" />,
+                      },
                       {
                         name: "IP Subnet Analyzer",
                         href: "/tools/ip-subnet",
@@ -153,10 +183,14 @@ export default function LandingHeader() {
 
           {[
             { name: "Features", href: "/#features" },
+            { name: "Locations", href: "/locations" },
             { name: "Use Cases", href: "/use-cases" },
             { name: "Demo", href: "/demo" },
             { name: "Pricing", href: "/#pricing" },
-            { name: "Docs", href: "https://pulse-41cf5b0d.mintlify.site/introduction" },
+            {
+              name: "Docs",
+              href: "https://pulse-41cf5b0d.mintlify.site/introduction",
+            },
           ].map((item) => (
             <Link
               key={item.name}
@@ -171,23 +205,9 @@ export default function LandingHeader() {
         {/* Action Panel */}
         <div className="flex items-center gap-3.5">
           {/* Theme switcher */}
-          {mounted && (
-            <button
-              onClick={cycleTheme}
-              className="flex items-center justify-center size-8 rounded-lg border border-border bg-background/50 hover:bg-accent text-muted-foreground hover:text-foreground transition-all"
-              title={`Active Theme: ${theme || "dark"}. Click to change.`}
-            >
-              {theme === "light" ? (
-                <Sun className="size-4" />
-              ) : theme === "dark" ? (
-                <Moon className="size-4" />
-              ) : (
-                <Monitor className="size-4 text-primary" />
-              )}
-            </button>
-          )}
+          <ThemeToggleButton />
 
-          {session.data ? (
+          {session ? (
             <Link
               href="/dashboard"
               className="flex items-center justify-center h-8.5 px-4 bg-primary text-primary-foreground font-semibold text-xs rounded-lg border border-primary hover:bg-primary/90 transition-all duration-300"

@@ -1,9 +1,20 @@
 /**
  * Regional Monitoring Service
  *
- * Performs HTTP checks from multiple regions using free proxy services.
- * No paid Cloudflare plan required.
+ * Dispatches checks to geographically pinned Cloudflare RegionalProbe Durable Objects.
+ * Evaluates results using the 4-of-7 Quorum Consensus Engine.
  */
+
+import { isPrivateOrInternalUrl } from "@pulseguard/core";
+import {
+  CLOUDFLARE_PROBE_REGIONS,
+  FREE_TIER_PROBE_REGIONS,
+  getRegionByCode,
+  type DOLocationHint,
+} from "@pulseguard/shared";
+import type { ProbeCheckResult } from "@pulseguard/types";
+import type { Env } from "../env";
+import { evaluateQuorum, type QuorumConfig } from "./quorum-engine";
 
 export interface RegionalCheckResult {
   region: string;
@@ -11,6 +22,9 @@ export interface RegionalCheckResult {
   latency: number;
   timestamp: Date;
   errorReason?: string | undefined;
+  errorClass?: string | undefined;
+  colo?: string | undefined;
+  asn?: string | undefined;
 }
 
 export interface Monitor {
@@ -24,152 +38,189 @@ export interface Monitor {
 }
 
 /**
- * Perform a check from a specific region
- * Uses Cloudflare's global network - the Worker will execute from the nearest edge location
+ * Perform a check from a specific pinned Durable Object probe
  */
-async function checkFromRegion(monitor: Monitor, region: string): Promise<RegionalCheckResult> {
-  const start = Date.now();
-  const url = monitor.url;
-  const timeout = monitor.timeout;
+async function checkFromRegion(
+  monitor: Monitor,
+  regionCode: string,
+  env?: Env,
+): Promise<RegionalCheckResult> {
+  const start = performance.now();
+  const regionMeta = getRegionByCode(regionCode);
+  const resolvedRegion = (regionMeta?.code || "wnam") as DOLocationHint;
 
+  // 1. If Regional Probe DO is available, route to the pinned DO instance
+  if (env?.REGIONAL_PROBE) {
+    try {
+      const probeId = env.REGIONAL_PROBE.idFromName(`probe-${resolvedRegion}`);
+      const probe = env.REGIONAL_PROBE.get(probeId, {
+        locationHint: resolvedRegion as any,
+      });
+
+      const res = await probe.fetch("http://internal/check-batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          monitors: [
+            {
+              id: monitor.id,
+              url: monitor.url,
+              timeout: monitor.timeout,
+              method: monitor.method,
+              headers: monitor.headers,
+              body: monitor.body,
+            },
+          ],
+        }),
+      });
+
+      if (res.ok) {
+        const data = (await res.json()) as { results: ProbeCheckResult[] };
+        const r = data.results?.[0];
+        if (r) {
+          return {
+            region: resolvedRegion,
+            status: r.status,
+            latency: r.latency,
+            timestamp: new Date(r.timestamp),
+            errorReason: r.errorReason,
+            errorClass: r.errorClass,
+            colo: r.colo,
+            asn: r.asn,
+          };
+        }
+      }
+    } catch (doErr) {
+      console.warn(
+        `[RegionalProbe:${resolvedRegion}] DO dispatch failed, falling back to edge fetch:`,
+        doErr,
+      );
+    }
+  }
+
+  // 2. Direct edge fetch fallback with SSRF check
   try {
-    const method = monitor.method || "GET";
-    const userHeaders: Record<string, string> = {};
+    const ssrfCheck = isPrivateOrInternalUrl(monitor.url);
+    if (ssrfCheck.isForbidden) {
+      return {
+        region: resolvedRegion,
+        status: "DOWN",
+        latency: Math.round(performance.now() - start),
+        timestamp: new Date(),
+        errorReason: `SSRF_PROTECTION: ${ssrfCheck.reason}`,
+        errorClass: "SECURITY_VIOLATION",
+      };
+    }
 
+    const userHeaders: Record<string, string> = {};
     if (monitor.headers) {
       try {
         const parsed = JSON.parse(monitor.headers);
         if (Array.isArray(parsed)) {
-          parsed.forEach((h: { key: string; value: string }) => {
-            if (h.key) userHeaders[h.key] = h.value;
-          });
+          for (const h of parsed as { key?: string; value?: string }[]) {
+            if (h.key && h.value) userHeaders[h.key] = h.value;
+          }
+        } else if (typeof parsed === "object" && parsed !== null) {
+          Object.assign(userHeaders, parsed);
         }
-      } catch (e) {
-        console.error(`[Regional:${region}] Failed to parse headers:`, e);
-      }
+      } catch {}
     }
 
-    const response = await fetch(url, {
-      method,
-      redirect: "follow",
+    const hasBody =
+      ["POST", "PUT", "PATCH"].includes(monitor.method || "GET") && Boolean(monitor.body);
+
+    const response = await fetch(monitor.url, {
+      method: monitor.method || "GET",
       headers: {
-        // Use a real browser UA to avoid bot detection (429) from sites like Google
-        "User-Agent": "Mozilla/5.0 (compatible; PulseGuard/1.0; +https://pulseguard.io/bot)",
-        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.5",
+        "User-Agent": "PulseGuard-Synthetic-Monitor/2.0 (+https://pulseguard.io/bot)",
+        Accept: "*/*",
         ...userHeaders,
       },
-      body: ["POST", "PUT", "PATCH"].includes(method) ? (monitor.body ?? null) : null,
-      signal: AbortSignal.timeout(timeout * 1000),
+      ...(hasBody && monitor.body ? { body: monitor.body } : {}),
+      signal: AbortSignal.timeout((monitor.timeout || 10) * 1000),
+      redirect: "follow",
     });
 
-    // CRITICAL: Consume body to prevent deadlock
     await response.text();
 
-    const latency = Date.now() - start;
-
-    // Treat 2xx, 3xx as UP — healthy responses
-    // Treat 429 (Too Many Requests) as UP — the server is alive and responding,
-    // it's just rate-limiting our IP. This is NOT a real outage.
-    // Treat 403 (Forbidden) as UP — server is alive but blocking our monitoring IP/UA.
-    // Very common for Google, CDN-protected sites. A 403 is NOT a service outage.
+    const latency = Math.round(performance.now() - start);
     const statusNum = Number(response.status);
-    const isRateLimited = statusNum === 429;
-    const isIPBlocked = statusNum === 403;
-    const isHealthy =
-      response.ok || (statusNum >= 300 && statusNum < 400) || isRateLimited || isIPBlocked;
+    const isUp =
+      response.ok || (statusNum >= 300 && statusNum < 400) || [403, 429].includes(statusNum);
 
     return {
-      region,
-      status: isHealthy ? "UP" : "DOWN",
+      region: resolvedRegion,
+      status: isUp ? "UP" : "DOWN",
       latency,
       timestamp: new Date(),
-      errorReason: isRateLimited
-        ? undefined // 429 = alive, suppress error
-        : isHealthy
-          ? undefined
-          : `HTTP ${response.status}`,
+      errorReason: isUp ? undefined : `HTTP ${response.status}`,
+      errorClass: isUp ? undefined : statusNum >= 500 ? "SERVER_ERROR" : "CLIENT_ERROR",
     };
-  } catch (error) {
-    const latency = Date.now() - start;
-
+  } catch (error: any) {
     return {
-      region,
+      region: resolvedRegion,
       status: "DOWN",
-      latency,
+      latency: Math.round(performance.now() - start),
       timestamp: new Date(),
       errorReason: error instanceof Error ? error.message : "Unknown error",
+      errorClass: "NETWORK_ERROR",
     };
   }
 }
 
 /**
- * Perform checks from all configured regions for a monitor
+ * Perform checks from all configured or default probe regions for a monitor
  */
-export async function performRegionalChecks(monitor: Monitor): Promise<RegionalCheckResult[]> {
-  // Parse selected regions
-  let regions: string[] = [];
+export async function performRegionalChecks(
+  monitor: Monitor,
+  env?: Env,
+): Promise<RegionalCheckResult[]> {
+  let targetRegions: string[] = [];
 
   if (monitor.checkRegions) {
     try {
-      regions = JSON.parse(monitor.checkRegions);
-    } catch (e) {
-      console.error("Failed to parse checkRegions:", e);
-      regions = [];
+      targetRegions = JSON.parse(monitor.checkRegions);
+    } catch {
+      targetRegions = [];
     }
   }
 
-  // If no regions selected, perform single check (default behavior)
-  if (regions.length === 0) {
-    const result = await checkFromRegion(monitor, "default");
-    return [result];
+  // If no regions configured, use default 3 primary regions on free tier (2-of-3 quorum)
+  if (targetRegions.length === 0) {
+    targetRegions = [...FREE_TIER_PROBE_REGIONS];
   }
 
-  // CLOUDFLARE FREE PLAN: Hard cap at 3 regions maximum.
-  // Each region = 1 fetch subrequest. Cloudflare Free allows 50 subrequests per invocation.
-  // A single check invocation also does: DB reads, DB writes, multi-vector retries (3 more fetches),
-  // proxy mesh calls, latency aggregator DO calls, and processes multiple monitors at once.
-  // Running 10 regions = 10 fetches + all overhead = consistently blows the 50 subrequest budget.
-  // 3 regions is the safe sweet spot: meaningful multi-region signal, stays well within budget.
-  const MAX_REGIONS = 3;
-  if (regions.length > MAX_REGIONS) {
-    console.warn(
-      `[Regional] Monitor has ${regions.length} regions but capping to ${MAX_REGIONS} to avoid exceeding Cloudflare subrequest limits.`,
-    );
-    regions = regions.slice(0, MAX_REGIONS);
-  }
-
-  // Run regions sequentially with a delay between each.
-  // Even small parallel bursts to the same target (google.com) from the same Cloudflare
-  // edge IP trigger HTTP 429 rate-limiting — running them sequentially avoids this entirely.
-  const results: RegionalCheckResult[] = [];
-  const BATCH_SIZE = 2;
-  const BATCH_DELAY_MS = 400; // Enough spread to avoid rate-limiting on sensitive sites
-
-  for (let i = 0; i < regions.length; i += BATCH_SIZE) {
-    if (i > 0) {
-      // Brief pause between batches to avoid triggering rate-limits
-      await new Promise((r) => setTimeout(r, BATCH_DELAY_MS));
-    }
-    const batch = regions.slice(i, i + BATCH_SIZE);
-    const batchPromises = batch.map((region) => checkFromRegion(monitor, region));
-    const batchResults = await Promise.all(batchPromises);
-    results.push(...batchResults);
-  }
-
-  return results;
+  // Execute checks concurrently across distinct probe regions
+  const checkPromises = targetRegions.map((region) => checkFromRegion(monitor, region, env));
+  return await Promise.all(checkPromises);
 }
 
 /**
- * Get the overall status from regional checks
- * Returns DOWN if ANY region is down
+ * Evaluate overall status using Quorum Consensus Engine (4-of-7 confirmation)
  */
-export function getOverallStatus(results: RegionalCheckResult[]): "UP" | "DOWN" {
-  return results.some((r) => r.status === "DOWN") ? "DOWN" : "UP";
+export function getOverallStatus(
+  results: RegionalCheckResult[],
+  monitorId: string = "default",
+): "UP" | "DOWN" | "DEGRADED" {
+  if (results.length === 0) return "UP";
+
+  const probeResults: ProbeCheckResult[] = results.map((r) => ({
+    monitorId,
+    probeId: `probe-${r.region}`,
+    region: r.region,
+    status: r.status,
+    latency: r.latency,
+    errorReason: r.errorReason,
+    errorClass: r.errorClass,
+    timestamp: r.timestamp.toISOString(),
+  }));
+
+  const quorumEval = evaluateQuorum(monitorId, probeResults);
+  return quorumEval.finalStatus;
 }
 
 /**
- * Get average latency across all regions
+ * Get average latency across healthy UP regions
  */
 export function getAverageLatency(results: RegionalCheckResult[]): number {
   const upResults = results.filter((r) => r.status === "UP");

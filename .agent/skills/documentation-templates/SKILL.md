@@ -43,8 +43,8 @@ Brief one-line description.
 ## Configuration
 
 | Variable | Description | Default |
-|----------|-------------|---------|
-| PORT | Server port | 3000 |
+| -------- | ----------- | ------- |
+| PORT     | Server port | 3000    |
 
 ## Documentation
 
@@ -68,11 +68,13 @@ MIT
 Get a user by ID.
 
 **Parameters:**
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| id | string | Yes | User ID |
+
+| Name | Type   | Required | Description |
+| ---- | ------ | -------- | ----------- |
+| id   | string | Yes      | User ID     |
 
 **Response:**
+
 - 200: User object
 - 404: User not found
 
@@ -116,15 +118,23 @@ Get a user by ID.
 # Changelog
 
 ## [Unreleased]
+
 ### Added
+
 - New feature
 
 ## [1.0.0] - 2025-01-01
+
 ### Added
+
 - Initial release
+
 ### Changed
+
 - Updated dependency
+
 ### Fixed
+
 - Bug fix
 ```
 
@@ -136,15 +146,19 @@ Get a user by ID.
 # ADR-001: [Title]
 
 ## Status
+
 Accepted / Deprecated / Superseded
 
 ## Context
+
 Why are we making this decision?
 
 ## Decision
+
 What did we decide?
 
 ## Consequences
+
 What are the trade-offs?
 ```
 
@@ -158,14 +172,17 @@ For AI crawlers and agents:
 
 ```markdown
 # Project Name
+
 > One-line objective.
 
 ## Core Files
+
 - [src/index.ts]: Main entry
 - [src/api/]: API routes
 - [docs/]: Documentation
 
 ## Key Concepts
+
 - Concept 1: Brief explanation
 - Concept 2: Brief explanation
 ```

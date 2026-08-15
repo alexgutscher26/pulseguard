@@ -23,28 +23,42 @@ export async function queueNotification(
     return;
   }
 
-  // FALLBACK: Direct notification for local dev (queues don't work in dev)
+  // FALLBACK: Direct notification for local dev or missing queue binding
   console.warn(
     `[Notification] Queue not available - sending notification directly for ${payload.monitorName}`,
   );
-  try {
-    const { default: notificationHandler } = await import("../notification-handler");
-    const batch = {
-      queue: "notifications",
-      messages: [
-        {
-          id: `local-${Date.now()}`,
-          timestamp: new Date(),
-          body: payload,
-          ack: () => {},
-          retry: () => {},
-        },
-      ],
-      ackAll: () => {},
-      retryAll: () => {},
-    } as unknown as MessageBatch<NotificationPayload>;
-    await notificationHandler.queue(batch, env, ctx);
-  } catch (notifError) {
-    console.error(`[Notification] Failed to send direct notification:`, notifError);
+
+  let attempts = 0;
+  const maxAttempts = 3;
+
+  while (attempts < maxAttempts) {
+    try {
+      attempts++;
+      const { default: notificationHandler } = await import("../notification-handler");
+      const batch = {
+        queue: "notifications",
+        messages: [
+          {
+            id: `local-${Date.now()}-${attempts}`,
+            timestamp: new Date(),
+            body: payload,
+            ack: () => {},
+            retry: () => {},
+          },
+        ],
+        ackAll: () => {},
+        retryAll: () => {},
+      } as unknown as MessageBatch<NotificationPayload>;
+      await notificationHandler.queue(batch, env, ctx);
+      return; // Success
+    } catch (notifError) {
+      console.error(
+        `[Notification] Attempt ${attempts}/${maxAttempts} failed for ${payload.monitorName}:`,
+        notifError,
+      );
+      if (attempts < maxAttempts) {
+        await new Promise((resolve) => setTimeout(resolve, Math.pow(2, attempts) * 500));
+      }
+    }
   }
 }

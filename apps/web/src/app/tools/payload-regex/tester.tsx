@@ -76,7 +76,7 @@ const MOCK_SITES: Record<string, string> = {
 </head>
 <body>
   <h1>Detect downtime before your users do</h1>
-  <p>60-second checks from over 50 global edge regions.</p>
+  <p>60-second checks from 7 global regions with 4-of-7 quorum verification.</p>
 </body>
 </html>`,
 };
@@ -92,7 +92,11 @@ const PRESETS = [
     pattern: '"status"\\s*:\\s*"(.*?)"',
     description: "Matches JSON status response fields",
   },
-  { label: "HTML Headings", pattern: "<h1>(.*?)</h1>", description: "Finds first-level headings" },
+  {
+    label: "HTML Headings",
+    pattern: "<h1>(.*?)</h1>",
+    description: "Finds first-level headings",
+  },
   {
     label: "Viewport Meta",
     pattern: '<meta name="viewport" content=".*">',
@@ -497,7 +501,11 @@ export function PayloadTester() {
                   key={i}
                   className="w-2 h-10 bg-primary"
                   animate={{ height: [10, 40, 10], opacity: [0.2, 1, 0.2] }}
-                  transition={{ duration: 1, repeat: Infinity, delay: i * 0.15 }}
+                  transition={{
+                    duration: 1,
+                    repeat: Infinity,
+                    delay: i * 0.15,
+                  }}
                 />
               ))}
             </div>

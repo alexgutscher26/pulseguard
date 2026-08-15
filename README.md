@@ -20,7 +20,7 @@ PulseGuard is a serverless monitoring platform that runs on Cloudflare's edge ne
 ### Monitoring
 
 - **16 monitor types**: HTTP/HTTPS, PING, TCP Port, SSL/TLS, DNS record, Domain expiration, Browser (Puppeteer), Heartbeat, MCP, GraphQL, WebSocket, Database, BGP, SEQUENCE (multi-step browser scripts), PING, PORT
-- **Multi-region probes**: Check from 50+ geographic locations across 7 continents
+- **Multi-region probes**: Pinned execution across 7 sovereign Cloudflare edge regions (`wnam`, `enam`, `weur`, `eeur`, `apac`, `apac-ne`, `apac-se`) with 4-of-7 quorum consensus
 - **Adaptive intervals**: 30s to 24h per monitor
 - **Double-check protocol**: Auto-retry from alternate vantage points before declaring downtime
 - **Private probes**: Docker-based on-premise agents for internal network monitoring

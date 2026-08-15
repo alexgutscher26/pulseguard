@@ -12,7 +12,9 @@ export type FeatureFlag =
   | "sla_pdf_export"
   | "saml_sso"
   | "custom_webhooks_pagerduty"
-  | "sms_alerts";
+  | "pagerduty_integration"
+  | "sms_alerts"
+  | "multi_seat_teams";
 
 export const PLAN_FEATURE_FLAGS: Record<PlanTier, Record<FeatureFlag, boolean>> = {
   INITIATE: {
@@ -27,7 +29,9 @@ export const PLAN_FEATURE_FLAGS: Record<PlanTier, Record<FeatureFlag, boolean>> 
     sla_pdf_export: false,
     saml_sso: false,
     custom_webhooks_pagerduty: false,
+    pagerduty_integration: true,
     sms_alerts: false,
+    multi_seat_teams: false,
   },
   NETRUNNER: {
     custom_domains: true,
@@ -41,7 +45,9 @@ export const PLAN_FEATURE_FLAGS: Record<PlanTier, Record<FeatureFlag, boolean>> 
     sla_pdf_export: true,
     saml_sso: false,
     custom_webhooks_pagerduty: false,
+    pagerduty_integration: true,
     sms_alerts: false,
+    multi_seat_teams: false,
   },
   CONSTRUCT: {
     custom_domains: true,
@@ -55,26 +61,51 @@ export const PLAN_FEATURE_FLAGS: Record<PlanTier, Record<FeatureFlag, boolean>> 
     sla_pdf_export: true,
     saml_sso: true,
     custom_webhooks_pagerduty: true,
+    pagerduty_integration: true,
     sms_alerts: true,
+    multi_seat_teams: true,
   },
 };
 
 const FEATURE_DESCRIPTIONS: Record<FeatureFlag, { name: string; requiredPlan: PlanTier }> = {
   custom_domains: { name: "Custom CNAME Domains", requiredPlan: "NETRUNNER" },
-  browser_monitors: { name: "Browser Synthetic Checks", requiredPlan: "NETRUNNER" },
+  browser_monitors: {
+    name: "Browser Synthetic Checks",
+    requiredPlan: "NETRUNNER",
+  },
   sequence_monitors: { name: "API Sequence Checks", requiredPlan: "NETRUNNER" },
-  mcp_database_monitors: { name: "MCP & Database Monitoring", requiredPlan: "CONSTRUCT" },
+  mcp_database_monitors: {
+    name: "MCP & Database Monitoring",
+    requiredPlan: "CONSTRUCT",
+  },
   multi_region: { name: "Multi-Region Monitoring", requiredPlan: "NETRUNNER" },
-  dynamic_thresholding: { name: "Dynamic Anomaly Thresholds", requiredPlan: "NETRUNNER" },
-  white_label_status_pages: { name: "White-Label Status Pages", requiredPlan: "NETRUNNER" },
-  private_status_pages: { name: "Password-Protected Portals", requiredPlan: "CONSTRUCT" },
+  dynamic_thresholding: {
+    name: "Dynamic Anomaly Thresholds",
+    requiredPlan: "NETRUNNER",
+  },
+  white_label_status_pages: {
+    name: "White-Label Status Pages",
+    requiredPlan: "NETRUNNER",
+  },
+  private_status_pages: {
+    name: "Password-Protected Portals",
+    requiredPlan: "CONSTRUCT",
+  },
   sla_pdf_export: { name: "SLA PDF Export Reports", requiredPlan: "NETRUNNER" },
   saml_sso: { name: "SAML SSO & Workspaces", requiredPlan: "CONSTRUCT" },
   custom_webhooks_pagerduty: {
-    name: "PagerDuty & Webhook Integrations",
+    name: "Custom Webhook Integrations",
     requiredPlan: "CONSTRUCT",
   },
+  pagerduty_integration: {
+    name: "PagerDuty Integration",
+    requiredPlan: "INITIATE",
+  },
   sms_alerts: { name: "SMS Notification Alerts", requiredPlan: "CONSTRUCT" },
+  multi_seat_teams: {
+    name: "Multi-Seat Team Workspaces & RBAC",
+    requiredPlan: "CONSTRUCT",
+  },
 };
 
 /**

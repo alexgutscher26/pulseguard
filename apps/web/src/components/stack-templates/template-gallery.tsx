@@ -10,6 +10,12 @@ import {
   FileText,
   LayoutDashboard,
   Server,
+  Cpu,
+  Boxes,
+  Smartphone,
+  Coins,
+  Cloud,
+  Network,
   Loader2,
   CheckCircle2,
   AlertTriangle,
@@ -39,6 +45,12 @@ const iconMap: Record<string, React.ElementType> = {
   FileText,
   LayoutDashboard,
   Server,
+  Cpu,
+  Boxes,
+  Smartphone,
+  Coins,
+  Cloud,
+  Network,
 };
 
 const monitorTypeIcons: Record<string, React.ElementType> = {
@@ -104,7 +116,8 @@ function TemplateCard({
         <div className="flex items-center gap-2 mt-1">
           <Layers className="size-3 text-primary/50" />
           <span className="text-[10px] font-mono text-primary/50">
-            {template.monitors.length} monitor{template.monitors.length > 1 ? "s" : ""}
+            {template.monitors.length} monitor
+            {template.monitors.length > 1 ? "s" : ""}
           </span>
         </div>
       </div>
@@ -259,7 +272,10 @@ function TemplateDetailModal({
                         type="text"
                         value={urlMapping[monitor.name] ?? ""}
                         onChange={(e) =>
-                          setUrlMapping({ ...urlMapping, [monitor.name]: e.target.value })
+                          setUrlMapping({
+                            ...urlMapping,
+                            [monitor.name]: e.target.value,
+                          })
                         }
                         className="w-full bg-black/50 border border-primary/20 text-xs font-mono p-2 text-primary placeholder:text-primary/20 focus:outline-none focus:border-primary/50 transition-colors"
                         placeholder="https://your-actual-url.com"
@@ -273,7 +289,10 @@ function TemplateDetailModal({
                         type="text"
                         value={urlMapping[monitor.name] ?? monitor.url}
                         onChange={(e) =>
-                          setUrlMapping({ ...urlMapping, [monitor.name]: e.target.value })
+                          setUrlMapping({
+                            ...urlMapping,
+                            [monitor.name]: e.target.value,
+                          })
                         }
                         className="w-full bg-black/50 border border-primary/20 text-xs font-mono p-2 text-primary placeholder:text-primary/20 focus:outline-none focus:border-primary/50 transition-colors"
                         placeholder="example.com"

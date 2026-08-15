@@ -257,8 +257,8 @@ export function CronSentinel() {
                   <Info className="w-4 h-4 text-primary mt-1 shrink-0" />
                   <div className="space-y-2">
                     <p className="text-[10px] font-mono text-foreground/60 leading-relaxed uppercase tracking-tighter italic">
-                      Execution nodes are distributed across 350+ edge locations. Timestamps reflect
-                      regional synchronization.
+                      Execution nodes are distributed across sovereign global edge regions.
+                      Timestamps reflect multi-node synchronization.
                     </p>
                     <div className="flex gap-1.5 h-1 items-end">
                       {[...Array(12)].map((_, i) => (
@@ -266,7 +266,11 @@ export function CronSentinel() {
                           key={i}
                           className="flex-1 bg-primary/20"
                           animate={{ height: [4, 8, 4] }}
-                          transition={{ duration: 1, repeat: Infinity, delay: i * 0.1 }}
+                          transition={{
+                            duration: 1,
+                            repeat: Infinity,
+                            delay: i * 0.1,
+                          }}
                         />
                       ))}
                     </div>

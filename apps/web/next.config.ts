@@ -1,5 +1,8 @@
 import "@pulseguard/env/web";
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   output: "standalone",
@@ -21,9 +24,5 @@ const nextConfig: NextConfig = {
   },
   allowedDevOrigins: process.env.ALLOWED_DEV_ORIGINS?.split(",") || [],
 };
-
-import createNextIntlPlugin from "next-intl/plugin";
-
-const withNextIntl = createNextIntlPlugin();
 
 export default withNextIntl(nextConfig);

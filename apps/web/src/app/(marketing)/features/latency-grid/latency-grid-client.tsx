@@ -7,15 +7,69 @@ import { ArrowLeft, Globe, Zap, Shield, Activity, Clock, Server, CheckCircle2 } 
 import { motion } from "framer-motion";
 
 const REGIONS = [
-  { id: "us-east", name: "US East (N. Virginia)", code: "IAD", base: 14, variance: 3 },
-  { id: "us-west", name: "US West (Oregon)", code: "PDX", base: 22, variance: 4 },
-  { id: "eu-central", name: "EU Central (Frankfurt)", code: "FRA", base: 45, variance: 5 },
-  { id: "eu-west", name: "EU West (London)", code: "LHR", base: 38, variance: 4 },
-  { id: "ap-northeast", name: "Asia North (Tokyo)", code: "NRT", base: 88, variance: 8 },
-  { id: "ap-southeast", name: "Asia South (Singapore)", code: "SIN", base: 74, variance: 6 },
-  { id: "ap-south", name: "Asia West (Mumbai)", code: "BOM", base: 112, variance: 10 },
-  { id: "sa-east", name: "South America (São Paulo)", code: "GRU", base: 135, variance: 12 },
-  { id: "au-southeast", name: "Oceania (Sydney)", code: "SYD", base: 148, variance: 15 },
+  {
+    id: "us-east",
+    name: "US East (N. Virginia)",
+    code: "IAD",
+    base: 14,
+    variance: 3,
+  },
+  {
+    id: "us-west",
+    name: "US West (Oregon)",
+    code: "PDX",
+    base: 22,
+    variance: 4,
+  },
+  {
+    id: "eu-central",
+    name: "EU Central (Frankfurt)",
+    code: "FRA",
+    base: 45,
+    variance: 5,
+  },
+  {
+    id: "eu-west",
+    name: "EU West (London)",
+    code: "LHR",
+    base: 38,
+    variance: 4,
+  },
+  {
+    id: "ap-northeast",
+    name: "Asia North (Tokyo)",
+    code: "NRT",
+    base: 88,
+    variance: 8,
+  },
+  {
+    id: "ap-southeast",
+    name: "Asia South (Singapore)",
+    code: "SIN",
+    base: 74,
+    variance: 6,
+  },
+  {
+    id: "ap-south",
+    name: "Asia West (Mumbai)",
+    code: "BOM",
+    base: 112,
+    variance: 10,
+  },
+  {
+    id: "sa-east",
+    name: "South America (São Paulo)",
+    code: "GRU",
+    base: 135,
+    variance: 12,
+  },
+  {
+    id: "au-southeast",
+    name: "Oceania (Sydney)",
+    code: "SYD",
+    base: 148,
+    variance: 15,
+  },
 ];
 
 export function LatencyGridClient() {

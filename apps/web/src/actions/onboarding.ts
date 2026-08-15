@@ -44,7 +44,9 @@ export async function getOnboardingStatus(): Promise<OnboardingStatus> {
         select: { onboardingCompleted: true },
       }),
       prisma.monitor.count({ where: { userId: session.user.id } }),
-      prisma.notificationChannel.count({ where: { userId: session.user.id } }),
+      prisma.notificationChannel.count({
+        where: { userId: session.user.id },
+      }),
       prisma.statusPage.count({ where: { userId: session.user.id } }),
     ]);
 
@@ -89,7 +91,10 @@ export async function getOnboardingStatus(): Promise<OnboardingStatus> {
   }
 }
 
-export async function completeOnboarding(): Promise<{ success: boolean; error?: string }> {
+export async function completeOnboarding(): Promise<{
+  success: boolean;
+  error?: string;
+}> {
   const session = await auth.api.getSession({
     headers: await headers(),
   });

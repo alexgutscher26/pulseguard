@@ -3,6 +3,9 @@
   "main": "src/index.ts",
   "compatibility_date": "2026-01-24",
   "compatibility_flags": ["nodejs_compat"],
+  "placement": {
+    "mode": "off",
+  },
   "browser": {
     "binding": "BROWSER",
   },
@@ -22,7 +25,6 @@
   // Local dev config: connect to real remote bindings instead of local simulation
   // This prevents "proxy request failed" errors when crons fire in wrangler dev
   "dev": {
-    "remote": false,
     "local_protocol": "http",
     "upstream_protocol": "https",
   },
@@ -36,6 +38,10 @@
         "name": "MONITOR_CHANNEL",
         "class_name": "MonitorChannel",
       },
+      {
+        "name": "REGIONAL_PROBE",
+        "class_name": "RegionalProbe",
+      },
     ],
   },
   "migrations": [
@@ -46,6 +52,10 @@
     {
       "tag": "v2",
       "new_sqlite_classes": ["MonitorChannel"],
+    },
+    {
+      "tag": "v3",
+      "new_sqlite_classes": ["RegionalProbe"],
     },
   ],
   "observability": {

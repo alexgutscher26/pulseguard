@@ -32,7 +32,11 @@ export function json(
 ): Response {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { "Content-Type": "application/json", ...getCorsHeaders(env), ...extraHeaders },
+    headers: {
+      "Content-Type": "application/json",
+      ...getCorsHeaders(env),
+      ...extraHeaders,
+    },
   });
 }
 

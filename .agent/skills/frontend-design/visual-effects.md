@@ -165,10 +165,9 @@ Good Gradient Rules:
 ```css
 .gradient {
   background: linear-gradient(
-    DIRECTION,           /* angle or to-keyword */
-    COLOR-STOP-1,        /* color + optional position */
-    COLOR-STOP-2,
-    /* ... more stops */
+    DIRECTION,
+    /* angle or to-keyword */ COLOR-STOP-1,
+    /* color + optional position */ COLOR-STOP-2 /* ... more stops */
   );
 }
 
@@ -251,8 +250,13 @@ box-shadow:
 
 ```css
 @keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 SMALL-BLUR COLOR; }
-  50% { box-shadow: 0 0 LARGE-BLUR COLOR; }
+  0%,
+  100% {
+    box-shadow: 0 0 SMALL-BLUR COLOR;
+  }
+  50% {
+    box-shadow: 0 0 LARGE-BLUR COLOR;
+  }
 }
 
 /* Easing and duration affect feel */
@@ -272,13 +276,13 @@ Position: Where text will appear
 
 ```css
 .overlay::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(
     DIRECTION,
     transparent PERCENTAGE,
-    rgba(0,0,0,OPACITY) 100%
+    rgba(0, 0, 0, OPACITY) 100%
   );
 }
 ```
@@ -287,9 +291,7 @@ Position: Where text will appear
 
 ```css
 /* Blend mode or layered gradient */
-background:
-  linear-gradient(YOUR-COLOR-WITH-OPACITY),
-  url('image.jpg');
+background: linear-gradient(YOUR-COLOR-WITH-OPACITY), url("image.jpg");
 ```
 
 ---

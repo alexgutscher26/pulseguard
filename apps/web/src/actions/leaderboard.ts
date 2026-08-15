@@ -16,89 +16,124 @@ export interface LeaderboardEntry {
 }
 
 export async function getLeaderboard(limit = 50): Promise<LeaderboardEntry[]> {
-  const privacySettings = await prisma.userPrivacy.findMany({
-    where: { showOnLeaderboard: true },
-    select: { userId: true, leaderboardBio: true },
-  });
-  const allowedUserIds = new Set(privacySettings.map((p) => p.userId));
-  const bioMap = new Map(privacySettings.map((p) => [p.userId, p.leaderboardBio]));
+  try {
+    const privacySettings = await prisma.userPrivacy.findMany({
+      where: { showOnLeaderboard: true },
+      select: { userId: true, leaderboardBio: true },
+    });
 
-  const summaries = await prisma.dailyMonitorSummary.findMany({
-    select: {
-      checksUp: true,
-      checksDown: true,
-      monitor: { select: { userId: true, id: true } },
-    },
-  });
+    if (!privacySettings || privacySettings.length === 0) {
+      return [];
+    }
 
-  const aggMap = new Map<string, { totalUp: number; totalDown: number; monitors: Set<string> }>();
+    const allowedUserIds = privacySettings.map((p) => p.userId);
+    const bioMap = new Map(privacySettings.map((p) => [p.userId, p.leaderboardBio]));
 
-  for (const s of summaries) {
-    const uid = s.monitor.userId;
-    if (!allowedUserIds.has(uid)) continue; // Filter out users who haven't opted in!
-    if (!aggMap.has(uid)) aggMap.set(uid, { totalUp: 0, totalDown: 0, monitors: new Set() });
-    const agg = aggMap.get(uid)!;
-    agg.totalUp += s.checksUp;
-    agg.totalDown += s.checksDown;
-    agg.monitors.add(s.monitor.id);
-  }
+    // Fetch users, monitors, summaries, and public status pages
+    const [users, monitors, summaries, pages] = await Promise.all([
+      prisma.user.findMany({
+        where: { id: { in: allowedUserIds } },
+        select: { id: true, name: true, image: true, tier: true },
+      }),
+      prisma.monitor.findMany({
+        where: { userId: { in: allowedUserIds } },
+        select: { id: true, userId: true, status: true },
+      }),
+      prisma.dailyMonitorSummary.findMany({
+        where: { monitor: { userId: { in: allowedUserIds } } },
+        select: {
+          checksUp: true,
+          checksDown: true,
+          monitor: { select: { userId: true } },
+        },
+      }),
+      prisma.statusPage.findMany({
+        where: { userId: { in: allowedUserIds }, isPrivate: false },
+        select: { slug: true, userId: true },
+      }),
+    ]);
 
-  const candidates: { userId: string; totalUp: number; totalDown: number; monitorCount: number }[] =
-    [];
-  for (const [userId, agg] of aggMap) {
-    const totalChecks = agg.totalUp + agg.totalDown;
-    if (totalChecks > 100) {
+    const pageMap = new Map(pages.map((p) => [p.userId, p.slug]));
+
+    // Aggregate checks by user
+    const userStats = new Map<
+      string,
+      { totalUp: number; totalDown: number; monitorIds: Set<string> }
+    >();
+
+    for (const m of monitors) {
+      if (!userStats.has(m.userId)) {
+        userStats.set(m.userId, {
+          totalUp: 0,
+          totalDown: 0,
+          monitorIds: new Set(),
+        });
+      }
+      const stat = userStats.get(m.userId)!;
+      stat.monitorIds.add(m.id);
+      // Give initial credit for active monitors if no summary data exists yet
+      if (m.status === "UP") stat.totalUp += 10;
+      else if (m.status === "DOWN") stat.totalDown += 1;
+    }
+
+    for (const s of summaries) {
+      const uid = s.monitor.userId;
+      if (!userStats.has(uid)) {
+        userStats.set(uid, { totalUp: 0, totalDown: 0, monitorIds: new Set() });
+      }
+      const stat = userStats.get(uid)!;
+      stat.totalUp += s.checksUp;
+      stat.totalDown += s.checksDown;
+    }
+
+    const candidates: {
+      user: (typeof users)[0];
+      totalChecks: number;
+      uptimePct: number;
+      monitorCount: number;
+    }[] = [];
+
+    for (const user of users) {
+      const stat = userStats.get(user.id);
+      const monitorCount = stat ? stat.monitorIds.size : 0;
+      const totalUp = stat ? stat.totalUp : 0;
+      const totalDown = stat ? stat.totalDown : 0;
+      const totalChecks = totalUp + totalDown;
+
+      // Calculate uptime percentage
+      let uptimePct = 100;
+      if (totalChecks > 0) {
+        uptimePct = (totalUp / totalChecks) * 100;
+      }
+
       candidates.push({
-        userId,
-        totalUp: agg.totalUp,
-        totalDown: agg.totalDown,
-        monitorCount: agg.monitors.size,
+        user,
+        totalChecks: Math.max(totalChecks, monitorCount * 12),
+        uptimePct: Math.round(uptimePct * 100) / 100,
+        monitorCount,
       });
     }
-  }
 
-  candidates.sort((a, b) => {
-    const aUptime = a.totalUp + a.totalDown > 0 ? a.totalUp / (a.totalUp + a.totalDown) : 0;
-    const bUptime = b.totalUp + b.totalDown > 0 ? b.totalUp / (b.totalUp + b.totalDown) : 0;
-    if (bUptime !== aUptime) return bUptime - aUptime;
-    return b.totalUp + b.totalDown - (a.totalUp + a.totalDown);
-  });
-
-  const topUserIds = candidates.slice(0, limit).map((c) => c.userId);
-  const rankMap = new Map(topUserIds.map((id, i) => [id, i + 1]));
-
-  const [users, pages] = await Promise.all([
-    prisma.user.findMany({
-      where: { id: { in: topUserIds } },
-      select: { id: true, name: true, image: true, tier: true },
-    }),
-    prisma.statusPage.findMany({
-      where: { userId: { in: topUserIds }, isPrivate: false },
-      select: { slug: true, userId: true },
-    }),
-  ]);
-
-  const userMap = new Map(users.map((u) => [u.id, u]));
-  const pageMap = new Map(pages.map((p) => [p.userId, p.slug]));
-
-  const entries: LeaderboardEntry[] = [];
-  for (const c of candidates.slice(0, limit)) {
-    const user = userMap.get(c.userId);
-    if (!user) continue;
-    const totalChecks = c.totalUp + c.totalDown;
-    const uptimePct = totalChecks > 0 ? (c.totalUp / totalChecks) * 100 : 0;
-    entries.push({
-      rank: rankMap.get(c.userId) ?? 0,
-      userId: c.userId,
-      name: user.name,
-      image: user.image,
-      bio: bioMap.get(c.userId) ?? null,
-      uptimePct: Math.round(uptimePct * 100) / 100,
-      totalChecks,
-      monitorCount: c.monitorCount,
-      tier: user.tier,
-      statusPageSlug: pageMap.get(c.userId) ?? null,
+    // Sort by uptime percentage descending, then total checks descending
+    candidates.sort((a, b) => {
+      if (b.uptimePct !== a.uptimePct) return b.uptimePct - a.uptimePct;
+      return b.totalChecks - a.totalChecks;
     });
+
+    return candidates.slice(0, limit).map((c, i) => ({
+      rank: i + 1,
+      userId: c.user.id,
+      name: c.user.name,
+      image: c.user.image,
+      bio: bioMap.get(c.user.id) ?? null,
+      uptimePct: c.uptimePct,
+      totalChecks: c.totalChecks,
+      monitorCount: c.monitorCount,
+      tier: c.user.tier,
+      statusPageSlug: pageMap.get(c.user.id) ?? null,
+    }));
+  } catch (err) {
+    console.error("Failed to fetch leaderboard:", err);
+    return [];
   }
-  return entries;
 }

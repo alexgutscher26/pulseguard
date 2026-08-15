@@ -11,7 +11,11 @@ function StatusBadge({ status }: { status: ShowcaseEntry["preview"]["status"] })
     degraded: "text-yellow-500 bg-yellow-500/10 border-yellow-500/20",
     outage: "text-red-500 bg-red-500/10 border-red-500/20",
   };
-  const labels = { operational: "Operational", degraded: "Degraded", outage: "Outage" };
+  const labels = {
+    operational: "Operational",
+    degraded: "Degraded",
+    outage: "Outage",
+  };
 
   return (
     <span
@@ -23,7 +27,9 @@ function StatusBadge({ status }: { status: ShowcaseEntry["preview"]["status"] })
 }
 
 function PreviewMockup({ entry }: { entry: ShowcaseEntry }) {
-  const monitors = Array.from({ length: Math.min(entry.preview.monitors || 3, 6) });
+  const monitors = Array.from({
+    length: Math.min(entry.preview.monitors || 3, 6),
+  });
   const serviceNames = [
     "API Gateway",
     "Auth Service",

@@ -35,7 +35,11 @@ export async function initiateSubscription(
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return { success: false, message: "Invalid email address", error: "INVALID_EMAIL" };
+      return {
+        success: false,
+        message: "Invalid email address",
+        error: "INVALID_EMAIL",
+      };
     }
 
     // Check if status page exists
@@ -45,7 +49,11 @@ export async function initiateSubscription(
     });
 
     if (!statusPage) {
-      return { success: false, message: "Status page not found", error: "PAGE_NOT_FOUND" };
+      return {
+        success: false,
+        message: "Status page not found",
+        error: "PAGE_NOT_FOUND",
+      };
     }
 
     // Validate monitor IDs belong to this status page
@@ -53,7 +61,11 @@ export async function initiateSubscription(
     const selectedMonitorIds = monitorIds.filter((id) => validMonitorIds.includes(id));
 
     if (selectedMonitorIds.length === 0 && monitorIds.length > 0) {
-      return { success: false, message: "Invalid monitor selection", error: "INVALID_MONITORS" };
+      return {
+        success: false,
+        message: "Invalid monitor selection",
+        error: "INVALID_MONITORS",
+      };
     }
 
     // Check for existing subscriber
@@ -164,7 +176,11 @@ export async function verifySubscription(token: string): Promise<SubscriptionRes
 
     // Check if already used
     if (subscriptionToken.usedAt) {
-      return { success: false, message: "This link has already been used.", error: "TOKEN_USED" };
+      return {
+        success: false,
+        message: "This link has already been used.",
+        error: "TOKEN_USED",
+      };
     }
 
     // Verify the subscription
@@ -240,7 +256,11 @@ export async function updateSubscriptionPreferences(
     });
 
     if (!subscriber) {
-      return { success: false, message: "Subscription not found.", error: "NOT_FOUND" };
+      return {
+        success: false,
+        message: "Subscription not found.",
+        error: "NOT_FOUND",
+      };
     }
 
     // Validate monitor IDs if provided
@@ -289,7 +309,11 @@ export async function unsubscribe(manageToken: string): Promise<SubscriptionResu
     });
 
     if (!subscriber) {
-      return { success: false, message: "Subscription not found.", error: "NOT_FOUND" };
+      return {
+        success: false,
+        message: "Subscription not found.",
+        error: "NOT_FOUND",
+      };
     }
 
     // Delete the subscriber (cascades to tokens and monitor subscriptions)
@@ -316,6 +340,22 @@ export async function unsubscribe(manageToken: string): Promise<SubscriptionResu
  */
 export async function getVerifiedSubscribers(statusPageId: string, monitorId?: string) {
   try {
+    const { auth } = await import("@pulseguard/auth");
+    const { headers } = await import("next/headers");
+    let reqHeaders: any;
+    try {
+      reqHeaders = await headers();
+    } catch {
+      reqHeaders = new Headers();
+    }
+    const session = await auth.api.getSession({ headers: reqHeaders });
+    if (!session?.user) return [];
+
+    const page = await prisma.statusPage.findFirst({
+      where: { id: statusPageId, userId: session.user.id },
+    });
+    if (!page) return [];
+
     const whereClause: any = {
       statusPageId,
       verified: true,

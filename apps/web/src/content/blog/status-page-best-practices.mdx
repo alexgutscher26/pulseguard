@@ -1,66 +1,74 @@
 ---
-title: "Status page best practices: how to communicate during outages"
-description: "The status page playbook: what to show before, during, and after an incident, how to write clear updates, and how to turn outages into trust."
+title: "Status Page Best Practices: How to Communicate Transparently During Outages"
+description: "The complete status page playbook: what to publish before, during, and after an incident, how to craft clear updates, and how to turn outages into customer trust."
 date: "2026-08-04"
 category: "Product"
 readTime: "6 min read"
-tags: ["status page", "outage communication", "incident updates", "status page best practices"]
+author: "Alex Gutscher"
+tags:
+  [
+    "status page",
+    "outage communication",
+    "incident updates",
+    "status page best practices",
+    "branding",
+  ]
 ---
 
-A status page is the one piece of infrastructure users actually _want_ to visit during an outage. Done well, it turns a bad moment into a trust-building one. Done poorly, it's the thing screenshots circulate on social media. Here's the playbook.
+A status page is the one piece of engineering infrastructure your customers actively look for when things go wrong. Handled well, transparent communication transforms an operational failure into a moment that builds lasting customer trust. Handled poorly, silence and vague updates generate panic.
 
-## Before the incident: set up for success
+Here is the tactical playbook for running high-trust status pages.
 
-The time to think about outage communication is when everything is green.
+---
 
-- **Make the page findable** — link it from your footer, docs, and login screens. A status page nobody can find is a liability
-- **Put the status page on its own infrastructure** — if it's hosted on the same stack as your product, it goes down with it
-- **Use a custom domain** — `status.yourdomain.com` is more credible and memorable than a vendor subdomain
-- **Subscribe users in advance** — pre-incident subscribers get updates automatically; emergency subscribers can't log in during an outage
-- **Write templates now** — skeleton incident updates you can fill in under pressure
+## 1. Before the Incident: Setting the Foundation
 
-## During the incident: the three rules
+The best time to prepare your status page communication strategy is when all services are green:
 
-1. **Acknowledge within minutes.** The first update should appear as soon as you've confirmed something is wrong — even if you don't know the cause yet. "We're investigating elevated error rates on the API" is a complete, honest update.
-2. **Update on a schedule.** Users refresh status pages obsessively. Every 30–60 minutes without an update, they assume the worst. Set a reminder to post even when there's nothing new: "No change yet — investigation ongoing."
-3. **Never claim more than you know.** Don't say "the issue is resolved" while your monitors still show failures. You can say "we're seeing recovery; validating before marking resolved."
+- **Decouple Infrastructure:** Host your status page on an independent network (such as PulseGuard's Cloudflare edge) so it remains accessible even when your primary origin data center is down.
+- **Set Up Custom Domains:** Point `status.yourdomain.com` directly using a `CNAME` record to maintain brand credibility.
+- **Draft Incident Update Templates:** Prepare standardized communication skeletons in advance so on-call engineers aren't drafting copy under high stress.
 
-## What a good update contains
+---
 
-| Element          | Example                                  |
-| ---------------- | ---------------------------------------- |
-| Affected systems | "Checkout and payment API"               |
-| Impact           | "Users may see errors completing orders" |
-| Started at       | "14:32 UTC, confirmed at 14:40 UTC"      |
-| Current action   | "Rolling back the deployment from 14:00" |
-| Next update      | "Next update within 30 minutes"          |
+## 2. During the Incident: The Three Golden Rules
 
-Every update should answer the same four questions: what's affected, how badly, what are you doing, and when will we hear next.
+| Rule                           | Core Principle           | Tactical Execution                                                        |
+| :----------------------------- | :----------------------- | :------------------------------------------------------------------------ |
+| **1. Acknowledge Fast**        | Speed beats completeness | Post an initial "Investigating" update within 5 minutes of confirmation   |
+| **2. Cadence Over Content**    | Silence creates anxiety  | Update every 20–30 minutes, even if only to state "Investigation ongoing" |
+| **3. Precision Over Promises** | Never guess fix times    | State what is being tested, not when you think it will be fixed           |
 
-## The status page anatomy
+---
 
-A status page is a hierarchy, not a wall of text:
+## What an Actionable Status Update Looks Like
 
-- **Overall status** — one indicator at the top: Operational / Degraded / Major Outage
-- **Component status** — per-service indicators (API, Web, Database, CDN)
-- **Active incidents** — newest first, with severity and start time
-- **Incident timeline** — the full update history, kept as a permanent record
-- **Uptime history** — rolling 30/90-day uptime percentages per component
+```
+[14:35 UTC - Investigating]
+We are investigating elevated HTTP 504 error rates impacting our Payment API.
+Web checkout flows are currently degraded. Our engineering team is reviewing recent database connection pool metrics.
+Next update will be posted by 15:00 UTC.
 
-Put the overall indicator at the top, keep component granularity, and never bury the incident timeline.
+[14:52 UTC - Identified & Remediating]
+We identified a lock contention issue on the primary database cluster following a deployment.
+We have initiated a rollback to deployment v2.14.0.
+Next update in 15 minutes.
 
-## After the incident: post-mortems and history
+[15:08 UTC - Monitoring Recovery]
+The rollback is complete and API latency has returned to normal (P95 < 45ms).
+We are actively monitoring system telemetry before declaring the incident fully resolved.
+```
 
-- **Post-mortem within 72 hours** — publish root cause, timeline, and corrective actions. Ambitious companies publish even embarrassing post-mortems; users reward the honesty
-- **Keep incident history** — incident pages should stay live forever. They're your credibility archive
-- **Update your SLAs** — reconcile reported uptime against your [SLA calculations](/blog/sla-calculations) and issue credits where owed
+---
 
-## Common mistakes to avoid
+## 3. After the Incident: Publishing Root Cause Analyses (RCAs)
 
-- **Saying "resolved" twice** — declaring resolution then reopening the incident erodes trust more than a slow incident
-- **Markdown walls** — pasting internal chat logs into the status page. Write for users, not for yourself
-- **Vendor-status-only monitoring** — if your status page is driven by your monitoring tool's checks, make sure those checks are multi-region; a single-node check will declare you down when you're not
+- **Publish within 48 to 72 hours:** Provide a clear timeline, technical root cause, and concrete preventive actions.
+- **Maintain Permanent Public History:** Keeping a transparent record of past incident resolutions demonstrates engineering maturity.
+- **Link Status Page to SLA Credits:** Proactively notify enterprise customers eligible for credits based on verified downtime calculations.
 
-## The bottom line
+---
 
-Users forgive outages. They don't forgive silence. A status page that acknowledges fast, updates on schedule, and publishes honest post-mortems converts every incident into a proof point — and that's the best any monitoring setup can do.
+## Five Status Page Themes with PulseGuard
+
+PulseGuard includes five beautiful, real-time status page themes out of the box — **Dark**, **Light**, **Cyberpunk**, **Matrix**, and **Blade** — complete with custom domain SSL, multi-region latency graphs, and automatic incident history tracking.

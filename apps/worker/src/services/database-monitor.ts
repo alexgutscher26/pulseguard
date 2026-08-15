@@ -19,7 +19,11 @@ export interface DatabaseResult {
   errorMessage?: string;
 }
 
-function parseDbUrl(url: string): { dbType: string; host: string; port: number } {
+function parseDbUrl(url: string): {
+  dbType: string;
+  host: string;
+  port: number;
+} {
   try {
     const u = new URL(url);
     const dbType = u.protocol.replace(":", "");

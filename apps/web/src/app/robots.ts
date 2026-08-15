@@ -27,6 +27,6 @@ export default function robots(): MetadataRoute.Robots {
         "/static/",
       ],
     },
-    sitemap: "https://pulseguard.com/sitemap.xml",
+    sitemap: `${process.env.NEXT_PUBLIC_APP_URL || "https://pulseguard.io"}/sitemap.xml`,
   };
 }

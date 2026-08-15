@@ -11,7 +11,7 @@ import { assertNotificationChannelLimits, checkAndNotifyUsageLimits } from "@/li
 
 const channelSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  type: z.enum(["EMAIL", "DISCORD", "SLACK", "WEBHOOK", "TELEGRAM", "SMS"]),
+  type: z.enum(["EMAIL", "DISCORD", "SLACK", "WEBHOOK", "TELEGRAM", "SMS", "PAGERDUTY"]),
   config: z.string().transform((str, ctx) => {
     try {
       return JSON.parse(str);
@@ -56,7 +56,10 @@ export async function createNotificationChannel(prevState: any, formData: FormDa
     });
 
     if (!limitCheck.allowed) {
-      return { success: false, error: limitCheck.error || "Plan limit exceeded" };
+      return {
+        success: false,
+        error: limitCheck.error || "Plan limit exceeded",
+      };
     }
 
     await prisma.notificationChannel.create({
@@ -79,9 +82,7 @@ export async function createNotificationChannel(prevState: any, formData: FormDa
 }
 
 export async function deleteNotificationChannel(id: string) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSafeSession();
 
   if (!session?.user) {
     return { success: false, error: "Unauthorized" };
@@ -112,9 +113,7 @@ export async function deleteNotificationChannel(id: string) {
  * @returns An object indicating the success status and any error messages.
  */
 export async function sendTestNotification(id: string) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSafeSession();
 
   if (!session?.user) {
     return { success: false, error: "Unauthorized" };
@@ -153,7 +152,10 @@ export async function sendTestNotification(id: string) {
 
     if (channel.type === "DISCORD") {
       if (!config?.webhookUrl)
-        return { success: false, error: "Invalid Discord webhook configuration" };
+        return {
+          success: false,
+          error: "Invalid Discord webhook configuration",
+        };
 
       // Rich Discord Payload
       await fetch(config.webhookUrl, {
@@ -173,7 +175,11 @@ export async function sendTestNotification(id: string) {
                 { name: "Status", value: "🛑 DOWN", inline: true },
                 { name: "Severity", value: "Critical", inline: true },
                 { name: "Region", value: "🇺🇸 us-east-1", inline: true },
-                { name: "Response Time", value: "Timeout (>10000ms)", inline: true },
+                {
+                  name: "Response Time",
+                  value: "Timeout (>10000ms)",
+                  inline: true,
+                },
                 { name: "Error", value: "Connection Refused", inline: true },
               ],
               footer: { text: "PulseGuard Sentinel • Mock Event" },
@@ -197,13 +203,20 @@ export async function sendTestNotification(id: string) {
           blocks: [
             {
               type: "header",
-              text: { type: "plain_text", text: "🔴 Test Alert: System Down", emoji: true },
+              text: {
+                type: "plain_text",
+                text: "🔴 Test Alert: System Down",
+                emoji: true,
+              },
             },
             { type: "divider" },
             {
               type: "section",
               fields: [
-                { type: "mrkdwn", text: "*Target:*\n<https://example.com|https://example.com>" },
+                {
+                  type: "mrkdwn",
+                  text: "*Target:*\n<https://example.com|https://example.com>",
+                },
                 { type: "mrkdwn", text: "*Status:*\nDOWN" },
                 { type: "mrkdwn", text: "*Severity:*\nCritical" },
                 { type: "mrkdwn", text: "*Region:*\nus-east-1" },
@@ -211,12 +224,18 @@ export async function sendTestNotification(id: string) {
             },
             {
               type: "section",
-              text: { type: "mrkdwn", text: "*Response Time:*\nTimeout (>10000ms)" },
+              text: {
+                type: "mrkdwn",
+                text: "*Response Time:*\nTimeout (>10000ms)",
+              },
             },
             {
               type: "context",
               elements: [
-                { type: "mrkdwn", text: "⏱ Timestamp: " + new Date().toISOString() },
+                {
+                  type: "mrkdwn",
+                  text: "⏱ Timestamp: " + new Date().toISOString(),
+                },
                 { type: "mrkdwn", text: "• PulseGuard Sentinel" },
               ],
             },
@@ -237,7 +256,70 @@ export async function sendTestNotification(id: string) {
       return { success: true };
     }
 
-    return { success: false, error: `Testing for ${channel.type} not implemented yet` };
+    if (channel.type === "PAGERDUTY") {
+      if (!config?.routingKey)
+        return {
+          success: false,
+          error: "Invalid PagerDuty configuration: routing key required",
+        };
+
+      const PD_EVENTS_URL = "https://events.pagerduty.com/v2/enqueue";
+      const dedupKey = `pulseguard-test-${Date.now()}`;
+
+      // Fire a test trigger
+      const triggerRes = await fetch(PD_EVENTS_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          routing_key: config.routingKey,
+          dedup_key: dedupKey,
+          event_action: "trigger",
+          payload: {
+            summary: "🔴 PulseGuard Test Alert: Monitor Down",
+            source: "https://example.com",
+            severity: "critical",
+            custom_details: {
+              monitor_name: "Test Monitor",
+              target_url: "https://example.com",
+              status: "DOWN",
+              reason: "This is a test notification from PulseGuard",
+            },
+          },
+          links: [
+            {
+              href: `${env.NEXT_PUBLIC_APP_URL}/dashboard`,
+              text: "Open PulseGuard",
+            },
+          ],
+        }),
+      });
+
+      if (!triggerRes.ok) {
+        const errText = await triggerRes.text();
+        return {
+          success: false,
+          error: `PagerDuty API error: ${triggerRes.status} ${errText}`,
+        };
+      }
+
+      // Immediately resolve so no phantom incident stays open
+      await fetch(PD_EVENTS_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          routing_key: config.routingKey,
+          dedup_key: dedupKey,
+          event_action: "resolve",
+        }),
+      });
+
+      return { success: true };
+    }
+
+    return {
+      success: false,
+      error: `Testing for ${channel.type} not implemented yet`,
+    };
   } catch (error) {
     console.error("Failed to send test notification", error);
     return { success: false, error: "Failed to send test notification" };
@@ -498,10 +580,10 @@ export async function updateAlertRule(id: string, prevState: any, formData: Form
   }
 }
 
+import { getSafeSession } from "@/lib/safe-session";
+
 export async function deleteAlertRule(id: string) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSafeSession();
 
   if (!session?.user) {
     return { success: false, error: "Unauthorized" };

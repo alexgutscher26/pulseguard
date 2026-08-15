@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import LandingHeader from "@/components/landing/header";
 import { SubnetCalculator } from "./calculator";
+import { ToolSchema } from "@/components/seo/tool-schema";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "IP Subnet Calculator | PulseGuard",
@@ -17,6 +20,11 @@ export const metadata: Metadata = {
 export default function IPSubnetPage() {
   return (
     <div className="min-h-screen bg-background">
+      <ToolSchema
+        name="IP Subnet Calculator"
+        description="Free IP Subnet Calculator to visualize network masks, broadcast addresses, and host ranges. Decode binary bitmasks and optimize your infrastructure topology."
+        url="https://pulseguard.io/tools/ip-subnet"
+      />
       <LandingHeader />
       <main className="container mx-auto pt-32 pb-12 px-4 md:px-6">
         <div className="max-w-7xl mx-auto space-y-8">

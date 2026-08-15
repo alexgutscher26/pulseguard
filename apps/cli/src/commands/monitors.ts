@@ -163,7 +163,9 @@ monitorsCmd
 
     let config: { monitors: any[] };
     try {
-      config = parseYaml(readFileSync(filePath, "utf-8")) as { monitors: any[] };
+      config = parseYaml(readFileSync(filePath, "utf-8")) as {
+        monitors: any[];
+      };
     } catch {
       console.error(chalk.red("✖ Invalid YAML file"));
       process.exit(1);

@@ -17,7 +17,9 @@ test.describe("E2E Critical Flow", () => {
   // We can add afterAll to clean up if we want to keep DB clean.
   test.afterAll(async () => {
     try {
-      const user = await db.user.findUnique({ where: { email: TEST_USER.email } });
+      const user = await db.user.findUnique({
+        where: { email: TEST_USER.email },
+      });
       if (user) {
         await db.user.delete({ where: { id: user.id } });
       }
@@ -46,7 +48,9 @@ test.describe("E2E Critical Flow", () => {
       // Find "Create" or "New" button in header or command palette
       // Assuming there's a visible "New Monitor" or "+" button or link
       // Based on grep, it's in header.tsx. Let's try finding link to /new
-      const createLink = page.getByRole("link", { name: /New Monitor|Create/i });
+      const createLink = page.getByRole("link", {
+        name: /New Monitor|Create/i,
+      });
 
       // Fallback: direct navigation if UI button is hidden behind menu
       if ((await createLink.count()) > 0 && (await createLink.isVisible())) {
@@ -94,12 +98,16 @@ test.describe("E2E Critical Flow", () => {
 
       // If we are in settings, look for Delete button
       // It might be "Delete Monitor" in a danger zone
-      const deleteButton = page.getByRole("button", { name: /delete monitor/i });
+      const deleteButton = page.getByRole("button", {
+        name: /delete monitor/i,
+      });
       await expect(deleteButton).toBeVisible();
       await deleteButton.click();
 
       // Confirm modal
-      const confirmButton = page.getByRole("button", { name: /confirm|delete|continuing/i });
+      const confirmButton = page.getByRole("button", {
+        name: /confirm|delete|continuing/i,
+      });
       if (await confirmButton.isVisible()) {
         await confirmButton.click();
       }

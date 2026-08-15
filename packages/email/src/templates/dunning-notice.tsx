@@ -1,5 +1,5 @@
 import * as React from "react";
-import { render } from "@react-email/render";
+import { render } from "../primitives";
 
 export interface DunningNoticeEmailProps {
   userName: string;
@@ -12,7 +12,7 @@ export interface DunningNoticeEmailProps {
 export const DunningNoticeEmail: React.FC<Readonly<DunningNoticeEmailProps>> = ({
   userName = "PulseGuard Operator",
   planName = "The Netrunner",
-  amountDue = "$14.00",
+  amountDue = "$19.00",
   failureReason = "Card declined",
   billingPortalUrl = "https://pulseguard.io/dashboard/settings?tab=billing",
 }) => (
@@ -47,7 +47,14 @@ export const DunningNoticeEmail: React.FC<Readonly<DunningNoticeEmailProps>> = (
         >
           Billing Action Required
         </span>
-        <h2 style={{ fontSize: "22px", fontWeight: "700", color: "#ffffff", marginTop: "4px" }}>
+        <h2
+          style={{
+            fontSize: "22px",
+            fontWeight: "700",
+            color: "#ffffff",
+            marginTop: "4px",
+          }}
+        >
           Payment Failed for Your PulseGuard Subscription
         </h2>
       </div>
@@ -67,7 +74,13 @@ export const DunningNoticeEmail: React.FC<Readonly<DunningNoticeEmailProps>> = (
           marginBottom: "24px",
         }}
       >
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginBottom: "8px",
+          }}
+        >
           <span style={{ fontSize: "13px", color: "#9ca3af" }}>Invoice Amount Due:</span>
           <span style={{ fontSize: "14px", fontWeight: "700", color: "#f87171" }}>{amountDue}</span>
         </div>

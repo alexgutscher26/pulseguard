@@ -158,7 +158,11 @@ export async function checkGraphQL(
       );
     }
 
-    const assertionResults: { path: string; passed: boolean; actual: unknown }[] = [];
+    const assertionResults: {
+      path: string;
+      passed: boolean;
+      actual: unknown;
+    }[] = [];
     let assertionsPassed = 0;
     let assertionsFailed = 0;
 

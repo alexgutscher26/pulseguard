@@ -10,8 +10,11 @@ import { toast } from "@/components/ui/sonner";
 
 export function ActionCommands() {
   const router = useRouter();
-  const { theme, setTheme } = useTheme();
+  const themeContext = useTheme();
   const { close } = useCommandPalette();
+
+  const theme = themeContext?.theme || "dark";
+  const setTheme = themeContext?.setTheme || (() => {});
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");

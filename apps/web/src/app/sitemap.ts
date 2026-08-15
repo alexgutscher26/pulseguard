@@ -1,9 +1,12 @@
 import type { MetadataRoute } from "next";
 import prisma from "@pulseguard/db";
 import { getAllPosts } from "@/lib/blog";
+import { getAllServices } from "@/content/is-down-services";
+
+export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://pulseguard.com";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://pulseguard.io";
 
   // Static routes
   const staticRoutes = [
@@ -57,6 +60,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(post.meta.date),
       changeFrequency: "monthly",
       priority: 0.6,
+    });
+  }
+
+  // Programmatic SEO: "Is [Service] Down?" status pages (300+ services)
+  sitemapEntries.push({
+    url: `${baseUrl}/is-down`,
+    lastModified: new Date(),
+    changeFrequency: "daily",
+    priority: 0.9,
+  });
+
+  for (const service of getAllServices()) {
+    sitemapEntries.push({
+      url: `${baseUrl}/is-down/${service.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: service.featured ? 0.9 : 0.8,
     });
   }
 

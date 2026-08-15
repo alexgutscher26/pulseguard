@@ -46,7 +46,12 @@ const ICON_MAP = {
 };
 
 const OVERALL_LABELS = [
-  { max: 30, label: "Yikes", color: "text-red-500", bg: "bg-red-500/10 border-red-500/30" },
+  {
+    max: 30,
+    label: "Yikes",
+    color: "text-red-500",
+    bg: "bg-red-500/10 border-red-500/30",
+  },
   {
     max: 50,
     label: "Needs Work",
@@ -59,8 +64,18 @@ const OVERALL_LABELS = [
     color: "text-yellow-500",
     bg: "bg-yellow-500/10 border-yellow-500/30",
   },
-  { max: 90, label: "Solid", color: "text-lime-500", bg: "bg-lime-500/10 border-lime-500/30" },
-  { max: 100, label: "S-tier", color: "text-green-500", bg: "bg-green-500/10 border-green-500/30" },
+  {
+    max: 90,
+    label: "Solid",
+    color: "text-lime-500",
+    bg: "bg-lime-500/10 border-lime-500/30",
+  },
+  {
+    max: 100,
+    label: "S-tier",
+    color: "text-green-500",
+    bg: "bg-green-500/10 border-green-500/30",
+  },
 ];
 
 function getOverallLabel(score: number) {
@@ -168,7 +183,10 @@ export function RoastMyStack() {
     // SSL check via fetch
     try {
       const start = Date.now();
-      const sslRes = await fetch(`https://${domain}`, { method: "HEAD", mode: "no-cors" });
+      const sslRes = await fetch(`https://${domain}`, {
+        method: "HEAD",
+        mode: "no-cors",
+      });
       const ms = Date.now() - start;
       if (sslRes.type === "opaque" || sslRes.status < 400) {
         checks.push({
@@ -206,7 +224,10 @@ export function RoastMyStack() {
     // TTFB check via image timing
     try {
       const imgStart = performance.now();
-      await fetch(`https://${domain}/favicon.ico`, { method: "GET", mode: "no-cors" });
+      await fetch(`https://${domain}/favicon.ico`, {
+        method: "GET",
+        mode: "no-cors",
+      });
       const ttfb = Math.round(performance.now() - imgStart);
       if (ttfb < 300) {
         checks.push({
@@ -295,7 +316,10 @@ export function RoastMyStack() {
 
     // Headers check
     try {
-      const hRes = await fetch(`https://${domain}`, { method: "GET", mode: "no-cors" });
+      const hRes = await fetch(`https://${domain}`, {
+        method: "GET",
+        mode: "no-cors",
+      });
       const headers = hRes.headers;
       const hasSecurityHeaders =
         headers.get("strict-transport-security") ||

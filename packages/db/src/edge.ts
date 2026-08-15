@@ -29,10 +29,15 @@ export function createPrisma(databaseUrl?: string) {
     connectionString: cleanUrl,
     // Increased to 5 to avoid pool starvation on concurrent requests in wrangler dev/production isolates.
     max: 5,
-    // Release idle connections quickly in a serverless environment
-    idleTimeoutMillis: 10_000,
+    // Release idle connections quickly in a serverless environment to avoid
+    // stale sockets being terminated unexpectedly (keep < OS TCP timeout).
+    idleTimeoutMillis: 8_000,
     // Set to 5s to fail-fast and allow app retry/recovery strategies
     connectionTimeoutMillis: 5_000,
+    // TCP keep-alive prevents the OS / NAT from silently dropping idle
+    // connections, which is the root cause of "Connection terminated unexpectedly".
+    keepAlive: true,
+    keepAliveInitialDelayMillis: 5_000,
   };
 
   if (isSsl || poolUrl.includes("supabase") || poolUrl.includes("neon.tech")) {

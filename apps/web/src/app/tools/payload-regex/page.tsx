@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import LandingHeader from "@/components/landing/header";
 import { PayloadTester } from "./tester";
+import { ToolSchema } from "@/components/seo/tool-schema";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Regex Payload Monitor & Tester | PulseGuard",
@@ -16,6 +19,11 @@ export const metadata: Metadata = {
 export default function PayloadTesterPage() {
   return (
     <div className="min-h-screen bg-background">
+      <ToolSchema
+        name="Regex Payload Monitor & Tester"
+        description="Free regex tester for website monitoring. Verify HTML expectations, check for specific phrases, and validate payload integrity with our regex sentinel."
+        url="https://pulseguard.io/tools/payload-regex"
+      />
       <LandingHeader />
       <main className="container mx-auto pt-32 pb-12 px-4 md:px-6">
         <div className="max-w-6xl mx-auto space-y-8">

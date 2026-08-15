@@ -364,7 +364,9 @@ python .agent/skills/webapp-testing/scripts/playwright_runner.py http://localhos
 
 ```markdown
 # Add this to the plan file after ALL checks pass:
+
 ## ✅ PHASE X COMPLETE
+
 - Lint: ✅ Pass
 - Security: ✅ No critical issues
 - Build: ✅ Success

@@ -217,11 +217,17 @@ export async function parseCsvOrJsonMonitors(content: string): Promise<{
     }
 
     if (normalized.length === 0) {
-      return { success: false, error: "Could not detect valid monitor URLs in CSV/JSON data." };
+      return {
+        success: false,
+        error: "Could not detect valid monitor URLs in CSV/JSON data.",
+      };
     }
 
     return { success: true, monitors: normalized };
   } catch (e: any) {
-    return { success: false, error: "Failed to parse CSV/JSON format: " + e.message };
+    return {
+      success: false,
+      error: "Failed to parse CSV/JSON format: " + e.message,
+    };
   }
 }

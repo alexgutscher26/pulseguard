@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { MessageSquare, Mail, Terminal, Settings, Plus, Loader2, Trash2 } from "lucide-react";
+import { MessageSquare, Mail, Terminal, Plus, Loader2, Trash2, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,6 +30,8 @@ function getIcon(type: string) {
       return MessageSquare;
     case "EMAIL":
       return Mail;
+    case "PAGERDUTY":
+      return Bell;
     default:
       return Terminal;
   }
@@ -43,6 +45,8 @@ function getColor(type: string) {
       return "text-[#5865F2]";
     case "EMAIL":
       return "text-primary";
+    case "PAGERDUTY":
+      return "text-[#06AC38]";
     default:
       return "text-primary/50";
   }
@@ -62,6 +66,10 @@ function getDetail(channel: NotificationChannel) {
   }
   if (channel.type === "WEBHOOK") {
     return config?.url || "Custom Webhook";
+  }
+  if (channel.type === "PAGERDUTY") {
+    const key = config?.routingKey as string | undefined;
+    return key ? `${key.slice(0, 6)}••••${key.slice(-4)}` : "PagerDuty";
   }
   return config?.value || channel.name || "Channel";
 }
@@ -190,6 +198,76 @@ export function NotificationChannels({
               </div>
               <div className="relative flex justify-center text-xs uppercase">
                 <span className="bg-black/90 px-2 text-primary/50 font-mono">Or Manual Config</span>
+              </div>
+            </div>
+
+            {/* PagerDuty */}
+            <div className="mb-4">
+              <p className="text-xs text-[#06AC38]/70 font-mono uppercase tracking-wider mb-2 flex items-center gap-1">
+                <Bell className="size-3" /> PagerDuty
+              </p>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const formData = new FormData(e.currentTarget);
+                  const routingKey = formData.get("pagerdutyRoutingKey") as string;
+                  const submitData = new FormData();
+                  submitData.append("name", formData.get("pagerdutyName") as string);
+                  submitData.append("type", "PAGERDUTY");
+                  submitData.append("config", JSON.stringify({ routingKey }));
+                  handleSubmit(submitData);
+                }}
+                className="flex flex-col gap-3"
+              >
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="pagerdutyName">Channel name</Label>
+                  <Input
+                    id="pagerdutyName"
+                    name="pagerdutyName"
+                    required
+                    placeholder="PagerDuty Production"
+                    className="bg-primary/5 border-primary/20"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="pagerdutyRoutingKey">
+                    Integration routing key
+                    <a
+                      href="https://support.pagerduty.com/docs/services-and-integrations"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="ml-2 text-[#06AC38]/70 hover:text-[#06AC38] text-[10px] font-mono underline"
+                    >
+                      Where to find this?
+                    </a>
+                  </Label>
+                  <Input
+                    id="pagerdutyRoutingKey"
+                    name="pagerdutyRoutingKey"
+                    required
+                    placeholder="R015PXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                    className="bg-primary/5 border-primary/20 font-mono text-xs"
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  disabled={isPending}
+                  className="w-full border border-[#06AC38]/50 bg-[#06AC38]/10 text-[#06AC38] hover:bg-[#06AC38]/20 font-mono uppercase tracking-wider"
+                  variant="ghost"
+                >
+                  {isPending ? <Loader2 className="animate-spin size-4 mr-2" /> : null}
+                  <Bell className="size-4 mr-2" />
+                  Add PagerDuty Channel
+                </Button>
+              </form>
+            </div>
+
+            <div className="relative mb-4">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-primary/20" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-black/90 px-2 text-primary/50 font-mono">Email</span>
               </div>
             </div>
 

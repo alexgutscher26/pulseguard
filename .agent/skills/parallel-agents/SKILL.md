@@ -144,20 +144,24 @@ After all agents complete, synthesize:
 ## Orchestration Synthesis
 
 ### Task Summary
+
 [What was accomplished]
 
 ### Agent Contributions
-| Agent | Finding |
-|-------|---------|
-| security-auditor | Found X |
+
+| Agent              | Finding      |
+| ------------------ | ------------ |
+| security-auditor   | Found X      |
 | backend-specialist | Identified Y |
 
 ### Consolidated Recommendations
+
 1. **Critical**: [Issue from Agent A]
 2. **Important**: [Issue from Agent B]
 3. **Nice-to-have**: [Enhancement from Agent C]
 
 ### Action Items
+
 - [ ] Fix critical security issue
 - [ ] Refactor API endpoint
 - [ ] Add missing tests

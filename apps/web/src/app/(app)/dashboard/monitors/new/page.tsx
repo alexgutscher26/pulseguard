@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { MonitorForm } from "@/components/monitors/monitor-form";
 import { getUserUsageSummary } from "@/lib/billing-server";
 
+export const dynamic = "force-dynamic";
+
 export default async function NewMonitorPage() {
   const session = await auth.api.getSession({
     headers: await headers(),

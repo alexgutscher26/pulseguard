@@ -55,14 +55,33 @@ export async function getAdminStatus(): Promise<AdminStatusResponse> {
 /**
  * Elevates the authenticated user's tier to "ADMIN" in the database
  */
-export async function grantSelfAdminAccess(): Promise<{ success: boolean; error?: string }> {
+export async function grantSelfAdminAccess(): Promise<{
+  success: boolean;
+  error?: string;
+}> {
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
     });
 
     if (!session?.user?.id) {
-      return { success: false, error: "Must be logged in to grant admin access" };
+      return {
+        success: false,
+        error: "Must be logged in to grant admin access",
+      };
+    }
+
+    const email = session.user.email?.toLowerCase() || "";
+    const adminEmails = (process.env.ADMIN_EMAILS || "")
+      .split(",")
+      .map((e) => e.trim().toLowerCase())
+      .filter(Boolean);
+
+    if (!email || !adminEmails.includes(email)) {
+      return {
+        success: false,
+        error: "Unauthorized: User email is not listed in ADMIN_EMAILS",
+      };
     }
 
     await prisma.user.update({
@@ -79,6 +98,9 @@ export async function grantSelfAdminAccess(): Promise<{ success: boolean; error?
     return { success: true };
   } catch (error: any) {
     console.error("Failed to grant admin access:", error);
-    return { success: false, error: error.message || "Failed to grant admin access" };
+    return {
+      success: false,
+      error: error.message || "Failed to grant admin access",
+    };
   }
 }

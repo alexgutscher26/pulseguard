@@ -138,7 +138,9 @@ export async function importUptimeRobotMonitors(
   }
 
   try {
-    const limitCheck = await assertMonitorLimits(session.user.id, { isNew: true });
+    const limitCheck = await assertMonitorLimits(session.user.id, {
+      isNew: true,
+    });
     if (!limitCheck.allowed) {
       return {
         success: false,

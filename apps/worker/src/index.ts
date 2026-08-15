@@ -2,6 +2,8 @@ import { getPrisma } from "@pulseguard/db";
 import type { ExecutionContext, MessageBatch, ScheduledEvent } from "@cloudflare/workers-types";
 export { LatencyAggregator } from "./durable-objects/latency-aggregator";
 export { MonitorChannel } from "./durable-objects/monitor-channel";
+export { RegionalProbe } from "./durable-objects/regional-probe";
+import { CLOUDFLARE_PROBE_REGIONS, type DOLocationHint } from "@pulseguard/shared";
 import type { Env } from "./env";
 export type { Env };
 import { handleFetch } from "./routes";
@@ -15,13 +17,32 @@ export default {
       return await handleFetch(request, env, ctx, url);
     } catch (globalErr: any) {
       console.error(`[GLOBAL WORKER ERROR]`, globalErr);
-      return new Response(`Global Worker Error: ${globalErr.message}`, { status: 500 });
+      return new Response(`Global Worker Error: ${globalErr.message}`, {
+        status: 500,
+      });
     }
   },
 
   // 1. Cron: Find pending checks and run them (Free Tier Batch Mode)
   async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
     console.log(`Cron triggered: ${event.cron}`);
+
+    // --- DOWNSAMPLING & DATA RETENTION: Run on daily cron trigger ---
+    if (event.cron === "0 0 * * *") {
+      ctx.waitUntil(
+        (async () => {
+          try {
+            const dsPrisma = getPrisma(env.DATABASE_URL);
+            const { runDownsamplingCron } = await import("./downsampling-cron");
+            await runDownsamplingCron(env);
+            const { resetPrisma } = await import("@pulseguard/db");
+            await resetPrisma(env.DATABASE_URL);
+          } catch (err) {
+            console.error("[Downsampling] Daily run failed:", err);
+          }
+        })(),
+      );
+    }
 
     // --- ANOMALY SCANNER: Run on 5-minute or hourly triggers ---
     if (event.cron === "*/5 * * * *" || event.cron === "0 * * * *") {
@@ -73,9 +94,31 @@ export default {
       );
     }
 
-    // FREE TIER CONFIG: Process 5 monitors per cron tick (1 min)
-    // Decreased to 5 to avoid CPU limits (exceededCpu error).
-    const BATCH_SIZE = 5;
+    // --- REGIONAL PROBE DO BOOTSTRAP ---
+    if (env.REGIONAL_PROBE) {
+      ctx.waitUntil(
+        (async () => {
+          for (const reg of CLOUDFLARE_PROBE_REGIONS) {
+            try {
+              const probeId = env.REGIONAL_PROBE.idFromName(`probe-${reg.code}`);
+              const probe = env.REGIONAL_PROBE.get(probeId, {
+                locationHint: reg.code as any,
+              });
+              await probe.fetch("http://internal/init", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ region: reg.code }),
+              });
+            } catch {}
+          }
+        })(),
+      );
+    }
+
+    // Process all due monitors for this shard in chunks to prevent dropping checks under load
+    const CHUNK_SIZE = 100;
+    const MAX_CHUNKS_PER_TICK = 10;
+    let totalProcessedCount = 0;
 
     const totalShards = Number(env.TOTAL_SHARDS || 1);
     const shardId = Number(env.SHARD_ID || 0);
@@ -83,8 +126,6 @@ export default {
     const runWithRetry = async (retry: boolean = true): Promise<any> => {
       try {
         // Find active monitors that are due for a check, but only for THIS shard
-        // We use a raw query to fetch just the IDs that belong to the current shard's hash-space.
-        // Postgres: Use abs(hashtext(id)) % totalShards = shardId
         const targetIds: { id: string }[] = await prisma.$queryRaw`
           SELECT id FROM "Monitor"
           WHERE ("status" IN ('UP', 'DOWN', 'MAINTENANCE'))
@@ -95,7 +136,7 @@ export default {
             SELECT 1 FROM "ProbeAssignment" WHERE "monitorId" = "Monitor"."id"
           )
           ORDER BY "nextCheck" ASC
-          LIMIT ${BATCH_SIZE}
+          LIMIT ${CHUNK_SIZE}
         `;
         return targetIds;
       } catch (err: any) {
@@ -111,9 +152,7 @@ export default {
           );
           const { resetPrisma } = await import("@pulseguard/db");
           await resetPrisma(env.DATABASE_URL);
-          // Re-get new prisma instance
           prisma = getPrisma(env.DATABASE_URL);
-          // Retry
           return await runWithRetry(false);
         }
         throw err;
@@ -121,72 +160,71 @@ export default {
     };
 
     try {
-      // Shard-based monitor fetching
-      const targetIds = await runWithRetry();
+      for (let chunkIdx = 0; chunkIdx < MAX_CHUNKS_PER_TICK; chunkIdx++) {
+        const targetIds = await runWithRetry();
+        if (targetIds.length === 0) break;
 
-      if (targetIds.length === 0) return;
+        const ids = targetIds.map((t: { id: any }) => t.id);
 
-      const ids = targetIds.map((t: { id: any }) => t.id);
-
-      // Fetch full monitor data for the batch
-      const monitors = await prisma.monitor.findMany({
-        where: { id: { in: ids } },
-        select: {
-          id: true,
-          url: true,
-          interval: true,
-          timeout: true,
-          status: true,
-          name: true,
-          type: true,
-          checkRegions: true,
-          alertThreshold: true,
-          dynamicThresholding: true,
-          runbookUrl: true,
-          method: true,
-          headers: true,
-          body: true,
-          expectation: true,
-          script: true,
-          // @ts-ignore
-          maintenanceWindows: {
-            where: {
-              startAt: { lte: new Date() },
-              endAt: { gte: new Date() },
+        const monitors = await prisma.monitor.findMany({
+          where: { id: { in: ids } },
+          select: {
+            id: true,
+            url: true,
+            interval: true,
+            timeout: true,
+            status: true,
+            name: true,
+            type: true,
+            checkRegions: true,
+            alertThreshold: true,
+            dynamicThresholding: true,
+            runbookUrl: true,
+            method: true,
+            headers: true,
+            body: true,
+            expectation: true,
+            script: true,
+            // @ts-ignore
+            maintenanceWindows: {
+              where: {
+                startAt: { lte: new Date() },
+                endAt: { gte: new Date() },
+              },
+              take: 1,
             },
-            take: 1,
+            alertRules: {
+              where: { enabled: true },
+            },
           },
-          alertRules: {
-            where: { enabled: true },
-          },
-        },
-      });
+        });
 
-      console.log(`Found ${monitors.length} monitors to check.`);
+        if (monitors.length === 0) break;
 
-      if (monitors.length === 0) return;
+        console.log(`[Cron Chunk ${chunkIdx + 1}] Processing ${monitors.length} monitors...`);
+        const { remaining } = await processBatch(monitors, prisma, env, ctx);
+        totalProcessedCount += monitors.length - remaining.length;
 
-      // --- FREE PLAN: DIRECT EXECUTION ---
-      // We process them right here instead of queuing
-      const { remaining } = await processBatch(monitors, prisma, env, ctx);
-
-      // Offload remaining to Queue if any
-      if (remaining.length > 0) {
-        if (env.CHECK_QUEUE) {
-          console.warn(
-            `[SmartBatch] Offloading ${remaining.length} monitors to Queue due to CPU limits.`,
-          );
-          // Send remaining monitors as individual messages or small batches
-          const messages = remaining.map((m) => ({ body: m }));
-          await env.CHECK_QUEUE.sendBatch(messages);
-        } else {
-          console.error(
-            "[SmartBatch] Critical: CPU limit reached but NO CHECK_QUEUE defined. Checks dropped.",
-          );
+        if (remaining.length > 0) {
+          if (env.CHECK_QUEUE) {
+            console.warn(
+              `[SmartBatch] Offloading ${remaining.length} monitors to Queue due to execution limits.`,
+            );
+            const messages = remaining.map((m) => ({ body: m }));
+            await env.CHECK_QUEUE.sendBatch(messages);
+          } else {
+            console.error(
+              "[SmartBatch] CPU/time limit reached and NO CHECK_QUEUE configured. Remaining monitors deferred.",
+            );
+          }
+          break;
         }
+
+        // If chunk returned fewer than CHUNK_SIZE, no more due monitors
+        if (targetIds.length < CHUNK_SIZE) break;
       }
 
-      console.log(`Monitors processed successfully.`);
+      console.log(`Cron execution completed. Total monitors checked: ${totalProcessedCount}.`);
     } catch (error) {
       console.error("Error in scheduled handler:", error);
     } finally {
@@ -229,7 +267,9 @@ export default {
         // Construct a filtered batch inheriting prototype methods from original batch
         activeBatch = Object.create(batch);
         (
-          activeBatch as { -readonly [K in keyof MessageBatch<any>]: MessageBatch<any>[K] }
+          activeBatch as {
+            -readonly [K in keyof MessageBatch<any>]: MessageBatch<any>[K];
+          }
         ).messages = batch.messages.filter((msg) => {
           const msgId = msg.id || (msg.body && msg.body.id);
           return !failedMessageIds.has(msgId);

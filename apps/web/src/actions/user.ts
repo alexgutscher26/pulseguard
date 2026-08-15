@@ -65,10 +65,12 @@ export async function getLicenseTelemetry() {
   if (!session?.user) {
     return {
       tier: "INITIATE",
-      probeCount: 0,
-      maxProbes: 0,
-      pingInterval: "60s Min",
-      regions: "US-East Only",
+      isAdmin: false,
+      edgeNodes: "3 Nodes (2-of-3)",
+      vpcProbeCount: 0,
+      maxVpcProbes: 0,
+      pingInterval: "3m / 1m Fast",
+      regions: "3 Primary Regions",
     };
   }
 
@@ -80,11 +82,22 @@ export async function getLicenseTelemetry() {
       select: { tier: true, email: true },
     });
 
-    const userTier = dbUser?.tier || session.user.tier || "INITIATE";
+    const subscription = await prisma.subscription.findUnique({
+      where: { userId: session.user.id },
+    });
+
+    const userTier = (
+      subscription?.plan ||
+      dbUser?.tier ||
+      (session.user as any).tier ||
+      "INITIATE"
+    ).toUpperCase();
     const adminEmails = (process.env.ADMIN_EMAILS || "")
       .split(",")
-      .map((e) => e.trim().toLowerCase());
-    const isEmailAdmin = Boolean(dbUser?.email && adminEmails.includes(dbUser.email.toLowerCase()));
+      .map((e) => e.trim().toLowerCase())
+      .filter(Boolean);
+    const userEmail = (dbUser?.email || session.user.email || "").trim().toLowerCase();
+    const isEmailAdmin = Boolean(userEmail && adminEmails.includes(userEmail));
     const isAdmin = userTier === "ADMIN" || isEmailAdmin;
 
     const probeCount = await prisma.probe.count({
@@ -94,46 +107,48 @@ export async function getLicenseTelemetry() {
       },
     });
 
-    let maxProbes = 0;
-    let pingInterval = "60s Min";
-    let regions = "US-East Only";
+    let edgeNodes = "3 Nodes (2-of-3)";
+    let maxVpcProbes = 0;
+    let pingInterval = "3m / 1m Fast";
+    let regions = "3 Primary Regions";
 
     if (userTier === "NETRUNNER") {
-      maxProbes = 3;
-      pingInterval = "30s Min";
-      regions = "3 Regions";
+      edgeNodes = "7 Nodes (4-of-7)";
+      maxVpcProbes = 3;
+      pingInterval = "30s Rapid";
+      regions = "7 Sovereign Regions";
     } else if (userTier === "CONSTRUCT" || userTier === "ADMIN") {
-      maxProbes = 5; // Enterprise / Admin
-      pingInterval = "10s Min";
-      regions = "Global Edge";
+      edgeNodes = "7 Nodes + VPC Mesh";
+      maxVpcProbes = 10;
+      pingInterval = "10s Ultra-Fast";
+      regions = "7 Sovereign Regions";
     }
 
     return {
       tier: userTier,
       isAdmin,
-      probeCount,
-      maxProbes,
+      edgeNodes,
+      vpcProbeCount: probeCount,
+      maxVpcProbes,
       pingInterval,
       regions,
     };
   } catch (error) {
     console.error("Failed to fetch license telemetry:", error);
+    const fallbackTier = session.user.tier || "INITIATE";
     return {
-      tier: session.user.tier || "INITIATE",
-      probeCount: 0,
-      maxProbes: session.user.tier === "NETRUNNER" ? 3 : session.user.tier === "CONSTRUCT" ? 5 : 0,
+      tier: fallbackTier,
+      isAdmin: false,
+      edgeNodes: fallbackTier === "INITIATE" ? "3 Nodes (2-of-3)" : "7 Nodes (4-of-7)",
+      vpcProbeCount: 0,
+      maxVpcProbes: fallbackTier === "NETRUNNER" ? 3 : fallbackTier === "CONSTRUCT" ? 10 : 0,
       pingInterval:
-        session.user.tier === "NETRUNNER"
-          ? "30s Min"
-          : session.user.tier === "CONSTRUCT"
-            ? "10s Min"
-            : "60s Min",
-      regions:
-        session.user.tier === "NETRUNNER"
-          ? "3 Regions"
-          : session.user.tier === "CONSTRUCT"
-            ? "Global Edge"
-            : "US-East Only",
+        fallbackTier === "NETRUNNER"
+          ? "30s Rapid"
+          : fallbackTier === "CONSTRUCT"
+            ? "10s Ultra-Fast"
+            : "3m / 1m Fast",
+      regions: fallbackTier === "INITIATE" ? "3 Primary Regions" : "7 Sovereign Regions",
     };
   }
 }

@@ -13,15 +13,18 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Users,
+  History,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const items = [
   { name: "General", icon: User, tab: "general" },
+  { name: "Team & RBAC", icon: Users, tab: "team" },
   { name: "Billing", icon: CreditCard, tab: "billing" },
   // { name: "Affiliate & Referrals", icon: Users, tab: "referrals" },
   { name: "Security", icon: Shield, tab: "security" },
   { name: "API Keys", icon: Key, tab: "api-keys" },
+  { name: "Audit Log", icon: History, tab: "audit-log" },
   { name: "Migration & Export", icon: Download, tab: "migration" },
   { name: "Privacy", icon: Eye, tab: "privacy" },
 ];
@@ -31,7 +34,8 @@ const items = [
  */
 export function SettingsSidebar() {
   const searchParams = useSearchParams();
-  const currentTab = searchParams.get("tab") || "general";
+  const rawTab = searchParams.get("tab") || "general";
+  const currentTab = rawTab.split("?")[0].split("&")[0];
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   // Restore saved collapse preference from localStorage

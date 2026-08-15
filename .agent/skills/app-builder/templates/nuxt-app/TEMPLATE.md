@@ -99,13 +99,13 @@ project-name/
    Add to `nuxt.config.ts`:
 
    ```ts
-   import tailwindcss from '@tailwindcss/vite'
+   import tailwindcss from "@tailwindcss/vite";
    export default defineNuxtConfig({
      vite: {
-       plugins: [tailwindcss()]
+       plugins: [tailwindcss()],
      },
-     css: ['~/assets/css/main.css']
-   })
+     css: ["~/assets/css/main.css"],
+   });
    ```
 
 4. Configure CSS:

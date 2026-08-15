@@ -51,7 +51,13 @@ export async function GET(req: NextRequest, { params }: Ctx) {
       events: {
         take: 10,
         orderBy: { timestamp: "desc" },
-        select: { status: true, latency: true, errorReason: true, timestamp: true, region: true },
+        select: {
+          status: true,
+          latency: true,
+          errorReason: true,
+          timestamp: true,
+          region: true,
+        },
       },
     },
   });
@@ -96,7 +102,14 @@ export async function PUT(req: NextRequest, { params }: Ctx) {
   const monitor = await prisma.monitor.update({
     where: { id },
     data: updateData,
-    select: { id: true, name: true, url: true, type: true, status: true, updatedAt: true },
+    select: {
+      id: true,
+      name: true,
+      url: true,
+      type: true,
+      status: true,
+      updatedAt: true,
+    },
   });
 
   return NextResponse.json({ monitor });

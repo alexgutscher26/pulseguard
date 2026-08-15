@@ -4,6 +4,8 @@ import AdminDesignPartnersClient from "./admin-client";
 import { getAllDesignPartnerApplications } from "@/actions/design-partners";
 import { getAdminStatus } from "@/actions/admin";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Design Partner Applications | Admin | PulseGuard",
   description: "Review, approve, and manage Design Partner applications.",

@@ -87,7 +87,13 @@ export async function checkSSL(targetUrl: string): Promise<SSLResult> {
         protocol: "Unknown",
         cipher: "Unknown",
         chain: [],
-        details: { tls13: false, tls12: false, tls11: false, tls10: false, pfs: false },
+        details: {
+          tls13: false,
+          tls12: false,
+          tls11: false,
+          tls10: false,
+          pfs: false,
+        },
       };
     } else {
       // Site is reachable but 3rd party API failed. Return best-effort safe estimation.
@@ -103,7 +109,13 @@ export async function checkSSL(targetUrl: string): Promise<SSLResult> {
         protocol: "Unknown",
         cipher: "Unknown",
         chain: [],
-        details: { tls13: true, tls12: true, tls11: false, tls10: false, pfs: true },
+        details: {
+          tls13: true,
+          tls12: true,
+          tls11: false,
+          tls10: false,
+          pfs: true,
+        },
       };
     }
   }

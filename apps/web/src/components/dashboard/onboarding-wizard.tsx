@@ -272,7 +272,10 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
         setChannelError("Telegram bot token and chat ID are required.");
         return;
       }
-      configObj = { botToken: telegramToken.trim(), chatId: telegramChatId.trim() };
+      configObj = {
+        botToken: telegramToken.trim(),
+        chatId: telegramChatId.trim(),
+      };
     }
 
     setIsSavingChannel(true);
@@ -502,7 +505,11 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                     {/* Provider Selection Grid */}
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                       {[
-                        { id: "uptimerobot", label: "UptimeRobot", icon: Boxes },
+                        {
+                          id: "uptimerobot",
+                          label: "UptimeRobot",
+                          icon: Boxes,
+                        },
                         { id: "betterstack", label: "Better Stack", icon: Zap },
                         { id: "statuscake", label: "StatusCake", icon: Cpu },
                         { id: "csv", label: "CSV / JSON", icon: FileText },

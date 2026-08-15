@@ -124,7 +124,12 @@ export class ProxyMesh {
         return { status: Status.UP, latency, source: "18-1-1" };
       }
 
-      return { status: Status.DOWN, latency, error: `HTTP_${response.status}`, source: "18-1-1" };
+      return {
+        status: Status.DOWN,
+        latency,
+        error: `HTTP_${response.status}`,
+        source: "18-1-1",
+      };
     } catch (err: any) {
       return {
         status: Status.DOWN,

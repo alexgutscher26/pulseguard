@@ -48,7 +48,14 @@ export async function POST(req: NextRequest) {
       userId: session.user.id,
       expiresAt: expiresAt ? new Date(expiresAt) : null,
     },
-    select: { id: true, name: true, prefix: true, scopes: true, expiresAt: true, createdAt: true },
+    select: {
+      id: true,
+      name: true,
+      prefix: true,
+      scopes: true,
+      expiresAt: true,
+      createdAt: true,
+    },
   });
 
   // rawKey is returned ONCE and never retrievable again

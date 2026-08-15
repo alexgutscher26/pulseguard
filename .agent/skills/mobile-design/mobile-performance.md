@@ -130,7 +130,7 @@ import { FlashList } from "@shopify/flash-list";
   renderItem={renderItem}
   estimatedItemSize={ITEM_HEIGHT}
   keyExtractor={keyExtractor}
-/>
+/>;
 
 // Benefits over FlatList:
 // ├── Faster recycling
@@ -176,7 +176,7 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
-} from 'react-native-reanimated';
+} from "react-native-reanimated";
 
 const Component = () => {
   const offset = useSharedValue(0);
@@ -227,6 +227,7 @@ useEffect(() => {
 
 ```markdown
 ## Before Every List
+
 - [ ] Using FlatList or FlashList (NOT ScrollView)
 - [ ] renderItem is useCallback memoized
 - [ ] List items are React.memo wrapped
@@ -234,12 +235,14 @@ useEffect(() => {
 - [ ] getItemLayout provided (if fixed height)
 
 ## Before Every Animation
+
 - [ ] useNativeDriver: true (if possible)
 - [ ] Using Reanimated for complex animations
 - [ ] Only animating transform/opacity
 - [ ] Tested on low-end Android device
 
 ## Before Any Release
+
 - [ ] console.log statements removed
 - [ ] Cleanup functions in all useEffects
 - [ ] No memory leaks (test with profiler)
@@ -437,22 +440,26 @@ class _MyWidgetState extends State<MyWidget> {
 
 ```markdown
 ## Before Every Widget
+
 - [ ] const constructor added (if no runtime args)
 - [ ] const keywords on static children
 - [ ] Minimal setState scope
 - [ ] Using selectors for provider watches
 
 ## Before Every List
+
 - [ ] Using ListView.builder (NOT ListView with children)
 - [ ] itemExtent provided (if fixed height)
 - [ ] Image caching with size limits
 
 ## Before Any Animation
+
 - [ ] Using Impeller (Flutter 3.16+)
 - [ ] Avoiding Opacity widget (use FadeTransition)
 - [ ] TickerProviderStateMixin for AnimationController
 
 ## Before Any Release
+
 - [ ] All dispose() methods implemented
 - [ ] No print() in production
 - [ ] Tested in profile/release mode
@@ -695,12 +702,14 @@ COMPRESS: Reduce payload size
 
 ```markdown
 ## During Development
+
 - [ ] Performance overlay enabled
 - [ ] Watching for dropped frames
 - [ ] Memory usage stable
 - [ ] No console warnings about performance
 
 ## Before Release
+
 - [ ] Tested on low-end device
 - [ ] Profiled memory over extended use
 - [ ] Cold start time measured
@@ -719,13 +728,21 @@ COMPRESS: Reduce payload size
 // List: Always use
 <FlatList
   data={data}
-  renderItem={useCallback(({item}) => <MemoItem item={item} />, [])}
-  keyExtractor={useCallback(item => item.id, [])}
-  getItemLayout={useCallback((_, i) => ({length: H, offset: H*i, index: i}), [])}
-/>
+  renderItem={useCallback(
+    ({ item }) => (
+      <MemoItem item={item} />
+    ),
+    [],
+  )}
+  keyExtractor={useCallback((item) => item.id, [])}
+  getItemLayout={useCallback(
+    (_, i) => ({ length: H, offset: H * i, index: i }),
+    [],
+  )}
+/>;
 
 // Animation: Always native
-useNativeDriver: true
+useNativeDriver: true;
 
 // Cleanup: Always present
 useEffect(() => {

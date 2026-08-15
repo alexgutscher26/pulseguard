@@ -69,7 +69,11 @@ export class LatencyAggregator extends DurableObject {
 
     try {
       const aggregates = [];
-      const baselineUpdates: { monitorId: string; region: string; currentAvg: number }[] = [];
+      const baselineUpdates: {
+        monitorId: string;
+        region: string;
+        currentAvg: number;
+      }[] = [];
 
       for (const [key, buffer] of this.buffers.entries()) {
         const [monitorId, region] = key.split(":");
@@ -93,7 +97,11 @@ export class LatencyAggregator extends DurableObject {
           });
 
           // Collect regional baseline update
-          baselineUpdates.push({ monitorId, region, currentAvg: data.avgLatency });
+          baselineUpdates.push({
+            monitorId,
+            region,
+            currentAvg: data.avgLatency,
+          });
         }
 
         buffer.reset();

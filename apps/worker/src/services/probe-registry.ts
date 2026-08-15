@@ -39,9 +39,8 @@ function generateToken(): string {
   return (
     "pg_probe_" +
     Array.from(bytes)
-      .map((b) => b.toString(36).padStart(2, "0"))
+      .map((b) => b.toString(16).padStart(2, "0"))
       .join("")
-      .slice(0, 40)
   );
 }
 
@@ -91,7 +90,12 @@ export async function registerProbe(
       status: "ACTIVE",
     },
   });
-  return { id: probe.id, name: probe.name, token: probe.token, status: probe.status };
+  return {
+    id: probe.id,
+    name: probe.name,
+    token: probe.token,
+    status: probe.status,
+  };
 }
 
 export async function authenticateProbe(
@@ -266,7 +270,11 @@ export async function checkProbeHeartbeats(prisma: any): Promise<ProbeHeartbeatR
 
   for (const probe of probes) {
     if (!probe.lastHeartbeat) {
-      results.push({ probeId: probe.id, status: "DOWN", secondsSinceLastHeartbeat: -1 });
+      results.push({
+        probeId: probe.id,
+        status: "DOWN",
+        secondsSinceLastHeartbeat: -1,
+      });
       continue;
     }
 
@@ -281,7 +289,11 @@ export async function checkProbeHeartbeats(prisma: any): Promise<ProbeHeartbeatR
       });
     }
 
-    results.push({ probeId: probe.id, status, secondsSinceLastHeartbeat: secondsSince });
+    results.push({
+      probeId: probe.id,
+      status,
+      secondsSinceLastHeartbeat: secondsSince,
+    });
   }
 
   return results;

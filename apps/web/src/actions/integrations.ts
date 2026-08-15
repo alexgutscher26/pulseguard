@@ -114,7 +114,10 @@ export async function importThirdPartyMonitors(projects: IntegrationProject[]) {
     return { success: true, count: createdMonitors.length };
   } catch (error: any) {
     console.error("Failed to import monitors:", error);
-    return { success: false, error: error.message || "Failed to import monitors" };
+    return {
+      success: false,
+      error: error.message || "Failed to import monitors",
+    };
   }
 }
 
@@ -123,32 +126,8 @@ export async function importThirdPartyMonitors(projects: IntegrationProject[]) {
  */
 export async function fetchVercelProjects(
   token?: string,
-  useDemo?: boolean,
 ): Promise<{ success: boolean; data?: ExternalResource[]; error?: string }> {
-  // Handle mock credentials
-  if (
-    useDemo ||
-    !token ||
-    token.toLowerCase().trim() === "mock" ||
-    token.toLowerCase().trim() === "demo"
-  ) {
-    return {
-      success: true,
-      data: [
-        { id: "v1", name: "[personal] pulseguard-landing", url: "pulseguard.io", type: "HTTP" },
-        {
-          id: "v2",
-          name: "[personal] nextjs-dashboard-prod",
-          url: "dashboard.pulseguard.io",
-          type: "HTTP",
-        },
-        { id: "v3", name: "[acme-corp] acme-main-website", url: "acme.com", type: "HTTP" },
-        { id: "v4", name: "[acme-corp] saas-api-service", url: "api.acme.com", type: "HTTP" },
-      ],
-    };
-  }
-
-  // If token is explicitly provided (fallback/legacy flow), fetch using it:
+  // If a direct token is provided, use it immediately
   if (token && token.toLowerCase().trim() !== "db") {
     try {
       const headers = {
@@ -175,7 +154,6 @@ export async function fetchVercelProjects(
       const teamsPromise = fetch("https://api.vercel.com/v2/teams", { headers })
         .then(async (res) => {
           if (!res.ok) {
-            // If we can't read teams, maybe token doesn't have permissions or user has no teams.
             return { teams: [] };
           }
           return res.json() as Promise<{ teams: any[] }>;
@@ -195,7 +173,6 @@ export async function fetchVercelProjects(
         scope: { type: "personal" | "team"; slug: string; name: string };
       }> = [];
 
-      // Add personal projects to our list
       if (personalResult.projects) {
         for (const p of personalResult.projects) {
           allProjects.push({
@@ -221,7 +198,11 @@ export async function fetchVercelProjects(
               const data = (await res.json()) as any;
               return (data.projects || []).map((p: any) => ({
                 project: p,
-                scope: { type: "team" as const, slug: team.slug, name: team.name },
+                scope: {
+                  type: "team" as const,
+                  slug: team.slug,
+                  name: team.name,
+                },
               }));
             })
             .catch((err) => {
@@ -236,7 +217,7 @@ export async function fetchVercelProjects(
         }
       }
 
-      // 4. Map and de-duplicate or structure aliases
+      // 4. Map and de-duplicate
       const data: ExternalResource[] = [];
       const seenUrls = new Set<string>();
 
@@ -278,7 +259,10 @@ export async function fetchVercelProjects(
 
       return { success: true, data };
     } catch (err: any) {
-      return { success: false, error: err.message || "Failed to fetch from Vercel" };
+      return {
+        success: false,
+        error: err.message || "Failed to fetch from Vercel",
+      };
     }
   }
 
@@ -297,7 +281,7 @@ export async function fetchVercelProjects(
     });
 
     if (integrations.length === 0) {
-      return { success: true, data: [] }; // No connections yet
+      return { success: true, data: [] };
     }
 
     const allProjects: Array<{
@@ -306,7 +290,7 @@ export async function fetchVercelProjects(
     }> = [];
 
     for (const integration of integrations) {
-      const headers = {
+      const authHeaders = {
         Authorization: `Bearer ${integration.accessToken}`,
       };
 
@@ -316,7 +300,7 @@ export async function fetchVercelProjects(
         : `https://api.vercel.com/v9/projects?teamId=${integration.teamId}&limit=100`;
 
       try {
-        const res = await fetch(url, { headers });
+        const res = await fetch(url, { headers: authHeaders });
         if (!res.ok) {
           const text = await res.text();
           console.error(
@@ -332,7 +316,11 @@ export async function fetchVercelProjects(
           for (const p of data.projects) {
             allProjects.push({
               project: p,
-              scope: { type: isPersonal ? "personal" : "team", slug: scopeSlug, name: scopeName },
+              scope: {
+                type: isPersonal ? "personal" : "team",
+                slug: scopeSlug,
+                name: scopeName,
+              },
             });
           }
         }
@@ -341,7 +329,6 @@ export async function fetchVercelProjects(
       }
     }
 
-    // Map and de-duplicate or structure aliases
     const data: ExternalResource[] = [];
     const seenUrls = new Set<string>();
 
@@ -383,7 +370,10 @@ export async function fetchVercelProjects(
 
     return { success: true, data };
   } catch (err: any) {
-    return { success: false, error: err.message || "Failed to fetch from Vercel" };
+    return {
+      success: false,
+      error: err.message || "Failed to fetch from Vercel",
+    };
   }
 }
 
@@ -400,9 +390,24 @@ export async function fetchNetlifySites(
     return {
       success: true,
       data: [
-        { id: "n1", name: "sveltekit-portfolio", url: "portfolio.netlify.app", type: "HTTP" },
-        { id: "n2", name: "static-docs-site", url: "docs.maker.io", type: "HTTP" },
-        { id: "n3", name: "landing-page-v2", url: "promo.netlify.app", type: "HTTP" },
+        {
+          id: "n1",
+          name: "sveltekit-portfolio",
+          url: "portfolio.netlify.app",
+          type: "HTTP",
+        },
+        {
+          id: "n2",
+          name: "static-docs-site",
+          url: "docs.maker.io",
+          type: "HTTP",
+        },
+        {
+          id: "n3",
+          name: "landing-page-v2",
+          url: "promo.netlify.app",
+          type: "HTTP",
+        },
       ],
     };
   }
@@ -439,7 +444,10 @@ export async function fetchNetlifySites(
 
     if (!res.ok) {
       const errorText = await res.text();
-      return { success: false, error: `Netlify API returned status ${res.status}: ${errorText}` };
+      return {
+        success: false,
+        error: `Netlify API returned status ${res.status}: ${errorText}`,
+      };
     }
 
     const sites = (await res.json()) as any[];
@@ -457,7 +465,10 @@ export async function fetchNetlifySites(
 
     return { success: true, data };
   } catch (err: any) {
-    return { success: false, error: err.message || "Failed to fetch from Netlify" };
+    return {
+      success: false,
+      error: err.message || "Failed to fetch from Netlify",
+    };
   }
 }
 
@@ -526,7 +537,10 @@ export async function connectNetlifyWithToken(token: string) {
     };
   } catch (err: any) {
     console.error("Netlify token integration error:", err);
-    return { success: false, error: err.message || "An unexpected error occurred." };
+    return {
+      success: false,
+      error: err.message || "An unexpected error occurred.",
+    };
   }
 }
 
@@ -598,7 +612,10 @@ export async function fetchGitHubRepos(
 
     if (!res.ok) {
       const errorText = await res.text();
-      return { success: false, error: `GitHub API returned status ${res.status}: ${errorText}` };
+      return {
+        success: false,
+        error: `GitHub API returned status ${res.status}: ${errorText}`,
+      };
     }
 
     const repos = (await res.json()) as any[];
@@ -616,7 +633,10 @@ export async function fetchGitHubRepos(
 
     return { success: true, data };
   } catch (err: any) {
-    return { success: false, error: err.message || "Failed to fetch from GitHub" };
+    return {
+      success: false,
+      error: err.message || "Failed to fetch from GitHub",
+    };
   }
 }
 
@@ -689,7 +709,10 @@ export async function connectGitHubWithToken(token: string) {
     };
   } catch (err: any) {
     console.error("GitHub token integration error:", err);
-    return { success: false, error: err.message || "An unexpected error occurred." };
+    return {
+      success: false,
+      error: err.message || "An unexpected error occurred.",
+    };
   }
 }
 
@@ -721,17 +744,20 @@ export async function getConnectedIntegrations() {
     return { success: true, data: integrations };
   } catch (err: any) {
     console.error("Failed to fetch connected integrations:", err);
-    return { success: false, error: err.message || "Failed to retrieve integrations" };
+    return {
+      success: false,
+      error: err.message || "Failed to retrieve integrations",
+    };
   }
 }
 
 /**
  * Disconnects/deletes a persistent integration.
  */
+import { getSafeSession } from "@/lib/safe-session";
+
 export async function disconnectIntegration(integrationId: string) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSafeSession();
 
   if (!session?.user) {
     return { success: false, error: "Unauthorized" };
@@ -744,7 +770,10 @@ export async function disconnectIntegration(integrationId: string) {
     });
 
     if (!integration) {
-      return { success: false, error: "Integration not found or access denied" };
+      return {
+        success: false,
+        error: "Integration not found or access denied",
+      };
     }
 
     await prisma.userIntegration.delete({
@@ -756,7 +785,10 @@ export async function disconnectIntegration(integrationId: string) {
     return { success: true };
   } catch (err: any) {
     console.error("Failed to disconnect integration:", err);
-    return { success: false, error: err.message || "Failed to disconnect integration" };
+    return {
+      success: false,
+      error: err.message || "Failed to disconnect integration",
+    };
   }
 }
 
@@ -904,6 +936,9 @@ export async function connectVercelWithToken(token: string) {
     };
   } catch (err: any) {
     console.error("Vercel token integration error:", err);
-    return { success: false, error: err.message || "An unexpected error occurred." };
+    return {
+      success: false,
+      error: err.message || "An unexpected error occurred.",
+    };
   }
 }
