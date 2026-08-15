@@ -41,6 +41,7 @@
     "db:migrate": "turbo -F @pulseguard/db db:migrate",
     "db:seed": "turbo -F @pulseguard/db db:seed",
     "seed": "bun scripts/seed-monitors.ts",
+    "import:kuma": "bun scripts/import-uptime-kuma.ts",
     "deploy": "turbo -F @pulseguard/infra deploy",
     "destroy": "turbo -F @pulseguard/infra destroy",
     "check": "oxlint && oxfmt --write",

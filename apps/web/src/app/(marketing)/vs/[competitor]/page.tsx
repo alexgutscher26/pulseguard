@@ -11,10 +11,17 @@ const COMPETITOR_MAP: Record<string, string> = {
   "better-stack": "vs-better-stack",
   betteruptime: "vs-better-stack",
   checkly: "vs-checkly",
+  "uptime-kuma": "vs-uptime-kuma",
+  kuma: "vs-uptime-kuma",
 };
 
 export function generateStaticParams() {
-  return [{ competitor: "uptimerobot" }, { competitor: "better-stack" }, { competitor: "checkly" }];
+  return [
+    { competitor: "uptimerobot" },
+    { competitor: "better-stack" },
+    { competitor: "checkly" },
+    { competitor: "uptime-kuma" },
+  ];
 }
 
 export async function generateMetadata({
