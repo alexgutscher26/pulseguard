@@ -525,17 +525,27 @@ export function PublicView({
             <p className="text-[10px] text-primary/30 uppercase tracking-[0.2em]">
               {tCommon("system_status")}
             </p>
-            {(!page.user || page.user.tier === "INITIATE") && (
-              <p className="text-xs text-primary/50">
-                {tCommon("powered_by")}{" "}
-                <a
-                  href="https://pulseguard.com"
-                  className="text-primary font-bold hover:underline decoration-dotted underline-offset-4"
-                >
-                  PulseGuard
-                </a>
-              </p>
-            )}
+            {(!page.user || page.user.tier === "INITIATE") &&
+              (() => {
+                const referralCode = page.user?.referralCode?.code;
+                const referralUrl = referralCode
+                  ? `/r/${referralCode}?utm_source=status_page&utm_medium=badge&utm_campaign=status_page_loop&utm_content=${encodeURIComponent(page.slug || "public")}`
+                  : `/?utm_source=status_page&utm_medium=badge&utm_campaign=status_page_loop&utm_content=${encodeURIComponent(page.slug || "public")}`;
+
+                return (
+                  <p className="text-xs text-primary/50">
+                    {tCommon("powered_by")}{" "}
+                    <a
+                      href={referralUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary font-bold hover:underline decoration-dotted underline-offset-4"
+                    >
+                      PulseGuard
+                    </a>
+                  </p>
+                );
+              })()}
           </div>
         </div>
       </div>

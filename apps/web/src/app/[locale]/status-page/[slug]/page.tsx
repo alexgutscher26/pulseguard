@@ -17,7 +17,12 @@ async function getPublicStatusPage(slug: string) {
   return prisma.statusPage.findUnique({
     where: { slug: slug },
     include: {
-      user: { select: { tier: true } },
+      user: {
+        select: {
+          tier: true,
+          referralCode: { select: { code: true } },
+        },
+      },
       monitors: {
         include: {
           monitor: {
