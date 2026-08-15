@@ -25,9 +25,6 @@ interface LocationsClientProps {
 export default function LocationsClient({ probes }: LocationsClientProps) {
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
 
-  const allIpv4 = Array.from(new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv4Ranges)));
-  const allIpv6 = Array.from(new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv6Ranges)));
-
   const healthyCount = probes.filter((p) => p.status === "ONLINE").length;
   const flappingProbes = probes.filter((p) => p.status === "FLAPPING");
   const excludedRegionText =
@@ -39,16 +36,17 @@ export default function LocationsClient({ probes }: LocationsClientProps) {
     setTimeout(() => setCopiedSection(null), 2000);
   };
 
-  const allowlistSnippet = `# 1. Cloudflare WAF / Fastly / AWS WAF (Recommended)
-# Our checks originate from Cloudflare's global edge network.
-# Match on un-spoofable edge headers to allowlist without opening to all shared egress:
-CF-Worker: pulseguard.io
-User-Agent: PulseGuard-Monitor/1.0 (+https://pulseguard.io/bot)
+  const allowlistSnippet = `# 1. Cloudflare WAF Custom Rule (Recommended)
+# Our synthetic probes run as Cloudflare Durable Objects.
+# Subrequests include an authentic, un-spoofable CF-Worker header.
+#
+# Match Expression:
+(http.request.headers["cf-worker"][0] eq "pulseguard.io")
+# Action: Skip / Bypass WAF & Rate Limiting
 
-# 2. Machine-readable reference feeds (for IP-based firewalls)
-GET https://pulseguard.io/ips.json
-GET https://pulseguard.io/ips.txt      # IPv4 CIDR reference list
-GET https://pulseguard.io/ips-v6.txt   # IPv6 CIDR reference list`;
+# 2. General WAF & Reverse Proxy Headers (Fastly / AWS WAF / Nginx)
+CF-Worker: pulseguard.io
+User-Agent: PulseGuard-Monitor/1.0 (+https://pulseguard.io/bot)`;
 
   return (
     <div className="min-h-screen bg-background text-foreground pt-32 pb-24 px-4 sm:px-6 lg:px-8">
@@ -163,18 +161,19 @@ GET https://pulseguard.io/ips-v6.txt   # IPv6 CIDR reference list`;
               Allowlist our probes
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-              Our probes originate from Cloudflare&apos;s global edge network. Because raw IP ranges
-              on serverless edge networks are shared across platforms, we recommend configuring your
-              WAF to match on our un-spoofable{" "}
+              Our synthetic probes originate from Cloudflare Durable Objects. Because serverless
+              edge runtimes egress via Cloudflare&apos;s shared global edge IP pool, IP allowlisting
+              is neither deterministic nor secure. Instead, configure your WAF or reverse proxy to
+              match on our cryptographic{" "}
               <code className="text-primary font-mono font-semibold">CF-Worker: pulseguard.io</code>{" "}
-              header and <code className="text-primary font-mono font-semibold">User-Agent</code>.
-              For traditional firewalls, reference CIDR feeds are also provided below.
+              header and verified{" "}
+              <code className="text-primary font-mono font-semibold">User-Agent</code>.
             </p>
           </div>
 
           <div className="relative rounded-2xl bg-zinc-950 border border-zinc-800 p-5 font-mono text-xs text-zinc-300 overflow-x-auto">
             <div className="flex justify-between items-center pb-3 mb-3 border-b border-zinc-800 text-[11px] text-zinc-500">
-              <span>Allowlist Configuration Spec</span>
+              <span>WAF Allowlist Configuration Spec</span>
               <button
                 onClick={() => handleCopy(allowlistSnippet, "spec")}
                 className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline cursor-pointer"
@@ -192,40 +191,62 @@ GET https://pulseguard.io/ips-v6.txt   # IPv6 CIDR reference list`;
             </pre>
           </div>
 
-          {/* Quick Copy CIDR Buttons */}
+          {/* Quick Copy Action Buttons */}
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <button
-              onClick={() => handleCopy(allIpv4.join("\n"), "ipv4")}
+              onClick={() => handleCopy("CF-Worker: pulseguard.io", "cf-worker")}
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-muted/60 border border-border text-xs font-mono font-medium hover:bg-muted transition-colors cursor-pointer"
             >
-              {copiedSection === "ipv4" ? (
+              {copiedSection === "cf-worker" ? (
                 <Check className="size-3.5 text-emerald-500" />
               ) : (
                 <Copy className="size-3.5" />
               )}
-              <span>{copiedSection === "ipv4" ? "Copied IPv4 CIDRs" : "Copy IPv4 CIDRs"}</span>
+              <span>
+                {copiedSection === "cf-worker" ? "Copied Header" : "Copy CF-Worker Header"}
+              </span>
             </button>
 
             <button
-              onClick={() => handleCopy(allIpv6.join("\n"), "ipv6")}
+              onClick={() =>
+                handleCopy("PulseGuard-Monitor/1.0 (+https://pulseguard.io/bot)", "user-agent")
+              }
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-muted/60 border border-border text-xs font-mono font-medium hover:bg-muted transition-colors cursor-pointer"
             >
-              {copiedSection === "ipv6" ? (
+              {copiedSection === "user-agent" ? (
                 <Check className="size-3.5 text-emerald-500" />
               ) : (
                 <Copy className="size-3.5" />
               )}
-              <span>{copiedSection === "ipv6" ? "Copied IPv6 CIDRs" : "Copy IPv6 CIDRs"}</span>
+              <span>
+                {copiedSection === "user-agent" ? "Copied User-Agent" : "Copy User-Agent"}
+              </span>
+            </button>
+
+            <button
+              onClick={() =>
+                handleCopy('http.request.headers["cf-worker"][0] eq "pulseguard.io"', "waf-rule")
+              }
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-muted/60 border border-border text-xs font-mono font-medium hover:bg-muted transition-colors cursor-pointer"
+            >
+              {copiedSection === "waf-rule" ? (
+                <Check className="size-3.5 text-emerald-500" />
+              ) : (
+                <Copy className="size-3.5" />
+              )}
+              <span>
+                {copiedSection === "waf-rule" ? "Copied WAF Rule" : "Copy Cloudflare WAF Rule"}
+              </span>
             </button>
 
             <a
-              href="/ips.json"
+              href="/api/locations"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-card border border-border text-xs font-mono font-medium hover:border-primary/40 hover:bg-primary/5 transition-colors"
             >
               <Terminal className="size-3.5 text-primary" />
-              <span>/ips.json</span>
+              <span>/api/locations</span>
               <ExternalLink className="size-3 text-muted-foreground" />
             </a>
           </div>

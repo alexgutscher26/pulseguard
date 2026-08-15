@@ -5,27 +5,27 @@ export const dynamic = "force-dynamic";
 export const revalidate = 60;
 
 export async function GET() {
-  const allIpv4 = Array.from(new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv4Ranges)));
-  const allIpv6 = Array.from(new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv6Ranges)));
-
   return NextResponse.json(
     {
       updated_at: new Date().toISOString(),
+      identification_method: "CF-Worker Header Verification",
       notice:
-        "Subrequests originate from Cloudflare's global edge network. For secure WAF allowlisting without permitting shared edge IP traffic, match on the un-spoofable CF-Worker and User-Agent headers.",
+        "PulseGuard synthetic probes execute via Cloudflare Durable Objects, which egress from Cloudflare's shared global edge IP pool. Static IP allowlisting cannot uniquely identify probe traffic without permitting shared edge egress. Configure your WAF or reverse proxy to match on the authentic CF-Worker header and User-Agent.",
       identification_headers: {
         "CF-Worker": "pulseguard.io",
         "User-Agent": "PulseGuard-Monitor/1.0 (+https://pulseguard.io/bot)",
       },
-      user_agent: "PulseGuard-Monitor/1.0 (+https://pulseguard.io/locations)",
-      ipv4: allIpv4,
-      ipv6: allIpv6,
+      waf_rules: {
+        cloudflare: 'http.request.headers["cf-worker"][0] eq "pulseguard.io"',
+        cloudflare_action: "Skip / Bypass WAF & Rate Limiting",
+      },
       regions: CLOUDFLARE_PROBE_REGIONS.map((r) => ({
         code: r.code,
         covers: r.covers,
         city: r.city,
-        ipv4: r.ipv4Ranges,
-        ipv6: r.ipv6Ranges,
+        continent: r.continent,
+        provider: r.provider,
+        asn: r.asn,
       })),
     },
     {

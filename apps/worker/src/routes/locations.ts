@@ -42,24 +42,22 @@ export const locationsRoute: RouteHandler = withErrorHandling(async ({ env }, ur
         status: telemetry?.healthState || region.defaultHealthStatus || "ONLINE",
         lastAlarmRun: telemetry?.lastAlarmRun || new Date().toISOString(),
         lastWallDurationMs: telemetry?.lastWallDurationMs || 0,
-        ipv4Ranges: region.ipv4Ranges,
-        ipv6Ranges: region.ipv6Ranges,
       };
     }),
   );
-
-  // Collect unique IPv4 & IPv6 CIDRs across all probes
-  const allIpv4 = Array.from(new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv4Ranges)));
-  const allIpv6 = Array.from(new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv6Ranges)));
 
   return json({
     totalRegions: liveProbes.length,
     consensusThreshold: "4-of-7 (Majority Quorum)",
     probes: liveProbes,
-    allowlist: {
-      ipv4: allIpv4,
-      ipv6: allIpv6,
-      userAgent: "PulseGuard-Synthetic-Monitor/2.0 (+https://pulseguard.io/bot)",
+    identificationMethod: "CF-Worker Header Verification",
+    identificationHeaders: {
+      "CF-Worker": "pulseguard.io",
+      "User-Agent": "PulseGuard-Synthetic-Monitor/2.0 (+https://pulseguard.io/bot)",
+    },
+    wafRule: {
+      expression: 'http.request.headers["cf-worker"][0] eq "pulseguard.io"',
+      action: "Skip / Bypass WAF & Rate Limiting",
     },
     timestamp: new Date().toISOString(),
   });

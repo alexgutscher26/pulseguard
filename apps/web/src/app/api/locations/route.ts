@@ -8,9 +8,6 @@ export const revalidate = 60;
  * GET /api/locations — Public machine-readable JSON endpoint for customer WAF / Firewall allowlisting
  */
 export async function GET() {
-  const allIpv4 = Array.from(new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv4Ranges)));
-  const allIpv6 = Array.from(new Set(CLOUDFLARE_PROBE_REGIONS.flatMap((r) => r.ipv6Ranges)));
-
   const probeNodes = CLOUDFLARE_PROBE_REGIONS.map((region) => ({
     code: region.code,
     name: region.name,
@@ -22,8 +19,6 @@ export async function GET() {
     asn: region.asn,
     primaryColos: region.primaryColos,
     status: region.defaultHealthStatus || "ONLINE",
-    ipv4Ranges: region.ipv4Ranges,
-    ipv6Ranges: region.ipv6Ranges,
   }));
 
   return NextResponse.json(
@@ -32,10 +27,14 @@ export async function GET() {
       consensusEngine: "4-of-7 Quorum Verification",
       totalRegions: CLOUDFLARE_PROBE_REGIONS.length,
       lastUpdated: new Date().toISOString(),
-      userAgent: "PulseGuard-Monitor/1.0 (+https://pulseguard.io/locations)",
-      allowlist: {
-        ipv4: allIpv4,
-        ipv6: allIpv6,
+      identificationMethod: "CF-Worker Header Verification",
+      identificationHeaders: {
+        "CF-Worker": "pulseguard.io",
+        "User-Agent": "PulseGuard-Monitor/1.0 (+https://pulseguard.io/bot)",
+      },
+      wafRule: {
+        expression: 'http.request.headers["cf-worker"][0] eq "pulseguard.io"',
+        action: "Skip / Bypass WAF & Rate Limiting",
       },
       probes: probeNodes,
     },

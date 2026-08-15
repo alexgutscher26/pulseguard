@@ -111,8 +111,8 @@ export const featureComparisons: FeatureComparisonItem[] = [
   // Transparency & Allowlisting
   {
     category: "Transparency & Allowlisting",
-    name: "Probe locations published",
-    description: "Every city, network and IP range, with live health",
+    name: "Probe locations & health published",
+    description: "Every city, network ASN, and DO location hint with live health",
     pulseguard: "✓ Full list + live status",
     uptimerobot: "Regions only",
     betteruptime: "Not published",
@@ -121,10 +121,10 @@ export const featureComparisons: FeatureComparisonItem[] = [
   },
   {
     category: "Transparency & Allowlisting",
-    name: "Probe identification for WAF allowlisting",
+    name: "WAF & probe allowlisting",
     description:
-      "Un-spoofable CF-Worker header + User-Agent matching without shared IP allowlist vulnerabilities",
-    pulseguard: "✓ Cryptographic header",
+      "CF-Worker cryptographic header + User-Agent matching (immune to shared Cloudflare edge egress IP spoofing)",
+    pulseguard: "✓ CF-Worker header",
     uptimerobot: "Static IPs (shared)",
     betteruptime: "Static IPs only",
     checkly: "Static IPs (AWS)",
