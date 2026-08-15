@@ -74,9 +74,47 @@ export async function runGlobalpingDiagnostics(targetUrl: string): Promise<{
       };
     }
 
+    let hostname = targetUrl.trim();
+    let protocol: "HTTP" | "HTTPS" = "HTTPS";
+    let port: number | undefined;
+    let path = "/";
+    let query: string | undefined;
+
+    try {
+      const parsed = new URL(targetUrl.includes("://") ? targetUrl : `https://${targetUrl}`);
+      hostname = parsed.hostname;
+      protocol = parsed.protocol === "http:" ? "HTTP" : "HTTPS";
+      if (parsed.port) {
+        const p = Number.parseInt(parsed.port, 10);
+        if (!Number.isNaN(p)) port = p;
+      }
+      path = parsed.pathname || "/";
+      if (parsed.search) {
+        query = parsed.search.replace(/^\?/, "") || undefined;
+      }
+    } catch {
+      hostname =
+        targetUrl
+          .replace(/^[a-zA-Z]+:\/\//, "")
+          .split("/")[0]
+          ?.split(":")[0] || targetUrl;
+    }
+
+    const measurementOptions: Record<string, any> = {
+      protocol,
+      request: {
+        method: "HEAD",
+        path: path || "/",
+        ...(query ? { query } : {}),
+      },
+    };
+    if (port) {
+      measurementOptions.port = port;
+    }
+
     const reqBody = {
       type: "http",
-      target: targetUrl,
+      target: hostname,
       locations: [
         { continent: "NA" },
         { continent: "EU" },
@@ -85,9 +123,7 @@ export async function runGlobalpingDiagnostics(targetUrl: string): Promise<{
         { continent: "SA" },
         { continent: "AF" },
       ],
-      measurementOptions: {
-        method: "HEAD",
-      },
+      measurementOptions,
       limit: 12, // Test from 12 diverse global probe vantage points
     };
 

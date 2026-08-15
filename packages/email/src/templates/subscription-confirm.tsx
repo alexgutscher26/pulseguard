@@ -1,6 +1,5 @@
 import React from "react";
-import { render } from "@react-email/render";
-import { Html, Head, Body, Container, Section, Text, Link } from "@react-email/components";
+import { render, Html, Head, Body, Container, Section, Text, Link } from "../primitives";
 import { emailTheme } from "../styles/theme";
 
 export interface SubscriptionConfirmData {

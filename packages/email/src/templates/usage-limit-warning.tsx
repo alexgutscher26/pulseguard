@@ -1,5 +1,5 @@
 import * as React from "react";
-import { render } from "@react-email/render";
+import { render } from "../primitives";
 
 export interface UsageLimitWarningEmailProps {
   userName: string;

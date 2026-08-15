@@ -25,7 +25,6 @@
   // Local dev config: connect to real remote bindings instead of local simulation
   // This prevents "proxy request failed" errors when crons fire in wrangler dev
   "dev": {
-    "remote": false,
     "local_protocol": "http",
     "upstream_protocol": "https",
   },

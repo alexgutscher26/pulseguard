@@ -14,15 +14,15 @@
   },
   "dependencies": {
     "@pulseguard/env": "workspace:*",
-    "@react-email/components": "^0.0.25",
-    "@react-email/render": "^1.0.1",
     "@react-pdf/renderer": "^4.3.2",
     "react": "^19.2.3",
+    "react-dom": "^19.2.3",
     "resend": "^4.0.0"
   },
   "devDependencies": {
     "@pulseguard/config": "workspace:*",
     "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "typescript": "catalog:"
   }
 }

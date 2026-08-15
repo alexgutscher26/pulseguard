@@ -165,9 +165,47 @@ export async function checkGlobalLatency(targetUrl: string): Promise<LatencyResu
 
   // 2. Perform Real Global Latency checks via the Globalping API (jsDelivr)
   try {
+    let hostname = url.trim();
+    let protocol: "HTTP" | "HTTPS" = "HTTPS";
+    let port: number | undefined;
+    let path = "/";
+    let query: string | undefined;
+
+    try {
+      const parsed = new URL(url.includes("://") ? url : `https://${url}`);
+      hostname = parsed.hostname;
+      protocol = parsed.protocol === "http:" ? "HTTP" : "HTTPS";
+      if (parsed.port) {
+        const p = Number.parseInt(parsed.port, 10);
+        if (!Number.isNaN(p)) port = p;
+      }
+      path = parsed.pathname || "/";
+      if (parsed.search) {
+        query = parsed.search.replace(/^\?/, "") || undefined;
+      }
+    } catch {
+      hostname =
+        url
+          .replace(/^[a-zA-Z]+:\/\//, "")
+          .split("/")[0]
+          ?.split(":")[0] || url;
+    }
+
+    const measurementOptions: Record<string, any> = {
+      protocol,
+      request: {
+        method: "HEAD",
+        path: path || "/",
+        ...(query ? { query } : {}),
+      },
+    };
+    if (port) {
+      measurementOptions.port = port;
+    }
+
     const reqBody = {
       type: "http",
-      target: url,
+      target: hostname,
       locations: [
         { continent: "NA" }, // North America
         { continent: "EU" }, // Europe
@@ -175,9 +213,7 @@ export async function checkGlobalLatency(targetUrl: string): Promise<LatencyResu
         { continent: "SA" }, // South America
         { continent: "OC" }, // Oceania
       ],
-      measurementOptions: {
-        method: "HEAD",
-      },
+      measurementOptions,
       limit: 6, // Fetch a few probes
     };
 
