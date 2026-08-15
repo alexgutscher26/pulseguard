@@ -13,7 +13,8 @@ export type FeatureFlag =
   | "saml_sso"
   | "custom_webhooks_pagerduty"
   | "pagerduty_integration"
-  | "sms_alerts";
+  | "sms_alerts"
+  | "multi_seat_teams";
 
 export const PLAN_FEATURE_FLAGS: Record<PlanTier, Record<FeatureFlag, boolean>> = {
   INITIATE: {
@@ -30,6 +31,7 @@ export const PLAN_FEATURE_FLAGS: Record<PlanTier, Record<FeatureFlag, boolean>> 
     custom_webhooks_pagerduty: false,
     pagerduty_integration: true,
     sms_alerts: false,
+    multi_seat_teams: false,
   },
   NETRUNNER: {
     custom_domains: true,
@@ -45,6 +47,7 @@ export const PLAN_FEATURE_FLAGS: Record<PlanTier, Record<FeatureFlag, boolean>> 
     custom_webhooks_pagerduty: false,
     pagerduty_integration: true,
     sms_alerts: false,
+    multi_seat_teams: false,
   },
   CONSTRUCT: {
     custom_domains: true,
@@ -60,6 +63,7 @@ export const PLAN_FEATURE_FLAGS: Record<PlanTier, Record<FeatureFlag, boolean>> 
     custom_webhooks_pagerduty: true,
     pagerduty_integration: true,
     sms_alerts: true,
+    multi_seat_teams: true,
   },
 };
 
@@ -98,6 +102,10 @@ const FEATURE_DESCRIPTIONS: Record<FeatureFlag, { name: string; requiredPlan: Pl
     requiredPlan: "INITIATE",
   },
   sms_alerts: { name: "SMS Notification Alerts", requiredPlan: "CONSTRUCT" },
+  multi_seat_teams: {
+    name: "Multi-Seat Team Workspaces & RBAC",
+    requiredPlan: "CONSTRUCT",
+  },
 };
 
 /**

@@ -25,15 +25,15 @@
 
 ### 👥 Team Management & RBAC (Official Roadmap Item)
 
-- [ ] Design `Team` / `Organization` model in Prisma schema
-- [ ] Add `Role` enum: `OWNER`, `ADMIN`, `MEMBER`, `VIEWER`, `BILLING`
-- [ ] Implement per-resource permission checks in tRPC routers (monitors, alerts, status pages)
-- [ ] Build team invitation flow (email invite → accept link → auto-join)
-- [ ] Create `/settings/team` UI page with member list, role editor, and invite form
-- [ ] Add team-scoped API keys with role-level permissions
-- [ ] Implement audit log for all team actions (member added/removed, role changed)
-- [ ] Support multiple workspaces per user (workspace switcher in nav)
-- [ ] Add team billing: aggregate usage across all members
+- [x] Design `Team` / `Organization` model in Prisma schema
+- [x] Add `Role` enum: `OWNER`, `ADMIN`, `MEMBER`, `VIEWER`, `BILLING`
+- [x] Implement per-resource permission checks in tRPC routers (monitors, alerts, status pages)
+- [x] Build team invitation flow (email invite → accept link → auto-join)
+- [x] Create `/settings/team` UI page with member list, role editor, and invite form
+- [x] Add team-scoped API keys with role-level permissions
+- [x] Implement audit log for all team actions (member added/removed, role changed)
+- [x] Support multiple workspaces per user (workspace switcher in nav)
+- [x] Add team billing: aggregate usage across all members
 
 ### 📱 Mobile Push Notifications (Official Roadmap Item)
 
@@ -273,9 +273,9 @@
 
 ### Prisma Schema
 
-- [ ] Add `Team` model with `members: TeamMember[]`, `plan`, `billingEmail`
-- [ ] Add `TeamMember` model with `userId`, `teamId`, `role`, `invitedAt`, `acceptedAt`
-- [ ] Add `Invitation` model for pending team invites (token, expiresAt, role)
+- [x] Add `Team` model with `members: TeamMember[]`, `plan`, `billingEmail`
+- [x] Add `TeamMember` model with `userId`, `teamId`, `role`, `invitedAt`, `acceptedAt`
+- [x] Add `Invitation` model for pending team invites (token, expiresAt, role)
 - [ ] Add `PushToken` model for mobile push notification tokens
 - [ ] Add `OnCallSchedule` model (rotation config, member list, timezone)
 - [ ] Add `EscalationPolicy` model linked to `AlertRule`
@@ -286,7 +286,7 @@
 - [ ] Add `MonitorTag` model with many-to-many relation to `Monitor`
 - [ ] Add `Screenshot` model (URL in R2, monitorId, checkTimestamp)
 - [ ] Add `VisualBaseline` model for BROWSER monitor visual regression
-- [ ] Add `AuditLog` model for all user/team actions (actor, action, resource, metadata)
+- [x] Add `AuditLog` model for all user/team actions (actor, action, resource, metadata)
 - [ ] Add `BillingSubscription` model (Stripe subscription ID, plan, seat count)
 - [ ] Add `UsageRecord` model for per-workspace check consumption
 - [ ] Add `CustomField` model for user-defined metadata on monitors
@@ -311,9 +311,9 @@
 - [ ] Add `incident.acknowledge` procedure with timestamp
 - [ ] Add `incident.addNote` procedure (internal incident comments)
 - [ ] Add `alertRule.test` procedure (trigger test notification)
-- [ ] Add `team.create` / `team.invite` / `team.removeMember` procedures
+- [x] Add `team.create` / `team.invite` / `team.removeMember` procedures
 - [ ] Add `billing.getSubscription` / `billing.createCheckoutSession` procedures
-- [ ] Add `auditLog.list` procedure with filtering by actor, resource, action
+- [x] Add `auditLog.list` procedure with filtering by actor, resource, action
 - [ ] Add `runbook.create` / `runbook.update` / `runbook.list` procedures
 - [ ] Add `sla.generateReport` procedure with date range params
 - [ ] Add pagination to all `.list` procedures (cursor-based pagination)
@@ -384,8 +384,8 @@
 ### Settings
 
 - [ ] Add `/settings/billing` page with current plan, usage meters, upgrade CTA
-- [ ] Add `/settings/team` page (P1 item — UI side)
-- [ ] Add `/settings/audit-log` page with searchable/filterable audit trail
+- [x] Add `/settings/team` page (P1 item — UI side)
+- [x] Add `/settings/audit-log` page with searchable/filterable audit trail
 - [ ] Add `/settings/api-keys` page with create, revoke, and last-used display
 - [ ] Add `/settings/integrations` hub page listing all configured integrations
 - [ ] Add `/settings/notifications` personal notification preferences

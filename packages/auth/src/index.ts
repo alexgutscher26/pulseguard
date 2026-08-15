@@ -5,7 +5,8 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
 
-import { sendPasswordResetEmail } from "@pulseguard/email";
+import { sendPasswordResetEmail, sendTeamInvitationEmail } from "@pulseguard/email";
+import { organization } from "better-auth/plugins";
 
 console.log("🔧 Initializing BetterAuth with config:", {
   hasSecret: !!env.BETTER_AUTH_SECRET,
@@ -81,7 +82,22 @@ export const auth = betterAuth({
       });
     },
   },
-  plugins: [nextCookies(), expo()],
+  plugins: [
+    nextCookies(),
+    expo(),
+    organization({
+      async sendInvitationEmail(data) {
+        const appUrl = env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+        await sendTeamInvitationEmail(data.email, {
+          organizationName: data.organization.name,
+          inviterName:
+            data.inviter?.user?.name || data.inviter?.user?.email || "A team administrator",
+          role: data.role || "member",
+          inviteUrl: `${appUrl}/invitations/${data.id}`,
+        });
+      },
+    }),
+  ],
 });
 
 console.log("✅ BetterAuth initialized successfully");

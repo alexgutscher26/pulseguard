@@ -8,6 +8,8 @@ export interface PlanLimits {
   customDomainAllowed: boolean;
   usageMetered: boolean;
   priorityProbes: boolean;
+  maxSeats: number;
+  multiSeatAllowed: boolean;
   /** Max manual run-checks per monitor per window. 0 = unlimited. */
   maxManualChecksPerWindow: number;
   /** Sliding window length in seconds for manual check rate limiting. */
@@ -42,6 +44,8 @@ export const PLANS: Record<PlanTier, PlanDetails> = {
       customDomainAllowed: false,
       usageMetered: false,
       priorityProbes: false,
+      maxSeats: 1,
+      multiSeatAllowed: false,
       maxManualChecksPerWindow: 3,
       manualCheckWindowSeconds: 300,
     },
@@ -74,6 +78,8 @@ export const PLANS: Record<PlanTier, PlanDetails> = {
       customDomainAllowed: true,
       usageMetered: true,
       priorityProbes: true,
+      maxSeats: 1,
+      multiSeatAllowed: false,
       maxManualChecksPerWindow: 10,
       manualCheckWindowSeconds: 300,
     },
@@ -104,6 +110,8 @@ export const PLANS: Record<PlanTier, PlanDetails> = {
       customDomainAllowed: true,
       usageMetered: true,
       priorityProbes: true,
+      maxSeats: 25,
+      multiSeatAllowed: true,
       maxManualChecksPerWindow: 0,
       manualCheckWindowSeconds: 300,
     },
@@ -111,6 +119,7 @@ export const PLANS: Record<PlanTier, PlanDetails> = {
       "1,500 Active Monitors",
       "10-second HFT Heartbeat checks",
       "Full Global Pulse coverage (7 regions)",
+      "Multi-Seat Team Workspaces & RBAC",
       "SSO, SAML & Workspaces",
       "PagerDuty, Slack & custom webhooks",
       "75 Private status portals",

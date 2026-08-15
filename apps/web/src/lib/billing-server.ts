@@ -391,3 +391,58 @@ export async function assertManualCheckRateLimit(
   g.__mcStore!.set(key, timestamps);
   return { allowed: true };
 }
+
+/**
+ * Server-side check before creating a team workspace or inviting a new team member.
+ */
+export async function assertTeamLimits(
+  userId: string,
+  organizationId?: string,
+): Promise<{
+  allowed: boolean;
+  error?: string;
+  plan: PlanTier;
+  currentSeats?: number;
+  maxSeats?: number;
+}> {
+  const plan = await getUserPlan(userId);
+  const limits = PLANS[plan].limits;
+
+  // If checking an existing organization (e.g. inviting a member or adding seats)
+  if (organizationId) {
+    if (!limits.multiSeatAllowed || !isFeatureEnabled(plan, "multi_seat_teams")) {
+      return {
+        allowed: false,
+        error:
+          "Multi-seat team collaboration and member invitations require The Construct plan ($79/mo). Upgrade to invite team members and collaborate.",
+        plan,
+        maxSeats: limits.maxSeats,
+      };
+    }
+
+    const [memberCount, pendingInvitesCount] = await Promise.all([
+      db.member.count({ where: { organizationId } }),
+      db.invitation.count({ where: { organizationId, status: "pending" } }),
+    ]);
+
+    const totalUsedSeats = memberCount + pendingInvitesCount;
+    if (totalUsedSeats >= limits.maxSeats) {
+      return {
+        allowed: false,
+        error: `Workspace seat limit reached (${totalUsedSeats}/${limits.maxSeats} seats used). Upgrade to expand team seats.`,
+        plan,
+        currentSeats: totalUsedSeats,
+        maxSeats: limits.maxSeats,
+      };
+    }
+
+    return {
+      allowed: true,
+      plan,
+      currentSeats: totalUsedSeats,
+      maxSeats: limits.maxSeats,
+    };
+  }
+
+  return { allowed: true, plan, maxSeats: limits.maxSeats };
+}

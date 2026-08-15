@@ -427,3 +427,33 @@ export async function sendDunningNotice(
     return { error: error instanceof Error ? error.message : "Unknown error" };
   }
 }
+
+export type { TeamInvitationEmailData } from "./templates/team-invitation";
+
+export async function sendTeamInvitationEmail(
+  to: string,
+  data: import("./templates/team-invitation").TeamInvitationEmailData,
+  apiKey?: string,
+): Promise<{ id: string } | { error: string }> {
+  try {
+    const resend = getResendClient(apiKey);
+    const { renderTeamInvitation } = await import("./templates/team-invitation");
+
+    const html = await renderTeamInvitation(data);
+
+    const result = await resend.emails.send({
+      from: "PulseGuard Teams <invitations@pulseguard.io>",
+      to,
+      subject: `👋 You've been invited to join ${data.organizationName} on PulseGuard`,
+      html,
+    });
+
+    if (result.data && "id" in result.data) {
+      return { id: result.data.id };
+    }
+    return { error: result.error?.message || "Failed to send email" };
+  } catch (error) {
+    console.error("Error sending team invitation email:", error);
+    return { error: error instanceof Error ? error.message : "Unknown error" };
+  }
+}

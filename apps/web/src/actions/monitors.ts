@@ -15,6 +15,7 @@ import {
   checkAndNotifyUsageLimits,
 } from "@/lib/billing-server";
 import { generateDeepInsightAnalysis, getAIProviderClient } from "@/lib/ai";
+import { getActiveWorkspace } from "@/actions/team";
 
 // Helper Types for Incident Management
 enum IncidentEventType {
@@ -316,6 +317,8 @@ export async function createMonitor(prevState: any, formData: FormData) {
       finalUrl = `heartbeat://${heartbeatToken}`;
     }
 
+    const active = await getActiveWorkspace();
+
     // Create monitor
     const monitor = await prisma.monitor.create({
       data: {
@@ -325,6 +328,7 @@ export async function createMonitor(prevState: any, formData: FormData) {
         interval: data.interval,
         timeout: data.timeout,
         userId: session.user.id,
+        organizationId: active?.id || null,
         checkRegions: data.checkRegions,
         alertThreshold: data.alertThreshold,
         dynamicThresholding: data.dynamicThresholding,
@@ -609,12 +613,18 @@ export async function getMonitors() {
 
   if (!session?.user) return [];
 
+  const active = await getActiveWorkspace();
+
   // Use try/catch in case DB not ready
   try {
     const monitors = await prisma.monitor.findMany({
-      where: {
-        userId: session.user.id,
-      },
+      where: active?.id
+        ? {
+            organizationId: active.id,
+          }
+        : {
+            userId: session.user.id,
+          },
       orderBy: {
         createdAt: "desc",
       },
@@ -651,7 +661,10 @@ export async function getMonitor(id: string) {
     const monitor = await prisma.monitor.findFirst({
       where: {
         id,
-        userId: session.user.id,
+        OR: [
+          { organization: { members: { some: { userId: session.user.id } } } },
+          { userId: session.user.id },
+        ],
       },
       include: {
         events: {
@@ -1327,8 +1340,10 @@ export async function getDashboardStats() {
     };
   }
 
+  const active = await getActiveWorkspace();
+  const monitorScope = active?.id ? { organizationId: active.id } : { userId: session.user.id };
+
   try {
-    const userId = session.user.id;
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
     const [activeMonitorsCount, activeAlertsCount, totalEventsCount, upEventsCount, latencyAgg] =
@@ -1336,28 +1351,28 @@ export async function getDashboardStats() {
         // 1. Active Monitors
         prisma.monitor.count({
           where: {
-            userId,
+            ...monitorScope,
             status: { not: "PAUSED" },
           },
         }),
         // 2. Active Alerts (Monitors currently DOWN)
         prisma.monitor.count({
           where: {
-            userId,
+            ...monitorScope,
             status: "DOWN",
           },
         }),
         // 3. Total Events (Last 24h)
         prisma.monitorEvent.count({
           where: {
-            monitor: { userId },
+            monitor: monitorScope,
             timestamp: { gte: oneDayAgo },
           },
         }),
         // 4. UP Events (Last 24h)
         prisma.monitorEvent.count({
           where: {
-            monitor: { userId },
+            monitor: monitorScope,
             timestamp: { gte: oneDayAgo },
             status: "UP",
           },
@@ -1365,7 +1380,7 @@ export async function getDashboardStats() {
         // 5. Avg Latency for UP events (Last 24h)
         prisma.monitorEvent.aggregate({
           where: {
-            monitor: { userId },
+            monitor: monitorScope,
             timestamp: { gte: oneDayAgo },
             status: "UP",
             latency: { gt: 0 },
@@ -1410,12 +1425,15 @@ export async function getMonitorInsights(monitorId?: string) {
 
   if (!session?.user) return [];
 
+  const active = await getActiveWorkspace();
+  const monitorScope = active?.id ? { organizationId: active.id } : { userId: session.user.id };
+
   try {
     const insights = await prisma.monitorInsight.findMany({
       where: {
         monitor: {
           id: monitorId,
-          userId: session.user.id,
+          ...monitorScope,
         },
         dismissed: false,
       },

@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { SettingsSidebar } from "@/components/settings/settings-sidebar";
 import { ProfileForm } from "@/components/settings/profile-form";
 import { RegionalForm } from "@/components/settings/regional-form";
+import { TeamForm } from "@/components/settings/team-form";
+import { AuditLogForm } from "@/components/settings/audit-log-form";
 import { DangerZone } from "@/components/settings/danger-zone";
 import { SecurityForm } from "@/components/settings/security-form";
 import { ApiKeysForm } from "@/components/settings/api-keys-form";
@@ -22,7 +24,7 @@ export const dynamic = "force-dynamic";
  * This function retrieves the current user session and checks if the user is authenticated.
  * It then determines which settings tab to display, defaulting to "general" if none is specified.
  * Depending on the selected tab, it renders the appropriate settings components, including
- * profile, regional settings, security, and API keys forms.
+ * profile, regional settings, security, team, audit logs, and API keys forms.
  *
  * @param {Object} params - The parameters for the function.
  * @param {Promise<{ tab?: string; session_id?: string }>} params.searchParams - Search params.
@@ -54,7 +56,16 @@ export default async function SettingsPage({
 
   // Clean tab parameter in case query parameters were concatenated (e.g. "billing?session_id=...")
   const cleanTab = rawTab.split("?")[0].split("&")[0];
-  const validTabs = ["general", "billing", "security", "api-keys", "migration", "privacy"];
+  const validTabs = [
+    "general",
+    "team",
+    "billing",
+    "security",
+    "api-keys",
+    "audit-log",
+    "migration",
+    "privacy",
+  ];
   const tab = validTabs.includes(cleanTab) ? cleanTab : "general";
   const usageSummary = tab === "billing" ? await getUserUsageSummary(session.user.id) : undefined;
 
@@ -69,10 +80,12 @@ export default async function SettingsPage({
             <DangerZone />
           </>
         )}
+        {tab === "team" && <TeamForm />}
         {tab === "billing" && <BillingForm initialUsage={usageSummary} />}
         {/* {tab === "referrals" && <ReferralForm />} */}
         {tab === "security" && <SecurityForm />}
         {tab === "api-keys" && <ApiKeysForm />}
+        {tab === "audit-log" && <AuditLogForm />}
         {tab === "migration" && <MigrationForm />}
         {tab === "privacy" && <PrivacyForm />}
       </div>

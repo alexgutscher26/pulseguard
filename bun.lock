@@ -73,6 +73,7 @@
         "@expo/vector-icons": "^15.0.3",
         "@gorhom/bottom-sheet": "^5",
         "@pulseguard/api": "workspace:*",
+        "@pulseguard/db": "workspace:*",
         "@pulseguard/env": "workspace:*",
         "@react-navigation/drawer": "^7.3.9",
         "@react-navigation/elements": "^2.8.1",
@@ -243,6 +244,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@pulseguard/auth": "workspace:*",
+        "@pulseguard/db": "workspace:*",
         "@trpc/server": "catalog:",
         "next": "catalog:",
       },

@@ -4,12 +4,15 @@ model ApiKey {
   keyHash     String    @unique // SHA-256 of the raw key (never stored in plaintext)
   prefix      String    // First 12 chars shown in UI: "pg_xxxxxxxx..."
   scopes      String    @default("read,write") // CSV: "read", "write"
-  userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  expiresAt   DateTime?
-  lastUsedAt  DateTime?
-  createdAt   DateTime  @default(now())
+  userId         String
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  expiresAt      DateTime?
+  lastUsedAt     DateTime?
+  createdAt      DateTime      @default(now())
 
   @@index([userId])
+  @@index([organizationId])
   @@index([keyHash])
 }

@@ -6,18 +6,20 @@ import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 
 import { getSafeSession } from "@/lib/safe-session";
+import { getActiveWorkspace } from "@/actions/team";
 
 export async function getIncidents() {
   const session = await getSafeSession();
 
   if (!session?.user) return [];
 
+  const active = await getActiveWorkspace();
+  const monitorScope = active?.id ? { organizationId: active.id } : { userId: session.user.id };
+
   try {
     const incidents = await prisma.incident.findMany({
       where: {
-        monitor: {
-          userId: session.user.id,
-        },
+        monitor: monitorScope,
       },
       orderBy: {
         updatedAt: "desc",

@@ -10,7 +10,9 @@ import {
   Terminal,
   ChevronRight,
   Command,
+  Users,
 } from "lucide-react";
+import { WorkspaceSwitcher } from "@/components/dashboard/workspace-switcher";
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import Link from "next/link";
@@ -107,8 +109,13 @@ export function DashboardHeader({ onMenuClick, userTier }: DashboardHeaderProps 
           </button>
         )}
 
+        {/* Workspace Switcher */}
+        <WorkspaceSwitcher />
+
+        <div className="hidden sm:block h-5 w-[1px] bg-border/60 shrink-0" />
+
         {/* Breadcrumbs Navigation */}
-        <div className="flex items-center gap-3 min-w-0">
+        <div className="hidden sm:flex items-center gap-3 min-w-0">
           <nav className="flex items-center gap-1.5 text-xs font-mono select-none min-w-0">
             {getBreadcrumbs().map((crumb, index) => (
               <div key={crumb.url} className="flex items-center gap-1.5 min-w-0">
@@ -256,6 +263,13 @@ export function DashboardHeader({ onMenuClick, userTier }: DashboardHeaderProps 
                 >
                   <User className="size-3.5 text-muted-foreground" />
                   <span>Profile & Security</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="text-xs font-semibold focus:bg-accent focus:text-foreground cursor-pointer rounded-lg px-2.5 py-2 transition-colors gap-2"
+                  onClick={() => router.push("/dashboard/settings?tab=team")}
+                >
+                  <Users className="size-3.5 text-muted-foreground" />
+                  <span>Team & RBAC</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   className="text-xs font-semibold focus:bg-accent focus:text-foreground cursor-pointer rounded-lg px-2.5 py-2 transition-colors gap-2"
