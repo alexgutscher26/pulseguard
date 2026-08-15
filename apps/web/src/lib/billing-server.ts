@@ -336,7 +336,10 @@ export async function assertNotificationChannelLimits(
     };
   }
 
-  if (params.type === "PAGERDUTY" && !isFeatureEnabled(plan, "pagerduty_integration")) {
+  if (
+    (params.type === "PAGERDUTY" || params.type === "OPSGENIE") &&
+    !isFeatureEnabled(plan, "pagerduty_integration")
+  ) {
     return { allowed: false, error: getFeatureError("pagerduty_integration") };
   }
 

@@ -11,8 +11,10 @@ import type { Env } from "./env";
 import {
   runWithLimit,
   sendDiscordAlert,
+  sendOpsgenieAlert,
   sendPagerDutyAlert,
   sendSlackAlert,
+  type OpsgenieConfig,
 } from "./services/notifications";
 
 export interface NotificationMessage {
@@ -221,6 +223,7 @@ export default {
             const slackChannels = new Set<{ url: string; token?: string }>();
             const discordChannels = new Set<{ url: string; token?: string }>();
             const pagerdutyChannels = new Set<string>();
+            const opsgenieChannels = new Map<string, OpsgenieConfig>();
 
             if (monitor.user.email) {
               emailChannels.add(monitor.user.email);
@@ -241,6 +244,11 @@ export default {
                   discordChannels.add({ url: config.webhookUrl });
                 } else if (channel.type === "PAGERDUTY" && config?.routingKey) {
                   pagerdutyChannels.add(config.routingKey);
+                } else if (channel.type === "OPSGENIE" && config?.apiKey) {
+                  opsgenieChannels.set(channel.id, {
+                    apiKey: config.apiKey,
+                    region: config.region || "us",
+                  });
                 }
               });
             });
@@ -264,6 +272,11 @@ export default {
                   notification.type,
                   notification.incidentId,
                 ),
+              );
+            });
+            Array.from(opsgenieChannels.values()).forEach((opsConfig) => {
+              deliveryPromises.push(
+                sendOpsgenieAlert(opsConfig, emailData, notification.type, notification.incidentId),
               );
             });
           } else {

@@ -31,6 +31,7 @@ function getIcon(type: string) {
     case "EMAIL":
       return Mail;
     case "PAGERDUTY":
+    case "OPSGENIE":
       return Bell;
     default:
       return Terminal;
@@ -47,6 +48,8 @@ function getColor(type: string) {
       return "text-primary";
     case "PAGERDUTY":
       return "text-[#06AC38]";
+    case "OPSGENIE":
+      return "text-[#0052CC]";
     default:
       return "text-primary/50";
   }
@@ -70,6 +73,11 @@ function getDetail(channel: NotificationChannel) {
   if (channel.type === "PAGERDUTY") {
     const key = config?.routingKey as string | undefined;
     return key ? `${key.slice(0, 6)}••••${key.slice(-4)}` : "PagerDuty";
+  }
+  if (channel.type === "OPSGENIE") {
+    const key = config?.apiKey as string | undefined;
+    const region = (config?.region || "us").toUpperCase();
+    return key ? `${key.slice(0, 6)}•••• (${region})` : `Opsgenie (${region})`;
   }
   return config?.value || channel.name || "Channel";
 }
@@ -258,6 +266,70 @@ export function NotificationChannels({
                   {isPending ? <Loader2 className="animate-spin size-4 mr-2" /> : null}
                   <Bell className="size-4 mr-2" />
                   Add PagerDuty Channel
+                </Button>
+              </form>
+            </div>
+
+            {/* Opsgenie */}
+            <div className="mb-4">
+              <p className="text-xs text-[#0052CC]/80 font-mono uppercase tracking-wider mb-2 flex items-center gap-1">
+                <Bell className="size-3" /> Opsgenie (Atlassian)
+              </p>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const formData = new FormData(e.currentTarget);
+                  const apiKey = formData.get("opsgenieApiKey") as string;
+                  const region = formData.get("opsgenieRegion") as string;
+                  const submitData = new FormData();
+                  submitData.append("name", formData.get("opsgenieName") as string);
+                  submitData.append("type", "OPSGENIE");
+                  submitData.append("config", JSON.stringify({ apiKey, region }));
+                  handleSubmit(submitData);
+                }}
+                className="flex flex-col gap-3"
+              >
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="opsgenieName">Channel name</Label>
+                  <Input
+                    id="opsgenieName"
+                    name="opsgenieName"
+                    required
+                    placeholder="Opsgenie Escalation"
+                    className="bg-primary/5 border-primary/20"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="opsgenieApiKey">API Integration Key</Label>
+                  <Input
+                    id="opsgenieApiKey"
+                    name="opsgenieApiKey"
+                    required
+                    placeholder="eb32xxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                    className="bg-primary/5 border-primary/20 font-mono text-xs"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="opsgenieRegion">Data Region</Label>
+                  <select
+                    id="opsgenieRegion"
+                    name="opsgenieRegion"
+                    defaultValue="us"
+                    className="h-9 w-full rounded-md border border-primary/20 bg-zinc-900 px-3 py-1 text-xs text-foreground shadow-sm focus:outline-none focus:ring-1 focus:ring-primary font-mono"
+                  >
+                    <option value="us">United States (api.opsgenie.com)</option>
+                    <option value="eu">European Union (api.eu.opsgenie.com)</option>
+                  </select>
+                </div>
+                <Button
+                  type="submit"
+                  disabled={isPending}
+                  className="w-full border border-[#0052CC]/50 bg-[#0052CC]/10 text-[#0052CC] hover:bg-[#0052CC]/20 font-mono uppercase tracking-wider"
+                  variant="ghost"
+                >
+                  {isPending ? <Loader2 className="animate-spin size-4 mr-2" /> : null}
+                  <Bell className="size-4 mr-2" />
+                  Add Opsgenie Channel
                 </Button>
               </form>
             </div>

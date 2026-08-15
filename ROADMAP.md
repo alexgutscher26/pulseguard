@@ -35,7 +35,10 @@
 - [x] **4-of-7 Quorum Consensus Voting Engine**: Majority multi-region consensus before declaring global outages; eliminate localized ISP false alarms.
 - [x] **Team Management & Organization RBAC**: Multi-tenant organizations, team invitations, member management, and granular role permissions (`Owner`, `Admin`, `Member`, `Viewer`).
 - [x] **Comprehensive SLA Report Exports (PDF, JSON, Web)**: Automated monthly uptime and downtime accounting, contractual SLA breach detection, and downloadable branded PDF/JSON reports.
-- [x] **PagerDuty & Multi-Channel Alerting**: Direct PagerDuty routing integration, interactive Slack blocks, Discord rich embeds, Telegram, SMS, Email (React Email), and custom Webhooks.
+- [x] **PagerDuty & Opsgenie Multi-Channel Alerting**: Direct PagerDuty Events v2 & Atlassian Opsgenie API v2 (US & EU) with alert deduplication and recovery auto-closing.
+- [x] **Official HashiCorp Terraform Provider**: Monitoring-as-code provider for provisioning monitors, alert channels, and sovereign regions via Terraform Registry.
+- [x] **Prometheus Metrics Streamer & Grafana NOC Dashboard**: Expose `/api/v1/metrics/prometheus` for seamless integration into Grafana and Prometheus observability stacks.
+- [x] **PulseGuard Edge Preview GitHub Action**: Automated multi-region synthetic edge health verification and sticky PR comments on pull request preview deployments.
 - [x] **One-Command Uptime Kuma Importer**:
   - CLI: `pulse import kuma backup.json`
   - Web: Instant drag-and-drop backup import with live dry-run preview table.
