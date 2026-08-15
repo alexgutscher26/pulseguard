@@ -49,13 +49,13 @@
 
 ### 📄 SLA Report Exports (Official Roadmap Item)
 
-- [ ] Design SLA report data model (uptime%, incident count, MTTR, MTTD per monitor)
-- [ ] Build PDF export using `@react-pdf/renderer` or `jspdf`
-- [ ] Build JSON export endpoint (`/api/reports/sla?from=&to=&monitorId=`)
-- [ ] Add CSV export for raw `MonitorEvent` data
-- [ ] Create in-app SLA report viewer page under `/dashboard/reports`
-- [ ] Schedule automated monthly SLA report emails to workspace owner
-- [ ] Support custom date ranges, monitor filters, and grouping by status page
+- [x] Design SLA report data model (uptime%, incident count, MTTR, MTTD per monitor)
+- [x] Build PDF export using `@react-pdf/renderer` or `jspdf`
+- [x] Build JSON export endpoint (`/api/reports/sla?from=&to=&monitorId=`)
+- [x] Add CSV export for raw `MonitorEvent` data
+- [x] Create in-app SLA report viewer page under `/dashboard/reports`
+- [x] Schedule automated monthly SLA report emails to workspace owner
+- [x] Support custom date ranges, monitor filters, and grouping by status page
 
 ### 🔗 PagerDuty & Opsgenie Integrations (Official Roadmap Item)
 

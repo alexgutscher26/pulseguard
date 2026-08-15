@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Download, FileJson, FileSpreadsheet, Loader2 } from "lucide-react";
+import { Download, FileJson, FileSpreadsheet, FileText, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -36,6 +36,13 @@ export function MonitorExportModal({ monitorId, trigger }: MonitorExportModalPro
   const handleExport = async () => {
     try {
       setIsExporting(true);
+
+      if (format === "pdf") {
+        window.location.href = `/api/reports/sla?monitorId=${monitorId}&range=${range}&format=pdf&targetSla=99.9`;
+        toast.success("PDF SLA report generation started");
+        setIsOpen(false);
+        return;
+      }
 
       const now = new Date();
       let startDate = new Date();
@@ -91,11 +98,11 @@ export function MonitorExportModal({ monitorId, trigger }: MonitorExportModalPro
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[460px]">
         <DialogHeader>
-          <DialogTitle>Export Monitor Data</DialogTitle>
+          <DialogTitle>Export Monitor Data & Deliverables</DialogTitle>
           <DialogDescription>
-            Download raw event logs for compliance and analysis.
+            Download raw event logs or a branded PDF SLA compliance deliverable.
           </DialogDescription>
         </DialogHeader>
 
@@ -117,36 +124,52 @@ export function MonitorExportModal({ monitorId, trigger }: MonitorExportModalPro
 
           <div className="grid gap-2">
             <Label>Format</Label>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-3">
               <div
-                className={`cursor-pointer rounded-md border-2 p-4 hover:bg-muted/50 transition-all flex flex-col items-center gap-2 ${
+                className={`cursor-pointer rounded-md border-2 p-3 hover:bg-muted/50 transition-all flex flex-col items-center gap-1.5 ${
                   format === "csv" ? "border-primary bg-primary/5" : "border-muted"
                 }`}
                 onClick={() => setFormat("csv")}
               >
                 <FileSpreadsheet
-                  className={`size-6 ${format === "csv" ? "text-primary" : "text-muted-foreground"}`}
+                  className={`size-5 ${format === "csv" ? "text-primary" : "text-muted-foreground"}`}
                 />
                 <span
-                  className={`text-sm font-medium ${format === "csv" ? "text-primary" : "text-muted-foreground"}`}
+                  className={`text-xs font-medium ${format === "csv" ? "text-primary" : "text-muted-foreground"}`}
                 >
-                  CSV
+                  CSV Logs
                 </span>
               </div>
 
               <div
-                className={`cursor-pointer rounded-md border-2 p-4 hover:bg-muted/50 transition-all flex flex-col items-center gap-2 ${
+                className={`cursor-pointer rounded-md border-2 p-3 hover:bg-muted/50 transition-all flex flex-col items-center gap-1.5 ${
                   format === "json" ? "border-primary bg-primary/5" : "border-muted"
                 }`}
                 onClick={() => setFormat("json")}
               >
                 <FileJson
-                  className={`size-6 ${format === "json" ? "text-primary" : "text-muted-foreground"}`}
+                  className={`size-5 ${format === "json" ? "text-primary" : "text-muted-foreground"}`}
                 />
                 <span
-                  className={`text-sm font-medium ${format === "json" ? "text-primary" : "text-muted-foreground"}`}
+                  className={`text-xs font-medium ${format === "json" ? "text-primary" : "text-muted-foreground"}`}
                 >
-                  JSON
+                  JSON Events
+                </span>
+              </div>
+
+              <div
+                className={`cursor-pointer rounded-md border-2 p-3 hover:bg-muted/50 transition-all flex flex-col items-center gap-1.5 ${
+                  format === "pdf" ? "border-primary bg-primary/5" : "border-muted"
+                }`}
+                onClick={() => setFormat("pdf")}
+              >
+                <FileText
+                  className={`size-5 ${format === "pdf" ? "text-primary" : "text-muted-foreground"}`}
+                />
+                <span
+                  className={`text-xs font-medium ${format === "pdf" ? "text-primary" : "text-muted-foreground"}`}
+                >
+                  PDF SLA
                 </span>
               </div>
             </div>

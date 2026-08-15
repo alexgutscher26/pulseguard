@@ -307,6 +307,23 @@ export async function renderMonthlyReportToBuffer(stats: any): Promise<Buffer> {
   return Buffer.concat(chunks);
 }
 
+export type { SlaReportData } from "./templates/sla-report";
+export { SlaReportDocument } from "./templates/sla-report";
+
+export async function renderSlaReportToBuffer(
+  data: import("./templates/sla-report").SlaReportData,
+): Promise<Buffer> {
+  const { renderToStream } = await import("@react-pdf/renderer");
+  const { SlaReportDocument } = await import("./templates/sla-report");
+  const stream = await renderToStream(React.createElement(SlaReportDocument, { data }) as any);
+  const chunks: Uint8Array[] = [];
+  // @ts-ignore - ReadableStream iteration
+  for await (const chunk of stream) {
+    chunks.push(chunk as Uint8Array);
+  }
+  return Buffer.concat(chunks);
+}
+
 export async function sendMonthlyReport(
   to: string,
   pdfBuffer: Buffer,

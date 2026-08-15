@@ -17,6 +17,7 @@ import {
   PanelLeftOpen,
   Zap,
   Award,
+  FileCheck2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
@@ -26,6 +27,7 @@ const navigation = [
   { name: "Monitors", href: "/dashboard/monitors", icon: Monitor },
   { name: "Templates", href: "/dashboard/templates", icon: Layers },
   { name: "Status Pages", href: "/dashboard/pages", icon: Globe },
+  { name: "SLA Reports", href: "/dashboard/reports", icon: FileCheck2 },
   { name: "Integrations", href: "/dashboard/integrations", icon: Blocks },
   { name: "Incidents", href: "/dashboard/incidents", icon: TriangleAlert },
   { name: "Alerts", href: "/dashboard/alerts", icon: Bell },
