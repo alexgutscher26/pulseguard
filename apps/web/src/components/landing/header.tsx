@@ -108,6 +108,11 @@ export default function LandingHeader() {
                   <div className="bg-popover border border-border p-2 rounded-xl shadow-[0_12px_38px_rgba(0,0,0,0.125)] dark:shadow-[0_12px_38px_rgba(0,0,0,0.5)] grid grid-cols-1 gap-1 relative overflow-hidden">
                     {[
                       {
+                        name: "Is It Down? (300+ Services)",
+                        href: "/is-down",
+                        icon: <Activity className="h-4 w-4 text-emerald-500" />,
+                      },
+                      {
                         name: "IP Subnet Analyzer",
                         href: "/tools/ip-subnet",
                         icon: <Network className="h-4 w-4" />,
