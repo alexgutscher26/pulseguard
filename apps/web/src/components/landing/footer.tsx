@@ -45,6 +45,15 @@ export default function LandingFooter() {
                 Locations & WAF
               </Link>
               <Link
+                href={"/benchmarks/false-positives" as any}
+                className="text-emerald-400 hover:text-emerald-300 text-xs font-semibold transition-colors w-fit flex items-center gap-1.5"
+              >
+                False-Positive Benchmark
+                <span className="text-[9px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.2 rounded font-mono font-bold">
+                  30D Study
+                </span>
+              </Link>
+              <Link
                 href={"/comparison" as any}
                 className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
               >

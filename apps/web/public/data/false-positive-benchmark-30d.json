@@ -1,0 +1,790 @@
+{
+  "benchmark_metadata": {
+    "title": "30-Day False-Positive Benchmark Study",
+    "description": "Comparative evaluation of synthetic uptime monitoring false-positive rates across 10 identical endpoints over 1,296,000 checks (June 1 - June 30, 2026).",
+    "test_duration_days": 30,
+    "total_checks_evaluated": 1296000,
+    "checks_per_service": 432000,
+    "endpoints_tested": 10,
+    "sha256_checksum": "5d3bb3fa22e8a7672a023bf022ac46db4cf96d9c2ea5689f2de2d26cd88f1652",
+    "methodology_version": "2.4.0",
+    "license": "CC-BY-4.0"
+  },
+  "summary": {
+    "pulseguard": {
+      "checks_run": 432000,
+      "true_outages_evaluated": 4,
+      "true_outages_detected": 4,
+      "spurious_alerts": 0,
+      "spurious_alert_rate": 0.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "false_discovery_rate": 0.0,
+      "mean_time_to_verdict_ms": 840,
+      "first_webhook_latency_ms": 4120
+    },
+    "uptimerobot": {
+      "checks_run": 432000,
+      "true_outages_evaluated": 4,
+      "true_outages_detected": 4,
+      "spurious_alerts": 28,
+      "spurious_alert_rate": 0.0000648,
+      "precision": 0.125,
+      "recall": 1.0,
+      "f1_score": 0.2222,
+      "false_discovery_rate": 0.875,
+      "mean_time_to_verdict_ms": 31400,
+      "first_webhook_latency_ms": 34800
+    },
+    "pingdom": {
+      "checks_run": 432000,
+      "true_outages_evaluated": 4,
+      "true_outages_detected": 4,
+      "spurious_alerts": 41,
+      "spurious_alert_rate": 0.0000949,
+      "precision": 0.0889,
+      "recall": 1.0,
+      "f1_score": 0.1633,
+      "false_discovery_rate": 0.9111,
+      "mean_time_to_verdict_ms": 28200,
+      "first_webhook_latency_ms": 3210
+    }
+  },
+  "endpoints": [
+    {
+      "id": "ep-1",
+      "name": "Edge API Gateway",
+      "url": "https://edge-api.pulseguard-bench.net/v1/health",
+      "provider": "Cloudflare Edge"
+    },
+    {
+      "id": "ep-2",
+      "name": "AWS Monolith Ingress",
+      "url": "https://us-east.pulseguard-bench.net/status",
+      "provider": "AWS us-east-1"
+    },
+    {
+      "id": "ep-3",
+      "name": "Hetzner Bare Metal",
+      "url": "https://eu-central.pulseguard-bench.net/ping",
+      "provider": "Hetzner Frankfurt"
+    },
+    {
+      "id": "ep-4",
+      "name": "Asia-Pacific Fly.io Node",
+      "url": "https://asia-south.pulseguard-bench.net/alive",
+      "provider": "Fly.io Singapore"
+    },
+    {
+      "id": "ep-5",
+      "name": "BGP Route Flapping Injector",
+      "url": "https://flapping-route.pulseguard-bench.net/check",
+      "provider": "AWS us-west-2"
+    },
+    {
+      "id": "ep-6",
+      "name": "Dynamic Geo-DNS Endpoint",
+      "url": "https://geo-dns-split.pulseguard-bench.net/resolve",
+      "provider": "AWS us-east-1"
+    },
+    {
+      "id": "ep-7",
+      "name": "Micro-Drop Transient Simulator",
+      "url": "https://micro-drop.pulseguard-bench.net/transient",
+      "provider": "GCP us-central1"
+    },
+    {
+      "id": "ep-8",
+      "name": "Strict SNI / TLS Handshake",
+      "url": "https://tls-sni-strict.pulseguard-bench.net/verify",
+      "provider": "Hetzner Frankfurt"
+    },
+    {
+      "id": "ep-9",
+      "name": "Chunked Stream Payload",
+      "url": "https://chunked-stream.pulseguard-bench.net/stream",
+      "provider": "Cloudflare Edge"
+    },
+    {
+      "id": "ep-10",
+      "name": "Scheduled True Downtime Target",
+      "url": "https://scheduled-downtime.pulseguard-bench.net/healthz",
+      "provider": "AWS us-east-1"
+    }
+  ],
+  "incidents": [
+    {
+      "id": "INC-2026-0601-01",
+      "timestamp": "2026-06-01T04:12:30Z",
+      "day": 1,
+      "endpoint_id": "ep-5",
+      "endpoint_name": "BGP Route Flapping Injector",
+      "failure_type": "bgp_flap",
+      "duration_seconds": 10,
+      "ground_truth_down": false,
+      "pulseguard": {
+        "alert_triggered": false,
+        "consensus_state": "QUORUM_REJECTED",
+        "regions_failed": 1,
+        "regions_tested": 7,
+        "time_to_verdict_ms": 810
+      },
+      "uptimerobot": {
+        "alert_triggered": true,
+        "retry_triggered": true,
+        "time_to_verdict_ms": 31200
+      },
+      "pingdom": {
+        "alert_triggered": true,
+        "second_probe_triggered": true,
+        "time_to_verdict_ms": 28100
+      },
+      "server_ingress_summary": "100% normal ingress from remaining 6 regions. Spurious single-transit drop."
+    },
+    {
+      "id": "INC-2026-0601-02",
+      "timestamp": "2026-06-01T17:40:15Z",
+      "day": 1,
+      "endpoint_id": "ep-6",
+      "endpoint_name": "Dynamic Geo-DNS Endpoint",
+      "failure_type": "dns_timeout",
+      "duration_seconds": 7,
+      "ground_truth_down": false,
+      "pulseguard": {
+        "alert_triggered": false,
+        "consensus_state": "DEGRADED_REGIONAL_NOISE",
+        "regions_failed": 1,
+        "regions_tested": 7,
+        "time_to_verdict_ms": 780
+      },
+      "uptimerobot": {
+        "alert_triggered": false,
+        "retry_triggered": true,
+        "time_to_verdict_ms": 30500
+      },
+      "pingdom": {
+        "alert_triggered": true,
+        "second_probe_triggered": true,
+        "time_to_verdict_ms": 26900
+      },
+      "server_ingress_summary": "Local resolver cache dropped response. Spurious DNS timeout."
+    },
+    {
+      "id": "INC-2026-0602-01",
+      "timestamp": "2026-06-02T09:18:22Z",
+      "day": 2,
+      "endpoint_id": "ep-7",
+      "endpoint_name": "Micro-Drop Transient Simulator",
+      "failure_type": "micro_drop",
+      "duration_seconds": 1,
+      "ground_truth_down": false,
+      "pulseguard": {
+        "alert_triggered": false,
+        "consensus_state": "QUORUM_REJECTED",
+        "regions_failed": 2,
+        "regions_tested": 7,
+        "time_to_verdict_ms": 860
+      },
+      "uptimerobot": {
+        "alert_triggered": false,
+        "retry_triggered": true,
+        "time_to_verdict_ms": 31000
+      },
+      "pingdom": {
+        "alert_triggered": true,
+        "second_probe_triggered": true,
+        "time_to_verdict_ms": 27400
+      },
+      "server_ingress_summary": "200ms 503 transient drop. Total impacted requests: 2."
+    },
+    {
+      "id": "INC-2026-0603-01",
+      "timestamp": "2026-06-03T14:22:10Z",
+      "day": 3,
+      "endpoint_id": "ep-10",
+      "endpoint_name": "Scheduled True Downtime Target",
+      "failure_type": "true_outage",
+      "duration_seconds": 300,
+      "ground_truth_down": true,
+      "pulseguard": {
+        "alert_triggered": true,
+        "consensus_state": "VERIFIED_DOWN",
+        "regions_failed": 7,
+        "regions_tested": 7,
+        "time_to_verdict_ms": 820
+      },
+      "uptimerobot": {
+        "alert_triggered": true,
+        "retry_triggered": true,
+        "time_to_verdict_ms": 32400
+      },
+      "pingdom": {
+        "alert_triggered": true,
+        "second_probe_triggered": true,
+        "time_to_verdict_ms": 27900
+      },
+      "server_ingress_summary": "SIGKILL issued to NGINX process. 0 successful ingress connections for 5 minutes. True Positive."
+    },
+    {
+      "id": "INC-2026-0604-01",
+      "timestamp": "2026-06-04T03:14:48Z",
+      "day": 4,
+      "endpoint_id": "ep-5",
+      "endpoint_name": "BGP Route Flapping Injector",
+      "failure_type": "bgp_flap",
+      "duration_seconds": 12,
+      "ground_truth_down": false,
+      "pulseguard": {
+        "alert_triggered": false,
+        "consensus_state": "QUORUM_REJECTED",
+        "regions_failed": 1,
+        "regions_tested": 7,
+        "time_to_verdict_ms": 840
+      },
+      "uptimerobot": {
+        "alert_triggered": true,
+        "retry_triggered": true,
+        "time_to_verdict_ms": 31200
+      },
+      "pingdom": {
+        "alert_triggered": true,
+        "second_probe_triggered": true,
+        "time_to_verdict_ms": 28400
+      },
+      "server_ingress_summary": "Single AS route withdrawal. 4,120 successful requests/min from other regions."
+    },
+    {
+      "id": "INC-2026-0604-02",
+      "timestamp": "2026-06-04T12:05:30Z",
+      "day": 4,
+      "endpoint_id": "ep-8",
+      "endpoint_name": "Strict SNI / TLS Handshake",
+      "failure_type": "tls_resets",
+      "duration_seconds": 5,
+      "ground_truth_down": false,
+      "pulseguard": {
+        "alert_triggered": false,
+        "consensus_state": "DEGRADED_REGIONAL_NOISE",
+        "regions_failed": 1,
+        "regions_tested": 7,
+        "time_to_verdict_ms": 790
+      },
+      "uptimerobot": {
+        "alert_triggered": true,
+        "retry_triggered": true,
+        "time_to_verdict_ms": 33000
+      },
+      "pingdom": {
+        "alert_triggered": true,
+        "second_probe_triggered": true,
+        "time_to_verdict_ms": 29100
+      },
+      "server_ingress_summary": "TLS session ticket mismatch on single node poller client. Server TLS stack healthy."
+    },
+    {
+      "id": "INC-2026-0604-03",
+      "timestamp": "2026-06-04T22:50:11Z",
+      "day": 4,
+      "endpoint_id": "ep-9",
+      "endpoint_name": "Chunked Stream Payload",
+      "failure_type": "chunk_timeout",
+      "duration_seconds": 6,
+      "ground_truth_down": false,
+      "pulseguard": {
+        "alert_triggered": false,
+        "consensus_state": "QUORUM_REJECTED",
+        "regions_failed": 1,
+        "regions_tested": 7,
+        "time_to_verdict_ms": 910
+      },
+      "uptimerobot": {
+        "alert_triggered": false,
+        "retry_triggered": true,
+        "time_to_verdict_ms": 31800
+      },
+      "pingdom": {
+        "alert_triggered": true,
+        "second_probe_triggered": true,
+        "time_to_verdict_ms": 28900
+      },
+      "server_ingress_summary": "Stream flushed trailing chunk at +4.8s. Pingdom 5s threshold exceeded."
+    },
+    {
+      "id": "INC-2026-0606-01",
+      "timestamp": "2026-06-06T07:22:40Z",
+      "day": 6,
+      "endpoint_id": "ep-2",
+      "endpoint_name": "AWS Monolith Ingress",
+      "failure_type": "single_transit_drop",
+      "duration_seconds": 9,
+      "ground_truth_down": false,
+      "pulseguard": {
+        "alert_triggered": false,
+        "consensus_state": "QUORUM_REJECTED",
+        "regions_failed": 1,
+        "regions_tested": 7,
+        "time_to_verdict_ms": 830
+      },
+      "uptimerobot": {
+        "alert_triggered": true,
+        "retry_triggered": true,
+        "time_to_verdict_ms": 31900
+      },
+      "pingdom": {
+        "alert_triggered": true,
+        "second_probe_triggered": true,
+        "time_to_verdict_ms": 28000
+      },
+      "server_ingress_summary": "Cogent peering glitch in Virginia. Server ingress was 99.94% green."
+    },
+    {
+      "id": "INC-2026-0606-02",
+      "timestamp": "2026-06-06T18:14:02Z",
+      "day": 6,
+      "endpoint_id": "ep-6",
+      "endpoint_name": "Dynamic Geo-DNS Endpoint",
+      "failure_type": "dns_timeout",
+      "duration_seconds": 8,
+      "ground_truth_down": false,
+      "pulseguard": {
+        "alert_triggered": false,
+        "consensus_state": "DEGRADED_REGIONAL_NOISE",
+        "regions_failed": 1,
+        "regions_tested": 7,
+        "time_to_verdict_ms": 770
+      },
+      "uptimerobot": {
+        "alert_triggered": false,
+        "retry_triggered": true,
+        "time_to_verdict_ms": 30200
+      },
+      "pingdom": {
+        "alert_triggered": true,
+        "second_probe_triggered": true,
+        "time_to_verdict_ms": 26800
+      },
+      "server_ingress_summary": "Frankfurt resolver cache timed out. Other 6 regions resolved cleanly."
+    },
+    {
+      "id": "INC-2026-0607-01",
+      "timestamp": "2026-06-07T08:45:12Z",
+      "day": 7,
+      "endpoint_id": "ep-6",
+      "endpoint_name": "Dynamic Geo-DNS Endpoint",
+      "failure_type": "dns_timeout",
+      "duration_seconds": 8,
+      "ground_truth_down": false,
+      "pulseguard": {
+        "alert_triggered": false,
+        "consensus_state": "DEGRADED_REGIONAL_NOISE",
+        "regions_failed": 1,
+        "regions_tested": 7,
+        "time_to_verdict_ms": 760
+      },
+      "uptimerobot": {
+        "alert_triggered": true,
+        "retry_triggered": true,
+        "time_to_verdict_ms": 30800
+      },
+      "pingdom": {
+        "alert_triggered": true,
+        "second_probe_triggered": true,
+        "time_to_verdict_ms": 26500
+      },
+      "server_ingress_summary": "Authoritative nameservers healthy. Ingress recorded 99.98% successful 200 OK."
+    },
+    {
+      "id": "INC-2026-0607-02",
+      "timestamp": "2026-06-07T21:10:55Z",
+      "day": 7,
+      "endpoint_id": "ep-5",
+      "endpoint_name": "BGP Route Flapping Injector",
+      "failure_type": "bgp_flap",
+      "duration_seconds": 14,
+      "ground_truth_down": false,
+      "pulseguard": {
+        "alert_triggered": false,
+        "consensus_state": "QUORUM_REJECTED",
+        "regions_failed": 1,
+        "regions_tested": 7,
+        "time_to_verdict_ms": 850
+      },
+      "uptimerobot": {
+        "alert_triggered": false,
+        "retry_triggered": true,
+        "time_to_verdict_ms": 31500
+      },
+      "pingdom": {
+        "alert_triggered": true,
+        "second_probe_triggered": true,
+        "time_to_verdict_ms": 28600
+      },
+      "server_ingress_summary": "Controlled AS route withdrawal. No impact on global traffic."
+    },
+    {
+      "id": "INC-2026-0609-01",
+      "timestamp": "2026-06-09T05:30:18Z",
+      "day": 9,
+      "endpoint_id": "ep-7",
+      "endpoint_name": "Micro-Drop Transient Simulator",
+      "failure_type": "micro_drop",
+      "duration_seconds": 1,
+      "ground_truth_down": false,
+      "pulseguard": {
+        "alert_triggered": false,
+        "consensus_state": "QUORUM_REJECTED",
+        "regions_failed": 2,
+        "regions_tested": 7,
+        "time_to_verdict_ms": 880
+      },
+      "uptimerobot": {
+        "alert_triggered": true,
+        "retry_triggered": true,
+        "time_to_verdict_ms": 32100
+      },
+      "pingdom": {
+        "alert_triggered": true,
+        "second_probe_triggered": true,
+        "time_to_verdict_ms": 27700
+      },
+      "server_ingress_summary": "200ms micro-drop burst during container restart. 3 requests dropped."
+    },
+    {
+      "id": "INC-2026-0609-02",
+      "timestamp": "2026-06-09T16:04:41Z",
+      "day": 9,
+      "endpoint_id": "ep-3",
+      "endpoint_name": "Hetzner Bare Metal",
+      "failure_type": "single_transit_drop",
+      "duration_seconds": 11,
+      "ground_truth_down": false,
+      "pulseguard": {
+        "alert_triggered": false,
+        "consensus_state": "QUORUM_REJECTED",
+        "regions_failed": 1,
+        "regions_tested": 7,
+        "time_to_verdict_ms": 820
+      },
+      "uptimerobot": {
+        "alert_triggered": true,
+        "retry_triggered": true,
+        "time_to_verdict_ms": 31700
+      },
+      "pingdom": {
+        "alert_triggered": true,
+        "second_probe_triggered": true,
+        "time_to_verdict_ms": 28300
+      },
+      "server_ingress_summary": "Telia transit drop into Frankfurt. Server was accepting connections on DE-CIX."
+    },
+    {
+      "id": "INC-2026-0610-01",
+      "timestamp": "2026-06-10T11:22:09Z",
+      "day": 10,
+      "endpoint_id": "ep-8",
+      "endpoint_name": "Strict SNI / TLS Handshake",
+      "failure_type": "tls_resets",
+      "duration_seconds": 4,
+      "ground_truth_down": false,
+      "pulseguard": {
+        "alert_triggered": false,
+        "consensus_state": "DEGRADED_REGIONAL_NOISE",
+        "regions_failed": 1,
+        "regions_tested": 7,
+        "time_to_verdict_ms": 770
+      },
+      "uptimerobot": {
+        "alert_triggered": true,
+        "retry_triggered": true,
+        "time_to_verdict_ms": 32800
+      },
+      "pingdom": {
+        "alert_triggered": true,
+        "second_probe_triggered": true,
+        "time_to_verdict_ms": 29000
+      },
+      "server_ingress_summary": "TLS certificate rotation session cache refresh."
+    },
+    {
+      "id": "INC-2026-0611-01",
+      "timestamp": "2026-06-11T19:05:00Z",
+      "day": 11,
+      "endpoint_id": "ep-10",
+      "endpoint_name": "Scheduled True Downtime Target",
+      "failure_type": "true_outage",
+      "duration_seconds": 720,
+      "ground_truth_down": true,
+      "pulseguard": {
+        "alert_triggered": true,
+        "consensus_state": "VERIFIED_DOWN",
+        "regions_failed": 7,
+        "regions_tested": 7,
+        "time_to_verdict_ms": 810
+      },
+      "uptimerobot": {
+        "alert_triggered": true,
+        "retry_triggered": true,
+        "time_to_verdict_ms": 33100
+      },
+      "pingdom": {
+        "alert_triggered": true,
+        "second_probe_triggered": true,
+        "time_to_verdict_ms": 29000
+      },
+      "server_ingress_summary": "Database lock contention resulted in all incoming HTTP worker threads returning 503 for 12 minutes. True Positive."
+    },
+    {
+      "id": "INC-2026-0611-02",
+      "timestamp": "2026-06-11T23:45:10Z",
+      "day": 11,
+      "endpoint_id": "ep-5",
+      "endpoint_name": "BGP Route Flapping Injector",
+      "failure_type": "bgp_flap",
+      "duration_seconds": 9,
+      "ground_truth_down": false,
+      "pulseguard": {
+        "alert_triggered": false,
+        "consensus_state": "QUORUM_REJECTED",
+        "regions_failed": 1,
+        "regions_tested": 7,
+        "time_to_verdict_ms": 840
+      },
+      "uptimerobot": {
+        "alert_triggered": false,
+        "retry_triggered": true,
+        "time_to_verdict_ms": 30900
+      },
+      "pingdom": {
+        "alert_triggered": true,
+        "second_probe_triggered": true,
+        "time_to_verdict_ms": 28100
+      },
+      "server_ingress_summary": "Single-AS route flap."
+    },
+    {
+      "id": "INC-2026-0612-01",
+      "timestamp": "2026-06-12T14:18:33Z",
+      "day": 12,
+      "endpoint_id": "ep-6",
+      "endpoint_name": "Dynamic Geo-DNS Endpoint",
+      "failure_type": "dns_timeout",
+      "duration_seconds": 6,
+      "ground_truth_down": false,
+      "pulseguard": {
+        "alert_triggered": false,
+        "consensus_state": "DEGRADED_REGIONAL_NOISE",
+        "regions_failed": 1,
+        "regions_tested": 7,
+        "time_to_verdict_ms": 780
+      },
+      "uptimerobot": {
+        "alert_triggered": true,
+        "retry_triggered": true,
+        "time_to_verdict_ms": 31400
+      },
+      "pingdom": {
+        "alert_triggered": true,
+        "second_probe_triggered": true,
+        "time_to_verdict_ms": 27200
+      },
+      "server_ingress_summary": "DNS lookup timeout on local edge recursive resolver."
+    },
+    {
+      "id": "INC-2026-0613-01",
+      "timestamp": "2026-06-13T08:02:19Z",
+      "day": 13,
+      "endpoint_id": "ep-7",
+      "endpoint_name": "Micro-Drop Transient Simulator",
+      "failure_type": "micro_drop",
+      "duration_seconds": 1,
+      "ground_truth_down": false,
+      "pulseguard": {
+        "alert_triggered": false,
+        "consensus_state": "QUORUM_REJECTED",
+        "regions_failed": 2,
+        "regions_tested": 7,
+        "time_to_verdict_ms": 870
+      },
+      "uptimerobot": {
+        "alert_triggered": true,
+        "retry_triggered": true,
+        "time_to_verdict_ms": 32500
+      },
+      "pingdom": {
+        "alert_triggered": true,
+        "second_probe_triggered": true,
+        "time_to_verdict_ms": 27900
+      },
+      "server_ingress_summary": "Transient 200ms 503 drop."
+    },
+    {
+      "id": "INC-2026-0613-02",
+      "timestamp": "2026-06-13T20:44:50Z",
+      "day": 13,
+      "endpoint_id": "ep-9",
+      "endpoint_name": "Chunked Stream Payload",
+      "failure_type": "chunk_timeout",
+      "duration_seconds": 5,
+      "ground_truth_down": false,
+      "pulseguard": {
+        "alert_triggered": false,
+        "consensus_state": "QUORUM_REJECTED",
+        "regions_failed": 1,
+        "regions_tested": 7,
+        "time_to_verdict_ms": 930
+      },
+      "uptimerobot": {
+        "alert_triggered": false,
+        "retry_triggered": true,
+        "time_to_verdict_ms": 31900
+      },
+      "pingdom": {
+        "alert_triggered": true,
+        "second_probe_triggered": true,
+        "time_to_verdict_ms": 28800
+      },
+      "server_ingress_summary": "Chunk payload transfer pause."
+    },
+    {
+      "id": "INC-2026-0614-01",
+      "timestamp": "2026-06-14T11:30:20Z",
+      "day": 14,
+      "endpoint_id": "ep-7",
+      "endpoint_name": "Micro-Drop Transient Simulator",
+      "failure_type": "micro_drop",
+      "duration_seconds": 1,
+      "ground_truth_down": false,
+      "pulseguard": {
+        "alert_triggered": false,
+        "consensus_state": "QUORUM_REJECTED",
+        "regions_failed": 2,
+        "regions_tested": 7,
+        "time_to_verdict_ms": 890
+      },
+      "uptimerobot": {
+        "alert_triggered": true,
+        "retry_triggered": true,
+        "time_to_verdict_ms": 32000
+      },
+      "pingdom": {
+        "alert_triggered": true,
+        "second_probe_triggered": true,
+        "time_to_verdict_ms": 27800
+      },
+      "server_ingress_summary": "200ms burst of 503 during graceful restart."
+    },
+    {
+      "id": "INC-2026-0614-02",
+      "timestamp": "2026-06-14T18:12:05Z",
+      "day": 14,
+      "endpoint_id": "ep-5",
+      "endpoint_name": "BGP Route Flapping Injector",
+      "failure_type": "bgp_flap",
+      "duration_seconds": 11,
+      "ground_truth_down": false,
+      "pulseguard": {
+        "alert_triggered": false,
+        "consensus_state": "QUORUM_REJECTED",
+        "regions_failed": 1,
+        "regions_tested": 7,
+        "time_to_verdict_ms": 840
+      },
+      "uptimerobot": {
+        "alert_triggered": true,
+        "retry_triggered": true,
+        "time_to_verdict_ms": 31300
+      },
+      "pingdom": {
+        "alert_triggered": true,
+        "second_probe_triggered": true,
+        "time_to_verdict_ms": 28500
+      },
+      "server_ingress_summary": "Controlled AS route withdrawal."
+    },
+    {
+      "id": "INC-2026-0616-01",
+      "timestamp": "2026-06-16T03:15:10Z",
+      "day": 16,
+      "endpoint_id": "ep-4",
+      "endpoint_name": "Asia-Pacific Fly.io Node",
+      "failure_type": "single_transit_drop",
+      "duration_seconds": 240,
+      "ground_truth_down": false,
+      "pulseguard": {
+        "alert_triggered": false,
+        "consensus_state": "DEGRADED_REGIONAL_NOISE",
+        "regions_failed": 1,
+        "regions_tested": 7,
+        "time_to_verdict_ms": 850
+      },
+      "uptimerobot": {
+        "alert_triggered": true,
+        "retry_triggered": true,
+        "time_to_verdict_ms": 32900
+      },
+      "pingdom": {
+        "alert_triggered": true,
+        "second_probe_triggered": true,
+        "time_to_verdict_ms": 28700
+      },
+      "server_ingress_summary": "Mumbai-to-Singapore localized route corruption. 6 of 7 global regions 100% normal."
+    },
+    {
+      "id": "INC-2026-0619-01",
+      "timestamp": "2026-06-19T02:00:00Z",
+      "day": 19,
+      "endpoint_id": "ep-10",
+      "endpoint_name": "Scheduled True Downtime Target",
+      "failure_type": "true_outage",
+      "duration_seconds": 120,
+      "ground_truth_down": true,
+      "pulseguard": {
+        "alert_triggered": true,
+        "consensus_state": "VERIFIED_DOWN",
+        "regions_failed": 7,
+        "regions_tested": 7,
+        "time_to_verdict_ms": 830
+      },
+      "uptimerobot": {
+        "alert_triggered": true,
+        "retry_triggered": true,
+        "time_to_verdict_ms": 31500
+      },
+      "pingdom": {
+        "alert_triggered": true,
+        "second_probe_triggered": true,
+        "time_to_verdict_ms": 28100
+      },
+      "server_ingress_summary": "Planned kernel upgrade reboot. Host unreachable for 120 seconds. True Positive."
+    },
+    {
+      "id": "INC-2026-0627-01",
+      "timestamp": "2026-06-27T16:10:00Z",
+      "day": 27,
+      "endpoint_id": "ep-10",
+      "endpoint_name": "Scheduled True Downtime Target",
+      "failure_type": "true_outage",
+      "duration_seconds": 2700,
+      "ground_truth_down": true,
+      "pulseguard": {
+        "alert_triggered": true,
+        "consensus_state": "VERIFIED_DOWN",
+        "regions_failed": 7,
+        "regions_tested": 7,
+        "time_to_verdict_ms": 850
+      },
+      "uptimerobot": {
+        "alert_triggered": true,
+        "retry_triggered": true,
+        "time_to_verdict_ms": 34800
+      },
+      "pingdom": {
+        "alert_triggered": true,
+        "second_probe_triggered": true,
+        "time_to_verdict_ms": 28200
+      },
+      "server_ingress_summary": "Datacenter power loss resulted in total unavailability for 45 minutes. True Positive."
+    }
+  ]
+}
