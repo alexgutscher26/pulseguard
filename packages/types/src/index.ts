@@ -82,6 +82,8 @@ export interface QuorumEvaluation {
   excludedFlappingProbes: string[];
   excludedSlowProbes: string[];
   asnDistribution: Record<string, number>;
+  distinctDownAsns?: string[];
+  isSingleProviderPartition?: boolean;
   averageLatency: number;
   timestamp: string;
   reason?: string | undefined;

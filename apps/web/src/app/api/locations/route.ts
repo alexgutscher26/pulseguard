@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { CLOUDFLARE_PROBE_REGIONS } from "@pulseguard/shared";
+import { ALL_PROBE_REGIONS } from "@pulseguard/shared";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60;
@@ -8,7 +8,7 @@ export const revalidate = 60;
  * GET /api/locations — Public machine-readable JSON endpoint for customer WAF / Firewall allowlisting
  */
 export async function GET() {
-  const probeNodes = CLOUDFLARE_PROBE_REGIONS.map((region) => ({
+  const probeNodes = ALL_PROBE_REGIONS.map((region) => ({
     code: region.code,
     name: region.name,
     covers: region.covers,
@@ -18,14 +18,15 @@ export async function GET() {
     provider: region.provider,
     asn: region.asn,
     primaryColos: region.primaryColos,
+    isCloudflareDO: region.isCloudflareDO,
     status: region.defaultHealthStatus || "ONLINE",
   }));
 
   return NextResponse.json(
     {
       platform: "PulseGuard Global Edge Mesh",
-      consensusEngine: "4-of-7 Quorum Verification",
-      totalRegions: CLOUDFLARE_PROBE_REGIONS.length,
+      consensusEngine: "4-of-7 Quorum + Multi-ASN Sentinel Verification",
+      totalRegions: ALL_PROBE_REGIONS.length,
       lastUpdated: new Date().toISOString(),
       identificationMethod: "CF-Worker Header Verification",
       identificationHeaders: {

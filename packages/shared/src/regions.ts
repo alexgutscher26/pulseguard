@@ -141,7 +141,28 @@ export const CLOUDFLARE_PROBE_REGIONS: Region[] = [
   },
 ];
 
-export const AVAILABLE_REGIONS: Region[] = CLOUDFLARE_PROBE_REGIONS;
+export const OUT_OF_BAND_SENTINEL_REGION: Region = {
+  code: "ext-sentinel",
+  name: "Out-of-Band Sentinel",
+  covers: "Multi-Cloud / Heterogeneous ASN",
+  city: "Nuremberg (Hetzner)",
+  continent: "Europe",
+  flag: "🛡️",
+  provider: "Independent VPS (Non-Cloudflare)",
+  asn: "AS24940",
+  primaryColos: ["NBG1", "FSN1"],
+  ipv4Ranges: [],
+  ipv6Ranges: [],
+  isCloudflareDO: false,
+  defaultHealthStatus: "ONLINE",
+};
+
+export const ALL_PROBE_REGIONS: Region[] = [
+  ...CLOUDFLARE_PROBE_REGIONS,
+  OUT_OF_BAND_SENTINEL_REGION,
+];
+
+export const AVAILABLE_REGIONS: Region[] = ALL_PROBE_REGIONS;
 
 export const VALID_DO_LOCATION_HINTS = [
   "wnam",

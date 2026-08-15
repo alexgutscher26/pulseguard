@@ -158,6 +158,16 @@ export function evaluateQuorum(
     asnDistribution[asn] = (asnDistribution[asn] || 0) + 1;
   }
 
+  const distinctDownAsns = Object.keys(asnDistribution);
+
+  // Track up ASNs to detect single-provider anomalies
+  const upAsns = new Set<string>();
+  for (const r of upResults) {
+    const regionMeta = getRegionByCode(r.region);
+    const asn = r.asn || regionMeta?.asn || "AS_UNKNOWN";
+    upAsns.add(asn);
+  }
+
   // 4. Calculate Average Latency from UP probes
   const totalLatency = upResults.reduce((acc, r) => acc + r.latency, 0);
   const averageLatency = upResults.length > 0 ? Math.round(totalLatency / upResults.length) : 0;
@@ -171,7 +181,20 @@ export function evaluateQuorum(
       : Math.max(2, Math.ceil((totalEligible + 1) / 2));
 
   const confirmedDownCount = downResults.length;
-  const isDownConsensus = confirmedDownCount >= requiredDownCount && totalEligible >= 2;
+  let isDownConsensus = confirmedDownCount >= requiredDownCount && totalEligible >= 2;
+
+  // Multi-ASN Quorum / Provider Partition Circuit Breaker:
+  // If down consensus is reached but 100% of failures are confined to a single provider ASN (e.g. AS13335)
+  // while an independent external ASN (e.g. out-of-band sentinel AS24940) verifies that the origin is UP,
+  // we identify this as a provider-layer egress partition rather than an origin outage.
+  const hasDistinctUpAsn = Array.from(upAsns).some((asn) => !distinctDownAsns.includes(asn));
+  const isSingleProviderPartition =
+    isDownConsensus && distinctDownAsns.length === 1 && hasDistinctUpAsn;
+
+  if (isSingleProviderPartition) {
+    isDownConsensus = false;
+  }
+
   const isRegionalDegradation = confirmedDownCount > 0 && !isDownConsensus;
   const isGlobalOutage = isDownConsensus;
 
@@ -180,7 +203,10 @@ export function evaluateQuorum(
 
   if (isGlobalOutage) {
     finalStatus = "DOWN";
-    reason = `Global Outage confirmed by ${confirmedDownCount}/${totalEligible} edge regions (${downRegions.join(", ")})`;
+    reason = `Global Outage confirmed by ${confirmedDownCount}/${totalEligible} edge regions across ${distinctDownAsns.length} ASNs (${downRegions.join(", ")})`;
+  } else if (isSingleProviderPartition) {
+    finalStatus = "DEGRADED";
+    reason = `Provider partition on ${distinctDownAsns[0] || "AS13335"}: 100% of failures isolated to single ASN while independent out-of-band ASN verified origin is UP`;
   } else if (isRegionalDegradation) {
     finalStatus = "DEGRADED";
     reason = `Regional Degradation in ${downRegions.join(", ")} (${confirmedDownCount}/${totalEligible} regions failing)`;
@@ -192,6 +218,8 @@ export function evaluateQuorum(
     isDownConsensus,
     isRegionalDegradation,
     isGlobalOutage,
+    isSingleProviderPartition,
+    distinctDownAsns,
     confirmedDownCount,
     totalEligibleProbes: totalEligible,
     reportingRegions,

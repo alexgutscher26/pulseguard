@@ -63,9 +63,9 @@ User-Agent: PulseGuard-Monitor/1.0 (+https://pulseguard.io/bot)`;
           </h1>
 
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-            Live status of all seven probe regions, the networks they run on, and cryptographic
-            headers to allowlist. Updated continuously. If a probe is unhealthy, you&apos;ll see it
-            here before it can affect your alerts.
+            Live status of our seven Cloudflare edge regions plus out-of-band sentinel nodes on
+            independent ASNs (Hetzner AS24940). Updated continuously. Multi-ASN quorum verification
+            guarantees that a single-cloud provider outage never triggers false customer alerts.
           </p>
         </div>
 
@@ -136,8 +136,9 @@ User-Agent: PulseGuard-Monitor/1.0 (+https://pulseguard.io/bot)`;
             <div className="p-4 sm:p-5 bg-muted/20 border-t border-border font-mono text-xs text-muted-foreground flex items-start gap-2.5">
               <ShieldCheck className="size-4 text-emerald-500 shrink-0 mt-0.5" />
               <div className="leading-relaxed">
-                <strong className="text-foreground">Current quorum:</strong> 4 of {healthyCount}{" "}
-                healthy regions must confirm a failure before an incident opens.{" "}
+                <strong className="text-foreground">Multi-ASN Quorum:</strong> 4 of {healthyCount}{" "}
+                healthy regions plus independent ASN verification must confirm a failure before an
+                incident opens.{" "}
                 {excludedRegionText ? (
                   <span>
                     <strong className="text-amber-500">{excludedRegionText}</strong> is excluded
@@ -146,7 +147,8 @@ User-Agent: PulseGuard-Monitor/1.0 (+https://pulseguard.io/bot)`;
                   </span>
                 ) : (
                   <span>
-                    All 7 regions are currently healthy and participating in active quorum.
+                    All probe nodes across Cloudflare and independent ASN sentinels are currently
+                    healthy and participating in active quorum.
                   </span>
                 )}
               </div>

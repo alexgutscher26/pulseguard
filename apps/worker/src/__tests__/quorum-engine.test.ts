@@ -255,4 +255,78 @@ describe("Quorum Engine — Zero False Positive Consensus Verification", () => {
     expect(twoFailEval.confirmedDownCount).toBe(2);
     expect(twoFailEval.totalEligibleProbes).toBe(3);
   });
+
+  test("Provider Partition Circuit Breaker: 7 Cloudflare DOs fail but Out-of-Band sentinel on AS24940 reports UP -> DEGRADED (Suppresses false DOWN alarm)", () => {
+    // 7 Cloudflare regions (AS13335) all report DOWN due to Cloudflare internal egress incident
+    // 1 Out-of-band sentinel probe (AS24940) reports UP
+    const mockCloudflareFailures = createMockResults([
+      { region: "wnam", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
+      { region: "enam", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
+      { region: "weur", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
+      { region: "eeur", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
+      { region: "apac", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
+      { region: "apac-ne", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
+      { region: "apac-se", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
+    ]);
+
+    const outOfBandSentinelResult: ProbeCheckResult = {
+      monitorId: "mon-123",
+      probeId: "probe-ext-sentinel",
+      region: "ext-sentinel",
+      colo: "NBG1",
+      asn: "AS24940",
+      timestamp: new Date().toISOString(),
+      statusCode: 200,
+      latency: 22,
+      status: "UP",
+      isVerificationRetry: false,
+    };
+
+    const hybridResults = [...mockCloudflareFailures, outOfBandSentinelResult];
+
+    const evaluation = evaluateQuorum("mon-123", hybridResults);
+
+    expect(evaluation.isSingleProviderPartition).toBe(true);
+    expect(evaluation.isDownConsensus).toBe(false);
+    expect(evaluation.finalStatus).toBe("DEGRADED");
+    expect(evaluation.isGlobalOutage).toBe(false);
+    expect(evaluation.distinctDownAsns).toEqual(["AS13335"]);
+    expect(evaluation.reason).toContain("Provider partition on AS13335");
+  });
+
+  test("Genuine Outage across Multi-ASN: Cloudflare DOs and Out-of-Band sentinel both fail -> Confirms GLOBAL_OUTAGE", () => {
+    const mockCloudflareFailures = createMockResults([
+      { region: "wnam", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
+      { region: "enam", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
+      { region: "weur", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
+      { region: "eeur", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
+      { region: "apac", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
+      { region: "apac-ne", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
+      { region: "apac-se", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
+    ]);
+
+    const outOfBandFailureResult: ProbeCheckResult = {
+      monitorId: "mon-123",
+      probeId: "probe-ext-sentinel",
+      region: "ext-sentinel",
+      colo: "NBG1",
+      asn: "AS24940",
+      timestamp: new Date().toISOString(),
+      statusCode: 500,
+      latency: 35,
+      status: "DOWN",
+      isVerificationRetry: true,
+    };
+
+    const hybridResults = [...mockCloudflareFailures, outOfBandFailureResult];
+
+    const evaluation = evaluateQuorum("mon-123", hybridResults);
+
+    expect(evaluation.isSingleProviderPartition).toBe(false);
+    expect(evaluation.isDownConsensus).toBe(true);
+    expect(evaluation.finalStatus).toBe("DOWN");
+    expect(evaluation.isGlobalOutage).toBe(true);
+    expect(evaluation.distinctDownAsns).toContain("AS13335");
+    expect(evaluation.distinctDownAsns).toContain("AS24940");
+  });
 });

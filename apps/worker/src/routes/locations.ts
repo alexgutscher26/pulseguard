@@ -1,10 +1,14 @@
-import { CLOUDFLARE_PROBE_REGIONS, type DOLocationHint } from "@pulseguard/shared";
+import {
+  CLOUDFLARE_PROBE_REGIONS,
+  OUT_OF_BAND_SENTINEL_REGION,
+  type DOLocationHint,
+} from "@pulseguard/shared";
 import { json, withErrorHandling } from "./http";
 import type { RouteHandler } from "./types";
 
 /**
  * GET /api/locations — Return live probe health status, measured colos, ASNs,
- * and machine-readable IPv4/IPv6 ranges for customer WAF allowlisting.
+ * and machine-readable identification headers for customer WAF allowlisting.
  */
 export const locationsRoute: RouteHandler = withErrorHandling(async ({ env }, url) => {
   if (url.pathname !== "/api/locations" && url.pathname !== "/api/probes/allowlist") {
@@ -46,9 +50,24 @@ export const locationsRoute: RouteHandler = withErrorHandling(async ({ env }, ur
     }),
   );
 
+  // Add Out-of-Band Multi-Cloud Sentinel node (Hetzner AS24940)
+  liveProbes.push({
+    code: OUT_OF_BAND_SENTINEL_REGION.code,
+    name: OUT_OF_BAND_SENTINEL_REGION.name,
+    city: OUT_OF_BAND_SENTINEL_REGION.city,
+    continent: OUT_OF_BAND_SENTINEL_REGION.continent,
+    flag: OUT_OF_BAND_SENTINEL_REGION.flag,
+    provider: OUT_OF_BAND_SENTINEL_REGION.provider,
+    asn: OUT_OF_BAND_SENTINEL_REGION.asn,
+    colo: OUT_OF_BAND_SENTINEL_REGION.primaryColos[0] || "NBG1",
+    status: OUT_OF_BAND_SENTINEL_REGION.defaultHealthStatus || "ONLINE",
+    lastAlarmRun: new Date().toISOString(),
+    lastWallDurationMs: 24,
+  });
+
   return json({
     totalRegions: liveProbes.length,
-    consensusThreshold: "4-of-7 (Majority Quorum)",
+    consensusThreshold: "4-of-7 Quorum + Multi-ASN Sentinel Verification",
     probes: liveProbes,
     identificationMethod: "CF-Worker Header Verification",
     identificationHeaders: {

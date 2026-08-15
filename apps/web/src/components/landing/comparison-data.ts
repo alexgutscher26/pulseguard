@@ -107,6 +107,17 @@ export const featureComparisons: FeatureComparisonItem[] = [
     checkly: "—",
     isBattle: false,
   },
+  {
+    category: "Consensus & Verification",
+    name: "Multi-ASN provider partition protection",
+    description:
+      "Out-of-band sentinel nodes on independent ASNs prevent single-cloud false positive storms",
+    pulseguard: "✓ Multi-ASN Quorum",
+    uptimerobot: "Single-vendor egress",
+    betteruptime: "Single-vendor egress",
+    checkly: "AWS only",
+    isBattle: true,
+  },
 
   // Transparency & Allowlisting
   {
