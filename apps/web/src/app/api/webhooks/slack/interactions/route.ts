@@ -9,9 +9,11 @@ function validateSlackResponseUrl(url: string): string | null {
     const parsed = new URL(url);
     const isHttps = parsed.protocol === "https:";
     const hostname = parsed.hostname.toLowerCase();
-    const isSlackHost = hostname === "hooks.slack.com" || hostname.endsWith(".slack.com");
+    const isAllowedHost = hostname === "hooks.slack.com";
+    const hasDefaultPort = parsed.port === "" || parsed.port === "443";
+    const isAllowedPath = parsed.pathname.startsWith("/actions/");
 
-    if (!isHttps || !isSlackHost) {
+    if (!isHttps || !isAllowedHost || !hasDefaultPort || !isAllowedPath) {
       return null;
     }
 
