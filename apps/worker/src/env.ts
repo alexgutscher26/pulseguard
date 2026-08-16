@@ -15,4 +15,9 @@ export interface Env {
   CHAOS_ENGINEERING?: string;
   /** Allowed CORS origin — set via wrangler secret or .dev.vars. Must not be a wildcard in production. */
   CORS_ORIGIN?: string;
+  /** Secret key used for field-level AES-256-GCM encryption of credentials */
+  ENCRYPTION_SECRET?: string;
+  /** Outbound dead-man's switch / heartbeat webhook for worker check-loop liveness */
+  DEADMAN_SNITCH_URL?: string;
+  HEALTHCHECK_PING_URL?: string;
 }

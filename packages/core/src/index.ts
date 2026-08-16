@@ -82,6 +82,12 @@ export function isPrivateOrInternalIp(ip: string): {
       isForbidden: true,
       reason: "Private network range (10.0.0.0/8) is forbidden",
     };
+  // 100.64.0.0/10 (Carrier-Grade NAT / Shared Address Space)
+  if (p1 === 100 && p2 >= 64 && p2 <= 127)
+    return {
+      isForbidden: true,
+      reason: "Carrier-Grade NAT range (100.64.0.0/10) is forbidden",
+    };
   // 172.16.0.0/12 (Private)
   if (p1 === 172 && p2 >= 16 && p2 <= 31)
     return {
@@ -94,11 +100,39 @@ export function isPrivateOrInternalIp(ip: string): {
       isForbidden: true,
       reason: "Private network range (192.168.0.0/16) is forbidden",
     };
-  // 169.254.0.0/16 (Link-Local / AWS Metadata)
+  // 169.254.0.0/16 (Link-Local / AWS & Cloud Metadata)
   if (p1 === 169 && p2 === 254)
     return {
       isForbidden: true,
       reason: "Link-local/metadata range (169.254.0.0/16) is forbidden",
+    };
+  // 192.0.0.0/24 (IETF Protocol Assignments)
+  if (p1 === 192 && p2 === 0 && p3 === 0)
+    return {
+      isForbidden: true,
+      reason: "IETF protocol range (192.0.0.0/24) is forbidden",
+    };
+  // 192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24 (Documentation / Test-Net)
+  if (
+    (p1 === 192 && p2 === 0 && p3 === 2) ||
+    (p1 === 198 && p2 === 51 && p3 === 100) ||
+    (p1 === 203 && p2 === 0 && p3 === 113)
+  )
+    return {
+      isForbidden: true,
+      reason: "Documentation / Test-Net address range is forbidden",
+    };
+  // 198.18.0.0/15 (Network Benchmark Tests)
+  if (p1 === 198 && (p2 === 18 || p2 === 19))
+    return {
+      isForbidden: true,
+      reason: "Benchmark testing range (198.18.0.0/15) is forbidden",
+    };
+  // 224.0.0.0/4 (Multicast) & 240.0.0.0/4 (Reserved / Broadcast)
+  if (p1 >= 224)
+    return {
+      isForbidden: true,
+      reason: "Multicast/Reserved/Broadcast address range is forbidden",
     };
   // 0.0.0.0/8
   if (p1 === 0)
@@ -122,7 +156,7 @@ export function isPrivateOrInternalUrl(urlStr: string): {
     const url = new URL(urlStr);
     const hostname = url.hostname.toLowerCase().replace(/^\[|\]$/g, "");
 
-    // Block direct dangerous hostnames
+    // Block direct dangerous hostnames and internal TLDs
     if (
       hostname === "localhost" ||
       hostname === "127.0.0.1" ||
@@ -130,7 +164,13 @@ export function isPrivateOrInternalUrl(urlStr: string): {
       hostname === "::1" ||
       hostname === "169.254.169.254" ||
       hostname === "metadata.google.internal" ||
-      hostname === "instance-data"
+      hostname === "instance-data" ||
+      hostname.endsWith(".localhost") ||
+      hostname.endsWith(".local") ||
+      hostname.endsWith(".internal") ||
+      hostname.endsWith(".lan") ||
+      hostname.endsWith(".home") ||
+      hostname.endsWith(".corp")
     ) {
       return {
         isForbidden: true,
@@ -560,4 +600,103 @@ export async function checkHttpUniversal(
     bodyText,
     statusCode: statusNum,
   };
+}
+
+/**
+ * AES-256-GCM Field-Level Encryption Utilities for credentials at rest
+ */
+const ENCRYPTION_PREFIX = "enc:v1:";
+
+export function isEncrypted(value: string | null | undefined): boolean {
+  return typeof value === "string" && value.startsWith(ENCRYPTION_PREFIX);
+}
+
+async function deriveKey(secret: string): Promise<CryptoKey> {
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(secret),
+    { name: "PBKDF2" },
+    false,
+    ["deriveKey"],
+  );
+  // Fixed domain-separated salt for deterministic key derivation from secret
+  const salt = enc.encode("pulseguard:credential-store:v1");
+  return await crypto.subtle.deriveKey(
+    {
+      name: "PBKDF2",
+      salt,
+      iterations: 100_000,
+      hash: "SHA-256",
+    },
+    keyMaterial,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["encrypt", "decrypt"],
+  );
+}
+
+export async function encryptSecret(plainText: string, secretKey?: string): Promise<string> {
+  if (!plainText) return "";
+  const secret =
+    secretKey ||
+    (typeof process !== "undefined"
+      ? process.env?.ENCRYPTION_SECRET || process.env?.BETTER_AUTH_SECRET
+      : (globalThis as any).ENCRYPTION_SECRET);
+
+  if (!secret) return plainText; // Fallback if no encryption key is configured
+  if (isEncrypted(plainText)) return plainText;
+
+  const key = await deriveKey(secret);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const encoded = new TextEncoder().encode(plainText);
+
+  const cipherBuffer = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, encoded);
+
+  const combined = new Uint8Array(iv.length + cipherBuffer.byteLength);
+  combined.set(iv, 0);
+  combined.set(new Uint8Array(cipherBuffer), iv.length);
+
+  let binary = "";
+  for (let i = 0; i < combined.byteLength; i++) {
+    binary += String.fromCharCode(combined[i] ?? 0);
+  }
+  const base64 = btoa(binary);
+  return `${ENCRYPTION_PREFIX}${base64}`;
+}
+
+export async function decryptSecret(
+  cipherText: string | null | undefined,
+  secretKey?: string,
+): Promise<string> {
+  if (!cipherText || typeof cipherText !== "string") return "";
+  if (!isEncrypted(cipherText)) return cipherText; // Return plaintext directly if not encrypted
+
+  const secret =
+    secretKey ||
+    (typeof process !== "undefined"
+      ? process.env?.ENCRYPTION_SECRET || process.env?.BETTER_AUTH_SECRET
+      : (globalThis as any).ENCRYPTION_SECRET);
+
+  if (!secret) return cipherText;
+
+  try {
+    const base64 = cipherText.slice(ENCRYPTION_PREFIX.length);
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+
+    const iv = bytes.slice(0, 12);
+    const data = bytes.slice(12);
+
+    const key = await deriveKey(secret);
+    const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, data);
+
+    return new TextDecoder().decode(decrypted);
+  } catch (err) {
+    console.error("[Crypto] Failed to decrypt payload, returning raw input:", err);
+    return cipherText;
+  }
 }

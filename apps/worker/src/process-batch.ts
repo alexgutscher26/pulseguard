@@ -20,6 +20,8 @@ import {
   shouldSendAlert,
 } from "./check-runner";
 import { queueNotification } from "./lib/send-notification";
+import { evaluateQuorum } from "./services/quorum-engine";
+import type { ProbeCheckResult } from "@pulseguard/types";
 import type { Env } from "./env";
 
 const mesh = new ProxyMesh();
@@ -170,21 +172,27 @@ export async function processBatch(
               `[Regional] Checked ${monitor.name} from ${regionalResults.length} regions`,
             );
 
-            // Capture failed regions
-            failedRegions = regionalResults
-              .filter((r) => r.status === Status.DOWN)
-              .map((r) => r.region);
+            // Convert to ProbeCheckResult format for Quorum Consensus Engine
+            const probeResults: ProbeCheckResult[] = regionalResults.map((r) => ({
+              monitorId: monitor.id,
+              probeId: `probe-${r.region}`,
+              region: r.region,
+              status: r.status === Status.UP ? "UP" : "DOWN",
+              latency: r.latency,
+              errorReason: r.errorReason,
+              errorClass: r.errorClass,
+              colo: r.colo,
+              asn: r.asn,
+              timestamp: r.timestamp.toISOString(),
+            }));
 
-            // Require a MAJORITY of regions to be DOWN before marking as global outage.
-            // With alertThreshold=1 (the DB default), even 1 flaky region triggers DOWN — too noisy.
-            // Use the higher of: the monitor's custom alertThreshold OR 50% of checked regions.
-            const majorityThreshold = Math.max(
-              monitor.alertThreshold || 1,
-              Math.ceil(regionalResults.length / 2),
-            );
-            const isMajorOutage = failedRegions.length >= majorityThreshold;
+            // Evaluate Quorum Consensus with Colocation Deduplication and Provider Partition Breaker
+            const quorumEval = evaluateQuorum(monitor.id, probeResults);
+
+            failedRegions = quorumEval.downRegions;
+            const isMajorOutage = quorumEval.isGlobalOutage;
             const overallStatus = isMajorOutage ? Status.DOWN : Status.UP;
-            const avgLatency = getAverageLatency(regionalResults);
+            const avgLatency = quorumEval.averageLatency || getAverageLatency(regionalResults);
 
             // AGGRESSIVE AGGREGATION: Smart Filtering to save DB space and CPU
             // We store ALL regional results in the Durable Object (LatencyAggregator) for high-res charts.

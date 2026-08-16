@@ -1,6 +1,6 @@
 import { DurableObject } from "cloudflare:workers";
 import type { ProbeCheckResult, ProbeHealthState } from "@pulseguard/types";
-import { isPrivateOrInternalUrl } from "@pulseguard/core";
+import { isPrivateOrInternalUrl, decryptSecret } from "@pulseguard/core";
 import { getRegionByCode, type DOLocationHint } from "@pulseguard/shared";
 import { getPrisma } from "@pulseguard/db";
 import type { Env } from "../env";
@@ -44,7 +44,7 @@ async function runWithBoundedConcurrency<T, R>(
   return results;
 }
 
-export class RegionalProbe extends DurableObject {
+export class RegionalProbe extends DurableObject<Env> {
   private probeState: ProbeStorageState | null = null;
 
   constructor(state: DurableObjectState, env: Env) {
@@ -147,7 +147,8 @@ export class RegionalProbe extends DurableObject {
         const userHeaders: Record<string, string> = {};
         if (monitor.headers) {
           try {
-            const parsed = JSON.parse(monitor.headers);
+            const rawHeaders = await decryptSecret(monitor.headers, this.env.ENCRYPTION_SECRET);
+            const parsed = JSON.parse(rawHeaders);
             if (Array.isArray(parsed)) {
               for (const h of parsed as { key?: string; value?: string }[]) {
                 if (h.key && h.value) userHeaders[h.key] = h.value;
@@ -161,23 +162,53 @@ export class RegionalProbe extends DurableObject {
         const hasBody =
           ["POST", "PUT", "PATCH"].includes(monitor.method || "GET") && Boolean(monitor.body);
 
-        const res = await fetch(monitor.url, {
-          method: monitor.method || "GET",
-          headers: {
-            "User-Agent": "PulseGuard-Synthetic-Monitor/2.0 (+https://pulseguard.io/bot)",
-            Accept: "*/*",
-            ...userHeaders,
-          },
-          ...(hasBody && monitor.body ? { body: monitor.body } : {}),
-          signal: AbortSignal.timeout(timeoutSeconds * 1000),
-          redirect: "follow",
-        });
+        let currentUrl = monitor.url;
+        let hops = 0;
+        const maxHops = 5;
+        let res: Response | null = null;
+        let code = 0;
+
+        while (hops < maxHops) {
+          const hopCheck = isPrivateOrInternalUrl(currentUrl);
+          if (hopCheck.isForbidden) {
+            return {
+              status: "DOWN",
+              statusCode: 403,
+              latency: Math.round(performance.now() - reqStart),
+              errorReason: `SSRF Blocked: ${hopCheck.reason || "Forbidden target"}`,
+              errorClass: "SECURITY_BLOCK",
+            };
+          }
+
+          res = await fetch(currentUrl, {
+            method: hops === 0 ? monitor.method || "GET" : "GET",
+            headers: {
+              "User-Agent": "PulseGuard-Synthetic-Monitor/2.0 (+https://pulseguard.io/bot)",
+              Accept: "*/*",
+              ...userHeaders,
+            },
+            ...(hops === 0 && hasBody && monitor.body ? { body: monitor.body } : {}),
+            signal: AbortSignal.timeout(timeoutSeconds * 1000),
+            redirect: "manual",
+          });
+
+          code = res.status;
+          if (code >= 300 && code < 400) {
+            const location = res.headers.get("location");
+            if (!location) break;
+            currentUrl = new URL(location, currentUrl).toString();
+            hops++;
+            continue;
+          }
+          break;
+        }
+
+        if (!res) throw new Error("No HTTP response received");
 
         // Consume body stream to avoid resource leakage
         await res.text();
 
         const latency = Math.round(performance.now() - reqStart);
-        const code = res.status;
         // Treat 2xx, 3xx as UP. 429 and 403 are server responses (endpoint is up/alive)
         const isUp = res.ok || (code >= 300 && code < 400) || code === 429 || code === 403;
 

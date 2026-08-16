@@ -73,7 +73,7 @@ export function ConversionCta({ service }: ConversionCtaProps) {
               <ShieldCheck className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-foreground">Zero False Positives</h3>
+              <h3 className="text-sm font-bold text-foreground">4-of-7 Quorum Verification</h3>
               <p className="text-xs text-muted-foreground mt-1">
                 Multi-region consensus verification prevents 3 AM wakeups from transient routing
                 blips.

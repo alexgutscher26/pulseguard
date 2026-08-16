@@ -5,13 +5,13 @@ import type { ProbeCheckResult } from "@pulseguard/types";
 describe("Quorum Engine — Zero False Positive Consensus Verification", () => {
   const createMockResults = (overrides: Partial<ProbeCheckResult>[]): ProbeCheckResult[] => {
     const defaultRegions = [
-      { region: "wnam", asn: "AS13335" },
-      { region: "enam", asn: "AS13335" },
-      { region: "weur", asn: "AS13335" },
-      { region: "eeur", asn: "AS13335" },
-      { region: "apac", asn: "AS13335" },
-      { region: "apac-ne", asn: "AS13335" },
-      { region: "apac-se", asn: "AS13335" },
+      { region: "wnam", colo: "SJC", asn: "AS13335" },
+      { region: "enam", colo: "IAD", asn: "AS13335" },
+      { region: "weur", colo: "LHR", asn: "AS13335" },
+      { region: "eeur", colo: "FRA", asn: "AS13335" },
+      { region: "apac", colo: "NRT", asn: "AS13335" },
+      { region: "apac-ne", colo: "ICN", asn: "AS13335" },
+      { region: "apac-se", colo: "SYD", asn: "AS13335" },
     ];
 
     return defaultRegions.map((dr, index) => {
@@ -20,7 +20,7 @@ describe("Quorum Engine — Zero False Positive Consensus Verification", () => {
         monitorId: "mon-123",
         probeId: `probe-${dr.region}`,
         region: dr.region,
-        colo: "TEST",
+        colo: dr.colo,
         asn: dr.asn,
         timestamp: new Date().toISOString(),
         statusCode: 200,
@@ -328,5 +328,63 @@ describe("Quorum Engine — Zero False Positive Consensus Verification", () => {
     expect(evaluation.isGlobalOutage).toBe(true);
     expect(evaluation.distinctDownAsns).toContain("AS13335");
     expect(evaluation.distinctDownAsns).toContain("AS24940");
+  });
+
+  test("Colocation Deduplication: Multiple virtual regions sharing identical physical PoP (e.g. SIN) cannot inflate quorum vote count", () => {
+    // 3 virtual regions all map to the same physical data center (colo: "SIN")
+    const colocatedResults: ProbeCheckResult[] = [
+      {
+        monitorId: "mon-123",
+        probeId: "probe-apac",
+        region: "apac",
+        colo: "SIN",
+        asn: "AS13335",
+        status: "DOWN",
+        latency: 50,
+        timestamp: new Date().toISOString(),
+        isVerificationRetry: true,
+      },
+      {
+        monitorId: "mon-123",
+        probeId: "probe-apac-se",
+        region: "apac-se",
+        colo: "SIN",
+        asn: "AS13335",
+        status: "DOWN",
+        latency: 52,
+        timestamp: new Date().toISOString(),
+        isVerificationRetry: true,
+      },
+      {
+        monitorId: "mon-123",
+        probeId: "probe-apac-ne",
+        region: "apac-ne",
+        colo: "SIN",
+        asn: "AS13335",
+        status: "DOWN",
+        latency: 48,
+        timestamp: new Date().toISOString(),
+        isVerificationRetry: true,
+      },
+      // 1 distinct region in London
+      {
+        monitorId: "mon-123",
+        probeId: "probe-weur",
+        region: "weur",
+        colo: "LHR",
+        asn: "AS13335",
+        status: "UP",
+        latency: 25,
+        timestamp: new Date().toISOString(),
+      },
+    ];
+
+    const evaluation = evaluateQuorum("mon-123", colocatedResults);
+
+    // Total eligible deduplicated probes should be 2 (SIN and LHR), NOT 4!
+    expect(evaluation.totalEligibleProbes).toBe(2);
+    expect(evaluation.confirmedDownCount).toBe(1);
+    expect(evaluation.finalStatus).toBe("DEGRADED");
+    expect(evaluation.isGlobalOutage).toBe(false);
   });
 });

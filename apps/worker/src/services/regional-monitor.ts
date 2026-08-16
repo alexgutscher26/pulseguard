@@ -190,9 +190,17 @@ export async function performRegionalChecks(
     targetRegions = [...FREE_TIER_PROBE_REGIONS];
   }
 
-  // Execute checks concurrently across distinct probe regions
-  const checkPromises = targetRegions.map((region) => checkFromRegion(monitor, region, env));
-  return await Promise.all(checkPromises);
+  // Execute checks in bounded concurrency (max 5 simultaneous subrequests) to respect DO limits
+  const results: RegionalCheckResult[] = [];
+  const concurrency = 5;
+  for (let i = 0; i < targetRegions.length; i += concurrency) {
+    const chunk = targetRegions.slice(i, i + concurrency);
+    const chunkResults = await Promise.all(
+      chunk.map((region) => checkFromRegion(monitor, region, env)),
+    );
+    results.push(...chunkResults);
+  }
+  return results;
 }
 
 /**

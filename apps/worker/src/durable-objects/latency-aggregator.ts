@@ -337,9 +337,13 @@ export class LatencyAggregator extends DurableObject {
   }
 
   /**
-   * Cleanup on object destruction
+   * Periodic alarm handler: ensures defensive recurring schedule and flushes memory aggregates to DB
    */
   override async alarm(): Promise<void> {
+    try {
+      // Defensive alarm rescheduling so memory eviction or flush failure does not orphan the aggregator
+      await this.ctx.storage.setAlarm(Date.now() + 60_000);
+    } catch {}
     await this.flushAggregates();
   }
 }

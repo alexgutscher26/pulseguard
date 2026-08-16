@@ -120,17 +120,19 @@ export default {
 
     const runWithRetry = async (retryCount: number = 0, maxRetries: number = 2): Promise<any> => {
       try {
-        // Find active monitors that are due for a check, but only for THIS shard
+        // Find active monitors that are due for a check, skipping abandoned free-tier accounts (>60d inactive)
         const targetIds: { id: string }[] = await prisma.$queryRaw`
-          SELECT id FROM "Monitor"
-          WHERE ("status" IN ('UP', 'DOWN', 'MAINTENANCE'))
-          AND NOT ("type" = 'HEARTBEAT' AND "status" = 'DOWN')
-          AND ("nextCheck" IS NULL OR "nextCheck" <= NOW())
-          AND (abs(hashtext(id)) % ${totalShards}) = ${shardId}
+          SELECT m.id FROM "Monitor" m
+          INNER JOIN "User" u ON m."userId" = u.id
+          WHERE (m."status" IN ('UP', 'DOWN', 'MAINTENANCE'))
+          AND NOT (m."type" = 'HEARTBEAT' AND m."status" = 'DOWN')
+          AND (m."nextCheck" IS NULL OR m."nextCheck" <= NOW())
+          AND (u."tier" != 'INITIATE' OR u."updatedAt" >= NOW() - INTERVAL '60 days')
+          AND (abs(hashtext(m.id)) % ${totalShards}) = ${shardId}
           AND NOT EXISTS (
-            SELECT 1 FROM "ProbeAssignment" WHERE "monitorId" = "Monitor"."id"
+            SELECT 1 FROM "ProbeAssignment" WHERE "monitorId" = m."id"
           )
-          ORDER BY "nextCheck" ASC
+          ORDER BY m."nextCheck" ASC
           LIMIT ${CHUNK_SIZE}
         `;
         return targetIds;
@@ -220,6 +222,27 @@ export default {
       }
 
       console.log(`Cron execution completed. Total monitors checked: ${totalProcessedCount}.`);
+
+      // Outbound dead-man's switch / external heartbeat ping to verify worker check-loop liveness
+      const pingUrl = env.DEADMAN_SNITCH_URL || env.HEALTHCHECK_PING_URL;
+      if (pingUrl) {
+        ctx.waitUntil(
+          fetch(pingUrl, {
+            method: "POST",
+            headers: {
+              "User-Agent": "PulseGuard-Cron-Sentinel/1.0",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              status: "ok",
+              checkedMonitors: totalProcessedCount,
+              timestamp: new Date().toISOString(),
+            }),
+          }).catch((pingErr) => {
+            console.warn("[Sentinel] Failed to ping outbound heartbeat URL:", pingErr);
+          }),
+        );
+      }
     } catch (error) {
       console.error("Error in scheduled handler:", error);
     }

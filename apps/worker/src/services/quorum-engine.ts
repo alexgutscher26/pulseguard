@@ -118,7 +118,22 @@ export function evaluateQuorum(
     }
   }
 
-  const distinctResults = Array.from(latestByRegion.values());
+  // Physical PoP / Colocation deduplication:
+  // If multiple distinct regions reported the exact same physical colo (e.g. both landed in "SIN"),
+  // deduplicate by physical colo so a single data center cannot cast multiple votes.
+  const latestByColoOrRegion = new Map<string, ProbeCheckResult>();
+  for (const r of latestByRegion.values()) {
+    const dedupeKey =
+      r.colo && r.colo !== "UNKNOWN" && r.colo !== "DIRECT" && r.colo !== "GLOBAL"
+        ? `colo:${r.colo}`
+        : `region:${r.region}`;
+    const existing = latestByColoOrRegion.get(dedupeKey);
+    if (!existing || (r.status === "DOWN" && existing.status === "UP")) {
+      latestByColoOrRegion.set(dedupeKey, r);
+    }
+  }
+
+  const distinctResults = Array.from(latestByColoOrRegion.values());
 
   const excludedFlappingProbes: string[] = [];
   const excludedSlowProbes: string[] = [];

@@ -197,6 +197,38 @@ async function cleanupOldData(prisma: any): Promise<void> {
   if (fiveMinResult.count > 0) {
     console.log(`[Cleanup] Deleted ${fiveMinResult.count} old 5-minute aggregates`);
   }
+
+  // Cleanup old status page views (older than 30 days)
+  try {
+    const viewsResult = await prisma.statusPageView.deleteMany({
+      where: {
+        viewedAt: {
+          lt: thirtyDaysAgo,
+        },
+      },
+    });
+    if (viewsResult.count > 0) {
+      console.log(`[Cleanup] Deleted ${viewsResult.count} old status page view records`);
+    }
+  } catch (err: any) {
+    console.warn(`[Cleanup] StatusPageView cleanup skipped or table uninitialized:`, err.message);
+  }
+
+  // Cleanup old heartbeat pings (older than 7 days)
+  try {
+    const pingsResult = await prisma.heartbeatPing.deleteMany({
+      where: {
+        timestamp: {
+          lt: sevenDaysAgo,
+        },
+      },
+    });
+    if (pingsResult.count > 0) {
+      console.log(`[Cleanup] Deleted ${pingsResult.count} old heartbeat ping records`);
+    }
+  } catch (err: any) {
+    console.warn(`[Cleanup] HeartbeatPing cleanup skipped or table uninitialized:`, err.message);
+  }
 }
 
 /**
@@ -382,6 +414,9 @@ export async function runDownsamplingCron(env: Env): Promise<void> {
 
     console.log("[Aggregator] Running Raw Event Cleanup");
     await cleanupRawMonitorEvents(prisma);
+
+    console.log("[Aggregator] Running Aggregate and Ping Retention Cleanup");
+    await cleanupOldData(prisma);
   } catch (error) {
     console.error("[Downsampling] Error:", error);
   }

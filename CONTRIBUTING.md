@@ -89,11 +89,11 @@ bun run dev
 | Translation   | `i18n/<locale>`             | `i18n/pt-br`                 |
 | Chore         | `chore/<short-description>` | `chore/upgrade-prisma-6`     |
 
-Always branch from `main`:
+Always branch from `master`:
 
 ```bash
-git checkout main
-git pull upstream main
+git checkout master
+git pull upstream master
 git checkout -b feat/your-feature
 ```
 
@@ -101,7 +101,7 @@ git checkout -b feat/your-feature
 
 ```bash
 git fetch upstream
-git rebase upstream/main
+git rebase upstream/master
 ```
 
 ### Running Checks

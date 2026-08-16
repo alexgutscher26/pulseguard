@@ -67,7 +67,7 @@ services:
       - .:/app
       - /app/node_modules # shadow host node_modules (mounts repo read-only context)
     environment:
-      DATABASE_URL: postgresql://pulseguard:${POSTGRES_PASSWORD:-changeme}@postgres:5432/pulseguard
+      DATABASE_URL: postgresql://pulseguard:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required in .env.production}@postgres:5432/pulseguard
     command: bunx --yes prisma migrate deploy
     depends_on:
       postgres:
@@ -80,7 +80,7 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: pulseguard
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required in .env.production}
       POSTGRES_DB: pulseguard
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -97,11 +97,18 @@ services:
     image: redis:7-alpine
     container_name: pulseguard-redis
     restart: unless-stopped
-    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-changeme}
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:?REDIS_PASSWORD is required in .env.production}
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-changeme}", "ping"]
+      test:
+        [
+          "CMD",
+          "redis-cli",
+          "-a",
+          "${REDIS_PASSWORD:?REDIS_PASSWORD is required in .env.production}",
+          "ping",
+        ]
       interval: 5s
       timeout: 3s
       retries: 5

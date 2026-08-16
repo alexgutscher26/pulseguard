@@ -349,16 +349,40 @@ export default {
 
           const results = await Promise.allSettled(deliveryPromises);
 
-          const successful = results.filter((r) => r.status === "fulfilled").length;
-          const failed = results.filter((r) => r.status === "rejected").length;
+          let successful = 0;
+          let failed = 0;
+
+          for (const r of results) {
+            if (r.status === "rejected") {
+              failed++;
+              console.error(
+                `[Notification] Delivery channel rejected for ${notification.monitorName}:`,
+                r.reason,
+              );
+            } else if (
+              r.status === "fulfilled" &&
+              r.value &&
+              typeof r.value === "object" &&
+              "error" in r.value &&
+              (r.value as any).error
+            ) {
+              failed++;
+              console.error(
+                `[Notification] Delivery channel returned error for ${notification.monitorName}:`,
+                (r.value as any).error,
+              );
+            } else {
+              successful++;
+            }
+          }
 
           console.log(
             `[Notification] Processed ${successful} deliveries for ${notification.monitorName} (${failed} failed)`,
           );
 
-          if (failed > 0 && successful === 0) {
+          if (failed > 0) {
             console.error(
-              `[Notification] All deliveries failed for ${notification.monitorName}, triggering queue retry.`,
+              `[Notification] One or more deliveries failed for ${notification.monitorName} (${failed}/${deliveryPromises.length}), triggering queue retry.`,
             );
             msg.retry();
           } else {
