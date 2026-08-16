@@ -58,8 +58,19 @@ export async function GET(request: NextRequest, props: LatencyHeatmapParams) {
       return NextResponse.json({ error: "Monitor not found" }, { status: 404 });
     }
 
+    // Parse configured regions from monitor
+    let configuredRegions: string[] = [];
+    if (monitor.checkRegions) {
+      try {
+        const parsed = JSON.parse(monitor.checkRegions);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          configuredRegions = parsed;
+        }
+      } catch {}
+    }
+
     // Fetch latency aggregates
-    const aggregates = await prisma.latencyAggregate.findMany({
+    let aggregates = await prisma.latencyAggregate.findMany({
       where: {
         monitorId,
         granularity: config.granularity as any,
@@ -71,6 +82,82 @@ export async function GET(request: NextRequest, props: LatencyHeatmapParams) {
         timestamp: "asc",
       },
     });
+
+    // Fallback: If downsampled granularity (e.g. FIVE_MINUTE or ONE_HOUR) has no records yet, fallback to ONE_MINUTE
+    if (aggregates.length === 0 && config.granularity !== "ONE_MINUTE") {
+      aggregates = await prisma.latencyAggregate.findMany({
+        where: {
+          monitorId,
+          granularity: "ONE_MINUTE" as any,
+          timestamp: {
+            gte: startTime,
+          },
+        },
+        orderBy: {
+          timestamp: "asc",
+        },
+      });
+    }
+
+    // Fallback: If no LatencyAggregate rows exist at all, synthesize from raw MonitorEvents
+    if (aggregates.length === 0) {
+      const rawEvents = await prisma.monitorEvent.findMany({
+        where: {
+          monitorId,
+          timestamp: {
+            gte: startTime,
+          },
+          status: "UP",
+        },
+        orderBy: {
+          timestamp: "asc",
+        },
+      });
+
+      if (rawEvents.length > 0) {
+        const eventGroups = new Map<
+          string,
+          { latencies: number[]; timestamp: Date; region: string }
+        >();
+        for (const ev of rawEvents) {
+          const region = ev.region || configuredRegions[0] || "global";
+          const d = new Date(ev.timestamp);
+          d.setSeconds(0);
+          d.setMilliseconds(0);
+          const key = `${region}:${d.getTime()}`;
+          if (!eventGroups.has(key)) {
+            eventGroups.set(key, { latencies: [], timestamp: d, region });
+          }
+          eventGroups.get(key)!.latencies.push(ev.latency);
+        }
+
+        aggregates = Array.from(eventGroups.values()).map((g) => {
+          const sorted = [...g.latencies].sort((a, b) => a - b);
+          const avg = sorted.reduce((a, b) => a + b, 0) / sorted.length;
+          const min = sorted[0];
+          const max = sorted[sorted.length - 1];
+          const p50 = sorted[Math.floor(sorted.length * 0.5)] || avg;
+          const p95 = sorted[Math.floor(sorted.length * 0.95)] || avg;
+          const p99 = sorted[Math.floor(sorted.length * 0.99)] || avg;
+          return {
+            id: `synth-${g.region}-${g.timestamp.getTime()}`,
+            monitorId,
+            region: g.region,
+            timestamp: g.timestamp,
+            granularity: "ONE_MINUTE" as any,
+            avgLatency: Math.round(avg),
+            minLatency: min,
+            maxLatency: max,
+            p50Latency: p50,
+            p95Latency: p95,
+            p99Latency: p99,
+            sampleCount: sorted.length,
+            successRate: 1.0,
+            createdAt: g.timestamp,
+          };
+        });
+      }
+    }
 
     // Fetch regional baselines
     const baselines = await prisma.regionalBaseline.findMany({
@@ -89,8 +176,19 @@ export async function GET(request: NextRequest, props: LatencyHeatmapParams) {
       },
     });
 
-    // Group by region
+    // If configured regions not defined in monitor settings, infer from aggregates or fallback to global
+    if (configuredRegions.length === 0 && aggregates.length > 0) {
+      configuredRegions = Array.from(new Set(aggregates.map((a) => a.region)));
+    }
+    if (configuredRegions.length === 0) {
+      configuredRegions = ["global"];
+    }
+
+    // Initialize region map with all configured regions so all monitored regions are always listed
     const regionMap = new Map<string, any[]>();
+    for (const reg of configuredRegions) {
+      regionMap.set(reg, []);
+    }
     for (const agg of aggregates) {
       if (!regionMap.has(agg.region)) {
         regionMap.set(agg.region, []);
@@ -139,8 +237,8 @@ export async function GET(request: NextRequest, props: LatencyHeatmapParams) {
     const allLatencies = aggregates.map((a) => a.avgLatency);
     const colorScale = {
       absolute: {
-        min: Math.min(...allLatencies, 50),
-        max: Math.max(...allLatencies, 500),
+        min: allLatencies.length > 0 ? Math.min(...allLatencies) : 50,
+        max: allLatencies.length > 0 ? Math.max(...allLatencies) : 500,
       },
       relative: {
         min: 0.5,

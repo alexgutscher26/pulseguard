@@ -54,12 +54,19 @@ export class LatencyAggregator extends DurableObject {
       latency: data.latency,
       timestamp: data.timestamp,
     });
+
+    try {
+      const currentAlarm = await this.ctx.storage.getAlarm();
+      if (!currentAlarm) {
+        await this.ctx.storage.setAlarm(Date.now() + 60_000);
+      }
+    } catch {}
   }
 
   /**
    * Flush aggregates to database
    */
-  private async flushAggregates(): Promise<void> {
+  async flushAggregates(): Promise<void> {
     if (this.buffers.size === 0) return;
 
     const env = this.env as Env;
@@ -165,10 +172,20 @@ export class LatencyAggregator extends DurableObject {
     if (updates.length === 0) return;
 
     try {
+      // Deduplicate updates by monitorId:region (take latest)
+      const uniqueUpdatesMap = new Map<
+        string,
+        { monitorId: string; region: string; currentAvg: number }
+      >();
+      for (const u of updates) {
+        uniqueUpdatesMap.set(`${u.monitorId}:${u.region}`, u);
+      }
+      const uniqueUpdates = Array.from(uniqueUpdatesMap.values());
+
       // Find existing baselines for the given monitorId and region pairs
       const existingBaselines = await prisma.regionalBaseline.findMany({
         where: {
-          OR: updates.map((u) => ({
+          OR: uniqueUpdates.map((u) => ({
             monitorId: u.monitorId,
             region: u.region,
           })),
@@ -182,7 +199,7 @@ export class LatencyAggregator extends DurableObject {
       const creates: any[] = [];
       const updatePromises: any[] = [];
 
-      for (const u of updates) {
+      for (const u of uniqueUpdates) {
         const key = `${u.monitorId}:${u.region}`;
         const existing = existingMap.get(key);
 
@@ -258,6 +275,34 @@ export class LatencyAggregator extends DurableObject {
     if (request.method === "POST" && url.pathname === "/record") {
       const data = (await request.json()) as LatencyRecord;
       await this.recordLatency(data);
+      if (url.searchParams.get("flush") === "true") {
+        await this.flushAggregates();
+      }
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    if (request.method === "POST" && url.pathname === "/record-batch") {
+      const { records, flush } = (await request.json()) as {
+        records: LatencyRecord[];
+        flush?: boolean;
+      };
+      if (Array.isArray(records)) {
+        for (const data of records) {
+          await this.recordLatency(data);
+        }
+      }
+      if (flush) {
+        await this.flushAggregates();
+      }
+      return new Response(JSON.stringify({ success: true, count: records?.length || 0 }), {
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    if (request.method === "POST" && url.pathname === "/flush") {
+      await this.flushAggregates();
       return new Response(JSON.stringify({ success: true }), {
         headers: { "Content-Type": "application/json" },
       });

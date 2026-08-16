@@ -15,6 +15,7 @@ import {
   broadcastLiveEvent,
   performCheck,
   recordAlertSent,
+  recordLatencyBatchToAggregator,
   recordLatencyToAggregator,
   shouldSendAlert,
 } from "./check-runner";
@@ -164,7 +165,7 @@ export async function processBatch(
         // Check if regional monitoring is enabled
         if (monitor.checkRegions) {
           try {
-            const regionalResults = await performRegionalChecks(monitor);
+            const regionalResults = await performRegionalChecks(monitor, env);
             console.log(
               `[Regional] Checked ${monitor.name} from ${regionalResults.length} regions`,
             );
@@ -202,18 +203,18 @@ export async function processBatch(
               timestamp: new Date(),
             });
 
-            // Store each regional result in LatencyAggregator (Fire and forget)
-            for (const regionalResult of regionalResults) {
-              ctx.waitUntil(
-                recordLatencyToAggregator(
-                  env,
-                  monitor.id,
-                  regionalResult.region,
-                  regionalResult.latency,
-                  regionalResult.status === Status.UP,
-                ),
-              );
+            // Store each regional result in LatencyAggregator / DB
+            const latencyRecords = regionalResults.map((r) => ({
+              monitorId: monitor.id,
+              region: r.region,
+              latency: r.latency,
+              success: r.status === Status.UP,
+              timestamp: r.timestamp.getTime(),
+            }));
 
+            ctx.waitUntil(recordLatencyBatchToAggregator(env, prisma, latencyRecords, true));
+
+            for (const regionalResult of regionalResults) {
               // Only add to DB if DOWN (to save massive IOPS)
               if (regionalResult.status === Status.DOWN) {
                 eventsToCreate.push({
@@ -262,6 +263,24 @@ export async function processBatch(
         } else {
           // Standard single-region check
           result = await performCheck(monitor, env, prisma);
+
+          // Store single-region latency measurement
+          ctx.waitUntil(
+            recordLatencyBatchToAggregator(
+              env,
+              prisma,
+              [
+                {
+                  monitorId: monitor.id,
+                  region: "global",
+                  latency: result.latency,
+                  success: result.status === Status.UP,
+                  timestamp: Date.now(),
+                },
+              ],
+              true,
+            ),
+          );
         }
 
         // 2. Multi-Vector Verification Protocol (Retry & Proxy on Failure)
