@@ -23,11 +23,14 @@ export const postSchema = z.object({
 export function getAllPosts(): BlogPost[] {
   const files = fs.readdirSync(POSTS_DIR).filter((file) => file.endsWith(".mdx"));
 
-  const posts = files.map((file) => {
-    const slug = file.replace(/\.mdx$/, "");
+  const posts = files.flatMap((file) => {
+    const slug = file.replace(/\.mdx$/, "").trim().toLowerCase();
+    const isSafeSlug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug);
+    if (!isSafeSlug) return [];
+
     const raw = fs.readFileSync(path.join(POSTS_DIR, file), "utf8");
     const { data } = matter(raw);
-    return { slug, meta: postSchema.parse(data) };
+    return [{ slug, meta: postSchema.parse(data) }];
   });
 
   return posts.sort((a, b) => b.meta.date.localeCompare(a.meta.date));
