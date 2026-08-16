@@ -31,6 +31,12 @@ const REGIONS: Array<{ region: string; location: string; flag: string; baseLaten
   { region: "af-south", location: "AF-South (Cape Town)", flag: "🇿🇦", baseLatency: 210 },
 ];
 
+// Restrict probes to server-approved public hosts to prevent SSRF.
+const ALLOWED_PROBE_HOSTNAMES = new Set<string>([
+  "pulseguard.io",
+  "api.pulseguard.io",
+]);
+
 /**
  * Executes a fast, lightweight real-time reachability and latency probe
  * against a target service domain/endpoint from Cloudflare Edge with regional variance.
@@ -81,6 +87,19 @@ export async function checkServiceLiveStatus(
       };
     }
 
+    const normalizedHost = parsedUrl.hostname.toLowerCase();
+    if (!ALLOWED_PROBE_HOSTNAMES.has(normalizedHost)) {
+      return {
+        success: false,
+        domain,
+        status: "OUTAGE",
+        latencyMs: 0,
+        checkedAt: now,
+        probes: [],
+        error: "Target host is not allowed.",
+      };
+    }
+
     const targetUrl = parsedUrl.toString();
     const ssrfCheck = isPrivateOrInternalUrl(targetUrl);
     if (ssrfCheck.isForbidden) {
@@ -102,6 +121,7 @@ export async function checkServiceLiveStatus(
     try {
       const response = await fetch(targetUrl, {
         method: "HEAD",
+        redirect: "error",
         headers: {
           "User-Agent": "PulseGuard-Edge-Status-Probe/2.0 (+https://pulseguard.io)",
           Accept: "*/*",
