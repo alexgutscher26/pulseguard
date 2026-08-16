@@ -35,6 +35,9 @@ export async function queueNotification(
     try {
       attempts++;
       const { default: notificationHandler } = await import("../notification-handler");
+      let hasFailed = false;
+      let failureReason = "";
+
       const batch = {
         queue: "notifications",
         messages: [
@@ -43,13 +46,25 @@ export async function queueNotification(
             timestamp: new Date(),
             body: payload,
             ack: () => {},
-            retry: () => {},
+            retry: () => {
+              hasFailed = true;
+              failureReason = "One or more notification channels failed to deliver";
+            },
           },
         ],
         ackAll: () => {},
-        retryAll: () => {},
+        retryAll: () => {
+          hasFailed = true;
+          failureReason = "Batch delivery retry requested";
+        },
       } as unknown as MessageBatch<NotificationPayload>;
+
       await notificationHandler.queue(batch, env, ctx);
+
+      if (hasFailed) {
+        throw new Error(failureReason || "Notification channel delivery returned failure");
+      }
+
       return; // Success
     } catch (notifError) {
       console.error(
@@ -59,6 +74,34 @@ export async function queueNotification(
       if (attempts < maxAttempts) {
         await new Promise((resolve) => setTimeout(resolve, Math.pow(2, attempts) * 500));
       }
+    }
+  }
+
+  // All direct attempts exhausted
+  console.error(
+    `[CRITICAL_NOTIFICATION_DROP] All ${maxAttempts} direct delivery attempts failed for monitor "${payload.monitorName}" (${payload.type}). Alert was not delivered.`,
+  );
+
+  if (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN) {
+    try {
+      const { Redis } = await import("@upstash/redis/cloudflare");
+      const redis = new Redis({
+        url: env.UPSTASH_REDIS_REST_URL,
+        token: env.UPSTASH_REDIS_REST_TOKEN,
+      });
+      await redis.lpush(
+        "pulseguard:dlq:notifications",
+        JSON.stringify({
+          payload,
+          droppedAt: new Date().toISOString(),
+          attempts: maxAttempts,
+        }),
+      );
+      console.log(
+        `[Notification] Persisted dropped alert to Redis DLQ: pulseguard:dlq:notifications`,
+      );
+    } catch (redisErr) {
+      console.error("[Notification] Failed to record dropped alert to Redis DLQ:", redisErr);
     }
   }
 }

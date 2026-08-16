@@ -1,5 +1,11 @@
 import db from "@pulseguard/db";
-import { PLANS, type PlanTier, type UsageSummary, type UsageWarning } from "./billing";
+import {
+  PLANS,
+  getPlanLimits,
+  type PlanTier,
+  type UsageSummary,
+  type UsageWarning,
+} from "./billing";
 import { isFeatureEnabled, getFeatureError, type FeatureFlag } from "./feature-flags";
 import { sendUsageLimitWarning } from "@pulseguard/email";
 
@@ -91,39 +97,39 @@ export async function getUserUsageSummary(userId: string): Promise<UsageSummary>
       db.subscription.findUnique({ where: { userId } }).catch(() => null),
     ]);
 
-  const details = PLANS[plan];
+  const limits = getPlanLimits(plan, subscription?.tierVersion);
 
   const warnings: UsageWarning[] = [];
 
-  const monitorPct = Math.round((monitorsCount / details.limits.maxMonitors) * 100);
+  const monitorPct = Math.round((monitorsCount / limits.maxMonitors) * 100);
   if (monitorPct >= 80) {
     warnings.push({
       resource: "monitors",
       label: "Active Monitors",
       used: monitorsCount,
-      limit: details.limits.maxMonitors,
+      limit: limits.maxMonitors,
       percentage: monitorPct,
     });
   }
 
-  const alertChannelPct = Math.round((alertChannelsCount / details.limits.maxAlertChannels) * 100);
+  const alertChannelPct = Math.round((alertChannelsCount / limits.maxAlertChannels) * 100);
   if (alertChannelPct >= 80) {
     warnings.push({
       resource: "alertChannels",
       label: "Alert Channels",
       used: alertChannelsCount,
-      limit: details.limits.maxAlertChannels,
+      limit: limits.maxAlertChannels,
       percentage: alertChannelPct,
     });
   }
 
-  const statusPagePct = Math.round((statusPagesCount / details.limits.maxStatusPages) * 100);
+  const statusPagePct = Math.round((statusPagesCount / limits.maxStatusPages) * 100);
   if (statusPagePct >= 80) {
     warnings.push({
       resource: "statusPages",
       label: "Status Pages",
       used: statusPagesCount,
-      limit: details.limits.maxStatusPages,
+      limit: limits.maxStatusPages,
       percentage: statusPagePct,
     });
   }
@@ -144,14 +150,14 @@ export async function getUserUsageSummary(userId: string): Promise<UsageSummary>
 
   return {
     monitorsUsed: monitorsCount,
-    monitorsLimit: details.limits.maxMonitors,
+    monitorsLimit: limits.maxMonitors,
     alertChannelsUsed: alertChannelsCount,
-    alertChannelsLimit: details.limits.maxAlertChannels,
+    alertChannelsLimit: limits.maxAlertChannels,
     statusPagesUsed: statusPagesCount,
-    statusPagesLimit: details.limits.maxStatusPages,
+    statusPagesLimit: limits.maxStatusPages,
     monthlyChecksCount: eventsCount,
     plan,
-    limits: details.limits,
+    limits,
     isApproachingLimit: warnings.length > 0,
     warnings,
     isTrialActive,

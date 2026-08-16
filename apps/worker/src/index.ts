@@ -243,8 +243,29 @@ export default {
           }),
         );
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error in scheduled handler:", error);
+
+      // Notify external dead-man's switch of fatal check-loop failure
+      const pingUrl = env.DEADMAN_SNITCH_URL || env.HEALTHCHECK_PING_URL;
+      if (pingUrl) {
+        ctx.waitUntil(
+          fetch(pingUrl, {
+            method: "POST",
+            headers: {
+              "User-Agent": "PulseGuard-Cron-Sentinel/1.0",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              status: "error",
+              error: error?.message || String(error),
+              timestamp: new Date().toISOString(),
+            }),
+          }).catch((pingErr) => {
+            console.warn("[Sentinel] Failed to ping error heartbeat URL:", pingErr);
+          }),
+        );
+      }
     }
   },
 

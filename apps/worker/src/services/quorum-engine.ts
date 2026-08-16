@@ -188,15 +188,20 @@ export function evaluateQuorum(
   const averageLatency = upResults.length > 0 ? Math.round(totalLatency / upResults.length) : 0;
 
   // Dynamic consensus threshold based on eligible probes:
-  // If all 7 probes are eligible, threshold is 4 (4-of-7).
-  // If some probes are excluded or partial pool, threshold is majority: Math.max(2, Math.ceil((totalEligible + 1) / 2))
-  const requiredDownCount =
-    totalEligible >= config.totalProbesInPool
-      ? config.minConfirmationCount
-      : Math.max(2, Math.ceil((totalEligible + 1) / 2));
+  // For the standard global pool (config.totalProbesInPool >= 4), a global DOWN outage
+  // consensus strictly requires a minimum reporting floor of at least 4 eligible probes (totalEligible >= 4)
+  // and at least minConfirmationCount confirmed down regions.
+  // For custom smaller pools (e.g. 3 probes), minimum reporting floor is config.minConfirmationCount.
+  const minReportingFloor = Math.min(config.minConfirmationCount, 4);
+  const hasSufficientQuorumPool = totalEligible >= minReportingFloor;
+
+  const requiredDownCount = Math.max(
+    config.minConfirmationCount,
+    Math.ceil((totalEligible + 1) / 2),
+  );
 
   const confirmedDownCount = downResults.length;
-  let isDownConsensus = confirmedDownCount >= requiredDownCount && totalEligible >= 2;
+  let isDownConsensus = confirmedDownCount >= requiredDownCount && hasSufficientQuorumPool;
 
   // Multi-ASN Quorum / Provider Partition Circuit Breaker:
   // If down consensus is reached but 100% of failures are confined to a single provider ASN (e.g. AS13335)

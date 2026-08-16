@@ -17,7 +17,9 @@ export function createPrisma(databaseUrl?: string) {
   // DATABASE_URL should still point to the direct connection for Prisma CLI migrations.
   // Set DATABASE_POOL_URL in production to prevent connection exhaustion under load.
   const poolUrl =
-    (typeof process !== "undefined" ? process.env.DATABASE_POOL_URL : undefined) || url;
+    (typeof process !== "undefined" ? process.env?.DATABASE_POOL_URL : undefined) ||
+    (typeof globalThis !== "undefined" ? (globalThis as any).DATABASE_POOL_URL : undefined) ||
+    url;
 
   // Determine if SSL is needed but remove sslmode from URL to avoid conflict with explicit ssl config
   const isSsl = poolUrl.includes("sslmode=require") || poolUrl.includes("sslmode=verify");
@@ -48,7 +50,7 @@ export function createPrisma(databaseUrl?: string) {
   });
   const adapter = new PrismaPg(pool);
 
-  const isDev = process.env.NODE_ENV === "development";
+  const isDev = typeof process !== "undefined" && process.env?.NODE_ENV === "development";
 
   const client = new PrismaClient({
     adapter,

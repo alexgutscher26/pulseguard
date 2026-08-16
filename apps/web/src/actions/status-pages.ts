@@ -7,6 +7,7 @@ import { auth } from "@pulseguard/auth";
 import { headers, cookies } from "next/headers";
 import { env } from "@pulseguard/env/server";
 import { assertStatusPageLimits, checkAndNotifyUsageLimits } from "@/lib/billing-server";
+import { hashPassword, verifyPassword, signAuthToken } from "@pulseguard/core";
 
 /**
  * Adds a custom domain to a Vercel project via their API.
@@ -169,6 +170,7 @@ export async function createStatusPage(prevState: any, formData: FormData) {
   if (existing) return { success: false, error: "Slug already exists" };
 
   try {
+    const hashedPassword = data.password ? await hashPassword(data.password) : undefined;
     const page = await prisma.statusPage.create({
       data: {
         slug: data.slug,
@@ -176,7 +178,7 @@ export async function createStatusPage(prevState: any, formData: FormData) {
         description: data.description,
         customDomain: data.customDomain,
         userId: session.user.id,
-        password: data.password ? data.password : undefined,
+        password: hashedPassword,
         isPrivate: data.isPrivate ?? false,
         theme: data.theme ? JSON.parse(data.theme) : undefined,
 
@@ -340,8 +342,12 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
       };
     }
 
-    // Domain logic commented out
-    // ...
+    let updatePassword: string | null | undefined = undefined;
+    if (rawData.password) {
+      updatePassword = await hashPassword(rawData.password);
+    } else if (rawData.password === "") {
+      updatePassword = null;
+    }
 
     await prisma.statusPage.update({
       where: { id, userId: session.user.id },
@@ -352,7 +358,7 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
         customDomain: rawData.customDomain,
         theme: rawData.theme ? JSON.parse(rawData.theme) : undefined,
 
-        password: rawData.password,
+        password: updatePassword !== undefined ? updatePassword : undefined,
         isPrivate: rawData.isPrivate,
         ipWhitelist: rawData.ipWhitelist,
         seoIndex: rawData.seoIndex,
@@ -383,9 +389,38 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
     console.error("Failed to update status page:", e);
     return {
       success: false,
-      error: `Update failed: ${e.message || String(e)}`,
+      error: `Failed to update status page: ${e.message || String(e)}`,
     };
   }
+}
+
+/**
+ * Validates the provided password against the status page's password.
+ *
+ * If the password matches, a cryptographically signed HMAC token cookie is set for 24 hours.
+ *
+ * @param {string} pageId - The ID of the status page.
+ * @param {string} password - The password to validate against the status page.
+ */
+export async function verifyStatusPagePassword(pageId: string, password: string) {
+  const page = await prisma.statusPage.findUnique({ where: { id: pageId } });
+  if (!page || !page.password) return { success: false, error: "Page not found or no password" };
+
+  const isValid = await verifyPassword(password, page.password);
+  if (isValid) {
+    const cookieStore = await cookies();
+    const token = await signAuthToken(page.id, env.BETTER_AUTH_SECRET, 60 * 60 * 24);
+    cookieStore.set(`status-page-token-${page.id}`, token, {
+      httpOnly: true,
+      secure: env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 24,
+      sameSite: "lax",
+      path: "/",
+    });
+    return { success: true };
+  }
+
+  return { success: false, error: "Invalid password" };
 }
 
 /**
@@ -467,35 +502,6 @@ export async function removeMonitorFromPage(pageId: string, monitorId: string) {
     console.error("Failed to remove monitor:", e);
     return { success: false, error: "Failed to remove monitor" };
   }
-}
-
-/**
- * Verifies the password for a status page and manages authentication cookies.
- *
- * This function retrieves a status page by its ID and checks if the provided password matches the stored password.
- * If the password is correct, it sets an authentication cookie that expires in 24 hours.
- * If the page is not found or the password is incorrect, it returns an appropriate error message.
- *
- * @param {string} pageId - The ID of the status page to verify.
- * @param {string} password - The password to validate against the status page.
- */
-export async function verifyStatusPagePassword(pageId: string, password: string) {
-  const page = await prisma.statusPage.findUnique({ where: { id: pageId } });
-  if (!page || !page.password) return { success: false, error: "Page not found or no password" };
-
-  if (page.password === password) {
-    // Set a cookie manually.
-    const cookieStore = await cookies();
-    // Expire in 24 hours
-    cookieStore.set(`status-page-token-${page.id}`, "authenticated", {
-      httpOnly: true,
-      secure: env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 24,
-    });
-    return { success: true };
-  }
-
-  return { success: false, error: "Invalid password" };
 }
 
 // Widget Configuration Schema

@@ -64,4 +64,25 @@ describe("Alert Notification Resilience & Failure Modes", () => {
       globalThis.fetch = originalFetch;
     }
   });
+
+  test("queueNotification: direct mode executes without crashing and logs critical drop on complete channel failure", async () => {
+    const { queueNotification } = await import("../lib/send-notification");
+    const mockEnv: any = {};
+    const mockCtx: any = { waitUntil: () => {} };
+
+    const payload: any = {
+      type: "ALERT_DISPATCH",
+      monitorId: "mon-123",
+      monitorName: "Payment Gateway",
+      userId: "usr-123",
+      event: {
+        status: "DOWN",
+        timestamp: new Date().toISOString(),
+        reason: "503 Service Unavailable",
+      },
+    };
+
+    // Should complete cleanly and not throw unhandled exception
+    await expect(queueNotification(mockEnv, payload, mockCtx)).resolves.toBeUndefined();
+  });
 });

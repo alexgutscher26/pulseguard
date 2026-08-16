@@ -178,10 +178,75 @@ export function isPrivateOrInternalUrl(urlStr: string): {
       };
     }
 
+    // Check for embedded IP addresses in DNS wildcards (e.g. 127.0.0.1.nip.io, 169-254-169-254.sslip.io)
+    const ipv4Embedded = hostname.match(
+      /(?:^|\.)(\d{1,3}[.-]\d{1,3}[.-]\d{1,3}[.-]\d{1,3})(?:\.|$)/,
+    );
+    if (ipv4Embedded && ipv4Embedded[1]) {
+      const normalizedIp = ipv4Embedded[1].replace(/-/g, ".");
+      const check = isPrivateOrInternalIp(normalizedIp);
+      if (check.isForbidden) {
+        return {
+          isForbidden: true,
+          reason: `Embedded private IP detected in hostname: ${normalizedIp} (${check.reason || "Forbidden target IP"})`,
+        };
+      }
+    }
+
     return isPrivateOrInternalIp(hostname);
   } catch {
     return { isForbidden: true, reason: "Malformed or unparseable URL" };
   }
+}
+
+/**
+ * Asynchronously validates a target URL string, resolving DNS records in Node runtimes
+ * to block DNS-rebinding attacks against private/internal IP ranges.
+ */
+export async function isPrivateOrInternalUrlAsync(urlStr: string): Promise<{
+  isForbidden: boolean;
+  reason?: string;
+}> {
+  const syncCheck = isPrivateOrInternalUrl(urlStr);
+  if (syncCheck.isForbidden) return syncCheck;
+
+  try {
+    const url = new URL(urlStr);
+    const hostname = url.hostname.toLowerCase().replace(/^\[|\]$/g, "");
+
+    // Universal DoH (DNS-over-HTTPS) query: safe across Cloudflare Workers, Node.js, and OpenNext
+    try {
+      const dohRes = await fetch(
+        `https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(hostname)}&type=A`,
+        {
+          headers: { accept: "application/dns-json" },
+          signal: AbortSignal.timeout(2000),
+        },
+      );
+      if (dohRes.ok) {
+        const dohData: any = await dohRes.json();
+        if (Array.isArray(dohData.Answer)) {
+          for (const ans of dohData.Answer) {
+            if (ans.type === 1 && typeof ans.data === "string") {
+              const ipCheck = isPrivateOrInternalIp(ans.data);
+              if (ipCheck.isForbidden) {
+                return {
+                  isForbidden: true,
+                  reason: `DNS Rebinding Protected: Hostname ${hostname} resolved to forbidden IP ${ans.data} (${ipCheck.reason || "Forbidden IP"})`,
+                };
+              }
+            }
+          }
+        }
+      }
+    } catch {
+      // If DoH query fails or times out, fallback to synchronous checks
+    }
+  } catch {
+    return { isForbidden: true, reason: "Malformed URL" };
+  }
+
+  return { isForbidden: false };
 }
 
 /**
@@ -506,7 +571,7 @@ export async function checkHttpUniversal(
   const maxHops = 5;
 
   while (hops < maxHops) {
-    const ssrfCheck = isPrivateOrInternalUrl(currentUrl);
+    const ssrfCheck = await isPrivateOrInternalUrlAsync(currentUrl);
     if (ssrfCheck.isForbidden) {
       return {
         status: "DOWN",
@@ -698,5 +763,183 @@ export async function decryptSecret(
   } catch (err) {
     console.error("[Crypto] Failed to decrypt payload, returning raw input:", err);
     return cipherText;
+  }
+}
+
+/**
+ * PBKDF2 Password Hashing & Verification Utilities for Status Page Access Gates
+ */
+const HASH_PREFIX = "pbkdf2:v1:";
+
+export async function hashPassword(password: string): Promise<string> {
+  if (!password) return "";
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(password),
+    { name: "PBKDF2" },
+    false,
+    ["deriveBits"],
+  );
+  const derivedBits = await crypto.subtle.deriveBits(
+    {
+      name: "PBKDF2",
+      salt,
+      iterations: 100_000,
+      hash: "SHA-256",
+    },
+    keyMaterial,
+    256,
+  );
+  const hashArray = new Uint8Array(derivedBits);
+  const combined = new Uint8Array(salt.length + hashArray.length);
+  combined.set(salt, 0);
+  combined.set(hashArray, salt.length);
+
+  let binary = "";
+  for (let i = 0; i < combined.byteLength; i++) {
+    binary += String.fromCharCode(combined[i] ?? 0);
+  }
+  return `${HASH_PREFIX}${btoa(binary)}`;
+}
+
+export async function verifyPassword(
+  password: string,
+  storedHash: string | null | undefined,
+): Promise<boolean> {
+  if (!password || !storedHash) return false;
+  if (!storedHash.startsWith(HASH_PREFIX)) {
+    // Backward compatibility for legacy plaintext passwords during transition
+    return password === storedHash;
+  }
+  try {
+    const raw = atob(storedHash.slice(HASH_PREFIX.length));
+    const combined = new Uint8Array(raw.length);
+    for (let i = 0; i < raw.length; i++) {
+      combined[i] = raw.charCodeAt(i);
+    }
+    const salt = combined.slice(0, 16);
+    const expectedHash = combined.slice(16);
+
+    const enc = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey(
+      "raw",
+      enc.encode(password),
+      { name: "PBKDF2" },
+      false,
+      ["deriveBits"],
+    );
+    const derivedBits = await crypto.subtle.deriveBits(
+      {
+        name: "PBKDF2",
+        salt,
+        iterations: 100_000,
+        hash: "SHA-256",
+      },
+      keyMaterial,
+      256,
+    );
+    const actualHash = new Uint8Array(derivedBits);
+
+    if (actualHash.length !== expectedHash.length) return false;
+    let match = 0;
+    for (let i = 0; i < actualHash.length; i++) {
+      match |= (actualHash[i] ?? 0) ^ (expectedHash[i] ?? 0);
+    }
+    return match === 0;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Cryptographically Signed HMAC Tokens for Status Page Authentication Cookies
+ */
+const TOKEN_PREFIX = "pg_sig:v1:";
+
+export async function signAuthToken(
+  payload: string,
+  secretKey?: string,
+  ttlSeconds = 86400,
+): Promise<string> {
+  const secret =
+    secretKey ||
+    (typeof process !== "undefined"
+      ? process.env?.BETTER_AUTH_SECRET || process.env?.ENCRYPTION_SECRET
+      : (globalThis as any).BETTER_AUTH_SECRET) ||
+    "pulseguard-default-sig-secret-min32chars!";
+
+  const expiresAt = Date.now() + ttlSeconds * 1000;
+  const dataToSign = `${payload}:${expiresAt}`;
+
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+
+  const sigBuffer = await crypto.subtle.sign("HMAC", key, enc.encode(dataToSign));
+  const sigArray = new Uint8Array(sigBuffer);
+
+  let binary = "";
+  for (let i = 0; i < sigArray.length; i++) {
+    binary += String.fromCharCode(sigArray[i] ?? 0);
+  }
+  const base64Sig = btoa(binary);
+  return `${TOKEN_PREFIX}${payload}:${expiresAt}:${base64Sig}`;
+}
+
+export async function verifyAuthToken(
+  token: string | null | undefined,
+  expectedPayload: string,
+  secretKey?: string,
+): Promise<boolean> {
+  if (!token || !token.startsWith(TOKEN_PREFIX)) return false;
+
+  const secret =
+    secretKey ||
+    (typeof process !== "undefined"
+      ? process.env?.BETTER_AUTH_SECRET || process.env?.ENCRYPTION_SECRET
+      : (globalThis as any).BETTER_AUTH_SECRET) ||
+    "pulseguard-default-sig-secret-min32chars!";
+
+  try {
+    const raw = token.slice(TOKEN_PREFIX.length);
+    const parts = raw.split(":");
+    if (parts.length < 3) return false;
+
+    const payload = parts[0];
+    const expiresAt = Number(parts[1]);
+    const base64Sig = parts.slice(2).join(":");
+
+    if (payload !== expectedPayload) return false;
+    if (Date.now() > expiresAt) return false;
+
+    const dataToSign = `${payload}:${expiresAt}`;
+    const enc = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+      "raw",
+      enc.encode(secret),
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["sign"],
+    );
+
+    const sigBuffer = await crypto.subtle.sign("HMAC", key, enc.encode(dataToSign));
+    const sigArray = new Uint8Array(sigBuffer);
+
+    let binary = "";
+    for (let i = 0; i < sigArray.length; i++) {
+      binary += String.fromCharCode(sigArray[i] ?? 0);
+    }
+    const expectedBase64Sig = btoa(binary);
+
+    return base64Sig === expectedBase64Sig;
+  } catch {
+    return false;
   }
 }

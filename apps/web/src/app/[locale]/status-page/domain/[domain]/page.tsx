@@ -1,13 +1,15 @@
+import type { Metadata } from "next";
 import prisma from "@pulseguard/db";
 import { notFound } from "next/navigation";
 import { PublicView } from "@/components/status-pages/public-view";
 import { headers, cookies } from "next/headers";
 import { PasswordProtection } from "@/components/status-pages/password-protection";
-import type { Metadata } from "next";
+import { getI18nOverrides } from "@/actions/i18n";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
-import { getI18nOverrides } from "@/actions/i18n";
 import set from "lodash.set";
+import { env } from "@pulseguard/env/server";
+import { verifyAuthToken } from "@pulseguard/core";
 
 export const dynamic = "force-dynamic";
 
@@ -89,8 +91,9 @@ export default async function CustomDomainStatusPage({ params }: Props) {
 
   // 2. Private Access Check
   if (page.isPrivate) {
-    const token = cookieStore.get(`status-page-token-${page.id}`);
-    if (token?.value !== "authenticated") {
+    const token = cookieStore.get(`status-page-token-${page.id}`)?.value;
+    const isValid = await verifyAuthToken(token, page.id, env.BETTER_AUTH_SECRET);
+    if (!isValid) {
       return <PasswordProtection pageId={page.id} title={page.title} />;
     }
   }

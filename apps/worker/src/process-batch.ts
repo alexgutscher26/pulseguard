@@ -469,30 +469,46 @@ export async function processBatch(
             throw new Error("CircuitBreaker: OPEN. Avoiding database writes.");
           }
 
+          const isStatusChange =
+            currentStatus !== monitor.status || currentStatus !== "UP" || Boolean(errorReason);
+
           const executePersistence = async (retry: boolean = true): Promise<void> => {
             try {
-              await prisma.$transaction(
-                [
-                  prisma.monitorEvent.create({
-                    data: {
-                      monitorId: monitor.id,
-                      status: currentStatus as any,
-                      latency: latency,
-                      errorReason: errorReason,
-                      timestamp: new Date(),
-                    },
-                  }),
-                  prisma.monitor.update({
-                    where: { id: monitor.id },
-                    data: {
-                      status: currentStatus as any,
-                      lastCheck: new Date(),
-                      nextCheck: nextCheckTime,
-                    },
-                  }),
-                ],
-                { maxWait: 5000, timeout: 10000 },
-              );
+              if (isStatusChange) {
+                // Record state transitions, outages, and degradations in history
+                await prisma.$transaction(
+                  [
+                    prisma.monitorEvent.create({
+                      data: {
+                        monitorId: monitor.id,
+                        status: currentStatus as any,
+                        latency: latency,
+                        errorReason: errorReason,
+                        timestamp: new Date(),
+                      },
+                    }),
+                    prisma.monitor.update({
+                      where: { id: monitor.id },
+                      data: {
+                        status: currentStatus as any,
+                        lastCheck: new Date(),
+                        nextCheck: nextCheckTime,
+                      },
+                    }),
+                  ],
+                  { maxWait: 5000, timeout: 10000 },
+                );
+              } else {
+                // Steady-state healthy check: update check timestamps without bloating raw event table
+                await prisma.monitor.update({
+                  where: { id: monitor.id },
+                  data: {
+                    status: currentStatus as any,
+                    lastCheck: new Date(),
+                    nextCheck: nextCheckTime,
+                  },
+                });
+              }
             } catch (txErr: any) {
               if (
                 retry &&

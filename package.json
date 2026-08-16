@@ -45,6 +45,7 @@
     "deploy": "turbo -F @pulseguard/infra deploy",
     "destroy": "turbo -F @pulseguard/infra destroy",
     "check": "oxlint && oxfmt --write",
+    "test": "bun test packages apps/worker apps/web",
     "check-names": "bun scripts/check-filenames.js",
     "check-deps": "turbo depcheck",
     "check-publint": "turbo publint",

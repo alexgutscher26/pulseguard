@@ -48,6 +48,15 @@ const rateLimitMiddleware = t.middleware(({ ctx, path, next }) => {
   calls.push(now);
   g.__rlStore!.set(key, calls);
 
+  // Periodic bounded prune to avoid memory growth in long-running instances
+  if (g.__rlStore!.size > 5_000) {
+    for (const [k, timestamps] of g.__rlStore!.entries()) {
+      if (timestamps.length === 0 || (timestamps[timestamps.length - 1] ?? 0) < windowStart) {
+        g.__rlStore!.delete(k);
+      }
+    }
+  }
+
   if (calls.length > RATE_LIMIT_MAX_CALLS) {
     throw new TRPCError({
       code: "TOO_MANY_REQUESTS",

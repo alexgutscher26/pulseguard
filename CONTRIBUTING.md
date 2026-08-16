@@ -33,7 +33,7 @@ By participating in this project you agree to abide by our [Code of Conduct](./C
 | ------------------- | ------------------------------------------------------------------------------------------------------- |
 | 🐛 Bug reports      | [Bug Report template](https://github.com/alexgutscher26/pulseguard/issues/new?template=bug_report.yml)  |
 | ✨ Feature requests | [GitHub Discussions → Ideas](https://github.com/alexgutscher26/pulseguard/discussions/categories/ideas) |
-| 📖 Documentation    | Open a PR against `main` — see [Documentation Guidelines](#documentation-guidelines)                    |
+| 📖 Documentation    | Open a PR against `master` — see [Documentation Guidelines](#documentation-guidelines)                  |
 | 🌐 Translations     | See [Translation Guidelines](#translation-guidelines)                                                   |
 | 💬 Community help   | [GitHub Discussions → Q&A](https://github.com/alexgutscher26/pulseguard/discussions/categories/q-a)     |
 | 🔒 Security issues  | See [SECURITY.md](./SECURITY.md) — **do not** open a public issue                                       |

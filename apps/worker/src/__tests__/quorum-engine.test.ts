@@ -1,5 +1,5 @@
 import { describe, test, expect } from "bun:test";
-import { evaluateQuorum, QuorumEngine } from "../services/quorum-engine";
+import { evaluateQuorum, QuorumEngine, DEFAULT_QUORUM_CONFIG } from "../services/quorum-engine";
 import type { ProbeCheckResult } from "@pulseguard/types";
 
 describe("Quorum Engine — Zero False Positive Consensus Verification", () => {
@@ -10,8 +10,8 @@ describe("Quorum Engine — Zero False Positive Consensus Verification", () => {
       { region: "weur", colo: "LHR", asn: "AS13335" },
       { region: "eeur", colo: "FRA", asn: "AS13335" },
       { region: "apac", colo: "NRT", asn: "AS13335" },
-      { region: "apac-ne", colo: "ICN", asn: "AS13335" },
-      { region: "apac-se", colo: "SYD", asn: "AS13335" },
+      { region: "oc", colo: "SYD", asn: "AS13335" },
+      { region: "sam", colo: "GRU", asn: "AS13335" },
     ];
 
     return defaultRegions.map((dr, index) => {
@@ -130,9 +130,9 @@ describe("Quorum Engine — Zero False Positive Consensus Verification", () => {
       { region: "weur", latency: 38 },
       { region: "eeur", latency: 45 },
       { region: "apac", latency: 50 },
-      { region: "apac-ne", latency: 48 },
+      { region: "oc", latency: 48 },
       {
-        region: "apac-se",
+        region: "sam",
         latency: 20000,
         status: "DOWN",
         errorReason: "Socket Timeout",
@@ -141,7 +141,7 @@ describe("Quorum Engine — Zero False Positive Consensus Verification", () => {
 
     const evaluation = evaluateQuorum("mon-123", results);
 
-    expect(evaluation.excludedSlowProbes).toContain("apac-se");
+    expect(evaluation.excludedSlowProbes).toContain("sam");
     expect(evaluation.totalEligibleProbes).toBe(6);
     expect(evaluation.finalStatus).toBe("UP");
   });
@@ -227,8 +227,14 @@ describe("Quorum Engine — Zero False Positive Consensus Verification", () => {
       },
     ];
 
+    const freeTierConfig = {
+      ...DEFAULT_QUORUM_CONFIG,
+      totalProbesInPool: 3,
+      minConfirmationCount: 2,
+    };
+
     // Single failure among 3 is DEGRADED, not DOWN (Zero false positives!)
-    const singleFailEval = evaluateQuorum("mon-free", freeTierResults);
+    const singleFailEval = evaluateQuorum("mon-free", freeTierResults, freeTierConfig);
     expect(singleFailEval.finalStatus).toBe("DEGRADED");
     expect(singleFailEval.isGlobalOutage).toBe(false);
     expect(singleFailEval.totalEligibleProbes).toBe(3);
@@ -249,7 +255,7 @@ describe("Quorum Engine — Zero False Positive Consensus Verification", () => {
       freeTierResults[2]!,
     ];
 
-    const twoFailEval = evaluateQuorum("mon-free", twoFailResults);
+    const twoFailEval = evaluateQuorum("mon-free", twoFailResults, freeTierConfig);
     expect(twoFailEval.finalStatus).toBe("DOWN");
     expect(twoFailEval.isGlobalOutage).toBe(true);
     expect(twoFailEval.confirmedDownCount).toBe(2);
@@ -301,8 +307,8 @@ describe("Quorum Engine — Zero False Positive Consensus Verification", () => {
       { region: "weur", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
       { region: "eeur", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
       { region: "apac", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
-      { region: "apac-ne", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
-      { region: "apac-se", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
+      { region: "oc", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
+      { region: "sam", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
     ]);
 
     const outOfBandFailureResult: ProbeCheckResult = {
@@ -346,8 +352,8 @@ describe("Quorum Engine — Zero False Positive Consensus Verification", () => {
       },
       {
         monitorId: "mon-123",
-        probeId: "probe-apac-se",
-        region: "apac-se",
+        probeId: "probe-oc",
+        region: "oc",
         colo: "SIN",
         asn: "AS13335",
         status: "DOWN",
@@ -357,8 +363,8 @@ describe("Quorum Engine — Zero False Positive Consensus Verification", () => {
       },
       {
         monitorId: "mon-123",
-        probeId: "probe-apac-ne",
-        region: "apac-ne",
+        probeId: "probe-sam",
+        region: "sam",
         colo: "SIN",
         asn: "AS13335",
         status: "DOWN",
@@ -386,5 +392,41 @@ describe("Quorum Engine — Zero False Positive Consensus Verification", () => {
     expect(evaluation.confirmedDownCount).toBe(1);
     expect(evaluation.finalStatus).toBe("DEGRADED");
     expect(evaluation.isGlobalOutage).toBe(false);
+  });
+
+  test("Minimum Reporting Floor Invariant: Insufficient reporting pool (<4 probes) never triggers global DOWN", () => {
+    // Only 2 probes report in the pool, both reporting DOWN (2-of-2)
+    const partialResults: ProbeCheckResult[] = [
+      {
+        monitorId: "mon-123",
+        probeId: "probe-wnam",
+        region: "wnam",
+        colo: "SJC",
+        asn: "AS13335",
+        status: "DOWN",
+        latency: 40,
+        timestamp: new Date().toISOString(),
+        isVerificationRetry: true,
+      },
+      {
+        monitorId: "mon-123",
+        probeId: "probe-enam",
+        region: "enam",
+        colo: "IAD",
+        asn: "AS13335",
+        status: "DOWN",
+        latency: 42,
+        timestamp: new Date().toISOString(),
+        isVerificationRetry: true,
+      },
+    ];
+
+    const evaluation = evaluateQuorum("mon-123", partialResults);
+
+    // Because totalEligible is 2 (< 4), status must be DEGRADED, not DOWN
+    expect(evaluation.totalEligibleProbes).toBe(2);
+    expect(evaluation.isDownConsensus).toBe(false);
+    expect(evaluation.isGlobalOutage).toBe(false);
+    expect(evaluation.finalStatus).toBe("DEGRADED");
   });
 });

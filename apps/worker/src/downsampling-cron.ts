@@ -242,12 +242,14 @@ async function summarizeDailyEvents(prisma: any): Promise<void> {
   // Example: Today is Day 8. 7 days ago (end of retention) was Day 1.
   // We summarize Day 0 (8 days ago) to be safe and ensuring it's fully complete.
   const startOfDay = new Date(utcNow.getTime() - 8 * 24 * 60 * 60 * 1000);
-  const endOfDay = new Date(utcNow.getTime() - 7 * 24 * 60 * 60 * 1000);
+  startOfDay.setUTCHours(0, 0, 0, 0);
+  const endOfDay = new Date(startOfDay.getTime() + 24 * 60 * 60 * 1000);
 
   console.log(`[Summarize] Processing day: ${startOfDay.toISOString().split("T")[0]}`);
 
   // Fetch all monitors
   const monitors = await prisma.monitor.findMany({ select: { id: true } });
+  if (monitors.length === 0) return;
 
   // Bulk fetch existing summaries for all monitors for the given date
   const monitorIds = monitors.map((m: any) => m.id);
@@ -260,70 +262,73 @@ async function summarizeDailyEvents(prisma: any): Promise<void> {
   });
 
   const existingMonitorIds = new Set(existingSummaries.map((s: any) => s.monitorId));
+  const candidateMonitorIds = monitorIds.filter((id: string) => !existingMonitorIds.has(id));
+  if (candidateMonitorIds.length === 0) {
+    console.log(
+      `[Summarize] All daily summaries already exist for ${startOfDay.toISOString().split("T")[0]}.`,
+    );
+    return;
+  }
 
-  for (const monitor of monitors) {
-    // Check if summary already exists
-    if (existingMonitorIds.has(monitor.id)) continue;
+  // Bulk group by monitorId and status to compute stats across all candidate monitors in 1 query
+  const statusCounts = await prisma.monitorEvent.groupBy({
+    by: ["monitorId", "status"],
+    where: {
+      monitorId: { in: candidateMonitorIds },
+      timestamp: { gte: startOfDay, lt: endOfDay },
+    },
+    _count: true,
+    _avg: { latency: true },
+  });
 
-    // 1. Get total checks
-    const totalChecks = await prisma.monitorEvent.count({
-      where: {
-        monitorId: monitor.id,
-        timestamp: { gte: startOfDay, lt: endOfDay },
-      },
-    });
+  const statsByMonitor: Record<
+    string,
+    { checksUp: number; checksDown: number; totalChecks: number; weightedLatency: number }
+  > = {};
 
-    if (totalChecks === 0) continue;
-
-    // 2. Get status counts
-    const statusCounts = await prisma.monitorEvent.groupBy({
-      by: ["status"],
-      where: {
-        monitorId: monitor.id,
-        timestamp: { gte: startOfDay, lt: endOfDay },
-      },
-      _count: true,
-    });
-
-    let checksUp = 0;
-    let checksDown = 0;
-
-    for (const s of statusCounts) {
-      if (s.status === "UP") checksUp += s._count;
-      if (s.status === "DOWN") checksDown += s._count;
+  for (const s of statusCounts) {
+    const mid = s.monitorId;
+    if (!statsByMonitor[mid]) {
+      statsByMonitor[mid] = { checksUp: 0, checksDown: 0, totalChecks: 0, weightedLatency: 0 };
     }
+    const count = s._count;
+    const avgLat = s._avg.latency || 0;
+    statsByMonitor[mid].totalChecks += count;
+    statsByMonitor[mid].weightedLatency += count * avgLat;
+    if (s.status === "UP") statsByMonitor[mid].checksUp += count;
+    if (s.status === "DOWN") statsByMonitor[mid].checksDown += count;
+  }
 
-    // 3. Avg Latency
-    const latencyAgg = await prisma.monitorEvent.aggregate({
-      where: {
-        monitorId: monitor.id,
-        timestamp: { gte: startOfDay, lt: endOfDay },
-      },
-      _avg: { latency: true },
-    });
+  const summariesToCreate: any[] = [];
+  const minutesInDay = 24 * 60;
 
-    const avgLatency = Math.round(latencyAgg._avg.latency || 0);
+  for (const [monitorId, stats] of Object.entries(statsByMonitor)) {
+    if (stats.totalChecks === 0) continue;
+    const avgLatency = Math.round(stats.weightedLatency / stats.totalChecks);
+    const totalValid = stats.checksUp + stats.checksDown;
+    const uptimePct = totalValid > 0 ? (stats.checksUp / totalValid) * 100 : 0;
+    const downDuration = Math.round((stats.checksDown / stats.totalChecks) * minutesInDay);
 
-    const totalValid = checksUp + checksDown;
-    const uptimePct = totalValid > 0 ? (checksUp / totalValid) * 100 : 0;
-
-    const minutesInDay = 24 * 60;
-    const downDuration = Math.round((checksDown / totalChecks) * minutesInDay);
-
-    await prisma.dailyMonitorSummary.create({
-      data: {
-        monitorId: monitor.id,
-        date: startOfDay,
-        uptimePct,
-        avgLatency,
-        checksTotal: totalChecks,
-        checksUp,
-        checksDown,
-        downDuration,
-      },
+    summariesToCreate.push({
+      monitorId,
+      date: startOfDay,
+      uptimePct,
+      avgLatency,
+      checksTotal: stats.totalChecks,
+      checksUp: stats.checksUp,
+      checksDown: stats.checksDown,
+      downDuration,
     });
   }
-  console.log(`[Summarize] Completed summary for ${monitors.length} monitors.`);
+
+  if (summariesToCreate.length > 0) {
+    await prisma.dailyMonitorSummary.createMany({
+      data: summariesToCreate,
+      skipDuplicates: true,
+    });
+  }
+
+  console.log(`[Summarize] Completed summary for ${summariesToCreate.length} monitors.`);
 }
 
 /**
