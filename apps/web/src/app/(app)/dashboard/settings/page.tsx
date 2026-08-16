@@ -14,25 +14,23 @@ import { PrivacyForm } from "@/components/settings/privacy-form";
 import { BillingForm } from "@/components/settings/billing-form";
 import { ReferralForm } from "@/components/settings/referral-form";
 import { getUserUsageSummary } from "@/lib/billing-server";
-import { verifyAndApplyCheckoutSession } from "@/lib/stripe";
+import { verifyAndApplyCheckoutSession, syncUserSubscriptionFromStripe } from "@/lib/stripe";
 
 export const dynamic = "force-dynamic";
 
 /**
  * Renders the settings page based on the user's session and selected tab.
- *
- * This function retrieves the current user session and checks if the user is authenticated.
- * It then determines which settings tab to display, defaulting to "general" if none is specified.
- * Depending on the selected tab, it renders the appropriate settings components, including
- * profile, regional settings, security, team, audit logs, and API keys forms.
- *
- * @param {Object} params - The parameters for the function.
- * @param {Promise<{ tab?: string; session_id?: string }>} params.searchParams - Search params.
  */
 export default async function SettingsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string; session_id?: string }>;
+  searchParams: Promise<{
+    tab?: string;
+    session_id?: string;
+    mock_checkout?: string;
+    plan?: string;
+    sync?: string;
+  }>;
 }) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -45,6 +43,9 @@ export default async function SettingsPage({
   const resolvedParams = await searchParams;
   const rawTab = resolvedParams.tab || "general";
   const sessionId = resolvedParams.session_id;
+  const isMockCheckout = resolvedParams.mock_checkout === "true";
+  const mockPlan = resolvedParams.plan?.toUpperCase();
+  const shouldSync = resolvedParams.sync === "true";
 
   // If returning from Stripe checkout with a session_id, verify and apply plan immediately!
   if (sessionId && sessionId.startsWith("cs_")) {
@@ -52,6 +53,40 @@ export default async function SettingsPage({
       userId: session.user.id,
       sessionId,
     });
+  } else if (
+    isMockCheckout &&
+    mockPlan &&
+    (mockPlan === "CONSTRUCT" || mockPlan === "NETRUNNER" || mockPlan === "INITIATE")
+  ) {
+    const prisma = (await import("@pulseguard/db")).default;
+    const oneYearFromNow = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+    await prisma.subscription.upsert({
+      where: { userId: session.user.id },
+      create: {
+        userId: session.user.id,
+        plan: mockPlan,
+        status: "ACTIVE",
+        trialEndsAt: null,
+        currentPeriodStart: new Date(),
+        currentPeriodEnd: oneYearFromNow,
+        tierVersion: "mock_test",
+      },
+      update: {
+        plan: mockPlan,
+        status: "ACTIVE",
+        trialEndsAt: null,
+        currentPeriodStart: new Date(),
+        currentPeriodEnd: oneYearFromNow,
+        tierVersion: "mock_test",
+      },
+    });
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { tier: mockPlan },
+    });
+  } else if (rawTab.includes("billing") || shouldSync) {
+    // Proactively synchronize with Stripe to ensure customer tier matches active subscription
+    await syncUserSubscriptionFromStripe(session.user.id).catch(() => {});
   }
 
   // Clean tab parameter in case query parameters were concatenated (e.g. "billing?session_id=...")

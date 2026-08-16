@@ -17,7 +17,9 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
   if (!apiKey) {
     console.error(
-      chalk.red("✖ Not logged in. Run: ") + chalk.bold("pulse auth login --key <API_KEY>"),
+      chalk.red("✖ Not logged in. Run: ") +
+        chalk.bold("pulse auth login --key <API_KEY>") +
+        chalk.dim(" or export PULSEGUARD_API_KEY=<API_KEY>"),
     );
     process.exit(1);
   }

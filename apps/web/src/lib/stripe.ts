@@ -279,6 +279,9 @@ export async function createCheckoutSession({
               product_data: {
                 name: `PulseGuard ${planDetails.name}`,
                 description: planDetails.description,
+                metadata: {
+                  plan,
+                },
               },
               unit_amount:
                 (interval === "annual"
@@ -391,6 +394,14 @@ export async function createCheckoutSession({
         customer_update: { name: "auto", address: "auto" },
         line_items: [lineItem],
         mode: "subscription",
+        subscription_data: {
+          metadata: {
+            userId,
+            plan,
+            interval,
+            promoCode: cleanPromo || "",
+          },
+        },
         success_url: appendQueryParams(returnUrl, {
           session_id: "{CHECKOUT_SESSION_ID}",
           success: "true",
@@ -526,6 +537,217 @@ export async function createPortalSession({
 }
 
 /**
+ * Synchronously resolves the internal PlanTier from a Stripe Subscription object.
+ */
+export function resolvePlanFromStripeSubscription(
+  subscription: any,
+  fallbackPlan: string = "INITIATE",
+): PlanTier {
+  if (!subscription) return (fallbackPlan as PlanTier) || "INITIATE";
+  if (subscription.status === "canceled") return "INITIATE";
+
+  // 1. Check subscription metadata
+  const metaPlan = subscription.metadata?.plan?.toUpperCase();
+  if (metaPlan && metaPlan in PLANS) {
+    return metaPlan as PlanTier;
+  }
+
+  // 2. Check price ID from subscription items against known PLANS
+  const priceItem = subscription.items?.data?.[0]?.price;
+  const priceId = priceItem?.id;
+  if (priceId) {
+    for (const [tier, details] of Object.entries(PLANS)) {
+      if (details.stripePriceIdMonthly === priceId || details.stripePriceIdAnnual === priceId) {
+        return tier as PlanTier;
+      }
+    }
+  }
+
+  // 3. Check price metadata
+  const priceMetaPlan = priceItem?.metadata?.plan?.toUpperCase();
+  if (priceMetaPlan && priceMetaPlan in PLANS) {
+    return priceMetaPlan as PlanTier;
+  }
+
+  // 4. Check price lookup_key or nickname
+  const lookupKey = priceItem?.lookup_key?.toUpperCase();
+  if (lookupKey?.includes("CONSTRUCT")) return "CONSTRUCT";
+  if (lookupKey?.includes("NETRUNNER")) return "NETRUNNER";
+
+  const nickname = priceItem?.nickname?.toUpperCase();
+  if (nickname?.includes("CONSTRUCT")) return "CONSTRUCT";
+  if (nickname?.includes("NETRUNNER")) return "NETRUNNER";
+
+  // 5. Check product name or metadata if product is populated as an object
+  const product = priceItem?.product;
+  if (typeof product === "object" && product !== null) {
+    const prodPlan = product.metadata?.plan?.toUpperCase();
+    if (prodPlan && prodPlan in PLANS) return prodPlan as PlanTier;
+
+    const prodName = (product.name || "").toUpperCase();
+    if (prodName.includes("CONSTRUCT")) return "CONSTRUCT";
+    if (prodName.includes("NETRUNNER")) return "NETRUNNER";
+  }
+
+  // 6. Check price unit_amount (78000 = $780 Construct annual, 7900 = $79 Construct monthly, 6500 = $65, 18000 = $180 Netrunner annual, 1900 = $19 Netrunner monthly, 1500 = $15)
+  const unitAmount = priceItem?.unit_amount;
+  if (unitAmount === 7900 || unitAmount === 78000 || unitAmount === 6500 || unitAmount === 79) {
+    return "CONSTRUCT";
+  }
+  if (unitAmount === 1900 || unitAmount === 18000 || unitAmount === 1500 || unitAmount === 19) {
+    return "NETRUNNER";
+  }
+
+  return fallbackPlan in PLANS ? (fallbackPlan as PlanTier) : "INITIATE";
+}
+
+/**
+ * Asynchronously resolves the internal PlanTier from a Stripe Subscription object,
+ * fetching underlying Product details from Stripe if necessary.
+ */
+export async function resolvePlanFromStripeSubscriptionAsync(
+  subscription: any,
+  fallbackPlan: string = "INITIATE",
+): Promise<PlanTier> {
+  const syncResult = resolvePlanFromStripeSubscription(subscription, fallbackPlan);
+  if (syncResult !== "INITIATE" && syncResult !== fallbackPlan) {
+    return syncResult;
+  }
+
+  // If synchronous check couldn't identify and product is a string ID, fetch product from Stripe
+  const priceItem = subscription?.items?.data?.[0]?.price;
+  const productId =
+    typeof priceItem?.product === "string" ? priceItem.product : priceItem?.product?.id;
+
+  if (
+    productId &&
+    process.env.STRIPE_SECRET_KEY &&
+    !process.env.STRIPE_SECRET_KEY.includes("mock")
+  ) {
+    try {
+      const prodObj = await stripe.products.retrieve(productId);
+      const prodPlan = prodObj.metadata?.plan?.toUpperCase();
+      if (prodPlan && prodPlan in PLANS) return prodPlan as PlanTier;
+
+      const prodName = (prodObj.name || "").toUpperCase();
+      if (prodName.includes("CONSTRUCT")) return "CONSTRUCT";
+      if (prodName.includes("NETRUNNER")) return "NETRUNNER";
+    } catch (err: any) {
+      console.warn("[Stripe] Failed to retrieve product for tier resolution:", err?.message);
+    }
+  }
+
+  return syncResult;
+}
+
+/**
+ * Synchronizes a user's subscription and tier directly against Stripe.
+ */
+export async function syncUserSubscriptionFromStripe(
+  userId: string,
+): Promise<{ success: boolean; plan: PlanTier; status: string; error?: string }> {
+  try {
+    const user = await db.user.findUnique({
+      where: { id: userId },
+      include: { subscription: true },
+    });
+
+    if (!user) {
+      return { success: false, plan: "INITIATE", status: "NOT_FOUND", error: "User not found" };
+    }
+
+    const stripeKey = process.env.STRIPE_SECRET_KEY || "";
+    if (!stripeKey || stripeKey.includes("mock")) {
+      const plan = (user.subscription?.plan || user.tier || "INITIATE") as PlanTier;
+      return { success: true, plan, status: user.subscription?.status || "ACTIVE" };
+    }
+
+    let customerId = user.subscription?.stripeCustomerId;
+    if (!customerId && user.email) {
+      const customerList = await stripe.customers.list({ email: user.email, limit: 1 });
+      if (customerList.data.length > 0) {
+        customerId = customerList.data[0].id;
+      }
+    }
+
+    if (!customerId) {
+      const plan = (user.subscription?.plan || user.tier || "INITIATE") as PlanTier;
+      return { success: true, plan, status: user.subscription?.status || "NO_STRIPE_CUSTOMER" };
+    }
+
+    const subscriptions = await stripe.subscriptions.list({
+      customer: customerId,
+      status: "all",
+      expand: ["data.items.data.price.product"],
+      limit: 10,
+    });
+
+    const activeSub = subscriptions.data.find(
+      (s) => s.status === "active" || s.status === "trialing",
+    );
+
+    if (activeSub) {
+      const plan = await resolvePlanFromStripeSubscriptionAsync(
+        activeSub,
+        user.subscription?.plan || "CONSTRUCT",
+      );
+      const effectiveStatus = activeSub.status === "active" ? "ACTIVE" : "TRIALING";
+      const oneYearFromNow = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+      const subAny = activeSub as any;
+      const periodStart = subAny.current_period_start
+        ? new Date(subAny.current_period_start * 1000)
+        : new Date();
+      const periodEnd = subAny.current_period_end
+        ? new Date(subAny.current_period_end * 1000)
+        : oneYearFromNow;
+
+      await db.subscription.upsert({
+        where: { userId },
+        create: {
+          userId,
+          stripeCustomerId: customerId,
+          stripeSubscriptionId: activeSub.id,
+          plan,
+          status: effectiveStatus,
+          trialEndsAt: null,
+          currentPeriodStart: periodStart,
+          currentPeriodEnd: periodEnd,
+          tierVersion: "stripe_live",
+        },
+        update: {
+          stripeCustomerId: customerId,
+          stripeSubscriptionId: activeSub.id,
+          plan,
+          status: effectiveStatus,
+          trialEndsAt: null,
+          currentPeriodStart: periodStart,
+          currentPeriodEnd: periodEnd,
+          tierVersion: "stripe_live",
+        },
+      });
+
+      await db.user.update({
+        where: { id: userId },
+        data: { tier: plan },
+      });
+
+      return { success: true, plan, status: effectiveStatus };
+    }
+
+    const plan = (user.subscription?.plan || user.tier || "INITIATE") as PlanTier;
+    return { success: true, plan, status: user.subscription?.status || "NO_ACTIVE_SUB" };
+  } catch (err: any) {
+    console.error("[Stripe] Failed to sync user subscription:", err);
+    return {
+      success: false,
+      plan: "INITIATE",
+      status: "ERROR",
+      error: err?.message || "Sync failed",
+    };
+  }
+}
+
+/**
  * Verifies a completed Stripe checkout session by ID and updates the user's subscription in DB.
  */
 export async function verifyAndApplyCheckoutSession({
@@ -546,7 +768,7 @@ export async function verifyAndApplyCheckoutSession({
     }
 
     const session = await stripe.checkout.sessions.retrieve(sessionId, {
-      expand: ["subscription", "customer"],
+      expand: ["subscription", "customer", "line_items.data.price.product"],
     });
 
     if (session.payment_status !== "paid" && session.status !== "complete") {
@@ -562,8 +784,14 @@ export async function verifyAndApplyCheckoutSession({
       return { success: false, error: "Session does not belong to this user" };
     }
 
-    const rawPlan = (session.metadata?.plan || "CONSTRUCT").toUpperCase();
-    const plan = rawPlan in PLANS ? rawPlan : "CONSTRUCT";
+    let plan: PlanTier = "CONSTRUCT";
+    const rawPlan = session.metadata?.plan?.toUpperCase();
+    if (rawPlan && rawPlan in PLANS) {
+      plan = rawPlan as PlanTier;
+    } else if (session.subscription && typeof session.subscription === "object") {
+      plan = await resolvePlanFromStripeSubscriptionAsync(session.subscription, "CONSTRUCT");
+    }
+
     const customerId =
       typeof session.customer === "string" ? session.customer : session.customer?.id;
     const subscriptionId =
@@ -583,6 +811,7 @@ export async function verifyAndApplyCheckoutSession({
         stripeSubscriptionId: subscriptionId || undefined,
         plan,
         status: "ACTIVE",
+        trialEndsAt: null,
         currentPeriodStart: new Date(),
         currentPeriodEnd: oneYearFromNow,
         tierVersion: "stripe_live",
@@ -592,6 +821,7 @@ export async function verifyAndApplyCheckoutSession({
         stripeSubscriptionId: subscriptionId || undefined,
         plan,
         status: "ACTIVE",
+        trialEndsAt: null,
         currentPeriodStart: new Date(),
         currentPeriodEnd: oneYearFromNow,
         tierVersion: "stripe_live",

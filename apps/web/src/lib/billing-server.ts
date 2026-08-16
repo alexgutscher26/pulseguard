@@ -56,7 +56,10 @@ export async function getUserPlan(userId: string): Promise<PlanTier> {
   if (subscription?.status === "TRIALING") {
     const trialEnd = subscription.trialEndsAt || subscription.currentPeriodEnd;
     if (trialEnd && new Date() < new Date(trialEnd)) {
-      return "NETRUNNER";
+      const trialPlan = (subscription.plan || user?.tier || "NETRUNNER").toUpperCase();
+      if (trialPlan === "ADMIN" || trialPlan === "ENTERPRISE") return "CONSTRUCT";
+      if (trialPlan === "PRO") return "NETRUNNER";
+      return trialPlan in PLANS ? (trialPlan as PlanTier) : "NETRUNNER";
     }
 
     // Trial has expired — transition status

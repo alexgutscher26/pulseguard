@@ -1,18 +1,32 @@
 import { Resend } from "resend";
 import React from "react";
 import { env } from "@pulseguard/env/server";
+import type { PasswordResetEmailData } from "./templates/password-reset";
 
-let resendClient: Resend | null = null;
+// ============================================================================
+// Types & Interfaces
+// ============================================================================
 
-export function getResendClient(apiKey?: string): Resend {
-  if (!resendClient) {
-    const key = apiKey ?? env.RESEND_API_KEY;
-    if (!key) {
-      throw new Error("RESEND_API_KEY is not set");
-    }
-    resendClient = new Resend(key);
-  }
-  return resendClient;
+export type SendEmailResult = { id: string; error?: undefined } | { error: string; id?: undefined };
+
+export interface EmailAttachment {
+  filename: string;
+  content: Buffer | string;
+  contentType?: string | undefined;
+}
+
+export interface SendEmailOptions {
+  to: string | string[];
+  subject: string;
+  html: string;
+  from?: string | undefined;
+  replyTo?: string | string[] | undefined;
+  cc?: string | string[] | undefined;
+  bcc?: string | string[] | undefined;
+  attachments?: EmailAttachment[] | undefined;
+  apiKey?: string | undefined;
+  headers?: Record<string, string> | undefined;
+  tags?: Array<{ name: string; value: string }> | undefined;
 }
 
 export interface MonitorAlertData {
@@ -38,10 +52,7 @@ export interface VerificationEmailData {
   verificationUrl: string;
 }
 
-export interface PasswordResetEmailData {
-  userName?: string;
-  resetUrl: string;
-}
+export type { PasswordResetEmailData };
 
 export interface WeeklyDigestData {
   userName: string;
@@ -50,310 +61,6 @@ export interface WeeklyDigestData {
   uptimePercentage: number;
   totalIncidents: number;
   topPerformers: Array<{ name: string; uptime: number }>;
-}
-
-export async function sendMonitorAlert(
-  to: string,
-  data: MonitorAlertData,
-  apiKey?: string,
-): Promise<{ id: string } | { error: string }> {
-  try {
-    const resend = getResendClient(apiKey);
-    const { renderMonitorAlert } = await import("./templates/monitor-alert");
-
-    let subject =
-      data.status === "DOWN"
-        ? `🔴 [CRITICAL] ${data.monitorName} is DOWN`
-        : `✅ [RESOLVED] ${data.monitorName} is UP`;
-
-    if (data.reason?.includes("expires in") || data.reason?.includes("SSL certificate expires")) {
-      subject = `⚠️ [EXPIRY WARNING] ${data.monitorName} SSL Certificate Expires Soon`;
-    }
-
-    const html = await renderMonitorAlert(data);
-
-    const result = await resend.emails.send({
-      from: "PulseGuard <alerts@pulseguard.com>",
-      to,
-      subject,
-      html,
-    });
-
-    if (result.data && "id" in result.data) {
-      return { id: result.data.id };
-    }
-    return { error: result.error?.message || "Failed to send email" };
-  } catch (error) {
-    console.error("Error sending monitor alert:", error);
-    return { error: error instanceof Error ? error.message : "Unknown error" };
-  }
-}
-
-export async function sendWelcomeEmail(
-  to: string,
-  data: WelcomeEmailData,
-  apiKey?: string,
-): Promise<{ id: string } | { error: string }> {
-  try {
-    const resend = getResendClient(apiKey);
-    const { renderWelcome } = await import("./templates/welcome");
-
-    const html = await renderWelcome(data);
-
-    const result = await resend.emails.send({
-      from: "PulseGuard <hello@pulseguard.com>",
-      to,
-      subject: "Welcome to PulseGuard - Your Monitors Await",
-      html,
-    });
-
-    if (result.data && "id" in result.data) {
-      return { id: result.data.id };
-    }
-    return { error: result.error?.message || "Failed to send email" };
-  } catch (error) {
-    console.error("Error sending welcome email:", error);
-    return { error: error instanceof Error ? error.message : "Unknown error" };
-  }
-}
-
-export async function sendVerificationEmail(
-  to: string,
-  data: VerificationEmailData,
-  apiKey?: string,
-): Promise<{ id: string } | { error: string }> {
-  try {
-    const resend = getResendClient(apiKey);
-    const { renderVerification } = await import("./templates/verification");
-
-    const html = await renderVerification(data);
-
-    const result = await resend.emails.send({
-      from: "PulseGuard <verify@pulseguard.com>",
-      to,
-      subject: "Verify Your Email - PulseGuard",
-      html,
-    });
-
-    if (result.data && "id" in result.data) {
-      return { id: result.data.id };
-    }
-    return { error: result.error?.message || "Failed to send email" };
-  } catch (error) {
-    console.error("Error sending verification email:", error);
-    return { error: error instanceof Error ? error.message : "Unknown error" };
-  }
-}
-
-export async function sendPasswordResetEmail(
-  to: string,
-  data: PasswordResetEmailData,
-  apiKey?: string,
-): Promise<{ id: string } | { error: string }> {
-  try {
-    const key = apiKey ?? env.RESEND_API_KEY;
-    if (!key && (process.env.NODE_ENV === "development" || !process.env.NODE_ENV)) {
-      console.log(`\n==================================================`);
-      console.log(`📧 [DEV EMAIL FALLBACK] Password Reset Email to: ${to}`);
-      console.log(`🔗 Reset Link: ${data.resetUrl}`);
-      console.log(`==================================================\n`);
-      return { id: "dev-mock-email-id" };
-    }
-
-    const resend = getResendClient(apiKey);
-    const { renderPasswordReset } = await import("./templates/password-reset");
-
-    const html = await renderPasswordReset(data);
-
-    const result = await resend.emails.send({
-      from: "PulseGuard <auth@pulseguard.com>",
-      to,
-      subject: "🔑 Reset Your Password - PulseGuard",
-      html,
-    });
-
-    if (result.data && "id" in result.data) {
-      return { id: result.data.id };
-    }
-    return { error: result.error?.message || "Failed to send email" };
-  } catch (error) {
-    console.error("Error sending password reset email:", error);
-    return { error: error instanceof Error ? error.message : "Unknown error" };
-  }
-}
-
-export async function sendWeeklyDigest(
-  to: string,
-  data: WeeklyDigestData,
-  apiKey?: string,
-): Promise<{ id: string } | { error: string }> {
-  try {
-    const resend = getResendClient(apiKey);
-    const { renderWeeklyDigest } = await import("./templates/weekly-digest");
-
-    const html = await renderWeeklyDigest(data);
-
-    const result = await resend.emails.send({
-      from: "PulseGuard <reports@pulseguard.com>",
-      to,
-      subject: `📊 Weekly Uptime Report - ${data.weekRange}`,
-      html,
-    });
-
-    if (result.data && "id" in result.data) {
-      return { id: result.data.id };
-    }
-    return { error: result.error?.message || "Failed to send email" };
-  } catch (error) {
-    console.error("Error sending weekly digest:", error);
-    return { error: error instanceof Error ? error.message : "Unknown error" };
-  }
-}
-
-export * from "./styles/theme";
-export type { SubscriptionConfirmData } from "./templates/subscription-confirm";
-export type { StatusUpdateData } from "./templates/status-update";
-
-export async function sendSubscriptionConfirm(
-  to: string,
-  data: import("./templates/subscription-confirm").SubscriptionConfirmData,
-  apiKey?: string,
-): Promise<{ id: string } | { error: string }> {
-  try {
-    const resend = getResendClient(apiKey);
-    const { renderSubscriptionConfirm } = await import("./templates/subscription-confirm");
-
-    const html = await renderSubscriptionConfirm(data);
-
-    const result = await resend.emails.send({
-      from: "PulseGuard <updates@pulseguard.com>",
-      to,
-      subject: `Confirm subscription to ${data.pageTitle}`,
-      html,
-    });
-
-    if (result.data && "id" in result.data) {
-      return { id: result.data.id };
-    }
-    return { error: result.error?.message || "Failed to send email" };
-  } catch (error) {
-    console.error("Error sending subscription confirmation:", error);
-    return { error: error instanceof Error ? error.message : "Unknown error" };
-  }
-}
-
-export async function sendStatusUpdate(
-  to: string,
-  data: import("./templates/status-update").StatusUpdateData,
-  apiKey?: string,
-): Promise<{ id: string } | { error: string }> {
-  try {
-    const resend = getResendClient(apiKey);
-    const { renderStatusUpdate } = await import("./templates/status-update");
-
-    let subjectPrefix = "";
-    switch (data.incidentStatus) {
-      case "INVESTIGATING":
-        subjectPrefix = "⚠️ [Investigating]";
-        break;
-      case "IDENTIFIED":
-        subjectPrefix = "🔍 [Identified]";
-        break;
-      case "MONITORING":
-        subjectPrefix = "👀 [Monitoring]";
-        break;
-      case "RESOLVED":
-        subjectPrefix = "✅ [Resolved]";
-        break;
-      case "SCHEDULED":
-        subjectPrefix = "📅 [Maintenance]";
-        break;
-      case "IN_PROGRESS":
-        subjectPrefix = "🔨 [In Progress]";
-        break;
-      case "COMPLETED":
-        subjectPrefix = "✨ [Completed]";
-        break;
-    }
-
-    const html = await renderStatusUpdate(data);
-
-    const result = await resend.emails.send({
-      from: "PulseGuard <status@pulseguard.com>",
-      to,
-      subject: `${subjectPrefix} ${data.incidentTitle} - ${data.pageTitle}`,
-      html,
-    });
-
-    if (result.data && "id" in result.data) {
-      return { id: result.data.id };
-    }
-    return { error: result.error?.message || "Failed to send email" };
-  } catch (error) {
-    console.error("Error sending status update:", error);
-    return { error: error instanceof Error ? error.message : "Unknown error" };
-  }
-}
-
-export async function renderMonthlyReportToBuffer(stats: any): Promise<Buffer> {
-  const { renderToStream } = await import("@react-pdf/renderer");
-  const { MonthlyReportDocument } = await import("./templates/monthly-report");
-  const stream = await renderToStream(React.createElement(MonthlyReportDocument, { stats }) as any);
-  const chunks: Uint8Array[] = [];
-  // @ts-ignore - ReadableStream iteration
-  for await (const chunk of stream) {
-    chunks.push(chunk as Uint8Array);
-  }
-  return Buffer.concat(chunks);
-}
-
-export type { SlaReportData } from "./templates/sla-report";
-export { SlaReportDocument } from "./templates/sla-report";
-
-export async function renderSlaReportToBuffer(
-  data: import("./templates/sla-report").SlaReportData,
-): Promise<Buffer> {
-  const { renderToStream } = await import("@react-pdf/renderer");
-  const { SlaReportDocument } = await import("./templates/sla-report");
-  const stream = await renderToStream(React.createElement(SlaReportDocument, { data }) as any);
-  const chunks: Uint8Array[] = [];
-  // @ts-ignore - ReadableStream iteration
-  for await (const chunk of stream) {
-    chunks.push(chunk as Uint8Array);
-  }
-  return Buffer.concat(chunks);
-}
-
-export async function sendMonthlyReport(
-  to: string,
-  pdfBuffer: Buffer,
-  monthName: string,
-  apiKey?: string,
-): Promise<{ id: string } | { error: string }> {
-  try {
-    const resend = getResendClient(apiKey);
-
-    const result = await resend.emails.send({
-      from: "PulseGuard <reports@pulseguard.com>",
-      to,
-      subject: `📊 Monthly Performance Report - ${monthName}`,
-      html: `<p>Please find attached your monthly performance report for <strong>${monthName}</strong>.</p>`,
-      attachments: [
-        {
-          filename: `PulseGuard-Report-${monthName}.pdf`,
-          content: pdfBuffer,
-        },
-      ],
-    });
-
-    if (result.data && "id" in result.data) {
-      return { id: result.data.id };
-    }
-    return { error: result.error?.message || "Failed to send email" };
-  } catch (error) {
-    console.error("Error sending monthly report:", error);
-    return { error: error instanceof Error ? error.message : "Unknown error" };
-  }
 }
 
 export interface UsageLimitWarningEmailData {
@@ -366,111 +73,420 @@ export interface UsageLimitWarningEmailData {
     limit: number;
     percentage: number;
   }>;
-  upgradeUrl?: string;
-}
-
-export async function sendUsageLimitWarning(
-  to: string,
-  data: UsageLimitWarningEmailData,
-  apiKey?: string,
-): Promise<{ id: string } | { error: string }> {
-  try {
-    const resend = getResendClient(apiKey);
-    const { renderUsageLimitWarning } = await import("./templates/usage-limit-warning");
-
-    const html = await renderUsageLimitWarning({
-      userName: data.userName,
-      planName: data.planName,
-      warnings: data.warnings,
-      upgradeUrl: data.upgradeUrl ?? "https://pulseguard.io/dashboard/settings?tab=billing",
-    });
-
-    const result = await resend.emails.send({
-      from: "PulseGuard <billing@pulseguard.io>",
-      to,
-      subject: "⚠️ Workspace Plan Usage Warning",
-      html,
-    });
-
-    if (result.data && "id" in result.data) {
-      return { id: result.data.id };
-    }
-    return { error: result.error?.message || "Failed to send email" };
-  } catch (error) {
-    console.error("Error sending usage limit warning email:", error);
-    return { error: error instanceof Error ? error.message : "Unknown error" };
-  }
+  upgradeUrl?: string | undefined;
 }
 
 export interface DunningNoticeEmailData {
   userName: string;
   planName: string;
   amountDue: string;
-  failureReason?: string;
-  billingPortalUrl?: string;
+  failureReason?: string | undefined;
+  billingPortalUrl?: string | undefined;
+}
+
+export type { SubscriptionConfirmData } from "./templates/subscription-confirm";
+export type { StatusUpdateData } from "./templates/status-update";
+export type { SlaReportData } from "./templates/sla-report";
+export { SlaReportDocument } from "./templates/sla-report";
+export type { TeamInvitationEmailData } from "./templates/team-invitation";
+export * from "./styles/theme";
+
+// ============================================================================
+// Sender Directory
+// ============================================================================
+
+export const EMAIL_SENDERS = {
+  alerts: "PulseGuard <alerts@pulseguard.com>",
+  auth: "PulseGuard <auth@pulseguard.com>",
+  billing: "PulseGuard Billing <billing@pulseguard.io>",
+  general: "PulseGuard <hello@pulseguard.com>",
+  reports: "PulseGuard <reports@pulseguard.com>",
+  status: "PulseGuard <status@pulseguard.com>",
+  teams: "PulseGuard Teams <invitations@pulseguard.io>",
+  updates: "PulseGuard <updates@pulseguard.com>",
+  verify: "PulseGuard <verify@pulseguard.com>",
+} as const;
+
+// ============================================================================
+// Resend Client Lifecycle Management
+// ============================================================================
+
+const resendClientCache = new Map<string, Resend>();
+
+export function getResendClient(apiKey?: string): Resend {
+  const key = apiKey ?? env.RESEND_API_KEY;
+  if (!key) {
+    throw new Error("RESEND_API_KEY is not set");
+  }
+
+  let client = resendClientCache.get(key);
+  if (!client) {
+    client = new Resend(key);
+    resendClientCache.set(key, client);
+  }
+  return client;
+}
+
+// ============================================================================
+// Core Email Dispatch Pipeline
+// ============================================================================
+
+export async function sendEmail(options: SendEmailOptions): Promise<SendEmailResult> {
+  const {
+    to,
+    subject,
+    html,
+    from = EMAIL_SENDERS.general,
+    attachments,
+    apiKey,
+    replyTo,
+    cc,
+    bcc,
+    headers,
+    tags,
+  } = options;
+
+  const key = apiKey ?? env.RESEND_API_KEY;
+  const isDevOrTest =
+    process.env.NODE_ENV === "development" ||
+    process.env.NODE_ENV === "test" ||
+    !process.env.NODE_ENV;
+
+  if (!key) {
+    if (isDevOrTest) {
+      const recipient = Array.isArray(to) ? to.join(", ") : to;
+      console.log(`\n==================================================`);
+      console.log(`📧 [DEV EMAIL FALLBACK] Email Simulation`);
+      console.log(`📬 From:    ${from}`);
+      console.log(`👤 To:      ${recipient}`);
+      console.log(`📝 Subject: ${subject}`);
+      if (attachments && attachments.length > 0) {
+        console.log(`📎 Attachments: ${attachments.map((a) => a.filename).join(", ")}`);
+      }
+      console.log(`==================================================\n`);
+      return { id: "dev-mock-email-id" };
+    }
+    return { error: "RESEND_API_KEY is not set" };
+  }
+
+  try {
+    const resend = getResendClient(key);
+    const result = await resend.emails.send({
+      from,
+      to,
+      subject,
+      html,
+      ...(attachments && attachments.length > 0 ? { attachments } : {}),
+      ...(replyTo ? { replyTo } : {}),
+      ...(cc ? { cc } : {}),
+      ...(bcc ? { bcc } : {}),
+      ...(headers ? { headers } : {}),
+      ...(tags ? { tags } : {}),
+    } as Parameters<typeof resend.emails.send>[0]);
+
+    if (result.data && "id" in result.data) {
+      return { id: result.data.id };
+    }
+
+    const errorMessage = result.error?.message || "Failed to send email";
+    console.error(`[PulseGuard Email] Error sending to ${to}:`, errorMessage);
+    return { error: errorMessage };
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown email error";
+    console.error(`[PulseGuard Email] Exception sending to ${to}:`, error);
+    return { error: errorMessage };
+  }
+}
+
+// ============================================================================
+// PDF Rendering Utilities
+// ============================================================================
+
+export async function renderPdfToBuffer(document: React.ReactElement): Promise<Buffer> {
+  const { renderToStream } = await import("@react-pdf/renderer");
+  const stream = await renderToStream(document as any);
+  const chunks: Uint8Array[] = [];
+  // @ts-ignore - ReadableStream iteration
+  for await (const chunk of stream) {
+    chunks.push(chunk as Uint8Array);
+  }
+  return Buffer.concat(chunks);
+}
+
+export async function renderMonthlyReportToBuffer(stats: any): Promise<Buffer> {
+  const { MonthlyReportDocument } = await import("./templates/monthly-report");
+  return renderPdfToBuffer(React.createElement(MonthlyReportDocument, { stats }));
+}
+
+export async function renderSlaReportToBuffer(
+  data: import("./templates/sla-report").SlaReportData,
+): Promise<Buffer> {
+  const { SlaReportDocument } = await import("./templates/sla-report");
+  return renderPdfToBuffer(React.createElement(SlaReportDocument, { data }));
+}
+
+// ============================================================================
+// Email Template Senders
+// ============================================================================
+
+export async function sendMonitorAlert(
+  to: string,
+  data: MonitorAlertData,
+  apiKey?: string,
+): Promise<SendEmailResult> {
+  const { renderMonitorAlert } = await import("./templates/monitor-alert");
+
+  let subject =
+    data.status === "DOWN"
+      ? `🔴 [CRITICAL] ${data.monitorName} is DOWN`
+      : `✅ [RESOLVED] ${data.monitorName} is UP`;
+
+  if (data.reason?.includes("expires in") || data.reason?.includes("SSL certificate expires")) {
+    subject = `⚠️ [EXPIRY WARNING] ${data.monitorName} SSL Certificate Expires Soon`;
+  }
+
+  const html = await renderMonitorAlert(data);
+
+  return sendEmail({
+    to,
+    from: EMAIL_SENDERS.alerts,
+    subject,
+    html,
+    apiKey,
+  });
+}
+
+export async function sendWelcomeEmail(
+  to: string,
+  data: WelcomeEmailData,
+  apiKey?: string,
+): Promise<SendEmailResult> {
+  const { renderWelcome } = await import("./templates/welcome");
+  const html = await renderWelcome(data);
+
+  return sendEmail({
+    to,
+    from: EMAIL_SENDERS.general,
+    subject: "Welcome to PulseGuard - Your Monitors Await",
+    html,
+    apiKey,
+  });
+}
+
+export async function sendVerificationEmail(
+  to: string,
+  data: VerificationEmailData,
+  apiKey?: string,
+): Promise<SendEmailResult> {
+  const { renderVerification } = await import("./templates/verification");
+  const html = await renderVerification(data);
+
+  return sendEmail({
+    to,
+    from: EMAIL_SENDERS.verify,
+    subject: "Verify Your Email - PulseGuard",
+    html,
+    apiKey,
+  });
+}
+
+export async function sendPasswordResetEmail(
+  to: string,
+  data: PasswordResetEmailData,
+  apiKey?: string,
+): Promise<SendEmailResult> {
+  const { renderPasswordReset } = await import("./templates/password-reset");
+  const html = await renderPasswordReset(data);
+
+  return sendEmail({
+    to,
+    from: EMAIL_SENDERS.auth,
+    subject: "🔑 Reset Your Password - PulseGuard",
+    html,
+    apiKey,
+  });
+}
+
+export async function sendWeeklyDigest(
+  to: string,
+  data: WeeklyDigestData,
+  apiKey?: string,
+): Promise<SendEmailResult> {
+  const { renderWeeklyDigest } = await import("./templates/weekly-digest");
+  const html = await renderWeeklyDigest(data);
+
+  return sendEmail({
+    to,
+    from: EMAIL_SENDERS.reports,
+    subject: `📊 Weekly Uptime Report - ${data.weekRange}`,
+    html,
+    apiKey,
+  });
+}
+
+export async function sendSubscriptionConfirm(
+  to: string,
+  data: import("./templates/subscription-confirm").SubscriptionConfirmData,
+  apiKey?: string,
+): Promise<SendEmailResult> {
+  const { renderSubscriptionConfirm } = await import("./templates/subscription-confirm");
+  const html = await renderSubscriptionConfirm(data);
+
+  return sendEmail({
+    to,
+    from: EMAIL_SENDERS.updates,
+    subject: `Confirm subscription to ${data.pageTitle}`,
+    html,
+    apiKey,
+  });
+}
+
+export async function sendStatusUpdate(
+  to: string,
+  data: import("./templates/status-update").StatusUpdateData,
+  apiKey?: string,
+): Promise<SendEmailResult> {
+  const { renderStatusUpdate } = await import("./templates/status-update");
+
+  let subjectPrefix = "";
+  switch (data.incidentStatus) {
+    case "INVESTIGATING":
+      subjectPrefix = "⚠️ [Investigating]";
+      break;
+    case "IDENTIFIED":
+      subjectPrefix = "🔍 [Identified]";
+      break;
+    case "MONITORING":
+      subjectPrefix = "👀 [Monitoring]";
+      break;
+    case "RESOLVED":
+      subjectPrefix = "✅ [Resolved]";
+      break;
+    case "SCHEDULED":
+      subjectPrefix = "📅 [Maintenance]";
+      break;
+    case "IN_PROGRESS":
+      subjectPrefix = "🔨 [In Progress]";
+      break;
+    case "COMPLETED":
+      subjectPrefix = "✨ [Completed]";
+      break;
+  }
+
+  const html = await renderStatusUpdate(data);
+
+  return sendEmail({
+    to,
+    from: EMAIL_SENDERS.status,
+    subject: `${subjectPrefix} ${data.incidentTitle} - ${data.pageTitle}`,
+    html,
+    apiKey,
+  });
+}
+
+export async function sendMonthlyReport(
+  to: string,
+  pdfBuffer: Buffer,
+  monthName: string,
+  apiKey?: string,
+): Promise<SendEmailResult> {
+  return sendEmail({
+    to,
+    from: EMAIL_SENDERS.reports,
+    subject: `📊 Monthly Performance Report - ${monthName}`,
+    html: `<p>Please find attached your monthly performance report for <strong>${monthName}</strong>.</p>`,
+    attachments: [
+      {
+        filename: `PulseGuard-Report-${monthName}.pdf`,
+        content: pdfBuffer,
+      },
+    ],
+    apiKey,
+  });
+}
+
+export async function sendUsageLimitWarning(
+  to: string,
+  data: UsageLimitWarningEmailData,
+  apiKey?: string,
+): Promise<SendEmailResult> {
+  const { renderUsageLimitWarning } = await import("./templates/usage-limit-warning");
+  const html = await renderUsageLimitWarning({
+    userName: data.userName,
+    planName: data.planName,
+    warnings: data.warnings,
+    upgradeUrl: data.upgradeUrl ?? "https://pulseguard.io/dashboard/settings?tab=billing",
+  });
+
+  return sendEmail({
+    to,
+    from: EMAIL_SENDERS.billing,
+    subject: "⚠️ Workspace Plan Usage Warning",
+    html,
+    apiKey,
+  });
 }
 
 export async function sendDunningNotice(
   to: string,
   data: DunningNoticeEmailData,
   apiKey?: string,
-): Promise<{ id: string } | { error: string }> {
-  try {
-    const resend = getResendClient(apiKey);
-    const { renderDunningNotice } = await import("./templates/dunning-notice");
+): Promise<SendEmailResult> {
+  const { renderDunningNotice } = await import("./templates/dunning-notice");
+  const html = await renderDunningNotice({
+    userName: data.userName,
+    planName: data.planName,
+    amountDue: data.amountDue,
+    failureReason: data.failureReason ?? "Card declined",
+    billingPortalUrl:
+      data.billingPortalUrl ?? "https://pulseguard.io/dashboard/settings?tab=billing",
+  });
 
-    const html = await renderDunningNotice({
-      userName: data.userName,
-      planName: data.planName,
-      amountDue: data.amountDue,
-      failureReason: data.failureReason ?? "Card declined",
-      billingPortalUrl:
-        data.billingPortalUrl ?? "https://pulseguard.io/dashboard/settings?tab=billing",
-    });
-
-    const result = await resend.emails.send({
-      from: "PulseGuard Billing <billing@pulseguard.io>",
-      to,
-      subject: "⚠️ Payment Failed: Action Required for Your PulseGuard Subscription",
-      html,
-    });
-
-    if (result.data && "id" in result.data) {
-      return { id: result.data.id };
-    }
-    return { error: result.error?.message || "Failed to send email" };
-  } catch (error) {
-    console.error("Error sending dunning notice email:", error);
-    return { error: error instanceof Error ? error.message : "Unknown error" };
-  }
+  return sendEmail({
+    to,
+    from: EMAIL_SENDERS.billing,
+    subject: "⚠️ Payment Failed: Action Required for Your PulseGuard Subscription",
+    html,
+    apiKey,
+  });
 }
-
-export type { TeamInvitationEmailData } from "./templates/team-invitation";
 
 export async function sendTeamInvitationEmail(
   to: string,
   data: import("./templates/team-invitation").TeamInvitationEmailData,
   apiKey?: string,
-): Promise<{ id: string } | { error: string }> {
-  try {
-    const resend = getResendClient(apiKey);
-    const { renderTeamInvitation } = await import("./templates/team-invitation");
+): Promise<SendEmailResult> {
+  const { renderTeamInvitation } = await import("./templates/team-invitation");
+  const html = await renderTeamInvitation(data);
 
-    const html = await renderTeamInvitation(data);
-
-    const result = await resend.emails.send({
-      from: "PulseGuard Teams <invitations@pulseguard.io>",
-      to,
-      subject: `👋 You've been invited to join ${data.organizationName} on PulseGuard`,
-      html,
-    });
-
-    if (result.data && "id" in result.data) {
-      return { id: result.data.id };
-    }
-    return { error: result.error?.message || "Failed to send email" };
-  } catch (error) {
-    console.error("Error sending team invitation email:", error);
-    return { error: error instanceof Error ? error.message : "Unknown error" };
-  }
+  return sendEmail({
+    to,
+    from: EMAIL_SENDERS.teams,
+    subject: `👋 You've been invited to join ${data.organizationName} on PulseGuard`,
+    html,
+    apiKey,
+  });
 }
+
+// ============================================================================
+// Service Facade Export
+// ============================================================================
+
+export const emailService = {
+  send: sendEmail,
+  sendAlert: sendMonitorAlert,
+  sendWelcome: sendWelcomeEmail,
+  sendVerification: sendVerificationEmail,
+  sendPasswordReset: sendPasswordResetEmail,
+  sendWeeklyDigest: sendWeeklyDigest,
+  sendSubscriptionConfirm: sendSubscriptionConfirm,
+  sendStatusUpdate: sendStatusUpdate,
+  sendMonthlyReport: sendMonthlyReport,
+  sendUsageLimitWarning: sendUsageLimitWarning,
+  sendDunningNotice: sendDunningNotice,
+  sendTeamInvitation: sendTeamInvitationEmail,
+  renderPdf: renderPdfToBuffer,
+  renderMonthlyReportPdf: renderMonthlyReportToBuffer,
+  renderSlaReportPdf: renderSlaReportToBuffer,
+  getClient: getResendClient,
+};

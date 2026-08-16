@@ -82,16 +82,9 @@ export async function getLicenseTelemetry() {
       select: { tier: true, email: true },
     });
 
-    const subscription = await prisma.subscription.findUnique({
-      where: { userId: session.user.id },
-    });
-
-    const userTier = (
-      subscription?.plan ||
-      dbUser?.tier ||
-      (session.user as any).tier ||
-      "INITIATE"
-    ).toUpperCase();
+    const { getUserPlan } = await import("@/lib/billing-server");
+    const userPlan = await getUserPlan(session.user.id);
+    const userTier = (dbUser?.tier === "ADMIN" ? "ADMIN" : userPlan).toUpperCase();
     const adminEmails = (process.env.ADMIN_EMAILS || "")
       .split(",")
       .map((e) => e.trim().toLowerCase())
@@ -150,5 +143,27 @@ export async function getLicenseTelemetry() {
             : "3m / 1m Fast",
       regions: fallbackTier === "INITIATE" ? "3 Primary Regions" : "7 Sovereign Regions",
     };
+  }
+}
+
+/**
+ * Server action to manually trigger a sync of user's subscription and license against Stripe.
+ */
+export async function syncStripeSubscriptionAction() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  try {
+    const { syncUserSubscriptionFromStripe } = await import("@/lib/stripe");
+    const result = await syncUserSubscriptionFromStripe(session.user.id);
+    return result;
+  } catch (error: any) {
+    console.error("Failed to sync stripe subscription action:", error);
+    return { success: false, error: error?.message || "Failed to sync" };
   }
 }

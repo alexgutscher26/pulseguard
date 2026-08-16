@@ -2,8 +2,6 @@ import { createEnv } from "@t3-oss/env-core";
 import { z } from "zod";
 
 export const env = createEnv({
-  clientPrefix: "PROBE_",
-  client: {},
   server: {
     PULSEGUARD_API_URL: z.string().url().default("https://pulseguard-worker.example.com"),
     PULSEGUARD_PROBE_TOKEN: z.string().min(1),

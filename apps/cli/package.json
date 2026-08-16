@@ -3,22 +3,46 @@
   "version": "0.1.0",
   "description": "Official CLI for PulseGuard — Monitoring as Code, live debugging, and CI/CD integration",
   "keywords": [
+    "ci-cd",
     "cli",
     "devops",
     "monitoring",
+    "monitoring-as-code",
     "pulseguard",
+    "status-page",
+    "synthetic-monitoring",
     "uptime"
   ],
-  "license": "MIT",
-  "bin": {
-    "pulse": "./dist/index.js"
+  "homepage": "https://pulseguard.io",
+  "bugs": {
+    "url": "https://github.com/alexgutscher26/pulseguard/issues"
   },
+  "license": "MIT",
+  "author": "PulseGuard Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexgutscher26/pulseguard.git",
+    "directory": "apps/cli"
+  },
+  "bin": {
+    "pulse": "./dist/index.js",
+    "pulseguard": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
   "type": "module",
   "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc",
-    "dev": "echo \"pulseguard-cli ready — run: bunx tsx src/index.ts <command>\"",
-    "prepublishOnly": "npm run build",
+    "dev": "bun --watch src/index.ts",
+    "prepublishOnly": "bun run build",
     "depcheck": "depcheck"
   },
   "dependencies": {

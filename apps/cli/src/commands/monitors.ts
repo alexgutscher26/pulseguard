@@ -2,7 +2,8 @@ import { Command } from "commander";
 import chalk from "chalk";
 import { table } from "table";
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
-import { readFileSync, writeFileSync, existsSync } from "fs";
+import { readFileSync, writeFileSync, existsSync, statSync, readdirSync } from "fs";
+import { join } from "path";
 import ora from "ora";
 import inquirer from "inquirer";
 import { api, ApiError } from "../client.js";
@@ -16,6 +17,10 @@ interface Monitor {
   interval: number;
   timeout: number;
   lastCheck: string | null;
+  method?: string;
+  alertThreshold?: number;
+  checkRegions?: string | null;
+  tags?: string[];
 }
 
 const STATUS_COLOR: Record<string, (s: string) => string> = {
@@ -27,6 +32,113 @@ const STATUS_COLOR: Record<string, (s: string) => string> = {
 
 function colorStatus(status: string) {
   return (STATUS_COLOR[status] ?? chalk.dim)(status);
+}
+
+function normalizeMonitor(def: any): any {
+  let type = (def.type || "HTTP").toUpperCase();
+  if (type === "TCP") {
+    type = "PORT";
+  }
+
+  let url = def.url || "";
+  if (!url && (def.host || def.hostname)) {
+    const host = def.host || def.hostname;
+    if (type === "PORT") {
+      url = def.port ? `tcp://${host}:${def.port}` : `tcp://${host}`;
+    } else if (type === "PING") {
+      url = `ping://${host}`;
+    } else if (type === "DNS") {
+      url = host;
+    } else if (type === "SSL" || type === "DOMAIN") {
+      url = host.startsWith("http") ? host : `https://${host}`;
+    } else {
+      url = host;
+    }
+  }
+
+  if (!url && type === "HEARTBEAT") {
+    url = `heartbeat://${encodeURIComponent(def.name || "heartbeat")}`;
+  }
+
+  const normalized: Record<string, any> = {
+    name: def.name,
+    url,
+    type,
+    interval: Number(def.interval) || 60,
+    timeout: Number(def.timeout) || 10,
+    method: (def.method || "GET").toUpperCase(),
+    alertThreshold: Number(def.alertThreshold) || 1,
+  };
+
+  if (def.headers) normalized.headers = def.headers;
+  if (def.body) normalized.body = def.body;
+  if (def.expectation) normalized.expectation = def.expectation;
+  if (def.checkRegions) normalized.checkRegions = def.checkRegions;
+  if (def.runbookUrl) normalized.runbookUrl = def.runbookUrl;
+  if (def.tags) normalized.tags = def.tags;
+
+  return normalized;
+}
+
+function loadMonitorsFromPath(targetPath?: string): any[] {
+  const resolvedPath =
+    targetPath ||
+    (existsSync("pulseguard.yaml")
+      ? "pulseguard.yaml"
+      : existsSync("pulseguard.yml")
+        ? "pulseguard.yml"
+        : undefined);
+
+  if (!resolvedPath) {
+    throw new Error("No YAML configuration specified. Provide a path or create 'pulseguard.yaml'.");
+  }
+
+  if (!existsSync(resolvedPath)) {
+    throw new Error(`File or directory not found: ${resolvedPath}`);
+  }
+
+  const stat = statSync(resolvedPath);
+  const filesToRead: string[] = [];
+
+  if (stat.isDirectory()) {
+    const entries = readdirSync(resolvedPath);
+    for (const entry of entries) {
+      if (entry.endsWith(".yml") || entry.endsWith(".yaml")) {
+        filesToRead.push(join(resolvedPath, entry));
+      }
+    }
+    if (filesToRead.length === 0) {
+      throw new Error(`No .yml or .yaml files found in directory: ${resolvedPath}`);
+    }
+  } else {
+    filesToRead.push(resolvedPath);
+  }
+
+  const monitors: any[] = [];
+  for (const file of filesToRead) {
+    let parsed: any;
+    try {
+      parsed = parseYaml(readFileSync(file, "utf-8"));
+    } catch {
+      throw new Error(`Invalid YAML format in: ${file}`);
+    }
+
+    if (!parsed) continue;
+
+    if (Array.isArray(parsed)) {
+      monitors.push(...parsed);
+    } else if (Array.isArray(parsed.monitors)) {
+      monitors.push(...parsed.monitors);
+    } else if (typeof parsed === "object" && parsed.name) {
+      monitors.push(parsed);
+    }
+  }
+
+  if (monitors.length === 0) {
+    throw new Error("No monitors found in YAML configuration.");
+  }
+
+  return monitors.map(normalizeMonitor);
 }
 
 export const monitorsCmd = new Command("monitors").description("Manage monitors");
@@ -148,73 +260,143 @@ monitorsCmd
     }
   });
 
-// pulse monitors apply -f pulseguard.yaml
+// pulse monitors apply [file]
 monitorsCmd
-  .command("apply")
-  .description("Create or update monitors from a pulseguard.yaml file (Monitoring as Code)")
-  .requiredOption("-f, --file <path>", "Path to pulseguard.yaml")
+  .command("apply [file]")
+  .description("Create or update monitors from a YAML file or directory (Monitoring as Code)")
+  .option("-f, --file <path>", "Path to YAML file or directory")
   .option("--dry-run", "Preview changes without applying")
-  .action(async (opts) => {
-    const filePath = opts.file as string;
-    if (!existsSync(filePath)) {
-      console.error(chalk.red(`✖ File not found: ${filePath}`));
-      process.exit(1);
-    }
-
-    let config: { monitors: any[] };
+  .action(async (posFile, opts) => {
+    const targetPath = posFile || opts.file;
+    let monitorsToApply: any[];
     try {
-      config = parseYaml(readFileSync(filePath, "utf-8")) as {
-        monitors: any[];
-      };
-    } catch {
-      console.error(chalk.red("✖ Invalid YAML file"));
-      process.exit(1);
-    }
-
-    if (!Array.isArray(config?.monitors)) {
-      console.error(chalk.red("✖ YAML must have a top-level 'monitors' array"));
+      monitorsToApply = loadMonitorsFromPath(targetPath);
+    } catch (err: any) {
+      console.error(chalk.red(`✖ ${err.message}`));
       process.exit(1);
     }
 
     if (opts.dryRun) {
-      console.log(chalk.yellow("DRY RUN — no changes will be made\n"));
+      console.log(chalk.yellow("DRY RUN — previewing changes without applying\n"));
     }
 
     // Fetch existing monitors for idempotency
-    const { monitors: existing } = await api.get<{ monitors: Monitor[] }>("/api/cli/monitors");
-    const existingByName = new Map(existing.map((m) => [m.name.toLowerCase(), m]));
+    const spinner = ora("Syncing monitor state…").start();
+    let existingByName = new Map<string, Monitor>();
+    try {
+      const { monitors: existing } = await api.get<{ monitors: Monitor[] }>("/api/cli/monitors");
+      existingByName = new Map(existing.map((m) => [m.name.toLowerCase(), m]));
+      spinner.stop();
+    } catch (err: any) {
+      if (opts.dryRun) {
+        spinner.stop();
+        console.log(
+          chalk.dim("  (Offline preview — connecting to remote will verify updates vs creates)\n"),
+        );
+      } else {
+        spinner.fail("Failed to fetch current monitors");
+        if (err instanceof ApiError) console.error(chalk.red(err.message));
+        process.exit(1);
+      }
+    }
 
-    let created = 0,
-      updated = 0;
-    for (const def of config.monitors) {
+    let created = 0;
+    let updated = 0;
+
+    for (const def of monitorsToApply) {
       const name = def.name;
       const existing = existingByName.get(name?.toLowerCase());
       const action = existing ? "update" : "create";
 
       if (opts.dryRun) {
-        console.log(`  ${action === "create" ? chalk.green("[+]") : chalk.yellow("[~]")} ${name}`);
+        console.log(
+          `  ${action === "create" ? chalk.green("[+] CREATE") : chalk.yellow("[~] UPDATE")} ${name} ${chalk.dim(`(${def.type}: ${def.url})`)}`,
+        );
         continue;
       }
 
-      const spinner = ora(`${action === "create" ? "Creating" : "Updating"} ${name}…`).start();
+      const itemSpinner = ora(`${action === "create" ? "Creating" : "Updating"} ${name}…`).start();
       try {
         if (existing) {
           await api.put(`/api/cli/monitors/${existing.id}`, def);
-          spinner.succeed(chalk.yellow(`[~] Updated: ${name}`));
+          itemSpinner.succeed(chalk.yellow(`[~] Updated: ${name}`));
           updated++;
         } else {
           await api.post("/api/cli/monitors", def);
-          spinner.succeed(chalk.green(`[+] Created: ${name}`));
+          itemSpinner.succeed(chalk.green(`[+] Created: ${name}`));
           created++;
         }
       } catch (err) {
-        spinner.fail(`Failed: ${name}`);
+        itemSpinner.fail(`Failed: ${name}`);
         if (err instanceof ApiError) console.error(chalk.dim(`    ${err.message}`));
       }
     }
 
     if (!opts.dryRun) {
       console.log(`\n${chalk.green("✔ Applied:")} ${created} created, ${updated} updated`);
+    }
+  });
+
+// pulse monitors diff [file]
+monitorsCmd
+  .command("diff [file]")
+  .description("Diff local YAML monitor definitions against remote monitors")
+  .option("-f, --file <path>", "Path to YAML file or directory")
+  .action(async (posFile, opts) => {
+    const targetPath = posFile || opts.file;
+    let monitorsToDiff: any[];
+    try {
+      monitorsToDiff = loadMonitorsFromPath(targetPath);
+    } catch (err: any) {
+      console.error(chalk.red(`✖ ${err.message}`));
+      process.exit(1);
+    }
+
+    const spinner = ora("Comparing local definitions against remote state…").start();
+    try {
+      const { monitors: existing } = await api.get<{ monitors: Monitor[] }>("/api/cli/monitors");
+      spinner.stop();
+
+      const existingByName = new Map(existing.map((m) => [m.name.toLowerCase(), m]));
+
+      console.log(chalk.bold("\nMonitor Diff:\n"));
+      let hasChanges = false;
+
+      for (const def of monitorsToDiff) {
+        const existing = existingByName.get(def.name?.toLowerCase());
+        if (!existing) {
+          hasChanges = true;
+          console.log(
+            `  ${chalk.green("[+] NEW")} ${chalk.bold(def.name)} ${chalk.dim(`(${def.type}: ${def.url}, ${def.interval}s)`)}`,
+          );
+        } else {
+          const changes: string[] = [];
+          if (existing.url !== def.url) changes.push(`url: ${existing.url} -> ${def.url}`);
+          if (existing.type !== def.type) changes.push(`type: ${existing.type} -> ${def.type}`);
+          if (existing.interval !== def.interval) {
+            changes.push(`interval: ${existing.interval}s -> ${def.interval}s`);
+          }
+
+          if (changes.length > 0) {
+            hasChanges = true;
+            console.log(`  ${chalk.yellow("[~] MODIFY")} ${chalk.bold(def.name)}`);
+            for (const ch of changes) {
+              console.log(chalk.dim(`      ↳ ${ch}`));
+            }
+          } else {
+            console.log(`  ${chalk.dim("[=] UNCHANGED")} ${chalk.dim(def.name)}`);
+          }
+        }
+      }
+
+      if (!hasChanges) {
+        console.log(chalk.green("\n✔ No changes. Local definitions match remote state."));
+      } else {
+        console.log(chalk.dim("\nRun 'pulse monitors apply' to sync these changes."));
+      }
+    } catch (err) {
+      spinner.fail("Failed to diff monitors");
+      if (err instanceof ApiError) console.error(chalk.red(err.message));
     }
   });
 
@@ -242,103 +424,6 @@ monitorsCmd
         })),
       });
 
-      // pulse monitors create — interactive wizard
-      monitorsCmd
-        .command("create")
-        .description("Interactive wizard to create a new monitor")
-        .action(async () => {
-          const answers = await inquirer.prompt([
-            {
-              type: "input",
-              name: "name",
-              message: "Monitor name:",
-              validate: (input: string) => (input.trim() !== "" ? true : "Name cannot be empty"),
-            },
-            {
-              type: "input",
-              name: "url",
-              message: "Monitor URL:",
-              validate: (input: string | URL) => {
-                try {
-                  new URL(input);
-                  return true;
-                } catch {
-                  return "Invalid URL";
-                }
-              },
-            },
-            {
-              type: "list",
-              name: "type",
-              message: "Monitor type:",
-              choices: [
-                "HTTP",
-                "HTTPS",
-                "PING",
-                "PORT",
-                "DNS",
-                "SSL",
-                "DOMAIN",
-                "HEARTBEAT",
-                "BROWSER",
-                "SEQUENCE",
-                "GRAPHQL",
-                "WEBSOCKET",
-                "DATABASE",
-                "BGP",
-                "MCP",
-              ],
-              default: "HTTP",
-            },
-            {
-              type: "input",
-              name: "interval",
-              message: "Check interval (seconds):",
-              default: "60",
-              validate: (input: string) =>
-                /^\d+$/.test(input) && Number(input) > 0 ? true : "Must be a positive integer",
-            },
-            {
-              type: "input",
-              name: "timeout",
-              message: "Timeout (seconds):",
-              default: "10",
-              validate: (input: string) =>
-                /^\d+$/.test(input) && Number(input) > 0 ? true : "Must be a positive integer",
-            },
-          ]);
-
-          const spinner = ora("Creating monitor…").start();
-          try {
-            const payload = {
-              name: answers.name,
-              url: answers.url,
-              type: answers.type,
-              interval: Number(answers.interval),
-              timeout: Number(answers.timeout),
-            };
-            await api.post("/api/cli/monitors", payload);
-            spinner.succeed("Monitor created");
-          } catch (err) {
-            spinner.fail("Failed to create monitor");
-            if (err instanceof ApiError) console.error(chalk.red(err.message));
-          }
-        });
-      // pulse monitors delete <id>
-      monitorsCmd
-        .command("delete <id>")
-        .description("Delete a monitor")
-        .action(async (id) => {
-          const spinner = ora(`Deleting monitor ${id}…`).start();
-          try {
-            await api.delete(`/api/cli/monitors/${id}`);
-            spinner.succeed("Monitor deleted");
-          } catch (err) {
-            spinner.fail("Failed to delete monitor");
-            if (err instanceof ApiError) console.error(chalk.red(err.message));
-          }
-        });
-
       writeFileSync(
         opts.output,
         `# PulseGuard Monitoring as Code\n# Generated: ${new Date().toISOString()}\n\n${yamlContent}`,
@@ -346,6 +431,104 @@ monitorsCmd
       console.log(chalk.green(`✔ Exported ${monitors.length} monitors to ${opts.output}`));
     } catch (err) {
       spinner.fail("Failed to export monitors");
+      if (err instanceof ApiError) console.error(chalk.red(err.message));
+    }
+  });
+
+// pulse monitors create — interactive wizard
+monitorsCmd
+  .command("create")
+  .description("Interactive wizard to create a new monitor")
+  .action(async () => {
+    const answers = await inquirer.prompt([
+      {
+        type: "input",
+        name: "name",
+        message: "Monitor name:",
+        validate: (input: string) => (input.trim() !== "" ? true : "Name cannot be empty"),
+      },
+      {
+        type: "input",
+        name: "url",
+        message: "Monitor URL:",
+        validate: (input: string | URL) => {
+          try {
+            new URL(input);
+            return true;
+          } catch {
+            return "Invalid URL";
+          }
+        },
+      },
+      {
+        type: "list",
+        name: "type",
+        message: "Monitor type:",
+        choices: [
+          "HTTP",
+          "HTTPS",
+          "PING",
+          "PORT",
+          "DNS",
+          "SSL",
+          "DOMAIN",
+          "HEARTBEAT",
+          "BROWSER",
+          "SEQUENCE",
+          "GRAPHQL",
+          "WEBSOCKET",
+          "DATABASE",
+          "BGP",
+          "MCP",
+        ],
+        default: "HTTP",
+      },
+      {
+        type: "input",
+        name: "interval",
+        message: "Check interval (seconds):",
+        default: "60",
+        validate: (input: string) =>
+          /^\d+$/.test(input) && Number(input) > 0 ? true : "Must be a positive integer",
+      },
+      {
+        type: "input",
+        name: "timeout",
+        message: "Timeout (seconds):",
+        default: "10",
+        validate: (input: string) =>
+          /^\d+$/.test(input) && Number(input) > 0 ? true : "Must be a positive integer",
+      },
+    ]);
+
+    const spinner = ora("Creating monitor…").start();
+    try {
+      const payload = {
+        name: answers.name,
+        url: answers.url,
+        type: answers.type,
+        interval: Number(answers.interval),
+        timeout: Number(answers.timeout),
+      };
+      await api.post("/api/cli/monitors", payload);
+      spinner.succeed("Monitor created");
+    } catch (err) {
+      spinner.fail("Failed to create monitor");
+      if (err instanceof ApiError) console.error(chalk.red(err.message));
+    }
+  });
+
+// pulse monitors delete <id>
+monitorsCmd
+  .command("delete <id>")
+  .description("Delete a monitor")
+  .action(async (id) => {
+    const spinner = ora(`Deleting monitor ${id}…`).start();
+    try {
+      await api.delete(`/api/cli/monitors/${id}`);
+      spinner.succeed("Monitor deleted");
+    } catch (err) {
+      spinner.fail("Failed to delete monitor");
       if (err instanceof ApiError) console.error(chalk.red(err.message));
     }
   });

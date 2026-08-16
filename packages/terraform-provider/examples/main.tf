@@ -43,6 +43,11 @@ resource "pulseguard_monitor" "api_production" {
   timeout  = 5
   method   = "GET"
 
+  headers = {
+    "X-Synthetic-Monitor" = "PulseGuard-Edge"
+    "Authorization"       = "Bearer secret-token"
+  }
+
   check_regions = [
     "wnam", # North America West
     "enam", # North America East

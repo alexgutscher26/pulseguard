@@ -16,7 +16,6 @@ import {
   performCheck,
   recordAlertSent,
   recordLatencyBatchToAggregator,
-  recordLatencyToAggregator,
   shouldSendAlert,
 } from "./check-runner";
 import { queueNotification } from "./lib/send-notification";

@@ -19,8 +19,8 @@ export const DEFAULT_BASE_URL = "https://pulseguard.io";
 
 export function getConfig(): PulseConfig {
   return {
-    apiKey: conf.get("apiKey"),
-    baseUrl: conf.get("baseUrl") || DEFAULT_BASE_URL,
+    apiKey: getApiKey(),
+    baseUrl: getBaseUrl(),
     email: conf.get("email"),
   };
 }
@@ -36,9 +36,14 @@ export function clearConfig() {
 }
 
 export function getApiKey(): string | undefined {
-  return conf.get("apiKey");
+  return process.env.PULSEGUARD_API_KEY || process.env.PULSE_API_KEY || conf.get("apiKey");
 }
 
 export function getBaseUrl(): string {
-  return conf.get("baseUrl") || DEFAULT_BASE_URL;
+  return (
+    process.env.PULSEGUARD_BASE_URL ||
+    process.env.PULSE_BASE_URL ||
+    conf.get("baseUrl") ||
+    DEFAULT_BASE_URL
+  );
 }

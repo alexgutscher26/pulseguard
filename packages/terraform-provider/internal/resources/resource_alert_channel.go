@@ -29,9 +29,9 @@ type AlertChannelResource struct {
 }
 
 type AlertChannelResourceModel struct {
-	ID        types.String `tfsdk:"id"`
-	Name      types.String `tfsdk:"name"`
-	Type      types.String `tfsdk:"type"`
+	ID         types.String `tfsdk:"id"`
+	Name       types.String `tfsdk:"name"`
+	Type       types.String `tfsdk:"type"`
 	ConfigJSON types.String `tfsdk:"config_json"`
 }
 
@@ -41,7 +41,7 @@ func (r *AlertChannelResource) Metadata(ctx context.Context, req resource.Metada
 
 func (r *AlertChannelResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Manages a PulseGuard alert notification channel (PagerDuty, Opsgenie, Slack, Discord, Webhook, Email).",
+		Description: "Manages a PulseGuard alert notification channel (PagerDuty, Opsgenie, Slack, Discord, Webhook, Email, Telegram, SMS).",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Description: "The unique identifier of the alert channel.",
@@ -55,8 +55,11 @@ func (r *AlertChannelResource) Schema(ctx context.Context, req resource.SchemaRe
 				Required:    true,
 			},
 			"type": schema.StringAttribute{
-				Description: "Notification channel type: PAGERDUTY, OPSGENIE, SLACK, DISCORD, WEBHOOK, EMAIL.",
+				Description: "Notification channel type: PAGERDUTY, OPSGENIE, SLACK, DISCORD, WEBHOOK, EMAIL, TELEGRAM, SMS.",
 				Required:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"config_json": schema.StringAttribute{
 				Description: "JSON encoded string with channel-specific configuration parameters.",
@@ -136,7 +139,37 @@ func (r *AlertChannelResource) Read(ctx context.Context, req resource.ReadReques
 }
 
 func (r *AlertChannelResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	resp.Diagnostics.AddError("Update Not Supported", "PulseGuard alert channels do not support in-place updates. Recreate the resource.")
+	var plan AlertChannelResourceModel
+	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var configMap map[string]interface{}
+	if err := json.Unmarshal([]byte(plan.ConfigJSON.ValueString()), &configMap); err != nil {
+		resp.Diagnostics.AddError("Invalid config_json JSON string", err.Error())
+		return
+	}
+
+	ch := &client.AlertChannel{
+		Name:   plan.Name.ValueString(),
+		Config: configMap,
+	}
+
+	updated, err := r.client.UpdateAlertChannel(plan.ID.ValueString(), ch)
+	if err != nil {
+		resp.Diagnostics.AddError("Error Updating PulseGuard Alert Channel", err.Error())
+		return
+	}
+
+	plan.Name = types.StringValue(updated.Name)
+	plan.Type = types.StringValue(updated.Type)
+	configBytes, _ := json.Marshal(updated.Config)
+	plan.ConfigJSON = types.StringValue(string(configBytes))
+
+	diags = resp.State.Set(ctx, plan)
+	resp.Diagnostics.Append(diags...)
 }
 
 func (r *AlertChannelResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
