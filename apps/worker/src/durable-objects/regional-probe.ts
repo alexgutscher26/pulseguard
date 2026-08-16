@@ -276,29 +276,68 @@ export class RegionalProbe extends DurableObject {
       const env = this.env as Env;
       if (env.DATABASE_URL) {
         const prisma = getPrisma(env.DATABASE_URL);
-        const monitors = await prisma.monitor.findMany({
-          where: {
-            status: { in: ["UP", "DOWN", "MAINTENANCE"] },
-            nextCheck: { lte: new Date() },
-          },
-          take: 30, // Free/standard batch size per probe wake
-          select: {
-            id: true,
-            url: true,
-            timeout: true,
-            method: true,
-            headers: true,
-            body: true,
-            checkRegions: true,
-          },
-        });
+
+        // Resilient query with exponential backoff for cross-region edge calls (e.g. APAC to US/EU Postgres)
+        let monitors: any[] = [];
+        let queryAttempts = 0;
+        const maxQueryAttempts = 3;
+        while (queryAttempts < maxQueryAttempts) {
+          try {
+            monitors = await prisma.monitor.findMany({
+              where: {
+                status: { in: ["UP", "DOWN", "MAINTENANCE"] },
+                nextCheck: { lte: new Date() },
+              },
+              take: 30, // Free/standard batch size per probe wake
+              select: {
+                id: true,
+                url: true,
+                timeout: true,
+                method: true,
+                headers: true,
+                body: true,
+                checkRegions: true,
+              },
+            });
+            break;
+          } catch (queryErr: any) {
+            queryAttempts++;
+            if (queryAttempts >= maxQueryAttempts) {
+              throw queryErr;
+            }
+            const delayMs = 200 * Math.pow(2, queryAttempts - 1) + Math.random() * 75;
+            console.warn(
+              `[RegionalProbe:${state.region}] DB query retry ${queryAttempts}/${maxQueryAttempts} after ${Math.round(delayMs)}ms:`,
+              queryErr?.message,
+            );
+            await new Promise((resolve) => setTimeout(resolve, delayMs));
+          }
+        }
 
         if (monitors.length > 0) {
           const results = await this.executeBatch(monitors);
 
-          // Submit results to central Quorum Engine
+          // Submit results to central Quorum Engine with retry
           const { processProbeResultsBatch } = await import("../services/quorum-engine");
-          await processProbeResultsBatch(prisma, env, results);
+          let quorumAttempts = 0;
+          const maxQuorumAttempts = 3;
+          while (quorumAttempts < maxQuorumAttempts) {
+            try {
+              await processProbeResultsBatch(prisma, env, results);
+              break;
+            } catch (quorumErr: any) {
+              quorumAttempts++;
+              if (quorumAttempts >= maxQuorumAttempts) {
+                throw quorumErr;
+              }
+              const delayMs = 200 * Math.pow(2, quorumAttempts - 1) + Math.random() * 75;
+              console.warn(
+                `[RegionalProbe:${state.region}] Quorum batch retry ${quorumAttempts}/${maxQuorumAttempts} after ${Math.round(delayMs)}ms:`,
+                quorumErr?.message,
+              );
+              await new Promise((resolve) => setTimeout(resolve, delayMs));
+            }
+          }
         }
       }
 

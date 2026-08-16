@@ -32,11 +32,8 @@ export default {
       ctx.waitUntil(
         (async () => {
           try {
-            const dsPrisma = getPrisma(env.DATABASE_URL);
             const { runDownsamplingCron } = await import("./downsampling-cron");
             await runDownsamplingCron(env);
-            const { resetPrisma } = await import("@pulseguard/db");
-            await resetPrisma(env.DATABASE_URL);
           } catch (err) {
             console.error("[Downsampling] Daily run failed:", err);
           }
@@ -52,8 +49,6 @@ export default {
             const scanPrisma = getPrisma(env.DATABASE_URL);
             const { runAnomalyScan } = await import("./services/anomaly-scanner");
             await runAnomalyScan(scanPrisma);
-            const { resetPrisma } = await import("@pulseguard/db");
-            await resetPrisma(env.DATABASE_URL);
           } catch (err) {
             console.error("[AnomalyScan] Scheduled run failed:", err);
           }
@@ -123,7 +118,7 @@ export default {
     const totalShards = Number(env.TOTAL_SHARDS || 1);
     const shardId = Number(env.SHARD_ID || 0);
 
-    const runWithRetry = async (retry: boolean = true): Promise<any> => {
+    const runWithRetry = async (retryCount: number = 0, maxRetries: number = 2): Promise<any> => {
       try {
         // Find active monitors that are due for a check, but only for THIS shard
         const targetIds: { id: string }[] = await prisma.$queryRaw`
@@ -141,19 +136,19 @@ export default {
         return targetIds;
       } catch (err: any) {
         if (
-          retry &&
+          retryCount < maxRetries &&
           (err.message?.includes("Connection terminated") ||
             err.message?.includes("is closed") ||
             err.message?.includes("not found") ||
-            err.message?.includes("timeout"))
+            err.message?.includes("timeout") ||
+            err.message?.includes("performIO"))
         ) {
+          const delayMs = 200 * Math.pow(2, retryCount) + Math.random() * 50;
           console.warn(
-            `[Sync] Stale DB connection or timeout detected in schedule. Resetting Prisma and retrying...`,
+            `[Sync] Transient DB connection error or timeout in schedule (attempt ${retryCount + 1}/${maxRetries}). Retrying in ${Math.round(delayMs)}ms...`,
           );
-          const { resetPrisma } = await import("@pulseguard/db");
-          await resetPrisma(env.DATABASE_URL);
-          prisma = getPrisma(env.DATABASE_URL);
-          return await runWithRetry(false);
+          await new Promise((r) => setTimeout(r, delayMs));
+          return await runWithRetry(retryCount + 1, maxRetries);
         }
         throw err;
       }
@@ -227,14 +222,6 @@ export default {
       console.log(`Cron execution completed. Total monitors checked: ${totalProcessedCount}.`);
     } catch (error) {
       console.error("Error in scheduled handler:", error);
-    } finally {
-      try {
-        const { resetPrisma } = await import("@pulseguard/db");
-        await resetPrisma(env.DATABASE_URL);
-        console.log("[Sync] Cleaned up database connection pool after cron execution.");
-      } catch (err) {
-        console.error("Failed to reset Prisma pool in finally:", err);
-      }
     }
   },
 

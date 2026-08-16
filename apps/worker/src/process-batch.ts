@@ -442,25 +442,46 @@ export async function processBatch(
             throw new Error("CircuitBreaker: OPEN. Avoiding database writes.");
           }
 
-          await prisma.$transaction([
-            prisma.monitorEvent.create({
-              data: {
-                monitorId: monitor.id,
-                status: currentStatus as any,
-                latency: latency,
-                errorReason: errorReason,
-                timestamp: new Date(),
-              },
-            }),
-            prisma.monitor.update({
-              where: { id: monitor.id },
-              data: {
-                status: currentStatus as any,
-                lastCheck: new Date(),
-                nextCheck: nextCheckTime,
-              },
-            }),
-          ]);
+          const executePersistence = async (retry: boolean = true): Promise<void> => {
+            try {
+              await prisma.$transaction(
+                [
+                  prisma.monitorEvent.create({
+                    data: {
+                      monitorId: monitor.id,
+                      status: currentStatus as any,
+                      latency: latency,
+                      errorReason: errorReason,
+                      timestamp: new Date(),
+                    },
+                  }),
+                  prisma.monitor.update({
+                    where: { id: monitor.id },
+                    data: {
+                      status: currentStatus as any,
+                      lastCheck: new Date(),
+                      nextCheck: nextCheckTime,
+                    },
+                  }),
+                ],
+                { maxWait: 5000, timeout: 10000 },
+              );
+            } catch (txErr: any) {
+              if (
+                retry &&
+                (txErr.message?.includes("Unable to start a transaction") ||
+                  txErr.message?.includes("timeout") ||
+                  txErr.message?.includes("Connection terminated") ||
+                  txErr.message?.includes("performIO"))
+              ) {
+                await new Promise((r) => setTimeout(r, 100));
+                return await executePersistence(false);
+              }
+              throw txErr;
+            }
+          };
+
+          await executePersistence();
 
           // Successfully saved - if we were in HALF_OPEN, we can now mark as healthy
           if (circuitState === CircuitState.HALF_OPEN) {

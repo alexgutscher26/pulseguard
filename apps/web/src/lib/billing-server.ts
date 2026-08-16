@@ -1,4 +1,4 @@
-import db, { resetPrisma } from "@pulseguard/db";
+import db from "@pulseguard/db";
 import { PLANS, type PlanTier, type UsageSummary, type UsageWarning } from "./billing";
 import { isFeatureEnabled, getFeatureError, type FeatureFlag } from "./feature-flags";
 import { sendUsageLimitWarning } from "@pulseguard/email";
@@ -17,10 +17,6 @@ export async function getUserPlan(userId: string): Promise<PlanTier> {
     });
     subscription = user?.subscription;
   } catch {
-    try {
-      await resetPrisma();
-    } catch {}
-
     user = await db.user.findUnique({
       where: { id: userId },
     });

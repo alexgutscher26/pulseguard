@@ -74,6 +74,7 @@ export class LatencyAggregator extends DurableObject {
         region: string;
         currentAvg: number;
       }[] = [];
+      const processedBuffers: LatencyBuffer[] = [];
 
       for (const [key, buffer] of this.buffers.entries()) {
         const [monitorId, region] = key.split(":");
@@ -102,19 +103,42 @@ export class LatencyAggregator extends DurableObject {
             region,
             currentAvg: data.avgLatency,
           });
-        }
 
-        buffer.reset();
+          processedBuffers.push(buffer);
+        }
       }
 
-      // Batch insert aggregates
+      // Batch insert aggregates with retry
       if (aggregates.length > 0) {
-        await prisma.latencyAggregate.createMany({
-          data: aggregates,
-        });
+        let insertAttempts = 0;
+        const maxInsertAttempts = 3;
+        while (insertAttempts < maxInsertAttempts) {
+          try {
+            await prisma.latencyAggregate.createMany({
+              data: aggregates,
+            });
 
-        // Update regional baselines in batch
-        await this.updateBaselinesBatched(prisma, baselineUpdates);
+            // Update regional baselines in batch
+            await this.updateBaselinesBatched(prisma, baselineUpdates);
+            break;
+          } catch (writeErr: any) {
+            insertAttempts++;
+            if (insertAttempts >= maxInsertAttempts) {
+              throw writeErr;
+            }
+            const delayMs = 250 * Math.pow(2, insertAttempts - 1) + Math.random() * 50;
+            console.warn(
+              `[LatencyAggregator] Flush DB retry ${insertAttempts}/${maxInsertAttempts} after ${Math.round(delayMs)}ms:`,
+              writeErr?.message,
+            );
+            await new Promise((resolve) => setTimeout(resolve, delayMs));
+          }
+        }
+
+        // Only reset buffers once persistence has succeeded
+        for (const buf of processedBuffers) {
+          buf.reset();
+        }
 
         console.log(`[LatencyAggregator] Flushed ${aggregates.length} aggregates`);
 
@@ -127,7 +151,7 @@ export class LatencyAggregator extends DurableObject {
       }
     } catch (error) {
       console.error("[LatencyAggregator] Flush error:", error);
-      // Don't reset buffers on error - retry next interval
+      // Retain buffer samples in memory for the next interval
     }
   }
 

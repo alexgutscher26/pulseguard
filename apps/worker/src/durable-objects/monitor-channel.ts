@@ -89,14 +89,13 @@ export class MonitorChannel extends DurableObject {
               (err.message?.includes("Connection terminated") ||
                 err.message?.includes("is closed") ||
                 err.message?.includes("not found") ||
-                err.message?.includes("timeout"))
+                err.message?.includes("timeout") ||
+                err.message?.includes("performIO"))
             ) {
               console.warn(
-                `[MonitorChannel WS] Stale DB connection or timeout detected. Resetting Prisma...`,
+                `[MonitorChannel WS] Transient DB connection error or timeout detected. Retrying handshake...`,
               );
-              const { resetPrisma } = await import("@pulseguard/db");
-              await resetPrisma(env.DATABASE_URL);
-              prisma = getPrisma(env.DATABASE_URL);
+              await new Promise((r) => setTimeout(r, 150));
               return await performHandshake(false);
             }
             throw err;
