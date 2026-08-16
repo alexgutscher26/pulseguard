@@ -6,6 +6,7 @@ import { monitorsCmd } from "./commands/monitors.js";
 import { triggerCmd } from "./commands/trigger.js";
 import { logsCmd } from "./commands/logs.js";
 import { waitCmd } from "./commands/wait.js";
+import { importCmd } from "./commands/import-kuma.js";
 
 const program = new Command();
 
@@ -20,6 +21,7 @@ program
 
 program.addCommand(authCmd);
 program.addCommand(monitorsCmd);
+program.addCommand(importCmd);
 program.addCommand(triggerCmd);
 program.addCommand(logsCmd);
 program.addCommand(waitCmd);

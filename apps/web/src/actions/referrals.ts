@@ -168,3 +168,182 @@ export async function trackReferralClick(code: string): Promise<void> {
     console.error("Error tracking referral click:", err);
   }
 }
+
+/**
+ * Ensures a referral code exists for a given user ID and returns it.
+ */
+export async function ensureUserReferralCode(userId: string): Promise<string> {
+  if (!userId) return "pulseguard";
+  try {
+    const client = await getReferralDb();
+    if (!client.referralCode) return `pg_${userId.slice(-6)}`;
+
+    let record = await client.referralCode.findUnique({
+      where: { userId },
+      select: { code: true },
+    });
+
+    if (!record) {
+      const code = generateRandomCode();
+      try {
+        record = await client.referralCode.create({
+          data: { userId, code },
+          select: { code: true },
+        });
+      } catch {
+        record = await client.referralCode.findUnique({
+          where: { userId },
+          select: { code: true },
+        });
+      }
+    }
+
+    return record?.code || `pg_${userId.slice(-6)}`;
+  } catch (err) {
+    console.error("Error ensuring referral code:", err);
+    return `pg_${userId.slice(-6)}`;
+  }
+}
+
+/**
+ * Records a referral when a newly registered user signs up with a referral code.
+ */
+export async function recordReferralSignup(
+  code: string,
+  newUserId?: string,
+): Promise<{ success: boolean; error?: string }> {
+  if (!code) return { success: false, error: "Missing referral code" };
+
+  try {
+    const client = await getReferralDb();
+    if (!client.referralCode || !client.referral) {
+      return { success: true };
+    }
+
+    const referralCodeRecord = await client.referralCode.findUnique({
+      where: { code },
+      select: { id: true, userId: true },
+    });
+
+    if (!referralCodeRecord) {
+      return { success: false, error: "Referral code not found" };
+    }
+
+    // Determine the new user's ID from session or argument
+    let targetUserId = newUserId;
+    if (!targetUserId) {
+      try {
+        const session = await auth.api.getSession({
+          headers: await headers(),
+        });
+        targetUserId = session?.user?.id;
+      } catch {}
+    }
+
+    if (!targetUserId) {
+      return { success: false, error: "User not authenticated" };
+    }
+
+    // A user cannot refer themselves
+    if (targetUserId === referralCodeRecord.userId) {
+      return { success: false, error: "Self-referral is not allowed" };
+    }
+
+    // Check if the user is already referred
+    const existing = await client.referral.findUnique({
+      where: { referredUserId: targetUserId },
+    });
+
+    if (existing) {
+      return { success: true };
+    }
+
+    await client.referral.create({
+      data: {
+        referralCodeId: referralCodeRecord.id,
+        referredUserId: targetUserId,
+        status: "PENDING",
+        rewardAmount: 10.0,
+      },
+    });
+
+    return { success: true };
+  } catch (err: any) {
+    console.error("Error recording referral signup:", err);
+    return { success: false, error: err?.message || "Failed to record referral" };
+  }
+}
+
+export interface StatusPageLoopMetrics {
+  statusPageViews: number;
+  referralClicks: number;
+  totalSignups: number;
+  conversionRate: number;
+  referralCode: string;
+  referralUrl: string;
+}
+
+/**
+ * Computes status page loop metrics (views, badge clicks, referred signups, conversion rate).
+ */
+export async function getStatusPageLoopMetrics(
+  pageId: string,
+  slug: string,
+): Promise<StatusPageLoopMetrics> {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user?.id) {
+    throw new Error("Unauthorized");
+  }
+
+  const client = await getReferralDb();
+  let statusPageViews = 0;
+  let referralClicks = 0;
+  let totalSignups = 0;
+  let code = `pg_${session.user.id.slice(-6)}`;
+
+  try {
+    if (client.statusPageView) {
+      statusPageViews = await client.statusPageView.count({
+        where: { statusPageId: pageId },
+      });
+    }
+
+    if (client.referralCode) {
+      const refRecord = await client.referralCode.findUnique({
+        where: { userId: session.user.id },
+        include: {
+          referrals: true,
+        },
+      });
+
+      if (refRecord) {
+        code = refRecord.code;
+        referralClicks = refRecord.clicks || 0;
+        totalSignups = refRecord.referrals?.length || 0;
+      }
+    }
+  } catch (err) {
+    console.error("Error fetching status page loop metrics:", err);
+  }
+
+  const host = (await headers()).get("host") || "localhost:3000";
+  const protocol = host.includes("localhost") ? "http" : "https";
+  const referralUrl = `${protocol}://${host}/r/${code}?utm_source=status_page&utm_medium=badge&utm_campaign=status_page_loop&utm_content=${slug}`;
+
+  const baseVisitors =
+    statusPageViews > 0 ? statusPageViews : referralClicks > 0 ? referralClicks : 1;
+  const conversionRate =
+    baseVisitors > 0 ? Number(((totalSignups / baseVisitors) * 100).toFixed(2)) : 0;
+
+  return {
+    statusPageViews,
+    referralClicks,
+    totalSignups,
+    conversionRate,
+    referralCode: code,
+    referralUrl,
+  };
+}

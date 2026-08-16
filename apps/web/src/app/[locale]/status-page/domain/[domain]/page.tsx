@@ -15,7 +15,12 @@ async function getPageByDomain(domain: string) {
   return prisma.statusPage.findUnique({
     where: { customDomain: domain },
     include: {
-      user: { select: { tier: true } },
+      user: {
+        select: {
+          tier: true,
+          referralCode: { select: { code: true } },
+        },
+      },
       monitors: {
         include: {
           monitor: {

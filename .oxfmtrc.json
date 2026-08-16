@@ -1,3 +1,11 @@
 {
-  "ignorePatterns": []
+  "ignorePatterns": [
+    "**/.next/**",
+    "**/dist/**",
+    "**/node_modules/**",
+    "**/.turbo/**",
+    "**/.wrangler/**",
+    "helm/**",
+    ".github/workflows/**"
+  ]
 }

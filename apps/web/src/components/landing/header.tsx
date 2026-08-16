@@ -108,6 +108,11 @@ export default function LandingHeader() {
                   <div className="bg-popover border border-border p-2 rounded-xl shadow-[0_12px_38px_rgba(0,0,0,0.125)] dark:shadow-[0_12px_38px_rgba(0,0,0,0.5)] grid grid-cols-1 gap-1 relative overflow-hidden">
                     {[
                       {
+                        name: "30-Day Benchmark Study",
+                        href: "/benchmarks/false-positives",
+                        icon: <Activity className="h-4 w-4 text-emerald-400" />,
+                      },
+                      {
                         name: "Is It Down? (300+ Services)",
                         href: "/is-down",
                         icon: <Activity className="h-4 w-4 text-emerald-500" />,
@@ -183,6 +188,7 @@ export default function LandingHeader() {
 
           {[
             { name: "Features", href: "/#features" },
+            { name: "Benchmark", href: "/benchmarks/false-positives" },
             { name: "Locations", href: "/locations" },
             { name: "Use Cases", href: "/use-cases" },
             { name: "Demo", href: "/demo" },

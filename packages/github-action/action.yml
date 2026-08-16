@@ -1,0 +1,46 @@
+name: "PulseGuard Edge Preview Check"
+description: "Zero-false-positive multi-region edge verification for PR preview deployments"
+author: "PulseGuard"
+branding:
+  icon: "activity"
+  color: "emerald"
+
+inputs:
+  api_key:
+    description: "PulseGuard API Key (pg_live_...)"
+    required: true
+  url:
+    description: "Preview deployment URL or target endpoint to verify"
+    required: true
+  regions:
+    description: "Comma-separated sovereign regions (e.g. wnam,enam,weur,apac)"
+    default: "wnam,weur,apac"
+    required: false
+  fail_on_down:
+    description: "Fail CI step if quorum check fails"
+    default: "true"
+    required: false
+  comment_on_pr:
+    description: "Post sticky markdown comment on pull request"
+    default: "true"
+    required: false
+  github_token:
+    description: "GitHub token for PR commenting (e.g. ${{ secrets.GITHUB_TOKEN }})"
+    default: "${{ github.token }}"
+    required: false
+  host_url:
+    description: "PulseGuard API host URL"
+    default: "https://app.pulseguard.io"
+    required: false
+
+outputs:
+  status:
+    description: "Global quorum status (UP or DOWN)"
+  latency_ms:
+    description: "Average latency across sovereign regions in milliseconds"
+  quorum_ratio:
+    description: "Consensus voting ratio (e.g. 3/3)"
+
+runs:
+  using: "node20"
+  main: "dist/index.js"

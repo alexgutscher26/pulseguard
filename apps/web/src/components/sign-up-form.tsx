@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "@tanstack/react-form";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "@/components/ui/sonner";
 import z from "zod";
 
 import { authClient } from "@/lib/auth-client";
+import { recordReferralSignup } from "@/actions/referrals";
+import { Gift } from "lucide-react";
 
 import Loader from "./loader";
 import { Button } from "./ui/button";
@@ -13,7 +15,35 @@ import { Label } from "./ui/label";
 
 export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () => void }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isPending, setIsPending] = useState(false);
+  const [refCode, setRefCode] = useState<string | null>(null);
+
+  useEffect(() => {
+    // 1. Check URL query param ?ref=
+    const queryRef = searchParams?.get("ref");
+    if (queryRef) {
+      setRefCode(queryRef);
+      return;
+    }
+
+    // 2. Fallback to pulseguard_ref cookie
+    if (typeof document !== "undefined") {
+      const match = document.cookie.split("; ").find((row) => row.startsWith("pulseguard_ref="));
+      if (match) {
+        try {
+          const cookieVal = decodeURIComponent(match.split("=")[1]);
+          const parsed = JSON.parse(cookieVal);
+          if (parsed?.code) {
+            setRefCode(parsed.code);
+          }
+        } catch {
+          const raw = match.split("=")[1];
+          if (raw) setRefCode(raw);
+        }
+      }
+    }
+  }, [searchParams]);
 
   const form = useForm({
     defaultValues: {
@@ -29,7 +59,14 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
           name: value.name,
         },
         {
-          onSuccess: () => {
+          onSuccess: async (ctx: any) => {
+            if (refCode) {
+              try {
+                await recordReferralSignup(refCode, ctx?.data?.user?.id);
+              } catch (e) {
+                console.error("Failed to attribute referral:", e);
+              }
+            }
             router.push("/dashboard");
             toast.success("Sign up successful");
           },
@@ -54,6 +91,15 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
 
   return (
     <div className="space-y-6">
+      {refCode && (
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-primary/10 border border-primary/20 text-primary text-xs font-mono">
+          <Gift className="size-4 shrink-0 text-primary animate-pulse" />
+          <span>
+            Referred by partner code{" "}
+            <strong className="font-bold underline decoration-dotted">{refCode}</strong>
+          </span>
+        </div>
+      )}
       <form
         onSubmit={(e) => {
           e.preventDefault();

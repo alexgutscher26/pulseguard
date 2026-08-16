@@ -1,0 +1,58 @@
+terraform {
+  required_providers {
+    pulseguard = {
+      source  = "alexgutscher26/pulseguard"
+      version = ">= 1.0.0"
+    }
+  }
+}
+
+provider "pulseguard" {
+  # api_key can also be set via PULSEGUARD_API_KEY env var
+  api_key = "pg_live_your_api_key_here"
+}
+
+# Fetch all available sovereign edge regions
+data "pulseguard_regions" "edge" {}
+
+# Create PagerDuty notification channel
+resource "pulseguard_alert_channel" "pagerduty_sre" {
+  name = "PagerDuty SRE High Priority"
+  type = "PAGERDUTY"
+  config_json = jsonencode({
+    routingKey = "R015PXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+  })
+}
+
+# Create Opsgenie notification channel
+resource "pulseguard_alert_channel" "opsgenie_oncall" {
+  name = "Opsgenie Platform On-Call"
+  type = "OPSGENIE"
+  config_json = jsonencode({
+    apiKey = "eb32xxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    region = "us"
+  })
+}
+
+# Define edge-native synthetic monitor across sovereign regions
+resource "pulseguard_monitor" "api_production" {
+  name     = "Production API Gateway"
+  url      = "https://api.example.com/health"
+  type     = "HTTP"
+  interval = 30
+  timeout  = 5
+  method   = "GET"
+
+  check_regions = [
+    "wnam", # North America West
+    "enam", # North America East
+    "weur", # Western Europe (Frankfurt)
+    "apac", # Asia Pacific (Singapore)
+  ]
+
+  alert_threshold      = 2
+  dynamic_thresholding = true
+  runbook_url          = "https://wiki.example.com/runbooks/api-gateway-outage"
+
+  tags = ["production", "api", "critical"]
+}

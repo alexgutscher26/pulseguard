@@ -11,7 +11,16 @@ import { assertNotificationChannelLimits, checkAndNotifyUsageLimits } from "@/li
 
 const channelSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  type: z.enum(["EMAIL", "DISCORD", "SLACK", "WEBHOOK", "TELEGRAM", "SMS", "PAGERDUTY"]),
+  type: z.enum([
+    "EMAIL",
+    "DISCORD",
+    "SLACK",
+    "WEBHOOK",
+    "TELEGRAM",
+    "SMS",
+    "PAGERDUTY",
+    "OPSGENIE",
+  ]),
   config: z.string().transform((str, ctx) => {
     try {
       return JSON.parse(str);
@@ -310,6 +319,63 @@ export async function sendTestNotification(id: string) {
           routing_key: config.routingKey,
           dedup_key: dedupKey,
           event_action: "resolve",
+        }),
+      });
+
+      return { success: true };
+    }
+
+    if (channel.type === "OPSGENIE") {
+      if (!config?.apiKey)
+        return {
+          success: false,
+          error: "Invalid Opsgenie configuration: API key required",
+        };
+
+      const baseUrl =
+        config.region === "eu" ? "https://api.eu.opsgenie.com/v2" : "https://api.opsgenie.com/v2";
+      const alias = `pulseguard-test-${Date.now()}`;
+
+      // Fire a test alert
+      const triggerRes = await fetch(`${baseUrl}/alerts`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `GenieKey ${config.apiKey}`,
+        },
+        body: JSON.stringify({
+          message: "🔴 PulseGuard Test Alert: Monitor Down",
+          alias,
+          description: "This is a test notification from PulseGuard",
+          priority: "P3",
+          source: "PulseGuard Test Event",
+          details: {
+            monitor_name: "Test Monitor",
+            target_url: "https://example.com",
+            status: "DOWN",
+          },
+        }),
+      });
+
+      if (!triggerRes.ok && triggerRes.status !== 202) {
+        const errText = await triggerRes.text();
+        return {
+          success: false,
+          error: `Opsgenie API error: ${triggerRes.status} ${errText}`,
+        };
+      }
+
+      // Immediately close test alert so no phantom alert lingers
+      await fetch(`${baseUrl}/alerts/${encodeURIComponent(alias)}/close?identifierType=alias`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `GenieKey ${config.apiKey}`,
+        },
+        body: JSON.stringify({
+          user: "PulseGuard System",
+          source: "PulseGuard Test Event",
+          note: "Test notification completed successfully.",
         }),
       });
 

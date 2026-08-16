@@ -60,6 +60,7 @@ export default async function SettingsPage({
     "general",
     "team",
     "billing",
+    "referrals",
     "security",
     "api-keys",
     "audit-log",
@@ -82,7 +83,7 @@ export default async function SettingsPage({
         )}
         {tab === "team" && <TeamForm />}
         {tab === "billing" && <BillingForm initialUsage={usageSummary} />}
-        {/* {tab === "referrals" && <ReferralForm />} */}
+        {tab === "referrals" && <ReferralForm />}
         {tab === "security" && <SecurityForm />}
         {tab === "api-keys" && <ApiKeysForm />}
         {tab === "audit-log" && <AuditLogForm />}

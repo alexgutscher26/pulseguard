@@ -77,7 +77,17 @@ export default async function VerifySubscriptionPage({ params }: VerifyPageProps
         </div>
 
         {/* Footer */}
-        <p className="text-center text-primary/30 text-xs mt-6 font-mono">Powered by PulseGuard</p>
+        <p className="text-center text-primary/40 text-xs mt-6 font-mono">
+          Powered by{" "}
+          <a
+            href="/?utm_source=subscribe_page&utm_medium=badge&utm_campaign=status_page_loop"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline decoration-dotted underline-offset-4 font-bold"
+          >
+            PulseGuard
+          </a>
+        </p>
       </div>
     </div>
   );

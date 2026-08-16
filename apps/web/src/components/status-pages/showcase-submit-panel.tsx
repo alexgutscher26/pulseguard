@@ -17,6 +17,8 @@ import { toast } from "@/components/ui/sonner";
 interface ShowcaseSubmitPanelProps {
   /** Slug of the status page — used to build the badge embed URL */
   pageSlug: string;
+  /** Referral code of the status page owner */
+  referralCode?: string;
   /** Whether the user is already opted in to the Hall of Fame */
   defaultOptedIn?: boolean;
   /** Existing leaderboard bio */
@@ -63,6 +65,7 @@ function CodeBlock({ code, label }: { code: string; label: string }) {
 
 export function ShowcaseSubmitPanel({
   pageSlug,
+  referralCode,
   defaultOptedIn = false,
   defaultBio = "",
 }: ShowcaseSubmitPanelProps) {
@@ -109,12 +112,15 @@ export function ShowcaseSubmitPanel({
 
   const badgeUrl = `${appUrl}/api/badge/powered-by?theme=dark&style=flat&size=sm`;
   const statusBadgeUrl = `${appUrl}/api/badge/${pageSlug}?theme=dark&style=flat`;
-  const statusPageUrl = `${appUrl}/status/${pageSlug}`;
+  const trackedBadgeLink = referralCode
+    ? `${appUrl}/r/${referralCode}?utm_source=badge_embed&utm_medium=readme&utm_campaign=status_page_loop&utm_content=${pageSlug}`
+    : `${appUrl}/signup?utm_source=badge_embed&utm_medium=readme&utm_campaign=status_page_loop&utm_content=${pageSlug}`;
+  const trackedStatusPageUrl = `${appUrl}/status-page/${pageSlug}?utm_source=status_badge&utm_medium=embed&utm_campaign=status_page_loop`;
 
-  const markdownPowered = `[![Powered by PulseGuard](${badgeUrl})](${appUrl})`;
-  const htmlPowered = `<a href="${appUrl}" target="_blank" rel="noopener noreferrer">\n  <img src="${badgeUrl}" alt="Powered by PulseGuard" />\n</a>`;
-  const markdownStatus = `[![Status](${statusBadgeUrl})](${statusPageUrl})`;
-  const htmlStatus = `<a href="${statusPageUrl}" target="_blank" rel="noopener noreferrer">\n  <img src="${statusBadgeUrl}" alt="Status" />\n</a>`;
+  const markdownPowered = `[![Powered by PulseGuard](${badgeUrl})](${trackedBadgeLink})`;
+  const htmlPowered = `<a href="${trackedBadgeLink}" target="_blank" rel="noopener noreferrer">\n  <img src="${badgeUrl}" alt="Powered by PulseGuard" />\n</a>`;
+  const markdownStatus = `[![Status](${statusBadgeUrl})](${trackedStatusPageUrl})`;
+  const htmlStatus = `<a href="${trackedStatusPageUrl}" target="_blank" rel="noopener noreferrer">\n  <img src="${statusBadgeUrl}" alt="Status" />\n</a>`;
 
   return (
     <div className="space-y-4">

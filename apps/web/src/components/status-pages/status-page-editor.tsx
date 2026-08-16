@@ -38,6 +38,7 @@ import { UptimePercentageCard } from "./uptime-percentage-card";
 import { WidgetConfigurator } from "./widget-configurator";
 import { OverridesTab } from "./overrides-tab";
 import { ShowcaseSubmitPanel } from "./showcase-submit-panel";
+import { StatusPageLoopCard } from "./status-page-loop-card";
 
 type TabType =
   | "monitors"
@@ -439,6 +440,11 @@ export function StatusPageEditor({ page, allMonitors }: { page: any; allMonitors
 
       {activeTab === "analytics" && (
         <div className="space-y-6">
+          <StatusPageLoopCard
+            pageId={page.id}
+            pageSlug={page.slug}
+            onNavigateToShowcase={() => setActiveTab("showcase")}
+          />
           <StatsCards pageId={page.id} />
           <div className="border border-white/10 bg-white/5 rounded-sm p-6">
             <h3 className="text-lg font-bold font-mono uppercase text-foreground mb-6">
@@ -456,6 +462,7 @@ export function StatusPageEditor({ page, allMonitors }: { page: any; allMonitors
       {activeTab === "showcase" && (
         <ShowcaseSubmitPanel
           pageSlug={page.slug}
+          referralCode={page.user?.referralCode?.code}
           defaultOptedIn={page.user?.privacy?.showOnLeaderboard ?? false}
           defaultBio={page.user?.privacy?.leaderboardBio ?? ""}
         />
