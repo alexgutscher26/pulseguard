@@ -314,5 +314,6 @@ For each monitor (up to BATCH_SIZE):
 
 ## Related Documents
 
+- [docs/adr/001-single-provider-quorum.md](./docs/adr/001-single-provider-quorum.md) — ADR 001: Quorum Consensus within AS13335
 - [SECURITY.md](./SECURITY.md) — Security policy and practices
 - `.agent/ARCHITECTURE.md` — AI agent framework architecture

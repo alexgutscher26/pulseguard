@@ -148,8 +148,12 @@ export function evaluateQuorum(
       continue;
     }
 
-    if (r.latency > config.slowProbeLatencyThresholdMs && r.status === "DOWN") {
-      // Exclude slow/congested transit probe from denominator
+    if (
+      (r.latency > config.slowProbeLatencyThresholdMs && r.status === "DOWN") ||
+      r.errorClass === "TIMEOUT" ||
+      (r.errorReason && r.errorReason.toLowerCase().includes("timed out"))
+    ) {
+      // Exclude slow/congested transit probe or timed-out probe from denominator
       excludedSlowProbes.push(r.region);
       continue;
     }

@@ -5,7 +5,7 @@
  * Evaluates results using the 4-of-7 Quorum Consensus Engine.
  */
 
-import { isPrivateOrInternalUrlAsync } from "@pulseguard/core";
+import { isPrivateOrInternalUrlAsync, decryptSecret } from "@pulseguard/core";
 import {
   CLOUDFLARE_PROBE_REGIONS,
   FREE_TIER_PROBE_REGIONS,
@@ -112,7 +112,8 @@ export async function checkSingleRegion(
     const userHeaders: Record<string, string> = {};
     if (monitor.headers) {
       try {
-        const parsed = JSON.parse(monitor.headers);
+        const rawHeaders = await decryptSecret(monitor.headers, env?.ENCRYPTION_SECRET);
+        const parsed = JSON.parse(rawHeaders);
         if (Array.isArray(parsed)) {
           for (const h of parsed as { key?: string; value?: string }[]) {
             if (h.key && h.value) userHeaders[h.key] = h.value;

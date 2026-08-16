@@ -114,7 +114,7 @@ export function VerificationClient() {
           Global Verification
         </h1>
         <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
-          Zero false alarm consensus checking. Avoid alert fatigue by cross-referencing outages
+          Multi-region quorum consensus checking. Avoid alert fatigue by cross-referencing outages
           using multiple global vantage nodes before triggering high-priority pages.
         </p>
       </div>

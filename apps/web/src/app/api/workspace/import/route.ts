@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@pulseguard/auth";
 import prisma from "@pulseguard/db";
+import { encryptSecret } from "@pulseguard/core";
 import { headers } from "next/headers";
 import { assertMonitorLimits } from "@/lib/billing-server";
 import { getPlanLimits } from "@/lib/billing";
@@ -293,15 +294,17 @@ export async function POST(req: NextRequest) {
       const existingId = existingByName.get(m.name.toLowerCase().trim());
 
       if (existingId) {
+        const encryptedHeaders = m.headers ? await encryptSecret(m.headers) : null;
         const updated = await prisma.monitor.update({
           where: { id: existingId },
           data: {
+            name: m.name,
             url: m.url,
             type: m.type,
             interval: m.interval,
             timeout: m.timeout,
             method: m.method,
-            headers: m.headers,
+            headers: encryptedHeaders,
             body: m.body,
             expectation: m.expectation,
             alertThreshold: m.alertThreshold,
@@ -311,6 +314,7 @@ export async function POST(req: NextRequest) {
         updatedCount++;
         resultMonitors.push({ id: updated.id, name: updated.name, action: "updated" });
       } else {
+        const encryptedHeaders = m.headers ? await encryptSecret(m.headers) : null;
         const created = await prisma.monitor.create({
           data: {
             userId,
@@ -320,7 +324,7 @@ export async function POST(req: NextRequest) {
             interval: m.interval,
             timeout: m.timeout,
             method: m.method,
-            headers: m.headers,
+            headers: encryptedHeaders,
             body: m.body,
             expectation: m.expectation,
             alertThreshold: m.alertThreshold,

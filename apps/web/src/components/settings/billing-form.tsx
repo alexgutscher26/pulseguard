@@ -131,7 +131,7 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
                 </span>
               </div>
               <p className="text-xs text-slate-300 mt-0.5">
-                Enjoy full Netrunner Pro telemetry checks, zero false alarms, and multi-region
+                Enjoy full Netrunner Pro telemetry checks, quorum-verified alerts, and multi-region
                 monitoring.
               </p>
             </div>

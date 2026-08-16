@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Multi-Region Global Verification | PulseGuard Features",
   description:
-    "Zero false alarm consensus checking. Avoid alert fatigue by cross-referencing outages using multiple global vantage nodes before triggering alarms.",
+    "Multi-region quorum consensus checking. Avoid alert fatigue by cross-referencing outages using multiple global vantage nodes before triggering alarms.",
   openGraph: {
     title: "Multi-Region Global Verification | PulseGuard",
     description:

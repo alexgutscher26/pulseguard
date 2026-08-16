@@ -426,7 +426,7 @@ export function VisualDiffComparator() {
         </div>
         <div className="space-y-2">
           <CardTitle className="text-sm font-mono flex items-center gap-2 text-primary">
-            <Zap className="h-4 w-4" /> Zero False Alarms
+            <Zap className="h-4 w-4" /> Noise-Filtered Alerts
           </CardTitle>
           <p className="text-xs text-muted-foreground font-mono">
             Intelligent noise filtering ignores dynamic content like ads or varying timestamps.

@@ -73,6 +73,22 @@ export default {
           .catch((err) => console.error("[Sync] Background task failed:", err)),
       );
 
+      // Inspect Queue Backlog & Alarm if Depth Exceeds Threshold
+      ctx.waitUntil(
+        (async () => {
+          try {
+            const { FallbackQueue } = await import("./lib/fallback-queue");
+            const queue = new FallbackQueue(
+              env.UPSTASH_REDIS_REST_URL,
+              env.UPSTASH_REDIS_REST_TOKEN,
+            );
+            await queue.inspectBacklogAndAlarm(100);
+          } catch (qErr) {
+            console.warn("[QueueMetrics] Failed to inspect queue backlog:", qErr);
+          }
+        })(),
+      );
+
       // Check probe heartbeats in background
       ctx.waitUntil(
         import("./services/probe-registry")

@@ -9,7 +9,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@pulseguard/auth";
 import { headers, cookies } from "next/headers";
 import { sendMonitorAlert, type MonitorAlertData } from "@pulseguard/email";
-import { isPrivateOrInternalUrlAsync } from "@pulseguard/core";
+import { isPrivateOrInternalUrlAsync, encryptSecret, decryptSecret } from "@pulseguard/core";
 import { PULSEGUARD_CANONICAL_USER_AGENT } from "@pulseguard/shared";
 import {
   assertMonitorLimits,
@@ -336,7 +336,7 @@ export async function createMonitor(prevState: any, formData: FormData) {
         dynamicThresholding: data.dynamicThresholding,
         runbookUrl: data.runbookUrl,
         method: data.method,
-        headers: data.headers,
+        headers: data.headers ? await encryptSecret(data.headers) : null,
         body: data.body,
         script: data.script,
         expectation: data.expectation,
@@ -852,11 +852,14 @@ export async function checkMonitor(
 
           if (monitor.headers) {
             try {
-              const parsed = JSON.parse(monitor.headers);
+              const rawHeaders = await decryptSecret(monitor.headers);
+              const parsed = JSON.parse(rawHeaders);
               if (Array.isArray(parsed)) {
                 parsed.forEach((h: { key: string; value: string }) => {
                   if (h.key) userHeaders[h.key] = h.value;
                 });
+              } else if (typeof parsed === "object" && parsed !== null) {
+                Object.assign(userHeaders, parsed);
               }
             } catch (e) {
               console.error("Failed to parse monitor headers:", e);
