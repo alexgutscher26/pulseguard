@@ -39,10 +39,49 @@ export async function checkServiceLiveStatus(
   domain: string,
   apiEndpoint?: string,
 ): Promise<ServiceLiveStatusResult> {
-  const targetUrl = apiEndpoint || `https://${domain}`;
   const now = new Date().toISOString();
 
   try {
+    let parsedUrl: URL;
+    try {
+      parsedUrl = apiEndpoint ? new URL(apiEndpoint) : new URL(`https://${domain}`);
+    } catch {
+      return {
+        success: false,
+        domain,
+        status: "OUTAGE",
+        latencyMs: 0,
+        checkedAt: now,
+        probes: [],
+        error: "Invalid target URL.",
+      };
+    }
+
+    if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
+      return {
+        success: false,
+        domain,
+        status: "OUTAGE",
+        latencyMs: 0,
+        checkedAt: now,
+        probes: [],
+        error: "Only HTTP/HTTPS endpoints are allowed.",
+      };
+    }
+
+    if (parsedUrl.username || parsedUrl.password) {
+      return {
+        success: false,
+        domain,
+        status: "OUTAGE",
+        latencyMs: 0,
+        checkedAt: now,
+        probes: [],
+        error: "URLs with embedded credentials are not allowed.",
+      };
+    }
+
+    const targetUrl = parsedUrl.toString();
     const ssrfCheck = isPrivateOrInternalUrl(targetUrl);
     if (ssrfCheck.isForbidden) {
       return {
