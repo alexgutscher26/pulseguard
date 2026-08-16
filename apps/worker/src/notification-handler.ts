@@ -279,6 +279,20 @@ export default {
                 sendOpsgenieAlert(opsConfig, emailData, notification.type, notification.incidentId),
               );
             });
+          } else if (
+            monitor.user?.email &&
+            (notification.status === "DOWN" ||
+              notification.status === "UP" ||
+              notification.type === NotificationType.INCIDENT_CREATED ||
+              notification.type === NotificationType.INCIDENT_RESOLVED)
+          ) {
+            // Default fallback: Always notify monitor owner on status changes even if custom alert rules are unset
+            console.log(
+              `[Notification] No custom alert rules for ${notification.monitorName}, falling back to owner email: ${monitor.user.email}`,
+            );
+            deliveryPromises.push(
+              sendMonitorAlert(monitor.user.email, emailData, env.RESEND_API_KEY),
+            );
           } else {
             console.log(`[Notification] No matching alert rules for ${notification.monitorName}`);
           }

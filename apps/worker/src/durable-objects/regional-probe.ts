@@ -1,7 +1,11 @@
 import { DurableObject } from "cloudflare:workers";
 import type { ProbeCheckResult, ProbeHealthState } from "@pulseguard/types";
-import { isPrivateOrInternalUrl, decryptSecret } from "@pulseguard/core";
-import { getRegionByCode, type DOLocationHint } from "@pulseguard/shared";
+import { isPrivateOrInternalUrlAsync, decryptSecret } from "@pulseguard/core";
+import {
+  getRegionByCode,
+  type DOLocationHint,
+  PULSEGUARD_CANONICAL_USER_AGENT,
+} from "@pulseguard/shared";
 import { getPrisma } from "@pulseguard/db";
 import type { Env } from "../env";
 
@@ -134,7 +138,7 @@ export class RegionalProbe extends DurableObject<Env> {
     }> => {
       const reqStart = performance.now();
       try {
-        const ssrfCheck = isPrivateOrInternalUrl(monitor.url);
+        const ssrfCheck = await isPrivateOrInternalUrlAsync(monitor.url);
         if (ssrfCheck.isForbidden) {
           return {
             status: "DOWN",
@@ -169,7 +173,7 @@ export class RegionalProbe extends DurableObject<Env> {
         let code = 0;
 
         while (hops < maxHops) {
-          const hopCheck = isPrivateOrInternalUrl(currentUrl);
+          const hopCheck = await isPrivateOrInternalUrlAsync(currentUrl);
           if (hopCheck.isForbidden) {
             return {
               status: "DOWN",
@@ -183,7 +187,7 @@ export class RegionalProbe extends DurableObject<Env> {
           res = await fetch(currentUrl, {
             method: hops === 0 ? monitor.method || "GET" : "GET",
             headers: {
-              "User-Agent": "PulseGuard-Synthetic-Monitor/2.0 (+https://pulseguard.io/bot)",
+              "User-Agent": PULSEGUARD_CANONICAL_USER_AGENT,
               Accept: "*/*",
               ...userHeaders,
             },

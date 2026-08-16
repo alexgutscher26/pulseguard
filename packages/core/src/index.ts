@@ -864,11 +864,17 @@ export async function signAuthToken(
   ttlSeconds = 86400,
 ): Promise<string> {
   const secret =
-    secretKey ||
-    (typeof process !== "undefined"
-      ? process.env?.BETTER_AUTH_SECRET || process.env?.ENCRYPTION_SECRET
-      : (globalThis as any).BETTER_AUTH_SECRET) ||
-    "pulseguard-default-sig-secret-min32chars!";
+    secretKey !== undefined
+      ? secretKey
+      : typeof process !== "undefined"
+        ? process.env?.BETTER_AUTH_SECRET || process.env?.ENCRYPTION_SECRET
+        : (globalThis as any).BETTER_AUTH_SECRET;
+
+  if (!secret) {
+    throw new Error(
+      "BETTER_AUTH_SECRET or ENCRYPTION_SECRET is required to sign authentication tokens",
+    );
+  }
 
   const expiresAt = Date.now() + ttlSeconds * 1000;
   const dataToSign = `${payload}:${expiresAt}`;
@@ -901,11 +907,13 @@ export async function verifyAuthToken(
   if (!token || !token.startsWith(TOKEN_PREFIX)) return false;
 
   const secret =
-    secretKey ||
-    (typeof process !== "undefined"
-      ? process.env?.BETTER_AUTH_SECRET || process.env?.ENCRYPTION_SECRET
-      : (globalThis as any).BETTER_AUTH_SECRET) ||
-    "pulseguard-default-sig-secret-min32chars!";
+    secretKey !== undefined
+      ? secretKey
+      : typeof process !== "undefined"
+        ? process.env?.BETTER_AUTH_SECRET || process.env?.ENCRYPTION_SECRET
+        : (globalThis as any).BETTER_AUTH_SECRET;
+
+  if (!secret) return false;
 
   try {
     const raw = token.slice(TOKEN_PREFIX.length);

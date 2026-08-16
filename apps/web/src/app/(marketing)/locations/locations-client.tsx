@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { CLOUDFLARE_PROBE_REGIONS, type Region } from "@pulseguard/shared";
+import {
+  CLOUDFLARE_PROBE_REGIONS,
+  type Region,
+  PULSEGUARD_CANONICAL_USER_AGENT,
+} from "@pulseguard/shared";
 import {
   Copy,
   Check,
@@ -46,7 +50,7 @@ export default function LocationsClient({ probes }: LocationsClientProps) {
 
 # 2. General WAF & Reverse Proxy Headers (Fastly / AWS WAF / Nginx)
 CF-Worker: pulseguard.io
-User-Agent: PulseGuard-Monitor/1.0 (+https://pulseguard.io/bot)`;
+User-Agent: ${PULSEGUARD_CANONICAL_USER_AGENT}`;
 
   return (
     <div className="min-h-screen bg-background text-foreground pt-32 pb-24 px-4 sm:px-6 lg:px-8">

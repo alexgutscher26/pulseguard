@@ -3,6 +3,7 @@ import { auth } from "@pulseguard/auth";
 import prisma from "@pulseguard/db";
 import { headers } from "next/headers";
 import { assertMonitorLimits } from "@/lib/billing-server";
+import { getPlanLimits } from "@/lib/billing";
 import type { MonitorType } from "@pulseguard/db";
 
 interface ParsedMonitor {
@@ -237,20 +238,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Check user plan limits
-    const limitCheck = await assertMonitorLimits(userId, {
-      isNew: true,
-      type: "HTTP",
-      interval: 60,
-    });
-
-    if (!limitCheck.allowed) {
-      return NextResponse.json(
-        { error: limitCheck.error || "Plan limit exceeded. Upgrade to import more monitors." },
-        { status: 403 },
-      );
-    }
-
     // Fetch existing monitors for conflict resolution
     const existingMonitors = await prisma.monitor.findMany({
       where: { userId },
@@ -260,6 +247,25 @@ export async function POST(req: NextRequest) {
     const existingByName = new Map(
       existingMonitors.map((m) => [m.name.toLowerCase().trim(), m.id]),
     );
+
+    const toCreateCount = parsedMonitors.filter(
+      (m) => !existingByName.has(m.name.toLowerCase().trim()),
+    ).length;
+
+    // Check user plan limits for the full batch
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { tier: true },
+    });
+    const limits = getPlanLimits((user?.tier as any) || "INITIATE");
+    if (existingMonitors.length + toCreateCount > limits.maxMonitors) {
+      return NextResponse.json(
+        {
+          error: `Importing ${toCreateCount} new monitors would exceed your plan limit of ${limits.maxMonitors} (currently active: ${existingMonitors.length}). Please upgrade to import more monitors.`,
+        },
+        { status: 403 },
+      );
+    }
 
     const dryRun = req.nextUrl.searchParams.get("dryRun") === "true";
     if (dryRun) {
@@ -320,13 +326,11 @@ export async function POST(req: NextRequest) {
             alertThreshold: m.alertThreshold,
             tags: m.tags,
             alertRules: {
-              create: [
-                {
-                  trigger: "STATUS_CHANGE",
-                  targetStatus: "DOWN",
-                  enabled: true,
-                },
-              ],
+              create: {
+                trigger: "STATUS_CHANGE",
+                targetStatus: "DOWN",
+                enabled: true,
+              },
             },
           },
         });

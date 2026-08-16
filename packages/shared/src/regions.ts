@@ -33,6 +33,9 @@ export interface Region {
   defaultHealthStatus?: ProbeHealthStatus;
 }
 
+export const PULSEGUARD_CANONICAL_USER_AGENT =
+  "PulseGuard-Synthetic-Monitor/2.0 (+https://pulseguard.io/bot)";
+
 export const CLOUDFLARE_PROBE_REGIONS: Region[] = [
   {
     code: "wnam",
@@ -210,6 +213,8 @@ export const REGION_MAP = new Map<string, Region>(
 
 /** Legacy & alias code mappings for backward compatibility */
 const LEGACY_REGION_ALIASES: Record<string, string> = {
+  sam: "enam",
+  oc: "apac-se",
   "us-east-1": "enam",
   "us-east-2": "enam",
   "us-west-1": "wnam",

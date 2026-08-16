@@ -10,7 +10,7 @@
     "check-types": "tsc --noEmit",
     "test": "vitest run",
     "size-limit": "size-limit",
-    "depcheck": "depcheck",
+    "depcheck": "depcheck --ignores=\"bun:test,next-mdx-remote,remark-gfm,@swc/helpers,styled-jsx,shadcn,tw-animate-css,@chromatic-com/storybook,@pulseguard/config,@size-limit/preset-app,@storybook/*,@tailwindcss/postcss,alchemy\"",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },

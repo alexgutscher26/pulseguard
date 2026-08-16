@@ -149,6 +149,46 @@ export const PLAN_VERSIONS: Record<string, Record<PlanTier, Partial<PlanLimits>>
       maxStatusPages: 75,
     },
   },
+  design_partner_vip: {
+    INITIATE: {
+      maxMonitors: 100,
+      minIntervalSeconds: 30,
+      maxAlertChannels: 10,
+      maxStatusPages: 5,
+    },
+    NETRUNNER: {
+      maxMonitors: 500,
+      minIntervalSeconds: 15,
+      maxAlertChannels: 50,
+      maxStatusPages: 25,
+    },
+    CONSTRUCT: {
+      maxMonitors: 2500,
+      minIntervalSeconds: 5,
+      maxAlertChannels: 500,
+      maxStatusPages: 100,
+    },
+  },
+  stripe_live: {
+    INITIATE: {
+      maxMonitors: 50,
+      minIntervalSeconds: 60,
+      maxAlertChannels: 3,
+      maxStatusPages: 1,
+    },
+    NETRUNNER: {
+      maxMonitors: 250,
+      minIntervalSeconds: 30,
+      maxAlertChannels: 25,
+      maxStatusPages: 15,
+    },
+    CONSTRUCT: {
+      maxMonitors: 1500,
+      minIntervalSeconds: 10,
+      maxAlertChannels: 250,
+      maxStatusPages: 75,
+    },
+  },
 };
 
 /**

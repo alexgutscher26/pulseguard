@@ -279,10 +279,12 @@ export async function processProbeResultsBatch(
     select: {
       id: true,
       name: true,
+      url: true,
       status: true,
       interval: true,
       alertThreshold: true,
       userId: true,
+      runbookUrl: true,
     },
   });
 
@@ -354,13 +356,37 @@ export async function processProbeResultsBatch(
         try {
           const { IncidentService } = await import("../lib/incident-service");
           const incidentService = new IncidentService(prisma);
-          await incidentService.createIncident(
+          const incident = await incidentService.createIncident(
             monitorId,
             `Global Outage: ${monitor.name}`,
             evaluation.reason || "Global outage confirmed across edge quorum",
           );
+
+          // Dispatch notification to user channels
+          const { queueNotification } = await import("../lib/send-notification");
+          const { recordAlertSent } = await import("../check-runner");
+          const { NotificationType } = await import("../constants");
+
+          await queueNotification(
+            env,
+            {
+              type: NotificationType.INCIDENT_CREATED,
+              monitorId: monitor.id,
+              monitorName: monitor.name,
+              url: monitor.url,
+              status: "DOWN",
+              incidentId: incident.id,
+              reason: evaluation.reason || "Global outage confirmed across edge quorum",
+              runbookUrl: monitor.runbookUrl,
+              timestamp: new Date().toISOString(),
+              failedRegions: evaluation.downRegions.length > 0 ? evaluation.downRegions : undefined,
+            },
+            undefined as any,
+          );
+
+          await recordAlertSent(monitor.id, env);
         } catch (alertErr) {
-          console.error(`[QuorumEngine] Failed to create incident:`, alertErr);
+          console.error(`[QuorumEngine] Failed to create incident or dispatch alerts:`, alertErr);
         }
       } else if (newStatus === "UP" && prevStatus === "DOWN") {
         try {
@@ -369,6 +395,26 @@ export async function processProbeResultsBatch(
           const activeIncident = await incidentService.findActiveIncident(monitorId);
           if (activeIncident) {
             await incidentService.resolveIncident(activeIncident.id);
+
+            const { queueNotification } = await import("../lib/send-notification");
+            const { recordAlertSent } = await import("../check-runner");
+            const { NotificationType } = await import("../constants");
+
+            await queueNotification(
+              env,
+              {
+                type: NotificationType.INCIDENT_RESOLVED,
+                monitorId: monitor.id,
+                monitorName: monitor.name,
+                url: monitor.url,
+                status: "UP",
+                incidentId: activeIncident.id,
+                timestamp: new Date().toISOString(),
+              },
+              undefined as any,
+            );
+
+            await recordAlertSent(monitor.id, env);
           }
         } catch (alertErr) {
           console.error(`[QuorumEngine] Failed to resolve incident:`, alertErr);

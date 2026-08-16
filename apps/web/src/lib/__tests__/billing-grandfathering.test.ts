@@ -37,10 +37,26 @@ describe("Early Cohort Grandfathering Guarantee & Plan Limits (P0-BIL-01)", () =
     expect(unknownVersionLimits.maxMonitors).toBe(PLANS.INITIATE.limits.maxMonitors);
   });
 
+  test("applies grandfathered limits for design_partner_vip and stripe_live subscribers", () => {
+    const vipInitiate = getPlanLimits("INITIATE", "design_partner_vip");
+    expect(vipInitiate.maxMonitors).toBe(100);
+    expect(vipInitiate.minIntervalSeconds).toBe(30);
+
+    const vipNetrunner = getPlanLimits("NETRUNNER", "design_partner_vip");
+    expect(vipNetrunner.maxMonitors).toBe(500);
+    expect(vipNetrunner.minIntervalSeconds).toBe(15);
+
+    const liveConstruct = getPlanLimits("CONSTRUCT", "stripe_live");
+    expect(liveConstruct.maxMonitors).toBe(1500);
+    expect(liveConstruct.minIntervalSeconds).toBe(10);
+  });
+
   test("preserves grandfathered limits even if base PLANS dictionary is modified", () => {
     // Verify PLAN_VERSIONS defines fixed immutable contracts
     expect(PLAN_VERSIONS.v1_launch.INITIATE.maxMonitors).toBe(50);
     expect(PLAN_VERSIONS.v1_launch.NETRUNNER.maxMonitors).toBe(250);
     expect(PLAN_VERSIONS.v1_launch.CONSTRUCT.maxMonitors).toBe(1500);
+    expect(PLAN_VERSIONS.design_partner_vip.INITIATE.maxMonitors).toBe(100);
+    expect(PLAN_VERSIONS.design_partner_vip.NETRUNNER.maxMonitors).toBe(500);
   });
 });

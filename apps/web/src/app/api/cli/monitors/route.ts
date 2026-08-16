@@ -102,6 +102,13 @@ export async function POST(req: NextRequest) {
       checkRegions: checkRegions ? JSON.stringify(checkRegions) : null,
       runbookUrl: runbookUrl || null,
       userId: user.userId,
+      alertRules: {
+        create: {
+          trigger: "STATUS_CHANGE",
+          targetStatus: "DOWN",
+          enabled: true,
+        },
+      },
     },
     select: {
       id: true,

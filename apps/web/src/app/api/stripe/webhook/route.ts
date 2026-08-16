@@ -42,6 +42,9 @@ function resolvePlanFromStripeSubscription(
   return fallbackPlan || "INITIATE";
 }
 
+const processedEvents = new Set<string>();
+const MAX_PROCESSED_EVENTS = 10_000;
+
 export async function POST(req: Request) {
   const body = await req.text();
   const signature = req.headers.get("stripe-signature");
@@ -65,6 +68,16 @@ export async function POST(req: Request) {
     console.error(`Stripe Webhook Signature Verification Failed: ${errorMessage}`);
     return NextResponse.json({ error: `Webhook Error: ${errorMessage}` }, { status: 400 });
   }
+
+  // Idempotency: Ignore duplicate deliveries of the same Stripe event ID
+  if (processedEvents.has(event.id)) {
+    console.log(`[Stripe Webhook] Duplicate event ${event.id} received, returning cached 200`);
+    return NextResponse.json({ received: true, duplicate: true });
+  }
+  if (processedEvents.size > MAX_PROCESSED_EVENTS) {
+    processedEvents.clear();
+  }
+  processedEvents.add(event.id);
 
   try {
     switch (event.type) {

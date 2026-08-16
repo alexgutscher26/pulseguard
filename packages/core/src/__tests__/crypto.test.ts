@@ -137,4 +137,12 @@ describe("Status Page Cryptographic HMAC Token Authentication (P0-SEC-01)", () =
     const isValid = await verifyAuthToken(expiredToken, pageId, secretKey);
     expect(isValid).toBe(false);
   });
+
+  test("throws error on signAuthToken when secret is missing and rejects verifyAuthToken", async () => {
+    expect(signAuthToken(pageId, "")).rejects.toThrow(
+      "BETTER_AUTH_SECRET or ENCRYPTION_SECRET is required",
+    );
+    const isValid = await verifyAuthToken("pg_sig:v1:test:9999999999:dummy", "test", "");
+    expect(isValid).toBe(false);
+  });
 });

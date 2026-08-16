@@ -5,28 +5,30 @@ interface Env {
 }
 
 /**
- * Downsample 1-minute aggregates to 5-minute aggregates
+ * Downsample 1-minute aggregates to 5-minute aggregates across previous 24h
  */
 async function downsample1mTo5m(prisma: any): Promise<void> {
   const now = new Date();
+  const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
   const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
-  const tenMinutesAgo = new Date(now.getTime() - 10 * 60 * 1000);
 
-  // Get all 1-minute aggregates from the last 5 minutes
+  // Get all 1-minute aggregates from the last 24 hours
   const oneMinAggregates = await prisma.latencyAggregate.findMany({
     where: {
       granularity: "ONE_MINUTE",
       timestamp: {
-        gte: tenMinutesAgo,
+        gte: twentyFourHoursAgo,
         lt: fiveMinutesAgo,
       },
     },
   });
 
-  // Group by monitor + region
+  // Group by monitor + region + 5-minute bucket
   const grouped = new Map<string, any[]>();
   for (const agg of oneMinAggregates) {
-    const key = `${agg.monitorId}:${agg.region}`;
+    const bucketTs =
+      Math.floor(new Date(agg.timestamp).getTime() / (5 * 60 * 1000)) * (5 * 60 * 1000);
+    const key = `${agg.monitorId}:${agg.region}:${bucketTs}`;
     if (!grouped.has(key)) {
       grouped.set(key, []);
     }
@@ -36,7 +38,8 @@ async function downsample1mTo5m(prisma: any): Promise<void> {
   // Create 5-minute aggregates
   const fiveMinAggregates = [];
   for (const [key, aggregates] of grouped.entries()) {
-    const [monitorId, region] = key.split(":");
+    const [monitorId, region, bucketTsStr] = key.split(":");
+    const timestamp = new Date(Number(bucketTsStr));
 
     // Calculate weighted averages
     const totalSamples = aggregates.reduce((sum, a) => sum + a.sampleCount, 0);
@@ -55,11 +58,6 @@ async function downsample1mTo5m(prisma: any): Promise<void> {
     const successRate =
       aggregates.reduce((sum, a) => sum + a.successRate * a.sampleCount, 0) / totalSamples;
 
-    // Round timestamp to 5-minute boundary
-    const timestamp = new Date(
-      Math.floor(fiveMinutesAgo.getTime() / (5 * 60 * 1000)) * (5 * 60 * 1000),
-    );
-
     fiveMinAggregates.push({
       monitorId,
       region,
@@ -77,36 +75,40 @@ async function downsample1mTo5m(prisma: any): Promise<void> {
   }
 
   if (fiveMinAggregates.length > 0) {
+    // Upsert or createMany (skipDuplicates to prevent collisions)
     await prisma.latencyAggregate.createMany({
       data: fiveMinAggregates,
+      skipDuplicates: true,
     });
-    console.log(`[Downsampling] Created ${fiveMinAggregates.length} 5-minute aggregates`);
+    console.log(`[Downsampling] Processed ${fiveMinAggregates.length} 5-minute aggregate buckets`);
   }
 }
 
 /**
- * Downsample 5-minute aggregates to hourly aggregates
+ * Downsample 5-minute aggregates to hourly aggregates across previous 24h
  */
 async function downsample5mTo1h(prisma: any): Promise<void> {
   const now = new Date();
+  const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
   const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
-  const twoHoursAgo = new Date(now.getTime() - 2 * 60 * 60 * 1000);
 
-  // Get all 5-minute aggregates from the last hour
+  // Get all 5-minute aggregates from the last 24 hours
   const fiveMinAggregates = await prisma.latencyAggregate.findMany({
     where: {
       granularity: "FIVE_MINUTE",
       timestamp: {
-        gte: twoHoursAgo,
+        gte: twentyFourHoursAgo,
         lt: oneHourAgo,
       },
     },
   });
 
-  // Group by monitor + region
+  // Group by monitor + region + 1-hour bucket
   const grouped = new Map<string, any[]>();
   for (const agg of fiveMinAggregates) {
-    const key = `${agg.monitorId}:${agg.region}`;
+    const bucketTs =
+      Math.floor(new Date(agg.timestamp).getTime() / (60 * 60 * 1000)) * (60 * 60 * 1000);
+    const key = `${agg.monitorId}:${agg.region}:${bucketTs}`;
     if (!grouped.has(key)) {
       grouped.set(key, []);
     }
@@ -116,7 +118,8 @@ async function downsample5mTo1h(prisma: any): Promise<void> {
   // Create hourly aggregates
   const hourlyAggregates = [];
   for (const [key, aggregates] of grouped.entries()) {
-    const [monitorId, region] = key.split(":");
+    const [monitorId, region, bucketTsStr] = key.split(":");
+    const timestamp = new Date(Number(bucketTsStr));
 
     const totalSamples = aggregates.reduce((sum, a) => sum + a.sampleCount, 0);
     if (totalSamples === 0) continue;
@@ -134,16 +137,11 @@ async function downsample5mTo1h(prisma: any): Promise<void> {
     const successRate =
       aggregates.reduce((sum, a) => sum + a.successRate * a.sampleCount, 0) / totalSamples;
 
-    // Round timestamp to hour boundary
-    const timestamp = new Date(
-      Math.floor(oneHourAgo.getTime() / (60 * 60 * 1000)) * (60 * 60 * 1000),
-    );
-
     hourlyAggregates.push({
       monitorId,
       region,
       timestamp,
-      granularity: "ONE_HOUR",
+      granularity: "HOURLY",
       avgLatency,
       minLatency,
       maxLatency,
@@ -158,8 +156,9 @@ async function downsample5mTo1h(prisma: any): Promise<void> {
   if (hourlyAggregates.length > 0) {
     await prisma.latencyAggregate.createMany({
       data: hourlyAggregates,
+      skipDuplicates: true,
     });
-    console.log(`[Downsampling] Created ${hourlyAggregates.length} hourly aggregates`);
+    console.log(`[Downsampling] Processed ${hourlyAggregates.length} hourly aggregate buckets`);
   }
 }
 
@@ -218,7 +217,7 @@ async function cleanupOldData(prisma: any): Promise<void> {
   try {
     const pingsResult = await prisma.heartbeatPing.deleteMany({
       where: {
-        timestamp: {
+        pingedAt: {
           lt: sevenDaysAgo,
         },
       },

@@ -133,6 +133,13 @@ export async function POST(req: NextRequest) {
       alertThreshold: Number(alertThreshold),
       dynamicThresholding: Boolean(dynamicThresholding),
       runbookUrl: runbookUrl ? String(runbookUrl).trim() : null,
+      alertRules: {
+        create: {
+          trigger: "STATUS_CHANGE",
+          targetStatus: "DOWN",
+          enabled: true,
+        },
+      },
     },
   });
 
