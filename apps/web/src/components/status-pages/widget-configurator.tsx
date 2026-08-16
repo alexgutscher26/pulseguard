@@ -40,6 +40,19 @@ const DEFAULT_THEME = {
   borderRadius: "8px",
 };
 
+const ALLOWED_SHIELD_STYLES = ["flat", "outline"] as const;
+const ALLOWED_SHIELD_THEMES = ["dark", "light"] as const;
+const ALLOWED_SHIELD_SIZES = ["sm", "lg"] as const;
+
+const sanitizeShieldStyle = (value: string) =>
+  ALLOWED_SHIELD_STYLES.includes(value as (typeof ALLOWED_SHIELD_STYLES)[number]) ? value : "flat";
+
+const sanitizeShieldTheme = (value: string) =>
+  ALLOWED_SHIELD_THEMES.includes(value as (typeof ALLOWED_SHIELD_THEMES)[number]) ? value : "dark";
+
+const sanitizeShieldSize = (value: string) =>
+  ALLOWED_SHIELD_SIZES.includes(value as (typeof ALLOWED_SHIELD_SIZES)[number]) ? value : "sm";
+
 export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetConfiguratorProps) {
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState<{
@@ -335,7 +348,7 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
                 </label>
                 <select
                   value={shieldStyle}
-                  onChange={(e) => setShieldStyle(e.target.value)}
+                  onChange={(e) => setShieldStyle(sanitizeShieldStyle(e.target.value))}
                   className="w-full bg-background/50 border border-primary/20 rounded-sm p-2 text-xs font-mono text-foreground focus:outline-none focus:border-primary/50"
                 >
                   <option value="flat">Flat (Shields.io style)</option>
@@ -349,7 +362,7 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
                 </label>
                 <select
                   value={shieldTheme}
-                  onChange={(e) => setShieldTheme(e.target.value)}
+                  onChange={(e) => setShieldTheme(sanitizeShieldTheme(e.target.value))}
                   className="w-full bg-background/50 border border-primary/20 rounded-sm p-2 text-xs font-mono text-foreground focus:outline-none focus:border-primary/50"
                 >
                   <option value="dark">Dark Theme</option>
@@ -363,7 +376,7 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
                 </label>
                 <select
                   value={shieldSize}
-                  onChange={(e) => setShieldSize(e.target.value)}
+                  onChange={(e) => setShieldSize(sanitizeShieldSize(e.target.value))}
                   className="w-full bg-background/50 border border-primary/20 rounded-sm p-2 text-xs font-mono text-foreground focus:outline-none focus:border-primary/50"
                 >
                   <option value="sm">Small (20px)</option>
@@ -379,7 +392,11 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
               </span>
               <div className="bg-black/40 border border-white/5 rounded-sm p-4 flex items-center justify-center min-h-[60px]">
                 <img
-                  src={`/api/badge/${pageSlug}.svg?style=${shieldStyle}&theme=${shieldTheme}&size=${shieldSize}&t=${Date.now()}`}
+                  src={`/api/badge/${encodeURIComponent(pageSlug)}.svg?style=${encodeURIComponent(
+                    sanitizeShieldStyle(shieldStyle)
+                  )}&theme=${encodeURIComponent(sanitizeShieldTheme(shieldTheme))}&size=${encodeURIComponent(
+                    sanitizeShieldSize(shieldSize)
+                  )}&t=${Date.now()}`}
                   alt="Status Badge Preview"
                   className="max-w-full"
                 />
