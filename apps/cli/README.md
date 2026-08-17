@@ -1,9 +1,9 @@
-# PulseGuard CLI (`pulseguard-cli`)
+# SteadyStack CLI (`steadystack`)
 
-[![npm version](https://img.shields.io/npm/v/pulseguard-cli.svg)](https://www.npmjs.com/package/pulseguard-cli)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/alexgutscher26/pulseguard)
+[![npm version](https://img.shields.io/npm/v/steadystack.svg)](https://www.npmjs.com/package/steadystack)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/getsteadystack/SteadyStack)
 
-The official command-line interface for **PulseGuard** — Monitoring as Code, real-time log streaming, CI/CD deployment gates, and synthetic monitor management.
+The official command-line interface for **SteadyStack** — Monitoring as Code, real-time log streaming, CI/CD deployment gates, and synthetic monitor management.
 
 ---
 
@@ -13,13 +13,13 @@ Install globally via npm, bun, or pnpm:
 
 ```bash
 # npm
-npm install -g pulseguard-cli
+npm install -g steadystack
 
 # bun
-bun add -g pulseguard-cli
+bun add -g steadystack
 
 # pnpm
-pnpm add -g pulseguard-cli
+pnpm add -g steadystack
 ```
 
 Or run instantly without installation using `npx` or `bunx`:

@@ -1,7 +1,7 @@
 {
-  "name": "pulseguard-cli",
+  "name": "steadystack",
   "version": "0.1.0",
-  "description": "Official CLI for PulseGuard — Monitoring as Code, live debugging, and CI/CD integration",
+  "description": "Official CLI for SteadyStack — Monitoring as Code, live debugging, and CI/CD integration",
   "keywords": [
     "ci-cd",
     "cli",
@@ -10,23 +10,25 @@
     "monitoring-as-code",
     "pulseguard",
     "status-page",
+    "steadystack",
     "synthetic-monitoring",
     "uptime"
   ],
-  "homepage": "https://pulseguard.io",
+  "homepage": "https://steadystack.dev",
   "bugs": {
-    "url": "https://github.com/alexgutscher26/pulseguard/issues"
+    "url": "https://github.com/getsteadystack/SteadyStack/issues"
   },
   "license": "MIT",
-  "author": "PulseGuard Team",
+  "author": "SteadyStack Team",
   "repository": {
     "type": "git",
-    "url": "https://github.com/alexgutscher26/pulseguard.git",
+    "url": "https://github.com/getsteadystack/SteadyStack",
     "directory": "apps/cli"
   },
   "bin": {
     "pulse": "./dist/index.js",
-    "pulseguard": "./dist/index.js"
+    "pulseguard": "./dist/index.js",
+    "steadystack": "./dist/index.js"
   },
   "files": [
     "dist",
