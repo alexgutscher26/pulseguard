@@ -18,6 +18,7 @@
     "@ai-sdk/openai": "^3.0.25",
     "@base-ui/react": "^1.0.0",
     "@hookform/resolvers": "^5.2.2",
+    "@pinecone-database/pinecone": "^8.2.0",
     "@prisma/client": "catalog:",
     "@pulseguard/api": "workspace:*",
     "@pulseguard/auth": "workspace:*",

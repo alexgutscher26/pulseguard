@@ -18,6 +18,9 @@ export const env = createEnv({
     HELICONE_API_KEY: z.string().min(1).optional(),
     HELICONE_BASE_PATH: z.string().url().default("https://oai.helicone.ai/v1"),
     HELICONE_CACHE_ENABLED: z.enum(["true", "false"]).default("true"),
+    // Pinecone Vector Database Configuration
+    PINECONE_API_KEY: z.string().min(1).optional(),
+    PINECONE_INDEX_NAME: z.string().default("pulseguard-incidents"),
     // Ollama Local AI Configuration (for testing)
     OLLAMA_BASE_URL: z.string().url().default("http://localhost:11434/v1"),
     OLLAMA_MODEL: z.string().default("llama3.2"),
