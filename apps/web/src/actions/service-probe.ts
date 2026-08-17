@@ -100,7 +100,27 @@ export async function checkServiceLiveStatus(
       };
     }
 
-    const targetUrl = parsedUrl.toString();
+    const isDefaultPort =
+      !parsedUrl.port ||
+      (parsedUrl.protocol === "http:" && parsedUrl.port === "80") ||
+      (parsedUrl.protocol === "https:" && parsedUrl.port === "443");
+    if (!isDefaultPort) {
+      return {
+        success: false,
+        domain,
+        status: "OUTAGE",
+        latencyMs: 0,
+        checkedAt: now,
+        probes: [],
+        error: "Custom ports are not allowed.",
+      };
+    }
+
+    const canonicalUrl = new URL(`${parsedUrl.protocol}//${normalizedHost}`);
+    canonicalUrl.pathname = parsedUrl.pathname;
+    canonicalUrl.search = parsedUrl.search;
+    const targetUrl = canonicalUrl.toString();
+
     const ssrfCheck = isPrivateOrInternalUrl(targetUrl);
     if (ssrfCheck.isForbidden) {
       return {
