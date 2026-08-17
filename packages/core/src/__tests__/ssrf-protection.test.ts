@@ -36,6 +36,13 @@ describe("Probe Layer SSRF Security & Resource Abuse Protection Tests", () => {
       expect(isPrivateOrInternalIp("2130706433").isForbidden).toBe(true);
     });
 
+    test("blocks embedded private IPs in wildcard DNS hostnames (e.g. nip.io, sslip.io)", () => {
+      expect(isPrivateOrInternalUrl("http://127.0.0.1.nip.io").isForbidden).toBe(true);
+      expect(isPrivateOrInternalUrl("http://169.254.169.254.nip.io").isForbidden).toBe(true);
+      expect(isPrivateOrInternalUrl("http://10-0-0-1.sslip.io").isForbidden).toBe(true);
+      expect(isPrivateOrInternalUrl("http://192.168.1.5.nip.io/admin").isForbidden).toBe(true);
+    });
+
     test("allows legitimate public domains and IPs", () => {
       expect(isPrivateOrInternalUrl("https://example.com").isForbidden).toBe(false);
       expect(isPrivateOrInternalUrl("https://8.8.8.8").isForbidden).toBe(false);

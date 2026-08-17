@@ -10,6 +10,8 @@ import { getI18nOverrides } from "@/actions/i18n";
 import set from "lodash.set";
 import { auth } from "@pulseguard/auth";
 import { getMockStatusPage } from "@/components/status-pages/mock-data";
+import { env } from "@pulseguard/env/server";
+import { verifyAuthToken } from "@pulseguard/core";
 
 export const dynamic = "force-dynamic";
 
@@ -117,8 +119,9 @@ export default async function PublicStatusPage({ params }: Props) {
 
   // 2. Private Access Check
   if (page.isPrivate) {
-    const token = cookieStore.get(`status-page-token-${page.id}`);
-    if (token?.value !== "authenticated") {
+    const token = cookieStore.get(`status-page-token-${page.id}`)?.value;
+    const isValid = await verifyAuthToken(token, page.id, env.BETTER_AUTH_SECRET);
+    if (!isValid) {
       return <PasswordProtection pageId={page.id} title={page.title} />;
     }
   }

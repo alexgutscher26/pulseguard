@@ -33,6 +33,9 @@ export interface Region {
   defaultHealthStatus?: ProbeHealthStatus;
 }
 
+export const PULSEGUARD_CANONICAL_USER_AGENT =
+  "PulseGuard-Synthetic-Monitor/2.0 (+https://pulseguard.io/bot)";
+
 export const CLOUDFLARE_PROBE_REGIONS: Region[] = [
   {
     code: "wnam",
@@ -96,44 +99,44 @@ export const CLOUDFLARE_PROBE_REGIONS: Region[] = [
   },
   {
     code: "apac",
-    name: "Asia-Pacific (wider)",
-    covers: "Asia-Pacific (wider)",
-    city: "Hong Kong / Mumbai",
+    name: "Asia-Pacific",
+    covers: "Tokyo, Singapore, Hong Kong",
+    city: "Tokyo / Singapore / Hong Kong",
     continent: "Asia Pacific",
     flag: "🌏",
     provider: "Cloudflare Edge",
     asn: "AS13335",
-    primaryColos: ["HKG", "BOM", "DEL"],
+    primaryColos: ["NRT", "SIN", "HKG", "ICN"],
     ipv4Ranges: [],
     ipv6Ranges: [],
     isCloudflareDO: true,
     defaultHealthStatus: "ONLINE",
   },
   {
-    code: "apac-ne",
-    name: "Asia-Pacific Northeast",
-    covers: "Japan, Korea",
-    city: "Tokyo / Seoul / Osaka",
-    continent: "Asia Pacific",
-    flag: "🇯🇵",
+    code: "oc",
+    name: "Oceania",
+    covers: "Australia, New Zealand",
+    city: "Sydney / Melbourne",
+    continent: "Oceania",
+    flag: "🇦🇺",
     provider: "Cloudflare Edge",
     asn: "AS13335",
-    primaryColos: ["NRT", "HND", "ICN", "KIX"],
+    primaryColos: ["SYD", "MEL", "AKL"],
     ipv4Ranges: [],
     ipv6Ranges: [],
     isCloudflareDO: true,
     defaultHealthStatus: "ONLINE",
   },
   {
-    code: "apac-se",
-    name: "Asia-Pacific Southeast",
-    covers: "Singapore, Indonesia",
-    city: "Singapore / Jakarta / Kuala Lumpur",
-    continent: "Asia Pacific",
-    flag: "🇸🇬",
+    code: "sam",
+    name: "South America",
+    covers: "Brazil, Chile, Argentina",
+    city: "São Paulo / Santiago / Buenos Aires",
+    continent: "South America",
+    flag: "🇧🇷",
     provider: "Cloudflare Edge",
     asn: "AS13335",
-    primaryColos: ["SIN", "CGK", "KUL", "BKK"],
+    primaryColos: ["GRU", "GIG", "SCL", "EZE"],
     ipv4Ranges: [],
     ipv6Ranges: [],
     isCloudflareDO: true,
@@ -170,8 +173,8 @@ export const VALID_DO_LOCATION_HINTS = [
   "weur",
   "eeur",
   "apac",
-  "apac-ne",
-  "apac-se",
+  "oc",
+  "sam",
 ] as const;
 
 export type DOLocationHint = (typeof VALID_DO_LOCATION_HINTS)[number];
@@ -183,8 +186,8 @@ export const FREE_TIER_PROBE_REGIONS: DOLocationHint[] = [
   "weur",
   "eeur",
   "apac",
-  "apac-ne",
-  "apac-se",
+  "oc",
+  "sam",
 ];
 
 export const PAID_TIER_PROBE_REGIONS: DOLocationHint[] = [
@@ -193,8 +196,8 @@ export const PAID_TIER_PROBE_REGIONS: DOLocationHint[] = [
   "weur",
   "eeur",
   "apac",
-  "apac-ne",
-  "apac-se",
+  "oc",
+  "sam",
 ];
 
 /**
@@ -210,6 +213,8 @@ export const REGION_MAP = new Map<string, Region>(
 
 /** Legacy & alias code mappings for backward compatibility */
 const LEGACY_REGION_ALIASES: Record<string, string> = {
+  sam: "enam",
+  oc: "apac-se",
   "us-east-1": "enam",
   "us-east-2": "enam",
   "us-west-1": "wnam",

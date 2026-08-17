@@ -33,7 +33,7 @@ By participating in this project you agree to abide by our [Code of Conduct](./C
 | ------------------- | ------------------------------------------------------------------------------------------------------- |
 | 🐛 Bug reports      | [Bug Report template](https://github.com/alexgutscher26/pulseguard/issues/new?template=bug_report.yml)  |
 | ✨ Feature requests | [GitHub Discussions → Ideas](https://github.com/alexgutscher26/pulseguard/discussions/categories/ideas) |
-| 📖 Documentation    | Open a PR against `main` — see [Documentation Guidelines](#documentation-guidelines)                    |
+| 📖 Documentation    | Open a PR against `master` — see [Documentation Guidelines](#documentation-guidelines)                  |
 | 🌐 Translations     | See [Translation Guidelines](#translation-guidelines)                                                   |
 | 💬 Community help   | [GitHub Discussions → Q&A](https://github.com/alexgutscher26/pulseguard/discussions/categories/q-a)     |
 | 🔒 Security issues  | See [SECURITY.md](./SECURITY.md) — **do not** open a public issue                                       |
@@ -89,11 +89,11 @@ bun run dev
 | Translation   | `i18n/<locale>`             | `i18n/pt-br`                 |
 | Chore         | `chore/<short-description>` | `chore/upgrade-prisma-6`     |
 
-Always branch from `main`:
+Always branch from `master`:
 
 ```bash
-git checkout main
-git pull upstream main
+git checkout master
+git pull upstream master
 git checkout -b feat/your-feature
 ```
 
@@ -101,7 +101,7 @@ git checkout -b feat/your-feature
 
 ```bash
 git fetch upstream
-git rebase upstream/main
+git rebase upstream/master
 ```
 
 ### Running Checks

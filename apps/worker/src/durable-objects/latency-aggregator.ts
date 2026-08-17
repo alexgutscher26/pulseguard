@@ -54,12 +54,19 @@ export class LatencyAggregator extends DurableObject {
       latency: data.latency,
       timestamp: data.timestamp,
     });
+
+    try {
+      const currentAlarm = await this.ctx.storage.getAlarm();
+      if (!currentAlarm) {
+        await this.ctx.storage.setAlarm(Date.now() + 60_000);
+      }
+    } catch {}
   }
 
   /**
    * Flush aggregates to database
    */
-  private async flushAggregates(): Promise<void> {
+  async flushAggregates(): Promise<void> {
     if (this.buffers.size === 0) return;
 
     const env = this.env as Env;
@@ -74,6 +81,7 @@ export class LatencyAggregator extends DurableObject {
         region: string;
         currentAvg: number;
       }[] = [];
+      const processedBuffers: LatencyBuffer[] = [];
 
       for (const [key, buffer] of this.buffers.entries()) {
         const [monitorId, region] = key.split(":");
@@ -102,19 +110,42 @@ export class LatencyAggregator extends DurableObject {
             region,
             currentAvg: data.avgLatency,
           });
-        }
 
-        buffer.reset();
+          processedBuffers.push(buffer);
+        }
       }
 
-      // Batch insert aggregates
+      // Batch insert aggregates with retry
       if (aggregates.length > 0) {
-        await prisma.latencyAggregate.createMany({
-          data: aggregates,
-        });
+        let insertAttempts = 0;
+        const maxInsertAttempts = 3;
+        while (insertAttempts < maxInsertAttempts) {
+          try {
+            await prisma.latencyAggregate.createMany({
+              data: aggregates,
+            });
 
-        // Update regional baselines in batch
-        await this.updateBaselinesBatched(prisma, baselineUpdates);
+            // Update regional baselines in batch
+            await this.updateBaselinesBatched(prisma, baselineUpdates);
+            break;
+          } catch (writeErr: any) {
+            insertAttempts++;
+            if (insertAttempts >= maxInsertAttempts) {
+              throw writeErr;
+            }
+            const delayMs = 250 * Math.pow(2, insertAttempts - 1) + Math.random() * 50;
+            console.warn(
+              `[LatencyAggregator] Flush DB retry ${insertAttempts}/${maxInsertAttempts} after ${Math.round(delayMs)}ms:`,
+              writeErr?.message,
+            );
+            await new Promise((resolve) => setTimeout(resolve, delayMs));
+          }
+        }
+
+        // Only reset buffers once persistence has succeeded
+        for (const buf of processedBuffers) {
+          buf.reset();
+        }
 
         console.log(`[LatencyAggregator] Flushed ${aggregates.length} aggregates`);
 
@@ -127,7 +158,7 @@ export class LatencyAggregator extends DurableObject {
       }
     } catch (error) {
       console.error("[LatencyAggregator] Flush error:", error);
-      // Don't reset buffers on error - retry next interval
+      // Retain buffer samples in memory for the next interval
     }
   }
 
@@ -141,10 +172,20 @@ export class LatencyAggregator extends DurableObject {
     if (updates.length === 0) return;
 
     try {
+      // Deduplicate updates by monitorId:region (take latest)
+      const uniqueUpdatesMap = new Map<
+        string,
+        { monitorId: string; region: string; currentAvg: number }
+      >();
+      for (const u of updates) {
+        uniqueUpdatesMap.set(`${u.monitorId}:${u.region}`, u);
+      }
+      const uniqueUpdates = Array.from(uniqueUpdatesMap.values());
+
       // Find existing baselines for the given monitorId and region pairs
       const existingBaselines = await prisma.regionalBaseline.findMany({
         where: {
-          OR: updates.map((u) => ({
+          OR: uniqueUpdates.map((u) => ({
             monitorId: u.monitorId,
             region: u.region,
           })),
@@ -158,7 +199,7 @@ export class LatencyAggregator extends DurableObject {
       const creates: any[] = [];
       const updatePromises: any[] = [];
 
-      for (const u of updates) {
+      for (const u of uniqueUpdates) {
         const key = `${u.monitorId}:${u.region}`;
         const existing = existingMap.get(key);
 
@@ -234,6 +275,34 @@ export class LatencyAggregator extends DurableObject {
     if (request.method === "POST" && url.pathname === "/record") {
       const data = (await request.json()) as LatencyRecord;
       await this.recordLatency(data);
+      if (url.searchParams.get("flush") === "true") {
+        await this.flushAggregates();
+      }
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    if (request.method === "POST" && url.pathname === "/record-batch") {
+      const { records, flush } = (await request.json()) as {
+        records: LatencyRecord[];
+        flush?: boolean;
+      };
+      if (Array.isArray(records)) {
+        for (const data of records) {
+          await this.recordLatency(data);
+        }
+      }
+      if (flush) {
+        await this.flushAggregates();
+      }
+      return new Response(JSON.stringify({ success: true, count: records?.length || 0 }), {
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    if (request.method === "POST" && url.pathname === "/flush") {
+      await this.flushAggregates();
       return new Response(JSON.stringify({ success: true }), {
         headers: { "Content-Type": "application/json" },
       });
@@ -268,9 +337,13 @@ export class LatencyAggregator extends DurableObject {
   }
 
   /**
-   * Cleanup on object destruction
+   * Periodic alarm handler: ensures defensive recurring schedule and flushes memory aggregates to DB
    */
   override async alarm(): Promise<void> {
+    try {
+      // Defensive alarm rescheduling so memory eviction or flush failure does not orphan the aggregator
+      await this.ctx.storage.setAlarm(Date.now() + 60_000);
+    } catch {}
     await this.flushAggregates();
   }
 }

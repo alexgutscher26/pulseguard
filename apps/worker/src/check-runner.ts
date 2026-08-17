@@ -553,15 +553,12 @@ export async function recordAlertSent(monitorId: string, env?: Env): Promise<voi
 /**
  * Records latency data to the aggregator service.
  *
- * This function checks if the LATENCY_AGGREGATOR is defined in the environment. If it is, it retrieves the corresponding
- * DO instance using the monitorId and sends a POST request with the latency data, including the monitorId, region,
- * latency value, success status, and a timestamp. Any errors during the fetch operation are logged to the console.
- *
  * @param {Env | undefined} env - The environment object that may contain the LATENCY_AGGREGATOR.
  * @param {string} monitorId - The identifier for the monitor.
  * @param {string} region - The region associated with the latency data.
  * @param {number} latency - The recorded latency value.
  * @param {boolean} success - Indicates whether the operation was successful.
+ * @param {boolean} flush - Whether to trigger an immediate flush.
  */
 export async function recordLatencyToAggregator(
   env: Env | undefined,
@@ -569,17 +566,16 @@ export async function recordLatencyToAggregator(
   region: string,
   latency: number,
   success: boolean,
+  flush: boolean = false,
 ): Promise<void> {
   if (!env?.LATENCY_AGGREGATOR) return;
 
   try {
-    // Get DO instance (using monitorId as the DO ID for consistent routing)
-    const id = env.LATENCY_AGGREGATOR.idFromName(monitorId);
+    const id = env.LATENCY_AGGREGATOR.idFromName("global-latency-aggregator");
     const stub = env.LATENCY_AGGREGATOR.get(id);
 
-    // Send latency data
     await stub
-      .fetch("https://latency-aggregator/record", {
+      .fetch(`https://latency-aggregator/record${flush ? "?flush=true" : ""}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -593,6 +589,81 @@ export async function recordLatencyToAggregator(
       .then((r) => r.text()); // Consume body
   } catch (error) {
     console.error(`[LatencyAggregator] Failed to record latency:`, error);
+  }
+}
+
+/**
+ * Records a batch of latency records to the Aggregator DO, with direct DB fallback.
+ */
+export async function recordLatencyBatchToAggregator(
+  env: Env | undefined,
+  prisma: any,
+  records: Array<{
+    monitorId: string;
+    region: string;
+    latency: number;
+    success: boolean;
+    timestamp?: number | Date;
+  }>,
+  flush: boolean = true,
+): Promise<void> {
+  if (records.length === 0) return;
+
+  if (env?.LATENCY_AGGREGATOR) {
+    try {
+      const id = env.LATENCY_AGGREGATOR.idFromName("global-latency-aggregator");
+      const stub = env.LATENCY_AGGREGATOR.get(id);
+
+      const res = await stub.fetch("https://latency-aggregator/record-batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          records: records.map((r) => ({
+            monitorId: r.monitorId,
+            region: r.region,
+            latency: r.latency,
+            success: r.success,
+            timestamp:
+              typeof r.timestamp === "number" ? r.timestamp : r.timestamp?.getTime() || Date.now(),
+          })),
+          flush,
+        }),
+      });
+
+      if (res.ok) return;
+    } catch (error) {
+      console.warn(
+        `[LatencyAggregator] DO record-batch failed, falling back to direct DB write:`,
+        error,
+      );
+    }
+  }
+
+  // Fallback: direct write to database
+  if (prisma) {
+    try {
+      const now = new Date();
+      const timestamp = new Date(Math.floor(now.getTime() / 60000) * 60000);
+
+      await prisma.latencyAggregate.createMany({
+        data: records.map((r) => ({
+          monitorId: r.monitorId,
+          region: r.region,
+          timestamp,
+          granularity: "ONE_MINUTE" as any,
+          avgLatency: r.latency,
+          minLatency: r.latency,
+          maxLatency: r.latency,
+          p50Latency: r.latency,
+          p95Latency: r.latency,
+          p99Latency: r.latency,
+          sampleCount: 1,
+          successRate: r.success ? 1 : 0,
+        })),
+      });
+    } catch (err) {
+      console.error("[LatencyAggregator] Direct DB fallback failed:", err);
+    }
   }
 }
 

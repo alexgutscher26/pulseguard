@@ -11,9 +11,11 @@ import {
   ShieldCheck,
   Loader2,
   Tag,
+  RefreshCw,
 } from "lucide-react";
 import { PLANS, type PlanTier, type UsageSummary } from "@/lib/billing";
 import { toast } from "@/components/ui/sonner";
+import { syncStripeSubscriptionAction } from "@/actions/user";
 
 interface BillingFormProps {
   initialUsage?: UsageSummary;
@@ -24,6 +26,7 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("annual");
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [loadingPortal, setLoadingPortal] = useState(false);
+  const [syncingStripe, setSyncingStripe] = useState(false);
   const [promoCode, setPromoCode] = useState("");
   const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
 
@@ -58,6 +61,23 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
   };
 
   const currentPlan = PLANS[usage.plan] || PLANS.INITIATE;
+
+  const handleSyncStripe = async () => {
+    try {
+      setSyncingStripe(true);
+      const res = await syncStripeSubscriptionAction();
+      if (res?.success && "plan" in res) {
+        toast.success(`License synchronized: ${res.plan} tier active!`);
+        window.location.reload();
+      } else {
+        toast.error(res?.error || "Failed to sync license from Stripe");
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Sync failed");
+    } finally {
+      setSyncingStripe(false);
+    }
+  };
 
   const handleCheckout = async (planTier: PlanTier) => {
     if (planTier === usage.plan && !usage.isTrialActive) {
@@ -131,7 +151,7 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
                 </span>
               </div>
               <p className="text-xs text-slate-300 mt-0.5">
-                Enjoy full Netrunner Pro telemetry checks, zero false alarms, and multi-region
+                Enjoy full Netrunner Pro telemetry checks, quorum-verified alerts, and multi-region
                 monitoring.
               </p>
             </div>
@@ -161,21 +181,37 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
             </p>
           </div>
 
-          <button
-            onClick={handleManageSubscription}
-            disabled={loadingPortal}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 hover:border-slate-600 text-sm font-semibold transition-all shadow-sm shrink-0"
-          >
-            {loadingPortal ? (
-              <Loader2 className="size-4 animate-spin" />
-            ) : (
-              <>
-                <CreditCard className="size-4 text-emerald-400" />
-                Manage Invoices & Billing
-                <ExternalLink className="size-3.5 text-slate-400" />
-              </>
-            )}
-          </button>
+          <div className="flex items-center gap-3 shrink-0 flex-wrap">
+            <button
+              onClick={handleSyncStripe}
+              disabled={syncingStripe}
+              title="Sync subscription status from Stripe"
+              className="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-600 text-xs font-semibold transition-all shadow-sm cursor-pointer"
+            >
+              {syncingStripe ? (
+                <Loader2 className="size-3.5 animate-spin" />
+              ) : (
+                <RefreshCw className="size-3.5 text-cyan-400" />
+              )}
+              Sync License
+            </button>
+
+            <button
+              onClick={handleManageSubscription}
+              disabled={loadingPortal}
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 hover:border-slate-600 text-sm font-semibold transition-all shadow-sm shrink-0 cursor-pointer"
+            >
+              {loadingPortal ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <>
+                  <CreditCard className="size-4 text-emerald-400" />
+                  Manage Invoices & Billing
+                  <ExternalLink className="size-3.5 text-slate-400" />
+                </>
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Usage Progress Meters */}

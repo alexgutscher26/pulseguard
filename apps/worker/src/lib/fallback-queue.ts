@@ -58,8 +58,44 @@ export class FallbackQueue {
   async getQueueLength(): Promise<number> {
     try {
       return await this.redis.llen(this.QUEUE_KEY);
-    } catch (err) {
+    } catch {
       return 0;
     }
+  }
+
+  /**
+   * Returns the current number of dropped notifications in the Redis DLQ.
+   */
+  async getDlqLength(): Promise<number> {
+    try {
+      return await this.redis.llen("pulseguard:dlq:notifications");
+    } catch {
+      return 0;
+    }
+  }
+
+  /**
+   * Observes queue depths and triggers alarm warning if threshold exceeded.
+   */
+  async inspectBacklogAndAlarm(threshold: number = 100): Promise<{
+    fallbackDepth: number;
+    dlqDepth: number;
+    alarmTriggered: boolean;
+  }> {
+    const fallbackDepth = await this.getQueueLength();
+    const dlqDepth = await this.getDlqLength();
+    const alarmTriggered = fallbackDepth > threshold || dlqDepth > 50;
+
+    console.log(
+      `[QueueMetrics] Fallback Depth: ${fallbackDepth}, Notification DLQ Depth: ${dlqDepth}`,
+    );
+
+    if (alarmTriggered) {
+      console.warn(
+        `[QUEUE_BACKLOG_ALARM] Critical Queue Backlog Exceeded! Fallback: ${fallbackDepth}/${threshold}, DLQ: ${dlqDepth}/50`,
+      );
+    }
+
+    return { fallbackDepth, dlqDepth, alarmTriggered };
   }
 }

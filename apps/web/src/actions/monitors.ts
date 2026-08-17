@@ -9,6 +9,8 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@pulseguard/auth";
 import { headers, cookies } from "next/headers";
 import { sendMonitorAlert, type MonitorAlertData } from "@pulseguard/email";
+import { isPrivateOrInternalUrlAsync, encryptSecret, decryptSecret } from "@pulseguard/core";
+import { PULSEGUARD_CANONICAL_USER_AGENT } from "@pulseguard/shared";
 import {
   assertMonitorLimits,
   assertManualCheckRateLimit,
@@ -334,7 +336,7 @@ export async function createMonitor(prevState: any, formData: FormData) {
         dynamicThresholding: data.dynamicThresholding,
         runbookUrl: data.runbookUrl,
         method: data.method,
-        headers: data.headers,
+        headers: data.headers ? await encryptSecret(data.headers) : null,
         body: data.body,
         script: data.script,
         expectation: data.expectation,
@@ -438,6 +440,13 @@ export async function quickCreateMonitor(data: {
         status: "UP",
         checkRegions: JSON.stringify(["us-east", "eu-central", "ap-tokyo"]),
         userId: session.user.id,
+        alertRules: {
+          create: {
+            trigger: "STATUS_CHANGE",
+            targetStatus: "DOWN",
+            enabled: true,
+          },
+        },
       },
     });
 
@@ -831,53 +840,64 @@ export async function checkMonitor(
 
         latency = Math.round(Date.now() - start);
       } else if (monitor.url.startsWith("http://") || monitor.url.startsWith("https://")) {
-        const method = monitor.method || "GET";
-        const userHeaders: Record<string, string> = {};
+        // Enforce SSRF validation for manual web checks
+        const ssrfCheck = await isPrivateOrInternalUrlAsync(monitor.url);
+        if (ssrfCheck.isForbidden) {
+          currentStatus = "DOWN";
+          errorReason = `SSRF Protection: ${ssrfCheck.reason || "Target URL points to a private or internal network"}`;
+          latency = Math.round(Date.now() - start);
+        } else {
+          const method = monitor.method || "GET";
+          const userHeaders: Record<string, string> = {};
 
-        if (monitor.headers) {
-          try {
-            const parsed = JSON.parse(monitor.headers);
-            if (Array.isArray(parsed)) {
-              parsed.forEach((h: { key: string; value: string }) => {
-                if (h.key) userHeaders[h.key] = h.value;
-              });
+          if (monitor.headers) {
+            try {
+              const rawHeaders = await decryptSecret(monitor.headers);
+              const parsed = JSON.parse(rawHeaders);
+              if (Array.isArray(parsed)) {
+                parsed.forEach((h: { key: string; value: string }) => {
+                  if (h.key) userHeaders[h.key] = h.value;
+                });
+              } else if (typeof parsed === "object" && parsed !== null) {
+                Object.assign(userHeaders, parsed);
+              }
+            } catch (e) {
+              console.error("Failed to parse monitor headers:", e);
             }
-          } catch (e) {
-            console.error("Failed to parse monitor headers:", e);
           }
-        }
 
-        const response = await fetch(monitor.url, {
-          method,
-          redirect: "follow",
-          headers: {
-            "User-Agent": "Mozilla/5.0 (compatible; PulseGuard/1.0; +https://pulseguard.io/bot)",
-            Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "Accept-Language": "en-US,en;q=0.5",
-            ...userHeaders,
-          },
-          body: ["POST", "PUT", "PATCH"].includes(method) ? monitor.body : undefined,
-          signal: AbortSignal.timeout((monitor.timeout || 10) * 1000),
-        });
+          const response = await fetch(monitor.url, {
+            method,
+            redirect: "follow",
+            headers: {
+              "User-Agent": PULSEGUARD_CANONICAL_USER_AGENT,
+              Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+              "Accept-Language": "en-US,en;q=0.5",
+              ...userHeaders,
+            },
+            body: ["POST", "PUT", "PATCH"].includes(method) ? monitor.body : undefined,
+            signal: AbortSignal.timeout((monitor.timeout || 10) * 1000),
+          });
 
-        const body = await response.text();
-        latency = Math.round(Date.now() - start);
-        // Treat 2xx, 3xx as UP. Treat 429 as UP — rate-limited means server is alive.
-        const statusNum = Number(response.status);
-        const isRateLimited = statusNum === 429;
-        const isHealthyStatus =
-          response.ok || (statusNum >= 300 && statusNum < 400) || isRateLimited;
-        currentStatus = isHealthyStatus ? "UP" : "DOWN";
+          const body = await response.text();
+          latency = Math.round(Date.now() - start);
+          // Treat 2xx, 3xx as UP. Treat 429 as UP — rate-limited means server is alive.
+          const statusNum = Number(response.status);
+          const isRateLimited = statusNum === 429;
+          const isHealthyStatus =
+            response.ok || (statusNum >= 300 && statusNum < 400) || isRateLimited;
+          currentStatus = isHealthyStatus ? "UP" : "DOWN";
 
-        if (currentStatus === "UP" && monitor.expectation) {
-          const { validatePayload } = await import("@/lib/payload-parser");
-          const validation = validatePayload(body, response.status, monitor.expectation);
-          if (!validation.success) {
-            currentStatus = "DOWN";
-            errorReason = validation.errorMessage || `HTTP_${response.status}`;
+          if (currentStatus === "UP" && monitor.expectation) {
+            const { validatePayload } = await import("@/lib/payload-parser");
+            const validation = validatePayload(body, response.status, monitor.expectation);
+            if (!validation.success) {
+              currentStatus = "DOWN";
+              errorReason = validation.errorMessage || "Payload validation failed";
+            }
+          } else if (currentStatus === "DOWN") {
+            errorReason = `HTTP_${response.status}`;
           }
-        } else if (!isHealthyStatus) {
-          errorReason = `HTTP_${response.status}`;
         }
       } else {
         throw new Error(`Unsupported protocol in URL: ${monitor.url}`);

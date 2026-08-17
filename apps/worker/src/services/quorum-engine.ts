@@ -118,7 +118,22 @@ export function evaluateQuorum(
     }
   }
 
-  const distinctResults = Array.from(latestByRegion.values());
+  // Physical PoP / Colocation deduplication:
+  // If multiple distinct regions reported the exact same physical colo (e.g. both landed in "SIN"),
+  // deduplicate by physical colo so a single data center cannot cast multiple votes.
+  const latestByColoOrRegion = new Map<string, ProbeCheckResult>();
+  for (const r of latestByRegion.values()) {
+    const dedupeKey =
+      r.colo && r.colo !== "UNKNOWN" && r.colo !== "DIRECT" && r.colo !== "GLOBAL"
+        ? `colo:${r.colo}`
+        : `region:${r.region}`;
+    const existing = latestByColoOrRegion.get(dedupeKey);
+    if (!existing || (r.status === "DOWN" && existing.status === "UP")) {
+      latestByColoOrRegion.set(dedupeKey, r);
+    }
+  }
+
+  const distinctResults = Array.from(latestByColoOrRegion.values());
 
   const excludedFlappingProbes: string[] = [];
   const excludedSlowProbes: string[] = [];
@@ -133,8 +148,12 @@ export function evaluateQuorum(
       continue;
     }
 
-    if (r.latency > config.slowProbeLatencyThresholdMs && r.status === "DOWN") {
-      // Exclude slow/congested transit probe from denominator
+    if (
+      (r.latency > config.slowProbeLatencyThresholdMs && r.status === "DOWN") ||
+      r.errorClass === "TIMEOUT" ||
+      (r.errorReason && r.errorReason.toLowerCase().includes("timed out"))
+    ) {
+      // Exclude slow/congested transit probe or timed-out probe from denominator
       excludedSlowProbes.push(r.region);
       continue;
     }
@@ -173,15 +192,20 @@ export function evaluateQuorum(
   const averageLatency = upResults.length > 0 ? Math.round(totalLatency / upResults.length) : 0;
 
   // Dynamic consensus threshold based on eligible probes:
-  // If all 7 probes are eligible, threshold is 4 (4-of-7).
-  // If some probes are excluded or partial pool, threshold is majority: Math.max(2, Math.ceil((totalEligible + 1) / 2))
-  const requiredDownCount =
-    totalEligible >= config.totalProbesInPool
-      ? config.minConfirmationCount
-      : Math.max(2, Math.ceil((totalEligible + 1) / 2));
+  // For the standard global pool (config.totalProbesInPool >= 4), a global DOWN outage
+  // consensus strictly requires a minimum reporting floor of at least 4 eligible probes (totalEligible >= 4)
+  // and at least minConfirmationCount confirmed down regions.
+  // For custom smaller pools (e.g. 3 probes), minimum reporting floor is config.minConfirmationCount.
+  const minReportingFloor = Math.min(config.minConfirmationCount, 4);
+  const hasSufficientQuorumPool = totalEligible >= minReportingFloor;
+
+  const requiredDownCount = Math.max(
+    config.minConfirmationCount,
+    Math.ceil((totalEligible + 1) / 2),
+  );
 
   const confirmedDownCount = downResults.length;
-  let isDownConsensus = confirmedDownCount >= requiredDownCount && totalEligible >= 2;
+  let isDownConsensus = confirmedDownCount >= requiredDownCount && hasSufficientQuorumPool;
 
   // Multi-ASN Quorum / Provider Partition Circuit Breaker:
   // If down consensus is reached but 100% of failures are confined to a single provider ASN (e.g. AS13335)
@@ -259,10 +283,12 @@ export async function processProbeResultsBatch(
     select: {
       id: true,
       name: true,
+      url: true,
       status: true,
       interval: true,
       alertThreshold: true,
       userId: true,
+      runbookUrl: true,
     },
   });
 
@@ -334,13 +360,37 @@ export async function processProbeResultsBatch(
         try {
           const { IncidentService } = await import("../lib/incident-service");
           const incidentService = new IncidentService(prisma);
-          await incidentService.createIncident(
+          const incident = await incidentService.createIncident(
             monitorId,
             `Global Outage: ${monitor.name}`,
             evaluation.reason || "Global outage confirmed across edge quorum",
           );
+
+          // Dispatch notification to user channels
+          const { queueNotification } = await import("../lib/send-notification");
+          const { recordAlertSent } = await import("../check-runner");
+          const { NotificationType } = await import("../constants");
+
+          await queueNotification(
+            env,
+            {
+              type: NotificationType.INCIDENT_CREATED,
+              monitorId: monitor.id,
+              monitorName: monitor.name,
+              url: monitor.url,
+              status: "DOWN",
+              incidentId: incident.id,
+              reason: evaluation.reason || "Global outage confirmed across edge quorum",
+              runbookUrl: monitor.runbookUrl,
+              timestamp: new Date().toISOString(),
+              failedRegions: evaluation.downRegions.length > 0 ? evaluation.downRegions : undefined,
+            },
+            undefined as any,
+          );
+
+          await recordAlertSent(monitor.id, env);
         } catch (alertErr) {
-          console.error(`[QuorumEngine] Failed to create incident:`, alertErr);
+          console.error(`[QuorumEngine] Failed to create incident or dispatch alerts:`, alertErr);
         }
       } else if (newStatus === "UP" && prevStatus === "DOWN") {
         try {
@@ -349,6 +399,26 @@ export async function processProbeResultsBatch(
           const activeIncident = await incidentService.findActiveIncident(monitorId);
           if (activeIncident) {
             await incidentService.resolveIncident(activeIncident.id);
+
+            const { queueNotification } = await import("../lib/send-notification");
+            const { recordAlertSent } = await import("../check-runner");
+            const { NotificationType } = await import("../constants");
+
+            await queueNotification(
+              env,
+              {
+                type: NotificationType.INCIDENT_RESOLVED,
+                monitorId: monitor.id,
+                monitorName: monitor.name,
+                url: monitor.url,
+                status: "UP",
+                incidentId: activeIncident.id,
+                timestamp: new Date().toISOString(),
+              },
+              undefined as any,
+            );
+
+            await recordAlertSent(monitor.id, env);
           }
         } catch (alertErr) {
           console.error(`[QuorumEngine] Failed to resolve incident:`, alertErr);

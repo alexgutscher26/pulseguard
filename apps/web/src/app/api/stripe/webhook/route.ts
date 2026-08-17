@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
+import { stripe, resolvePlanFromStripeSubscriptionAsync } from "@/lib/stripe";
 import db from "@pulseguard/db";
 import { sendDunningNotice } from "@pulseguard/email";
+import { PLANS, type PlanTier } from "@/lib/billing";
 import Stripe from "stripe";
+
+const processedEvents = new Set<string>();
+const MAX_PROCESSED_EVENTS = 10_000;
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -28,14 +32,43 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: `Webhook Error: ${errorMessage}` }, { status: 400 });
   }
 
+  // Idempotency: Ignore duplicate deliveries of the same Stripe event ID
+  if (processedEvents.has(event.id)) {
+    console.log(`[Stripe Webhook] Duplicate event ${event.id} received, returning cached 200`);
+    return NextResponse.json({ received: true, duplicate: true });
+  }
+  if (processedEvents.size > MAX_PROCESSED_EVENTS) {
+    processedEvents.clear();
+  }
+  processedEvents.add(event.id);
+
   try {
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
         const userId = session.metadata?.userId;
-        const plan = (session.metadata?.plan || "NETRUNNER").toUpperCase();
+        let plan = (session.metadata?.plan || "").toUpperCase() as PlanTier;
+
+        if (!plan || !(plan in PLANS)) {
+          if (session.subscription) {
+            try {
+              const subObj =
+                typeof session.subscription === "string"
+                  ? await stripe.subscriptions.retrieve(session.subscription, {
+                      expand: ["items.data.price.product"],
+                    })
+                  : session.subscription;
+              plan = await resolvePlanFromStripeSubscriptionAsync(subObj, "CONSTRUCT");
+            } catch {
+              plan = "CONSTRUCT";
+            }
+          } else {
+            plan = "CONSTRUCT";
+          }
+        }
 
         if (userId) {
+          const oneYearFromNow = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
           await db.subscription.upsert({
             where: { userId },
             create: {
@@ -44,12 +77,20 @@ export async function POST(req: Request) {
               stripeSubscriptionId: session.subscription as string,
               plan,
               status: "ACTIVE",
+              trialEndsAt: null,
+              currentPeriodStart: new Date(),
+              currentPeriodEnd: oneYearFromNow,
+              tierVersion: "stripe_live",
             },
             update: {
               stripeCustomerId: session.customer as string,
               stripeSubscriptionId: session.subscription as string,
               plan,
               status: "ACTIVE",
+              trialEndsAt: null,
+              currentPeriodStart: new Date(),
+              currentPeriodEnd: oneYearFromNow,
+              tierVersion: "stripe_live",
             },
           });
 
@@ -74,13 +115,17 @@ export async function POST(req: Request) {
 
         if (subRecord) {
           const effectiveStatus = subscription.status === "active" ? "ACTIVE" : status;
-          const currentPlan = subscription.status === "canceled" ? "INITIATE" : subRecord.plan;
+          const currentPlan =
+            subscription.status === "canceled"
+              ? "INITIATE"
+              : await resolvePlanFromStripeSubscriptionAsync(subscription, subRecord.plan);
 
           await db.subscription.update({
             where: { id: subRecord.id },
             data: {
               status: effectiveStatus,
-              plan: currentPlan,
+              plan: currentPlan as any,
+              trialEndsAt: null,
               cancelAtPeriodEnd,
               currentPeriodStart: subscription.current_period_start
                 ? new Date(subscription.current_period_start * 1000)
@@ -88,12 +133,13 @@ export async function POST(req: Request) {
               currentPeriodEnd: subscription.current_period_end
                 ? new Date(subscription.current_period_end * 1000)
                 : null,
+              tierVersion: "stripe_live",
             },
           });
 
           await db.user.update({
             where: { id: subRecord.userId },
-            data: { tier: currentPlan },
+            data: { tier: currentPlan as any },
           });
         }
         break;

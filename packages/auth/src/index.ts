@@ -67,11 +67,11 @@ export const auth = betterAuth({
   },
 
   trustedOrigins: [
-    env.CORS_ORIGIN,
-    env.NEXT_PUBLIC_APP_URL,
-    "http://localhost:3000",
-    "exp://",
-    "https://pulseguard-org.vercel.app/",
+    ...(env.CORS_ORIGIN ? [env.CORS_ORIGIN] : []),
+    ...(env.NEXT_PUBLIC_APP_URL ? [env.NEXT_PUBLIC_APP_URL] : []),
+    ...(env.NODE_ENV !== "production"
+      ? ["http://localhost:3000", "exp://", "http://127.0.0.1:3000"]
+      : []),
   ],
   emailAndPassword: {
     enabled: true,

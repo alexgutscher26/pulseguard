@@ -1,5 +1,11 @@
-import db, { resetPrisma } from "@pulseguard/db";
-import { PLANS, type PlanTier, type UsageSummary, type UsageWarning } from "./billing";
+import db from "@pulseguard/db";
+import {
+  PLANS,
+  getPlanLimits,
+  type PlanTier,
+  type UsageSummary,
+  type UsageWarning,
+} from "./billing";
 import { isFeatureEnabled, getFeatureError, type FeatureFlag } from "./feature-flags";
 import { sendUsageLimitWarning } from "@pulseguard/email";
 
@@ -17,10 +23,6 @@ export async function getUserPlan(userId: string): Promise<PlanTier> {
     });
     subscription = user?.subscription;
   } catch {
-    try {
-      await resetPrisma();
-    } catch {}
-
     user = await db.user.findUnique({
       where: { id: userId },
     });
@@ -54,7 +56,10 @@ export async function getUserPlan(userId: string): Promise<PlanTier> {
   if (subscription?.status === "TRIALING") {
     const trialEnd = subscription.trialEndsAt || subscription.currentPeriodEnd;
     if (trialEnd && new Date() < new Date(trialEnd)) {
-      return "NETRUNNER";
+      const trialPlan = (subscription.plan || user?.tier || "NETRUNNER").toUpperCase();
+      if (trialPlan === "ADMIN" || trialPlan === "ENTERPRISE") return "CONSTRUCT";
+      if (trialPlan === "PRO") return "NETRUNNER";
+      return trialPlan in PLANS ? (trialPlan as PlanTier) : "NETRUNNER";
     }
 
     // Trial has expired — transition status
@@ -95,39 +100,39 @@ export async function getUserUsageSummary(userId: string): Promise<UsageSummary>
       db.subscription.findUnique({ where: { userId } }).catch(() => null),
     ]);
 
-  const details = PLANS[plan];
+  const limits = getPlanLimits(plan, subscription?.tierVersion);
 
   const warnings: UsageWarning[] = [];
 
-  const monitorPct = Math.round((monitorsCount / details.limits.maxMonitors) * 100);
+  const monitorPct = Math.round((monitorsCount / limits.maxMonitors) * 100);
   if (monitorPct >= 80) {
     warnings.push({
       resource: "monitors",
       label: "Active Monitors",
       used: monitorsCount,
-      limit: details.limits.maxMonitors,
+      limit: limits.maxMonitors,
       percentage: monitorPct,
     });
   }
 
-  const alertChannelPct = Math.round((alertChannelsCount / details.limits.maxAlertChannels) * 100);
+  const alertChannelPct = Math.round((alertChannelsCount / limits.maxAlertChannels) * 100);
   if (alertChannelPct >= 80) {
     warnings.push({
       resource: "alertChannels",
       label: "Alert Channels",
       used: alertChannelsCount,
-      limit: details.limits.maxAlertChannels,
+      limit: limits.maxAlertChannels,
       percentage: alertChannelPct,
     });
   }
 
-  const statusPagePct = Math.round((statusPagesCount / details.limits.maxStatusPages) * 100);
+  const statusPagePct = Math.round((statusPagesCount / limits.maxStatusPages) * 100);
   if (statusPagePct >= 80) {
     warnings.push({
       resource: "statusPages",
       label: "Status Pages",
       used: statusPagesCount,
-      limit: details.limits.maxStatusPages,
+      limit: limits.maxStatusPages,
       percentage: statusPagePct,
     });
   }
@@ -148,14 +153,14 @@ export async function getUserUsageSummary(userId: string): Promise<UsageSummary>
 
   return {
     monitorsUsed: monitorsCount,
-    monitorsLimit: details.limits.maxMonitors,
+    monitorsLimit: limits.maxMonitors,
     alertChannelsUsed: alertChannelsCount,
-    alertChannelsLimit: details.limits.maxAlertChannels,
+    alertChannelsLimit: limits.maxAlertChannels,
     statusPagesUsed: statusPagesCount,
-    statusPagesLimit: details.limits.maxStatusPages,
+    statusPagesLimit: limits.maxStatusPages,
     monthlyChecksCount: eventsCount,
     plan,
-    limits: details.limits,
+    limits,
     isApproachingLimit: warnings.length > 0,
     warnings,
     isTrialActive,

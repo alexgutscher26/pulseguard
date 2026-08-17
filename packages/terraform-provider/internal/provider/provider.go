@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/alexgutscher26/pulseguard/terraform-provider-pulseguard/internal/client"
-	"github.com/alexgutscher26/pulseguard/terraform-provider-pulseguard/internal/datasource"
+	pgdatasource "github.com/alexgutscher26/pulseguard/terraform-provider-pulseguard/internal/datasource"
 	"github.com/alexgutscher26/pulseguard/terraform-provider-pulseguard/internal/resources"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -101,6 +101,6 @@ func (p *PulseGuardProvider) Resources(ctx context.Context) []func() resource.Re
 
 func (p *PulseGuardProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
-		datasource.NewRegionsDataSource,
+		pgdatasource.NewRegionsDataSource,
 	}
 }

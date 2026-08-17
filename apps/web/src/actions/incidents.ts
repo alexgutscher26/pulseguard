@@ -8,13 +8,22 @@ import { revalidatePath } from "next/cache";
 import { getSafeSession } from "@/lib/safe-session";
 import { getActiveWorkspace } from "@/actions/team";
 
+async function getMonitorAccessScope(userId: string) {
+  const active = await getActiveWorkspace();
+  if (active?.id) {
+    return {
+      OR: [{ organizationId: active.id }, { userId: userId }],
+    };
+  }
+  return { userId };
+}
+
 export async function getIncidents() {
   const session = await getSafeSession();
 
   if (!session?.user) return [];
 
-  const active = await getActiveWorkspace();
-  const monitorScope = active?.id ? { organizationId: active.id } : { userId: session.user.id };
+  const monitorScope = await getMonitorAccessScope(session.user.id);
 
   try {
     const incidents = await prisma.incident.findMany({
@@ -49,13 +58,13 @@ export async function getIncident(id: string) {
 
   if (!session?.user) return null;
 
+  const monitorScope = await getMonitorAccessScope(session.user.id);
+
   try {
     const incident = await prisma.incident.findFirst({
       where: {
         id,
-        monitor: {
-          userId: session.user.id,
-        },
+        monitor: monitorScope,
       },
       include: {
         monitor: true,
@@ -81,14 +90,14 @@ export async function updateIncidentStatus(
 
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
+  const monitorScope = await getMonitorAccessScope(session.user.id);
+
   try {
-    // Verify ownership
+    // Verify ownership or workspace membership
     const incident = await prisma.incident.findFirst({
       where: {
         id,
-        monitor: {
-          userId: session.user.id,
-        },
+        monitor: monitorScope,
       },
     });
 
@@ -126,18 +135,18 @@ export async function createIncident(data: {
   severity: "HIGH" | "MEDIUM" | "LOW";
   status: "INVESTIGATING" | "IDENTIFIED" | "MONITORING" | "RESOLVED";
 }) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSafeSession();
 
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
+  const monitorScope = await getMonitorAccessScope(session.user.id);
+
   try {
-    // Verify monitor ownership
+    // Verify monitor ownership or workspace membership
     const monitor = await prisma.monitor.findFirst({
       where: {
         id: data.monitorId,
-        userId: session.user.id,
+        ...monitorScope,
       },
     });
 
@@ -152,7 +161,7 @@ export async function createIncident(data: {
         status: data.status as any,
         events: {
           create: {
-            type: "STATE_CHANGE", // Use string literal or enum if imported
+            type: IncidentEventType.STATE_CHANGE,
             message: `Incident manually reported: ${data.title}`,
           },
         },

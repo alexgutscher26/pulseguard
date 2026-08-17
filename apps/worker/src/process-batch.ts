@@ -15,10 +15,12 @@ import {
   broadcastLiveEvent,
   performCheck,
   recordAlertSent,
-  recordLatencyToAggregator,
+  recordLatencyBatchToAggregator,
   shouldSendAlert,
 } from "./check-runner";
 import { queueNotification } from "./lib/send-notification";
+import { evaluateQuorum } from "./services/quorum-engine";
+import type { ProbeCheckResult } from "@pulseguard/types";
 import type { Env } from "./env";
 
 const mesh = new ProxyMesh();
@@ -164,26 +166,32 @@ export async function processBatch(
         // Check if regional monitoring is enabled
         if (monitor.checkRegions) {
           try {
-            const regionalResults = await performRegionalChecks(monitor);
+            const regionalResults = await performRegionalChecks(monitor, env);
             console.log(
               `[Regional] Checked ${monitor.name} from ${regionalResults.length} regions`,
             );
 
-            // Capture failed regions
-            failedRegions = regionalResults
-              .filter((r) => r.status === Status.DOWN)
-              .map((r) => r.region);
+            // Convert to ProbeCheckResult format for Quorum Consensus Engine
+            const probeResults: ProbeCheckResult[] = regionalResults.map((r) => ({
+              monitorId: monitor.id,
+              probeId: `probe-${r.region}`,
+              region: r.region,
+              status: r.status === Status.UP ? "UP" : "DOWN",
+              latency: r.latency,
+              errorReason: r.errorReason,
+              errorClass: r.errorClass,
+              colo: r.colo,
+              asn: r.asn,
+              timestamp: r.timestamp.toISOString(),
+            }));
 
-            // Require a MAJORITY of regions to be DOWN before marking as global outage.
-            // With alertThreshold=1 (the DB default), even 1 flaky region triggers DOWN — too noisy.
-            // Use the higher of: the monitor's custom alertThreshold OR 50% of checked regions.
-            const majorityThreshold = Math.max(
-              monitor.alertThreshold || 1,
-              Math.ceil(regionalResults.length / 2),
-            );
-            const isMajorOutage = failedRegions.length >= majorityThreshold;
+            // Evaluate Quorum Consensus with Colocation Deduplication and Provider Partition Breaker
+            const quorumEval = evaluateQuorum(monitor.id, probeResults);
+
+            failedRegions = quorumEval.downRegions;
+            const isMajorOutage = quorumEval.isGlobalOutage;
             const overallStatus = isMajorOutage ? Status.DOWN : Status.UP;
-            const avgLatency = getAverageLatency(regionalResults);
+            const avgLatency = quorumEval.averageLatency || getAverageLatency(regionalResults);
 
             // AGGRESSIVE AGGREGATION: Smart Filtering to save DB space and CPU
             // We store ALL regional results in the Durable Object (LatencyAggregator) for high-res charts.
@@ -202,18 +210,18 @@ export async function processBatch(
               timestamp: new Date(),
             });
 
-            // Store each regional result in LatencyAggregator (Fire and forget)
-            for (const regionalResult of regionalResults) {
-              ctx.waitUntil(
-                recordLatencyToAggregator(
-                  env,
-                  monitor.id,
-                  regionalResult.region,
-                  regionalResult.latency,
-                  regionalResult.status === Status.UP,
-                ),
-              );
+            // Store each regional result in LatencyAggregator / DB
+            const latencyRecords = regionalResults.map((r) => ({
+              monitorId: monitor.id,
+              region: r.region,
+              latency: r.latency,
+              success: r.status === Status.UP,
+              timestamp: r.timestamp.getTime(),
+            }));
 
+            ctx.waitUntil(recordLatencyBatchToAggregator(env, prisma, latencyRecords, true));
+
+            for (const regionalResult of regionalResults) {
               // Only add to DB if DOWN (to save massive IOPS)
               if (regionalResult.status === Status.DOWN) {
                 eventsToCreate.push({
@@ -262,6 +270,24 @@ export async function processBatch(
         } else {
           // Standard single-region check
           result = await performCheck(monitor, env, prisma);
+
+          // Store single-region latency measurement
+          ctx.waitUntil(
+            recordLatencyBatchToAggregator(
+              env,
+              prisma,
+              [
+                {
+                  monitorId: monitor.id,
+                  region: "global",
+                  latency: result.latency,
+                  success: result.status === Status.UP,
+                  timestamp: Date.now(),
+                },
+              ],
+              true,
+            ),
+          );
         }
 
         // 2. Multi-Vector Verification Protocol (Retry & Proxy on Failure)
@@ -442,25 +468,62 @@ export async function processBatch(
             throw new Error("CircuitBreaker: OPEN. Avoiding database writes.");
           }
 
-          await prisma.$transaction([
-            prisma.monitorEvent.create({
-              data: {
-                monitorId: monitor.id,
-                status: currentStatus as any,
-                latency: latency,
-                errorReason: errorReason,
-                timestamp: new Date(),
-              },
-            }),
-            prisma.monitor.update({
-              where: { id: monitor.id },
-              data: {
-                status: currentStatus as any,
-                lastCheck: new Date(),
-                nextCheck: nextCheckTime,
-              },
-            }),
-          ]);
+          const isStatusChange =
+            currentStatus !== monitor.status || currentStatus !== "UP" || Boolean(errorReason);
+
+          const executePersistence = async (retry: boolean = true): Promise<void> => {
+            try {
+              if (isStatusChange) {
+                // Record state transitions, outages, and degradations in history
+                await prisma.$transaction(
+                  [
+                    prisma.monitorEvent.create({
+                      data: {
+                        monitorId: monitor.id,
+                        status: currentStatus as any,
+                        latency: latency,
+                        errorReason: errorReason,
+                        timestamp: new Date(),
+                      },
+                    }),
+                    prisma.monitor.update({
+                      where: { id: monitor.id },
+                      data: {
+                        status: currentStatus as any,
+                        lastCheck: new Date(),
+                        nextCheck: nextCheckTime,
+                      },
+                    }),
+                  ],
+                  { maxWait: 5000, timeout: 10000 },
+                );
+              } else {
+                // Steady-state healthy check: update check timestamps without bloating raw event table
+                await prisma.monitor.update({
+                  where: { id: monitor.id },
+                  data: {
+                    status: currentStatus as any,
+                    lastCheck: new Date(),
+                    nextCheck: nextCheckTime,
+                  },
+                });
+              }
+            } catch (txErr: any) {
+              if (
+                retry &&
+                (txErr.message?.includes("Unable to start a transaction") ||
+                  txErr.message?.includes("timeout") ||
+                  txErr.message?.includes("Connection terminated") ||
+                  txErr.message?.includes("performIO"))
+              ) {
+                await new Promise((r) => setTimeout(r, 100));
+                return await executePersistence(false);
+              }
+              throw txErr;
+            }
+          };
+
+          await executePersistence();
 
           // Successfully saved - if we were in HALF_OPEN, we can now mark as healthy
           if (circuitState === CircuitState.HALF_OPEN) {

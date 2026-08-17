@@ -5,12 +5,13 @@
  * Evaluates results using the 4-of-7 Quorum Consensus Engine.
  */
 
-import { isPrivateOrInternalUrl } from "@pulseguard/core";
+import { isPrivateOrInternalUrlAsync, decryptSecret } from "@pulseguard/core";
 import {
   CLOUDFLARE_PROBE_REGIONS,
   FREE_TIER_PROBE_REGIONS,
   getRegionByCode,
   type DOLocationHint,
+  PULSEGUARD_CANONICAL_USER_AGENT,
 } from "@pulseguard/shared";
 import type { ProbeCheckResult } from "@pulseguard/types";
 import type { Env } from "../env";
@@ -29,54 +30,50 @@ export interface RegionalCheckResult {
 
 export interface Monitor {
   id: string;
+  name: string;
   url: string;
-  timeout: number;
-  checkRegions?: string | null;
-  method?: string;
+  interval?: number | null;
+  timeout?: number | null;
+  method?: string | null;
   headers?: string | null;
   body?: string | null;
+  expectation?: string | null;
+  alertThreshold?: number | null;
+  dynamicThresholding?: boolean | null;
+  checkRegions?: string | null;
+  runbookUrl?: string | null;
 }
 
 /**
- * Perform a check from a specific pinned Durable Object probe
+ * Performs a single check for a region, prioritizing RegionalProbe DOs
  */
-async function checkFromRegion(
+export async function checkSingleRegion(
+  env: Env,
   monitor: Monitor,
   regionCode: string,
-  env?: Env,
 ): Promise<RegionalCheckResult> {
   const start = performance.now();
-  const regionMeta = getRegionByCode(regionCode);
-  const resolvedRegion = (regionMeta?.code || "wnam") as DOLocationHint;
+  const regionDef = getRegionByCode(regionCode);
+  const resolvedRegion = regionDef?.code || regionCode;
 
-  // 1. If Regional Probe DO is available, route to the pinned DO instance
-  if (env?.REGIONAL_PROBE) {
+  // 1. Prioritize DO-based execution if available
+  if (env.REGIONAL_PROBE && regionDef?.isCloudflareDO) {
     try {
-      const probeId = env.REGIONAL_PROBE.idFromName(`probe-${resolvedRegion}`);
+      const probeId = env.REGIONAL_PROBE.idFromName(resolvedRegion);
       const probe = env.REGIONAL_PROBE.get(probeId, {
-        locationHint: resolvedRegion as any,
+        locationHint: (regionDef.code as DOLocationHint) || "wnam",
       });
 
-      const res = await probe.fetch("http://internal/check-batch", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          monitors: [
-            {
-              id: monitor.id,
-              url: monitor.url,
-              timeout: monitor.timeout,
-              method: monitor.method,
-              headers: monitor.headers,
-              body: monitor.body,
-            },
-          ],
+      const res = await probe.fetch(
+        new Request("https://probe/check", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ monitor, isScheduledAlarm: false }),
         }),
-      });
+      );
 
       if (res.ok) {
-        const data = (await res.json()) as { results: ProbeCheckResult[] };
-        const r = data.results?.[0];
+        const r = (await res.json()) as ProbeCheckResult;
         if (r) {
           return {
             region: resolvedRegion,
@@ -100,7 +97,7 @@ async function checkFromRegion(
 
   // 2. Direct edge fetch fallback with SSRF check
   try {
-    const ssrfCheck = isPrivateOrInternalUrl(monitor.url);
+    const ssrfCheck = await isPrivateOrInternalUrlAsync(monitor.url);
     if (ssrfCheck.isForbidden) {
       return {
         region: resolvedRegion,
@@ -115,7 +112,8 @@ async function checkFromRegion(
     const userHeaders: Record<string, string> = {};
     if (monitor.headers) {
       try {
-        const parsed = JSON.parse(monitor.headers);
+        const rawHeaders = await decryptSecret(monitor.headers, env?.ENCRYPTION_SECRET);
+        const parsed = JSON.parse(rawHeaders);
         if (Array.isArray(parsed)) {
           for (const h of parsed as { key?: string; value?: string }[]) {
             if (h.key && h.value) userHeaders[h.key] = h.value;
@@ -132,12 +130,12 @@ async function checkFromRegion(
     const response = await fetch(monitor.url, {
       method: monitor.method || "GET",
       headers: {
-        "User-Agent": "PulseGuard-Synthetic-Monitor/2.0 (+https://pulseguard.io/bot)",
+        "User-Agent": PULSEGUARD_CANONICAL_USER_AGENT,
         Accept: "*/*",
         ...userHeaders,
       },
       ...(hasBody && monitor.body ? { body: monitor.body } : {}),
-      signal: AbortSignal.timeout((monitor.timeout || 10) * 1000),
+      signal: AbortSignal.timeout(((monitor.timeout || 10) as number) * 1000),
       redirect: "follow",
     });
 
@@ -190,9 +188,17 @@ export async function performRegionalChecks(
     targetRegions = [...FREE_TIER_PROBE_REGIONS];
   }
 
-  // Execute checks concurrently across distinct probe regions
-  const checkPromises = targetRegions.map((region) => checkFromRegion(monitor, region, env));
-  return await Promise.all(checkPromises);
+  // Execute checks in bounded concurrency (max 5 simultaneous subrequests) to respect DO limits
+  const results: RegionalCheckResult[] = [];
+  const concurrency = 5;
+  for (let i = 0; i < targetRegions.length; i += concurrency) {
+    const chunk = targetRegions.slice(i, i + concurrency);
+    const chunkResults = await Promise.all(
+      chunk.map((region) => checkSingleRegion(env!, monitor, region)),
+    );
+    results.push(...chunkResults);
+  }
+  return results;
 }
 
 /**

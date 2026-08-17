@@ -4,7 +4,6 @@ import (
 	"context"
 	"flag"
 	"log"
-
 	"github.com/alexgutscher26/pulseguard/terraform-provider-pulseguard/internal/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 )

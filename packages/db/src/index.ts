@@ -17,7 +17,9 @@ export function createPrisma(databaseUrl?: string) {
   // DATABASE_URL should still point to the direct connection for Prisma CLI migrations.
   // Set DATABASE_POOL_URL in production to prevent connection exhaustion under load.
   const poolUrl =
-    (typeof process !== "undefined" ? process.env.DATABASE_POOL_URL : undefined) || url;
+    (typeof process !== "undefined" ? process.env?.DATABASE_POOL_URL : undefined) ||
+    (typeof globalThis !== "undefined" ? (globalThis as any).DATABASE_POOL_URL : undefined) ||
+    url;
 
   // Determine if SSL is needed but remove sslmode from URL to avoid conflict with explicit ssl config
   const isSsl = poolUrl.includes("sslmode=require") || poolUrl.includes("sslmode=verify");
@@ -25,13 +27,15 @@ export function createPrisma(databaseUrl?: string) {
 
   const poolConfig: any = {
     connectionString: cleanUrl,
-    // Reduced to 3 to avoid pool exhaustion with many concurrent isolates/workers.
-    // Supabase Pooler (Supavisor) can be sensitive to many checkout attempts.
-    max: 3,
-    // Release idle connections quickly in a serverless environment
-    idleTimeoutMillis: 10_000,
-    // Set to 5s to fail-fast and allow app retry/recovery strategies
-    connectionTimeoutMillis: 5_000,
+    // Bounded pool size to avoid connection exhaustion in serverless / edge isolates
+    max: 5,
+    // Keep idle connections long enough to be reused across periodic ticks
+    idleTimeoutMillis: 30_000,
+    // Extended timeout for high-latency or cross-region connections
+    connectionTimeoutMillis: 10_000,
+    // TCP keep-alive prevents intermediate proxies and NATs from silently dropping connections
+    keepAlive: true,
+    keepAliveInitialDelayMillis: 5_000,
   };
 
   if (isSsl || poolUrl.includes("supabase") || poolUrl.includes("neon.tech")) {
@@ -40,21 +44,13 @@ export function createPrisma(databaseUrl?: string) {
 
   const pool = new Pool(poolConfig);
   pool.on("error", (err) => {
-    console.error("[PG Pool Error] Unexpected error on idle client:", err.message);
-    if (
-      err.message?.includes("Connection terminated") ||
-      err.message?.includes("closed") ||
-      err.message?.includes("terminate")
-    ) {
-      console.warn(
-        "[PG Pool Error] Stale connection detected. Proactively clearing client singleton cache.",
-      );
-      resetPrisma(url).catch(() => {});
-    }
+    // pg.Pool handles dead idle connections automatically by removing them from the pool.
+    // NEVER call resetPrisma or pool.end() here as it closes the entire pool and destroys active queries.
+    console.warn("[PG Pool] Idle client connection event (handled by pool):", err.message);
   });
   const adapter = new PrismaPg(pool);
 
-  const isDev = process.env.NODE_ENV === "development";
+  const isDev = typeof process !== "undefined" && process.env?.NODE_ENV === "development";
 
   const client = new PrismaClient({
     adapter,

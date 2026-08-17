@@ -7,7 +7,7 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "depcheck": "depcheck",
+    "depcheck": "depcheck --ignores=\"bun:test,cloudflare:sockets,typescript\"",
     "publint": "publint"
   },
   "dependencies": {

@@ -1,7 +1,11 @@
 import { DurableObject } from "cloudflare:workers";
 import type { ProbeCheckResult, ProbeHealthState } from "@pulseguard/types";
-import { isPrivateOrInternalUrl } from "@pulseguard/core";
-import { getRegionByCode, type DOLocationHint } from "@pulseguard/shared";
+import { isPrivateOrInternalUrlAsync, decryptSecret } from "@pulseguard/core";
+import {
+  getRegionByCode,
+  type DOLocationHint,
+  PULSEGUARD_CANONICAL_USER_AGENT,
+} from "@pulseguard/shared";
 import { getPrisma } from "@pulseguard/db";
 import type { Env } from "../env";
 
@@ -44,7 +48,7 @@ async function runWithBoundedConcurrency<T, R>(
   return results;
 }
 
-export class RegionalProbe extends DurableObject {
+export class RegionalProbe extends DurableObject<Env> {
   private probeState: ProbeStorageState | null = null;
 
   constructor(state: DurableObjectState, env: Env) {
@@ -134,7 +138,7 @@ export class RegionalProbe extends DurableObject {
     }> => {
       const reqStart = performance.now();
       try {
-        const ssrfCheck = isPrivateOrInternalUrl(monitor.url);
+        const ssrfCheck = await isPrivateOrInternalUrlAsync(monitor.url);
         if (ssrfCheck.isForbidden) {
           return {
             status: "DOWN",
@@ -147,7 +151,8 @@ export class RegionalProbe extends DurableObject {
         const userHeaders: Record<string, string> = {};
         if (monitor.headers) {
           try {
-            const parsed = JSON.parse(monitor.headers);
+            const rawHeaders = await decryptSecret(monitor.headers, this.env.ENCRYPTION_SECRET);
+            const parsed = JSON.parse(rawHeaders);
             if (Array.isArray(parsed)) {
               for (const h of parsed as { key?: string; value?: string }[]) {
                 if (h.key && h.value) userHeaders[h.key] = h.value;
@@ -161,23 +166,53 @@ export class RegionalProbe extends DurableObject {
         const hasBody =
           ["POST", "PUT", "PATCH"].includes(monitor.method || "GET") && Boolean(monitor.body);
 
-        const res = await fetch(monitor.url, {
-          method: monitor.method || "GET",
-          headers: {
-            "User-Agent": "PulseGuard-Synthetic-Monitor/2.0 (+https://pulseguard.io/bot)",
-            Accept: "*/*",
-            ...userHeaders,
-          },
-          ...(hasBody && monitor.body ? { body: monitor.body } : {}),
-          signal: AbortSignal.timeout(timeoutSeconds * 1000),
-          redirect: "follow",
-        });
+        let currentUrl = monitor.url;
+        let hops = 0;
+        const maxHops = 5;
+        let res: Response | null = null;
+        let code = 0;
+
+        while (hops < maxHops) {
+          const hopCheck = await isPrivateOrInternalUrlAsync(currentUrl);
+          if (hopCheck.isForbidden) {
+            return {
+              status: "DOWN",
+              statusCode: 403,
+              latency: Math.round(performance.now() - reqStart),
+              errorReason: `SSRF Blocked: ${hopCheck.reason || "Forbidden target"}`,
+              errorClass: "SECURITY_BLOCK",
+            };
+          }
+
+          res = await fetch(currentUrl, {
+            method: hops === 0 ? monitor.method || "GET" : "GET",
+            headers: {
+              "User-Agent": PULSEGUARD_CANONICAL_USER_AGENT,
+              Accept: "*/*",
+              ...userHeaders,
+            },
+            ...(hops === 0 && hasBody && monitor.body ? { body: monitor.body } : {}),
+            signal: AbortSignal.timeout(timeoutSeconds * 1000),
+            redirect: "manual",
+          });
+
+          code = res.status;
+          if (code >= 300 && code < 400) {
+            const location = res.headers.get("location");
+            if (!location) break;
+            currentUrl = new URL(location, currentUrl).toString();
+            hops++;
+            continue;
+          }
+          break;
+        }
+
+        if (!res) throw new Error("No HTTP response received");
 
         // Consume body stream to avoid resource leakage
         await res.text();
 
         const latency = Math.round(performance.now() - reqStart);
-        const code = res.status;
         // Treat 2xx, 3xx as UP. 429 and 403 are server responses (endpoint is up/alive)
         const isUp = res.ok || (code >= 300 && code < 400) || code === 429 || code === 403;
 
@@ -276,29 +311,68 @@ export class RegionalProbe extends DurableObject {
       const env = this.env as Env;
       if (env.DATABASE_URL) {
         const prisma = getPrisma(env.DATABASE_URL);
-        const monitors = await prisma.monitor.findMany({
-          where: {
-            status: { in: ["UP", "DOWN", "MAINTENANCE"] },
-            nextCheck: { lte: new Date() },
-          },
-          take: 30, // Free/standard batch size per probe wake
-          select: {
-            id: true,
-            url: true,
-            timeout: true,
-            method: true,
-            headers: true,
-            body: true,
-            checkRegions: true,
-          },
-        });
+
+        // Resilient query with exponential backoff for cross-region edge calls (e.g. APAC to US/EU Postgres)
+        let monitors: any[] = [];
+        let queryAttempts = 0;
+        const maxQueryAttempts = 3;
+        while (queryAttempts < maxQueryAttempts) {
+          try {
+            monitors = await prisma.monitor.findMany({
+              where: {
+                status: { in: ["UP", "DOWN", "MAINTENANCE"] },
+                nextCheck: { lte: new Date() },
+              },
+              take: 30, // Free/standard batch size per probe wake
+              select: {
+                id: true,
+                url: true,
+                timeout: true,
+                method: true,
+                headers: true,
+                body: true,
+                checkRegions: true,
+              },
+            });
+            break;
+          } catch (queryErr: any) {
+            queryAttempts++;
+            if (queryAttempts >= maxQueryAttempts) {
+              throw queryErr;
+            }
+            const delayMs = 200 * Math.pow(2, queryAttempts - 1) + Math.random() * 75;
+            console.warn(
+              `[RegionalProbe:${state.region}] DB query retry ${queryAttempts}/${maxQueryAttempts} after ${Math.round(delayMs)}ms:`,
+              queryErr?.message,
+            );
+            await new Promise((resolve) => setTimeout(resolve, delayMs));
+          }
+        }
 
         if (monitors.length > 0) {
           const results = await this.executeBatch(monitors);
 
-          // Submit results to central Quorum Engine
+          // Submit results to central Quorum Engine with retry
           const { processProbeResultsBatch } = await import("../services/quorum-engine");
-          await processProbeResultsBatch(prisma, env, results);
+          let quorumAttempts = 0;
+          const maxQuorumAttempts = 3;
+          while (quorumAttempts < maxQuorumAttempts) {
+            try {
+              await processProbeResultsBatch(prisma, env, results);
+              break;
+            } catch (quorumErr: any) {
+              quorumAttempts++;
+              if (quorumAttempts >= maxQuorumAttempts) {
+                throw quorumErr;
+              }
+              const delayMs = 200 * Math.pow(2, quorumAttempts - 1) + Math.random() * 75;
+              console.warn(
+                `[RegionalProbe:${state.region}] Quorum batch retry ${quorumAttempts}/${maxQuorumAttempts} after ${Math.round(delayMs)}ms:`,
+                quorumErr?.message,
+              );
+              await new Promise((resolve) => setTimeout(resolve, delayMs));
+            }
+          }
         }
       }
 

@@ -1,7 +1,7 @@
 "use server";
 
 import { auth } from "@pulseguard/auth";
-import db, { resetPrisma } from "@pulseguard/db";
+import db from "@pulseguard/db";
 import { headers } from "next/headers";
 
 export interface ReferredUserItem {
@@ -39,11 +39,6 @@ function maskEmail(email: string): string {
 }
 
 async function getReferralDb() {
-  if (!(db as any).referralCode) {
-    try {
-      await resetPrisma();
-    } catch {}
-  }
   return db as any;
 }
 

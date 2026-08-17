@@ -279,6 +279,20 @@ export default {
                 sendOpsgenieAlert(opsConfig, emailData, notification.type, notification.incidentId),
               );
             });
+          } else if (
+            monitor.user?.email &&
+            (notification.status === "DOWN" ||
+              notification.status === "UP" ||
+              notification.type === NotificationType.INCIDENT_CREATED ||
+              notification.type === NotificationType.INCIDENT_RESOLVED)
+          ) {
+            // Default fallback: Always notify monitor owner on status changes even if custom alert rules are unset
+            console.log(
+              `[Notification] No custom alert rules for ${notification.monitorName}, falling back to owner email: ${monitor.user.email}`,
+            );
+            deliveryPromises.push(
+              sendMonitorAlert(monitor.user.email, emailData, env.RESEND_API_KEY),
+            );
           } else {
             console.log(`[Notification] No matching alert rules for ${notification.monitorName}`);
           }
@@ -349,16 +363,40 @@ export default {
 
           const results = await Promise.allSettled(deliveryPromises);
 
-          const successful = results.filter((r) => r.status === "fulfilled").length;
-          const failed = results.filter((r) => r.status === "rejected").length;
+          let successful = 0;
+          let failed = 0;
+
+          for (const r of results) {
+            if (r.status === "rejected") {
+              failed++;
+              console.error(
+                `[Notification] Delivery channel rejected for ${notification.monitorName}:`,
+                r.reason,
+              );
+            } else if (
+              r.status === "fulfilled" &&
+              r.value &&
+              typeof r.value === "object" &&
+              "error" in r.value &&
+              (r.value as any).error
+            ) {
+              failed++;
+              console.error(
+                `[Notification] Delivery channel returned error for ${notification.monitorName}:`,
+                (r.value as any).error,
+              );
+            } else {
+              successful++;
+            }
+          }
 
           console.log(
             `[Notification] Processed ${successful} deliveries for ${notification.monitorName} (${failed} failed)`,
           );
 
-          if (failed > 0 && successful === 0) {
+          if (failed > 0) {
             console.error(
-              `[Notification] All deliveries failed for ${notification.monitorName}, triggering queue retry.`,
+              `[Notification] One or more deliveries failed for ${notification.monitorName} (${failed}/${deliveryPromises.length}), triggering queue retry.`,
             );
             msg.retry();
           } else {

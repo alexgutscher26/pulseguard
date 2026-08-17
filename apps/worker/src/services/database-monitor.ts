@@ -119,13 +119,6 @@ export async function checkDatabase(
         rowCount: 0,
         errorMessage: err.message,
       };
-    } finally {
-      if (prisma) {
-        try {
-          const { resetPrisma } = await import("@pulseguard/db");
-          await resetPrisma(connectionUrl);
-        } catch {}
-      }
     }
   }
 

@@ -128,6 +128,83 @@ export const PLANS: Record<PlanTier, PlanDetails> = {
   },
 };
 
+export const PLAN_VERSIONS: Record<string, Record<PlanTier, Partial<PlanLimits>>> = {
+  v1_launch: {
+    INITIATE: {
+      maxMonitors: 50,
+      minIntervalSeconds: 60,
+      maxAlertChannels: 3,
+      maxStatusPages: 1,
+    },
+    NETRUNNER: {
+      maxMonitors: 250,
+      minIntervalSeconds: 30,
+      maxAlertChannels: 25,
+      maxStatusPages: 15,
+    },
+    CONSTRUCT: {
+      maxMonitors: 1500,
+      minIntervalSeconds: 10,
+      maxAlertChannels: 250,
+      maxStatusPages: 75,
+    },
+  },
+  design_partner_vip: {
+    INITIATE: {
+      maxMonitors: 100,
+      minIntervalSeconds: 30,
+      maxAlertChannels: 10,
+      maxStatusPages: 5,
+    },
+    NETRUNNER: {
+      maxMonitors: 500,
+      minIntervalSeconds: 15,
+      maxAlertChannels: 50,
+      maxStatusPages: 25,
+    },
+    CONSTRUCT: {
+      maxMonitors: 2500,
+      minIntervalSeconds: 5,
+      maxAlertChannels: 500,
+      maxStatusPages: 100,
+    },
+  },
+  stripe_live: {
+    INITIATE: {
+      maxMonitors: 50,
+      minIntervalSeconds: 60,
+      maxAlertChannels: 3,
+      maxStatusPages: 1,
+    },
+    NETRUNNER: {
+      maxMonitors: 250,
+      minIntervalSeconds: 30,
+      maxAlertChannels: 25,
+      maxStatusPages: 15,
+    },
+    CONSTRUCT: {
+      maxMonitors: 1500,
+      minIntervalSeconds: 10,
+      maxAlertChannels: 250,
+      maxStatusPages: 75,
+    },
+  },
+};
+
+/**
+ * Resolves limits for a given plan tier, applying grandfathered terms if tierVersion is specified.
+ */
+export function getPlanLimits(tier: PlanTier, tierVersion?: string | null): PlanLimits {
+  const baseLimits = PLANS[tier]?.limits || PLANS.INITIATE.limits;
+  if (!tierVersion || !PLAN_VERSIONS[tierVersion] || !PLAN_VERSIONS[tierVersion][tier]) {
+    return { ...baseLimits };
+  }
+  return {
+    ...baseLimits,
+    ...PLAN_VERSIONS[tierVersion][tier],
+  };
+}
+
 export interface UsageWarning {
   resource: "monitors" | "alertChannels" | "statusPages";
   label: string;

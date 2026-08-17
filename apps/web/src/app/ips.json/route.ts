@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { CLOUDFLARE_PROBE_REGIONS } from "@pulseguard/shared";
+import { CLOUDFLARE_PROBE_REGIONS, PULSEGUARD_CANONICAL_USER_AGENT } from "@pulseguard/shared";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60;
@@ -13,7 +13,7 @@ export async function GET() {
         "PulseGuard synthetic probes execute via Cloudflare Durable Objects, which egress from Cloudflare's shared global edge IP pool. Static IP allowlisting cannot uniquely identify probe traffic without permitting shared edge egress. Configure your WAF or reverse proxy to match on the authentic CF-Worker header and User-Agent.",
       identification_headers: {
         "CF-Worker": "pulseguard.io",
-        "User-Agent": "PulseGuard-Monitor/1.0 (+https://pulseguard.io/bot)",
+        "User-Agent": PULSEGUARD_CANONICAL_USER_AGENT,
       },
       waf_rules: {
         cloudflare: 'http.request.headers["cf-worker"][0] eq "pulseguard.io"',

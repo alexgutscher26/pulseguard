@@ -192,6 +192,25 @@ func (c *Client) CreateAlertChannel(ch *AlertChannel) (*AlertChannel, error) {
 	return &resp.Data, nil
 }
 
+func (c *Client) UpdateAlertChannel(id string, ch *AlertChannel) (*AlertChannel, error) {
+	payload, err := json.Marshal(ch)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", fmt.Sprintf("%s/api/v1/alert-channels/%s", c.HostURL, id), bytes.NewBuffer(payload))
+	if err != nil {
+		return nil, err
+	}
+
+	var resp APIResponse[AlertChannel]
+	if err := c.sendRequest(req, &resp); err != nil {
+		return nil, err
+	}
+
+	return &resp.Data, nil
+}
+
 func (c *Client) DeleteAlertChannel(id string) error {
 	req, err := http.NewRequest("DELETE", fmt.Sprintf("%s/api/v1/alert-channels/%s", c.HostURL, id), nil)
 	if err != nil {

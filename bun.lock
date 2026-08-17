@@ -137,6 +137,7 @@
         "@ai-sdk/openai": "^3.0.25",
         "@base-ui/react": "^1.0.0",
         "@hookform/resolvers": "^5.2.2",
+        "@pinecone-database/pinecone": "^8.2.0",
         "@prisma/client": "catalog:",
         "@pulseguard/api": "workspace:*",
         "@pulseguard/auth": "workspace:*",
@@ -247,6 +248,7 @@
         "@pulseguard/db": "workspace:*",
         "@trpc/server": "catalog:",
         "next": "catalog:",
+        "zod": "catalog:",
       },
       "devDependencies": {
         "@pulseguard/config": "workspace:*",
@@ -1302,6 +1304,8 @@
     "@parcel/watcher-win32-ia32": ["@parcel/watcher-win32-ia32@2.5.6", "", { "os": "win32", "cpu": "ia32" }, "sha512-k35yLp1ZMwwee3Ez/pxBi5cf4AoBKYXj00CZ80jUz5h8prpiaQsiRPKQMxoLstNuqe2vR4RNPEAEcjEFzhEz/g=="],
 
     "@parcel/watcher-win32-x64": ["@parcel/watcher-win32-x64@2.5.6", "", { "os": "win32", "cpu": "x64" }, "sha512-hbQlYcCq5dlAX9Qx+kFb0FHue6vbjlf0FrNzSKdYK2APUf7tGfGxQCk2ihEREmbR6ZMc0MVAD5RIX/41gpUzTw=="],
+
+    "@pinecone-database/pinecone": ["@pinecone-database/pinecone@8.2.0", "", {}, "sha512-4Lzn+Ph4Lmf8ZEm2Ky1WGgPJJtoMtjSCmsT6bdHpd8nhkUnCQqk/NsbPYglx7irWYJpb2zBE+wehNBfoCeJ6Qw=="],
 
     "@pkgjs/parseargs": ["@pkgjs/parseargs@0.11.0", "", {}, "sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg=="],
 

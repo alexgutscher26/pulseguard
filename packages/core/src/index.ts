@@ -82,6 +82,12 @@ export function isPrivateOrInternalIp(ip: string): {
       isForbidden: true,
       reason: "Private network range (10.0.0.0/8) is forbidden",
     };
+  // 100.64.0.0/10 (Carrier-Grade NAT / Shared Address Space)
+  if (p1 === 100 && p2 >= 64 && p2 <= 127)
+    return {
+      isForbidden: true,
+      reason: "Carrier-Grade NAT range (100.64.0.0/10) is forbidden",
+    };
   // 172.16.0.0/12 (Private)
   if (p1 === 172 && p2 >= 16 && p2 <= 31)
     return {
@@ -94,11 +100,39 @@ export function isPrivateOrInternalIp(ip: string): {
       isForbidden: true,
       reason: "Private network range (192.168.0.0/16) is forbidden",
     };
-  // 169.254.0.0/16 (Link-Local / AWS Metadata)
+  // 169.254.0.0/16 (Link-Local / AWS & Cloud Metadata)
   if (p1 === 169 && p2 === 254)
     return {
       isForbidden: true,
       reason: "Link-local/metadata range (169.254.0.0/16) is forbidden",
+    };
+  // 192.0.0.0/24 (IETF Protocol Assignments)
+  if (p1 === 192 && p2 === 0 && p3 === 0)
+    return {
+      isForbidden: true,
+      reason: "IETF protocol range (192.0.0.0/24) is forbidden",
+    };
+  // 192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24 (Documentation / Test-Net)
+  if (
+    (p1 === 192 && p2 === 0 && p3 === 2) ||
+    (p1 === 198 && p2 === 51 && p3 === 100) ||
+    (p1 === 203 && p2 === 0 && p3 === 113)
+  )
+    return {
+      isForbidden: true,
+      reason: "Documentation / Test-Net address range is forbidden",
+    };
+  // 198.18.0.0/15 (Network Benchmark Tests)
+  if (p1 === 198 && (p2 === 18 || p2 === 19))
+    return {
+      isForbidden: true,
+      reason: "Benchmark testing range (198.18.0.0/15) is forbidden",
+    };
+  // 224.0.0.0/4 (Multicast) & 240.0.0.0/4 (Reserved / Broadcast)
+  if (p1 >= 224)
+    return {
+      isForbidden: true,
+      reason: "Multicast/Reserved/Broadcast address range is forbidden",
     };
   // 0.0.0.0/8
   if (p1 === 0)
@@ -122,7 +156,7 @@ export function isPrivateOrInternalUrl(urlStr: string): {
     const url = new URL(urlStr);
     const hostname = url.hostname.toLowerCase().replace(/^\[|\]$/g, "");
 
-    // Block direct dangerous hostnames
+    // Block direct dangerous hostnames and internal TLDs
     if (
       hostname === "localhost" ||
       hostname === "127.0.0.1" ||
@@ -130,7 +164,13 @@ export function isPrivateOrInternalUrl(urlStr: string): {
       hostname === "::1" ||
       hostname === "169.254.169.254" ||
       hostname === "metadata.google.internal" ||
-      hostname === "instance-data"
+      hostname === "instance-data" ||
+      hostname.endsWith(".localhost") ||
+      hostname.endsWith(".local") ||
+      hostname.endsWith(".internal") ||
+      hostname.endsWith(".lan") ||
+      hostname.endsWith(".home") ||
+      hostname.endsWith(".corp")
     ) {
       return {
         isForbidden: true,
@@ -138,10 +178,75 @@ export function isPrivateOrInternalUrl(urlStr: string): {
       };
     }
 
+    // Check for embedded IP addresses in DNS wildcards (e.g. 127.0.0.1.nip.io, 169-254-169-254.sslip.io)
+    const ipv4Embedded = hostname.match(
+      /(?:^|\.)(\d{1,3}[.-]\d{1,3}[.-]\d{1,3}[.-]\d{1,3})(?:\.|$)/,
+    );
+    if (ipv4Embedded && ipv4Embedded[1]) {
+      const normalizedIp = ipv4Embedded[1].replace(/-/g, ".");
+      const check = isPrivateOrInternalIp(normalizedIp);
+      if (check.isForbidden) {
+        return {
+          isForbidden: true,
+          reason: `Embedded private IP detected in hostname: ${normalizedIp} (${check.reason || "Forbidden target IP"})`,
+        };
+      }
+    }
+
     return isPrivateOrInternalIp(hostname);
   } catch {
     return { isForbidden: true, reason: "Malformed or unparseable URL" };
   }
+}
+
+/**
+ * Asynchronously validates a target URL string, resolving DNS records in Node runtimes
+ * to block DNS-rebinding attacks against private/internal IP ranges.
+ */
+export async function isPrivateOrInternalUrlAsync(urlStr: string): Promise<{
+  isForbidden: boolean;
+  reason?: string;
+}> {
+  const syncCheck = isPrivateOrInternalUrl(urlStr);
+  if (syncCheck.isForbidden) return syncCheck;
+
+  try {
+    const url = new URL(urlStr);
+    const hostname = url.hostname.toLowerCase().replace(/^\[|\]$/g, "");
+
+    // Universal DoH (DNS-over-HTTPS) query: safe across Cloudflare Workers, Node.js, and OpenNext
+    try {
+      const dohRes = await fetch(
+        `https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(hostname)}&type=A`,
+        {
+          headers: { accept: "application/dns-json" },
+          signal: AbortSignal.timeout(2000),
+        },
+      );
+      if (dohRes.ok) {
+        const dohData: any = await dohRes.json();
+        if (Array.isArray(dohData.Answer)) {
+          for (const ans of dohData.Answer) {
+            if (ans.type === 1 && typeof ans.data === "string") {
+              const ipCheck = isPrivateOrInternalIp(ans.data);
+              if (ipCheck.isForbidden) {
+                return {
+                  isForbidden: true,
+                  reason: `DNS Rebinding Protected: Hostname ${hostname} resolved to forbidden IP ${ans.data} (${ipCheck.reason || "Forbidden IP"})`,
+                };
+              }
+            }
+          }
+        }
+      }
+    } catch {
+      // If DoH query fails or times out, fallback to synchronous checks
+    }
+  } catch {
+    return { isForbidden: true, reason: "Malformed URL" };
+  }
+
+  return { isForbidden: false };
 }
 
 /**
@@ -466,7 +571,7 @@ export async function checkHttpUniversal(
   const maxHops = 5;
 
   while (hops < maxHops) {
-    const ssrfCheck = isPrivateOrInternalUrl(currentUrl);
+    const ssrfCheck = await isPrivateOrInternalUrlAsync(currentUrl);
     if (ssrfCheck.isForbidden) {
       return {
         status: "DOWN",
@@ -560,4 +665,289 @@ export async function checkHttpUniversal(
     bodyText,
     statusCode: statusNum,
   };
+}
+
+/**
+ * AES-256-GCM Field-Level Encryption Utilities for credentials at rest
+ */
+const ENCRYPTION_PREFIX = "enc:v1:";
+
+export function isEncrypted(value: string | null | undefined): boolean {
+  return typeof value === "string" && value.startsWith(ENCRYPTION_PREFIX);
+}
+
+async function deriveKey(secret: string): Promise<CryptoKey> {
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(secret),
+    { name: "PBKDF2" },
+    false,
+    ["deriveKey"],
+  );
+  // Fixed domain-separated salt for deterministic key derivation from secret
+  const salt = enc.encode("pulseguard:credential-store:v1");
+  return await crypto.subtle.deriveKey(
+    {
+      name: "PBKDF2",
+      salt,
+      iterations: 100_000,
+      hash: "SHA-256",
+    },
+    keyMaterial,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["encrypt", "decrypt"],
+  );
+}
+
+export async function encryptSecret(plainText: string, secretKey?: string): Promise<string> {
+  if (!plainText) return "";
+  const secret =
+    secretKey ||
+    (typeof process !== "undefined"
+      ? process.env?.ENCRYPTION_SECRET || process.env?.BETTER_AUTH_SECRET
+      : (globalThis as any).ENCRYPTION_SECRET);
+
+  if (!secret) return plainText; // Fallback if no encryption key is configured
+  if (isEncrypted(plainText)) return plainText;
+
+  const key = await deriveKey(secret);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const encoded = new TextEncoder().encode(plainText);
+
+  const cipherBuffer = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, encoded);
+
+  const combined = new Uint8Array(iv.length + cipherBuffer.byteLength);
+  combined.set(iv, 0);
+  combined.set(new Uint8Array(cipherBuffer), iv.length);
+
+  let binary = "";
+  for (let i = 0; i < combined.byteLength; i++) {
+    binary += String.fromCharCode(combined[i] ?? 0);
+  }
+  const base64 = btoa(binary);
+  return `${ENCRYPTION_PREFIX}${base64}`;
+}
+
+export async function decryptSecret(
+  cipherText: string | null | undefined,
+  secretKey?: string,
+): Promise<string> {
+  if (!cipherText || typeof cipherText !== "string") return "";
+  if (!isEncrypted(cipherText)) return cipherText; // Return plaintext directly if not encrypted
+
+  const secret =
+    secretKey ||
+    (typeof process !== "undefined"
+      ? process.env?.ENCRYPTION_SECRET || process.env?.BETTER_AUTH_SECRET
+      : (globalThis as any).ENCRYPTION_SECRET);
+
+  if (!secret) return cipherText;
+
+  try {
+    const base64 = cipherText.slice(ENCRYPTION_PREFIX.length);
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+
+    const iv = bytes.slice(0, 12);
+    const data = bytes.slice(12);
+
+    const key = await deriveKey(secret);
+    const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, data);
+
+    return new TextDecoder().decode(decrypted);
+  } catch (err) {
+    console.error("[Crypto] Failed to decrypt payload, returning raw input:", err);
+    return cipherText;
+  }
+}
+
+/**
+ * PBKDF2 Password Hashing & Verification Utilities for Status Page Access Gates
+ */
+const HASH_PREFIX = "pbkdf2:v1:";
+
+export async function hashPassword(password: string): Promise<string> {
+  if (!password) return "";
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(password),
+    { name: "PBKDF2" },
+    false,
+    ["deriveBits"],
+  );
+  const derivedBits = await crypto.subtle.deriveBits(
+    {
+      name: "PBKDF2",
+      salt,
+      iterations: 100_000,
+      hash: "SHA-256",
+    },
+    keyMaterial,
+    256,
+  );
+  const hashArray = new Uint8Array(derivedBits);
+  const combined = new Uint8Array(salt.length + hashArray.length);
+  combined.set(salt, 0);
+  combined.set(hashArray, salt.length);
+
+  let binary = "";
+  for (let i = 0; i < combined.byteLength; i++) {
+    binary += String.fromCharCode(combined[i] ?? 0);
+  }
+  return `${HASH_PREFIX}${btoa(binary)}`;
+}
+
+export async function verifyPassword(
+  password: string,
+  storedHash: string | null | undefined,
+): Promise<boolean> {
+  if (!password || !storedHash) return false;
+  if (!storedHash.startsWith(HASH_PREFIX)) {
+    // Backward compatibility for legacy plaintext passwords during transition
+    return password === storedHash;
+  }
+  try {
+    const raw = atob(storedHash.slice(HASH_PREFIX.length));
+    const combined = new Uint8Array(raw.length);
+    for (let i = 0; i < raw.length; i++) {
+      combined[i] = raw.charCodeAt(i);
+    }
+    const salt = combined.slice(0, 16);
+    const expectedHash = combined.slice(16);
+
+    const enc = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey(
+      "raw",
+      enc.encode(password),
+      { name: "PBKDF2" },
+      false,
+      ["deriveBits"],
+    );
+    const derivedBits = await crypto.subtle.deriveBits(
+      {
+        name: "PBKDF2",
+        salt,
+        iterations: 100_000,
+        hash: "SHA-256",
+      },
+      keyMaterial,
+      256,
+    );
+    const actualHash = new Uint8Array(derivedBits);
+
+    if (actualHash.length !== expectedHash.length) return false;
+    let match = 0;
+    for (let i = 0; i < actualHash.length; i++) {
+      match |= (actualHash[i] ?? 0) ^ (expectedHash[i] ?? 0);
+    }
+    return match === 0;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Cryptographically Signed HMAC Tokens for Status Page Authentication Cookies
+ */
+const TOKEN_PREFIX = "pg_sig:v1:";
+
+export async function signAuthToken(
+  payload: string,
+  secretKey?: string,
+  ttlSeconds = 86400,
+): Promise<string> {
+  const secret =
+    secretKey !== undefined
+      ? secretKey
+      : typeof process !== "undefined"
+        ? process.env?.BETTER_AUTH_SECRET || process.env?.ENCRYPTION_SECRET
+        : (globalThis as any).BETTER_AUTH_SECRET;
+
+  if (!secret) {
+    throw new Error(
+      "BETTER_AUTH_SECRET or ENCRYPTION_SECRET is required to sign authentication tokens",
+    );
+  }
+
+  const expiresAt = Date.now() + ttlSeconds * 1000;
+  const dataToSign = `${payload}:${expiresAt}`;
+
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+
+  const sigBuffer = await crypto.subtle.sign("HMAC", key, enc.encode(dataToSign));
+  const sigArray = new Uint8Array(sigBuffer);
+
+  let binary = "";
+  for (let i = 0; i < sigArray.length; i++) {
+    binary += String.fromCharCode(sigArray[i] ?? 0);
+  }
+  const base64Sig = btoa(binary);
+  return `${TOKEN_PREFIX}${payload}:${expiresAt}:${base64Sig}`;
+}
+
+export async function verifyAuthToken(
+  token: string | null | undefined,
+  expectedPayload: string,
+  secretKey?: string,
+): Promise<boolean> {
+  if (!token || !token.startsWith(TOKEN_PREFIX)) return false;
+
+  const secret =
+    secretKey !== undefined
+      ? secretKey
+      : typeof process !== "undefined"
+        ? process.env?.BETTER_AUTH_SECRET || process.env?.ENCRYPTION_SECRET
+        : (globalThis as any).BETTER_AUTH_SECRET;
+
+  if (!secret) return false;
+
+  try {
+    const raw = token.slice(TOKEN_PREFIX.length);
+    const parts = raw.split(":");
+    if (parts.length < 3) return false;
+
+    const payload = parts[0];
+    const expiresAt = Number(parts[1]);
+    const base64Sig = parts.slice(2).join(":");
+
+    if (payload !== expectedPayload) return false;
+    if (Date.now() > expiresAt) return false;
+
+    const dataToSign = `${payload}:${expiresAt}`;
+    const enc = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+      "raw",
+      enc.encode(secret),
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["sign"],
+    );
+
+    const sigBuffer = await crypto.subtle.sign("HMAC", key, enc.encode(dataToSign));
+    const sigArray = new Uint8Array(sigBuffer);
+
+    let binary = "";
+    for (let i = 0; i < sigArray.length; i++) {
+      binary += String.fromCharCode(sigArray[i] ?? 0);
+    }
+    const expectedBase64Sig = btoa(binary);
+
+    return base64Sig === expectedBase64Sig;
+  } catch {
+    return false;
+  }
 }

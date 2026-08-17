@@ -27,15 +27,13 @@ export function createPrisma(databaseUrl?: string) {
 
   const poolConfig: any = {
     connectionString: cleanUrl,
-    // Increased to 5 to avoid pool starvation on concurrent requests in wrangler dev/production isolates.
+    // Bounded pool size to avoid connection exhaustion in serverless / edge isolates
     max: 5,
-    // Release idle connections quickly in a serverless environment to avoid
-    // stale sockets being terminated unexpectedly (keep < OS TCP timeout).
-    idleTimeoutMillis: 8_000,
-    // Set to 5s to fail-fast and allow app retry/recovery strategies
-    connectionTimeoutMillis: 5_000,
-    // TCP keep-alive prevents the OS / NAT from silently dropping idle
-    // connections, which is the root cause of "Connection terminated unexpectedly".
+    // Keep idle connections long enough to be reused across periodic ticks
+    idleTimeoutMillis: 30_000,
+    // Extended timeout for high-latency or cross-region connections (e.g. APAC to US/EU Postgres)
+    connectionTimeoutMillis: 10_000,
+    // TCP keep-alive prevents intermediate proxies and NATs from silently dropping connections
     keepAlive: true,
     keepAliveInitialDelayMillis: 5_000,
   };
@@ -46,17 +44,9 @@ export function createPrisma(databaseUrl?: string) {
 
   const pool = new Pool(poolConfig);
   pool.on("error", (err) => {
-    console.error("[PG Pool Error] Unexpected error on idle client:", err.message);
-    if (
-      err.message?.includes("Connection terminated") ||
-      err.message?.includes("closed") ||
-      err.message?.includes("terminate")
-    ) {
-      console.warn(
-        "[PG Pool Error] Stale connection detected. Proactively clearing client singleton cache.",
-      );
-      resetPrisma(url).catch(() => {});
-    }
+    // pg.Pool handles dead idle connections automatically by removing them from the pool.
+    // NEVER call resetPrisma or pool.end() here as it closes the entire pool and destroys active queries.
+    console.warn("[PG Pool] Idle client connection event (handled by pool):", err.message);
   });
   const adapter = new PrismaPg(pool);
 
@@ -92,42 +82,57 @@ function getUrl() {
 }
 
 export async function resetPrisma(databaseUrl?: string) {
-  if (databaseUrl) {
-    if (g.instances!.has(databaseUrl)) {
-      const client = g.instances!.get(databaseUrl);
-      if (client) {
-        try {
-          await client.$disconnect();
-        } catch {}
-        if ((client as any).$pool) {
-          try {
-            await (client as any).$pool.end();
-          } catch {}
-        }
-      }
-      g.instances!.delete(databaseUrl);
-    }
-  } else {
-    if (g.prisma) {
+  if (databaseUrl && g.instances?.has(databaseUrl)) {
+    const client = g.instances.get(databaseUrl);
+    g.instances.delete(databaseUrl);
+    if (client) {
       try {
-        await g.prisma.$disconnect();
+        await client.$disconnect();
       } catch {}
-      if ((g.prisma as any).$pool) {
+      if ((client as any).$pool) {
         try {
-          await (g.prisma as any).$pool.end();
+          await (client as any).$pool.end();
         } catch {}
       }
-      g.prisma = undefined;
+    }
+  } else if (!databaseUrl && g.prisma) {
+    const oldClient = g.prisma;
+    g.prisma = undefined;
+    try {
+      await oldClient.$disconnect();
+    } catch {}
+    if ((oldClient as any).$pool) {
+      try {
+        await (oldClient as any).$pool.end();
+      } catch {}
     }
   }
 }
 
 export function getPrisma(databaseUrl?: string) {
   if (databaseUrl) {
-    if (!g.instances!.has(databaseUrl)) {
-      g.instances!.set(databaseUrl, createPrisma(databaseUrl));
+    const existing = g.instances?.get(databaseUrl);
+    if (existing) {
+      const pool = (existing as any).$pool;
+      if (pool && (pool.ended || pool.ending)) {
+        g.instances?.delete(databaseUrl);
+      } else {
+        return existing;
+      }
     }
-    return g.instances!.get(databaseUrl)!;
+    const created = createPrisma(databaseUrl);
+    if (!g.instances) {
+      g.instances = new Map<string, PrismaClient>();
+    }
+    g.instances.set(databaseUrl, created);
+    return created;
+  }
+
+  if (g.prisma) {
+    const pool = (g.prisma as any).$pool;
+    if (pool && (pool.ended || pool.ending)) {
+      g.prisma = undefined;
+    }
   }
 
   if (!g.prisma) {

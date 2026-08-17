@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@pulseguard/db";
+import { encryptSecret } from "@pulseguard/core";
 import { authenticateApiKey } from "../_lib/auth";
 import { assertMonitorLimits } from "@/lib/billing-server";
 
@@ -125,7 +126,7 @@ export async function POST(req: NextRequest) {
       interval: Number(interval),
       timeout: Number(timeout),
       method: method.toUpperCase(),
-      headers: customHeaders ? JSON.stringify(customHeaders) : null,
+      headers: customHeaders ? await encryptSecret(JSON.stringify(customHeaders)) : null,
       body: requestBody || null,
       expectation: expectation ? JSON.stringify(expectation) : null,
       tags: Array.isArray(tags) ? tags : [],
@@ -133,6 +134,13 @@ export async function POST(req: NextRequest) {
       alertThreshold: Number(alertThreshold),
       dynamicThresholding: Boolean(dynamicThresholding),
       runbookUrl: runbookUrl ? String(runbookUrl).trim() : null,
+      alertRules: {
+        create: {
+          trigger: "STATUS_CHANGE",
+          targetStatus: "DOWN",
+          enabled: true,
+        },
+      },
     },
   });
 

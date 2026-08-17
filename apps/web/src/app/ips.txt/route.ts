@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { CLOUDFLARE_PROBE_REGIONS } from "@pulseguard/shared";
+import { PULSEGUARD_CANONICAL_USER_AGENT } from "@pulseguard/shared";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60;
@@ -11,7 +11,7 @@ export async function GET() {
     "# Static IP allowlisting cannot uniquely identify probe traffic.",
     "# Configure WAF / Reverse Proxy matching with edge headers:",
     "CF-Worker: pulseguard.io",
-    "User-Agent: PulseGuard-Monitor/1.0 (+https://pulseguard.io/bot)",
+    `User-Agent: ${PULSEGUARD_CANONICAL_USER_AGENT}`,
     "",
     "# Cloudflare WAF Custom Rule:",
     '# http.request.headers["cf-worker"][0] eq "pulseguard.io"',

@@ -27,7 +27,7 @@ function getValueByPath(obj: any, path: string): any {
  * Interpolates variables formatted as {{varName}} in a template string.
  */
 function interpolate(template: string, variables: Record<string, string>): string {
-  return template.replace(/\{\{([^}]+)\}\}/g, (_, key) => {
+  return template.replace(/\{\{([^{}]+)\}\}/g, (_, key) => {
     const trimKey = key.trim();
     return variables[trimKey] !== undefined ? variables[trimKey] : `{{${key}}}`;
   });

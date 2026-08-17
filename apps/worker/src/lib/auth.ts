@@ -53,15 +53,10 @@ export async function verifySession(
       (err.message?.includes("Connection terminated") ||
         err.message?.includes("is closed") ||
         err.message?.includes("not found") ||
-        err.message?.includes("timeout"))
+        err.message?.includes("timeout") ||
+        err.message?.includes("performIO"))
     ) {
-      console.warn(
-        `[Auth] DB connection error or timeout detected. Resetting Prisma and retrying...`,
-      );
-      const { resetPrisma } = await import("@pulseguard/db");
-      await resetPrisma(env.DATABASE_URL);
-      // Brief pause so the new pool's first connect() doesn't race against
-      // the OS releasing the previous socket.
+      console.warn(`[Auth] DB connection error or timeout detected. Retrying query...`);
       await new Promise((r) => setTimeout(r, 150));
       return verifySession(request, env, false);
     }
@@ -104,15 +99,12 @@ export async function verifyMonitorAccess(
       (err.message?.includes("Connection terminated") ||
         err.message?.includes("is closed") ||
         err.message?.includes("not found") ||
-        err.message?.includes("timeout"))
+        err.message?.includes("timeout") ||
+        err.message?.includes("performIO"))
     ) {
       console.warn(
-        `[Auth Access] DB connection error or timeout detected. Resetting Prisma and retrying...`,
+        `[Auth Access] DB connection error or timeout detected. Retrying access check...`,
       );
-      const { resetPrisma } = await import("@pulseguard/db");
-      await resetPrisma(env.DATABASE_URL);
-      // Brief pause so the new pool's first connect() doesn't race against
-      // the OS releasing the previous socket.
       await new Promise((r) => setTimeout(r, 150));
       return verifyMonitorAccess(userId, monitorId, env, false);
     }

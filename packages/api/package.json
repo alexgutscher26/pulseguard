@@ -17,7 +17,8 @@
     "@pulseguard/auth": "workspace:*",
     "@pulseguard/db": "workspace:*",
     "@trpc/server": "catalog:",
-    "next": "catalog:"
+    "next": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@pulseguard/config": "workspace:*",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,14 +17,23 @@ import {
   ShieldCheck,
   Info,
   Sparkles,
+  Database,
+  BrainCircuit,
+  CheckCircle2,
+  ExternalLink,
+  RefreshCw,
 } from "lucide-react";
 import {
   upsertPostMortem,
   generatePostMortemSummary,
+  generateFullPostMortemAI,
   getMonitorEventsDuringIncident,
+  getSimilarIncidentsForIncident,
+  syncAllIncidentsToPinecone,
+  checkPineconeStatus,
 } from "@/actions/post-mortem";
 import { toast } from "@/components/ui/sonner";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface PostMortemData {
   summary: string;
@@ -60,7 +69,48 @@ export function PostMortemEditor({
   );
   const [isSaving, setIsSaving] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isGeneratingFull, setIsGeneratingFull] = useState(false);
   const [isPopulatingTimeline, setIsPopulatingTimeline] = useState(false);
+  const [isSyncingPinecone, setIsSyncingPinecone] = useState(false);
+
+  const [pineconeInfo, setPineconeInfo] = useState<{
+    isConfigured: boolean;
+    indexName: string;
+    namespace?: string;
+    totalRecords?: number;
+    namespaceRecords?: number;
+  }>({
+    isConfigured: false,
+    indexName: "pulseguard-incidents",
+    namespace: "workspace_default",
+    totalRecords: 0,
+    namespaceRecords: 0,
+  });
+
+  const [similarIncidents, setSimilarIncidents] = useState<any[]>([]);
+  const [isLoadingSimilar, setIsLoadingSimilar] = useState(false);
+
+  useEffect(() => {
+    async function loadPineconeContext() {
+      setIsLoadingSimilar(true);
+      try {
+        const [status, similarRes] = await Promise.all([
+          checkPineconeStatus(),
+          getSimilarIncidentsForIncident(incidentId),
+        ]);
+        setPineconeInfo(status);
+        if (similarRes && "matches" in similarRes) {
+          setSimilarIncidents(similarRes.matches || []);
+        }
+      } catch (err) {
+        console.warn("Failed to load Pinecone context:", err);
+      } finally {
+        setIsLoadingSimilar(false);
+      }
+    }
+
+    loadPineconeContext();
+  }, [incidentId]);
 
   const handleInputChange = (field: keyof PostMortemData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -71,7 +121,11 @@ export function PostMortemEditor({
     try {
       const result = await upsertPostMortem(incidentId, formData);
       if (result.success) {
-        toast.success("Post-mortem saved successfully");
+        toast.success(
+          formData.status === "PUBLISHED"
+            ? "Post-mortem saved and synchronized with Pinecone vector memory"
+            : "Post-mortem draft saved successfully",
+        );
       } else {
         toast.error(result.error || "Failed to save post-mortem");
       }
@@ -88,7 +142,14 @@ export function PostMortemEditor({
       const result = await generatePostMortemSummary(incidentId);
       if (result.success && result.summary) {
         setFormData((prev) => ({ ...prev, summary: result.summary }));
-        toast.success("Summary generated successfully");
+        if (result.similarIncidents && result.similarIncidents.length > 0) {
+          setSimilarIncidents(result.similarIncidents);
+          toast.success(
+            `Executive summary generated using ${result.similarIncidents.length} past incident vectors from Pinecone`,
+          );
+        } else {
+          toast.success("Executive summary generated successfully");
+        }
       } else {
         toast.error(result.error || "Failed to generate summary");
       }
@@ -97,6 +158,78 @@ export function PostMortemEditor({
     } finally {
       setIsGenerating(false);
     }
+  };
+
+  const handleFullAISynthesis = async () => {
+    setIsGeneratingFull(true);
+    try {
+      const result = await generateFullPostMortemAI(incidentId);
+      if (result.success && result.data) {
+        setFormData((prev) => ({
+          ...prev,
+          summary: result.data.summary || prev.summary,
+          rootCause: result.data.rootCause || prev.rootCause,
+          impactScope: result.data.impactScope || prev.impactScope,
+          detectionMethod: result.data.detectionMethod || prev.detectionMethod,
+          actionItems: result.data.actionItems || prev.actionItems,
+        }));
+
+        if (result.similarIncidents && result.similarIncidents.length > 0) {
+          setSimilarIncidents(result.similarIncidents);
+          toast.success(
+            `Full Post-Mortem synthesized with ${result.similarIncidents.length} Pinecone historical outage memories!`,
+          );
+        } else {
+          toast.success("Full SRE Post-Mortem synthesized across all sections");
+        }
+      } else {
+        toast.error(result.error || "Failed to synthesize post-mortem");
+      }
+    } catch (error) {
+      toast.error("An unexpected error occurred during AI synthesis");
+    } finally {
+      setIsGeneratingFull(false);
+    }
+  };
+
+  const handleSyncDatabaseToPinecone = async () => {
+    setIsSyncingPinecone(true);
+    try {
+      const res = await syncAllIncidentsToPinecone({ seedSamplePlaybooks: true });
+      if (res.success) {
+        toast.success(
+          `Indexed ${res.count} incidents & historical SRE playbooks into Pinecone vector memory!`,
+        );
+        // Refresh similar incidents for this view
+        const similarRes = await getSimilarIncidentsForIncident(incidentId);
+        if (similarRes && "matches" in similarRes) {
+          setSimilarIncidents(similarRes.matches || []);
+        }
+      } else {
+        toast.error(res.error || "Failed to sync incidents to Pinecone");
+      }
+    } catch (error) {
+      toast.error("Failed to vectorize historical incidents");
+    } finally {
+      setIsSyncingPinecone(false);
+    }
+  };
+
+  const handleApplyPastIncident = (match: any) => {
+    const meta = match.metadata;
+    if (!meta) return;
+
+    setFormData((prev) => ({
+      ...prev,
+      rootCause: prev.rootCause
+        ? `${prev.rootCause}\n\n[From Similar Outage: ${meta.title}]\n${meta.rootCause}`
+        : meta.rootCause,
+      actionItems: prev.actionItems
+        ? `${prev.actionItems}\n${meta.actionItems || ""}`
+        : meta.actionItems || prev.actionItems,
+    }));
+
+    toast.success(`Injected historical insights from "${meta.title}"`);
   };
 
   const handlePopulateTimeline = async () => {
@@ -156,7 +289,7 @@ ${formData.detectionMethod || "(No detection method provided)"}
 ${formData.actionItems || "(No action items provided)"}
 
 ---
-*Generated by PulseGuard SRE Toolchain*
+*Generated by PulseGuard SRE Toolchain & Pinecone Vector Memory*
     `.trim();
 
     const blob = new Blob([markdown], { type: "text/markdown" });
@@ -177,6 +310,7 @@ ${formData.actionItems || "(No action items provided)"}
       animate={{ opacity: 1, y: 0 }}
       className="space-y-6"
     >
+      {/* Top Header Card */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-card/50 p-6 rounded-lg border border-primary/20 backdrop-blur-md">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
@@ -191,7 +325,22 @@ ${formData.actionItems || "(No action items provided)"}
             Incident: <span className="text-primary">{incidentTitle}</span>
           </p>
         </div>
-        <div className="flex gap-2">
+
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Incident Memory Status Badge */}
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-muted/40 border border-primary/20 font-mono text-[11px]">
+            <BrainCircuit className="size-3 text-primary" />
+            <span>AI Memory:</span>
+            {pineconeInfo.isConfigured ? (
+              <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                Active ({similarIncidents.length} matches)
+              </span>
+            ) : (
+              <span className="text-muted-foreground">Disabled</span>
+            )}
+          </div>
+
           <Button
             variant="outline"
             size="sm"
@@ -201,6 +350,7 @@ ${formData.actionItems || "(No action items provided)"}
             <FileDown className="mr-2 size-4 text-primary" />
             Export MD
           </Button>
+
           <Button
             size="sm"
             onClick={handleSave}
@@ -217,6 +367,131 @@ ${formData.actionItems || "(No action items provided)"}
         </div>
       </div>
 
+      {/* Pinecone Incident Memory & RAG Intelligence Panel */}
+      <Card className="bg-gradient-to-r from-primary/5 via-card/50 to-primary/5 border-primary/20 backdrop-blur-md">
+        <CardHeader className="pb-3 border-b border-primary/10">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <CardTitle className="text-sm font-mono flex items-center gap-2">
+                <BrainCircuit className="size-4 text-primary" />
+                INCIDENT MEMORY &amp; HISTORICAL INSIGHTS
+              </CardTitle>
+              <p className="text-[11px] font-mono text-muted-foreground mt-0.5">
+                AI semantic search matches telemetry against similar past outages and verified fixes
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              {pineconeInfo.isConfigured && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleSyncDatabaseToPinecone}
+                  disabled={isSyncingPinecone}
+                  className="h-7 text-[10px] font-mono uppercase bg-primary/10 hover:bg-primary/20 border border-primary/20"
+                >
+                  {isSyncingPinecone ? (
+                    <Loader2 className="mr-1.5 size-3 animate-spin" />
+                  ) : (
+                    <RefreshCw className="mr-1.5 size-3 text-primary" />
+                  )}
+                  Index Historical Incidents
+                </Button>
+              )}
+              <Button
+                variant="default"
+                size="sm"
+                onClick={handleFullAISynthesis}
+                disabled={isGeneratingFull}
+                className="h-7 text-[10px] font-mono uppercase bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-[0_0_10px_rgba(var(--primary),0.2)]"
+              >
+                {isGeneratingFull ? (
+                  <Loader2 className="mr-1.5 size-3 animate-spin" />
+                ) : (
+                  <Sparkles className="mr-1.5 size-3" />
+                )}
+                Full AI Synthesis (All Sections)
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-4">
+          {isLoadingSimilar ? (
+            <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground py-2">
+              <Loader2 className="size-3 animate-spin text-primary" />
+              Searching incident memory for similar historical outages...
+            </div>
+          ) : similarIncidents.length > 0 ? (
+            <div className="space-y-3">
+              <p className="text-xs font-mono text-muted-foreground">
+                Found <span className="text-primary font-bold">{similarIncidents.length}</span>{" "}
+                relevant historical incident matches:
+              </p>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {similarIncidents.map((match, idx) => {
+                  const meta = match.metadata;
+                  const similarityPct = Math.round((match.score || 0) * 100);
+                  return (
+                    <div
+                      key={match.incidentId || idx}
+                      className="p-3.5 rounded bg-background/60 border border-primary/20 space-y-2 hover:border-primary/40 transition-colors"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span
+                          className="font-mono text-xs font-semibold text-foreground truncate"
+                          title={meta?.title}
+                        >
+                          {meta?.title || "Historical Incident"}
+                        </span>
+                        <span className="px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-[10px] font-bold shrink-0">
+                          {similarityPct}% Match
+                        </span>
+                      </div>
+                      {meta?.rootCause && (
+                        <p className="text-[11px] text-muted-foreground font-mono line-clamp-2">
+                          <strong className="text-primary/90">Root Cause:</strong> {meta.rootCause}
+                        </p>
+                      )}
+                      {meta?.actionItems && (
+                        <p className="text-[11px] text-muted-foreground font-mono line-clamp-2">
+                          <strong className="text-emerald-400/90">Fix:</strong> {meta.actionItems}
+                        </p>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleApplyPastIncident(match)}
+                        className="w-full h-6 text-[10px] font-mono uppercase bg-primary/5 hover:bg-primary/15 border border-primary/10 mt-1"
+                      >
+                        Apply Historical Insight
+                      </Button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono text-muted-foreground py-1">
+              <div>
+                {pineconeInfo.isConfigured ? (
+                  <span>
+                    No previous incidents found matching this error signature in Pinecone. Save this
+                    post-mortem as <strong>LEVEL_1_PUBLIC</strong> or click{" "}
+                    <strong>Index DB into Pinecone</strong> to prime vector memory.
+                  </span>
+                ) : (
+                  <span>
+                    Pinecone is running in standalone mode. To enable semantic RAG incident
+                    retrieval, configure <code className="text-primary">PINECONE_API_KEY</code> in
+                    your environment.
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Post-Mortem Form Tabs */}
       <Tabs defaultValue="analysis" className="w-full">
         <TabsList className="bg-muted/30 border border-primary/10 p-1 w-full md:w-auto grid grid-cols-2 md:inline-flex h-auto">
           <TabsTrigger
@@ -271,19 +546,19 @@ ${formData.actionItems || "(No action items provided)"}
                       ) : (
                         <Wand2 className="mr-2 size-3 text-primary" />
                       )}
-                      Sync with AI
+                      Sync Summary with AI
                     </Button>
                   </div>
                 </CardHeader>
                 <CardContent className="pt-4">
                   <Textarea
-                    placeholder="Describe the high-level impact and core issue..."
+                    placeholder="Executive narrative describing the high-level impact and core issue..."
                     className="min-h-[150px] bg-background/50 border-primary/20 font-mono text-sm leading-relaxed focus-visible:ring-primary/30"
                     value={formData.summary}
                     onChange={(e) => handleInputChange("summary", e.target.value)}
                   />
                   <p className="text-[10px] text-muted-foreground mt-2 font-mono uppercase tracking-widest italic">
-                    AI generated summaries are based on incident audit events.
+                    AI generated summaries synthesize event telemetry and Pinecone incident memory.
                   </p>
                 </CardContent>
               </Card>
@@ -295,7 +570,7 @@ ${formData.actionItems || "(No action items provided)"}
                   </CardHeader>
                   <CardContent className="pt-4">
                     <Textarea
-                      placeholder="Why did this happen? Drill down to the primary failure vector."
+                      placeholder="Why did this happen? Technical breakdown of the primary failure vector."
                       className="min-h-[120px] bg-background/50 border-primary/20 font-mono text-sm"
                       value={formData.rootCause}
                       onChange={(e) => handleInputChange("rootCause", e.target.value)}
@@ -309,7 +584,7 @@ ${formData.actionItems || "(No action items provided)"}
                   </CardHeader>
                   <CardContent className="pt-4">
                     <Textarea
-                      placeholder="Quantify the blast radius. affected users, regions, and duration."
+                      placeholder="Quantify the blast radius: affected users, regions, and duration."
                       className="min-h-[120px] bg-background/50 border-primary/20 font-mono text-sm"
                       value={formData.impactScope}
                       onChange={(e) => handleInputChange("impactScope", e.target.value)}
@@ -486,7 +761,7 @@ ${formData.actionItems || "(No action items provided)"}
             onChange={(e) => handleInputChange("status", e.target.value as any)}
           >
             <option value="DRAFT">DRAFT_CLEARANCE</option>
-            <option value="PUBLISHED">LEVEL_1_PUBLIC</option>
+            <option value="PUBLISHED">LEVEL_1_PUBLIC (INDEX TO PINECONE)</option>
             <option value="ARCHIVED">LEVEL_5_ARCHIVE</option>
           </select>
         </div>

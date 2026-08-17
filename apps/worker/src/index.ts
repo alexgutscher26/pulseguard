@@ -32,11 +32,8 @@ export default {
       ctx.waitUntil(
         (async () => {
           try {
-            const dsPrisma = getPrisma(env.DATABASE_URL);
             const { runDownsamplingCron } = await import("./downsampling-cron");
             await runDownsamplingCron(env);
-            const { resetPrisma } = await import("@pulseguard/db");
-            await resetPrisma(env.DATABASE_URL);
           } catch (err) {
             console.error("[Downsampling] Daily run failed:", err);
           }
@@ -52,8 +49,6 @@ export default {
             const scanPrisma = getPrisma(env.DATABASE_URL);
             const { runAnomalyScan } = await import("./services/anomaly-scanner");
             await runAnomalyScan(scanPrisma);
-            const { resetPrisma } = await import("@pulseguard/db");
-            await resetPrisma(env.DATABASE_URL);
           } catch (err) {
             console.error("[AnomalyScan] Scheduled run failed:", err);
           }
@@ -76,6 +71,22 @@ export default {
         import("./services/db-sync")
           .then((m) => m.syncFallbackToDatabase(prisma, env))
           .catch((err) => console.error("[Sync] Background task failed:", err)),
+      );
+
+      // Inspect Queue Backlog & Alarm if Depth Exceeds Threshold
+      ctx.waitUntil(
+        (async () => {
+          try {
+            const { FallbackQueue } = await import("./lib/fallback-queue");
+            const queue = new FallbackQueue(
+              env.UPSTASH_REDIS_REST_URL,
+              env.UPSTASH_REDIS_REST_TOKEN,
+            );
+            await queue.inspectBacklogAndAlarm(100);
+          } catch (qErr) {
+            console.warn("[QueueMetrics] Failed to inspect queue backlog:", qErr);
+          }
+        })(),
       );
 
       // Check probe heartbeats in background
@@ -123,37 +134,39 @@ export default {
     const totalShards = Number(env.TOTAL_SHARDS || 1);
     const shardId = Number(env.SHARD_ID || 0);
 
-    const runWithRetry = async (retry: boolean = true): Promise<any> => {
+    const runWithRetry = async (retryCount: number = 0, maxRetries: number = 2): Promise<any> => {
       try {
-        // Find active monitors that are due for a check, but only for THIS shard
+        // Find active monitors that are due for a check, skipping abandoned free-tier accounts (>60d inactive)
         const targetIds: { id: string }[] = await prisma.$queryRaw`
-          SELECT id FROM "Monitor"
-          WHERE ("status" IN ('UP', 'DOWN', 'MAINTENANCE'))
-          AND NOT ("type" = 'HEARTBEAT' AND "status" = 'DOWN')
-          AND ("nextCheck" IS NULL OR "nextCheck" <= NOW())
-          AND (abs(hashtext(id)) % ${totalShards}) = ${shardId}
+          SELECT m.id FROM "Monitor" m
+          INNER JOIN "User" u ON m."userId" = u.id
+          WHERE (m."status" IN ('UP', 'DOWN', 'MAINTENANCE'))
+          AND NOT (m."type" = 'HEARTBEAT' AND m."status" = 'DOWN')
+          AND (m."nextCheck" IS NULL OR m."nextCheck" <= NOW())
+          AND (u."tier" != 'INITIATE' OR u."updatedAt" >= NOW() - INTERVAL '60 days')
+          AND (abs(hashtext(m.id)) % ${totalShards}) = ${shardId}
           AND NOT EXISTS (
-            SELECT 1 FROM "ProbeAssignment" WHERE "monitorId" = "Monitor"."id"
+            SELECT 1 FROM "ProbeAssignment" WHERE "monitorId" = m."id"
           )
-          ORDER BY "nextCheck" ASC
+          ORDER BY m."nextCheck" ASC
           LIMIT ${CHUNK_SIZE}
         `;
         return targetIds;
       } catch (err: any) {
         if (
-          retry &&
+          retryCount < maxRetries &&
           (err.message?.includes("Connection terminated") ||
             err.message?.includes("is closed") ||
             err.message?.includes("not found") ||
-            err.message?.includes("timeout"))
+            err.message?.includes("timeout") ||
+            err.message?.includes("performIO"))
         ) {
+          const delayMs = 200 * Math.pow(2, retryCount) + Math.random() * 50;
           console.warn(
-            `[Sync] Stale DB connection or timeout detected in schedule. Resetting Prisma and retrying...`,
+            `[Sync] Transient DB connection error or timeout in schedule (attempt ${retryCount + 1}/${maxRetries}). Retrying in ${Math.round(delayMs)}ms...`,
           );
-          const { resetPrisma } = await import("@pulseguard/db");
-          await resetPrisma(env.DATABASE_URL);
-          prisma = getPrisma(env.DATABASE_URL);
-          return await runWithRetry(false);
+          await new Promise((r) => setTimeout(r, delayMs));
+          return await runWithRetry(retryCount + 1, maxRetries);
         }
         throw err;
       }
@@ -225,15 +238,49 @@ export default {
       }
 
       console.log(`Cron execution completed. Total monitors checked: ${totalProcessedCount}.`);
-    } catch (error) {
+
+      // Outbound dead-man's switch / external heartbeat ping to verify worker check-loop liveness
+      const pingUrl = env.DEADMAN_SNITCH_URL || env.HEALTHCHECK_PING_URL;
+      if (pingUrl) {
+        ctx.waitUntil(
+          fetch(pingUrl, {
+            method: "POST",
+            headers: {
+              "User-Agent": "PulseGuard-Cron-Sentinel/1.0",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              status: "ok",
+              checkedMonitors: totalProcessedCount,
+              timestamp: new Date().toISOString(),
+            }),
+          }).catch((pingErr) => {
+            console.warn("[Sentinel] Failed to ping outbound heartbeat URL:", pingErr);
+          }),
+        );
+      }
+    } catch (error: any) {
       console.error("Error in scheduled handler:", error);
-    } finally {
-      try {
-        const { resetPrisma } = await import("@pulseguard/db");
-        await resetPrisma(env.DATABASE_URL);
-        console.log("[Sync] Cleaned up database connection pool after cron execution.");
-      } catch (err) {
-        console.error("Failed to reset Prisma pool in finally:", err);
+
+      // Notify external dead-man's switch of fatal check-loop failure
+      const pingUrl = env.DEADMAN_SNITCH_URL || env.HEALTHCHECK_PING_URL;
+      if (pingUrl) {
+        ctx.waitUntil(
+          fetch(pingUrl, {
+            method: "POST",
+            headers: {
+              "User-Agent": "PulseGuard-Cron-Sentinel/1.0",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              status: "error",
+              error: error?.message || String(error),
+              timestamp: new Date().toISOString(),
+            }),
+          }).catch((pingErr) => {
+            console.warn("[Sentinel] Failed to ping error heartbeat URL:", pingErr);
+          }),
+        );
       }
     }
   },

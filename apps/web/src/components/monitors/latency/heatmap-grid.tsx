@@ -30,6 +30,14 @@ export function HeatmapGrid({ data, metricType, onRegionClick }: HeatmapGridProp
   // Limit to last 24 data points for readability
   const displayTimestamps = timestamps.slice(-24);
 
+  if (data.regions.length === 0 || displayTimestamps.length === 0) {
+    return (
+      <div className="text-center py-12 text-muted-foreground text-sm">
+        No latency data available for this time range. Data will appear after the next check cycle.
+      </div>
+    );
+  }
+
   return (
     <div className="w-full overflow-x-auto">
       <div className="min-w-max">
@@ -108,12 +116,6 @@ export function HeatmapGrid({ data, metricType, onRegionClick }: HeatmapGridProp
           );
         })}
       </div>
-
-      {data.regions.length === 0 && (
-        <div className="text-center py-12 text-muted-foreground">
-          No latency data available for this time range.
-        </div>
-      )}
     </div>
   );
 }

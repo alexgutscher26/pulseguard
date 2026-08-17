@@ -209,8 +209,9 @@ export default function HowItWorks() {
                 Where we don&apos;t check from — yet
               </h3>
               <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                We check from North America, Europe and Asia-Pacific. We do not currently have
-                probes in South America, Africa, the Middle East or Oceania.
+                We check from North America, Europe and Asia-Pacific (including Tokyo and Sydney).
+                We do not currently have sovereign probes in South America, Africa, or the Middle
+                East.
               </p>
               <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                 We&apos;d rather tell you that than pad a number. If your users are concentrated in

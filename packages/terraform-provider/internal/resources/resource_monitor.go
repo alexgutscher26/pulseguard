@@ -39,6 +39,7 @@ type MonitorResourceModel struct {
 	Timeout             types.Int64  `tfsdk:"timeout"`
 	Status              types.String `tfsdk:"status"`
 	Method              types.String `tfsdk:"method"`
+	Headers             types.Map    `tfsdk:"headers"`
 	Body                types.String `tfsdk:"body"`
 	Tags                types.List   `tfsdk:"tags"`
 	CheckRegions        types.List   `tfsdk:"check_regions"`
@@ -98,6 +99,11 @@ func (r *MonitorResource) Schema(ctx context.Context, req resource.SchemaRequest
 				Computed:    true,
 				Default:     stringdefault.StaticString("GET"),
 			},
+			"headers": schema.MapAttribute{
+				Description: "Optional key-value HTTP headers sent with the request.",
+				ElementType: types.StringType,
+				Optional:    true,
+			},
 			"body": schema.StringAttribute{
 				Description: "Optional request body string for HTTP POST/PUT/PATCH requests.",
 				Optional:    true,
@@ -153,15 +159,25 @@ func (r *MonitorResource) Create(ctx context.Context, req resource.CreateRequest
 	}
 
 	var tags []string
-	if !plan.Tags.IsNull() {
+	if !plan.Tags.IsNull() && !plan.Tags.IsUnknown() {
 		diags = plan.Tags.ElementsAs(ctx, &tags, false)
 		resp.Diagnostics.Append(diags...)
 	}
 
 	var regions []string
-	if !plan.CheckRegions.IsNull() {
+	if !plan.CheckRegions.IsNull() && !plan.CheckRegions.IsUnknown() {
 		diags = plan.CheckRegions.ElementsAs(ctx, &regions, false)
 		resp.Diagnostics.Append(diags...)
+	}
+
+	var headers map[string]string
+	if !plan.Headers.IsNull() && !plan.Headers.IsUnknown() {
+		diags = plan.Headers.ElementsAs(ctx, &headers, false)
+		resp.Diagnostics.Append(diags...)
+	}
+
+	if resp.Diagnostics.HasError() {
+		return
 	}
 
 	m := &client.Monitor{
@@ -171,6 +187,7 @@ func (r *MonitorResource) Create(ctx context.Context, req resource.CreateRequest
 		Interval:            plan.Interval.ValueInt64(),
 		Timeout:             plan.Timeout.ValueInt64(),
 		Method:              plan.Method.ValueString(),
+		Headers:             headers,
 		Body:                plan.Body.ValueString(),
 		Tags:                tags,
 		CheckRegions:        regions,
@@ -187,6 +204,30 @@ func (r *MonitorResource) Create(ctx context.Context, req resource.CreateRequest
 
 	plan.ID = types.StringValue(created.ID)
 	plan.Status = types.StringValue(created.Status)
+
+	if len(created.Tags) > 0 {
+		tagsVal, d := types.ListValueFrom(ctx, types.StringType, created.Tags)
+		resp.Diagnostics.Append(d...)
+		plan.Tags = tagsVal
+	} else if plan.Tags.IsNull() {
+		plan.Tags = types.ListNull(types.StringType)
+	}
+
+	if len(created.CheckRegions) > 0 {
+		regionsVal, d := types.ListValueFrom(ctx, types.StringType, created.CheckRegions)
+		resp.Diagnostics.Append(d...)
+		plan.CheckRegions = regionsVal
+	} else if plan.CheckRegions.IsNull() {
+		plan.CheckRegions = types.ListNull(types.StringType)
+	}
+
+	if len(created.Headers) > 0 {
+		headersVal, d := types.MapValueFrom(ctx, types.StringType, created.Headers)
+		resp.Diagnostics.Append(d...)
+		plan.Headers = headersVal
+	} else if plan.Headers.IsNull() {
+		plan.Headers = types.MapNull(types.StringType)
+	}
 
 	diags = resp.State.Set(ctx, plan)
 	resp.Diagnostics.Append(diags...)
@@ -218,6 +259,30 @@ func (r *MonitorResource) Read(ctx context.Context, req resource.ReadRequest, re
 	state.DynamicThresholding = types.BoolValue(m.DynamicThresholding)
 	state.RunbookURL = types.StringValue(m.RunbookURL)
 
+	if len(m.Tags) > 0 {
+		tagsVal, d := types.ListValueFrom(ctx, types.StringType, m.Tags)
+		resp.Diagnostics.Append(d...)
+		state.Tags = tagsVal
+	} else {
+		state.Tags = types.ListNull(types.StringType)
+	}
+
+	if len(m.CheckRegions) > 0 {
+		regionsVal, d := types.ListValueFrom(ctx, types.StringType, m.CheckRegions)
+		resp.Diagnostics.Append(d...)
+		state.CheckRegions = regionsVal
+	} else {
+		state.CheckRegions = types.ListNull(types.StringType)
+	}
+
+	if len(m.Headers) > 0 {
+		headersVal, d := types.MapValueFrom(ctx, types.StringType, m.Headers)
+		resp.Diagnostics.Append(d...)
+		state.Headers = headersVal
+	} else {
+		state.Headers = types.MapNull(types.StringType)
+	}
+
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
@@ -231,15 +296,25 @@ func (r *MonitorResource) Update(ctx context.Context, req resource.UpdateRequest
 	}
 
 	var tags []string
-	if !plan.Tags.IsNull() {
+	if !plan.Tags.IsNull() && !plan.Tags.IsUnknown() {
 		diags = plan.Tags.ElementsAs(ctx, &tags, false)
 		resp.Diagnostics.Append(diags...)
 	}
 
 	var regions []string
-	if !plan.CheckRegions.IsNull() {
+	if !plan.CheckRegions.IsNull() && !plan.CheckRegions.IsUnknown() {
 		diags = plan.CheckRegions.ElementsAs(ctx, &regions, false)
 		resp.Diagnostics.Append(diags...)
+	}
+
+	var headers map[string]string
+	if !plan.Headers.IsNull() && !plan.Headers.IsUnknown() {
+		diags = plan.Headers.ElementsAs(ctx, &headers, false)
+		resp.Diagnostics.Append(diags...)
+	}
+
+	if resp.Diagnostics.HasError() {
+		return
 	}
 
 	m := &client.Monitor{
@@ -249,6 +324,7 @@ func (r *MonitorResource) Update(ctx context.Context, req resource.UpdateRequest
 		Interval:            plan.Interval.ValueInt64(),
 		Timeout:             plan.Timeout.ValueInt64(),
 		Method:              plan.Method.ValueString(),
+		Headers:             headers,
 		Body:                plan.Body.ValueString(),
 		Tags:                tags,
 		CheckRegions:        regions,
@@ -264,6 +340,31 @@ func (r *MonitorResource) Update(ctx context.Context, req resource.UpdateRequest
 	}
 
 	plan.Status = types.StringValue(updated.Status)
+
+	if len(updated.Tags) > 0 {
+		tagsVal, d := types.ListValueFrom(ctx, types.StringType, updated.Tags)
+		resp.Diagnostics.Append(d...)
+		plan.Tags = tagsVal
+	} else if plan.Tags.IsNull() {
+		plan.Tags = types.ListNull(types.StringType)
+	}
+
+	if len(updated.CheckRegions) > 0 {
+		regionsVal, d := types.ListValueFrom(ctx, types.StringType, updated.CheckRegions)
+		resp.Diagnostics.Append(d...)
+		plan.CheckRegions = regionsVal
+	} else if plan.CheckRegions.IsNull() {
+		plan.CheckRegions = types.ListNull(types.StringType)
+	}
+
+	if len(updated.Headers) > 0 {
+		headersVal, d := types.MapValueFrom(ctx, types.StringType, updated.Headers)
+		resp.Diagnostics.Append(d...)
+		plan.Headers = headersVal
+	} else if plan.Headers.IsNull() {
+		plan.Headers = types.MapNull(types.StringType)
+	}
+
 	diags = resp.State.Set(ctx, plan)
 	resp.Diagnostics.Append(diags...)
 }
