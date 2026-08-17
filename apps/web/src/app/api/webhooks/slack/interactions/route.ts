@@ -4,6 +4,25 @@ import { env } from "@pulseguard/env/server";
 
 const MAX_REQUEST_BODY_SIZE = 1_048_576;
 
+function validateSlackResponseUrl(url: string): string | null {
+  try {
+    const parsed = new URL(url);
+    const isHttps = parsed.protocol === "https:";
+    const hostname = parsed.hostname.toLowerCase();
+    const isAllowedHost = hostname === "hooks.slack.com";
+    const hasDefaultPort = parsed.port === "" || parsed.port === "443";
+    const isAllowedPath = parsed.pathname.startsWith("/actions/");
+
+    if (!isHttps || !isAllowedHost || !hasDefaultPort || !isAllowedPath) {
+      return null;
+    }
+
+    return parsed.toString();
+  } catch {
+    return null;
+  }
+}
+
 function checkBodySize(request: NextRequest) {
   const contentLength = request.headers.get("content-length");
   if (contentLength) {
@@ -114,7 +133,12 @@ export async function POST(req: NextRequest) {
         });
 
         // Send replacement payload back to response_url
-        await fetch(payload.response_url, {
+        const safeResponseUrl = validateSlackResponseUrl(payload.response_url);
+        if (!safeResponseUrl) {
+          return NextResponse.json({ error: "Invalid response_url" }, { status: 400 });
+        }
+
+        await fetch(safeResponseUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

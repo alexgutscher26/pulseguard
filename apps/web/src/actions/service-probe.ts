@@ -31,6 +31,12 @@ const REGIONS: Array<{ region: string; location: string; flag: string; baseLaten
   { region: "af-south", location: "AF-South (Cape Town)", flag: "🇿🇦", baseLatency: 210 },
 ];
 
+// Restrict probes to server-approved public hosts to prevent SSRF.
+const ALLOWED_PROBE_HOSTNAMES = new Set<string>([
+  "pulseguard.io",
+  "api.pulseguard.io",
+]);
+
 /**
  * Executes a fast, lightweight real-time reachability and latency probe
  * against a target service domain/endpoint from Cloudflare Edge with regional variance.
@@ -39,10 +45,82 @@ export async function checkServiceLiveStatus(
   domain: string,
   apiEndpoint?: string,
 ): Promise<ServiceLiveStatusResult> {
-  const targetUrl = apiEndpoint || `https://${domain}`;
   const now = new Date().toISOString();
 
   try {
+    let parsedUrl: URL;
+    try {
+      parsedUrl = apiEndpoint ? new URL(apiEndpoint) : new URL(`https://${domain}`);
+    } catch {
+      return {
+        success: false,
+        domain,
+        status: "OUTAGE",
+        latencyMs: 0,
+        checkedAt: now,
+        probes: [],
+        error: "Invalid target URL.",
+      };
+    }
+
+    if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
+      return {
+        success: false,
+        domain,
+        status: "OUTAGE",
+        latencyMs: 0,
+        checkedAt: now,
+        probes: [],
+        error: "Only HTTP/HTTPS endpoints are allowed.",
+      };
+    }
+
+    if (parsedUrl.username || parsedUrl.password) {
+      return {
+        success: false,
+        domain,
+        status: "OUTAGE",
+        latencyMs: 0,
+        checkedAt: now,
+        probes: [],
+        error: "URLs with embedded credentials are not allowed.",
+      };
+    }
+
+    const normalizedHost = parsedUrl.hostname.toLowerCase();
+    if (!ALLOWED_PROBE_HOSTNAMES.has(normalizedHost)) {
+      return {
+        success: false,
+        domain,
+        status: "OUTAGE",
+        latencyMs: 0,
+        checkedAt: now,
+        probes: [],
+        error: "Target host is not allowed.",
+      };
+    }
+
+    const isDefaultPort =
+      !parsedUrl.port ||
+      (parsedUrl.protocol === "http:" && parsedUrl.port === "80") ||
+      (parsedUrl.protocol === "https:" && parsedUrl.port === "443");
+    if (!isDefaultPort) {
+      return {
+        success: false,
+        domain,
+        status: "OUTAGE",
+        latencyMs: 0,
+        checkedAt: now,
+        probes: [],
+        error: "Custom ports are not allowed.",
+      };
+    }
+
+    const canonicalUrl = new URL(`${parsedUrl.protocol}//${normalizedHost}`);
+    canonicalUrl.pathname = parsedUrl.pathname;
+    canonicalUrl.search = parsedUrl.search;
+    const targetUrl = canonicalUrl.toString();
+
     const ssrfCheck = isPrivateOrInternalUrl(targetUrl);
     if (ssrfCheck.isForbidden) {
       return {
@@ -63,6 +141,7 @@ export async function checkServiceLiveStatus(
     try {
       const response = await fetch(targetUrl, {
         method: "HEAD",
+        redirect: "error",
         headers: {
           "User-Agent": "PulseGuard-Edge-Status-Probe/2.0 (+https://pulseguard.io)",
           Accept: "*/*",

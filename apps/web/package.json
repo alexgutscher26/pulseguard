@@ -72,7 +72,7 @@
   "devDependencies": {
     "@chromatic-com/storybook": "^5.2.1",
     "@cloudflare/workers-types": "catalog:",
-    "@opennextjs/cloudflare": "^0.6.6",
+    "@opennextjs/cloudflare": "^1.20.2",
     "@pulseguard/config": "workspace:*",
     "@size-limit/preset-app": "^13.0.3",
     "@storybook/addon-a11y": "^10.5.6",

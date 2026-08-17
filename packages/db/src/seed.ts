@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { randomBytes, scryptSync } from "node:crypto";
 import prisma from "./index.js";
 import {
   type MonitorType,
@@ -128,7 +128,9 @@ export async function seedDatabase(options: SeedOptions = {}) {
 
   // API Key for CLI and programmatic SDK access
   const rawApiKey = "pg_live_pulseguard_admin_master_key_2026";
-  const apiKeyHash = createHash("sha256").update(rawApiKey).digest("hex");
+  const salt = randomBytes(16).toString("hex");
+  const derivedKey = scryptSync(rawApiKey, salt, 64).toString("hex");
+  const apiKeyHash = `${salt}:${derivedKey}`;
   await prisma.apiKey.upsert({
     where: { keyHash: apiKeyHash },
     update: {

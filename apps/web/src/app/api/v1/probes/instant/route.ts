@@ -1,5 +1,75 @@
 import { NextRequest, NextResponse } from "next/server";
 import { authenticateApiKey } from "../../_lib/auth";
+import { lookup } from "node:dns/promises";
+
+function isPrivateIpv4(ip: string): boolean {
+  const parts = ip.split(".").map((p) => Number(p));
+  if (parts.length !== 4 || parts.some((n) => Number.isNaN(n) || n < 0 || n > 255)) return false;
+
+  const [a, b] = parts;
+  if (a === 10) return true;
+  if (a === 127) return true;
+  if (a === 169 && b === 254) return true;
+  if (a === 172 && b >= 16 && b <= 31) return true;
+  if (a === 192 && b === 168) return true;
+  return false;
+}
+
+function isLocalHostname(hostname: string): boolean {
+  const h = hostname.toLowerCase();
+  return h === "localhost" || h.endsWith(".localhost") || h === "::1";
+}
+
+async function validateProbeUrl(rawUrl: string): Promise<{ ok: true; normalizedUrl: string } | { ok: false; error: string }> {
+  let parsed: URL;
+  try {
+    parsed = new URL(rawUrl);
+  } catch {
+    return { ok: false, error: "url must be a valid absolute URL" };
+  }
+
+  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+    return { ok: false, error: "url protocol must be http or https" };
+  }
+
+  if (parsed.username || parsed.password) {
+    return { ok: false, error: "url must not include credentials" };
+  }
+
+  const hostname = parsed.hostname;
+  if (isLocalHostname(hostname)) {
+    return { ok: false, error: "local/internal addresses are not allowed" };
+  }
+
+  if (isPrivateIpv4(hostname)) {
+    return { ok: false, error: "private/internal addresses are not allowed" };
+  }
+
+  if (hostname.includes(":")) {
+    const lowered = hostname.toLowerCase();
+    if (lowered === "::1" || lowered.startsWith("fc") || lowered.startsWith("fd") || lowered.startsWith("fe80:")) {
+      return { ok: false, error: "private/internal addresses are not allowed" };
+    }
+  }
+
+  try {
+    const resolved = await lookup(hostname, { all: true });
+    for (const addr of resolved) {
+      const ip = addr.address;
+      if (isPrivateIpv4(ip)) {
+        return { ok: false, error: "private/internal addresses are not allowed" };
+      }
+      const lowerIp = ip.toLowerCase();
+      if (lowerIp === "::1" || lowerIp.startsWith("fc") || lowerIp.startsWith("fd") || lowerIp.startsWith("fe80:")) {
+        return { ok: false, error: "private/internal addresses are not allowed" };
+      }
+    }
+  } catch {
+    return { ok: false, error: "url hostname could not be resolved" };
+  }
+
+  return { ok: true, normalizedUrl: parsed.toString() };
+}
 
 export async function POST(req: NextRequest) {
   const auth = await authenticateApiKey(req, "read");
@@ -20,12 +90,15 @@ export async function POST(req: NextRequest) {
     timeoutMs = 8000,
   } = body;
 
-  if (!url || typeof url !== "string" || !url.startsWith("http")) {
-    return NextResponse.json(
-      { error: "url is required and must start with http:// or https://" },
-      { status: 400 },
-    );
+  if (!url || typeof url !== "string") {
+    return NextResponse.json({ error: "url is required and must be a string" }, { status: 400 });
   }
+
+  const validation = await validateProbeUrl(url);
+  if (!validation.ok) {
+    return NextResponse.json({ error: validation.error }, { status: 400 });
+  }
+  const safeUrl = validation.normalizedUrl;
 
   const regionList: string[] = Array.isArray(regions) ? regions : ["wnam", "weur", "apac"];
 
@@ -48,7 +121,7 @@ export async function POST(req: NextRequest) {
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), timeoutMs);
 
-        const res = await fetch(url, {
+        const res = await fetch(safeUrl, {
           method: method.toUpperCase(),
           headers: {
             "User-Agent": `PulseGuard-Edge-Probe/1.0 (${regionCode})`,
@@ -93,7 +166,7 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({
     data: {
-      url,
+      url: safeUrl,
       status: quorumPass ? "UP" : "DOWN",
       overallLatencyMs: avgLatency,
       quorumPass,

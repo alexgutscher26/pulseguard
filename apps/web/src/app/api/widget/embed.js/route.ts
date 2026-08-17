@@ -82,9 +82,9 @@ export async function GET(request: NextRequest) {
   
   // Status messages (from dashboard settings)
   var messages = {
-    operational: '${operationalText.replace(/'/g, "\\'")}',
-    partial: '${partialText.replace(/'/g, "\\'")}',
-    major: '${majorText.replace(/'/g, "\\'")}'
+    operational: ${JSON.stringify(operationalText)},
+    partial: ${JSON.stringify(partialText)},
+    major: ${JSON.stringify(majorText)}
   };
   
   // Status colors

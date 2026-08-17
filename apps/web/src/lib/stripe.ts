@@ -133,7 +133,7 @@ export async function createStripePromotionCode({
         couponExists = true;
         console.log(`[Stripe] Coupon ${cleanCode} already exists in Stripe`);
       } else {
-        console.error(`[Stripe] Error creating coupon ${cleanCode}:`, createErr);
+        console.error("[Stripe] Error creating coupon %s:", cleanCode, createErr);
         throw createErr;
       }
     }
