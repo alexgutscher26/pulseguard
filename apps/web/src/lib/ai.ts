@@ -1,6 +1,12 @@
 import { createOpenAI } from "@ai-sdk/openai";
 import { generateText } from "ai";
 import { env } from "@pulseguard/env/server";
+import {
+  type HeliconeMetadata,
+  buildHeliconeHeaders,
+  resolveHeliconeBaseUrl,
+  isHeliconeConfigured,
+} from "./helicone";
 
 export type AIProviderType = "openrouter" | "ollama" | "openai" | "heuristic";
 
@@ -9,6 +15,7 @@ export interface AIProviderConfig {
   modelName: string;
   endpoint: string;
   isLocal: boolean;
+  isHeliconeProxied?: boolean;
 }
 
 export interface InsightAnalysisResult {
@@ -28,6 +35,8 @@ export interface InsightAnalysisResult {
 
 /**
  * Resolves the active AI model instance based on configuration and environment priority.
+ * Automatically injects Helicone proxy routing and tenant observability headers
+ * when HELICONE_API_KEY is configured.
  *
  * Priority:
  * 1. Explicit AI_PROVIDER ("openrouter" | "ollama" | "openai")
@@ -36,7 +45,7 @@ export interface InsightAnalysisResult {
  * 4. If OPENAI_API_KEY is configured -> OpenAI
  * 5. Fallback -> Heuristic SRE synthesis engine
  */
-export function getAIProviderClient() {
+export function getAIProviderClient(metadata?: HeliconeMetadata) {
   const providerPreference = (env.AI_PROVIDER || process.env.AI_PROVIDER || "auto").toLowerCase();
   const openRouterKey = env.OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY;
   const openRouterModel =
@@ -49,15 +58,19 @@ export function getAIProviderClient() {
   const ollamaModel = env.OLLAMA_MODEL || process.env.OLLAMA_MODEL || "llama3.2";
 
   const openAiKey = env.OPENAI_API_KEY || process.env.OPENAI_API_KEY;
+  const heliconeActive = isHeliconeConfigured();
+  const heliconeHeaders = buildHeliconeHeaders(metadata);
 
   // 1. Explicit or Auto OpenRouter
   if ((providerPreference === "openrouter" || providerPreference === "auto") && openRouterKey) {
+    const endpoint = resolveHeliconeBaseUrl("openrouter", openRouterBaseUrl);
     const client = createOpenAI({
-      baseURL: openRouterBaseUrl,
+      baseURL: endpoint,
       apiKey: openRouterKey,
       headers: {
         "HTTP-Referer": env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
         "X-Title": "PulseGuard Edge Monitoring",
+        ...heliconeHeaders,
       },
     });
 
@@ -65,8 +78,9 @@ export function getAIProviderClient() {
       provider: "openrouter" as const,
       model: client(openRouterModel),
       modelName: openRouterModel,
-      endpoint: openRouterBaseUrl,
+      endpoint,
       isLocal: false,
+      isHeliconeProxied: heliconeActive,
     };
   }
 
@@ -86,21 +100,26 @@ export function getAIProviderClient() {
       modelName: ollamaModel,
       endpoint: ollamaBaseUrl,
       isLocal: true,
+      isHeliconeProxied: false,
     };
   }
 
   // 3. Explicit OpenAI
   if (openAiKey) {
+    const endpoint = resolveHeliconeBaseUrl("openai");
     const client = createOpenAI({
       apiKey: openAiKey,
+      baseURL: endpoint,
+      headers: heliconeHeaders,
     });
 
     return {
       provider: "openai" as const,
       model: client("gpt-4o-mini"),
       modelName: "gpt-4o-mini",
-      endpoint: "https://api.openai.com/v1",
+      endpoint,
       isLocal: false,
+      isHeliconeProxied: heliconeActive,
     };
   }
 
@@ -119,6 +138,11 @@ export async function generateDeepInsightAnalysis(params: {
   severity: "INFO" | "WARNING" | "CRITICAL";
   message: string;
   metadata?: any;
+  tenantContext?: {
+    workspaceId?: string;
+    userId?: string;
+    planTier?: string;
+  };
   recentEvents?: {
     latency: number;
     status: string;
@@ -135,10 +159,16 @@ export async function generateDeepInsightAnalysis(params: {
     severity,
     message,
     metadata,
+    tenantContext,
     recentEvents = [],
   } = params;
 
-  const aiClient = getAIProviderClient();
+  const aiClient = getAIProviderClient({
+    feature: `rca-insight-${insightType.toLowerCase()}`,
+    workspaceId: tenantContext?.workspaceId,
+    userId: tenantContext?.userId,
+    planTier: tenantContext?.planTier,
+  });
 
   // If an LLM provider (OpenRouter / Ollama / OpenAI) is available, prompt it with telemetry data
   if (aiClient) {

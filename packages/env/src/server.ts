@@ -14,6 +14,10 @@ export const env = createEnv({
     OPENROUTER_API_KEY: z.string().min(1).optional(),
     OPENROUTER_MODEL: z.string().default("meta-llama/llama-3.3-70b-instruct"),
     OPENROUTER_BASE_URL: z.string().url().default("https://openrouter.ai/api/v1"),
+    // Helicone LLM Observability & Smart Proxy
+    HELICONE_API_KEY: z.string().min(1).optional(),
+    HELICONE_BASE_PATH: z.string().url().default("https://oai.helicone.ai/v1"),
+    HELICONE_CACHE_ENABLED: z.enum(["true", "false"]).default("true"),
     // Ollama Local AI Configuration (for testing)
     OLLAMA_BASE_URL: z.string().url().default("http://localhost:11434/v1"),
     OLLAMA_MODEL: z.string().default("llama3.2"),

@@ -119,6 +119,8 @@ export async function generatePostMortemSummary(incidentId: string) {
           select: {
             name: true,
             url: true,
+            userId: true,
+            organizationId: true,
           },
         },
       },
@@ -126,7 +128,11 @@ export async function generatePostMortemSummary(incidentId: string) {
 
     if (!incident) return { success: false, error: "Incident not found" };
 
-    const aiClient = getAIProviderClient();
+    const aiClient = getAIProviderClient({
+      feature: "post-mortem-summary",
+      userId: session.user.id,
+      workspaceId: incident.monitor.organizationId || incident.monitor.userId,
+    });
     const eventsText = incident.events
       .map((e) => `[${e.createdAt.toISOString()}] ${e.type}: ${e.message}`)
       .join("\n");
