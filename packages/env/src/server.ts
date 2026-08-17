@@ -5,8 +5,8 @@ export const env = createEnv({
   server: {
     DATABASE_URL: z.string().min(1),
     BETTER_AUTH_SECRET: z.string().min(32),
-    BETTER_AUTH_URL: z.url(),
-    CORS_ORIGIN: z.url(),
+    BETTER_AUTH_URL: z.string().url(),
+    CORS_ORIGIN: z.string().url(),
     NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
     SLACK_SIGNING_SECRET: z.string().min(1).optional(),
     OPENAI_API_KEY: z.string().min(1).optional(),
@@ -55,4 +55,11 @@ export const env = createEnv({
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
   skipValidation: !!process.env.CI || process.env.npm_lifecycle_event === "build",
+  onValidationError: (issues) => {
+    const formatted = (issues || [])
+      .map((issue) => `  - ${issue.path ? issue.path.join(".") : "variable"}: ${issue.message}`)
+      .join("\n");
+    console.error("❌ Invalid environment variables:\n" + formatted);
+    throw new Error("Invalid environment variables:\n" + formatted);
+  },
 });

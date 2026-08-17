@@ -12,4 +12,11 @@ export const env = createEnv({
     NEXT_PUBLIC_WORKER_URL: process.env.NEXT_PUBLIC_WORKER_URL,
   },
   emptyStringAsUndefined: true,
+  onValidationError: (issues) => {
+    const formatted = (issues || [])
+      .map((issue) => `  - ${issue.path ? issue.path.join(".") : "variable"}: ${issue.message}`)
+      .join("\n");
+    console.error("❌ Invalid client environment variables:\n" + formatted);
+    throw new Error("Invalid client environment variables:\n" + formatted);
+  },
 });
