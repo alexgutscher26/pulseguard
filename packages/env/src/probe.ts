@@ -12,4 +12,11 @@ export const env = createEnv({
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
+  onValidationError: (issues) => {
+    const formatted = (issues || [])
+      .map((issue) => `  - ${issue.path ? issue.path.join(".") : "variable"}: ${issue.message}`)
+      .join("\n");
+    console.error("❌ Invalid probe environment variables:\n" + formatted);
+    throw new Error("Invalid probe environment variables:\n" + formatted);
+  },
 });
