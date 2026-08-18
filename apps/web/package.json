@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-"build": "next build && node scripts/fix-pg-cloudflare.mjs && opennextjs-cloudflare build -s",
+    "build": "next build && node scripts/fix-pg-cloudflare.mjs && opennextjs-cloudflare build -s",
     "start": "next start",
     "dev": "next dev --turbopack",
     "dev:bare": "next dev --turbopack --port 3001",
@@ -54,6 +54,7 @@
     "next-intl": "^4.8.2",
     "next-mdx-remote": "^6.0.0",
     "next-themes": "^0.4.6",
+    "pg": "8.16.3",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-hook-form": "^7.71.1",
