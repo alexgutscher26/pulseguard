@@ -4,8 +4,6 @@ import { routing } from "./i18n/routing";
 
 const intlMiddleware = createMiddleware(routing);
 
-// Edge runtime required by @opennextjs/cloudflare — all middleware logic is Web API compatible
-export const runtime = "edge";
 
 export const config = {
   matcher: ["/((?!api/|_next/|_static/|_vercel|[\\w-]+\\.\\w+).*)"],
