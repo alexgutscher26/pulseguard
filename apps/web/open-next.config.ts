@@ -1,5 +1,15 @@
-import { defineCloudflareConfig } from "@opennextjs/cloudflare";
+import type { NextConfig } from "next";
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 
-export default defineCloudflareConfig({
-  // Add supported overrides here only when needed.
-});
+initOpenNextCloudflareForDev();
+
+const nextConfig: NextConfig = {
+  serverExternalPackages: [
+    "pg",
+    "pg-cloudflare",
+    "@prisma/client",
+    ".prisma/client",
+  ],
+};
+
+export default nextConfig;
