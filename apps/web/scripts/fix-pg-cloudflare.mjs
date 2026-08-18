@@ -1,62 +1,90 @@
+// apps/web/scripts/fix-pg-cloudflare.mjs
 import fs from "node:fs";
 import path from "node:path";
 
-const nodeModules = path.resolve(process.cwd(), "node_modules");
+function findNodeModules(startDir) {
+  let current = startDir;
+
+  while (true) {
+    const candidate = path.join(current, "node_modules");
+
+    if (fs.existsSync(candidate)) {
+      return candidate;
+    }
+
+    const parent = path.dirname(current);
+
+    if (parent === current) {
+      throw new Error("Could not locate a node_modules directory.");
+    }
+
+    current = parent;
+  }
+}
 
 function walk(directory) {
   const found = [];
+  const entries = fs.readdirSync(directory, { withFileTypes: true });
 
-  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
+
     const fullPath = path.join(directory, entry.name);
 
-    if (entry.isDirectory()) {
-      if (entry.name === "pg-cloudflare") {
-        found.push(fullPath);
-      } else {
-        found.push(...walk(fullPath));
-      }
+    if (entry.name === "pg-cloudflare") {
+      found.push(fullPath);
+      continue;
+    }
+
+    // Bun stores package contents under node_modules/.bun.
+    // Avoid scanning irrelevant large package trees.
+    if (
+      entry.name === ".bun" ||
+      entry.name.startsWith("pg-cloudflare@") ||
+      entry.name.startsWith("pg@")
+    ) {
+      found.push(...walk(fullPath));
     }
   }
 
   return found;
 }
 
+const nodeModules = findNodeModules(process.cwd());
 const packages = walk(nodeModules);
 
 if (packages.length === 0) {
-  throw new Error("No pg-cloudflare package was found in node_modules.");
+  throw new Error(
+    `No pg-cloudflare package found under workspace dependencies: ${nodeModules}`
+  );
 }
 
 for (const packageDirectory of packages) {
   const distDirectory = path.join(packageDirectory, "dist");
-  const commonJsEntry = path.join(distDirectory, "index.js");
+  const target = path.join(distDirectory, "index.js");
 
-  if (fs.existsSync(commonJsEntry)) {
-    console.log(`pg-cloudflare already fixed: ${commonJsEntry}`);
+  if (fs.existsSync(target)) {
+    console.log(`pg-cloudflare already has index.js: ${target}`);
     continue;
   }
 
-  fs.mkdirSync(distDirectory, { recursive: true });
+  const cjsSource = path.join(distDirectory, "index.cjs");
 
-  const available = fs.existsSync(distDirectory)
-    ? fs.readdirSync(distDirectory)
-    : [];
+  if (!fs.existsSync(cjsSource)) {
+    const files = fs.existsSync(distDirectory)
+      ? fs.readdirSync(distDirectory).join(", ")
+      : "(no dist directory)";
 
-  const esmEntry = ["index.mjs", "index.js"].find((file) =>
-    available.includes(file)
-  );
-
-  if (!esmEntry) {
     throw new Error(
-      `Cannot patch ${packageDirectory}: expected a dist entrypoint, found: ${available.join(", ")}`
+      `Cannot patch ${packageDirectory}: expected dist/index.cjs; found ${files}`
     );
   }
 
   fs.writeFileSync(
-    commonJsEntry,
-    `module.exports = require("./${esmEntry}");\n`,
+    target,
+    'module.exports = require("./index.cjs");\n',
     "utf8"
   );
 
-  console.log(`Created missing entrypoint: ${commonJsEntry}`);
+  console.log(`Created ${target}`);
 }
