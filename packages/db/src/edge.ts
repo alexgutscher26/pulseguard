@@ -25,19 +25,25 @@ export function createPrisma(databaseUrl?: string) {
   const isSsl = poolUrl.includes("sslmode=require") || poolUrl.includes("sslmode=verify");
   const cleanUrl = poolUrl.replace(/[?&]sslmode=[^&]+/, "");
 
+  // Detect Cloudflare Workers runtime
+  const isWorkerd =
+    typeof navigator === "object" &&
+    navigator !== null &&
+    typeof navigator.userAgent === "string" &&
+    navigator.userAgent === "Cloudflare-Workers";
+
   const poolConfig: any = {
     connectionString: cleanUrl,
-    // Bounded pool size to avoid connection exhaustion in serverless / edge isolates
-    max: 5,
-    // Keep idle connections long enough to be reused across periodic ticks
-    idleTimeoutMillis: 30_000,
-    // Extended timeout for high-latency or cross-region connections (e.g. APAC to US/EU Postgres)
+    // In Cloudflare Workers, connections can't persist across invocations — use 1.
+    // In Node.js, allow a small pool for concurrent queries within a request.
+    max: isWorkerd ? 1 : 5,
+    idleTimeoutMillis: isWorkerd ? 10_000 : 30_000,
     connectionTimeoutMillis: 10_000,
-    // TCP keep-alive prevents intermediate proxies and NATs from silently dropping connections
-    keepAlive: true,
-    keepAliveInitialDelayMillis: 5_000,
+    // keepAlive uses Node.js net.Socket APIs not available in pg-cloudflare's CloudflareSocket
+    ...(isWorkerd ? {} : { keepAlive: true, keepAliveInitialDelayMillis: 5_000 }),
   };
 
+  // Always enable SSL for managed Postgres providers
   if (isSsl || poolUrl.includes("supabase") || poolUrl.includes("neon.tech")) {
     poolConfig.ssl = { rejectUnauthorized: false };
   }
