@@ -20,6 +20,13 @@ function isLocalHostname(hostname: string): boolean {
   return h === "localhost" || h.endsWith(".localhost") || h === "::1";
 }
 
+const ALLOWED_PROBE_HOSTS = ["example.com"];
+
+function isAllowedProbeHostname(hostname: string): boolean {
+  const h = hostname.toLowerCase();
+  return ALLOWED_PROBE_HOSTS.some((allowed) => h === allowed || h.endsWith(`.${allowed}`));
+}
+
 async function validateProbeUrl(rawUrl: string): Promise<{ ok: true; normalizedUrl: string } | { ok: false; error: string }> {
   let parsed: URL;
   try {
@@ -30,6 +37,10 @@ async function validateProbeUrl(rawUrl: string): Promise<{ ok: true; normalizedU
 
   if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
     return { ok: false, error: "url protocol must be http or https" };
+  }
+
+  if (!isAllowedProbeHostname(parsed.hostname)) {
+    return { ok: false, error: "url hostname is not allowed" };
   }
 
   if (parsed.username || parsed.password) {
