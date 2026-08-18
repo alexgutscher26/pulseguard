@@ -1,5 +1,7 @@
 export default {
   default: {
+    externalPackages: ["pg-cloudflare"],
+
     override: {
       wrapper: "cloudflare-node",
       converter: "edge",
