@@ -44,7 +44,8 @@
   "ANALYTICS_SALT",
   "ADMIN_EMAILS",
   "EXPO_PUBLIC_SERVER_URL",
-  "DATABASE_POOL_URL"
+  "DATABASE_POOL_URL",
+  "NODE_ENV"
 ],
   "remoteCache": {
     "enabled": true
