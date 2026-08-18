@@ -5,3 +5,6 @@ npx wrangler queues create notifications-dlq
 create a comprehensive and detailed todo.md file for improvements and features (the list should be very long)
 
 bun --cwd apps/worker wrangler deploy
+
+
+publish the cli package
