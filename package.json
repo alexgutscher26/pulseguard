@@ -6,6 +6,9 @@
       "apps/*",
       "packages/*"
     ],
+    "overrides": {
+      "pg": "8.16.3"
+    },
     "catalog": {
       "dotenv": "^17.2.2",
       "zod": "^4.1.13",
