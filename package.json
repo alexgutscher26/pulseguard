@@ -60,6 +60,7 @@
     "prettier": "prettier --write ."
   },
   "dependencies": {
+    "@opennextjs/cloudflare": "^1.20.2",
     "@pulseguard/env": "workspace:*",
     "@types/inquirer": "^9.0.10",
     "dotenv": "catalog:",

@@ -1,3 +1,12 @@
-import { defineCloudflareConfig } from "@opennextjs/cloudflare/config";
+import { defineCloudflareConfig } from "@opennextjs/cloudflare";
 
-export default defineCloudflareConfig();
+export default defineCloudflareConfig({
+  default: {
+    override: {
+      wrapper: "cloudflare-node",
+    },
+  },
+  build: {
+    externals: ["pg-cloudflare"],
+  },
+});
