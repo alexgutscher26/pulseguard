@@ -670,6 +670,7 @@
 - [x] Set up Hall of Fame / Showcase automatic submission from the UI
 - [x] Add "Powered by PulseGuard" badge for open-source status page users
 - [ ] Build official Discord community server
+- [ ] Holiday mode Suspend all alerts & notifications until a specific date.
 
 ---
 
