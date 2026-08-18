@@ -5,7 +5,7 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
 
-import { sendPasswordResetEmail, sendTeamInvitationEmail } from "@pulseguard/email";
+import { getResendClient, sendPasswordResetEmail, sendTeamInvitationEmail, sendWelcomeEmail } from "@pulseguard/email";
 import { organization } from "better-auth/plugins";
 
 console.log("🔧 Initializing BetterAuth with config:", {
@@ -80,6 +80,46 @@ export const auth = betterAuth({
         userName: user.name || user.email,
         resetUrl: url,
       });
+    },
+  },
+
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (user) => {
+          const appUrl = env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
+          // Fire-and-forget: failures here must never break signup
+          void (async () => {
+            try {
+              await sendWelcomeEmail(user.email, {
+                userName: user.name || user.email,
+                dashboardUrl: `${appUrl}/dashboard`,
+              });
+            } catch (err) {
+              console.error("[Auth] Failed to send welcome email:", err);
+            }
+
+            // Add contact to Resend audience (only when configured)
+            const audienceId = process.env.RESEND_AUDIENCE_ID;
+            if (audienceId && env.RESEND_API_KEY) {
+              try {
+                const resend = getResendClient();
+                const nameParts = (user.name || "").trim().split(" ");
+                await resend.contacts.create({
+                  audienceId,
+                  email: user.email,
+                  firstName: nameParts[0] || "",
+                  lastName: nameParts.slice(1).join(" ") || "",
+                  unsubscribed: false,
+                });
+              } catch (err) {
+                console.error("[Auth] Failed to add contact to Resend audience:", err);
+              }
+            }
+          })();
+        },
+      },
     },
   },
   plugins: [
