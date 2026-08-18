@@ -1,30 +1,6 @@
-// Root-level open-next.config.ts
-// opennextjs/cloudflare CLI resolves open-next.config.ts from process.cwd().
-// On Vercel with a Turborepo, cwd is the repo root — not apps/web.
-// This file ensures the CLI finds a valid config instead of auto-generating the default template.
-const config = {
-  default: {
-    override: {
-      wrapper: "cloudflare-node",
-      converter: "edge",
-      proxyExternalRequest: "fetch",
-      incrementalCache: "dummy",
-      tagCache: "dummy",
-      queue: "dummy",
-    },
-  },
-  edgeExternals: ["node:crypto"],
-  middleware: {
-    external: true,
-    override: {
-      wrapper: "cloudflare-edge",
-      converter: "edge",
-      proxyExternalRequest: "fetch",
-      incrementalCache: "dummy",
-      tagCache: "dummy",
-      queue: "dummy",
-    },
-  },
-};
+// Root-level fallback open-next.config.ts
+// If opennextjs-cloudflare CLI runs from repo root (e.g. during Turbo), it needs
+// a valid config here to avoid auto-generating the default template.
+import { defineCloudflareConfig } from "@opennextjs/cloudflare/config";
 
-export default config;
+export default defineCloudflareConfig();
