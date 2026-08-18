@@ -65,6 +65,12 @@ export default function LandingFooter() {
               >
                 Showcase
               </Link>
+              <Link 
+              href={"/changelog" as any}
+              className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
+              >
+                Changelog
+              </Link>
               <Link
                 href={"/hall-of-fame" as any}
                 className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
