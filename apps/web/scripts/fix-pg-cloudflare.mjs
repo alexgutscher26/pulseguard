@@ -1,35 +1,62 @@
-/**
- * Ensures pg-cloudflare/dist files exist before the OpenNext esbuild bundler runs.
- *
- * Bun's content-addressable cache on Vercel sometimes omits pre-built dist/ files
- * from the pg-cloudflare package. esbuild statically resolves require('pg-cloudflare')
- * in pg/lib/stream.js and fails if dist/index.js is missing.
- *
- * This script creates empty stubs so esbuild can resolve the import. At runtime,
- * pg detects the Cloudflare Workers environment and uses the ESM entry point instead.
- */
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
-import { createRequire } from "node:module";
-import { dirname, join } from "node:path";
+import fs from "node:fs";
+import path from "node:path";
 
-const require = createRequire(import.meta.url);
+const nodeModules = path.resolve(process.cwd(), "node_modules");
 
-try {
-  const pkgPath = require.resolve("pg-cloudflare/package.json");
-  const pkgDir = dirname(pkgPath);
-  const distDir = join(pkgDir, "dist");
+function walk(directory) {
+  const found = [];
 
-  mkdirSync(distDir, { recursive: true });
+  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+    const fullPath = path.join(directory, entry.name);
 
-  if (!existsSync(join(distDir, "index.js"))) {
-    writeFileSync(join(distDir, "index.js"), "module.exports = {};");
-    console.log("Created pg-cloudflare/dist/index.js stub");
+    if (entry.isDirectory()) {
+      if (entry.name === "pg-cloudflare") {
+        found.push(fullPath);
+      } else {
+        found.push(...walk(fullPath));
+      }
+    }
   }
 
-  if (!existsSync(join(distDir, "empty.js"))) {
-    writeFileSync(join(distDir, "empty.js"), "module.exports = {};");
-    console.log("Created pg-cloudflare/dist/empty.js stub");
+  return found;
+}
+
+const packages = walk(nodeModules);
+
+if (packages.length === 0) {
+  throw new Error("No pg-cloudflare package was found in node_modules.");
+}
+
+for (const packageDirectory of packages) {
+  const distDirectory = path.join(packageDirectory, "dist");
+  const commonJsEntry = path.join(distDirectory, "index.js");
+
+  if (fs.existsSync(commonJsEntry)) {
+    console.log(`pg-cloudflare already fixed: ${commonJsEntry}`);
+    continue;
   }
-} catch {
-  // pg-cloudflare not installed — nothing to patch
+
+  fs.mkdirSync(distDirectory, { recursive: true });
+
+  const available = fs.existsSync(distDirectory)
+    ? fs.readdirSync(distDirectory)
+    : [];
+
+  const esmEntry = ["index.mjs", "index.js"].find((file) =>
+    available.includes(file)
+  );
+
+  if (!esmEntry) {
+    throw new Error(
+      `Cannot patch ${packageDirectory}: expected a dist entrypoint, found: ${available.join(", ")}`
+    );
+  }
+
+  fs.writeFileSync(
+    commonJsEntry,
+    `module.exports = require("./${esmEntry}");\n`,
+    "utf8"
+  );
+
+  console.log(`Created missing entrypoint: ${commonJsEntry}`);
 }
