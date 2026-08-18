@@ -56,7 +56,7 @@ const sections = [
   {
     title: "Contact",
     content:
-      "If you have questions about this Privacy Policy, please contact us at privacy@pulseguard.app or write to PulseGuard, 548 Market Street, San Francisco, CA 94104.",
+      "If you have questions about this Privacy Policy, please contact us at privacy@steadystack.dev",
   },
 ];
 

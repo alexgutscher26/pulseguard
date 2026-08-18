@@ -72,7 +72,7 @@ const sections = [
   {
     title: "Contact",
     content:
-      "For questions about these terms, contact legal@pulseguard.app or write to PulseGuard, 548 Market Street, San Francisco, CA 94104.",
+      "For questions about these terms, contact legal@steadystack.dev",
   },
 ];
 
