@@ -21,7 +21,7 @@ const items = [
   { name: "General", icon: User, tab: "general" },
   { name: "Team & RBAC", icon: Users, tab: "team" },
   { name: "Billing", icon: CreditCard, tab: "billing" },
-  { name: "Affiliate & Referrals", icon: Users, tab: "referrals" },
+  // { name: "Affiliate & Referrals", icon: Users, tab: "referrals" },
   { name: "Security", icon: Shield, tab: "security" },
   { name: "API Keys", icon: Key, tab: "api-keys" },
   { name: "Audit Log", icon: History, tab: "audit-log" },
