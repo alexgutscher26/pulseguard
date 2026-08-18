@@ -1,6 +1,6 @@
 <div align="center">
 
-# PulseGuard ⚡
+# SteadyStack ⚡
 
 **Edge-native, zero-false-positive operational intelligence platform for modern infrastructure.**
 
