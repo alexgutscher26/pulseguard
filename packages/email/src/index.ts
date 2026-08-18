@@ -96,15 +96,15 @@ export * from "./styles/theme";
 // ============================================================================
 
 export const EMAIL_SENDERS = {
-  alerts: "PulseGuard <alerts@pulseguard.com>",
-  auth: "PulseGuard <auth@pulseguard.com>",
-  billing: "PulseGuard Billing <billing@pulseguard.io>",
-  general: "PulseGuard <hello@pulseguard.com>",
-  reports: "PulseGuard <reports@pulseguard.com>",
-  status: "PulseGuard <status@pulseguard.com>",
-  teams: "PulseGuard Teams <invitations@pulseguard.io>",
-  updates: "PulseGuard <updates@pulseguard.com>",
-  verify: "PulseGuard <verify@pulseguard.com>",
+  alerts: "PulseGuard <alerts@steadystack.dev>",
+  auth: "PulseGuard <auth@steadystack.dev>",
+  billing: "PulseGuard Billing <billing@steadystack.dev>",
+  general: "PulseGuard <hello@steadystack.dev>",
+  reports: "PulseGuard <reports@steadystack.dev>",
+  status: "PulseGuard <status@steadystack.dev>",
+  teams: "PulseGuard Teams <invitations@steadystack.dev>",
+  updates: "PulseGuard <updates@steadystack.dev>",
+  verify: "PulseGuard <verify@steadystack.dev>",
 } as const;
 
 // ============================================================================
