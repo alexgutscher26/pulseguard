@@ -11,6 +11,9 @@ import set from "lodash.set";
 import { env } from "@steadystack/env/server";
 import { verifyAuthToken } from "@steadystack/core";
 
+import { auth } from "@steadystack/auth";
+import { canManageStatusPage } from "@/actions/status-pages";
+
 export const dynamic = "force-dynamic";
 
 async function getPageByDomain(domain: string) {
@@ -49,9 +52,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!page) return {};
 
   return {
-    title: page.title,
-    description: page.description || undefined,
+    title: page.metaTitle || page.title,
+    description: page.metaDescription || page.description || undefined,
     icons: page.favicon ? [{ rel: "icon", url: page.favicon }] : undefined,
+    openGraph: page.ogImageUrl
+      ? {
+          images: [{ url: page.ogImageUrl }],
+          title: page.metaTitle || page.title,
+          description: page.metaDescription || page.description || undefined,
+        }
+      : undefined,
     robots: {
       index: page.seoIndex ?? true,
       follow: page.seoIndex ?? true,
@@ -110,13 +120,33 @@ export default async function CustomDomainStatusPage({ params }: Props) {
     });
   }
 
+  const session = await auth.api.getSession({ headers: headerStore });
+  const isAdmin = session?.user?.id ? await canManageStatusPage(page.id, session.user.id) : false;
+
+  // 4. Fetch Active & Recent Incidents (Last 7 Days)
+  const monitorIds = page.monitors.map((m) => m.monitorId);
+  const incidents = await prisma.incident.findMany({
+    where: {
+      monitorId: { in: monitorIds },
+      OR: [
+        { resolvedAt: null },
+        { resolvedAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } },
+      ],
+    },
+    include: {
+      monitor: { select: { name: true } },
+      events: { orderBy: { createdAt: "desc" } },
+    },
+    orderBy: { startedAt: "desc" },
+  });
+
   return (
     <NextIntlClientProvider messages={messages} locale={locale}>
       <>
         <label className="sr-only" aria-label="Status Page Label">
           Status Page
         </label>
-        <PublicView page={page} />
+        <PublicView page={page} isAdmin={isAdmin} initialIncidents={incidents} />
       </>
     </NextIntlClientProvider>
   );

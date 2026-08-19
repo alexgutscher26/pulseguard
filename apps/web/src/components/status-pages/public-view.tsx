@@ -1,17 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import {
-  CheckCircle,
-  AlertTriangle,
-  Clock,
-  Zap,
-  WifiOff,
-  Mail,
-  Sliders,
-  X,
-  Sparkles,
-} from "lucide-react";
+import { useState, useEffect } from "react";
+import { CheckCircle, AlertTriangle, Clock, Zap, Mail, Sliders, X, Sparkles } from "lucide-react";
 import { StatusPageMonitorRow } from "./status-page-monitor-row";
 import { AnalyticsTracker } from "./analytics-tracker";
 import Image from "next/image";
@@ -21,7 +11,7 @@ import { SubscribeModal } from "./subscribe-modal";
 import { StatusPageSettings } from "./status-page-settings";
 
 export function PublicView({
-  page,
+  page: initialPage,
   isAdmin,
   initialIncidents = [],
 }: {
@@ -29,6 +19,20 @@ export function PublicView({
   isAdmin?: boolean;
   initialIncidents?: any[];
 }) {
+  const [page, setPage] = useState(initialPage);
+
+  useEffect(() => {
+    setPage(initialPage);
+  }, [initialPage]);
+
+  const handleLiveChange = (updates: any) => {
+    setPage((prev: any) => ({
+      ...prev,
+      ...updates,
+      theme: updates.theme !== undefined ? updates.theme : prev.theme,
+    }));
+  };
+
   const tStatus = useTranslations("status");
   const tHeadings = useTranslations("headings");
   const tActions = useTranslations("actions");
@@ -39,12 +43,13 @@ export function PublicView({
   const resolvedIncidents = initialIncidents.filter((inc) => inc.resolvedAt);
 
   // Filter monitors based on visibility settings
-  const visibleMonitors = page.monitors.filter((m: any) => {
-    if (!page.showPaused && m.monitor.status === "PAUSED") return false;
+  const visibleMonitors = (page.monitors || []).filter((m: any) => {
+    if (!page.showPaused && m.monitor?.status === "PAUSED") return false;
     return true;
   });
 
-  const allUp = visibleMonitors.every((m: any) => m.monitor.status === "UP");
+  const allUp =
+    visibleMonitors.length > 0 && visibleMonitors.every((m: any) => m.monitor?.status === "UP");
 
   // Subscribe modal state
   const [isSubscribeModalOpen, setIsSubscribeModalOpen] = useState(false);
@@ -61,12 +66,19 @@ export function PublicView({
       error: "#f87171",
     },
   };
+  const colors = theme.colors || {
+    bg: "#0f0e13",
+    text: "#edeef0",
+    primary: "#e15639",
+    degraded: "#f59e0b",
+    error: "#f87171",
+  };
   const customStyle = {
-    "--bg-page": theme.colors.bg,
-    "--text-page": theme.colors.text,
-    "--primary-page": theme.colors.primary,
-    "--degraded-page": theme.colors.degraded || "#f59e0b",
-    "--error-page": theme.colors.error || "#ef4444",
+    "--bg-page": colors.bg || "#0f0e13",
+    "--text-page": colors.text || "#edeef0",
+    "--primary-page": colors.primary || "#e15639",
+    "--degraded-page": colors.degraded || "#f59e0b",
+    "--error-page": colors.error || "#ef4444",
   } as React.CSSProperties;
 
   return (
@@ -79,7 +91,7 @@ export function PublicView({
         dangerouslySetInnerHTML={{
           __html: `
             :root {
-                --primary: ${theme.colors.primary};
+                --primary: ${colors.primary || "#e15639"};
             }
             .text-primary { color: var(--primary-page) !important; }
             .bg-primary { background-color: var(--primary-page) !important; }
@@ -604,7 +616,7 @@ export function PublicView({
 
             {/* Sidebar Body */}
             <div className="p-6 overflow-y-auto h-[calc(100vh-80px)] custom-scrollbar">
-              <StatusPageSettings page={page} />
+              <StatusPageSettings page={page} onLiveChange={handleLiveChange} />
             </div>
           </div>
         </>

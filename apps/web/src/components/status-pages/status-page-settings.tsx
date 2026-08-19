@@ -20,6 +20,7 @@ import { StatusPageI18n } from "./status-page-i18n";
 
 interface StatusPageSettingsProps {
   page: any;
+  onLiveChange?: (updates: any) => void;
 }
 
 const initialState = { success: false, error: "" };
@@ -70,7 +71,7 @@ const themes = [
   },
 ];
 
-export function StatusPageSettings({ page }: StatusPageSettingsProps) {
+export function StatusPageSettings({ page, onLiveChange }: StatusPageSettingsProps) {
   const updateWithId = updateStatusPage.bind(null, page.id);
   const [state, formAction, isPending] = useActionState(updateWithId, initialState);
 
@@ -97,7 +98,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
   });
 
   useEffect(() => {
-    if (state.success) toast.success("Settings updated");
+    if (state.success) toast.success("Status page settings updated!");
     if (state.error) toast.error(state.error);
   }, [state]);
 
@@ -120,6 +121,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 <input
                   name="title"
                   defaultValue={page.title}
+                  onChange={(e) => onLiveChange?.({ title: e.target.value })}
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
                 />
               </div>
@@ -130,6 +132,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 <input
                   name="slug"
                   defaultValue={page.slug}
+                  onChange={(e) => onLiveChange?.({ slug: e.target.value })}
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
                 />
               </div>
@@ -140,6 +143,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 <textarea
                   name="description"
                   defaultValue={page.description || ""}
+                  onChange={(e) => onLiveChange?.({ description: e.target.value })}
                   rows={2}
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
                 />
@@ -151,6 +155,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 <input
                   name="customDomain"
                   defaultValue={page.customDomain || ""}
+                  onChange={(e) => onLiveChange?.({ customDomain: e.target.value })}
                   placeholder="status.example.com"
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
                 />
@@ -173,6 +178,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                   type="checkbox"
                   name="seoIndex"
                   defaultChecked={page.seoIndex !== false}
+                  onChange={(e) => onLiveChange?.({ seoIndex: e.target.checked })}
                   id="seoIndex"
                   className="accent-primary size-4"
                 />
@@ -186,6 +192,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                   type="checkbox"
                   name="showInShowcase"
                   defaultChecked={page.showInShowcase === true}
+                  onChange={(e) => onLiveChange?.({ showInShowcase: e.target.checked })}
                   id="showInShowcase"
                   className="accent-primary size-4"
                 />
@@ -213,6 +220,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 <input
                   name="metaTitle"
                   defaultValue={page.metaTitle || ""}
+                  onChange={(e) => onLiveChange?.({ metaTitle: e.target.value })}
                   placeholder="Custom title tag for search engines"
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
                 />
@@ -225,6 +233,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 <textarea
                   name="metaDescription"
                   defaultValue={page.metaDescription || ""}
+                  onChange={(e) => onLiveChange?.({ metaDescription: e.target.value })}
                   rows={2}
                   placeholder="Custom meta description summary"
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
@@ -238,6 +247,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 <input
                   name="ogImageUrl"
                   defaultValue={page.ogImageUrl || ""}
+                  onChange={(e) => onLiveChange?.({ ogImageUrl: e.target.value })}
                   placeholder="https://example.com/social-card.png"
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
                 />
@@ -256,6 +266,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 type="checkbox"
                 name="isPrivate"
                 defaultChecked={page.isPrivate}
+                onChange={(e) => onLiveChange?.({ isPrivate: e.target.checked })}
                 id="isPrivate"
                 className="accent-primary size-4"
               />
@@ -283,6 +294,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
               <input
                 name="ipWhitelist"
                 defaultValue={page.ipWhitelist || ""}
+                onChange={(e) => onLiveChange?.({ ipWhitelist: e.target.value })}
                 placeholder="192.168.1.1, 10.0.0.1"
                 className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
               />
@@ -318,12 +330,20 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                   type="button"
                   onClick={() => {
                     setSelectedTheme(theme.value);
-                    setCustomColors({
+                    const newColors = {
                       bg: theme.colors.bg,
                       text: theme.colors.text,
                       primary: theme.colors.primary,
                       degraded: theme.colors.degraded || "#f59e0b",
                       error: theme.colors.error || "#ef4444",
+                    };
+                    setCustomColors(newColors);
+                    onLiveChange?.({
+                      theme: {
+                        name: theme.name,
+                        value: theme.value,
+                        colors: newColors,
+                      },
                     });
                   }}
                   className={`relative p-2 rounded-sm border transition-all text-left group overflow-hidden ${
@@ -369,10 +389,18 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                       value={customColors.bg}
                       onChange={(e) => {
                         setSelectedTheme("custom");
-                        setCustomColors((prev) => ({
-                          ...prev,
+                        const newColors = {
+                          ...customColors,
                           bg: e.target.value,
-                        }));
+                        };
+                        setCustomColors(newColors);
+                        onLiveChange?.({
+                          theme: {
+                            name: "Custom",
+                            value: "custom",
+                            colors: newColors,
+                          },
+                        });
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />
@@ -388,10 +416,18 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                       value={customColors.text}
                       onChange={(e) => {
                         setSelectedTheme("custom");
-                        setCustomColors((prev) => ({
-                          ...prev,
+                        const newColors = {
+                          ...customColors,
                           text: e.target.value,
-                        }));
+                        };
+                        setCustomColors(newColors);
+                        onLiveChange?.({
+                          theme: {
+                            name: "Custom",
+                            value: "custom",
+                            colors: newColors,
+                          },
+                        });
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />
@@ -409,10 +445,18 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                       value={customColors.primary}
                       onChange={(e) => {
                         setSelectedTheme("custom");
-                        setCustomColors((prev) => ({
-                          ...prev,
+                        const newColors = {
+                          ...customColors,
                           primary: e.target.value,
-                        }));
+                        };
+                        setCustomColors(newColors);
+                        onLiveChange?.({
+                          theme: {
+                            name: "Custom",
+                            value: "custom",
+                            colors: newColors,
+                          },
+                        });
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />
@@ -430,10 +474,18 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                       value={customColors.degraded}
                       onChange={(e) => {
                         setSelectedTheme("custom");
-                        setCustomColors((prev) => ({
-                          ...prev,
+                        const newColors = {
+                          ...customColors,
                           degraded: e.target.value,
-                        }));
+                        };
+                        setCustomColors(newColors);
+                        onLiveChange?.({
+                          theme: {
+                            name: "Custom",
+                            value: "custom",
+                            colors: newColors,
+                          },
+                        });
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />
@@ -449,10 +501,18 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                       value={customColors.error}
                       onChange={(e) => {
                         setSelectedTheme("custom");
-                        setCustomColors((prev) => ({
-                          ...prev,
+                        const newColors = {
+                          ...customColors,
                           error: e.target.value,
-                        }));
+                        };
+                        setCustomColors(newColors);
+                        onLiveChange?.({
+                          theme: {
+                            name: "Custom",
+                            value: "custom",
+                            colors: newColors,
+                          },
+                        });
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />
@@ -473,6 +533,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 <input
                   name="logo"
                   defaultValue={page.logo || ""}
+                  onChange={(e) => onLiveChange?.({ logo: e.target.value })}
                   placeholder="https://..."
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
                 />
@@ -484,6 +545,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 <input
                   name="favicon"
                   defaultValue={page.favicon || ""}
+                  onChange={(e) => onLiveChange?.({ favicon: e.target.value })}
                   placeholder="https://..."
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
                 />
@@ -497,6 +559,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 <input
                   name="homepageUrl"
                   defaultValue={page.homepageUrl || ""}
+                  onChange={(e) => onLiveChange?.({ homepageUrl: e.target.value })}
                   placeholder="https://yourcompany.com"
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
                 />
@@ -510,6 +573,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 <input
                   name="contactUrl"
                   defaultValue={page.contactUrl || ""}
+                  onChange={(e) => onLiveChange?.({ contactUrl: e.target.value })}
                   placeholder="https://support.yourcompany.com or mailto:support@company.com"
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
                 />
@@ -530,6 +594,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                           const updated = [...footerLinks];
                           updated[idx].label = e.target.value;
                           setFooterLinks(updated);
+                          onLiveChange?.({ footerLinks: updated });
                         }}
                         className="w-1/3 bg-black/50 border border-white/10 p-1.5 rounded-sm text-xs font-mono focus:border-primary/50 outline-none transition-colors"
                       />
@@ -540,6 +605,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                           const updated = [...footerLinks];
                           updated[idx].url = e.target.value;
                           setFooterLinks(updated);
+                          onLiveChange?.({ footerLinks: updated });
                         }}
                         className="flex-1 bg-black/50 border border-white/10 p-1.5 rounded-sm text-xs font-mono focus:border-primary/50 outline-none transition-colors"
                       />
@@ -548,6 +614,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                         onClick={() => {
                           const updated = footerLinks.filter((_, i) => i !== idx);
                           setFooterLinks(updated);
+                          onLiveChange?.({ footerLinks: updated });
                         }}
                         className="p-1.5 text-red-500 hover:bg-red-500/10 rounded-sm border border-red-500/20 transition-all flex items-center justify-center"
                         title="Remove link"
@@ -560,7 +627,9 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                   <button
                     type="button"
                     onClick={() => {
-                      setFooterLinks([...footerLinks, { label: "", url: "" }]);
+                      const updated = [...footerLinks, { label: "", url: "" }];
+                      setFooterLinks(updated);
+                      onLiveChange?.({ footerLinks: updated });
                     }}
                     className="w-full py-1.5 border border-dashed border-primary/20 hover:border-primary/40 hover:bg-primary/5 text-[10px] font-mono font-bold text-primary uppercase rounded-sm transition-all"
                   >
@@ -576,6 +645,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 <textarea
                   name="customCss"
                   defaultValue={page.customCss || ""}
+                  onChange={(e) => onLiveChange?.({ customCss: e.target.value })}
                   rows={3}
                   placeholder=".body { ... }"
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
@@ -589,6 +659,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 <textarea
                   name="customJs"
                   defaultValue={page.customJs || ""}
+                  onChange={(e) => onLiveChange?.({ customJs: e.target.value })}
                   rows={3}
                   placeholder="console.log('Custom JS Loaded');"
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
@@ -617,6 +688,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 <select
                   name="barType"
                   defaultValue={page.barType || "absolute"}
+                  onChange={(e) => onLiveChange?.({ barType: e.target.value })}
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
                 >
                   <option value="absolute">Absolute (Real Data)</option>
@@ -631,6 +703,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                 <select
                   name="cardType"
                   defaultValue={page.cardType || "duration"}
+                  onChange={(e) => onLiveChange?.({ cardType: e.target.value })}
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
                 >
                   <option value="duration">Duration (Percent Uptime)</option>
@@ -640,28 +713,13 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
             </div>
           </div>
 
-          {/* Visibility & SEO */}
+          {/* Visibility Settings */}
           <div className="bg-card/20 border border-primary/10 p-6 rounded-sm space-y-4">
             <h3 className="text-sm font-bold font-mono uppercase text-muted-foreground flex items-center gap-2">
-              <Eye className="size-4" /> Visibility & SEO
+              <Eye className="size-4" /> Visibility Settings
             </h3>
 
             <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="seoIndex"
-                  className="text-sm font-mono text-muted-foreground flex items-center gap-2"
-                >
-                  <Search className="size-3" /> Index on Search Engines
-                </label>
-                <input
-                  type="checkbox"
-                  name="seoIndex"
-                  id="seoIndex"
-                  defaultChecked={page.seoIndex ?? true}
-                  className="accent-primary size-4"
-                />
-              </div>
               <div className="flex items-center justify-between">
                 <label htmlFor="showUptime" className="text-sm font-mono text-muted-foreground">
                   Show Uptime Percentage
@@ -671,6 +729,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                   name="showUptime"
                   id="showUptime"
                   defaultChecked={page.showUptime ?? true}
+                  onChange={(e) => onLiveChange?.({ showUptime: e.target.checked })}
                   className="accent-primary size-4"
                 />
               </div>
@@ -686,6 +745,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                   name="showResponseTime"
                   id="showResponseTime"
                   defaultChecked={page.showResponseTime ?? true}
+                  onChange={(e) => onLiveChange?.({ showResponseTime: e.target.checked })}
                   className="accent-primary size-4"
                 />
               </div>
@@ -698,6 +758,7 @@ export function StatusPageSettings({ page }: StatusPageSettingsProps) {
                   name="showPaused"
                   id="showPaused"
                   defaultChecked={page.showPaused ?? false}
+                  onChange={(e) => onLiveChange?.({ showPaused: e.target.checked })}
                   className="accent-primary size-4"
                 />
               </div>

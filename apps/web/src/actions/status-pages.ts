@@ -221,12 +221,76 @@ export async function createStatusPage(prevState: any, formData: FormData) {
  *
  * This function first obtains the user session using the auth.api.getSession method. If the session does not contain a user, it returns an empty array. Otherwise, it queries the database for status pages associated with the user's ID, ordering them by creation date in descending order and including a count of related monitors.
  */
+import { getSafeSession } from "@/lib/safe-session";
+import { getActiveWorkspace } from "@/actions/team";
+
+/**
+ * Returns a Prisma where-clause scope for status pages accessible by the current user and their active workspace.
+ */
+export async function getStatusPageAccessScope(userId: string) {
+  try {
+    const active = await getActiveWorkspace();
+    if (active?.id) {
+      const members = await prisma.member.findMany({
+        where: { organizationId: active.id },
+        select: { userId: true },
+      });
+      const userIds = members.map((m) => m.userId);
+      return {
+        userId: { in: Array.from(new Set([userId, ...userIds])) },
+      };
+    }
+  } catch {}
+  return { userId };
+}
+
+/**
+ * Checks if a user has permission to manage (edit, configure, delete) a specific status page.
+ * Returns true if the user is the status page creator OR an owner/admin of any organization the creator belongs to.
+ */
+export async function canManageStatusPage(statusPageId: string, userId: string): Promise<boolean> {
+  try {
+    const page = await prisma.statusPage.findUnique({
+      where: { id: statusPageId },
+      select: { userId: true },
+    });
+    if (!page) return false;
+    if (page.userId === userId) return true;
+
+    const userMemberships = await prisma.member.findMany({
+      where: {
+        userId,
+        role: { in: ["owner", "admin"] },
+      },
+      select: { organizationId: true },
+    });
+    const orgIds = userMemberships.map((m) => m.organizationId);
+    if (orgIds.length === 0) return false;
+
+    const match = await prisma.member.findFirst({
+      where: {
+        userId: page.userId,
+        organizationId: { in: orgIds },
+      },
+    });
+    return Boolean(match);
+  } catch (err) {
+    console.error("Error checking status page management permissions:", err);
+    return false;
+  }
+}
+
+/**
+ * Retrieves status pages for the authenticated user and their active workspace.
+ */
 export async function getStatusPages() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) return [];
 
+  const scope = await getStatusPageAccessScope(session.user.id);
+
   return prisma.statusPage.findMany({
-    where: { userId: session.user.id },
+    where: scope,
     orderBy: { createdAt: "desc" },
     include: {
       _count: {
@@ -237,22 +301,17 @@ export async function getStatusPages() {
 }
 
 /**
- * Retrieves the status page for a given user ID.
- *
- * This function first checks the user's session using the auth.api.getSession method. If the user is not authenticated, it returns null.
- * If the user is authenticated, it queries the database for a unique status page associated with the provided ID and the user's ID,
- * including related monitors and internationalization settings.
- *
- * @param {string} id - The unique identifier of the status page to retrieve.
+ * Retrieves the status page for a given ID if authorized.
  */
-import { getSafeSession } from "@/lib/safe-session";
-
 export async function getStatusPage(id: string) {
   const session = await getSafeSession();
   if (!session?.user) return null;
 
+  const allowed = await canManageStatusPage(id, session.user.id);
+  if (!allowed) return null;
+
   return prisma.statusPage.findUnique({
-    where: { id, userId: session.user.id } as any,
+    where: { id },
     include: {
       monitors: {
         include: {
@@ -278,17 +337,18 @@ export async function getStatusPage(id: string) {
 
 /**
  * Update the status page with the provided data.
- *
- * This function retrieves the current user session and checks for authorization. It then constructs an object with the updated status page data from the provided FormData. After verifying the current status page, it updates the database with the new values and triggers revalidation for the affected paths. If any errors occur during the process, it logs the error and returns a failure response.
- *
- * @param id - The unique identifier of the status page to be updated.
- * @param prevState - The previous state of the status page (not used in the current implementation).
- * @param formData - The FormData object containing the updated status page information.
- * @returns An object indicating the success of the update operation.
  */
 export async function updateStatusPage(id: string, prevState: any, formData: FormData) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) return { success: false, error: "Unauthorized" };
+
+  const allowed = await canManageStatusPage(id, session.user.id);
+  if (!allowed) {
+    return {
+      success: false,
+      error: "Forbidden: You do not have permission to edit this status page.",
+    };
+  }
 
   const rawData = {
     slug: formData.get("slug") as string,
@@ -302,7 +362,6 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
     ipWhitelist: (formData.get("ipWhitelist") as string) || undefined,
 
     // For booleans in update, unchecked means not sent (null).
-    // so `get` returns null. null !== 'on' -> false. Correct.
     seoIndex: formData.get("seoIndex") === "on",
     showUptime: formData.get("showUptime") === "on",
     showResponseTime: formData.get("showResponseTime") === "on",
@@ -325,9 +384,6 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
   };
 
   try {
-    // Check if domain changed
-    const current = await prisma.statusPage.findUnique({ where: { id } });
-
     const limitCheck = await assertStatusPageLimits(session.user.id, {
       customDomain: rawData.customDomain,
       isPasswordProtected: Boolean(rawData.password),
@@ -350,7 +406,7 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
     }
 
     await prisma.statusPage.update({
-      where: { id, userId: session.user.id },
+      where: { id },
       data: {
         slug: rawData.slug,
         title: rawData.title,
@@ -395,6 +451,41 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
 }
 
 /**
+ * Checks if a user has permission to access a monitor.
+ */
+export async function canAccessMonitor(monitorId: string, userId: string): Promise<boolean> {
+  try {
+    const monitor = await prisma.monitor.findUnique({
+      where: { id: monitorId },
+      select: { userId: true, organizationId: true },
+    });
+    if (!monitor) return false;
+    if (monitor.userId === userId) return true;
+
+    const userMemberships = await prisma.member.findMany({
+      where: {
+        userId,
+        role: { in: ["owner", "admin", "member"] },
+      },
+      select: { organizationId: true },
+    });
+    const orgIds = userMemberships.map((m) => m.organizationId);
+    if (monitor.organizationId && orgIds.includes(monitor.organizationId)) return true;
+
+    const match = await prisma.member.findFirst({
+      where: {
+        userId: monitor.userId,
+        organizationId: { in: orgIds },
+      },
+    });
+    return Boolean(match);
+  } catch (err) {
+    console.error("Error checking monitor access permissions:", err);
+    return false;
+  }
+}
+
+/**
  * Validates the provided password against the status page's password.
  *
  * If the password matches, a cryptographically signed HMAC token cookie is set for 24 hours.
@@ -425,12 +516,6 @@ export async function verifyStatusPagePassword(pageId: string, password: string)
 
 /**
  * Adds a monitor to a specified status page.
- *
- * The function first retrieves the user session to ensure authorization. It then checks if the specified page exists for the user. If the page is found, it creates a new monitor entry associated with the page and triggers revalidation for the relevant paths. If any errors occur, such as duplicate entries, they are handled gracefully.
- *
- * @param pageId - The ID of the status page to which the monitor will be added.
- * @param monitorId - The ID of the monitor to be associated with the status page.
- * @returns An object indicating the success of the operation and any associated error messages.
  */
 export async function addMonitorToPage(pageId: string, monitorId: string) {
   let reqHeaders: any;
@@ -443,15 +528,14 @@ export async function addMonitorToPage(pageId: string, monitorId: string) {
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
   try {
-    const page = await prisma.statusPage.findFirst({
-      where: { id: pageId, userId: session.user.id },
-    });
-    if (!page) return { success: false, error: "Page not found" };
+    const isAllowedPage = await canManageStatusPage(pageId, session.user.id);
+    if (!isAllowedPage) return { success: false, error: "Page not found or unauthorized" };
 
-    const monitor = await prisma.monitor.findFirst({
-      where: { id: monitorId, userId: session.user.id },
-    });
-    if (!monitor) return { success: false, error: "Monitor not found or unauthorized" };
+    const isAllowedMonitor = await canAccessMonitor(monitorId, session.user.id);
+    if (!isAllowedMonitor) return { success: false, error: "Monitor not found or unauthorized" };
+
+    const page = await prisma.statusPage.findUnique({ where: { id: pageId } });
+    if (!page) return { success: false, error: "Page not found" };
 
     await prisma.statusPageMonitor.create({
       data: {
@@ -471,21 +555,16 @@ export async function addMonitorToPage(pageId: string, monitorId: string) {
 
 /**
  * Remove a monitor from a specified status page.
- *
- * This function first retrieves the user session to ensure authorization. It then checks if the specified page exists for the user. If the page is found, it deletes the monitor associated with the page and revalidates the paths for the dashboard and status page. In case of any errors during the process, it logs the error and returns a failure response.
- *
- * @param pageId - The ID of the status page from which the monitor will be removed.
- * @param monitorId - The ID of the monitor to be removed from the status page.
- * @returns An object indicating the success of the operation and any associated error message.
  */
 export async function removeMonitorFromPage(pageId: string, monitorId: string) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
   try {
-    const page = await prisma.statusPage.findFirst({
-      where: { id: pageId, userId: session.user.id },
-    });
+    const isAllowed = await canManageStatusPage(pageId, session.user.id);
+    if (!isAllowed) return { success: false, error: "Page not found or unauthorized" };
+
+    const page = await prisma.statusPage.findUnique({ where: { id: pageId } });
     if (!page) return { success: false, error: "Page not found" };
 
     await prisma.statusPageMonitor.deleteMany({
@@ -565,16 +644,18 @@ export async function updateWidgetConfig(
   }
 
   try {
-    const page = await prisma.statusPage.findFirst({
-      where: { id: pageId, userId: session.user.id },
-    });
+    const isAllowed = await canManageStatusPage(pageId, session.user.id);
+    if (!isAllowed) {
+      return { success: false, error: "Status page not found or unauthorized" };
+    }
 
+    const page = await prisma.statusPage.findUnique({ where: { id: pageId } });
     if (!page) {
       return { success: false, error: "Status page not found" };
     }
 
     await prisma.statusPage.update({
-      where: { id: pageId, userId: session.user.id },
+      where: { id: pageId },
       data: {
         widgetEnabled: data.widgetEnabled,
         widgetAllowedDomains: data.widgetAllowedDomains,
@@ -605,16 +686,13 @@ export async function updateHistoryDays(pageId: string, historyDays: number) {
   }
 
   try {
-    const page = await prisma.statusPage.findFirst({
-      where: { id: pageId, userId: session.user.id },
-    });
-
-    if (!page) {
-      return { success: false, error: "Status page not found" };
+    const isAllowed = await canManageStatusPage(pageId, session.user.id);
+    if (!isAllowed) {
+      return { success: false, error: "Status page not found or unauthorized" };
     }
 
     await prisma.statusPage.update({
-      where: { id: pageId, userId: session.user.id },
+      where: { id: pageId },
       data: { historyDays },
     });
 
@@ -633,11 +711,14 @@ export async function getStatusPageIncidents(pageId: string, days: number = 90) 
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) return [];
 
+  const isAllowed = await canManageStatusPage(pageId, session.user.id);
+  if (!isAllowed) return [];
+
   const startDate = new Date();
   startDate.setDate(startDate.getDate() - days);
 
   const page = await prisma.statusPage.findUnique({
-    where: { id: pageId, userId: session.user.id },
+    where: { id: pageId },
     include: {
       monitors: {
         select: { monitorId: true },
@@ -674,8 +755,11 @@ export async function getStatusPageMaintenance(pageId: string) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) return [];
 
-  const page = await prisma.statusPage.findFirst({
-    where: { id: pageId, userId: session.user.id },
+  const isAllowed = await canManageStatusPage(pageId, session.user.id);
+  if (!isAllowed) return [];
+
+  const page = await prisma.statusPage.findUnique({
+    where: { id: pageId },
     include: {
       monitors: {
         select: { monitorId: true },
@@ -687,8 +771,6 @@ export async function getStatusPageMaintenance(pageId: string) {
 
   const monitorIds = page.monitors.map((m) => m.monitorId);
   const now = new Date();
-  const thirtyDaysFromNow = new Date();
-  thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
 
   return prisma.maintenanceWindow.findMany({
     where: {
@@ -728,8 +810,18 @@ export async function getStatusPageUptimeData(pageId: string, days: number = 90)
     };
   }
 
-  const page = await prisma.statusPage.findFirst({
-    where: { id: pageId, userId: session.user.id },
+  const isAllowed = await canManageStatusPage(pageId, session.user.id);
+  if (!isAllowed) {
+    return {
+      current: 100,
+      previous: 100,
+      trend: "stable" as const,
+      difference: 0,
+    };
+  }
+
+  const page = await prisma.statusPage.findUnique({
+    where: { id: pageId },
     include: {
       monitors: {
         select: { monitorId: true },
@@ -868,15 +960,14 @@ export async function createStatusPageOverride(
   const session = await auth.api.getSession({ headers: reqHeaders });
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
-  const page = await prisma.statusPage.findUnique({
-    where: { id: statusPageId, userId: session.user.id } as any,
-  });
-  if (!page) return { success: false, error: "Status page not found" };
+  const isAllowedPage = await canManageStatusPage(statusPageId, session.user.id);
+  if (!isAllowedPage) return { success: false, error: "Status page not found or unauthorized" };
 
-  const monitor = await prisma.monitor.findFirst({
-    where: { id: monitorId, userId: session.user.id },
-  });
-  if (!monitor) return { success: false, error: "Monitor not found or unauthorized" };
+  const isAllowedMonitor = await canAccessMonitor(monitorId, session.user.id);
+  if (!isAllowedMonitor) return { success: false, error: "Monitor not found or unauthorized" };
+
+  const page = await prisma.statusPage.findUnique({ where: { id: statusPageId } });
+  if (!page) return { success: false, error: "Status page not found" };
 
   const date = new Date(dateStr);
   date.setUTCHours(0, 0, 0, 0);
@@ -925,19 +1016,19 @@ export async function deleteStatusPageOverride(statusPageId: string, overrideId:
   const session = await auth.api.getSession({ headers: reqHeaders });
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
-  const page = await prisma.statusPage.findUnique({
-    where: { id: statusPageId, userId: session.user.id } as any,
-  });
+  const isAllowed = await canManageStatusPage(statusPageId, session.user.id);
+  if (!isAllowed) return { success: false, error: "Status page not found or unauthorized" };
+
+  const page = await prisma.statusPage.findUnique({ where: { id: statusPageId } });
   if (!page) return { success: false, error: "Status page not found" };
 
   const override = await prisma.statusPageOverride.findFirst({
     where: {
       id: overrideId,
       statusPageId,
-      statusPage: { userId: session.user.id },
     },
   });
-  if (!override) return { success: false, error: "Override not found or unauthorized" };
+  if (!override) return { success: false, error: "Override not found" };
 
   try {
     await prisma.statusPageOverride.delete({
@@ -960,10 +1051,8 @@ export async function getStatusPageOverrides(statusPageId: string) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) return [];
 
-  const page = await prisma.statusPage.findUnique({
-    where: { id: statusPageId, userId: session.user.id } as any,
-  });
-  if (!page) return [];
+  const isAllowed = await canManageStatusPage(statusPageId, session.user.id);
+  if (!isAllowed) return [];
 
   return prisma.statusPageOverride.findMany({
     where: { statusPageId },
@@ -992,9 +1081,10 @@ export async function updateStatusPageMonitorSettings(
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
-  const page = await prisma.statusPage.findUnique({
-    where: { id: statusPageId, userId: session.user.id } as any,
-  });
+  const isAllowed = await canManageStatusPage(statusPageId, session.user.id);
+  if (!isAllowed) return { success: false, error: "Status page not found or unauthorized" };
+
+  const page = await prisma.statusPage.findUnique({ where: { id: statusPageId } });
   if (!page) return { success: false, error: "Status page not found" };
 
   try {

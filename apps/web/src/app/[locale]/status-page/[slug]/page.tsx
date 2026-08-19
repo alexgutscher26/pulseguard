@@ -12,6 +12,7 @@ import { auth } from "@steadystack/auth";
 import { getMockStatusPage } from "@/components/status-pages/mock-data";
 import { env } from "@steadystack/env/server";
 import { verifyAuthToken } from "@steadystack/core";
+import { canManageStatusPage } from "@/actions/status-pages";
 
 export const dynamic = "force-dynamic";
 
@@ -143,7 +144,7 @@ export default async function PublicStatusPage({ params }: Props) {
   }
 
   const session = await auth.api.getSession({ headers: headerStore });
-  const isAdmin = session?.user?.id === page.userId;
+  const isAdmin = session?.user?.id ? await canManageStatusPage(page.id, session.user.id) : false;
 
   // 4. Fetch Active & Recent Incidents (Last 7 Days)
   const monitorIds = page.monitors.map((m) => m.monitorId);

@@ -38,8 +38,15 @@ export const UsageLimitWarningEmail: React.FC<Readonly<UsageLimitWarningEmailPro
       percentage: 84,
     },
   ],
-  upgradeUrl = "https://steadystack.dev/dashboard/settings?tab=billing",
+  upgradeUrl,
 }) => {
+  const baseUrl = (
+    process.env.NEXT_PUBLIC_APP_URL ||
+    process.env.BETTER_AUTH_URL ||
+    "https://steadystack.dev"
+  ).replace(/\/+$/, "");
+
+  const finalUpgradeUrl = upgradeUrl || `${baseUrl}/dashboard/settings?tab=billing`;
   const hasCriticalWarning = warnings.some((w) => w.percentage >= 90);
   const themeColor = hasCriticalWarning ? "#ef4444" : "#f59e0b";
 
@@ -196,13 +203,13 @@ export const UsageLimitWarningEmail: React.FC<Readonly<UsageLimitWarningEmailPro
             </div>
 
             {/* CTA Button */}
-            <PrimaryButton href={upgradeUrl}>Upgrade Workspace Plan</PrimaryButton>
+            <PrimaryButton href={finalUpgradeUrl}>Upgrade Workspace Plan</PrimaryButton>
           </Section>
 
           {/* Footer */}
           <EmailFooter
             customMessage="SteadyStack Quota & Capacity Management System."
-            unsubscribeUrl="https://steadystack.dev/dashboard/settings?tab=billing"
+            unsubscribeUrl={`${baseUrl}/dashboard/settings?tab=billing`}
           />
         </Container>
       </Body>

@@ -237,6 +237,17 @@ export function EmailFooter({
   customMessage?: string;
   unsubscribeUrl?: string;
 }) {
+  const baseUrl = (
+    process.env.NEXT_PUBLIC_APP_URL ||
+    process.env.BETTER_AUTH_URL ||
+    "https://steadystack.dev"
+  ).replace(/\/+$/, "");
+
+  const dashboardUrl = `${baseUrl}/dashboard`;
+  const statusUrl = `${baseUrl}/status-page/steadystack`;
+  const docsUrl = `${baseUrl}/docs`;
+  const prefUrl = unsubscribeUrl || `${baseUrl}/dashboard/settings?tab=notifications`;
+
   return (
     <Section
       style={{
@@ -266,7 +277,7 @@ export function EmailFooter({
             <td align="center">
               <div style={{ marginBottom: "12px" }}>
                 <Link
-                  href="https://steadystack.dev"
+                  href={dashboardUrl}
                   style={{
                     fontSize: "12px",
                     color: "#a1a1aa",
@@ -279,7 +290,7 @@ export function EmailFooter({
                 </Link>
                 <span style={{ color: "#3f3f46", fontSize: "12px" }}>•</span>
                 <Link
-                  href="https://steadystack.dev/en/status-page/steadystack"
+                  href={statusUrl}
                   style={{
                     fontSize: "12px",
                     color: "#a1a1aa",
@@ -292,7 +303,7 @@ export function EmailFooter({
                 </Link>
                 <span style={{ color: "#3f3f46", fontSize: "12px" }}>•</span>
                 <Link
-                  href="https://steadystack.dev/docs"
+                  href={docsUrl}
                   style={{
                     fontSize: "12px",
                     color: "#a1a1aa",
@@ -303,22 +314,18 @@ export function EmailFooter({
                 >
                   Docs
                 </Link>
-                {unsubscribeUrl && (
-                  <>
-                    <span style={{ color: "#3f3f46", fontSize: "12px" }}>•</span>
-                    <Link
-                      href={unsubscribeUrl}
-                      style={{
-                        fontSize: "12px",
-                        color: "#71717a",
-                        textDecoration: "none",
-                        margin: "0 8px",
-                      }}
-                    >
-                      Preferences
-                    </Link>
-                  </>
-                )}
+                <span style={{ color: "#3f3f46", fontSize: "12px" }}>•</span>
+                <Link
+                  href={prefUrl}
+                  style={{
+                    fontSize: "12px",
+                    color: "#71717a",
+                    textDecoration: "none",
+                    margin: "0 8px",
+                  }}
+                >
+                  Preferences
+                </Link>
               </div>
               <Text
                 style={{
@@ -330,7 +337,16 @@ export function EmailFooter({
               >
                 SteadyStack Edge Telemetry & Real-Time Observability Engine
                 <br />
-                Secured with 256-bit distributed consensus • steadystack.dev
+                Secured with 256-bit distributed consensus •{" "}
+                <Link
+                  href={baseUrl}
+                  style={{
+                    color: "#71717a",
+                    textDecoration: "none",
+                  }}
+                >
+                  steadystack.dev
+                </Link>
               </Text>
             </td>
           </tr>
