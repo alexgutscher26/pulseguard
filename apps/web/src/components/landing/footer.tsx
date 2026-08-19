@@ -206,6 +206,12 @@ export default function LandingFooter() {
               >
                 Terms of Service
               </Link>
+              <Link
+                href={"/security" as any}
+                className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
+              >
+                Security Policy
+              </Link>
             </div>
           </div>
         </div>
