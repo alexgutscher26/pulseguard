@@ -110,12 +110,12 @@ export default function LandingHeader() {
                       {
                         name: "30-Day Benchmark Study",
                         href: "/benchmarks/false-positives",
-                        icon: <Activity className="h-4 w-4 text-emerald-400" />,
+                        icon: <Activity className="h-4 w-4 text-primary" />,
                       },
                       {
                         name: "Is It Down? (300+ Services)",
                         href: "/is-down",
-                        icon: <Activity className="h-4 w-4 text-emerald-500" />,
+                        icon: <Activity className="h-4 w-4 text-primary" />,
                       },
                       {
                         name: "IP Subnet Analyzer",

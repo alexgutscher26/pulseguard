@@ -46,10 +46,10 @@ export default function LandingFooter() {
               </Link>
               <Link
                 href={"/benchmarks/false-positives" as any}
-                className="text-emerald-400 hover:text-emerald-300 text-xs font-semibold transition-colors w-fit flex items-center gap-1.5"
+                className="text-primary hover:text-primary/80 text-xs font-semibold transition-colors w-fit flex items-center gap-1.5"
               >
                 False-Positive Benchmark
-                <span className="text-[9px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.2 rounded font-mono font-bold">
+                <span className="text-[9px] bg-primary/10 text-primary px-1.5 py-0.2 rounded font-mono font-bold">
                   30D Study
                 </span>
               </Link>
@@ -106,7 +106,7 @@ export default function LandingFooter() {
                 className="text-primary hover:text-primary/80 text-xs font-semibold transition-colors w-fit flex items-center gap-1.5"
               >
                 Is It Down? Hub
-                <span className="text-[9px] bg-emerald-500/10 text-emerald-500 px-1.5 py-0.2 rounded font-mono font-bold">
+                <span className="text-[9px] bg-primary/10 text-primary px-1.5 py-0.2 rounded font-mono font-bold">
                   300+
                 </span>
               </Link>

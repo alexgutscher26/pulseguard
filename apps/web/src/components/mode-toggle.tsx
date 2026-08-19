@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Moon, Sun, Laptop, Zap, Monitor, Disc } from "lucide-react";
+import { Moon, Sun, Laptop, Monitor } from "lucide-react";
 import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
@@ -47,14 +47,20 @@ export function ModeToggle() {
         }
       />
       <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={() => setTheme("dark")}>
+          <Moon className="mr-2 h-4 w-4" /> Obsidian Dark
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("matrix")}>
-          <Monitor className="mr-2 h-4 w-4 text-[#e15639]" /> Sentry Slate
+          <Monitor className="mr-2 h-4 w-4 text-[#38bdf8]" /> Midnight Slate
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("cyberpunk")}>
-          <Moon className="mr-2 h-4 w-4 text-[#ff5a1f]" /> Loops Dark
+          <Moon className="mr-2 h-4 w-4 text-[#f97316]" /> Carbon Ember
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("blade")}>
-          <Sun className="mr-2 h-4 w-4 text-[#ff5a1f]" /> Loops Light
+          <Moon className="mr-2 h-4 w-4 text-[#10b981]" /> Nordic Emerald
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("light")}>
+          <Sun className="mr-2 h-4 w-4" /> Clean Light
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("system")}>
           <Laptop className="mr-2 h-4 w-4" /> System

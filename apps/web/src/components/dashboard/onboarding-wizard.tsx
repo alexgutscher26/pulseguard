@@ -297,9 +297,9 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="dark max-w-2xl max-h-[90vh] p-0 border border-emerald-500/30 bg-zinc-950/95 shadow-[0_0_60px_rgba(16,185,129,0.25)] text-zinc-100 overflow-hidden rounded-2xl sm:rounded-2xl flex flex-col [&>button]:hidden">
+      <DialogContent className="max-w-2xl max-h-[90vh] p-0 border border-border bg-card/95 backdrop-blur-2xl shadow-2xl text-foreground overflow-hidden rounded-2xl sm:rounded-2xl flex flex-col [&>button]:hidden">
         <DialogHeader className="sr-only">
-          <DialogTitle>PulseGuard 60-Second Setup</DialogTitle>
+          <DialogTitle>PulseGuard Setup</DialogTitle>
           <DialogDescription>
             {step === 1 &&
               "Create monitor or 1-click import from UptimeRobot, Better Stack, or StatusCake."}
@@ -309,21 +309,21 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
         </DialogHeader>
 
         {/* Header bar (Fixed Top) */}
-        <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-zinc-800/80 bg-zinc-900/60 backdrop-blur-md">
+        <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-border/80 bg-card/80 backdrop-blur-md">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.15)]">
-              <Rocket className="size-5 animate-pulse text-emerald-400" />
+            <div className="p-2 rounded-xl bg-primary/10 border border-primary/20 text-primary shadow-sm">
+              <Rocket className="size-5 text-primary" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-base font-bold font-mono text-foreground uppercase tracking-wider">
-                  PulseGuard 60-Second Setup
+                  PulseGuard Setup
                 </h2>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 font-bold">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full border border-primary/30 bg-primary/10 text-primary font-bold">
                   Step {step} of 3
                 </span>
               </div>
-              <p className="text-xs text-zinc-400 font-mono mt-0.5">
+              <p className="text-xs text-muted-foreground font-mono mt-0.5">
                 {step === 1 &&
                   "Create monitor or 1-click import from UptimeRobot, Better Stack, or StatusCake."}
                 {step === 2 && "Connect your alert channel — never leave a monitor unnotified."}
@@ -336,14 +336,14 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
             variant="ghost"
             size="icon"
             onClick={() => onOpenChange(false)}
-            className="size-8 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/60 rounded-lg transition-colors"
+            className="size-8 text-muted-foreground hover:text-foreground hover:bg-accent/60 rounded-lg transition-colors"
           >
             <X className="size-4" />
           </Button>
         </div>
 
         {/* Progress Stepper (Fixed Subheader) */}
-        <div className="shrink-0 grid grid-cols-3 border-b border-zinc-800/80 bg-zinc-950">
+        <div className="shrink-0 grid grid-cols-3 border-b border-border bg-card/50">
           {[
             { id: 1, label: "1. Monitor Target", icon: Activity },
             { id: 2, label: "2. Alert Channel", icon: Bell },
@@ -356,16 +356,16 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
               <div
                 key={s.id}
                 className={cn(
-                  "flex items-center justify-center gap-2 py-2.5 px-3 text-xs font-mono border-r border-zinc-800/80 last:border-r-0 transition-colors",
+                  "flex items-center justify-center gap-2 py-2.5 px-3 text-xs font-mono border-r border-border last:border-r-0 transition-colors",
                   isActive
-                    ? "bg-emerald-500/10 text-emerald-400 font-bold border-b-2 border-b-emerald-400 shadow-[inset_0_-2px_8px_rgba(16,185,129,0.2)]"
+                    ? "bg-primary/10 text-primary font-bold border-b-2 border-b-primary shadow-xs"
                     : isDone
-                      ? "text-emerald-500 bg-zinc-900/30"
-                      : "text-zinc-500",
+                      ? "text-primary bg-primary/5"
+                      : "text-muted-foreground",
                 )}
               >
                 {isDone ? (
-                  <CheckCircle2 className="size-3.5 text-emerald-400" />
+                  <CheckCircle2 className="size-3.5 text-primary" />
                 ) : (
                   <Icon className="size-3.5" />
                 )}
@@ -376,7 +376,7 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
         </div>
 
         {/* Scrollable Body Content */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-5 text-zinc-100 [color-scheme:dark]">
+        <div className="flex-1 overflow-y-auto p-6 space-y-5 text-foreground">
           <AnimatePresence mode="wait">
             {/* STEP 1: CREATE MONITOR / MULTI-PROVIDER IMPORT */}
             {step === 1 && (
@@ -388,15 +388,15 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                 className="space-y-5"
               >
                 {/* Method Switcher Tabs */}
-                <div className="grid grid-cols-2 gap-2 p-1 rounded-xl bg-zinc-900/80 border border-zinc-800">
+                <div className="grid grid-cols-2 gap-2 p-1 rounded-xl bg-accent/40 border border-border">
                   <button
                     type="button"
                     onClick={() => setTab("quick")}
                     className={cn(
-                      "flex items-center justify-center gap-2 py-2.5 text-xs font-mono font-bold rounded-lg transition-all",
+                      "flex items-center justify-center gap-2 py-2.5 text-xs font-mono font-bold rounded-lg transition-all cursor-pointer",
                       tab === "quick"
-                        ? "bg-gradient-to-r from-emerald-500 to-emerald-400 text-zinc-950 shadow-[0_0_15px_rgba(16,185,129,0.3)]"
-                        : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50",
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground hover:bg-accent/60",
                     )}
                   >
                     <Zap className="size-4" /> Single Endpoint Setup
@@ -405,10 +405,10 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                     type="button"
                     onClick={() => setTab("import")}
                     className={cn(
-                      "flex items-center justify-center gap-2 py-2.5 text-xs font-mono font-bold rounded-lg transition-all",
+                      "flex items-center justify-center gap-2 py-2.5 text-xs font-mono font-bold rounded-lg transition-all cursor-pointer",
                       tab === "import"
-                        ? "bg-gradient-to-r from-emerald-500 to-emerald-400 text-zinc-950 shadow-[0_0_15px_rgba(16,185,129,0.3)]"
-                        : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50",
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground hover:bg-accent/60",
                     )}
                   >
                     <Download className="size-4" /> ⚡ 1-Click Multi-Site Import
@@ -416,7 +416,7 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                 </div>
 
                 {monitorError && (
-                  <div className="p-3.5 rounded-xl border border-red-500/30 bg-red-500/10 text-xs font-mono text-red-400 flex items-center gap-2">
+                  <div className="p-3.5 rounded-xl border border-destructive/30 bg-destructive/10 text-xs font-mono text-destructive flex items-center gap-2">
                     <X className="size-4 shrink-0" />
                     <span>{monitorError}</span>
                   </div>
@@ -426,28 +426,30 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                 {tab === "quick" && (
                   <form onSubmit={handleQuickCreateMonitor} className="space-y-4">
                     {isPrefilledFromDemo && (
-                      <div className="p-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 flex items-center justify-between text-xs font-mono text-emerald-400">
+                      <div className="p-3 rounded-xl border border-primary/30 bg-primary/10 flex items-center justify-between text-xs font-mono text-primary">
                         <span className="flex items-center gap-2">
-                          <Sparkles className="size-4 text-emerald-400" />
+                          <Sparkles className="size-4 text-primary" />
                           Pre-filled from your demo session
                         </span>
-                        <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/30">
+                        <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-primary/20 border border-primary/30">
                           Auto-filled
                         </span>
                       </div>
                     )}
 
                     <div className="space-y-1.5">
-                      <Label className="text-xs font-mono text-zinc-300">Target Endpoint URL</Label>
+                      <Label className="text-xs font-mono text-foreground">
+                        Target Endpoint URL
+                      </Label>
                       <Input
                         type="text"
                         placeholder="https://api.yourdomain.com/health"
                         value={url}
                         onChange={(e) => handleUrlChange(e.target.value)}
-                        className="bg-zinc-900/90 border-zinc-800 text-zinc-100 placeholder:text-zinc-500 font-mono text-sm focus:border-emerald-500 focus-visible:ring-1 focus-visible:ring-emerald-500 h-10"
+                        className="bg-accent/30 border-border text-foreground placeholder:text-muted-foreground font-mono text-sm focus:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 h-10"
                         autoFocus
                       />
-                      <p className="text-[11px] text-zinc-500 font-mono">
+                      <p className="text-[11px] text-muted-foreground font-mono">
                         PulseGuard will probe this URL every 60 seconds across multi-region edge
                         nodes.
                       </p>
@@ -455,7 +457,7 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <Label className="text-xs font-mono text-zinc-300">
+                        <Label className="text-xs font-mono text-foreground">
                           Friendly Monitor Name
                         </Label>
                         <Input
@@ -463,16 +465,16 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                           placeholder="Main Web API"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
-                          className="bg-zinc-900/90 border-zinc-800 text-zinc-100 placeholder:text-zinc-500 font-mono text-sm h-10"
+                          className="bg-accent/30 border-border text-foreground placeholder:text-muted-foreground font-mono text-sm h-10"
                         />
                       </div>
 
                       <div className="space-y-1.5">
-                        <Label className="text-xs font-mono text-zinc-300">Check Protocol</Label>
+                        <Label className="text-xs font-mono text-foreground">Check Protocol</Label>
                         <select
                           value={monitorType}
                           onChange={(e) => setMonitorType(e.target.value as any)}
-                          className="w-full h-10 px-3 rounded-md bg-zinc-900 border border-zinc-800 font-mono text-sm text-zinc-100 focus:outline-none focus:border-emerald-500"
+                          className="w-full h-10 px-3 rounded-md bg-accent/30 border border-border font-mono text-sm text-foreground focus:outline-none focus:border-primary"
                         >
                           <option value="HTTP">HTTP / HTTPS (Rest API)</option>
                           <option value="PING">PING (ICMP Echo)</option>
@@ -486,7 +488,7 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                       <Button
                         type="submit"
                         disabled={isCreatingMonitor}
-                        className="bg-gradient-to-r from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 text-zinc-950 font-mono font-bold uppercase tracking-wider text-xs h-11 px-6 shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all"
+                        className="bg-primary text-primary-foreground hover:bg-primary/90 font-mono font-bold uppercase tracking-wider text-xs h-11 px-6 shadow-sm transition-all"
                       >
                         {isCreatingMonitor ? (
                           <RefreshCw className="size-4 animate-spin mr-2" />
@@ -526,10 +528,10 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                               setMonitorError("");
                             }}
                             className={cn(
-                              "p-2.5 rounded-xl border flex flex-col items-center justify-center gap-1.5 font-mono text-xs font-bold transition-all",
+                              "p-2.5 rounded-xl border flex flex-col items-center justify-center gap-1.5 font-mono text-xs font-bold transition-all cursor-pointer",
                               isSel
-                                ? "bg-emerald-500/15 border-emerald-500/50 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.2)]"
-                                : "bg-zinc-900/60 border-zinc-800/80 text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200",
+                                ? "bg-primary/10 border-primary/50 text-primary shadow-xs"
+                                : "bg-accent/20 border-border text-muted-foreground hover:bg-accent/40 hover:text-foreground",
                             )}
                           >
                             <Icon className="size-4" />
@@ -543,9 +545,9 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                       <div className="space-y-4 pt-1">
                         {importProvider !== "csv" ? (
                           <div className="space-y-1.5">
-                            <Label className="text-xs font-mono text-zinc-300 uppercase tracking-wider flex items-center justify-between">
+                            <Label className="text-xs font-mono text-foreground uppercase tracking-wider flex items-center justify-between">
                               <span>{importProvider} API Token / Key</span>
-                              <span className="text-[10px] text-emerald-400 font-normal">
+                              <span className="text-[10px] text-primary font-normal">
                                 Direct API Fetch
                               </span>
                             </Label>
@@ -554,12 +556,12 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                               placeholder={`Enter your ${importProvider} API Key (e.g. u1234567-xxx)...`}
                               value={apiKeyInput}
                               onChange={(e) => setApiKeyInput(e.target.value)}
-                              className="bg-zinc-900/90 border-zinc-800 text-zinc-100 placeholder:text-zinc-500 font-mono text-sm h-11 focus:border-emerald-500 focus-visible:ring-1 focus-visible:ring-emerald-500"
+                              className="bg-accent/30 border-border text-foreground placeholder:text-muted-foreground font-mono text-sm h-11 focus:border-primary focus-visible:ring-1 focus-visible:ring-primary/20"
                             />
                           </div>
                         ) : (
                           <div className="space-y-1.5">
-                            <Label className="text-xs font-mono text-zinc-300">
+                            <Label className="text-xs font-mono text-foreground">
                               Paste Exported CSV or JSON Data
                             </Label>
                             <textarea
@@ -567,7 +569,7 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                               placeholder={`name,url,type\nMy Web Service,https://api.example.com,HTTP\n...`}
                               value={rawContentInput}
                               onChange={(e) => setRawContentInput(e.target.value)}
-                              className="w-full p-3 rounded-xl bg-zinc-900/90 border border-zinc-800 font-mono text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500"
+                              className="w-full p-3 rounded-xl bg-accent/30 border border-border font-mono text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
                             />
                           </div>
                         )}
@@ -576,7 +578,7 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                           type="button"
                           onClick={handleFetchImportMonitors}
                           disabled={isFetchingImport}
-                          className="w-full bg-gradient-to-r from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 text-zinc-950 font-mono font-bold uppercase tracking-wider text-xs h-11 shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all"
+                          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-mono font-bold uppercase tracking-wider text-xs h-11 shadow-sm transition-all"
                         >
                           {isFetchingImport ? (
                             <RefreshCw className="size-4 animate-spin mr-2" />
@@ -589,16 +591,16 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                     ) : (
                       <div className="space-y-3">
                         <div className="flex items-center justify-between text-xs font-mono">
-                          <span className="text-zinc-300 font-bold">
+                          <span className="text-foreground font-bold">
                             Found {importedCandidates.length} Monitors
                           </span>
-                          <span className="text-emerald-400 font-bold">
+                          <span className="text-primary font-bold">
                             {importedCandidates.filter((m) => m.selected).length} Selected for
                             1-Click Import
                           </span>
                         </div>
 
-                        <div className="max-h-52 overflow-y-auto border border-zinc-800 rounded-xl p-2 space-y-1.5 bg-zinc-900/50">
+                        <div className="max-h-52 overflow-y-auto border border-border rounded-xl p-2 space-y-1.5 bg-accent/10">
                           {importedCandidates.map((mon, idx) => (
                             <div
                               key={idx}
@@ -606,8 +608,8 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                               className={cn(
                                 "p-2.5 rounded-lg border cursor-pointer flex items-center justify-between text-xs font-mono transition-colors",
                                 mon.selected
-                                  ? "bg-emerald-500/10 border-emerald-500/40 text-emerald-300"
-                                  : "bg-zinc-950 border-zinc-800 text-zinc-500 hover:bg-zinc-900",
+                                  ? "bg-primary/10 border-primary/40 text-primary font-bold"
+                                  : "bg-card border-border text-muted-foreground hover:bg-accent/40 hover:text-foreground",
                               )}
                             >
                               <div className="flex items-center gap-2.5 overflow-hidden">
@@ -615,14 +617,14 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                                   type="checkbox"
                                   checked={!!mon.selected}
                                   onChange={() => {}}
-                                  className="accent-emerald-500 size-4 rounded"
+                                  className="accent-primary size-4 rounded"
                                 />
                                 <span className="font-bold truncate">{mon.name}</span>
-                                <span className="text-[10px] text-zinc-500 truncate">
+                                <span className="text-[10px] text-muted-foreground truncate">
                                   {mon.url}
                                 </span>
                               </div>
-                              <span className="text-[10px] px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 font-bold uppercase">
+                              <span className="text-[10px] px-2 py-0.5 rounded bg-muted text-muted-foreground font-bold uppercase">
                                 {mon.type}
                               </span>
                             </div>
@@ -630,8 +632,8 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                         </div>
 
                         {importSuccessCount !== null ? (
-                          <div className="p-3.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 font-mono text-xs text-center font-bold flex items-center justify-center gap-2">
-                            <CheckCircle2 className="size-4 text-emerald-400" />
+                          <div className="p-3.5 rounded-xl bg-primary/15 border border-primary/40 text-primary font-mono text-xs text-center font-bold flex items-center justify-center gap-2">
+                            <CheckCircle2 className="size-4 text-primary" />
                             Successfully imported {importSuccessCount} monitors into PulseGuard!
                             Proceeding to alert setup...
                           </div>
@@ -640,7 +642,7 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                             type="button"
                             onClick={handleImportCandidates}
                             disabled={isImportingMonitors}
-                            className="w-full bg-gradient-to-r from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 text-zinc-950 font-mono font-bold uppercase tracking-wider text-xs h-11 shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all"
+                            className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-mono font-bold uppercase tracking-wider text-xs h-11 shadow-sm transition-all"
                           >
                             {isImportingMonitors ? (
                               <RefreshCw className="size-4 animate-spin mr-2" />
@@ -666,17 +668,16 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                 exit={{ opacity: 0, x: 10 }}
                 className="space-y-5"
               >
-                <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-xs font-mono text-emerald-300 leading-relaxed">
-                  <p className="font-bold text-foreground mb-1 flex items-center gap-2">
-                    <Bell className="size-4 text-emerald-400" />
-                    Step 2 Mandate: Alert Channel Setup
+                <div className="p-4 rounded-xl border border-primary/30 bg-primary/10 text-xs font-mono text-foreground leading-relaxed">
+                  <p className="font-bold text-primary mb-1 flex items-center gap-2">
+                    <Bell className="size-4 text-primary" />
+                    Step 2: Alert Channel Setup
                   </p>
-                  A monitor without an alert channel is a monitor that never proves its value.
                   Connect your alert channel now to ensure instantaneous incident notifications.
                 </div>
 
                 {channelError && (
-                  <div className="p-3 rounded-lg border border-red-500/30 bg-red-500/10 text-xs font-mono text-red-400 flex items-center gap-2">
+                  <div className="p-3 rounded-lg border border-destructive/30 bg-destructive/10 text-xs font-mono text-destructive flex items-center gap-2">
                     <X className="size-4 shrink-0" />
                     <span>{channelError}</span>
                   </div>
@@ -698,10 +699,10 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                         type="button"
                         onClick={() => setChannelType(preset.id as any)}
                         className={cn(
-                          "p-3 rounded-xl border flex flex-col items-center gap-1.5 transition-all text-xs font-mono font-bold",
+                          "p-3 rounded-xl border flex flex-col items-center gap-1.5 transition-all text-xs font-mono font-bold cursor-pointer",
                           isSel
-                            ? "bg-emerald-500/15 border-emerald-400 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.2)]"
-                            : "bg-zinc-900/60 border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200",
+                            ? "bg-primary/10 border-primary text-primary shadow-xs"
+                            : "bg-accent/20 border-border text-muted-foreground hover:border-primary/40 hover:text-foreground",
                         )}
                       >
                         <Icon className="size-5" />
@@ -713,18 +714,18 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
 
                 <form onSubmit={handleCreateChannel} className="space-y-4">
                   <div className="space-y-1.5">
-                    <Label className="text-xs font-mono text-zinc-300">Channel Name</Label>
+                    <Label className="text-xs font-mono text-foreground">Channel Name</Label>
                     <Input
                       type="text"
                       value={channelName}
                       onChange={(e) => setChannelName(e.target.value)}
-                      className="bg-zinc-900/90 border-zinc-800 text-zinc-100 font-mono text-sm h-10"
+                      className="bg-accent/30 border-border text-foreground font-mono text-sm h-10"
                     />
                   </div>
 
                   {channelType === "EMAIL" && (
                     <div className="space-y-1.5">
-                      <Label className="text-xs font-mono text-zinc-300">
+                      <Label className="text-xs font-mono text-foreground">
                         Alert Email Destination
                       </Label>
                       <Input
@@ -732,7 +733,7 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                         placeholder="you@company.com"
                         value={emailAddress}
                         onChange={(e) => setEmailAddress(e.target.value)}
-                        className="bg-zinc-900/90 border-zinc-800 text-zinc-100 font-mono text-sm h-10"
+                        className="bg-accent/30 border-border text-foreground font-mono text-sm h-10"
                       />
                     </div>
                   )}
@@ -741,13 +742,13 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                     channelType === "SLACK" ||
                     channelType === "WEBHOOK") && (
                     <div className="space-y-1.5">
-                      <Label className="text-xs font-mono text-zinc-300">Webhook URL</Label>
+                      <Label className="text-xs font-mono text-foreground">Webhook URL</Label>
                       <Input
                         type="url"
                         placeholder="https://discord.com/api/webhooks/..."
                         value={webhookUrl}
                         onChange={(e) => setWebhookUrl(e.target.value)}
-                        className="bg-zinc-900/90 border-zinc-800 text-zinc-100 font-mono text-sm h-10"
+                        className="bg-accent/30 border-border text-foreground font-mono text-sm h-10"
                       />
                     </div>
                   )}
@@ -755,7 +756,7 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                   {channelType === "TELEGRAM" && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <Label className="text-xs font-mono text-zinc-300">
+                        <Label className="text-xs font-mono text-foreground">
                           Telegram Bot Token
                         </Label>
                         <Input
@@ -763,17 +764,17 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                           placeholder="123456:ABC-DEF..."
                           value={telegramToken}
                           onChange={(e) => setTelegramToken(e.target.value)}
-                          className="bg-zinc-900/90 border-zinc-800 text-zinc-100 font-mono text-sm h-10"
+                          className="bg-accent/30 border-border text-foreground font-mono text-sm h-10"
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <Label className="text-xs font-mono text-zinc-300">Chat ID</Label>
+                        <Label className="text-xs font-mono text-foreground">Chat ID</Label>
                         <Input
                           type="text"
                           placeholder="-100123456789"
                           value={telegramChatId}
                           onChange={(e) => setTelegramChatId(e.target.value)}
-                          className="bg-zinc-900/90 border-zinc-800 text-zinc-100 font-mono text-sm h-10"
+                          className="bg-accent/30 border-border text-foreground font-mono text-sm h-10"
                         />
                       </div>
                     </div>
@@ -784,7 +785,7 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                       type="button"
                       variant="ghost"
                       onClick={() => setStep(1)}
-                      className="text-xs font-mono text-zinc-400 hover:text-zinc-200"
+                      className="text-xs font-mono text-muted-foreground hover:text-foreground"
                     >
                       ← Back
                     </Button>
@@ -792,7 +793,7 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                     <Button
                       type="submit"
                       disabled={isSavingChannel}
-                      className="bg-gradient-to-r from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 text-zinc-950 font-mono font-bold uppercase tracking-wider text-xs h-11 px-6 shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all"
+                      className="bg-primary text-primary-foreground hover:bg-primary/90 font-mono font-bold uppercase tracking-wider text-xs h-11 px-6 shadow-sm transition-all"
                     >
                       {isSavingChannel ? (
                         <RefreshCw className="size-4 animate-spin mr-2" />
@@ -815,8 +816,8 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                 className="space-y-6 text-center py-4"
               >
                 <div className="flex justify-center">
-                  <div className="relative size-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.25)]">
-                    <ShieldCheck className="size-8 animate-pulse text-emerald-400" />
+                  <div className="relative size-16 rounded-2xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary shadow-md">
+                    <ShieldCheck className="size-8 text-primary" />
                   </div>
                 </div>
 
@@ -824,25 +825,25 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                   <h3 className="text-lg font-bold font-mono text-foreground uppercase tracking-wider">
                     Edge Monitoring Active & Verified
                   </h3>
-                  <p className="text-xs font-mono text-zinc-400 mt-1">
+                  <p className="text-xs font-mono text-muted-foreground mt-1">
                     Your target monitor is live with 60-second multi-region probe consensus and
                     active alert dispatch.
                   </p>
                 </div>
 
                 {/* Probe Latency Badges */}
-                <div className="grid grid-cols-3 gap-3 p-4 rounded-xl border border-zinc-800 bg-zinc-900/60 font-mono text-xs">
-                  <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800">
-                    <div className="text-[10px] text-zinc-500">US-EAST-1</div>
-                    <div className="text-emerald-400 font-bold mt-1">14ms • UP</div>
+                <div className="grid grid-cols-3 gap-3 p-4 rounded-xl border border-border bg-card/60 font-mono text-xs">
+                  <div className="p-2.5 rounded-lg bg-accent/20 border border-border">
+                    <div className="text-[10px] text-muted-foreground">US-EAST-1</div>
+                    <div className="text-primary font-bold mt-1">14ms • UP</div>
                   </div>
-                  <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800">
-                    <div className="text-[10px] text-zinc-500">EU-CENTRAL-1</div>
-                    <div className="text-emerald-400 font-bold mt-1">38ms • UP</div>
+                  <div className="p-2.5 rounded-lg bg-accent/20 border border-border">
+                    <div className="text-[10px] text-muted-foreground">EU-CENTRAL-1</div>
+                    <div className="text-primary font-bold mt-1">38ms • UP</div>
                   </div>
-                  <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800">
-                    <div className="text-[10px] text-zinc-500">AP-TOKYO-1</div>
-                    <div className="text-emerald-400 font-bold mt-1">112ms • UP</div>
+                  <div className="p-2.5 rounded-lg bg-accent/20 border border-border">
+                    <div className="text-[10px] text-muted-foreground">AP-TOKYO-1</div>
+                    <div className="text-primary font-bold mt-1">112ms • UP</div>
                   </div>
                 </div>
 
@@ -853,7 +854,7 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                       onOpenChange(false);
                       window.location.reload();
                     }}
-                    className="w-full bg-gradient-to-r from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 text-zinc-950 font-mono font-bold uppercase tracking-wider text-xs h-11 shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all"
+                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-mono font-bold uppercase tracking-wider text-xs h-11 shadow-sm transition-all"
                   >
                     Go to Dashboard & Monitor Pulse <ArrowRight className="size-4 ml-2" />
                   </Button>

@@ -76,9 +76,7 @@ export function Sidebar() {
       ? "text-amber-400 bg-amber-500/20 border-amber-500/40 shadow-sm"
       : currentTier === "INITIATE"
         ? "text-amber-500 bg-amber-500/10 border-amber-500/20"
-        : currentTier === "NETRUNNER"
-          ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/20"
-          : "text-cyan-500 bg-cyan-500/10 border-cyan-500/20";
+        : "text-primary bg-primary/10 border-primary/20";
 
   return (
     <aside
@@ -96,11 +94,11 @@ export function Sidebar() {
           )}
         >
           <div className="flex items-center gap-3">
-            <div className="relative flex items-center justify-center size-10 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-emerald-400 overflow-hidden group shrink-0">
-              <div className="absolute inset-0 bg-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="relative flex items-center justify-center size-10 rounded-lg bg-primary/10 border border-primary/20 text-primary overflow-hidden group shrink-0">
+              <div className="absolute inset-0 bg-primary/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <span className="absolute top-1 right-1 flex h-1.5 w-1.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary"></span>
               </span>
               <Activity className="size-5" />
             </div>

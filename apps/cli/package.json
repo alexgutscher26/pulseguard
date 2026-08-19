@@ -43,7 +43,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "bun --watch src/index.ts",
+    "dev": "tsc --watch",
     "prepublishOnly": "bun run build",
     "depcheck": "depcheck"
   },

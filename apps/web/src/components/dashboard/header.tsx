@@ -2,7 +2,6 @@
 
 import {
   Search,
-  Plus,
   LogOut,
   User,
   Settings,
@@ -238,11 +237,8 @@ export function DashboardHeader({ onMenuClick, userTier }: DashboardHeaderProps 
                           "border-amber-500/30 bg-amber-500/10 text-amber-400",
                         displayTier === "CONSTRUCT" &&
                           "border-cyan-500/30 bg-cyan-500/10 text-cyan-400",
-                        displayTier === "NETRUNNER" &&
-                          "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
                         displayTier !== "ADMIN" &&
                           displayTier !== "CONSTRUCT" &&
-                          displayTier !== "NETRUNNER" &&
                           "border-primary/30 bg-primary/10 text-primary",
                       )}
                     >

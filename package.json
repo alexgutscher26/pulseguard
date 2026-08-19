@@ -29,7 +29,7 @@
     "postinstall": "bun run db:generate",
     "prepare": "husky",
     "predev": "node scripts/sync-env.js",
-    "dev": "turbo dev --filter=!@pulseguard/infra --filter=!@pulseguard/probe",
+    "dev": "turbo dev --filter=!@pulseguard/infra --filter=!@pulseguard/probe --filter=!steadystack",
     "build": "turbo build",
     "check-types": "turbo check-types",
     "dev:native": "turbo -F native dev",
