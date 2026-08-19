@@ -1,209 +1,309 @@
 import React from "react";
-import { render, Html, Head, Body, Container, Section, Text, Link, Hr } from "../primitives";
+import {
+  render,
+  Html,
+  Head,
+  Body,
+  Container,
+  Section,
+  Text,
+  Link,
+  Hr,
+  EmailHeader,
+  EmailFooter,
+  PrimaryButton,
+} from "../primitives";
 import { emailTheme } from "../styles/theme";
 import type { MonitorAlertData } from "../index";
 
 export function MonitorAlert({ data }: { data: MonitorAlertData }) {
   const isDown = data.status === "DOWN";
-  const statusColor = isDown ? emailTheme.colors.destructive : emailTheme.colors.primary;
-  const statusText = isDown ? "DOWN" : "UP";
-  const dashboardUrl = `https://pulseguard.com/monitors/${data.monitorId}`;
+  const isSslWarning =
+    data.reason?.includes("expires in") || data.reason?.includes("SSL certificate expires");
+
+  let statusColor = isDown ? "#ef4444" : "#10b981";
+  let statusBadgeText = isDown ? "CRITICAL ALERT" : "INCIDENT RESOLVED";
+  let statusTitle = isDown ? "Service Outage Detected" : "Service Recovered & Operational";
+
+  if (isSslWarning) {
+    statusColor = "#f59e0b";
+    statusBadgeText = "SSL WARNING";
+    statusTitle = "SSL Certificate Expiring Soon";
+  }
+
+  const dashboardUrl = `https://steadystack.dev/dashboard/monitors/${data.monitorId}`;
+  const actionUrl = data.runbookUrl || dashboardUrl;
 
   return (
     <Html>
       <Head>
+        <title>{statusTitle}</title>
         <style>{`
-          @media (prefers-color-scheme: dark) {
-            body { background-color: ${emailTheme.colors.background} !important; }
+          body { margin: 0; padding: 0; background-color: #09090b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+          @media only screen and (max-width: 600px) {
+            .email-container { width: 100% !important; border-radius: 0 !important; }
           }
         `}</style>
       </Head>
       <Body
         style={{
-          backgroundColor: emailTheme.colors.background,
-          color: emailTheme.colors.foreground,
-          fontFamily: emailTheme.fonts.mono,
-          padding: emailTheme.spacing.lg,
+          backgroundColor: "#09090b",
+          color: "#f4f4f5",
+          fontFamily: emailTheme.fonts.sans,
+          padding: "32px 16px",
+          margin: 0,
         }}
       >
         <Container
           style={{
-            maxWidth: "600px",
-            border: `2px solid ${emailTheme.colors.border}`,
-            backgroundColor: emailTheme.colors.card,
+            maxWidth: "580px",
+            border: `1px solid ${statusColor}40`,
+            borderRadius: "12px",
+            backgroundColor: "#121215",
+            boxShadow: `0 12px 40px ${statusColor}18`,
+            overflow: "hidden",
           }}
         >
           {/* Header */}
-          <Section
-            style={{
-              padding: emailTheme.spacing.lg,
-              borderBottom: `1px solid ${emailTheme.colors.border}`,
-            }}
-          >
-            <Text
-              style={{
-                margin: 0,
-                fontSize: "24px",
-                fontWeight: "bold",
-                color: emailTheme.colors.primary,
-                textTransform: "uppercase",
-                letterSpacing: "2px",
-              }}
-            >
-              PULSEGUARD
-            </Text>
-          </Section>
+          <EmailHeader badge={statusBadgeText} badgeColor={statusColor} />
 
-          {/* Alert Status */}
-          <Section style={{ padding: emailTheme.spacing.lg }}>
-            <Text
-              style={{
-                margin: 0,
-                fontSize: "32px",
-                fontWeight: "bold",
-                color: statusColor,
-                textAlign: "center",
-                marginBottom: emailTheme.spacing.md,
-              }}
-            >
-              {isDown ? "🔴" : "✅"} {statusText}
-            </Text>
+          {/* Alert Status Card */}
+          <Section style={{ padding: "32px 32px 24px" }}>
+            {/* Status Indicator */}
+            <div style={{ marginBottom: "16px" }}>
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  padding: "6px 14px",
+                  borderRadius: "9999px",
+                  backgroundColor: `${statusColor}18`,
+                  border: `1px solid ${statusColor}33`,
+                  color: statusColor,
+                  fontSize: "13px",
+                  fontWeight: "700",
+                  fontFamily: emailTheme.fonts.mono,
+                  letterSpacing: "0.5px",
+                }}
+              >
+                <span style={{ marginRight: "8px", fontSize: "10px" }}>●</span>
+                {isDown ? "SERVICE DOWN" : isSslWarning ? "EXPIRY NOTICE" : "SERVICE RESTORED"}
+              </div>
+            </div>
 
             <Text
               style={{
-                margin: 0,
-                fontSize: "18px",
-                color: emailTheme.colors.foreground,
-                marginBottom: emailTheme.spacing.sm,
+                margin: "0 0 6px",
+                fontSize: "22px",
+                fontWeight: "700",
+                color: "#ffffff",
+                letterSpacing: "-0.4px",
               }}
             >
-              <strong>Monitor:</strong> {data.monitorName}
+              {data.monitorName}
             </Text>
 
             <Text
               style={{
-                margin: 0,
-                fontSize: "14px",
-                color: emailTheme.colors.muted,
-                marginBottom: emailTheme.spacing.md,
+                margin: "0 0 20px",
+                fontSize: "13px",
+                fontFamily: emailTheme.fonts.mono,
+                color: "#71717a",
                 wordBreak: "break-all",
               }}
             >
               {data.url}
             </Text>
 
-            <Hr
+            {/* Diagnostic Details Grid */}
+            <div
               style={{
-                borderColor: emailTheme.colors.border,
-                margin: `${emailTheme.spacing.md} 0`,
-              }}
-            />
-
-            <Text
-              style={{
-                margin: 0,
-                fontSize: "14px",
-                color: emailTheme.colors.muted,
-                marginBottom: emailTheme.spacing.sm,
+                backgroundColor: "#18181b",
+                border: "1px solid #27272a",
+                borderRadius: "10px",
+                padding: "20px",
+                marginBottom: "20px",
               }}
             >
-              <strong>Time:</strong> {new Date(data.timestamp).toLocaleString()}
-            </Text>
+              <table width="100%" border={0} cellPadding="0" cellSpacing="0" role="presentation">
+                <tbody>
+                  <tr>
+                    <td
+                      style={{
+                        paddingBottom: "12px",
+                        fontSize: "13px",
+                        color: "#a1a1aa",
+                        width: "35%",
+                      }}
+                    >
+                      Status Change:
+                    </td>
+                    <td
+                      style={{
+                        paddingBottom: "12px",
+                        fontSize: "13px",
+                        fontWeight: "600",
+                        color: statusColor,
+                      }}
+                    >
+                      {data.previousStatus} ➔ {data.status}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style={{
+                        paddingBottom: "12px",
+                        fontSize: "13px",
+                        color: "#a1a1aa",
+                      }}
+                    >
+                      Timestamp:
+                    </td>
+                    <td
+                      style={{
+                        paddingBottom: "12px",
+                        fontSize: "13px",
+                        color: "#f4f4f5",
+                        fontFamily: emailTheme.fonts.mono,
+                      }}
+                    >
+                      {new Date(data.timestamp).toUTCString()}
+                    </td>
+                  </tr>
 
-            {data.reason && (
-              <Text
-                style={{
-                  margin: 0,
-                  fontSize: "14px",
-                  color: emailTheme.colors.destructive,
-                  marginBottom: emailTheme.spacing.sm,
-                }}
-              >
-                <strong>Reason:</strong> {data.reason}
-              </Text>
-            )}
+                  {data.downtimeDuration && !isDown && (
+                    <tr>
+                      <td
+                        style={{
+                          paddingBottom: "12px",
+                          fontSize: "13px",
+                          color: "#a1a1aa",
+                        }}
+                      >
+                        Total Downtime:
+                      </td>
+                      <td
+                        style={{
+                          paddingBottom: "12px",
+                          fontSize: "13px",
+                          fontWeight: "700",
+                          color: "#10b981",
+                        }}
+                      >
+                        {data.downtimeDuration}
+                      </td>
+                    </tr>
+                  )}
 
-            {data.downtimeDuration && !isDown && (
-              <Text
-                style={{
-                  margin: 0,
-                  fontSize: "14px",
-                  color: emailTheme.colors.primary,
-                  marginBottom: emailTheme.spacing.md,
-                }}
-              >
-                <strong>Downtime:</strong> {data.downtimeDuration}
-              </Text>
-            )}
+                  {data.reason && (
+                    <tr>
+                      <td
+                        style={{
+                          paddingTop: "4px",
+                          fontSize: "13px",
+                          color: "#a1a1aa",
+                          verticalAlign: "top",
+                        }}
+                      >
+                        Failure Reason:
+                      </td>
+                      <td
+                        style={{
+                          paddingTop: "4px",
+                          fontSize: "13px",
+                          fontFamily: emailTheme.fonts.mono,
+                          color: isDown ? "#f87171" : "#e4e4e7",
+                          lineHeight: 1.5,
+                        }}
+                      >
+                        {data.reason}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
 
+            {/* Failed Regions Badge Row */}
             {data.failedRegions && data.failedRegions.length > 0 && (
-              <Text
+              <div
                 style={{
-                  margin: 0,
-                  fontSize: "14px",
-                  color: emailTheme.colors.destructive,
-                  marginBottom: emailTheme.spacing.md,
+                  backgroundColor: "#1e1316",
+                  border: "1px solid rgba(239, 68, 68, 0.25)",
+                  borderRadius: "10px",
+                  padding: "14px 18px",
+                  marginBottom: "24px",
                 }}
               >
-                <strong>Failed Regions:</strong> {data.failedRegions.join(", ")}
-              </Text>
+                <Text
+                  style={{
+                    margin: "0 0 8px",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                    color: "#f87171",
+                  }}
+                >
+                  Detected from {data.failedRegions.length} Edge Locations:
+                </Text>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                  {data.failedRegions.map((region, idx) => (
+                    <span
+                      key={idx}
+                      style={{
+                        display: "inline-block",
+                        fontFamily: emailTheme.fonts.mono,
+                        fontSize: "11px",
+                        fontWeight: "700",
+                        color: "#ef4444",
+                        backgroundColor: "rgba(239, 68, 68, 0.15)",
+                        border: "1px solid rgba(239, 68, 68, 0.3)",
+                        padding: "3px 8px",
+                        borderRadius: "4px",
+                        marginRight: "6px",
+                        marginBottom: "4px",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      {region}
+                    </span>
+                  ))}
+                </div>
+              </div>
             )}
 
-            {/* CTA Button */}
-            <Link
-              href={dashboardUrl}
-              style={{
-                display: "inline-block",
-                backgroundColor: emailTheme.colors.primary,
-                color: emailTheme.colors.primaryForeground,
-                padding: `${emailTheme.spacing.md} ${emailTheme.spacing.xl}`,
-                textDecoration: "none",
-                fontWeight: "bold",
-                textTransform: "uppercase",
-                letterSpacing: "1px",
-                border: `2px solid ${emailTheme.colors.primary}`,
-                marginTop: emailTheme.spacing.md,
-              }}
-            >
-              VIEW DASHBOARD
-            </Link>
+            {/* Action CTA */}
+            <PrimaryButton href={actionUrl} variant={isDown ? "danger" : "primary"}>
+              {data.runbookUrl
+                ? "View Incident Runbook"
+                : isDown
+                  ? "Investigate Incident"
+                  : "View Live Telemetry"}
+            </PrimaryButton>
+
+            {data.runbookUrl && (
+              <Text
+                style={{
+                  margin: "12px 0 0",
+                  fontSize: "12px",
+                  color: "#71717a",
+                  textAlign: "center",
+                }}
+              >
+                Or open{" "}
+                <Link href={dashboardUrl} style={{ color: "#a1a1aa", textDecoration: "underline" }}>
+                  monitor dashboard
+                </Link>
+              </Text>
+            )}
           </Section>
 
           {/* Footer */}
-          <Section
-            style={{
-              padding: emailTheme.spacing.lg,
-              borderTop: `1px solid ${emailTheme.colors.border}`,
-              backgroundColor: emailTheme.colors.background,
-            }}
-          >
-            <Text
-              style={{
-                margin: 0,
-                fontSize: "12px",
-                color: emailTheme.colors.muted,
-                textAlign: "center",
-              }}
-            >
-              Sent by PulseGuard Monitoring System
-            </Text>
-            <Text
-              style={{
-                margin: 0,
-                fontSize: "12px",
-                color: emailTheme.colors.muted,
-                textAlign: "center",
-                marginTop: emailTheme.spacing.sm,
-              }}
-            >
-              <Link
-                href="https://pulseguard.com/settings/notifications"
-                style={{ color: emailTheme.colors.muted }}
-              >
-                Manage Notifications
-              </Link>
-            </Text>
-          </Section>
+          <EmailFooter
+            customMessage="This is an automated alert generated by the PulseGuard edge consensus engine."
+            unsubscribeUrl="https://steadystack.dev/dashboard/settings?tab=notifications"
+          />
         </Container>
       </Body>
     </Html>

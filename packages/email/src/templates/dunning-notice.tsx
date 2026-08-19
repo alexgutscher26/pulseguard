@@ -1,5 +1,17 @@
 import * as React from "react";
-import { render } from "../primitives";
+import {
+  render,
+  Html,
+  Head,
+  Body,
+  Container,
+  Section,
+  Text,
+  EmailHeader,
+  EmailFooter,
+  PrimaryButton,
+} from "../primitives";
+import { emailTheme } from "../styles/theme";
 
 export interface DunningNoticeEmailProps {
   userName: string;
@@ -11,111 +23,168 @@ export interface DunningNoticeEmailProps {
 
 export const DunningNoticeEmail: React.FC<Readonly<DunningNoticeEmailProps>> = ({
   userName = "PulseGuard Operator",
-  planName = "The Netrunner",
-  amountDue = "$19.00",
-  failureReason = "Card declined",
-  billingPortalUrl = "https://pulseguard.io/dashboard/settings?tab=billing",
+  planName = "Enterprise",
+  amountDue = "$49.00",
+  failureReason = "Card declined by issuing bank",
+  billingPortalUrl = "https://steadystack.dev/dashboard/settings?tab=billing",
 }) => (
-  <div
-    style={{
-      backgroundColor: "#030712",
-      color: "#f3f4f6",
-      fontFamily: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
-      padding: "40px 20px",
-    }}
-  >
-    <div
+  <Html>
+    <Head>
+      <title>Payment Action Required - PulseGuard</title>
+      <style>{`
+        body { margin: 0; padding: 0; background-color: #09090b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        @media only screen and (max-width: 600px) {
+          .email-container { width: 100% !important; border-radius: 0 !important; }
+        }
+      `}</style>
+    </Head>
+    <Body
       style={{
-        maxWidth: "560px",
-        margin: "0 auto",
-        backgroundColor: "#0b0f19",
-        borderRadius: "16px",
-        border: "1px solid #ef444433",
-        padding: "32px",
-        boxShadow: "0 20px 25px -5px rgba(239, 68, 68, 0.1)",
+        backgroundColor: "#09090b",
+        color: "#f4f4f5",
+        fontFamily: emailTheme.fonts.sans,
+        padding: "32px 16px",
+        margin: 0,
       }}
     >
-      <div style={{ marginBottom: "24px", textAlign: "left" }}>
-        <span
-          style={{
-            fontSize: "12px",
-            fontWeight: "700",
-            letterSpacing: "0.1em",
-            color: "#ef4444",
-            textTransform: "uppercase",
-          }}
-        >
-          Billing Action Required
-        </span>
-        <h2
-          style={{
-            fontSize: "22px",
-            fontWeight: "700",
-            color: "#ffffff",
-            marginTop: "4px",
-          }}
-        >
-          Payment Failed for Your PulseGuard Subscription
-        </h2>
-      </div>
-
-      <p style={{ fontSize: "14px", color: "#9ca3af", lineHeight: "1.6" }}>
-        Hello {userName}, we were unable to process the automatic payment for your{" "}
-        <strong>{planName}</strong> plan subscription.
-      </p>
-
-      <div
+      <Container
         style={{
-          backgroundColor: "#1f1215",
+          maxWidth: "580px",
+          border: "1px solid rgba(239, 68, 68, 0.4)",
           borderRadius: "12px",
-          border: "1px solid #ef444440",
-          padding: "20px",
-          marginTop: "20px",
-          marginBottom: "24px",
+          backgroundColor: "#121215",
+          boxShadow: "0 12px 40px rgba(239, 68, 68, 0.15)",
+          overflow: "hidden",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "8px",
-          }}
-        >
-          <span style={{ fontSize: "13px", color: "#9ca3af" }}>Invoice Amount Due:</span>
-          <span style={{ fontSize: "14px", fontWeight: "700", color: "#f87171" }}>{amountDue}</span>
-        </div>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <span style={{ fontSize: "13px", color: "#9ca3af" }}>Reason for Failure:</span>
-          <span style={{ fontSize: "13px", fontWeight: "600", color: "#fca5a5" }}>
-            {failureReason}
-          </span>
-        </div>
-      </div>
+        {/* Header */}
+        <EmailHeader badge="BILLING ACTION" badgeColor="#ef4444" />
 
-      <p style={{ fontSize: "14px", color: "#9ca3af", lineHeight: "1.6" }}>
-        Don't worry! Your monitoring endpoints remain active during our grace period retry schedule.
-        Please update your payment method to ensure uninterrupted telemetry checks and alerts.
-      </p>
+        {/* Content */}
+        <Section style={{ padding: "32px 32px 24px" }}>
+          <div style={{ marginBottom: "6px" }}>
+            <span
+              style={{
+                fontSize: "12px",
+                fontWeight: "600",
+                color: "#ef4444",
+                textTransform: "uppercase",
+                letterSpacing: "0.5px",
+              }}
+            >
+              Subscription Payment Failed
+            </span>
+          </div>
 
-      <div style={{ marginTop: "32px", textAlign: "center" }}>
-        <a
-          href={billingPortalUrl}
-          style={{
-            display: "inline-block",
-            backgroundColor: "#ef4444",
-            color: "#ffffff",
-            fontWeight: "600",
-            fontSize: "14px",
-            padding: "12px 28px",
-            borderRadius: "8px",
-            textDecoration: "none",
-          }}
-        >
-          Update Payment Method
-        </a>
-      </div>
-    </div>
-  </div>
+          <Text
+            style={{
+              margin: "0 0 12px",
+              fontSize: "22px",
+              fontWeight: "700",
+              color: "#ffffff",
+              letterSpacing: "-0.4px",
+            }}
+          >
+            Action Required: Update Payment Method
+          </Text>
+
+          <Text
+            style={{
+              margin: "0 0 20px",
+              fontSize: "15px",
+              color: "#a1a1aa",
+              lineHeight: 1.6,
+            }}
+          >
+            Hello {userName}, we were unable to process the scheduled renewal for your{" "}
+            <strong style={{ color: "#f4f4f5" }}>{planName}</strong> plan subscription.
+          </Text>
+
+          {/* Invoice Failure Card */}
+          <div
+            style={{
+              backgroundColor: "#1c1214",
+              borderRadius: "10px",
+              border: "1px solid rgba(239, 68, 68, 0.3)",
+              padding: "20px",
+              marginBottom: "24px",
+            }}
+          >
+            <table width="100%" border={0} cellPadding="0" cellSpacing="0" role="presentation">
+              <tbody>
+                <tr>
+                  <td
+                    style={{
+                      paddingBottom: "10px",
+                      fontSize: "13px",
+                      color: "#a1a1aa",
+                      width: "40%",
+                    }}
+                  >
+                    Outstanding Amount:
+                  </td>
+                  <td
+                    style={{
+                      paddingBottom: "10px",
+                      fontSize: "15px",
+                      fontWeight: "700",
+                      fontFamily: emailTheme.fonts.mono,
+                      color: "#f87171",
+                    }}
+                  >
+                    {amountDue}
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style={{
+                      fontSize: "13px",
+                      color: "#a1a1aa",
+                    }}
+                  >
+                    Processor Message:
+                  </td>
+                  <td
+                    style={{
+                      fontSize: "13px",
+                      fontWeight: "500",
+                      color: "#fca5a5",
+                    }}
+                  >
+                    {failureReason}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <Text
+            style={{
+              margin: "0 0 24px",
+              fontSize: "14px",
+              color: "#8a8a98",
+              lineHeight: 1.6,
+            }}
+          >
+            Your monitoring checks and alert escalations remain active during our grace period.
+            Please update your payment method to ensure continuous 24/7 service without
+            interruption.
+          </Text>
+
+          {/* CTA Button */}
+          <PrimaryButton href={billingPortalUrl} variant="danger">
+            Update Payment Method
+          </PrimaryButton>
+        </Section>
+
+        {/* Footer */}
+        <EmailFooter
+          customMessage="PulseGuard Invoicing & Subscription Management Engine."
+          unsubscribeUrl="https://steadystack.dev/dashboard/settings?tab=billing"
+        />
+      </Container>
+    </Body>
+  </Html>
 );
 
 export async function renderDunningNotice(props: DunningNoticeEmailProps): Promise<string> {

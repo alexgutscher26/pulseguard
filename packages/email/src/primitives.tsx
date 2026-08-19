@@ -1,4 +1,5 @@
 import * as React from "react";
+import { emailTheme } from "./styles/theme";
 
 export interface BaseProps {
   children?: React.ReactNode;
@@ -131,11 +132,324 @@ export function Hr({ style }: Omit<BaseProps, "children">) {
       style={{
         width: "100%",
         border: "none",
-        borderTop: "1px solid #333333",
-        margin: "16px 0",
+        borderTop: "1px solid #27272a",
+        margin: "24px 0",
         ...style,
       }}
     />
+  );
+}
+
+// ─── Modern SaaS Email Components ────────────────────────────────────────────
+
+export function EmailHeader({
+  badge,
+  badgeColor = emailTheme.colors.primary,
+}: {
+  badge?: string;
+  badgeColor?: string;
+}) {
+  return (
+    <Section
+      style={{
+        padding: "24px 32px 20px",
+        borderBottom: "1px solid #27272a",
+      }}
+    >
+      <table width="100%" border={0} cellPadding="0" cellSpacing="0" role="presentation">
+        <tbody>
+          <tr>
+            <td align="left" style={{ verticalAlign: "middle" }}>
+              <div style={{ display: "inline-flex", alignItems: "center" }}>
+                {/* Modern Brand Logo */}
+                <div
+                  style={{
+                    display: "inline-block",
+                    width: "28px",
+                    height: "28px",
+                    borderRadius: "7px",
+                    backgroundColor: "#10b981",
+                    textAlign: "center",
+                    lineHeight: "28px",
+                    marginRight: "10px",
+                    verticalAlign: "middle",
+                  }}
+                >
+                  <span
+                    style={{
+                      color: "#09090b",
+                      fontWeight: "900",
+                      fontSize: "15px",
+                      fontFamily: emailTheme.fonts.sans,
+                      display: "inline-block",
+                      marginTop: "-1px",
+                    }}
+                  >
+                    ⚡
+                  </span>
+                </div>
+                <span
+                  style={{
+                    fontFamily: emailTheme.fonts.sans,
+                    fontSize: "17px",
+                    fontWeight: "700",
+                    letterSpacing: "-0.3px",
+                    color: "#f4f4f5",
+                    verticalAlign: "middle",
+                  }}
+                >
+                  Pulse<span style={{ color: "#10b981" }}>Guard</span>
+                </span>
+              </div>
+            </td>
+            {badge && (
+              <td align="right" style={{ verticalAlign: "middle" }}>
+                <span
+                  style={{
+                    display: "inline-block",
+                    fontFamily: emailTheme.fonts.mono,
+                    fontSize: "11px",
+                    fontWeight: "600",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                    padding: "3px 8px",
+                    borderRadius: "9999px",
+                    color: badgeColor,
+                    backgroundColor: `${badgeColor}18`,
+                    border: `1px solid ${badgeColor}33`,
+                  }}
+                >
+                  {badge}
+                </span>
+              </td>
+            )}
+          </tr>
+        </tbody>
+      </table>
+    </Section>
+  );
+}
+
+export function EmailFooter({
+  customMessage,
+  unsubscribeUrl,
+}: {
+  customMessage?: string;
+  unsubscribeUrl?: string;
+}) {
+  return (
+    <Section
+      style={{
+        padding: "24px 32px",
+        borderTop: "1px solid #1f1f23",
+        backgroundColor: "#0c0c0e",
+        borderBottomLeftRadius: "12px",
+        borderBottomRightRadius: "12px",
+      }}
+    >
+      {customMessage && (
+        <Text
+          style={{
+            margin: "0 0 12px",
+            fontSize: "12px",
+            color: "#71717a",
+            textAlign: "center",
+            lineHeight: 1.5,
+          }}
+        >
+          {customMessage}
+        </Text>
+      )}
+      <table width="100%" border={0} cellPadding="0" cellSpacing="0" role="presentation">
+        <tbody>
+          <tr>
+            <td align="center">
+              <div style={{ marginBottom: "12px" }}>
+                <Link
+                  href="https://steadystack.dev"
+                  style={{
+                    fontSize: "12px",
+                    color: "#a1a1aa",
+                    textDecoration: "none",
+                    margin: "0 8px",
+                    fontWeight: "500",
+                  }}
+                >
+                  Dashboard
+                </Link>
+                <span style={{ color: "#3f3f46", fontSize: "12px" }}>•</span>
+                <Link
+                  href="https://steadystack.dev/status"
+                  style={{
+                    fontSize: "12px",
+                    color: "#a1a1aa",
+                    textDecoration: "none",
+                    margin: "0 8px",
+                    fontWeight: "500",
+                  }}
+                >
+                  Status
+                </Link>
+                <span style={{ color: "#3f3f46", fontSize: "12px" }}>•</span>
+                <Link
+                  href="https://steadystack.dev/docs"
+                  style={{
+                    fontSize: "12px",
+                    color: "#a1a1aa",
+                    textDecoration: "none",
+                    margin: "0 8px",
+                    fontWeight: "500",
+                  }}
+                >
+                  Docs
+                </Link>
+                {unsubscribeUrl && (
+                  <>
+                    <span style={{ color: "#3f3f46", fontSize: "12px" }}>•</span>
+                    <Link
+                      href={unsubscribeUrl}
+                      style={{
+                        fontSize: "12px",
+                        color: "#71717a",
+                        textDecoration: "none",
+                        margin: "0 8px",
+                      }}
+                    >
+                      Preferences
+                    </Link>
+                  </>
+                )}
+              </div>
+              <Text
+                style={{
+                  margin: 0,
+                  fontSize: "11px",
+                  color: "#52525b",
+                  lineHeight: 1.5,
+                }}
+              >
+                PulseGuard Edge Telemetry & Real-Time Observability Engine
+                <br />
+                Secured with 256-bit distributed consensus • steadystack.dev
+              </Text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </Section>
+  );
+}
+
+export function StatusBadge({
+  status,
+  variant = "success",
+}: {
+  status: string;
+  variant?: "success" | "danger" | "warning" | "info" | "neutral";
+}) {
+  let color: string = emailTheme.colors.primary;
+  let dot = "●";
+
+  if (variant === "danger") {
+    color = emailTheme.colors.destructive;
+  } else if (variant === "warning") {
+    color = emailTheme.colors.warning;
+  } else if (variant === "info") {
+    color = emailTheme.colors.info;
+  } else if (variant === "neutral") {
+    color = emailTheme.colors.foregroundMuted;
+  }
+
+  return (
+    <div
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        padding: "4px 12px",
+        borderRadius: "9999px",
+        backgroundColor: `${color}14`,
+        border: `1px solid ${color}33`,
+        color: color,
+        fontSize: "12px",
+        fontWeight: "700",
+        fontFamily: emailTheme.fonts.mono,
+        letterSpacing: "0.5px",
+        textTransform: "uppercase",
+      }}
+    >
+      <span style={{ marginRight: "6px", fontSize: "10px" }}>{dot}</span>
+      {status}
+    </div>
+  );
+}
+
+export function PrimaryButton({
+  href,
+  children,
+  variant = "primary",
+  style,
+}: {
+  href: string;
+  children: React.ReactNode;
+  variant?: "primary" | "danger" | "secondary";
+  style?: React.CSSProperties;
+}) {
+  let bg = "#10b981";
+  let fg = "#ffffff";
+  let border = "1px solid #10b981";
+
+  if (variant === "danger") {
+    bg = "#ef4444";
+    fg = "#ffffff";
+    border = "1px solid #ef4444";
+  } else if (variant === "secondary") {
+    bg = "#18181b";
+    fg = "#f4f4f5";
+    border = "1px solid #27272a";
+  }
+
+  return (
+    <table
+      border={0}
+      cellPadding="0"
+      cellSpacing="0"
+      role="presentation"
+      style={{ margin: "24px auto" }}
+    >
+      <tbody>
+        <tr>
+          <td
+            align="center"
+            style={{
+              borderRadius: "8px",
+              backgroundColor: bg,
+              border: border,
+              boxShadow: variant === "primary" ? "0 4px 14px rgba(16, 185, 129, 0.25)" : "none",
+            }}
+          >
+            <a
+              href={href}
+              target="_blank"
+              rel="noreferrer"
+              style={{
+                display: "inline-block",
+                padding: "12px 28px",
+                fontFamily: emailTheme.fonts.sans,
+                fontSize: "14px",
+                fontWeight: "600",
+                color: fg,
+                textDecoration: "none",
+                borderRadius: "8px",
+                letterSpacing: "-0.1px",
+                ...style,
+              }}
+            >
+              {children}
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   );
 }
 

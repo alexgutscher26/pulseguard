@@ -1,5 +1,17 @@
 import React from "react";
-import { render, Html, Head, Body, Container, Section, Text, Link, Hr } from "../primitives";
+import {
+  render,
+  Html,
+  Head,
+  Body,
+  Container,
+  Section,
+  Text,
+  Link,
+  EmailHeader,
+  EmailFooter,
+  PrimaryButton,
+} from "../primitives";
 import { emailTheme } from "../styles/theme";
 
 export interface TeamInvitationEmailData {
@@ -13,185 +25,187 @@ export function TeamInvitation({ data }: { data: TeamInvitationEmailData }) {
   return (
     <Html>
       <Head>
+        <title>You've been invited to join {data.organizationName} - PulseGuard</title>
         <style>{`
-          @media (prefers-color-scheme: dark) {
-            body { background-color: ${emailTheme.colors.background} !important; }
+          body { margin: 0; padding: 0; background-color: #09090b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+          @media only screen and (max-width: 600px) {
+            .email-container { width: 100% !important; border-radius: 0 !important; }
           }
         `}</style>
       </Head>
       <Body
         style={{
-          backgroundColor: emailTheme.colors.background,
-          color: emailTheme.colors.foreground,
-          fontFamily: emailTheme.fonts.mono,
-          padding: emailTheme.spacing.lg,
+          backgroundColor: "#09090b",
+          color: "#f4f4f5",
+          fontFamily: emailTheme.fonts.sans,
+          padding: "32px 16px",
+          margin: 0,
         }}
       >
         <Container
           style={{
-            maxWidth: "600px",
-            border: `2px solid ${emailTheme.colors.border}`,
-            backgroundColor: emailTheme.colors.card,
+            maxWidth: "580px",
+            border: "1px solid #27272a",
+            borderRadius: "12px",
+            backgroundColor: "#121215",
+            boxShadow: "0 12px 40px rgba(0, 0, 0, 0.6)",
+            overflow: "hidden",
           }}
         >
           {/* Header */}
-          <Section
-            style={{
-              padding: emailTheme.spacing.lg,
-              borderBottom: `1px solid ${emailTheme.colors.border}`,
-            }}
-          >
-            <Text
-              style={{
-                margin: 0,
-                fontSize: "24px",
-                fontWeight: "bold",
-                color: emailTheme.colors.primary,
-                textTransform: "uppercase",
-                letterSpacing: "2px",
-              }}
-            >
-              PULSEGUARD
-            </Text>
-          </Section>
+          <EmailHeader badge="WORKSPACE INVITE" badgeColor="#10b981" />
 
           {/* Invitation Content */}
-          <Section style={{ padding: emailTheme.spacing.lg }}>
+          <Section style={{ padding: "32px 32px 24px" }}>
             <Text
               style={{
-                margin: 0,
-                fontSize: "24px",
-                fontWeight: "bold",
-                color: emailTheme.colors.primary,
-                marginBottom: emailTheme.spacing.md,
+                margin: "0 0 12px",
+                fontSize: "22px",
+                fontWeight: "700",
+                color: "#ffffff",
+                letterSpacing: "-0.4px",
               }}
             >
-              Team Workspace Invitation
+              Join {data.organizationName}
             </Text>
 
             <Text
               style={{
-                margin: 0,
-                fontSize: "16px",
-                color: emailTheme.colors.foreground,
-                lineHeight: "1.6",
-                marginBottom: emailTheme.spacing.md,
-              }}
-            >
-              <strong>{data.inviterName}</strong> has invited you to join the{" "}
-              <strong>{data.organizationName}</strong> team workspace on PulseGuard with the role{" "}
-              <span
-                style={{
-                  display: "inline-block",
-                  padding: "2px 8px",
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  color: emailTheme.colors.primary,
-                  backgroundColor: "rgba(16, 185, 129, 0.1)",
-                  border: "1px solid rgba(16, 185, 129, 0.3)",
-                  textTransform: "uppercase",
-                }}
-              >
-                {data.role}
-              </span>
-              .
-            </Text>
-
-            <Text
-              style={{
-                margin: 0,
+                margin: "0 0 20px",
                 fontSize: "15px",
-                color: emailTheme.colors.muted,
-                lineHeight: "1.6",
-                marginBottom: emailTheme.spacing.lg,
+                color: "#a1a1aa",
+                lineHeight: 1.6,
               }}
             >
-              As part of this team, you will collaborate on monitoring targets, investigating
-              incidents, managing alert escalations, and viewing real-time latency telemetry.
+              <strong style={{ color: "#f4f4f5" }}>{data.inviterName}</strong> has invited you to
+              collaborate on the{" "}
+              <strong style={{ color: "#f4f4f5" }}>{data.organizationName}</strong> workspace on
+              PulseGuard.
             </Text>
+
+            {/* Team Details Card */}
+            <div
+              style={{
+                backgroundColor: "#18181b",
+                border: "1px solid #27272a",
+                borderRadius: "10px",
+                padding: "20px",
+                marginBottom: "24px",
+              }}
+            >
+              <table width="100%" border={0} cellPadding="0" cellSpacing="0" role="presentation">
+                <tbody>
+                  <tr>
+                    <td
+                      style={{
+                        paddingBottom: "12px",
+                        fontSize: "13px",
+                        color: "#a1a1aa",
+                        width: "35%",
+                      }}
+                    >
+                      Workspace:
+                    </td>
+                    <td
+                      style={{
+                        paddingBottom: "12px",
+                        fontSize: "14px",
+                        fontWeight: "600",
+                        color: "#ffffff",
+                      }}
+                    >
+                      {data.organizationName}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style={{
+                        paddingBottom: "12px",
+                        fontSize: "13px",
+                        color: "#a1a1aa",
+                      }}
+                    >
+                      Assigned Role:
+                    </td>
+                    <td style={{ paddingBottom: "12px" }}>
+                      <span
+                        style={{
+                          display: "inline-block",
+                          padding: "3px 10px",
+                          fontSize: "11px",
+                          fontWeight: "700",
+                          fontFamily: emailTheme.fonts.mono,
+                          color: "#10b981",
+                          backgroundColor: "rgba(16, 185, 129, 0.12)",
+                          border: "1px solid rgba(16, 185, 129, 0.3)",
+                          borderRadius: "4px",
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        {data.role}
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style={{
+                        fontSize: "13px",
+                        color: "#a1a1aa",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      Capabilities:
+                    </td>
+                    <td
+                      style={{
+                        fontSize: "13px",
+                        color: "#82828e",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      Access live uptime monitors, incident war rooms, automated alerting, and SLA
+                      compliance reports.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
             {/* CTA Button */}
-            <Link
-              href={data.inviteUrl}
-              style={{
-                display: "inline-block",
-                backgroundColor: emailTheme.colors.primary,
-                color: emailTheme.colors.primaryForeground,
-                padding: `${emailTheme.spacing.md} ${emailTheme.spacing.xl}`,
-                textDecoration: "none",
-                fontWeight: "bold",
-                textTransform: "uppercase",
-                letterSpacing: "1px",
-                border: `2px solid ${emailTheme.colors.primary}`,
-                marginTop: emailTheme.spacing.sm,
-                marginBottom: emailTheme.spacing.md,
-              }}
-            >
-              ACCEPT INVITATION
-            </Link>
+            <PrimaryButton href={data.inviteUrl}>Accept Invitation</PrimaryButton>
 
-            <Hr
-              style={{
-                borderColor: emailTheme.colors.border,
-                margin: `${emailTheme.spacing.md} 0`,
-              }}
-            />
-
+            {/* Expiry Note */}
             <Text
               style={{
-                margin: 0,
-                fontSize: "14px",
-                color: emailTheme.colors.muted,
-                lineHeight: "1.6",
-              }}
-            >
-              If you did not expect this invitation, you can ignore this email.
-            </Text>
-
-            <Text
-              style={{
-                margin: 0,
+                margin: "16px 0 12px",
                 fontSize: "12px",
-                color: emailTheme.colors.muted,
-                lineHeight: "1.6",
-                marginTop: emailTheme.spacing.sm,
-                wordBreak: "break-all",
+                color: "#71717a",
+                textAlign: "center",
               }}
             >
-              Direct Link: {data.inviteUrl}
+              This invitation link is unique to you and expires in 7 days.
             </Text>
+
+            {/* Fallback Direct Link */}
+            <div
+              style={{
+                backgroundColor: "#0d0d10",
+                border: "1px solid #1f1f23",
+                borderRadius: "6px",
+                padding: "10px 14px",
+                fontFamily: emailTheme.fonts.mono,
+                fontSize: "11px",
+                color: "#a1a1aa",
+                wordBreak: "break-all",
+                lineHeight: 1.4,
+              }}
+            >
+              {data.inviteUrl}
+            </div>
           </Section>
 
           {/* Footer */}
-          <Section
-            style={{
-              padding: emailTheme.spacing.lg,
-              borderTop: `1px solid ${emailTheme.colors.border}`,
-              backgroundColor: emailTheme.colors.background,
-            }}
-          >
-            <Text
-              style={{
-                margin: 0,
-                fontSize: "12px",
-                color: emailTheme.colors.muted,
-                textAlign: "center",
-              }}
-            >
-              This invitation link expires in 7 days
-            </Text>
-            <Text
-              style={{
-                margin: 0,
-                fontSize: "12px",
-                color: emailTheme.colors.muted,
-                textAlign: "center",
-                marginTop: emailTheme.spacing.sm,
-              }}
-            >
-              Sent by PulseGuard Monitoring Platform
-            </Text>
-          </Section>
+          <EmailFooter customMessage="PulseGuard Organizations & Workspace Collaboration Engine" />
         </Container>
       </Body>
     </Html>

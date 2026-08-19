@@ -1,5 +1,17 @@
 import React from "react";
-import { render, Html, Head, Body, Container, Section, Text, Link, Hr } from "../primitives";
+import {
+  render,
+  Html,
+  Head,
+  Body,
+  Container,
+  Section,
+  Text,
+  Link,
+  EmailHeader,
+  EmailFooter,
+  PrimaryButton,
+} from "../primitives";
 import { emailTheme } from "../styles/theme";
 import type { VerificationEmailData } from "../index";
 
@@ -7,169 +19,128 @@ export function Verification({ data }: { data: VerificationEmailData }) {
   return (
     <Html>
       <Head>
+        <title>Verify Your Email - PulseGuard</title>
         <style>{`
-          @media (prefers-color-scheme: dark) {
-            body { background-color: ${emailTheme.colors.background} !important; }
+          body { margin: 0; padding: 0; background-color: #09090b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+          @media only screen and (max-width: 600px) {
+            .email-container { width: 100% !important; border-radius: 0 !important; }
           }
         `}</style>
       </Head>
       <Body
         style={{
-          backgroundColor: emailTheme.colors.background,
-          color: emailTheme.colors.foreground,
-          fontFamily: emailTheme.fonts.mono,
-          padding: emailTheme.spacing.lg,
+          backgroundColor: "#09090b",
+          color: "#f4f4f5",
+          fontFamily: emailTheme.fonts.sans,
+          padding: "32px 16px",
+          margin: 0,
         }}
       >
         <Container
           style={{
-            maxWidth: "600px",
-            border: `2px solid ${emailTheme.colors.border}`,
-            backgroundColor: emailTheme.colors.card,
+            maxWidth: "580px",
+            border: "1px solid #27272a",
+            borderRadius: "12px",
+            backgroundColor: "#121215",
+            boxShadow: "0 12px 40px rgba(0, 0, 0, 0.6)",
+            overflow: "hidden",
           }}
         >
           {/* Header */}
-          <Section
-            style={{
-              padding: emailTheme.spacing.lg,
-              borderBottom: `1px solid ${emailTheme.colors.border}`,
-            }}
-          >
-            <Text
-              style={{
-                margin: 0,
-                fontSize: "24px",
-                fontWeight: "bold",
-                color: emailTheme.colors.primary,
-                textTransform: "uppercase",
-                letterSpacing: "2px",
-              }}
-            >
-              PULSEGUARD
-            </Text>
-          </Section>
+          <EmailHeader badge="VERIFICATION" badgeColor="#06b6d4" />
 
           {/* Verification Content */}
-          <Section style={{ padding: emailTheme.spacing.lg }}>
+          <Section style={{ padding: "32px 32px 24px" }}>
             <Text
               style={{
-                margin: 0,
-                fontSize: "28px",
-                fontWeight: "bold",
-                color: emailTheme.colors.primary,
-                marginBottom: emailTheme.spacing.md,
+                margin: "0 0 12px",
+                fontSize: "22px",
+                fontWeight: "700",
+                color: "#ffffff",
+                letterSpacing: "-0.4px",
               }}
             >
-              Verify Your Email
+              Verify Your Email Address
             </Text>
 
             <Text
               style={{
-                margin: 0,
-                fontSize: "16px",
-                color: emailTheme.colors.foreground,
-                lineHeight: "1.6",
-                marginBottom: emailTheme.spacing.md,
+                margin: "0 0 20px",
+                fontSize: "15px",
+                color: "#a1a1aa",
+                lineHeight: 1.6,
               }}
             >
-              Hi {data.userName},
-            </Text>
-
-            <Text
-              style={{
-                margin: 0,
-                fontSize: "16px",
-                color: emailTheme.colors.foreground,
-                lineHeight: "1.6",
-                marginBottom: emailTheme.spacing.md,
-              }}
-            >
-              Click the button below to verify your email address and activate your PulseGuard
-              account.
+              Hi {data.userName}, thank you for registering with PulseGuard. Please confirm your
+              email to activate your account and access global edge monitoring.
             </Text>
 
             {/* CTA Button */}
-            <Link
-              href={data.verificationUrl}
+            <PrimaryButton href={data.verificationUrl}>Verify Email Address</PrimaryButton>
+
+            {/* Expiry / Security Note */}
+            <div
               style={{
-                display: "inline-block",
-                backgroundColor: emailTheme.colors.primary,
-                color: emailTheme.colors.primaryForeground,
-                padding: `${emailTheme.spacing.md} ${emailTheme.spacing.xl}`,
-                textDecoration: "none",
-                fontWeight: "bold",
-                textTransform: "uppercase",
-                letterSpacing: "1px",
-                border: `2px solid ${emailTheme.colors.primary}`,
-                marginTop: emailTheme.spacing.md,
-                marginBottom: emailTheme.spacing.md,
+                backgroundColor: "#18181b",
+                border: "1px solid #27272a",
+                borderRadius: "10px",
+                padding: "16px 20px",
+                marginTop: "24px",
+                marginBottom: "20px",
               }}
             >
-              VERIFY EMAIL
-            </Link>
+              <Text
+                style={{
+                  margin: "0 0 6px",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                  color: "#f4f4f5",
+                }}
+              >
+                🔒 Security Notice
+              </Text>
+              <Text
+                style={{
+                  margin: 0,
+                  fontSize: "12px",
+                  color: "#71717a",
+                  lineHeight: 1.5,
+                }}
+              >
+                This verification link expires in 24 hours. If you did not create a PulseGuard
+                account, please disregard this email.
+              </Text>
+            </div>
 
-            <Hr
-              style={{
-                borderColor: emailTheme.colors.border,
-                margin: `${emailTheme.spacing.md} 0`,
-              }}
-            />
-
+            {/* Fallback URL */}
             <Text
               style={{
-                margin: 0,
-                fontSize: "14px",
-                color: emailTheme.colors.muted,
-                lineHeight: "1.6",
-              }}
-            >
-              If you didn't create a PulseGuard account, you can safely ignore this email.
-            </Text>
-
-            <Text
-              style={{
-                margin: 0,
+                margin: "0 0 6px",
                 fontSize: "12px",
-                color: emailTheme.colors.muted,
-                lineHeight: "1.6",
-                marginTop: emailTheme.spacing.sm,
-                wordBreak: "break-all",
+                color: "#71717a",
               }}
             >
-              Or copy and paste this link: {data.verificationUrl}
+              Button not working? Copy and paste this link into your browser:
             </Text>
+            <div
+              style={{
+                backgroundColor: "#0d0d10",
+                border: "1px solid #1f1f23",
+                borderRadius: "6px",
+                padding: "10px 14px",
+                fontFamily: emailTheme.fonts.mono,
+                fontSize: "11px",
+                color: "#06b6d4",
+                wordBreak: "break-all",
+                lineHeight: 1.4,
+              }}
+            >
+              {data.verificationUrl}
+            </div>
           </Section>
 
           {/* Footer */}
-          <Section
-            style={{
-              padding: emailTheme.spacing.lg,
-              borderTop: `1px solid ${emailTheme.colors.border}`,
-              backgroundColor: emailTheme.colors.background,
-            }}
-          >
-            <Text
-              style={{
-                margin: 0,
-                fontSize: "12px",
-                color: emailTheme.colors.muted,
-                textAlign: "center",
-              }}
-            >
-              This verification link expires in 24 hours
-            </Text>
-            <Text
-              style={{
-                margin: 0,
-                fontSize: "12px",
-                color: emailTheme.colors.muted,
-                textAlign: "center",
-                marginTop: emailTheme.spacing.sm,
-              }}
-            >
-              Sent by PulseGuard Monitoring System
-            </Text>
-          </Section>
+          <EmailFooter customMessage="PulseGuard Identity & Access Management System" />
         </Container>
       </Body>
     </Html>

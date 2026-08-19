@@ -1,5 +1,17 @@
 import * as React from "react";
-import { render } from "../primitives";
+import {
+  render,
+  Html,
+  Head,
+  Body,
+  Container,
+  Section,
+  Text,
+  EmailHeader,
+  EmailFooter,
+  PrimaryButton,
+} from "../primitives";
+import { emailTheme } from "../styles/theme";
 
 export interface UsageLimitWarningEmailProps {
   userName: string;
@@ -16,7 +28,7 @@ export interface UsageLimitWarningEmailProps {
 
 export const UsageLimitWarningEmail: React.FC<Readonly<UsageLimitWarningEmailProps>> = ({
   userName = "PulseGuard Operator",
-  planName = "The Initiate",
+  planName = "Starter",
   warnings = [
     {
       resource: "monitors",
@@ -26,140 +38,177 @@ export const UsageLimitWarningEmail: React.FC<Readonly<UsageLimitWarningEmailPro
       percentage: 84,
     },
   ],
-  upgradeUrl = "https://pulseguard.io/dashboard/settings?tab=billing",
-}) => (
-  <div
-    style={{
-      backgroundColor: "#030712",
-      color: "#f3f4f6",
-      fontFamily: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
-      padding: "40px 20px",
-    }}
-  >
-    <div
-      style={{
-        maxWidth: "560px",
-        margin: "0 auto",
-        backgroundColor: "#0b0f19",
-        borderRadius: "16px",
-        border: "1px solid #1f2937",
-        padding: "32px",
-        boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.5)",
-      }}
-    >
-      <div style={{ marginBottom: "24px", textAlign: "left" }}>
-        <span
+  upgradeUrl = "https://steadystack.dev/dashboard/settings?tab=billing",
+}) => {
+  const hasCriticalWarning = warnings.some((w) => w.percentage >= 90);
+  const themeColor = hasCriticalWarning ? "#ef4444" : "#f59e0b";
+
+  return (
+    <Html>
+      <Head>
+        <title>Workspace Usage Limit Warning - PulseGuard</title>
+        <style>{`
+          body { margin: 0; padding: 0; background-color: #09090b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+          @media only screen and (max-width: 600px) {
+            .email-container { width: 100% !important; border-radius: 0 !important; }
+          }
+        `}</style>
+      </Head>
+      <Body
+        style={{
+          backgroundColor: "#09090b",
+          color: "#f4f4f5",
+          fontFamily: emailTheme.fonts.sans,
+          padding: "32px 16px",
+          margin: 0,
+        }}
+      >
+        <Container
           style={{
-            fontSize: "12px",
-            fontWeight: "700",
-            letterSpacing: "0.1em",
-            color: "#06b6d4",
-            textTransform: "uppercase",
+            maxWidth: "580px",
+            border: `1px solid ${themeColor}40`,
+            borderRadius: "12px",
+            backgroundColor: "#121215",
+            boxShadow: `0 12px 40px ${themeColor}14`,
+            overflow: "hidden",
           }}
         >
-          PulseGuard Alert
-        </span>
-        <h2
-          style={{
-            fontSize: "22px",
-            fontWeight: "700",
-            color: "#ffffff",
-            marginTop: "4px",
-          }}
-        >
-          Workspace Approaching Plan Limits
-        </h2>
-      </div>
+          {/* Header */}
+          <EmailHeader badge="USAGE ALERT" badgeColor={themeColor} />
 
-      <p style={{ fontSize: "14px", color: "#9ca3af", lineHeight: "1.6" }}>
-        Hello {userName}, your workspace on <strong>{planName}</strong> plan is approaching resource
-        limits.
-      </p>
-
-      <div style={{ marginTop: "24px", marginBottom: "24px" }}>
-        {warnings.map((w, idx) => (
-          <div
-            key={idx}
-            style={{
-              backgroundColor: "#111827",
-              borderRadius: "12px",
-              border: "1px solid #1f2937",
-              padding: "16px",
-              marginBottom: "12px",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "8px",
-              }}
-            >
-              <span
-                style={{
-                  fontWeight: "600",
-                  fontSize: "14px",
-                  color: "#f3f4f6",
-                }}
-              >
-                {w.label}
-              </span>
+          {/* Body Content */}
+          <Section style={{ padding: "32px 32px 24px" }}>
+            <div style={{ marginBottom: "6px" }}>
               <span
                 style={{
                   fontSize: "12px",
-                  fontWeight: "700",
-                  color: "#f59e0b",
+                  fontWeight: "600",
+                  color: themeColor,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
                 }}
               >
-                {w.used} / {w.limit} ({w.percentage}%)
+                Plan Quota Threshold Reached
               </span>
             </div>
-            <div
+
+            <Text
               style={{
-                backgroundColor: "#1f2937",
-                borderRadius: "9999px",
-                height: "6px",
-                overflow: "hidden",
+                margin: "0 0 12px",
+                fontSize: "22px",
+                fontWeight: "700",
+                color: "#ffffff",
+                letterSpacing: "-0.4px",
               }}
             >
-              <div
-                style={{
-                  backgroundColor: w.percentage >= 90 ? "#ef4444" : "#f59e0b",
-                  width: `${Math.min(w.percentage, 100)}%`,
-                  height: "100%",
-                }}
-              />
+              Workspace Approaching Limits
+            </Text>
+
+            <Text
+              style={{
+                margin: "0 0 24px",
+                fontSize: "15px",
+                color: "#a1a1aa",
+                lineHeight: 1.6,
+              }}
+            >
+              Hello {userName}, your workspace on the{" "}
+              <strong style={{ color: "#f4f4f5" }}>{planName}</strong> plan is nearing its resource
+              allowance. Upgrade before hitting 100% capacity to prevent new check or integration
+              creation blocks.
+            </Text>
+
+            {/* Warning Meters */}
+            <div style={{ marginBottom: "24px" }}>
+              {warnings.map((w, idx) => {
+                const isCritical = w.percentage >= 90;
+                const meterColor = isCritical ? "#ef4444" : "#f59e0b";
+
+                return (
+                  <div
+                    key={idx}
+                    style={{
+                      backgroundColor: "#18181b",
+                      borderRadius: "10px",
+                      border: "1px solid #27272a",
+                      padding: "16px 20px",
+                      marginBottom: "12px",
+                    }}
+                  >
+                    <table
+                      width="100%"
+                      border={0}
+                      cellPadding="0"
+                      cellSpacing="0"
+                      role="presentation"
+                      style={{ marginBottom: "10px" }}
+                    >
+                      <tbody>
+                        <tr>
+                          <td align="left">
+                            <span
+                              style={{
+                                fontWeight: "600",
+                                fontSize: "14px",
+                                color: "#f4f4f5",
+                              }}
+                            >
+                              {w.label}
+                            </span>
+                          </td>
+                          <td align="right">
+                            <span
+                              style={{
+                                fontSize: "13px",
+                                fontWeight: "700",
+                                fontFamily: emailTheme.fonts.mono,
+                                color: meterColor,
+                              }}
+                            >
+                              {w.used} / {w.limit} ({w.percentage}%)
+                            </span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                    {/* Progress Bar Container */}
+                    <div
+                      style={{
+                        backgroundColor: "#27272a",
+                        borderRadius: "9999px",
+                        height: "6px",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <div
+                        style={{
+                          backgroundColor: meterColor,
+                          width: `${Math.min(w.percentage, 100)}%`,
+                          height: "100%",
+                          borderRadius: "9999px",
+                        }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          </div>
-        ))}
-      </div>
 
-      <p style={{ fontSize: "14px", color: "#9ca3af", lineHeight: "1.6" }}>
-        To prevent monitor or integration creation blocks when reaching 100% capacity, upgrade your
-        plan.
-      </p>
+            {/* CTA Button */}
+            <PrimaryButton href={upgradeUrl}>Upgrade Workspace Plan</PrimaryButton>
+          </Section>
 
-      <div style={{ marginTop: "32px", textAlign: "center" }}>
-        <a
-          href={upgradeUrl}
-          style={{
-            display: "inline-block",
-            backgroundColor: "#0891b2",
-            color: "#ffffff",
-            fontWeight: "600",
-            fontSize: "14px",
-            padding: "12px 28px",
-            borderRadius: "8px",
-            textDecoration: "none",
-          }}
-        >
-          Upgrade Workspace Plan
-        </a>
-      </div>
-    </div>
-  </div>
-);
+          {/* Footer */}
+          <EmailFooter
+            customMessage="PulseGuard Quota & Capacity Management System."
+            unsubscribeUrl="https://steadystack.dev/dashboard/settings?tab=billing"
+          />
+        </Container>
+      </Body>
+    </Html>
+  );
+};
 
 export async function renderUsageLimitWarning(props: UsageLimitWarningEmailProps): Promise<string> {
   return await render(<UsageLimitWarningEmail {...props} />);

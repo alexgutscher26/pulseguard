@@ -28,8 +28,8 @@ const styles = StyleSheet.create({
   },
   brand: {
     fontSize: 14,
-    color: "#6366f1", // Indigo
-    fontWeight: "black",
+    color: "#10b981", // PulseGuard Emerald
+    fontWeight: "heavy",
   },
   section: {
     marginBottom: 20,

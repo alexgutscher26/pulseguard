@@ -1,299 +1,297 @@
 import React from "react";
-import { render, Html, Head, Body, Container, Section, Text, Link, Hr } from "../primitives";
+import {
+  render,
+  Html,
+  Head,
+  Body,
+  Container,
+  Section,
+  Text,
+  Link,
+  EmailHeader,
+  EmailFooter,
+  PrimaryButton,
+} from "../primitives";
 import { emailTheme } from "../styles/theme";
 import type { WeeklyDigestData } from "../index";
 
 export function WeeklyDigest({ data }: { data: WeeklyDigestData }) {
+  const isFlawless = data.totalIncidents === 0;
+
   return (
     <Html>
       <Head>
+        <title>Weekly Uptime Report - {data.weekRange}</title>
         <style>{`
-          @media (prefers-color-scheme: dark) {
-            body { background-color: ${emailTheme.colors.background} !important; }
+          body { margin: 0; padding: 0; background-color: #09090b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+          @media only screen and (max-width: 600px) {
+            .email-container { width: 100% !important; border-radius: 0 !important; }
+            .stat-column { display: block !important; width: 100% !important; margin-bottom: 10px !important; }
           }
         `}</style>
       </Head>
       <Body
         style={{
-          backgroundColor: emailTheme.colors.background,
-          color: emailTheme.colors.foreground,
-          fontFamily: emailTheme.fonts.mono,
-          padding: emailTheme.spacing.lg,
+          backgroundColor: "#09090b",
+          color: "#f4f4f5",
+          fontFamily: emailTheme.fonts.sans,
+          padding: "32px 16px",
+          margin: 0,
         }}
       >
         <Container
           style={{
-            maxWidth: "600px",
-            border: `2px solid ${emailTheme.colors.border}`,
-            backgroundColor: emailTheme.colors.card,
+            maxWidth: "580px",
+            border: "1px solid #27272a",
+            borderRadius: "12px",
+            backgroundColor: "#121215",
+            boxShadow: "0 12px 40px rgba(0, 0, 0, 0.6)",
+            overflow: "hidden",
           }}
         >
           {/* Header */}
-          <Section
-            style={{
-              padding: emailTheme.spacing.lg,
-              borderBottom: `1px solid ${emailTheme.colors.border}`,
-            }}
-          >
-            <Text
-              style={{
-                margin: 0,
-                fontSize: "24px",
-                fontWeight: "bold",
-                color: emailTheme.colors.primary,
-                textTransform: "uppercase",
-                letterSpacing: "2px",
-              }}
-            >
-              PULSEGUARD
-            </Text>
-          </Section>
+          <EmailHeader badge="WEEKLY DIGEST" badgeColor="#06b6d4" />
 
-          {/* Digest Header */}
-          <Section style={{ padding: emailTheme.spacing.lg }}>
+          {/* Digest Body */}
+          <Section style={{ padding: "32px 32px 24px" }}>
+            <div style={{ marginBottom: "6px" }}>
+              <span
+                style={{
+                  fontSize: "12px",
+                  fontWeight: "600",
+                  color: "#06b6d4",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                }}
+              >
+                Telemetry & Availability Digest
+              </span>
+            </div>
+
             <Text
               style={{
-                margin: 0,
-                fontSize: "28px",
-                fontWeight: "bold",
-                color: emailTheme.colors.primary,
-                marginBottom: emailTheme.spacing.sm,
+                margin: "0 0 4px",
+                fontSize: "22px",
+                fontWeight: "700",
+                color: "#ffffff",
+                letterSpacing: "-0.4px",
               }}
             >
-              📊 Weekly Report
+              Weekly Performance Summary
             </Text>
 
             <Text
               style={{
-                margin: 0,
-                fontSize: "16px",
-                color: emailTheme.colors.muted,
-                marginBottom: emailTheme.spacing.lg,
+                margin: "0 0 24px",
+                fontSize: "13px",
+                fontFamily: emailTheme.fonts.mono,
+                color: "#71717a",
               }}
             >
-              {data.weekRange}
+              Reporting Period: {data.weekRange}
             </Text>
 
-            {/* Stats Grid */}
-            <Section
-              style={{
-                display: "table",
-                width: "100%",
-                marginBottom: emailTheme.spacing.lg,
-              }}
+            {/* 3-Column KPI Metric Cards */}
+            <table
+              width="100%"
+              border={0}
+              cellPadding="0"
+              cellSpacing="0"
+              role="presentation"
+              style={{ marginBottom: "24px" }}
             >
-              {/* Uptime Stat */}
-              <Section
-                style={{
-                  display: "table-cell",
-                  width: "33.33%",
-                  padding: emailTheme.spacing.md,
-                  border: `1px solid ${emailTheme.colors.border}`,
-                  textAlign: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    margin: 0,
-                    fontSize: "32px",
-                    fontWeight: "bold",
-                    color: emailTheme.colors.primary,
-                  }}
-                >
-                  {data.uptimePercentage}%
-                </Text>
-                <Text
-                  style={{
-                    margin: 0,
-                    fontSize: "12px",
-                    color: emailTheme.colors.muted,
-                    marginTop: emailTheme.spacing.xs,
-                  }}
-                >
-                  UPTIME
-                </Text>
-              </Section>
+              <tbody>
+                <tr>
+                  {/* Uptime Stat */}
+                  <td
+                    width="32%"
+                    style={{
+                      backgroundColor: "#18181b",
+                      border: "1px solid #27272a",
+                      borderRadius: "10px",
+                      padding: "16px 12px",
+                      textAlign: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: "22px",
+                        fontWeight: "800",
+                        fontFamily: emailTheme.fonts.mono,
+                        color: data.uptimePercentage >= 99.9 ? "#10b981" : "#f59e0b",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      {data.uptimePercentage}%
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "11px",
+                        fontWeight: "600",
+                        color: "#71717a",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.5px",
+                      }}
+                    >
+                      Avg Uptime
+                    </div>
+                  </td>
 
-              {/* Monitors Stat */}
-              <Section
-                style={{
-                  display: "table-cell",
-                  width: "33.33%",
-                  padding: emailTheme.spacing.md,
-                  border: `1px solid ${emailTheme.colors.border}`,
-                  borderLeft: "none",
-                  textAlign: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    margin: 0,
-                    fontSize: "32px",
-                    fontWeight: "bold",
-                    color: emailTheme.colors.foreground,
-                  }}
-                >
-                  {data.totalMonitors}
-                </Text>
-                <Text
-                  style={{
-                    margin: 0,
-                    fontSize: "12px",
-                    color: emailTheme.colors.muted,
-                    marginTop: emailTheme.spacing.xs,
-                  }}
-                >
-                  MONITORS
-                </Text>
-              </Section>
+                  <td width="2%" />
 
-              {/* Incidents Stat */}
-              <Section
-                style={{
-                  display: "table-cell",
-                  width: "33.33%",
-                  padding: emailTheme.spacing.md,
-                  border: `1px solid ${emailTheme.colors.border}`,
-                  borderLeft: "none",
-                  textAlign: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    margin: 0,
-                    fontSize: "32px",
-                    fontWeight: "bold",
-                    color:
-                      data.totalIncidents > 0
-                        ? emailTheme.colors.destructive
-                        : emailTheme.colors.primary,
-                  }}
-                >
-                  {data.totalIncidents}
-                </Text>
-                <Text
-                  style={{
-                    margin: 0,
-                    fontSize: "12px",
-                    color: emailTheme.colors.muted,
-                    marginTop: emailTheme.spacing.xs,
-                  }}
-                >
-                  INCIDENTS
-                </Text>
-              </Section>
-            </Section>
+                  {/* Monitors Stat */}
+                  <td
+                    width="32%"
+                    style={{
+                      backgroundColor: "#18181b",
+                      border: "1px solid #27272a",
+                      borderRadius: "10px",
+                      padding: "16px 12px",
+                      textAlign: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: "22px",
+                        fontWeight: "800",
+                        fontFamily: emailTheme.fonts.mono,
+                        color: "#f4f4f5",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      {data.totalMonitors}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "11px",
+                        fontWeight: "600",
+                        color: "#71717a",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.5px",
+                      }}
+                    >
+                      Endpoints
+                    </div>
+                  </td>
 
-            <Hr
-              style={{
-                borderColor: emailTheme.colors.border,
-                margin: `${emailTheme.spacing.md} 0`,
-              }}
-            />
+                  <td width="2%" />
 
-            {/* Top Performers */}
+                  {/* Incidents Stat */}
+                  <td
+                    width="32%"
+                    style={{
+                      backgroundColor: "#18181b",
+                      border: "1px solid #27272a",
+                      borderRadius: "10px",
+                      padding: "16px 12px",
+                      textAlign: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: "22px",
+                        fontWeight: "800",
+                        fontFamily: emailTheme.fonts.mono,
+                        color: isFlawless ? "#10b981" : "#ef4444",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      {data.totalIncidents}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "11px",
+                        fontWeight: "600",
+                        color: "#71717a",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.5px",
+                      }}
+                    >
+                      Incidents
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            {/* Top Performers Section */}
             {data.topPerformers.length > 0 && (
-              <>
+              <div style={{ marginBottom: "28px" }}>
                 <Text
                   style={{
-                    margin: 0,
-                    fontSize: "18px",
-                    fontWeight: "bold",
-                    color: emailTheme.colors.primary,
-                    marginBottom: emailTheme.spacing.md,
+                    margin: "0 0 12px",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                    color: "#a1a1aa",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
                   }}
                 >
-                  TOP PERFORMERS
+                  Top Monitored Services
                 </Text>
 
                 {data.topPerformers.map((monitor, index) => (
-                  <Section
+                  <div
                     key={index}
                     style={{
-                      padding: emailTheme.spacing.sm,
-                      border: `1px solid ${emailTheme.colors.border}`,
-                      marginBottom: emailTheme.spacing.sm,
+                      backgroundColor: "#18181b",
+                      border: "1px solid #27272a",
+                      borderRadius: "8px",
+                      padding: "12px 16px",
+                      marginBottom: "8px",
                     }}
                   >
-                    <Text
-                      style={{
-                        margin: 0,
-                        fontSize: "14px",
-                        color: emailTheme.colors.foreground,
-                      }}
+                    <table
+                      width="100%"
+                      border={0}
+                      cellPadding="0"
+                      cellSpacing="0"
+                      role="presentation"
                     >
-                      <strong>{monitor.name}</strong>
-                    </Text>
-                    <Text
-                      style={{
-                        margin: 0,
-                        fontSize: "12px",
-                        color: emailTheme.colors.primary,
-                        marginTop: emailTheme.spacing.xs,
-                      }}
-                    >
-                      {monitor.uptime}% uptime
-                    </Text>
-                  </Section>
+                      <tbody>
+                        <tr>
+                          <td align="left" style={{ verticalAlign: "middle" }}>
+                            <span
+                              style={{
+                                fontSize: "14px",
+                                fontWeight: "600",
+                                color: "#f4f4f5",
+                              }}
+                            >
+                              {monitor.name}
+                            </span>
+                          </td>
+                          <td align="right" style={{ verticalAlign: "middle" }}>
+                            <span
+                              style={{
+                                fontFamily: emailTheme.fonts.mono,
+                                fontSize: "13px",
+                                fontWeight: "700",
+                                color: monitor.uptime >= 99.9 ? "#10b981" : "#38bdf8",
+                              }}
+                            >
+                              {monitor.uptime}%
+                            </span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 ))}
-              </>
+              </div>
             )}
 
             {/* CTA Button */}
-            <Link
-              href="https://pulseguard.com/dashboard"
-              style={{
-                display: "inline-block",
-                backgroundColor: emailTheme.colors.primary,
-                color: emailTheme.colors.primaryForeground,
-                padding: `${emailTheme.spacing.md} ${emailTheme.spacing.xl}`,
-                textDecoration: "none",
-                fontWeight: "bold",
-                textTransform: "uppercase",
-                letterSpacing: "1px",
-                border: `2px solid ${emailTheme.colors.primary}`,
-                marginTop: emailTheme.spacing.lg,
-              }}
-            >
-              VIEW FULL REPORT
-            </Link>
+            <PrimaryButton href="https://steadystack.dev/dashboard">
+              View Analytics Dashboard
+            </PrimaryButton>
           </Section>
 
           {/* Footer */}
-          <Section
-            style={{
-              padding: emailTheme.spacing.lg,
-              borderTop: `1px solid ${emailTheme.colors.border}`,
-              backgroundColor: emailTheme.colors.background,
-            }}
-          >
-            <Text
-              style={{
-                margin: 0,
-                fontSize: "12px",
-                color: emailTheme.colors.muted,
-                textAlign: "center",
-              }}
-            >
-              <Link
-                href="https://pulseguard.com/settings/notifications"
-                style={{ color: emailTheme.colors.muted }}
-              >
-                Manage Email Preferences
-              </Link>
-            </Text>
-            <Text
-              style={{
-                margin: 0,
-                fontSize: "12px",
-                color: emailTheme.colors.muted,
-                textAlign: "center",
-                marginTop: emailTheme.spacing.sm,
-              }}
-            >
-              Sent by PulseGuard Monitoring System
-            </Text>
-          </Section>
+          <EmailFooter
+            customMessage="Weekly digest generated by PulseGuard Distributed Analytics Engine."
+            unsubscribeUrl="https://steadystack.dev/dashboard/settings?tab=notifications"
+          />
         </Container>
       </Body>
     </Html>

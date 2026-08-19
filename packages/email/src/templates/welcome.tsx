@@ -1,5 +1,17 @@
 import React from "react";
-import { render, Html, Head, Body, Container, Section, Text, Link, Hr } from "../primitives";
+import {
+  render,
+  Html,
+  Head,
+  Body,
+  Container,
+  Section,
+  Text,
+  Link,
+  EmailHeader,
+  EmailFooter,
+  PrimaryButton,
+} from "../primitives";
 import { emailTheme } from "../styles/theme";
 import type { WelcomeEmailData } from "../index";
 
@@ -7,191 +19,218 @@ export function Welcome({ data }: { data: WelcomeEmailData }) {
   return (
     <Html>
       <Head>
+        <title>Welcome to PulseGuard</title>
         <style>{`
-          @media (prefers-color-scheme: dark) {
-            body { background-color: ${emailTheme.colors.background} !important; }
+          body { margin: 0; padding: 0; background-color: #09090b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+          @media only screen and (max-width: 600px) {
+            .email-container { width: 100% !important; border-radius: 0 !important; }
+            .card-padding { padding: 24px 16px !important; }
           }
         `}</style>
       </Head>
       <Body
         style={{
-          backgroundColor: emailTheme.colors.background,
-          color: emailTheme.colors.foreground,
-          fontFamily: emailTheme.fonts.mono,
-          padding: emailTheme.spacing.lg,
+          backgroundColor: "#09090b",
+          color: "#f4f4f5",
+          fontFamily: emailTheme.fonts.sans,
+          padding: "32px 16px",
+          margin: 0,
         }}
       >
         <Container
           style={{
-            maxWidth: "600px",
-            border: `2px solid ${emailTheme.colors.border}`,
-            backgroundColor: emailTheme.colors.card,
+            maxWidth: "580px",
+            border: "1px solid #27272a",
+            borderRadius: "12px",
+            backgroundColor: "#121215",
+            boxShadow: "0 12px 40px rgba(0, 0, 0, 0.6)",
+            overflow: "hidden",
           }}
         >
           {/* Header */}
-          <Section
-            style={{
-              padding: emailTheme.spacing.lg,
-              borderBottom: `1px solid ${emailTheme.colors.border}`,
-            }}
-          >
+          <EmailHeader badge="WELCOME" badgeColor="#10b981" />
+
+          {/* Welcome Hero Content */}
+          <Section style={{ padding: "32px 32px 24px" }}>
             <Text
               style={{
-                margin: 0,
+                margin: "0 0 12px",
                 fontSize: "24px",
-                fontWeight: "bold",
-                color: emailTheme.colors.primary,
-                textTransform: "uppercase",
-                letterSpacing: "2px",
+                fontWeight: "700",
+                color: "#ffffff",
+                letterSpacing: "-0.5px",
+                lineHeight: 1.3,
               }}
             >
-              PULSEGUARD
-            </Text>
-          </Section>
-
-          {/* Welcome Content */}
-          <Section style={{ padding: emailTheme.spacing.lg }}>
-            <Text
-              style={{
-                margin: 0,
-                fontSize: "28px",
-                fontWeight: "bold",
-                color: emailTheme.colors.primary,
-                marginBottom: emailTheme.spacing.md,
-              }}
-            >
-              Welcome, {data.userName}
+              Welcome to PulseGuard, {data.userName}
             </Text>
 
             <Text
               style={{
-                margin: 0,
-                fontSize: "16px",
-                color: emailTheme.colors.foreground,
-                lineHeight: "1.6",
-                marginBottom: emailTheme.spacing.md,
+                margin: "0 0 24px",
+                fontSize: "15px",
+                color: "#a1a1aa",
+                lineHeight: 1.6,
               }}
             >
-              Your monitoring station is now online. PulseGuard will keep watch over your services
-              24/7, alerting you the moment something goes wrong.
+              Your enterprise monitoring station is now active. PulseGuard tracks your critical
+              APIs, websites, and infrastructure across global edge locations with sub-minute
+              precision.
             </Text>
 
-            <Hr
+            {/* Step 1 */}
+            <div
               style={{
-                borderColor: emailTheme.colors.border,
-                margin: `${emailTheme.spacing.md} 0`,
-              }}
-            />
-
-            <Text
-              style={{
-                margin: 0,
-                fontSize: "18px",
-                fontWeight: "bold",
-                color: emailTheme.colors.primary,
-                marginBottom: emailTheme.spacing.sm,
+                backgroundColor: "#18181b",
+                border: "1px solid #27272a",
+                borderRadius: "10px",
+                padding: "16px 20px",
+                marginBottom: "12px",
               }}
             >
-              GETTING STARTED
-            </Text>
+              <div style={{ display: "flex", alignItems: "flex-start" }}>
+                <div
+                  style={{
+                    display: "inline-block",
+                    width: "24px",
+                    height: "24px",
+                    borderRadius: "6px",
+                    backgroundColor: "rgba(16, 185, 129, 0.15)",
+                    border: "1px solid rgba(16, 185, 129, 0.3)",
+                    color: "#10b981",
+                    fontSize: "12px",
+                    fontWeight: "700",
+                    textAlign: "center",
+                    lineHeight: "24px",
+                    marginRight: "12px",
+                    verticalAlign: "top",
+                  }}
+                >
+                  1
+                </div>
+                <div style={{ display: "inline-block", width: "calc(100% - 44px)" }}>
+                  <Text
+                    style={{
+                      margin: "0 0 4px",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#f4f4f5",
+                    }}
+                  >
+                    Deploy Your First Monitor
+                  </Text>
+                  <Text style={{ margin: 0, fontSize: "13px", color: "#82828e", lineHeight: 1.5 }}>
+                    Configure HTTP/S endpoints, WebSocket streams, SSL expirations, or custom TCP
+                    ports.
+                  </Text>
+                </div>
+              </div>
+            </div>
 
-            <Text
+            {/* Step 2 */}
+            <div
               style={{
-                margin: 0,
-                fontSize: "14px",
-                color: emailTheme.colors.foreground,
-                lineHeight: "1.6",
-                marginBottom: emailTheme.spacing.sm,
+                backgroundColor: "#18181b",
+                border: "1px solid #27272a",
+                borderRadius: "10px",
+                padding: "16px 20px",
+                marginBottom: "12px",
               }}
             >
-              <strong style={{ color: emailTheme.colors.primary }}>
-                1. CREATE YOUR FIRST MONITOR
-              </strong>
-              <br />
-              Add the URLs you want to track. We support HTTP, TCP, and PING checks.
-            </Text>
+              <div style={{ display: "flex", alignItems: "flex-start" }}>
+                <div
+                  style={{
+                    display: "inline-block",
+                    width: "24px",
+                    height: "24px",
+                    borderRadius: "6px",
+                    backgroundColor: "rgba(6, 182, 212, 0.15)",
+                    border: "1px solid rgba(6, 182, 212, 0.3)",
+                    color: "#06b6d4",
+                    fontSize: "12px",
+                    fontWeight: "700",
+                    textAlign: "center",
+                    lineHeight: "24px",
+                    marginRight: "12px",
+                    verticalAlign: "top",
+                  }}
+                >
+                  2
+                </div>
+                <div style={{ display: "inline-block", width: "calc(100% - 44px)" }}>
+                  <Text
+                    style={{
+                      margin: "0 0 4px",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#f4f4f5",
+                    }}
+                  >
+                    Connect Incident Channels
+                  </Text>
+                  <Text style={{ margin: 0, fontSize: "13px", color: "#82828e", lineHeight: 1.5 }}>
+                    Route real-time alerts to Slack, Discord, PagerDuty, OpsGenie, or custom
+                    Webhooks.
+                  </Text>
+                </div>
+              </div>
+            </div>
 
-            <Text
+            {/* Step 3 */}
+            <div
               style={{
-                margin: 0,
-                fontSize: "14px",
-                color: emailTheme.colors.foreground,
-                lineHeight: "1.6",
-                marginBottom: emailTheme.spacing.sm,
+                backgroundColor: "#18181b",
+                border: "1px solid #27272a",
+                borderRadius: "10px",
+                padding: "16px 20px",
+                marginBottom: "24px",
               }}
             >
-              <strong style={{ color: emailTheme.colors.primary }}>2. CONFIGURE ALERTS</strong>
-              <br />
-              Set up notification channels (Email, Discord, Slack, Webhook) to get instant alerts.
-            </Text>
-
-            <Text
-              style={{
-                margin: 0,
-                fontSize: "14px",
-                color: emailTheme.colors.foreground,
-                lineHeight: "1.6",
-                marginBottom: emailTheme.spacing.md,
-              }}
-            >
-              <strong style={{ color: emailTheme.colors.primary }}>3. MONITOR & RESPOND</strong>
-              <br />
-              View real-time status, uptime metrics, and incident history from your dashboard.
-            </Text>
+              <div style={{ display: "flex", alignItems: "flex-start" }}>
+                <div
+                  style={{
+                    display: "inline-block",
+                    width: "24px",
+                    height: "24px",
+                    borderRadius: "6px",
+                    backgroundColor: "rgba(245, 158, 11, 0.15)",
+                    border: "1px solid rgba(245, 158, 11, 0.3)",
+                    color: "#f59e0b",
+                    fontSize: "12px",
+                    fontWeight: "700",
+                    textAlign: "center",
+                    lineHeight: "24px",
+                    marginRight: "12px",
+                    verticalAlign: "top",
+                  }}
+                >
+                  3
+                </div>
+                <div style={{ display: "inline-block", width: "calc(100% - 44px)" }}>
+                  <Text
+                    style={{
+                      margin: "0 0 4px",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#f4f4f5",
+                    }}
+                  >
+                    Publish Status Pages
+                  </Text>
+                  <Text style={{ margin: 0, fontSize: "13px", color: "#82828e", lineHeight: 1.5 }}>
+                    Give your users transparent uptime visibility on custom domains with automated
+                    incident logs.
+                  </Text>
+                </div>
+              </div>
+            </div>
 
             {/* CTA Button */}
-            <Link
-              href={data.dashboardUrl}
-              style={{
-                display: "inline-block",
-                backgroundColor: emailTheme.colors.primary,
-                color: emailTheme.colors.primaryForeground,
-                padding: `${emailTheme.spacing.md} ${emailTheme.spacing.xl}`,
-                textDecoration: "none",
-                fontWeight: "bold",
-                textTransform: "uppercase",
-                letterSpacing: "1px",
-                border: `2px solid ${emailTheme.colors.primary}`,
-                marginTop: emailTheme.spacing.md,
-              }}
-            >
-              CREATE FIRST MONITOR
-            </Link>
+            <PrimaryButton href={data.dashboardUrl}>Open Control Center</PrimaryButton>
           </Section>
 
           {/* Footer */}
-          <Section
-            style={{
-              padding: emailTheme.spacing.lg,
-              borderTop: `1px solid ${emailTheme.colors.border}`,
-              backgroundColor: emailTheme.colors.background,
-            }}
-          >
-            <Text
-              style={{
-                margin: 0,
-                fontSize: "12px",
-                color: emailTheme.colors.muted,
-                textAlign: "center",
-              }}
-            >
-              Need help? Check out our{" "}
-              <Link href="https://steadystack.dev" style={{ color: emailTheme.colors.primary }}>
-                dashboard
-              </Link>
-            </Text>
-            <Text
-              style={{
-                margin: 0,
-                fontSize: "12px",
-                color: emailTheme.colors.muted,
-                textAlign: "center",
-                marginTop: emailTheme.spacing.sm,
-              }}
-            >
-              Sent by PulseGuard Monitoring Platform • steadystack.dev
-            </Text>
-          </Section>
+          <EmailFooter customMessage="Have questions or need assistance? Our 24/7 engineering team is here to help." />
         </Container>
       </Body>
     </Html>
@@ -201,19 +240,14 @@ export function Welcome({ data }: { data: WelcomeEmailData }) {
 export function renderWelcomeText(data: WelcomeEmailData): string {
   return `Welcome to PulseGuard, ${data.userName}!
 
-Your monitoring station is now online. PulseGuard keeps watch over your services 24/7, alerting you the moment an outage occurs.
+Your enterprise monitoring station is now active. PulseGuard tracks your critical services 24/7 across global edge locations with sub-minute precision.
 
-GETTING STARTED:
-1. CREATE YOUR FIRST MONITOR
-Add the URLs you want to track (HTTP, TCP, and PING checks).
+QUICK START:
+1. Deploy Your First Monitor: Add HTTP/S endpoints, TCP checks, or SSL expiry rules.
+2. Connect Incident Channels: Route alerts to Slack, Discord, PagerDuty, or Webhooks.
+3. Publish Status Pages: Give users transparent uptime visibility on custom domains.
 
-2. CONFIGURE ALERTS
-Set up notification channels (Email, Discord, Slack, Webhook) for instant incident alerts.
-
-3. MONITOR & RESPOND
-View real-time status, regional latency heatmaps, and SLA reports.
-
-Open Your Dashboard: ${data.dashboardUrl}
+Open Control Center: ${data.dashboardUrl}
 
 Sent by PulseGuard Monitoring Platform • https://steadystack.dev`;
 }
