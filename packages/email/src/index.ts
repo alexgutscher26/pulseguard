@@ -19,6 +19,7 @@ export interface SendEmailOptions {
   to: string | string[];
   subject: string;
   html: string;
+  text?: string | undefined;
   from?: string | undefined;
   replyTo?: string | string[] | undefined;
   cc?: string | string[] | undefined;
@@ -131,15 +132,30 @@ export function getResendClient(apiKey?: string): Resend {
 // Core Email Dispatch Pipeline
 // ============================================================================
 
+function stripHtmlTagsToPlainText(html: string): string {
+  return html
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
 export async function sendEmail(options: SendEmailOptions): Promise<SendEmailResult> {
   const {
     to,
     subject,
     html,
-    from = EMAIL_SENDERS.general,
+    text,
+    from = process.env.EMAIL_FROM || EMAIL_SENDERS.general,
     attachments,
     apiKey,
-    replyTo,
+    replyTo = "hello@steadystack.dev",
     cc,
     bcc,
     headers,
@@ -148,8 +164,6 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
 
   const key = apiKey ?? env.RESEND_API_KEY;
   // Treat as dev/test only when NODE_ENV is explicitly set to those values.
-  // An unset NODE_ENV (e.g. edge runtime, build time) is NOT treated as dev — that
-  // was the root cause of the welcome email silently no-oping in production.
   const isDevOrTest = process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test";
 
   if (!key) {
@@ -166,18 +180,19 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
       console.log(`==================================================\n`);
       return { id: "dev-mock-email-id" };
     }
-    // In production, a missing API key is a hard error — surface it so it doesn't
-    // silently disappear into a fire-and-forget catch block.
     throw new Error("[PulseGuard Email] RESEND_API_KEY is not configured. Email cannot be sent.");
   }
 
   try {
     const resend = getResendClient(key);
+    const plainText = text || stripHtmlTagsToPlainText(html);
+
     const result = await resend.emails.send({
       from,
       to,
       subject,
       html,
+      text: plainText,
       ...(attachments && attachments.length > 0 ? { attachments } : {}),
       ...(replyTo ? { replyTo } : {}),
       ...(cc ? { cc } : {}),
@@ -263,14 +278,17 @@ export async function sendWelcomeEmail(
   data: WelcomeEmailData,
   apiKey?: string,
 ): Promise<SendEmailResult> {
-  const { renderWelcome } = await import("./templates/welcome");
+  const { renderWelcome, renderWelcomeText } = await import("./templates/welcome");
   const html = await renderWelcome(data);
+  const text = renderWelcomeText(data);
 
   return sendEmail({
     to,
     from: EMAIL_SENDERS.general,
+    replyTo: "hello@steadystack.dev",
     subject: "Welcome to PulseGuard - Your Monitors Await",
     html,
+    text,
     apiKey,
   });
 }

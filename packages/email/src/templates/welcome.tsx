@@ -176,8 +176,8 @@ export function Welcome({ data }: { data: WelcomeEmailData }) {
               }}
             >
               Need help? Check out our{" "}
-              <Link href="https://pulseguard.com/docs" style={{ color: emailTheme.colors.primary }}>
-                documentation
+              <Link href="https://steadystack.dev" style={{ color: emailTheme.colors.primary }}>
+                dashboard
               </Link>
             </Text>
             <Text
@@ -189,13 +189,33 @@ export function Welcome({ data }: { data: WelcomeEmailData }) {
                 marginTop: emailTheme.spacing.sm,
               }}
             >
-              Sent by PulseGuard Monitoring System
+              Sent by PulseGuard Monitoring Platform • steadystack.dev
             </Text>
           </Section>
         </Container>
       </Body>
     </Html>
   );
+}
+
+export function renderWelcomeText(data: WelcomeEmailData): string {
+  return `Welcome to PulseGuard, ${data.userName}!
+
+Your monitoring station is now online. PulseGuard keeps watch over your services 24/7, alerting you the moment an outage occurs.
+
+GETTING STARTED:
+1. CREATE YOUR FIRST MONITOR
+Add the URLs you want to track (HTTP, TCP, and PING checks).
+
+2. CONFIGURE ALERTS
+Set up notification channels (Email, Discord, Slack, Webhook) for instant incident alerts.
+
+3. MONITOR & RESPOND
+View real-time status, regional latency heatmaps, and SLA reports.
+
+Open Your Dashboard: ${data.dashboardUrl}
+
+Sent by PulseGuard Monitoring Platform • https://steadystack.dev`;
 }
 
 export async function renderWelcome(data: WelcomeEmailData): Promise<string> {
