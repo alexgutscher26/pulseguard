@@ -871,8 +871,17 @@ export async function checkMonitor(
             redirect: "follow",
             headers: {
               "User-Agent": PULSEGUARD_CANONICAL_USER_AGENT,
-              Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-              "Accept-Language": "en-US,en;q=0.5",
+              Accept:
+                "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+              "Accept-Language": "en-US,en;q=0.9",
+              "Sec-CH-UA": '"Chromium";v="133", "Not(A:Brand";v="99", "Google Chrome";v="133"',
+              "Sec-CH-UA-Mobile": "?0",
+              "Sec-CH-UA-Platform": '"Windows"',
+              "Sec-Fetch-Dest": "document",
+              "Sec-Fetch-Mode": "navigate",
+              "Sec-Fetch-Site": "none",
+              "Sec-Fetch-User": "?1",
+              "Upgrade-Insecure-Requests": "1",
               ...userHeaders,
             },
             body: ["POST", "PUT", "PATCH"].includes(method) ? monitor.body : undefined,
@@ -881,11 +890,12 @@ export async function checkMonitor(
 
           const body = await response.text();
           latency = Math.round(Date.now() - start);
-          // Treat 2xx, 3xx as UP. Treat 429 as UP — rate-limited means server is alive.
+          // Treat 2xx, 3xx as UP. Treat 429 and 403 as UP — endpoint is alive and responsive.
           const statusNum = Number(response.status);
           const isRateLimited = statusNum === 429;
+          const isIPBlocked = statusNum === 403;
           const isHealthyStatus =
-            response.ok || (statusNum >= 300 && statusNum < 400) || isRateLimited;
+            response.ok || (statusNum >= 300 && statusNum < 400) || isRateLimited || isIPBlocked;
           currentStatus = isHealthyStatus ? "UP" : "DOWN";
 
           if (currentStatus === "UP" && monitor.expectation) {

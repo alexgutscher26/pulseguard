@@ -352,12 +352,17 @@ export async function performInternalRequest(
       const headersObj: Record<string, string> = {};
       if (monitor.headers) {
         try {
-          const parsed = JSON.parse(monitor.headers);
+          let rawHeaders = monitor.headers;
+          if (rawHeaders.startsWith("enc:v1:")) {
+            const { decryptSecret } = await import("@pulseguard/core");
+            rawHeaders = await decryptSecret(rawHeaders, env?.ENCRYPTION_SECRET);
+          }
+          const parsed = JSON.parse(rawHeaders);
           if (Array.isArray(parsed)) {
             parsed.forEach((h: { key: string; value: string }) => {
               if (h.key) headersObj[h.key] = h.value;
             });
-          } else if (typeof parsed === "object") {
+          } else if (typeof parsed === "object" && parsed !== null) {
             Object.assign(headersObj, parsed);
           }
         } catch {}
