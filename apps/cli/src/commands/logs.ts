@@ -21,7 +21,9 @@ const STATUS_SYMBOL: Record<string, string> = {
 function formatEvent(e: Event): string {
   const ts = new Date(e.timestamp).toLocaleTimeString();
   const symbol = STATUS_SYMBOL[e.status] ?? chalk.dim("●");
-  const latency = e.latency ? chalk.dim(`${e.latency}ms`.padStart(7)) : chalk.dim("  ---ms");
+  const latency = e.latency
+    ? chalk.dim(`${e.latency}ms`.padStart(7))
+    : chalk.dim("  ---ms");
   const region = e.region ? chalk.dim(` [${e.region}]`) : "";
   const err = e.errorReason ? chalk.red(` ${e.errorReason}`) : "";
   return `  ${chalk.dim(ts)}  ${symbol} ${e.status.padEnd(12)}${latency}${region}${err}`;
@@ -46,7 +48,9 @@ logsCmd
       );
 
       console.log(chalk.bold(`\n  Tailing logs for: ${name}`));
-      console.log(chalk.dim(`  Polling every ${intervalMs / 1000}s — Ctrl+C to stop\n`));
+      console.log(
+        chalk.dim(`  Polling every ${intervalMs / 1000}s — Ctrl+C to stop\n`),
+      );
 
       for (const e of events) {
         console.log(formatEvent(e));
@@ -54,7 +58,9 @@ logsCmd
 
       // Track the newest event we've seen
       let lastTimestamp =
-        events.length > 0 ? events[events.length - 1].timestamp : new Date().toISOString();
+        events.length > 0
+          ? events[events.length - 1].timestamp
+          : new Date().toISOString();
 
       // Poll for new events
       const poll = async () => {
