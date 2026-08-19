@@ -6,7 +6,7 @@ import z from "zod";
 
 import { authClient } from "@/lib/auth-client";
 import { recordReferralSignup } from "@/actions/referrals";
-import { Gift } from "lucide-react";
+import { Gift, X } from "lucide-react";
 
 import Loader from "./loader";
 import { Button } from "./ui/button";
@@ -68,6 +68,10 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
               } catch (e) {
                 console.error("Failed to attribute referral:", e);
               }
+              // Clear cookie upon successful registration
+              if (typeof document !== "undefined") {
+                document.cookie = "pulseguard_ref=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+              }
             }
             router.push("/dashboard");
             toast.success("Sign up successful");
@@ -95,12 +99,27 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
   return (
     <div className="space-y-6">
       {refCode && (
-        <div className="flex items-center gap-2 p-3 rounded-xl bg-primary/10 border border-primary/20 text-primary text-xs font-mono">
-          <Gift className="size-4 shrink-0 text-primary animate-pulse" />
-          <span>
-            Referred by partner code{" "}
-            <strong className="font-bold underline decoration-dotted">{refCode}</strong>
-          </span>
+        <div className="flex items-center justify-between gap-2 p-3 rounded-xl bg-primary/10 border border-primary/20 text-primary text-xs font-mono">
+          <div className="flex items-center gap-2">
+            <Gift className="size-4 shrink-0 text-primary animate-pulse" />
+            <span>
+              Referred by partner code{" "}
+              <strong className="font-bold underline decoration-dotted">{refCode}</strong>
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setRefCode(null);
+              if (typeof document !== "undefined") {
+                document.cookie = "pulseguard_ref=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+              }
+            }}
+            className="text-primary/60 hover:text-primary transition-colors p-1 rounded hover:bg-primary/20"
+            title="Remove referral code"
+          >
+            <X className="size-3.5" />
+          </button>
         </div>
       )}
       <form
