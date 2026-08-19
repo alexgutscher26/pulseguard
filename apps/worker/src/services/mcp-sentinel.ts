@@ -113,7 +113,7 @@ export async function checkMCP(
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        "User-Agent": "PulseGuard-MCP-Sentinel/1.0",
+        "User-Agent": "SteadyStack-MCP-Sentinel/1.0",
       },
       body: JSON.stringify(body),
       signal: AbortSignal.timeout(10000),

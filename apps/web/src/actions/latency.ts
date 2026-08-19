@@ -1,6 +1,6 @@
 "use server";
 
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 
 export type LatencyDataPoint = {
   timestamp: string; // ISO string for client serialization

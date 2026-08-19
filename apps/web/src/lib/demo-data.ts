@@ -67,7 +67,7 @@ export const DEMO_INSIGHTS: MonitorInsight[] = [
     type: "PREDICTION",
     severity: "WARNING",
     message:
-      "SSL certificate for auth.pulseguard.io expires in 12 days. Trigger ACME renewal daemon.",
+      "SSL certificate for auth.steadystack.dev expires in 12 days. Trigger ACME renewal daemon.",
     createdAt: new Date(),
     monitor: {
       name: "OAuth2 Auth Service",
@@ -92,7 +92,7 @@ export const DEMO_MONITORS = [
   {
     id: "demo-mon-2",
     name: "Cloudflare Edge CDN",
-    url: "https://cdn.pulseguard.io/ping",
+    url: "https://cdn.steadystack.dev/ping",
     type: "PING",
     status: "UP",
     interval: 60,
@@ -105,7 +105,7 @@ export const DEMO_MONITORS = [
   {
     id: "demo-mon-3",
     name: "PostgreSQL Primary Cluster",
-    url: "db-primary.internal.pulseguard:5432",
+    url: "db-primary.internal.steadystack:5432",
     type: "PORT",
     status: "UP",
     interval: 60,
@@ -118,7 +118,7 @@ export const DEMO_MONITORS = [
   {
     id: "demo-mon-4",
     name: "OAuth2 Auth Service",
-    url: "https://auth.pulseguard.io/health",
+    url: "https://auth.steadystack.dev/health",
     type: "SSL",
     status: "UP",
     interval: 300,
@@ -131,7 +131,7 @@ export const DEMO_MONITORS = [
   {
     id: "demo-mon-5",
     name: "User Portal Checkout Sequence",
-    url: "https://app.pulseguard.io/api/checkout/verify",
+    url: "https://app.steadystack.dev/api/checkout/verify",
     type: "SEQUENCE",
     status: "UP",
     interval: 180,
@@ -157,7 +157,7 @@ export const DEMO_MONITORS = [
   {
     id: "demo-mon-7",
     name: "GraphQL Federation Mesh",
-    url: "https://graphql.pulseguard.io/graphql",
+    url: "https://graphql.steadystack.dev/graphql",
     type: "HTTP",
     status: "DEGRADED",
     interval: 60,
@@ -170,7 +170,7 @@ export const DEMO_MONITORS = [
   {
     id: "demo-mon-8",
     name: "Webhooks Dispatch Queue",
-    url: "https://hooks.pulseguard.io/healthz",
+    url: "https://hooks.steadystack.dev/healthz",
     type: "HTTP",
     status: "UP",
     interval: 60,

@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { getMonitor } from "@/actions/monitors";
 import { MonitorSettingsView } from "@/components/monitors/settings-view";
-import { auth } from "@pulseguard/auth";
+import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";

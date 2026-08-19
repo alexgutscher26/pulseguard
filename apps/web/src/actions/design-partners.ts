@@ -1,10 +1,10 @@
 "use server";
 
 import { z } from "zod";
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { auth } from "@pulseguard/auth";
+import { auth } from "@steadystack/auth";
 import { getAdminStatus } from "./admin";
 import { createStripePromotionCode, createStripeRenewalDiscountCode } from "@/lib/stripe";
 

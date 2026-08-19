@@ -379,7 +379,7 @@ export function HeaderAnalyzer() {
                   className="px-10 h-12 uppercase font-mono font-bold tracking-tighter"
                   onClick={() => {
                     const report =
-                      `PULSEGUARD SECURITY AUDIT REPORT\n` +
+                      `STEADYSTACK SECURITY AUDIT REPORT\n` +
                       `TARGET: ${auditData.url}\n` +
                       `GRADE: ${auditData.grade} (${auditData.score}%)\n` +
                       `DATE: ${new Date().toISOString()}\n\n` +

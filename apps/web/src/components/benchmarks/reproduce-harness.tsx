@@ -24,14 +24,14 @@ export function ReproduceHarness() {
   };
 
   const reproduceCommand = `# 1. Clone repository & install dependencies
-git clone https://github.com/alexgutscher26/pulseguard.git
-cd pulseguard && bun install
+git clone https://github.com/getsteadystack/SteadyStack.git
+cd steadystack && bun install
 
 # 2. Run standalone benchmark verification script against raw dataset
 bun scripts/verify-benchmark.js
 
 # 3. Query the public API directly
-curl -s https://pulseguard.io/api/benchmarks/false-positives | jq .summary`;
+curl -s https://steadystack.dev/api/benchmarks/false-positives | jq .summary`;
 
   return (
     <section className="py-16 md:py-24 bg-background/50 border-b border-border relative">
@@ -151,7 +151,7 @@ curl -s https://pulseguard.io/api/benchmarks/false-positives | jq .summary`;
               </div>
 
               <Link
-                href="https://github.com/alexgutscher26/pulseguard/blob/master/scripts/verify-benchmark.js"
+                href="https://github.com/getsteadystack/SteadyStack/blob/master/scripts/verify-benchmark.js"
                 target="_blank"
                 className="w-full py-2.5 px-3 rounded-xl border border-border bg-muted/40 hover:bg-muted text-foreground flex items-center justify-center gap-1.5 text-xs font-mono font-medium transition-colors"
               >

@@ -6,12 +6,12 @@ import { ToolSchema } from "@/components/seo/tool-schema";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Regex Payload Monitor & Tester | PulseGuard",
+  title: "Regex Payload Monitor & Tester | SteadyStack",
   description:
     "Free regex tester for website monitoring. Verify HTML expectations, check for specific phrases, and validate payload integrity with our regex sentinel.",
   openGraph: {
     title: "Regex Payload Monitor & Tester",
-    description: "Verify your website's content with PulseGuard's payload analysis sentinel.",
+    description: "Verify your website's content with SteadyStack's payload analysis sentinel.",
     type: "website",
   },
 };
@@ -22,7 +22,7 @@ export default function PayloadTesterPage() {
       <ToolSchema
         name="Regex Payload Monitor & Tester"
         description="Free regex tester for website monitoring. Verify HTML expectations, check for specific phrases, and validate payload integrity with our regex sentinel."
-        url="https://pulseguard.io/tools/payload-regex"
+        url="https://steadystack.dev/tools/payload-regex"
       />
       <LandingHeader />
       <main className="container mx-auto pt-32 pb-12 px-4 md:px-6">

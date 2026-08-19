@@ -22,7 +22,7 @@ export function SubscriptionConfirm({ data }: { data: SubscriptionConfirmData })
   return (
     <Html>
       <Head>
-        <title>Confirm Subscription to {data.pageTitle} - PulseGuard</title>
+        <title>Confirm Subscription to {data.pageTitle} - SteadyStack</title>
         <style>{`
           body { margin: 0; padding: 0; background-color: #09090b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
           @media only screen and (max-width: 600px) {
@@ -165,7 +165,7 @@ export function SubscriptionConfirm({ data }: { data: SubscriptionConfirmData })
           </Section>
 
           {/* Footer */}
-          <EmailFooter customMessage="PulseGuard Public Status Communications Engine." />
+          <EmailFooter customMessage="SteadyStack Public Status Communications Engine." />
         </Container>
       </Body>
     </Html>

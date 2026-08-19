@@ -81,7 +81,7 @@ jobs:
         id: meta-web
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository_owner }}/pulseguard-web
+          images: ghcr.io/${{ github.repository_owner }}/steadystack-web
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -103,7 +103,7 @@ jobs:
         id: meta-probe
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository_owner }}/pulseguard-probe
+          images: ghcr.io/${{ github.repository_owner }}/steadystack-probe
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -131,12 +131,12 @@ jobs:
         run: |
           # Bump appVersion in Chart.yaml to match the release tag
           VERSION="${{ steps.version.outputs.version }}"
-          sed -i "s/^appVersion:.*/appVersion: \"$VERSION\"/" helm/pulseguard/Chart.yaml
-          sed -i "s/^version:.*/version: $VERSION/" helm/pulseguard/Chart.yaml
+          sed -i "s/^appVersion:.*/appVersion: \"$VERSION\"/" helm/steadystack/Chart.yaml
+          sed -i "s/^version:.*/version: $VERSION/" helm/steadystack/Chart.yaml
           # Resolve subchart dependencies (bitnami/postgresql) before packaging
           helm repo add bitnami https://charts.bitnami.com/bitnami
-          helm dependency build helm/pulseguard
-          helm package helm/pulseguard --destination helm-artifacts/
+          helm dependency build helm/steadystack
+          helm package helm/steadystack --destination helm-artifacts/
 
       # ── Create GitHub Release ────────────────────────────────────────────────
       - name: Create GitHub Release

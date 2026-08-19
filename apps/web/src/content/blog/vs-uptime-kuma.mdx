@@ -1,5 +1,5 @@
 ---
-title: "PulseGuard vs Uptime Kuma: An Honest Engineering Comparison for Self-Hosters"
+title: "SteadyStack vs Uptime Kuma: An Honest Engineering Comparison for Self-Hosters"
 description: "Why Uptime Kuma is the champion of homelabs, why teams eventually outgrow single-box monitoring, and how edge consensus eliminates false alarms without sacrificing data sovereignty."
 date: "2026-08-15"
 category: "Engineering"
@@ -11,7 +11,7 @@ tags:
     "self-hosted monitoring",
     "uptime monitoring",
     "edge consensus",
-    "PulseGuard vs Uptime Kuma",
+    "SteadyStack vs Uptime Kuma",
   ]
 ---
 
@@ -19,11 +19,11 @@ If you have ever spun up a Docker container on a homelab server or a $5 VPS to m
 
 Created by Louis Lam, Uptime Kuma is a masterclass in open-source developer experience: a single `docker run` command, a clean Vue dashboard, an embedded SQLite database, and zero external infrastructure dependencies. It proved that developers were tired of paying $50/month for simple ping checks with artificial limits.
 
-At PulseGuard, we love Uptime Kuma. Many of us ran it for years.
+At SteadyStack, we love Uptime Kuma. Many of us ran it for years.
 
 However, as production architectures evolved from monolithic servers to distributed edge microservices and global multi-region deployments, teams running mission-critical workloads started encountering the fundamental physical boundaries of **single-box monitoring**.
 
-This document is an honest, respectful engineering breakdown of how PulseGuard compares to Uptime Kuma, where Uptime Kuma is the right choice, and where edge-native consensus becomes necessary.
+This document is an honest, respectful engineering breakdown of how SteadyStack compares to Uptime Kuma, where Uptime Kuma is the right choice, and where edge-native consensus becomes necessary.
 
 ---
 
@@ -90,9 +90,9 @@ SQLite is remarkably fast for reads, but sequential write locks during heavy inc
 
 ---
 
-## 3. How PulseGuard Re-Architects Monitoring for the Edge
+## 3. How SteadyStack Re-Architects Monitoring for the Edge
 
-PulseGuard was engineered specifically to solve the architectural bottlenecks of single-server monitoring without forcing teams into proprietary SaaS vendor lock-in.
+SteadyStack was engineered specifically to solve the architectural bottlenecks of single-server monitoring without forcing teams into proprietary SaaS vendor lock-in.
 
 ```mermaid
 graph TD
@@ -121,24 +121,24 @@ graph TD
 
 ### 1. Multi-Region Quorum Consensus (High-Confidence Alerts)
 
-PulseGuard executes continuous parallel checks across **7 sovereign Cloudflare edge regions** (`wnam`, `enam`, `weur`, `eeur`, `apac`, `apac-ne`, `apac-se`).
+SteadyStack executes continuous parallel checks across **7 sovereign Cloudflare edge regions** (`wnam`, `enam`, `weur`, `eeur`, `apac`, `apac-ne`, `apac-se`).
 
 When a probe detects a non-2xx status code or TCP timeout:
 
 1. It triggers an immediate local double-check to eliminate transient packet glitches.
 2. If confirmed, results are evaluated against our **4-of-7 Quorum Consensus Engine**.
-3. A global downtime alert is dispatched **only if a majority of independent geographical regions confirm the outage**. If only 1 or 2 regions observe latency or packet loss, PulseGuard classifies it as _Regional Degradation_ rather than waking your team.
+3. A global downtime alert is dispatched **only if a majority of independent geographical regions confirm the outage**. If only 1 or 2 regions observe latency or packet loss, SteadyStack classifies it as _Regional Degradation_ rather than waking your team.
 
 ### 2. Private Probe Agents for Internal Networks
 
-Have private VPC endpoints, Kubernetes pods, or local databases? PulseGuard ships a lightweight Docker agent (`pulseguard-probe`) that connects outbound via WebSocket to report internal metrics back to your dashboard with zero open inbound ports.
+Have private VPC endpoints, Kubernetes pods, or local databases? SteadyStack ships a lightweight Docker agent (`steadystack-probe`) that connects outbound via WebSocket to report internal metrics back to your dashboard with zero open inbound ports.
 
 ### 3. Monitoring as Code & CI/CD Gates
 
-PulseGuard includes a first-class CLI (`pulse`) allowing you to version your monitors in Git:
+SteadyStack includes a first-class CLI (`pulse`) allowing you to version your monitors in Git:
 
 ```yaml
-# pulseguard.yaml
+# steadystack.yaml
 monitors:
   - name: Production Payment Gateway
     url: https://api.stripe.com/v1/health
@@ -158,7 +158,7 @@ Apply changes in CI/CD pipelines via `pulse monitors apply` and run deployment h
 
 ## 4. Head-to-Head Architectural Comparison
 
-| Feature / Dimension        | Uptime Kuma                                | PulseGuard                                                   |
+| Feature / Dimension        | Uptime Kuma                                | SteadyStack                                                  |
 | :------------------------- | :----------------------------------------- | :----------------------------------------------------------- |
 | **Primary Architecture**   | Single Docker container (Node.js + SQLite) | Edge-native serverless + Durable Objects + PostgreSQL        |
 | **Vantage Points**         | 1 (the single host VM)                     | **7 Sovereign Global Edge Regions**                          |
@@ -176,15 +176,15 @@ Apply changes in CI/CD pipelines via `pulse monitors apply` and run deployment h
 
 ## 5. The 10-Second Migration: One-Command Importer
 
-We believe you should own your monitoring data. If you are running Uptime Kuma today, you can migrate your entire fleet to PulseGuard in seconds.
+We believe you should own your monitoring data. If you are running Uptime Kuma today, you can migrate your entire fleet to SteadyStack in seconds.
 
 ### Step 1: Export from Uptime Kuma
 
 In your Uptime Kuma dashboard, navigate to **Settings** → **Backup** → **Export Backup (JSON)**.
 
-### Step 2: Import into PulseGuard
+### Step 2: Import into SteadyStack
 
-#### Option A: Via the PulseGuard CLI
+#### Option A: Via the SteadyStack CLI
 
 ```bash
 # Preview what will be imported (Dry Run)
@@ -196,27 +196,27 @@ pulse import kuma uptime-kuma-backup.json
 
 #### Option B: Via the Web Dashboard
 
-1. Open your PulseGuard dashboard and go to **Settings** → **Migration & Export**.
+1. Open your SteadyStack dashboard and go to **Settings** → **Migration & Export**.
 2. Drag and drop your `uptime-kuma-backup.json` file.
 3. Review the parsed monitors (HTTP, TCP, Ping, DNS, Heartbeat) in the live preview table and click **Confirm & Import**.
 
-All check intervals, custom headers, expected status codes, keywords, and tags are automatically mapped and immediately distributed across PulseGuard's global edge network.
+All check intervals, custom headers, expected status codes, keywords, and tags are automatically mapped and immediately distributed across SteadyStack's global edge network.
 
 ---
 
-## 6. Self-Hosting PulseGuard: Our Philosophy
+## 6. Self-Hosting SteadyStack: Our Philosophy
 
 Some companies hide self-hosting behind expensive enterprise tiers or make the setup intentionally painful.
 
 We take the opposite view: **self-hosters are our most valuable community and distribution network.**
 
-Developers who self-host and never pay us a single dollar provide battle-tested feedback, report edge-case network bugs, and write integrations. And when those same engineers join organizations with strict compliance budgets, they bring PulseGuard with them.
+Developers who self-host and never pay us a single dollar provide battle-tested feedback, report edge-case network bugs, and write integrations. And when those same engineers join organizations with strict compliance budgets, they bring SteadyStack with them.
 
-You can self-host the complete PulseGuard stack on your own Linux server in under 2 minutes:
+You can self-host the complete SteadyStack stack on your own Linux server in under 2 minutes:
 
 ```bash
-git clone https://github.com/alexgutscher26/pulseguard.git
-cd pulseguard
+git clone https://github.com/getsteadystack/SteadyStack.git
+cd steadystack
 cp .env.example .env
 docker compose -f docker-compose.prod.yml up -d
 ```
@@ -228,6 +228,6 @@ Read the full [Self-Hosted Installation Guide](/docs/self-hosted) for automated 
 ## Summary: Which Should You Choose?
 
 - **Stay on Uptime Kuma** if you are monitoring a homelab, prefer a single lightweight container with SQLite, or operate on a private air-gapped intranet.
-- **Move to PulseGuard** if you run production web applications, cannot tolerate 3 AM false alarms from localized ISP packet loss, need multi-region edge quorum consensus, or want GitOps Monitoring as Code.
+- **Move to SteadyStack** if you run production web applications, cannot tolerate 3 AM false alarms from localized ISP packet loss, need multi-region edge quorum consensus, or want GitOps Monitoring as Code.
 
-Check out [PulseGuard on GitHub](https://github.com/alexgutscher26/pulseguard) to explore the code, deploy your first edge monitor, or import your existing Uptime Kuma configuration today.
+Check out [SteadyStack on GitHub](https://github.com/getsteadystack/SteadyStack) to explore the code, deploy your first edge monitor, or import your existing Uptime Kuma configuration today.

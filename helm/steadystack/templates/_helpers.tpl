@@ -1,14 +1,14 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "pulseguard.name" -}}
+{{- define "steadystack.name" -}}
 {{- default .Chart.Name .Values.global.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Create a default fully qualified app name.
 */}}
-{{- define "pulseguard.fullname" -}}
+{{- define "steadystack.fullname" -}}
 {{- if .Values.global.fullnameOverride }}
 {{- .Values.global.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -24,16 +24,16 @@ Create a default fully qualified app name.
 {{/*
 Create chart label.
 */}}
-{{- define "pulseguard.chart" -}}
+{{- define "steadystack.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels.
 */}}
-{{- define "pulseguard.labels" -}}
-helm.sh/chart: {{ include "pulseguard.chart" . }}
-{{ include "pulseguard.selectorLabels" . }}
+{{- define "steadystack.labels" -}}
+helm.sh/chart: {{ include "steadystack.chart" . }}
+{{ include "steadystack.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -43,17 +43,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels.
 */}}
-{{- define "pulseguard.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "pulseguard.name" . }}
+{{- define "steadystack.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "steadystack.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account.
 */}}
-{{- define "pulseguard.serviceAccountName" -}}
+{{- define "steadystack.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "pulseguard.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "steadystack.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
@@ -62,8 +62,8 @@ Create the name of the service account.
 {{/*
 Web component selector labels.
 */}}
-{{- define "pulseguard.web.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "pulseguard.name" . }}-web
+{{- define "steadystack.web.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "steadystack.name" . }}-web
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/component: web
 {{- end }}
@@ -71,8 +71,8 @@ app.kubernetes.io/component: web
 {{/*
 Probe component selector labels.
 */}}
-{{- define "pulseguard.probe.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "pulseguard.name" . }}-probe
+{{- define "steadystack.probe.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "steadystack.name" . }}-probe
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/component: probe
 {{- end }}
@@ -80,19 +80,19 @@ app.kubernetes.io/component: probe
 {{/*
 Image tag helper — falls back to Chart.AppVersion.
 */}}
-{{- define "pulseguard.web.imageTag" -}}
+{{- define "steadystack.web.imageTag" -}}
 {{- .Values.web.image.tag | default .Chart.AppVersion }}
 {{- end }}
 
-{{- define "pulseguard.probe.imageTag" -}}
+{{- define "steadystack.probe.imageTag" -}}
 {{- .Values.probe.image.tag | default .Chart.AppVersion }}
 {{- end }}
 
 {{/*
 PostgreSQL service host when the bundled subchart is enabled, empty otherwise.
 */}}
-{{- define "pulseguard.postgresql.host" -}}
-{{- if .Values.postgresql.enabled }}{{ printf "%s-postgresql" (include "pulseguard.fullname" .) }}{{- end }}
+{{- define "steadystack.postgresql.host" -}}
+{{- if .Values.postgresql.enabled }}{{ printf "%s-postgresql" (include "steadystack.fullname" .) }}{{- end }}
 {{- end }}
 
 {{/*
@@ -100,11 +100,11 @@ Database connection string. An explicit secrets.databaseUrl wins; otherwise the
 value is derived from the bundled PostgreSQL subchart (used for both
 DATABASE_URL and DIRECT_URL).
 */}}
-{{- define "pulseguard.databaseUrl" -}}
+{{- define "steadystack.databaseUrl" -}}
 {{- if .Values.secrets.databaseUrl }}
 {{- .Values.secrets.databaseUrl }}
 {{- else if .Values.postgresql.enabled }}
-{{- printf "postgresql://%s:%s@%s-postgresql:5432/%s" .Values.postgresql.auth.username .Values.postgresql.auth.password (include "pulseguard.fullname" .) .Values.postgresql.auth.database }}
+{{- printf "postgresql://%s:%s@%s-postgresql:5432/%s" .Values.postgresql.auth.username .Values.postgresql.auth.password (include "steadystack.fullname" .) .Values.postgresql.auth.database }}
 {{- else }}
 {{- "" }}
 {{- end }}

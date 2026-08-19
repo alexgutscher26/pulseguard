@@ -20,10 +20,10 @@ export async function generateMetadata({
   if (!post) return {};
 
   const { title, description, date, tags } = post.meta;
-  const url = `https://pulseguard.com/blog/${slug}`;
+  const url = `https://steadystack.dev/blog/${slug}`;
 
   return {
-    title: `${title} | PulseGuard Engineering`,
+    title: `${title} | SteadyStack Engineering`,
     description,
     keywords: tags,
     alternates: { canonical: url },
@@ -32,7 +32,7 @@ export async function generateMetadata({
       url,
       title,
       description,
-      siteName: "PulseGuard",
+      siteName: "SteadyStack",
       publishedTime: date,
       tags,
     },
@@ -81,13 +81,13 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     description,
     datePublished: date,
     dateModified: date,
-    author: { "@type": "Person", name: author, url: "https://pulseguard.com" },
+    author: { "@type": "Person", name: author, url: "https://steadystack.dev" },
     publisher: {
       "@type": "Organization",
-      name: "PulseGuard",
-      url: "https://pulseguard.com",
+      name: "SteadyStack",
+      url: "https://steadystack.dev",
     },
-    mainEntityOfPage: `https://pulseguard.com/blog/${slug}`,
+    mainEntityOfPage: `https://steadystack.dev/blog/${slug}`,
     keywords: tags.join(", "),
   };
 

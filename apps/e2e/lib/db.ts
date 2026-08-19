@@ -1,4 +1,4 @@
-import { getPrisma, PrismaClient } from "@pulseguard/db";
+import { getPrisma, PrismaClient } from "@steadystack/db";
 
 // Lazy proxy to defer initialization until access
 // This prevents load-time crashes if environment variables are not yet set

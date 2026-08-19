@@ -40,7 +40,7 @@ export function ActionCommands() {
         icon={BookOpen}
         label="View Documentation"
         onSelect={() => {
-          window.open("https://docs.pulseguard.io", "_blank");
+          window.open("https://docs.steadystack.dev", "_blank");
           close();
         }}
       />
@@ -48,7 +48,7 @@ export function ActionCommands() {
         icon={HelpCircle}
         label="Contact Support"
         onSelect={() => {
-          window.open("mailto:support@pulseguard.io", "_blank");
+          window.open("mailto:support@steadystack.dev", "_blank");
           close();
         }}
       />

@@ -19,7 +19,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     console.error(
       chalk.red("✖ Not logged in. Run: ") +
         chalk.bold("pulse auth login --key <API_KEY>") +
-        chalk.dim(" or export PULSEGUARD_API_KEY=<API_KEY>"),
+        chalk.dim(" or export STEADYSTACK_API_KEY=<API_KEY>"),
     );
     process.exit(1);
   }
@@ -30,7 +30,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     headers: {
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
-      "User-Agent": "pulseguard-cli/0.1.0",
+      "User-Agent": "steadystack-cli/0.1.0",
       ...options.headers,
     },
   });
@@ -63,7 +63,7 @@ export const api = {
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        "User-Agent": "pulseguard-cli/0.1.0",
+        "User-Agent": "steadystack-cli/0.1.0",
       },
       signal: AbortSignal.timeout((timeout + 30) * 1000),
     });

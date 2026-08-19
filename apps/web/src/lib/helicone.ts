@@ -1,4 +1,4 @@
-import { env } from "@pulseguard/env/server";
+import { env } from "@steadystack/env/server";
 
 export interface HeliconeMetadata {
   workspaceId?: string;

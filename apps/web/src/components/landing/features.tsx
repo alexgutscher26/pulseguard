@@ -16,7 +16,7 @@ export default function Features() {
             <span>Uptime Orchestration</span>
           </div>
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-4">
-            See PulseGuard in action
+            See SteadyStack in action
           </h2>
           <p className="text-muted-foreground text-sm leading-relaxed">
             Watch how global surveillance and high-frequency checks prevent latency degradation and

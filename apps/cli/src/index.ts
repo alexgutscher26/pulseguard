@@ -13,9 +13,9 @@ const program = new Command();
 program
   .name("pulse")
   .description(
-    chalk.bold("PulseGuard CLI") +
+    chalk.bold("SteadyStack CLI") +
       " — Monitoring as Code, live debugging, and CI/CD integration\n" +
-      chalk.dim("  https://pulseguard.io/docs/cli"),
+      chalk.dim("  https://steadystack.dev/docs/cli"),
   )
   .version("0.1.0");
 

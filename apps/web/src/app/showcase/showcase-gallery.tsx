@@ -127,7 +127,7 @@ export function ShowcaseGallery({ initialEntries }: { initialEntries: ShowcaseEn
           Status Pages
         </h1>
         <p className="text-muted-foreground text-sm leading-relaxed max-w-xl">
-          PulseGuard status pages come alive with cyberpunk aesthetics. Browse featured pages from
+          SteadyStack status pages come alive with cyberpunk aesthetics. Browse featured pages from
           the community, then build your own with one click.
         </p>
       </div>

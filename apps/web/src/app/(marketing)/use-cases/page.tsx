@@ -7,9 +7,9 @@ import { cn } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Use Cases & Solutions | PulseGuard",
+  title: "Use Cases & Solutions | SteadyStack",
   description:
-    "Discover how PulseGuard provides tailormade monitoring solutions for DevOps, E-Commerce, SaaS, and API Developers.",
+    "Discover how SteadyStack provides tailormade monitoring solutions for DevOps, E-Commerce, SaaS, and API Developers.",
 };
 
 const iconMap: Record<string, any> = {
@@ -39,8 +39,8 @@ export default function UseCasesIndexPage() {
           </h1>
           <p className="text-muted-foreground text-base sm:text-lg leading-relaxed font-sans">
             Whether you&apos;re managing cloud microservices, operating an e-commerce platform, or
-            running an enterprise SaaS, PulseGuard delivers quorum-verified edge monitoring tailored
-            to your stack.
+            running an enterprise SaaS, SteadyStack delivers quorum-verified edge monitoring
+            tailored to your stack.
           </p>
         </div>
 

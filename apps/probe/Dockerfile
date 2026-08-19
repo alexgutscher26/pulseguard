@@ -1,5 +1,5 @@
 # Build stage using Bun (multi-stage build from workspace root)
-# Build command: docker build -f apps/probe/Dockerfile -t pulseguard-probe .
+# Build command: docker build -f apps/probe/Dockerfile -t steadystack-probe .
 FROM oven/bun:1.2-alpine AS build
 WORKDIR /app
 

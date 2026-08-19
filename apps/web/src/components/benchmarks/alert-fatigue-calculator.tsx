@@ -250,11 +250,11 @@ export function AlertFatigueCalculator() {
               </div>
             </div>
 
-            {/* PulseGuard Value Pitch */}
+            {/* SteadyStack Value Pitch */}
             <div className="p-4 rounded-xl bg-background/80 border border-emerald-500/30">
               <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs mb-1">
                 <ShieldCheck className="size-4 shrink-0" />
-                PulseGuard 4-of-7 Quorum Solution
+                SteadyStack 4-of-7 Quorum Solution
               </div>
               <p className="text-[11px] text-muted-foreground leading-relaxed mb-3">
                 Mathematically eliminates false alarms across your {endpointsCount} endpoints,

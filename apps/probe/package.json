@@ -1,5 +1,5 @@
 {
-  "name": "@pulseguard/probe",
+  "name": "@steadystack/probe",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -8,13 +8,13 @@
     "dev": "bun --watch src/index.ts",
     "build": "bun build src/index.ts --outfile dist/index.js --target node",
     "start": "node dist/index.js",
-    "docker:build": "docker build -f Dockerfile -t pulseguard-probe ../..",
+    "docker:build": "docker build -f Dockerfile -t steadystack-probe ../..",
     "depcheck": "depcheck"
   },
   "dependencies": {
-    "@pulseguard/core": "workspace:*",
-    "@pulseguard/env": "workspace:*",
-    "@pulseguard/types": "workspace:*"
+    "@steadystack/core": "workspace:*",
+    "@steadystack/env": "workspace:*",
+    "@steadystack/types": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

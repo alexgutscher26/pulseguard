@@ -17,8 +17,8 @@ export async function GET(request: Request) {
 
   let filteredIncidents = [...SAMPLE_INCIDENTS];
 
-  if (provider === "pulseguard") {
-    filteredIncidents = filteredIncidents.filter((i) => i.pulseguard.alertTriggered);
+  if (provider === "steadystack") {
+    filteredIncidents = filteredIncidents.filter((i) => i.steadystack.alertTriggered);
   } else if (provider === "uptimerobot") {
     filteredIncidents = filteredIncidents.filter((i) => i.uptimerobot.alertTriggered);
   } else if (provider === "pingdom") {

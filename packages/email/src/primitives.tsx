@@ -328,7 +328,7 @@ export function EmailFooter({
                   lineHeight: 1.5,
                 }}
               >
-                PulseGuard Edge Telemetry & Real-Time Observability Engine
+                SteadyStack Edge Telemetry & Real-Time Observability Engine
                 <br />
                 Secured with 256-bit distributed consensus • steadystack.dev
               </Text>

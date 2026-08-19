@@ -1,4 +1,4 @@
-import { auth } from "@pulseguard/auth";
+import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getMonitors } from "@/actions/monitors";
@@ -10,7 +10,7 @@ import { ReportsClient } from "./reports-client";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "SLA & Performance Reports | PulseGuard",
+  title: "SLA & Performance Reports | SteadyStack",
   description:
     "Generate executive uptime compliance deliverables for client billing and service level agreements.",
 };

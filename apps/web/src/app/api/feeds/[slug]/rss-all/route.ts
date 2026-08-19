@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 import { generateRssFeed, type FeedItem } from "@/lib/feeds/rss-generator";
 
 export const dynamic = "force-dynamic";

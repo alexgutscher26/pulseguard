@@ -65,7 +65,7 @@ export const useCommandPalette = create<CommandPaletteStore>()(
       },
     }),
     {
-      name: "pulseguard-command-palette-history",
+      name: "steadystack-command-palette-history",
       storage: createJSONStorage(() => localStorage),
       // Only persist history, not UI state
       partialize: (state) =>

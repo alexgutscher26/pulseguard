@@ -3,8 +3,8 @@ import { z } from "zod";
 
 export const env = createEnv({
   server: {
-    PULSEGUARD_API_URL: z.string().url().default("https://pulseguard-worker.example.com"),
-    PULSEGUARD_PROBE_TOKEN: z.string().min(1),
+    STEADYSTACK_API_URL: z.string().url().default("https://steadystack-worker.example.com"),
+    STEADYSTACK_PROBE_TOKEN: z.string().min(1),
     PROBE_POLL_INTERVAL: z.coerce.number().int().positive().default(15),
     PROBE_HEARTBEAT_INTERVAL: z.coerce.number().int().positive().default(30),
     PROBE_REGION: z.string().default("private"),

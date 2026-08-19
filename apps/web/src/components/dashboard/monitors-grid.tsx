@@ -31,7 +31,7 @@ export function MonitorsGrid({ monitors }: MonitorsGridProps) {
 
   // Load layout from localStorage or generate default
   useEffect(() => {
-    const savedLayout = localStorage.getItem("pulseguard_dashboard_grid_layout");
+    const savedLayout = localStorage.getItem("steadystack_dashboard_grid_layout");
     if (savedLayout) {
       try {
         const parsed = JSON.parse(savedLayout) as GridItemConfig[];
@@ -66,7 +66,7 @@ export function MonitorsGrid({ monitors }: MonitorsGridProps) {
   };
 
   const saveLayout = (newLayout: GridItemConfig[]) => {
-    localStorage.setItem("pulseguard_dashboard_grid_layout", JSON.stringify(newLayout));
+    localStorage.setItem("steadystack_dashboard_grid_layout", JSON.stringify(newLayout));
   };
 
   const handleResize = (id: string, size: "1x1" | "2x1" | "2x2") => {
@@ -77,7 +77,7 @@ export function MonitorsGrid({ monitors }: MonitorsGridProps) {
 
   const handleReset = () => {
     generateDefaultLayout();
-    localStorage.removeItem("pulseguard_dashboard_grid_layout");
+    localStorage.removeItem("steadystack_dashboard_grid_layout");
   };
 
   // Drag and Drop handlers

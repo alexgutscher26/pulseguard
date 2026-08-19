@@ -60,7 +60,7 @@ export function generateRssFeed(config: FeedConfig): string {
     <language>${language}</language>
     <lastBuildDate>${formatRfc822Date(lastBuildDate || new Date())}</lastBuildDate>
     <atom:link href="${escapeXml(link)}/feed/rss" rel="self" type="application/rss+xml"/>
-    <generator>PulseGuard Status Page</generator>
+    <generator>SteadyStack Status Page</generator>
     ${itemsXml}
   </channel>
 </rss>`;

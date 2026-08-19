@@ -34,14 +34,14 @@ export async function generateMetadata({
 
   if (!service) {
     return {
-      title: "Service Status Not Found | PulseGuard",
+      title: "Service Status Not Found | SteadyStack",
       description: "The requested service status page could not be located.",
     };
   }
 
-  const title = `Is ${service.name} Down Right Now? Live Status, Outage Tracker & Latency | PulseGuard`;
+  const title = `Is ${service.name} Down Right Now? Live Status, Outage Tracker & Latency | SteadyStack`;
   const description = `Check if ${service.name} (${service.domain}) is down or experiencing service degradation. Real-time global uptime, edge latency telemetry, official status links, and automated monitoring. Stop checking manually.`;
-  const url = `https://pulseguard.io/is-down/${service.slug}`;
+  const url = `https://steadystack.dev/is-down/${service.slug}`;
 
   return {
     title,
@@ -65,7 +65,7 @@ export async function generateMetadata({
       url,
       title,
       description,
-      siteName: "PulseGuard",
+      siteName: "SteadyStack",
     },
     twitter: {
       card: "summary_large_image",
@@ -96,7 +96,7 @@ export default async function ServiceDownPage({
     .filter((s): s is ServiceDownInfo => s !== undefined)
     .slice(0, 6);
 
-  const baseUrl = "https://pulseguard.io";
+  const baseUrl = "https://steadystack.dev";
   const pageUrl = `${baseUrl}/is-down/${service.slug}`;
 
   // Structured Data (JSON-LD) for FAQPage, Breadcrumbs, and SoftwareApplication
@@ -134,7 +134,7 @@ export default async function ServiceDownPage({
             name: `Is ${service.name} down right now?`,
             acceptedAnswer: {
               "@type": "Answer",
-              text: `PulseGuard real-time edge probes test ${service.name} (${service.domain}) across multiple global locations. Check our live status indicator and regional latency metrics for instantaneous verification.`,
+              text: `SteadyStack real-time edge probes test ${service.name} (${service.domain}) across multiple global locations. Check our live status indicator and regional latency metrics for instantaneous verification.`,
             },
           },
           {
@@ -150,14 +150,14 @@ export default async function ServiceDownPage({
             name: `Why should I automate ${service.name} status checks?`,
             acceptedAnswer: {
               "@type": "Answer",
-              text: `PulseGuard monitors ${service.name} every 10 seconds from 15 global edge nodes with consensus verification, alerting your engineering team on Slack, Discord, SMS, or PagerDuty the second degradation begins so you can stop checking manually.`,
+              text: `SteadyStack monitors ${service.name} every 10 seconds from 15 global edge nodes with consensus verification, alerting your engineering team on Slack, Discord, SMS, or PagerDuty the second degradation begins so you can stop checking manually.`,
             },
           },
         ],
       },
       {
         "@type": "WebApplication",
-        name: `PulseGuard ${service.name} Status Sentinel`,
+        name: `SteadyStack ${service.name} Status Sentinel`,
         url: pageUrl,
         applicationCategory: "DeveloperApplication",
         operatingSystem: "Cloud Edge",

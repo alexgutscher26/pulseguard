@@ -108,7 +108,7 @@ export function ShowcaseSubmitPanel({
 
   // Badge embed strings
   const appUrl =
-    typeof window !== "undefined" ? window.location.origin : "https://app.pulseguard.dev";
+    typeof window !== "undefined" ? window.location.origin : "https://app.steadystack.dev";
 
   const badgeUrl = `${appUrl}/api/badge/powered-by?theme=dark&style=flat&size=sm`;
   const statusBadgeUrl = `${appUrl}/api/badge/${pageSlug}?theme=dark&style=flat`;
@@ -117,8 +117,8 @@ export function ShowcaseSubmitPanel({
     : `${appUrl}/signup?utm_source=badge_embed&utm_medium=readme&utm_campaign=status_page_loop&utm_content=${pageSlug}`;
   const trackedStatusPageUrl = `${appUrl}/status-page/${pageSlug}?utm_source=status_badge&utm_medium=embed&utm_campaign=status_page_loop`;
 
-  const markdownPowered = `[![Powered by PulseGuard](${badgeUrl})](${trackedBadgeLink})`;
-  const htmlPowered = `<a href="${trackedBadgeLink}" target="_blank" rel="noopener noreferrer">\n  <img src="${badgeUrl}" alt="Powered by PulseGuard" />\n</a>`;
+  const markdownPowered = `[![Powered by SteadyStack](${badgeUrl})](${trackedBadgeLink})`;
+  const htmlPowered = `<a href="${trackedBadgeLink}" target="_blank" rel="noopener noreferrer">\n  <img src="${badgeUrl}" alt="Powered by SteadyStack" />\n</a>`;
   const markdownStatus = `[![Status](${statusBadgeUrl})](${trackedStatusPageUrl})`;
   const htmlStatus = `<a href="${trackedStatusPageUrl}" target="_blank" rel="noopener noreferrer">\n  <img src="${statusBadgeUrl}" alt="Status" />\n</a>`;
 
@@ -214,7 +214,7 @@ export function ShowcaseSubmitPanel({
         </a>
       </div>
 
-      {/* Powered by PulseGuard Badge */}
+      {/* Powered by SteadyStack Badge */}
       <div className="bg-card/20 border border-primary/10 rounded-sm">
         <button
           type="button"
@@ -223,7 +223,7 @@ export function ShowcaseSubmitPanel({
         >
           <h3 className="text-sm font-bold font-mono uppercase text-muted-foreground flex items-center gap-2">
             <Sparkles className="size-4 text-primary" />
-            "Powered by PulseGuard" Badge
+            "Powered by SteadyStack" Badge
           </h3>
           {badgeExpanded ? (
             <ChevronUp className="size-4 text-muted-foreground" />
@@ -236,7 +236,7 @@ export function ShowcaseSubmitPanel({
           <div className="px-6 pb-6 space-y-5 border-t border-white/5 pt-4">
             <p className="text-[11px] text-muted-foreground font-mono leading-relaxed">
               Add these badges to your README, website, or docs to show your infrastructure is
-              monitored by PulseGuard. Click any badge to copy the embed code.
+              monitored by SteadyStack. Click any badge to copy the embed code.
             </p>
 
             {/* Live previews */}
@@ -246,17 +246,17 @@ export function ShowcaseSubmitPanel({
               </p>
               <div className="flex flex-wrap gap-3 items-center bg-black/40 border border-white/5 rounded-sm p-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={`${badgeUrl}`} alt="Powered by PulseGuard" className="h-5" />
+                <img src={`${badgeUrl}`} alt="Powered by SteadyStack" className="h-5" />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={`${badgeUrl}&style=outline`}
-                  alt="Powered by PulseGuard outline"
+                  alt="Powered by SteadyStack outline"
                   className="h-5"
                 />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={`${badgeUrl}&size=lg`}
-                  alt="Powered by PulseGuard large"
+                  alt="Powered by SteadyStack large"
                   className="h-8"
                 />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -266,8 +266,8 @@ export function ShowcaseSubmitPanel({
 
             {/* Embed codes */}
             <div className="grid gap-4">
-              <CodeBlock label="Powered by PulseGuard — Markdown" code={markdownPowered} />
-              <CodeBlock label="Powered by PulseGuard — HTML" code={htmlPowered} />
+              <CodeBlock label="Powered by SteadyStack — Markdown" code={markdownPowered} />
+              <CodeBlock label="Powered by SteadyStack — HTML" code={htmlPowered} />
               <CodeBlock label="Live Status Badge — Markdown" code={markdownStatus} />
               <CodeBlock label="Live Status Badge — HTML" code={htmlStatus} />
             </div>

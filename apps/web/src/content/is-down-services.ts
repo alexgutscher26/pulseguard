@@ -2061,7 +2061,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     commonErrorCodes: ["502 Bad Gateway", "500 Internal Error"],
     troubleshootingSteps: [
       "Check status.betterstack.com.",
-      "Have secondary backup monitor on PulseGuard.",
+      "Have secondary backup monitor on SteadyStack.",
     ],
     relatedServices: ["datadog", "sentry", "checkly"],
   },
@@ -5376,7 +5376,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     commonErrorCodes: ["500 Internal Server Error", "502 Bad Gateway"],
     troubleshootingSteps: [
       "Check status.uptimerobot.com.",
-      "Switch to PulseGuard edge monitoring.",
+      "Switch to SteadyStack edge monitoring.",
     ],
     relatedServices: ["better-stack", "checkly", "pingdom"],
   },

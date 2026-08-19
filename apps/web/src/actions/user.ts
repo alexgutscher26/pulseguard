@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@pulseguard/auth";
+import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
 
 export async function getUserPreferences() {
@@ -37,7 +37,7 @@ export async function updateUserPreferences(data: {
   }
 
   try {
-    const prisma = await import("@pulseguard/db").then((m) => m.default);
+    const prisma = await import("@steadystack/db").then((m) => m.default);
     await prisma.user.update({
       where: { id: session.user.id },
       data: {
@@ -75,7 +75,7 @@ export async function getLicenseTelemetry() {
   }
 
   try {
-    const prisma = await import("@pulseguard/db").then((m) => m.default);
+    const prisma = await import("@steadystack/db").then((m) => m.default);
 
     const dbUser = await prisma.user.findUnique({
       where: { id: session.user.id },

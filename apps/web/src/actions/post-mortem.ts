@@ -1,6 +1,6 @@
 "use server";
 
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 import { getSafeSession } from "@/lib/safe-session";
 import { getActiveWorkspace } from "@/actions/team";
 import { revalidatePath } from "next/cache";
@@ -34,7 +34,7 @@ function cleanPostMortemText(text: string): string {
   return text
     .replace(/^(\s*Dear\s+Team\s*,?\s*|\s*To\s+whom\s+it\s+may\s+concern\s*,?\s*)/i, "")
     .replace(
-      /(\n\s*(Best regards|Regards|Sincerely|Thanks|Cheers|Warm regards),?\s*\n(\[?Your Name\]?|SRE Team|PulseGuard SRE|DevOps Team)[\s\S]*)$/i,
+      /(\n\s*(Best regards|Regards|Sincerely|Thanks|Cheers|Warm regards),?\s*\n(\[?Your Name\]?|SRE Team|SteadyStack SRE|DevOps Team)[\s\S]*)$/i,
       "",
     )
     .trim();
@@ -44,7 +44,7 @@ export async function checkPineconeStatus() {
   const session = await getSafeSession();
   const activeWorkspace = await getActiveWorkspace();
   const configured = isPineconeConfigured();
-  const indexName = process.env.PINECONE_INDEX_NAME || "pulseguard-incidents";
+  const indexName = process.env.PINECONE_INDEX_NAME || "steadystack-incidents";
   const workspaceId = activeWorkspace?.id || session?.user?.id || "default";
   const namespace = getWorkspaceNamespace(workspaceId);
   const stats = await getPineconeNamespaceStats(workspaceId);
@@ -392,7 +392,7 @@ Return a STRICT raw JSON object (without markdown blocks or backticks) with exac
   "summary": "Executive narrative explaining the chronological event flow and operational impact (2 paragraphs, no email greetings or signatures)",
   "rootCause": "Detailed technical root cause analysis (e.g. edge proxy timeout, DNS propagation failure, database pool exhaustion, upstream 502)",
   "impactScope": "Quantified blast radius including impacted regions, customer traffic degradation, and downtime duration",
-  "detectionMethod": "How the anomaly was flagged by PulseGuard edge probes and how to detect it earlier",
+  "detectionMethod": "How the anomaly was flagged by SteadyStack edge probes and how to detect it earlier",
   "actionItems": "- [ ] Immediate mitigation\n- [ ] Architectural preventive measure\n- [ ] Alert threshold tuning"
 }`;
 
@@ -432,7 +432,7 @@ Return a STRICT raw JSON object (without markdown blocks or backticks) with exac
         summary: `Executive Summary for Incident "${incident.title}"\n\nOn ${incident.startedAt.toUTCString()}, an outage was detected on ${incident.monitor.name} (${incident.monitor.url}). Telemetry recorded ${incident.events.length} lifecycle events prior to full restoration.`,
         rootCause: `Primary failure vector identified as anomalous upstream response latency or connection reset during edge probe verification.`,
         impactScope: `Affected endpoints on ${incident.monitor.name}. Outage duration spanned from ${incident.startedAt.toLocaleTimeString()} to ${incident.resolvedAt ? incident.resolvedAt.toLocaleTimeString() : "present"}.`,
-        detectionMethod: `PulseGuard Multi-Region Consensus Edge Probes flagged consecutive health check failures.`,
+        detectionMethod: `SteadyStack Multi-Region Consensus Edge Probes flagged consecutive health check failures.`,
         actionItems: `- [ ] Verify upstream service connection limits\n- [ ] Configure automatic edge failover rules\n- [ ] Review PostgreSQL p99 query latency during outage window`,
       },
       similarIncidents,
@@ -502,7 +502,7 @@ export async function syncAllIncidentsToPinecone(options?: { seedSamplePlaybooks
         actionItems:
           incident.postMortem?.actionItems ||
           "- [ ] Inspect server logs\n- [ ] Verify connection pool",
-        detectionMethod: incident.postMortem?.detectionMethod || "PulseGuard Multi-Region Probes",
+        detectionMethod: incident.postMortem?.detectionMethod || "SteadyStack Multi-Region Probes",
         status: incident.status,
         monitorName: incident.monitor.name,
         monitorUrl: incident.monitor.url,
@@ -533,7 +533,7 @@ export async function syncAllIncidentsToPinecone(options?: { seedSamplePlaybooks
           actionItems:
             "- [ ] Increased PM2 cluster worker instances from 4 to 8\n- [ ] Configured KeepAliveTimeout to 65s on upstream load balancer\n- [ ] Tuned PostgreSQL connection pool max limit to 50",
           detectionMethod:
-            "PulseGuard 2-of-3 Quorum Consensus Probes flagged consecutive 502 responses.",
+            "SteadyStack 2-of-3 Quorum Consensus Probes flagged consecutive 502 responses.",
           monitorName: "Production API Gateway",
           monitorUrl: "https://api.kudoswall.com/v1",
         },

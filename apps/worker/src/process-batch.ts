@@ -20,7 +20,7 @@ import {
 } from "./check-runner";
 import { queueNotification } from "./lib/send-notification";
 import { evaluateQuorum } from "./services/quorum-engine";
-import type { ProbeCheckResult } from "@pulseguard/types";
+import type { ProbeCheckResult } from "@steadystack/types";
 import type { Env } from "./env";
 
 const mesh = new ProxyMesh();

@@ -291,7 +291,7 @@ export function CronSentinel() {
           },
           {
             title: "Edge Scheduling",
-            desc: "PulseGuard triggers monitors at precisely these intervals across the global CDN.",
+            desc: "SteadyStack triggers monitors at precisely these intervals across the global CDN.",
             icon: <Zap className="w-4 h-4" />,
           },
           {

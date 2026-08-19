@@ -198,7 +198,7 @@ export function DashboardHeader({ onMenuClick, userTier }: DashboardHeaderProps 
                   {session?.user?.name || "Operator"}
                 </p>
                 <p className="text-[10px] text-muted-foreground font-mono mt-0.5">
-                  {session?.user?.email || "admin@pulseguard.io"}
+                  {session?.user?.email || "admin@steadystack.dev"}
                 </p>
               </div>
 
@@ -249,7 +249,7 @@ export function DashboardHeader({ onMenuClick, userTier }: DashboardHeaderProps 
                     {session?.user?.name || "Operator"}
                   </p>
                   <p className="text-[10px] text-muted-foreground truncate font-mono">
-                    {session?.user?.email || "admin@pulseguard.io"}
+                    {session?.user?.email || "admin@steadystack.dev"}
                   </p>
                 </div>
 

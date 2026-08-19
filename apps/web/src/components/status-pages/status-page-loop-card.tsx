@@ -63,7 +63,7 @@ export function StatusPageLoopCard({
           </div>
           <p className="text-xs text-muted-foreground font-mono leading-relaxed">
             Every public visitor sees the{" "}
-            <strong className="text-foreground">"Powered by PulseGuard"</strong> badge. Badge
+            <strong className="text-foreground">"Powered by SteadyStack"</strong> badge. Badge
             discovery compounds as traffic increases — all clicks and referred accounts are
             attributed directly to you.
           </p>

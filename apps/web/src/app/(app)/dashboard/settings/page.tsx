@@ -1,4 +1,4 @@
-import { auth } from "@pulseguard/auth";
+import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { SettingsSidebar } from "@/components/settings/settings-sidebar";
@@ -58,7 +58,7 @@ export default async function SettingsPage({
     mockPlan &&
     (mockPlan === "CONSTRUCT" || mockPlan === "NETRUNNER" || mockPlan === "INITIATE")
   ) {
-    const prisma = (await import("@pulseguard/db")).default;
+    const prisma = (await import("@steadystack/db")).default;
     const oneYearFromNow = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
     await prisma.subscription.upsert({
       where: { userId: session.user.id },

@@ -1,6 +1,6 @@
 "use server";
 
-import prisma, { MonitorStatus } from "@pulseguard/db";
+import prisma, { MonitorStatus } from "@steadystack/db";
 
 export interface ShowcaseEntry {
   name: string;
@@ -78,7 +78,7 @@ export async function getShowcaseEntries(limit = 18): Promise<ShowcaseEntry[]> {
       return {
         name: page.title,
         slug: page.slug,
-        tagline: page.description ?? "Powered by PulseGuard",
+        tagline: page.description ?? "Powered by SteadyStack",
         theme: themeName,
         themeColors: colors,
         preview: { status, uptime, monitors: total },

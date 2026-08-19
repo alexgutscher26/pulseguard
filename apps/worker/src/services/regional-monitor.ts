@@ -5,15 +5,15 @@
  * Evaluates results using the 4-of-7 Quorum Consensus Engine.
  */
 
-import { isPrivateOrInternalUrlAsync, decryptSecret } from "@pulseguard/core";
+import { isPrivateOrInternalUrlAsync, decryptSecret } from "@steadystack/core";
 import {
   CLOUDFLARE_PROBE_REGIONS,
   FREE_TIER_PROBE_REGIONS,
   getRegionByCode,
   type DOLocationHint,
-  PULSEGUARD_CANONICAL_USER_AGENT,
-} from "@pulseguard/shared";
-import type { ProbeCheckResult } from "@pulseguard/types";
+  STEADYSTACK_CANONICAL_USER_AGENT,
+} from "@steadystack/shared";
+import type { ProbeCheckResult } from "@steadystack/types";
 import type { Env } from "../env";
 import { evaluateQuorum, type QuorumConfig } from "./quorum-engine";
 
@@ -130,7 +130,7 @@ export async function checkSingleRegion(
     const response = await fetch(monitor.url, {
       method: monitor.method || "GET",
       headers: {
-        "User-Agent": PULSEGUARD_CANONICAL_USER_AGENT,
+        "User-Agent": STEADYSTACK_CANONICAL_USER_AGENT,
         Accept:
           "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.9",

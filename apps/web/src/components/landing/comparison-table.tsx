@@ -8,10 +8,10 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export default function ComparisonTable() {
-  const pulseguard = competitors.find((c) => c.id === "pulseguard")!;
-  const otherCompetitors = competitors.filter((c) => c.id !== "pulseguard");
+  const steadystack = competitors.find((c) => c.id === "steadystack")!;
+  const otherCompetitors = competitors.filter((c) => c.id !== "steadystack");
 
-  const renderValue = (val: string | boolean, isPulseguard = false) => {
+  const renderValue = (val: string | boolean, isSteadyStack = false) => {
     if (typeof val === "boolean") {
       return val ? (
         <div className="inline-flex items-center justify-center size-6 rounded-full bg-primary/10 border border-primary/30 text-primary">
@@ -27,7 +27,7 @@ export default function ComparisonTable() {
     return (
       <span
         className={`text-xs font-mono font-semibold ${
-          isPulseguard
+          isSteadyStack
             ? "text-primary font-bold px-2.5 py-1 rounded-md bg-primary/10 border border-primary/20"
             : "text-muted-foreground"
         }`}
@@ -50,10 +50,10 @@ export default function ComparisonTable() {
             Competitive Analysis
           </div>
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-4">
-            Why Engineering Teams Choose <span className="text-primary">PulseGuard</span>
+            Why Engineering Teams Choose <span className="text-primary">SteadyStack</span>
           </h2>
           <p className="text-muted-foreground text-sm sm:text-base leading-relaxed font-sans">
-            Compare PulseGuard head-to-head against legacy uptime tools. Faster checks, broader
+            Compare SteadyStack head-to-head against legacy uptime tools. Faster checks, broader
             global edge coverage, and native synthetic testing out of the box.
           </p>
         </div>
@@ -69,14 +69,14 @@ export default function ComparisonTable() {
                     Monitoring Capabilities
                   </th>
 
-                  {/* PulseGuard Column Header */}
+                  {/* SteadyStack Column Header */}
                   <th className="p-5 w-1/6 bg-primary/5 border-x border-primary/20 relative">
                     <div className="flex flex-col items-center text-center gap-1.5">
                       <span className="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30">
-                        {pulseguard.badge}
+                        {steadystack.badge}
                       </span>
                       <span className="text-base font-extrabold text-foreground font-mono">
-                        {pulseguard.name}
+                        {steadystack.name}
                       </span>
                       <Link
                         href="/signup"
@@ -147,9 +147,9 @@ export default function ComparisonTable() {
                           )}
                         </td>
 
-                        {/* PulseGuard Value Cell */}
+                        {/* SteadyStack Value Cell */}
                         <td className="p-4 sm:p-5 text-center bg-primary/5 border-x border-primary/15 group-hover:bg-primary/10 transition-colors">
-                          {renderValue(feature.pulseguard, true)}
+                          {renderValue(feature.steadystack, true)}
                         </td>
 
                         {/* UptimeRobot Cell */}

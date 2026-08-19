@@ -1,5 +1,5 @@
 ---
-"pulseguard-cli": minor
+"steadystack-cli": minor
 ---
 
 ## Added

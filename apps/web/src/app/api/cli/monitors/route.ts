@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@pulseguard/db";
-import { encryptSecret } from "@pulseguard/core";
+import prisma from "@steadystack/db";
+import { encryptSecret } from "@steadystack/core";
 import { verifyApiKey, unauthorized } from "../_lib/auth";
 import { assertMonitorLimits } from "@/lib/billing-server";
 

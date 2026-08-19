@@ -1,5 +1,5 @@
 import { ChevronDown } from "lucide-react";
-import { PRODUCT_CONFIG, AVAILABLE_REGIONS } from "@pulseguard/shared";
+import { PRODUCT_CONFIG, AVAILABLE_REGIONS } from "@steadystack/shared";
 
 export default function FAQ() {
   const faqs = [
@@ -9,11 +9,11 @@ export default function FAQ() {
     },
     {
       q: "What is multi-region consensus verification, and how does it prevent false alerts?",
-      a: "Outages on the Internet are often localized due to routing anomalies or regional network drops. When a PulseGuard edge probe detects that your monitor is DOWN, it triggers an immediate local re-check and queries our other sovereign regions. PulseGuard requires 4 of 7 global regions to independently confirm the failure before opening an incident. This voting system isolates regional route flaps from true global outages.",
+      a: "Outages on the Internet are often localized due to routing anomalies or regional network drops. When a SteadyStack edge probe detects that your monitor is DOWN, it triggers an immediate local re-check and queries our other sovereign regions. SteadyStack requires 4 of 7 global regions to independently confirm the failure before opening an incident. This voting system isolates regional route flaps from true global outages.",
     },
     {
       q: "How do private probes monitor internal infrastructure behind firewalls?",
-      a: "Our lightweight dockerized probes run internally on your own secure private subnets. Instead of requiring you to open incoming firewall ports or set up public DNS records, the private probe establishes a secure outbound WebSocket control channel to our edge Durable Objects. The probe securely polls jobs, executes them locally, and pushes metrics back to PulseGuard, ensuring zero inbound security risks.",
+      a: "Our lightweight dockerized probes run internally on your own secure private subnets. Instead of requiring you to open incoming firewall ports or set up public DNS records, the private probe establishes a secure outbound WebSocket control channel to our edge Durable Objects. The probe securely polls jobs, executes them locally, and pushes metrics back to SteadyStack, ensuring zero inbound security risks.",
     },
     {
       q: "What notification channels are supported for dispatches?",
@@ -25,7 +25,7 @@ export default function FAQ() {
     },
     {
       q: "Can I monitor protocols other than standard web pages?",
-      a: "Yes. PulseGuard supports comprehensive system checks including HTTP/HTTPS, SSL/TLS certificate handshakes, DNS records (A, MX, TXT, CAA), TCP port reachability, ICMP PING, and multi-step browser sequence simulations. Note that advanced protocols like TCP/Ping and browser sequences require upgrading to a paid tier (Netrunner or higher).",
+      a: "Yes. SteadyStack supports comprehensive system checks including HTTP/HTTPS, SSL/TLS certificate handshakes, DNS records (A, MX, TXT, CAA), TCP port reachability, ICMP PING, and multi-step browser sequence simulations. Note that advanced protocols like TCP/Ping and browser sequences require upgrading to a paid tier (Netrunner or higher).",
     },
     {
       q: "How does the SSL/TLS monitoring module work?",
@@ -33,7 +33,7 @@ export default function FAQ() {
     },
     {
       q: "Can I customize the look of my public status pages?",
-      a: "Absolutely. PulseGuard supports custom themes, status grid layouts, and white-labeling. You can map public pages to your own custom domain, configure responsive grid widgets, and select themes (such as Matrix Green, Cyberpunk Pink, or Terminal Dark). Paid plans allow you to completely remove PulseGuard branding.",
+      a: "Absolutely. SteadyStack supports custom themes, status grid layouts, and white-labeling. You can map public pages to your own custom domain, configure responsive grid widgets, and select themes (such as Matrix Green, Cyberpunk Pink, or Terminal Dark). Paid plans allow you to completely remove SteadyStack branding.",
     },
     {
       q: "How secure is my telemetry data, and what is your log retention policy?",
@@ -73,7 +73,7 @@ export default function FAQ() {
             Frequently asked questions
           </h2>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-md">
-            Find immediate answers regarding PulseGuard's global network, subscription models, and
+            Find immediate answers regarding SteadyStack's global network, subscription models, and
             telemetry configurations.
           </p>
         </div>

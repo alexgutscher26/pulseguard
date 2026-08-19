@@ -150,7 +150,7 @@ export function SleepModeClient() {
             </span>
           </h1>
           <p className="text-muted-foreground text-sm sm:text-base leading-relaxed max-w-lg">
-            Solo devs hate waking up for false alarms. PulseGuard runs every check through a{" "}
+            Solo devs hate waking up for false alarms. SteadyStack runs every check through a{" "}
             <strong className="text-foreground font-semibold">
               5-vector verification pipeline
             </strong>{" "}
@@ -215,7 +215,7 @@ export function SleepModeClient() {
 
               <div className="border-t border-border/40 pt-3 mt-1">
                 <p className="text-[11px] text-muted-foreground font-mono leading-relaxed text-center">
-                  PulseGuard&apos;s 5-vector verification completes in &lt;1.8s before any alert is
+                  SteadyStack&apos;s 5-vector verification completes in &lt;1.8s before any alert is
                   dispatched. If your phone buzzes, your origin is genuinely down.
                 </p>
               </div>
@@ -311,7 +311,7 @@ export function SleepModeClient() {
             Multi-Layer Noise Defense
           </h2>
           <p className="text-muted-foreground text-sm leading-relaxed">
-            Beyond vector verification, PulseGuard deploys intelligent dampers so unstable
+            Beyond vector verification, SteadyStack deploys intelligent dampers so unstable
             microservices and flapping containers don&apos;t spam your phone.
           </p>
         </div>

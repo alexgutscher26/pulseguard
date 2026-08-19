@@ -1,6 +1,6 @@
-import { getPrisma } from "@pulseguard/db";
+import { getPrisma } from "@steadystack/db";
 import { NextResponse } from "next/server";
-import { auth } from "@pulseguard/auth";
+import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
 
 export const runtime = "nodejs";

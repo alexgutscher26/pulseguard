@@ -65,7 +65,7 @@ describe("Helicone Integration", () => {
       process.env.HELICONE_API_KEY = "sk-helicone-test-key";
 
       const headers = buildHeliconeHeaders({
-        workspaceId: "ws_pulseguard_01",
+        workspaceId: "ws_steadystack_01",
         userId: "usr_alex_01",
         feature: "post-mortem-summary",
         planTier: "Enterprise",
@@ -79,7 +79,7 @@ describe("Helicone Integration", () => {
       });
 
       expect(headers["Helicone-Auth"]).toBe("Bearer sk-helicone-test-key");
-      expect(headers["Helicone-Property-WorkspaceId"]).toBe("ws_pulseguard_01");
+      expect(headers["Helicone-Property-WorkspaceId"]).toBe("ws_steadystack_01");
       expect(headers["Helicone-User-Id"]).toBe("usr_alex_01");
       expect(headers["Helicone-Property-Feature"]).toBe("post-mortem-summary");
       expect(headers["Helicone-Property-PlanTier"]).toBe("Enterprise");

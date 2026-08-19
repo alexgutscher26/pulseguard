@@ -5,7 +5,7 @@ import { config } from "dotenv";
 config({ path: "./.env" });
 config({ path: "../../apps/web/.env" });
 
-const app = await alchemy("pulseguard");
+const app = await alchemy("steadystack");
 
 export const web = await Nextjs("web", {
   cwd: "../../apps/web",

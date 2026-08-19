@@ -1,7 +1,7 @@
 import { describe, expect, test, mock } from "bun:test";
 import { evaluateQuorum, QuorumEngine, DEFAULT_QUORUM_CONFIG } from "../services/quorum-engine";
-import { isPrivateOrInternalUrl, isPrivateOrInternalUrlAsync } from "@pulseguard/core";
-import type { ProbeCheckResult } from "@pulseguard/types";
+import { isPrivateOrInternalUrl, isPrivateOrInternalUrlAsync } from "@steadystack/core";
+import type { ProbeCheckResult } from "@steadystack/types";
 
 describe("Gate Invariant Regression Barrier Suite (The 10 Invariant Tests)", () => {
   // Test 1: Alarm handler throws mid-execution → next alarm is still scheduled

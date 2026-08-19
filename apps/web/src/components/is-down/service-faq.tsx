@@ -22,7 +22,7 @@ export function ServiceFaq({ service }: ServiceFaqProps) {
     },
     {
       question: `Why should we automate ${service.name} status checks instead of checking manually?`,
-      answer: `When a core dependency like ${service.name} degrades, minutes of manual refreshing or searching Twitter can cost hours in customer support escalations, failed transactions, and SLA penalties. PulseGuard monitors ${service.name} every 10 seconds from 15 global edge nodes with multi-region consensus verification, alerting your engineering team on Slack, Discord, SMS, or PagerDuty the second degradation begins.`,
+      answer: `When a core dependency like ${service.name} degrades, minutes of manual refreshing or searching Twitter can cost hours in customer support escalations, failed transactions, and SLA penalties. SteadyStack monitors ${service.name} every 10 seconds from 15 global edge nodes with multi-region consensus verification, alerting your engineering team on Slack, Discord, SMS, or PagerDuty the second degradation begins.`,
     },
     {
       question: `What should our engineering team do during a ${service.name} outage?`,
@@ -30,7 +30,7 @@ export function ServiceFaq({ service }: ServiceFaqProps) {
     },
     {
       question: `How do I set up free automated synthetic monitoring for ${service.name}?`,
-      answer: `Click 'Monitor ${service.name} in 1 Click' on this page to create a free PulseGuard account. The endpoint and health check parameters for ${service.name} will be pre-configured. You can connect Slack or Discord channels in under 60 seconds to receive instant notifications on any future downtime.`,
+      answer: `Click 'Monitor ${service.name} in 1 Click' on this page to create a free SteadyStack account. The endpoint and health check parameters for ${service.name} will be pre-configured. You can connect Slack or Discord channels in under 60 seconds to receive instant notifications on any future downtime.`,
     },
   ];
 

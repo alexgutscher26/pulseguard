@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@pulseguard/auth";
+import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
 import type { NormalizedImportMonitor } from "./uptimerobot";
 

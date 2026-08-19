@@ -13,7 +13,7 @@ export function UsageLimitBanner({ summary }: UsageLimitBannerProps) {
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
-    const isDismissed = sessionStorage.getItem("pulseguard_dismissed_usage_alert");
+    const isDismissed = sessionStorage.getItem("steadystack_dismissed_usage_alert");
     if (isDismissed === "true") {
       setDismissed(true);
     }
@@ -25,7 +25,7 @@ export function UsageLimitBanner({ summary }: UsageLimitBannerProps) {
 
   const handleDismiss = () => {
     setDismissed(true);
-    sessionStorage.setItem("pulseguard_dismissed_usage_alert", "true");
+    sessionStorage.setItem("steadystack_dismissed_usage_alert", "true");
   };
 
   return (

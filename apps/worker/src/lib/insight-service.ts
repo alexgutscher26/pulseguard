@@ -1,4 +1,4 @@
-import type { PrismaClient } from "@pulseguard/db";
+import type { PrismaClient } from "@steadystack/db";
 
 export enum InsightType {
   ANOMALY = "ANOMALY",

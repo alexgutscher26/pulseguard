@@ -38,7 +38,7 @@ async function performLocalSyntheticCheck(
     const res = await fetch(targetUrl, {
       signal: controller.signal,
       headers: {
-        "User-Agent": "PulseGuard-Synthetic-Local-Agent/1.0",
+        "User-Agent": "SteadyStack-Synthetic-Local-Agent/1.0",
         Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
       },
     });

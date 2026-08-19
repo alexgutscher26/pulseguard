@@ -20,12 +20,12 @@ export interface PasswordResetEmailData {
 }
 
 export function PasswordReset({ data }: { data: PasswordResetEmailData }) {
-  const displayName = data.userName || "PulseGuard Operator";
+  const displayName = data.userName || "SteadyStack Operator";
 
   return (
     <Html>
       <Head>
-        <title>Reset Your Password - PulseGuard</title>
+        <title>Reset Your Password - SteadyStack</title>
         <style>{`
           body { margin: 0; padding: 0; background-color: #09090b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
           @media only screen and (max-width: 600px) {
@@ -77,7 +77,7 @@ export function PasswordReset({ data }: { data: PasswordResetEmailData }) {
                 lineHeight: 1.6,
               }}
             >
-              Hello {displayName}, we received a request to reset your PulseGuard account password.
+              Hello {displayName}, we received a request to reset your SteadyStack account password.
               Click the button below to establish new credentials.
             </Text>
 
@@ -146,7 +146,7 @@ export function PasswordReset({ data }: { data: PasswordResetEmailData }) {
           </Section>
 
           {/* Footer */}
-          <EmailFooter customMessage="PulseGuard Security & Authentication Engine" />
+          <EmailFooter customMessage="SteadyStack Security & Authentication Engine" />
         </Container>
       </Body>
     </Html>

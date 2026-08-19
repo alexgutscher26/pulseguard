@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 import { generateAtomFeed } from "@/lib/feeds/atom-generator";
 
 export const dynamic = "force-dynamic";
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     // Generate Atom feed
     const atom = generateAtomFeed({
-      id: `urn:pulseguard:status:${statusPage.id}`,
+      id: `urn:steadystack:status:${statusPage.id}`,
       title: `${statusPage.title} - Status Updates`,
       subtitle: statusPage.description || undefined,
       link: pageUrl,
@@ -62,7 +62,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         name: statusPage.title,
       },
       entries: incidents.map((incident) => ({
-        id: `urn:pulseguard:incident:${incident.id}`,
+        id: `urn:steadystack:incident:${incident.id}`,
         title: `[${incident.status}] ${incident.title}`,
         content: `
           <p><strong>Status:</strong> ${incident.status}</p>

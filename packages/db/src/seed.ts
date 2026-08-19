@@ -29,7 +29,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
   };
 
   log(
-    "🌱 [PulseGuard Seed] Initializing real PulseGuard services, APIs & endpoint seed generator...",
+    "🌱 [SteadyStack Seed] Initializing real SteadyStack services, APIs & endpoint seed generator...",
   );
 
   // 1. Locate or create target user & core auth profile
@@ -37,7 +37,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
     ? await prisma.user.findUnique({ where: { email: userEmail } })
     : await prisma.user.findFirst({ orderBy: { createdAt: "asc" } });
 
-  const defaultEmail = userEmail || "admin@pulseguard.io";
+  const defaultEmail = userEmail || "admin@steadystack.dev";
   const userId = targetUser?.id || "seed-user-admin-01";
 
   if (!targetUser) {
@@ -46,7 +46,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
       data: {
         id: userId,
         email: defaultEmail,
-        name: "PulseGuard Admin",
+        name: "SteadyStack Admin",
         emailVerified: true,
         tier: "CONSTRUCT",
         onboardingCompleted: true,
@@ -73,7 +73,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
   log("🔐 Setting up Authentication, Subscription, API Keys & Integrations...");
 
   // Session
-  const sessionToken = "pulseguard_seed_session_token_admin_2026";
+  const sessionToken = "steadystack_seed_session_token_admin_2026";
   await prisma.session.upsert({
     where: { token: sessionToken },
     update: {
@@ -86,7 +86,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
       userId,
       expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       ipAddress: "127.0.0.1",
-      userAgent: "PulseGuard Dev Environment (Bun/Next.js)",
+      userAgent: "SteadyStack Dev Environment (Bun/Next.js)",
     },
   });
 
@@ -116,8 +116,8 @@ export async function seedDatabase(options: SeedOptions = {}) {
     },
     create: {
       userId,
-      stripeCustomerId: "cus_pulseguard_admin_seed",
-      stripeSubscriptionId: "sub_pulseguard_construct_seed",
+      stripeCustomerId: "cus_steadystack_admin_seed",
+      stripeSubscriptionId: "sub_steadystack_construct_seed",
       plan: "CONSTRUCT",
       status: "ACTIVE",
       currentPeriodStart: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000),
@@ -127,19 +127,19 @@ export async function seedDatabase(options: SeedOptions = {}) {
   });
 
   // API Key for CLI and programmatic SDK access
-  const rawApiKey = "pg_live_pulseguard_admin_master_key_2026";
+  const rawApiKey = "pg_live_steadystack_admin_master_key_2026";
   const salt = randomBytes(16).toString("hex");
   const derivedKey = scryptSync(rawApiKey, salt, 64).toString("hex");
   const apiKeyHash = `${salt}:${derivedKey}`;
   await prisma.apiKey.upsert({
     where: { keyHash: apiKeyHash },
     update: {
-      name: "PulseGuard CLI & CI/CD Master Key",
+      name: "SteadyStack CLI & CI/CD Master Key",
       scopes: "read,write,admin",
       lastUsedAt: new Date(),
     },
     create: {
-      name: "PulseGuard CLI & CI/CD Master Key",
+      name: "SteadyStack CLI & CI/CD Master Key",
       keyHash: apiKeyHash,
       prefix: rawApiKey.slice(0, 12) + "...",
       scopes: "read,write,admin",
@@ -158,17 +158,17 @@ export async function seedDatabase(options: SeedOptions = {}) {
       },
     },
     update: {
-      teamName: "PulseGuard Cloud Platform",
-      teamSlug: "pulseguard-cloud",
+      teamName: "SteadyStack Cloud Platform",
+      teamSlug: "steadystack-cloud",
     },
     create: {
       provider: "vercel",
-      accessToken: "vercel_sec_pulseguard_dev_token",
-      configurationId: "icfg_pulseguard_dev",
+      accessToken: "vercel_sec_steadystack_dev_token",
+      configurationId: "icfg_steadystack_dev",
       userId,
       teamId: "personal",
-      teamName: "PulseGuard Cloud Platform",
-      teamSlug: "pulseguard-cloud",
+      teamName: "SteadyStack Cloud Platform",
+      teamSlug: "steadystack-cloud",
     },
   });
 
@@ -180,7 +180,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
       userId,
       anonymizeAnalytics: false,
       showOnLeaderboard: true,
-      leaderboardBio: "PulseGuard SRE & Core Infrastructure Team",
+      leaderboardBio: "SteadyStack SRE & Core Infrastructure Team",
     },
   });
 
@@ -244,43 +244,43 @@ export async function seedDatabase(options: SeedOptions = {}) {
     config: any;
   }[] = [
     {
-      name: "PulseGuard Security Ops (Primary Email)",
+      name: "SteadyStack Security Ops (Primary Email)",
       type: "EMAIL",
       config: { email: targetUser.email },
     },
     {
-      name: "PulseGuard Slack #ops-alerts",
+      name: "SteadyStack Slack #ops-alerts",
       type: "SLACK",
       config: {
-        webhookUrl: "https://webhook.pulseguard.internal/integrations/slack",
+        webhookUrl: "https://webhook.steadystack.internal/integrations/slack",
         channel: "#ops-alerts",
       },
     },
     {
-      name: "PulseGuard Discord DevOps Room",
+      name: "SteadyStack Discord DevOps Room",
       type: "DISCORD",
       config: {
-        webhookUrl: "https://webhook.pulseguard.internal/integrations/discord",
+        webhookUrl: "https://webhook.steadystack.internal/integrations/discord",
       },
     },
     {
-      name: "PulseGuard PagerDuty P1 Bridge",
+      name: "SteadyStack PagerDuty P1 Bridge",
       type: "WEBHOOK",
       config: {
-        url: "https://webhook.pulseguard.internal/integrations/pagerduty",
-        headers: { "X-Routing-Key": "pulseguard-ops-bridge" },
+        url: "https://webhook.steadystack.internal/integrations/pagerduty",
+        headers: { "X-Routing-Key": "steadystack-ops-bridge" },
       },
     },
     {
-      name: "PulseGuard Telegram SRE Bot",
+      name: "SteadyStack Telegram SRE Bot",
       type: "TELEGRAM",
       config: {
         chatId: "-1001987654321",
-        botToken: "mock_telegram_bot_token_pulseguard",
+        botToken: "mock_telegram_bot_token_steadystack",
       },
     },
     {
-      name: "PulseGuard SMS On-Call Dispatcher",
+      name: "SteadyStack SMS On-Call Dispatcher",
       type: "SMS",
       config: {
         phoneNumber: "+15550198765",
@@ -313,7 +313,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
   log("🛰️ Registering Private Network Probes...");
   const probesToSeed = [
     {
-      name: "PulseGuard Docker Local Probe 01",
+      name: "SteadyStack Docker Local Probe 01",
       token: "pg_probe_local_dev_token_2026",
       userId,
       platform: "docker",
@@ -325,7 +325,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
       heartbeatInterval: 60,
     },
     {
-      name: "PulseGuard Edge WASM Mesh Probe 02",
+      name: "SteadyStack Edge WASM Mesh Probe 02",
       token: "pg_probe_edge_wasm_token_2026",
       userId,
       platform: "wasm",
@@ -358,7 +358,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
   const privateProbe = seededProbes[0];
   log(`✅ Configured ${seededProbes.length} active private probes for ${targetUser.email}.`);
 
-  // 6. Define Real PulseGuard Monitor Types & Endpoints (All 13 Types)
+  // 6. Define Real SteadyStack Monitor Types & Endpoints (All 13 Types)
   interface SeedMonitorDef {
     name: string;
     url: string;
@@ -387,7 +387,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
   const monitorDefinitions: SeedMonitorDef[] = [
     // ── Group 1: Core API & Application Gateways (HTTP) ───────────────────────────
     {
-      name: "PulseGuard Core API Health Check",
+      name: "SteadyStack Core API Health Check",
       url: "http://localhost:3000/api/health",
       type: "HTTP",
       method: "GET",
@@ -397,10 +397,10 @@ export async function seedDatabase(options: SeedOptions = {}) {
       checkRegions: ["us-east-1", "eu-central-1", "ap-northeast-1", "sa-east-1", "af-south-1"],
       alertThreshold: 2,
       dynamicThresholding: true,
-      runbookUrl: "https://docs.pulseguard.io/runbooks/api-health",
+      runbookUrl: "https://docs.steadystack.dev/runbooks/api-health",
       headers: [
         { key: "Accept", value: "application/json" },
-        { key: "X-Watchdog-Source", value: "pulseguard-mesh" },
+        { key: "X-Watchdog-Source", value: "steadystack-mesh" },
       ],
       expectation: {
         body_contains: "ok",
@@ -414,7 +414,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
       groupName: "Core API & Application Gateways",
     },
     {
-      name: "PulseGuard Database Connection Probe",
+      name: "SteadyStack Database Connection Probe",
       url: "http://localhost:3000/api/test-db",
       type: "HTTP",
       method: "GET",
@@ -424,7 +424,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
       checkRegions: ["us-east-1", "eu-west-1"],
       alertThreshold: 1,
       dynamicThresholding: false,
-      runbookUrl: "https://docs.pulseguard.io/runbooks/db-connectivity",
+      runbookUrl: "https://docs.steadystack.dev/runbooks/db-connectivity",
       headers: [{ key: "Accept", value: "application/json" }],
       expectation: {
         json_assertions: [{ path: "$.status", operator: "==", value: "connected" }],
@@ -434,7 +434,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
       groupName: "Core API & Application Gateways",
     },
     {
-      name: "PulseGuard Better-Auth Session Service",
+      name: "SteadyStack Better-Auth Session Service",
       url: "http://localhost:3000/api/auth/get-session",
       type: "HTTP",
       method: "GET",
@@ -444,14 +444,14 @@ export async function seedDatabase(options: SeedOptions = {}) {
       checkRegions: ["us-east-1", "eu-central-1", "ap-northeast-1"],
       alertThreshold: 1,
       dynamicThresholding: false,
-      runbookUrl: "https://docs.pulseguard.io/runbooks/auth-failures",
+      runbookUrl: "https://docs.steadystack.dev/runbooks/auth-failures",
       headers: [{ key: "Accept", value: "application/json" }],
       tags: ["auth", "better-auth", "security", "session"],
       baseLatencyMs: 18,
       groupName: "Core API & Application Gateways",
     },
     {
-      name: "PulseGuard Web App Dashboard UI",
+      name: "SteadyStack Web App Dashboard UI",
       url: "http://localhost:3000/dashboard",
       type: "HTTP",
       method: "GET",
@@ -462,14 +462,14 @@ export async function seedDatabase(options: SeedOptions = {}) {
       alertThreshold: 2,
       dynamicThresholding: false,
       expectation: {
-        body_contains: "PulseGuard",
+        body_contains: "SteadyStack",
       },
       tags: ["web", "nextjs", "dashboard", "frontend"],
       baseLatencyMs: 28,
       groupName: "Core API & Application Gateways",
     },
     {
-      name: "PulseGuard Stripe Webhook Receiver",
+      name: "SteadyStack Stripe Webhook Receiver",
       url: "http://localhost:3000/api/stripe/webhook",
       type: "HTTP",
       method: "POST",
@@ -488,14 +488,14 @@ export async function seedDatabase(options: SeedOptions = {}) {
       ],
       body: JSON.stringify({
         type: "payment_intent.succeeded",
-        data: { object: { id: "pi_seed_pulseguard_123" } },
+        data: { object: { id: "pi_seed_steadystack_123" } },
       }),
       tags: ["billing", "stripe", "webhooks", "payments"],
       baseLatencyMs: 25,
       groupName: "Core API & Application Gateways",
     },
     {
-      name: "PulseGuard CLI & REST API Management Gateway",
+      name: "SteadyStack CLI & REST API Management Gateway",
       url: "http://localhost:3000/api/cli/monitors",
       type: "HTTP",
       method: "GET",
@@ -516,7 +516,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
 
     // ── Group 2: Edge Worker & Realtime Streaming ──────────────────────────────────
     {
-      name: "PulseGuard Cloudflare Worker Edge Engine",
+      name: "SteadyStack Cloudflare Worker Edge Engine",
       url: "http://127.0.0.1:8787/",
       type: "HTTP",
       method: "GET",
@@ -527,14 +527,14 @@ export async function seedDatabase(options: SeedOptions = {}) {
       alertThreshold: 1,
       dynamicThresholding: true,
       expectation: {
-        body_contains: "PulseGuard Worker is Running",
+        body_contains: "SteadyStack Worker is Running",
       },
       tags: ["worker", "cloudflare-edge", "monitoring-engine"],
       baseLatencyMs: 8,
       groupName: "Edge Worker & Realtime Streaming",
     },
     {
-      name: "PulseGuard Worker Edge Heartbeat Ping",
+      name: "SteadyStack Worker Edge Heartbeat Ping",
       url: "http://127.0.0.1:8787/api/heartbeat",
       type: "HTTP",
       method: "GET",
@@ -549,7 +549,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
       groupName: "Edge Worker & Realtime Streaming",
     },
     {
-      name: "PulseGuard Private Probe Gateway API",
+      name: "SteadyStack Private Probe Gateway API",
       url: "http://127.0.0.1:8787/api/probes/register",
       type: "HTTP",
       method: "POST",
@@ -570,7 +570,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
       groupName: "Edge Worker & Realtime Streaming",
     },
     {
-      name: "PulseGuard Live Telemetry WebSocket Stream",
+      name: "SteadyStack Live Telemetry WebSocket Stream",
       url: "ws://127.0.0.1:8787/api/broadcast",
       type: "WEBSOCKET",
       interval: 60,
@@ -591,8 +591,8 @@ export async function seedDatabase(options: SeedOptions = {}) {
 
     // ── Group 3: Database, Caching & Infrastructure Layer ─────────────────────────
     {
-      name: "PulseGuard PostgreSQL Activity & Connection Pool Probe",
-      url: "postgresql://pulseguard:pulseguard@localhost:5432/pulseguard",
+      name: "SteadyStack PostgreSQL Activity & Connection Pool Probe",
+      url: "postgresql://steadystack:steadystack@localhost:5432/steadystack",
       type: "DATABASE",
       interval: 60,
       timeout: 5,
@@ -610,7 +610,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
       assignToPrivateProbe: true,
     },
     {
-      name: "PulseGuard PostgreSQL Database Port (5432)",
+      name: "SteadyStack PostgreSQL Database Port (5432)",
       url: "tcp://localhost:5432",
       type: "PORT",
       interval: 60,
@@ -619,14 +619,14 @@ export async function seedDatabase(options: SeedOptions = {}) {
       checkRegions: ["us-east-1"],
       alertThreshold: 1,
       dynamicThresholding: false,
-      runbookUrl: "https://docs.pulseguard.io/runbooks/postgres-port",
+      runbookUrl: "https://docs.steadystack.dev/runbooks/postgres-port",
       tags: ["database", "postgres", "port-5432", "tier-1"],
       baseLatencyMs: 4,
       groupName: "Database, Caching & Infrastructure Layer",
       assignToPrivateProbe: true,
     },
     {
-      name: "PulseGuard Redis Cache & Queue Port (6379)",
+      name: "SteadyStack Redis Cache & Queue Port (6379)",
       url: "tcp://localhost:6379",
       type: "PORT",
       interval: 60,
@@ -641,7 +641,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
       assignToPrivateProbe: true,
     },
     {
-      name: "PulseGuard MailHog SMTP Port (1025)",
+      name: "SteadyStack MailHog SMTP Port (1025)",
       url: "tcp://localhost:1025",
       type: "PORT",
       interval: 120,
@@ -656,7 +656,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
       assignToPrivateProbe: true,
     },
     {
-      name: "PulseGuard MailHog Email Inbox Web UI",
+      name: "SteadyStack MailHog Email Inbox Web UI",
       url: "http://localhost:8025",
       type: "HTTP",
       method: "GET",
@@ -676,8 +676,8 @@ export async function seedDatabase(options: SeedOptions = {}) {
 
     // ── Group 4: Public Feeds, Badges & Network Security ──────────────────────────
     {
-      name: "PulseGuard Status Badge SVG Endpoint",
-      url: "http://localhost:3000/api/badge/pulseguard-global-status",
+      name: "SteadyStack Status Badge SVG Endpoint",
+      url: "http://localhost:3000/api/badge/steadystack-global-status",
       type: "HTTP",
       method: "GET",
       interval: 60,
@@ -695,8 +695,8 @@ export async function seedDatabase(options: SeedOptions = {}) {
       groupName: "Public Feeds, Badges & Network Security",
     },
     {
-      name: "PulseGuard Embed Widget JSON Endpoint",
-      url: "http://localhost:3000/api/widget/pulseguard-global-status/status",
+      name: "SteadyStack Embed Widget JSON Endpoint",
+      url: "http://localhost:3000/api/widget/steadystack-global-status/status",
       type: "HTTP",
       method: "GET",
       interval: 60,
@@ -710,7 +710,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
           {
             path: "$.statusPage.slug",
             operator: "==",
-            value: "pulseguard-global-status",
+            value: "steadystack-global-status",
           },
         ],
       },
@@ -719,8 +719,8 @@ export async function seedDatabase(options: SeedOptions = {}) {
       groupName: "Public Feeds, Badges & Network Security",
     },
     {
-      name: "PulseGuard Incident RSS Feed",
-      url: "http://localhost:3000/api/feeds/pulseguard-global-status/rss",
+      name: "SteadyStack Incident RSS Feed",
+      url: "http://localhost:3000/api/feeds/steadystack-global-status/rss",
       type: "HTTP",
       method: "GET",
       interval: 120,
@@ -738,7 +738,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
       groupName: "Public Feeds, Badges & Network Security",
     },
     {
-      name: "PulseGuard Cloudflare Anycast CDN Mesh",
+      name: "SteadyStack Cloudflare Anycast CDN Mesh",
       url: "ping://1.1.1.1",
       type: "PING",
       interval: 30,
@@ -756,13 +756,13 @@ export async function seedDatabase(options: SeedOptions = {}) {
       ],
       alertThreshold: 2,
       dynamicThresholding: true,
-      runbookUrl: "https://docs.pulseguard.io/runbooks/anycast-mesh",
+      runbookUrl: "https://docs.steadystack.dev/runbooks/anycast-mesh",
       tags: ["network", "cdn", "anycast", "icmp", "global-mesh"],
       baseLatencyMs: 8,
       groupName: "Public Feeds, Badges & Network Security",
     },
     {
-      name: "PulseGuard Local Gateway ICMP Ping",
+      name: "SteadyStack Local Gateway ICMP Ping",
       url: "ping://127.0.0.1",
       type: "PING",
       interval: 60,
@@ -776,8 +776,8 @@ export async function seedDatabase(options: SeedOptions = {}) {
       groupName: "Public Feeds, Badges & Network Security",
     },
     {
-      name: "PulseGuard Production Edge TLS 1.3 Certificate Watchdog",
-      url: "https://pulseguard.io",
+      name: "SteadyStack Production Edge TLS 1.3 Certificate Watchdog",
+      url: "https://steadystack.dev",
       type: "SSL",
       interval: 3600,
       timeout: 10,
@@ -785,14 +785,14 @@ export async function seedDatabase(options: SeedOptions = {}) {
       checkRegions: ["us-east-1", "eu-west-1", "ap-northeast-1"],
       alertThreshold: 1,
       dynamicThresholding: false,
-      runbookUrl: "https://docs.pulseguard.io/runbooks/ssl-renewal",
+      runbookUrl: "https://docs.steadystack.dev/runbooks/ssl-renewal",
       tags: ["security", "ssl", "tls-1.3", "certificates"],
       baseLatencyMs: 32,
       groupName: "Public Feeds, Badges & Network Security",
     },
     {
-      name: "PulseGuard Authoritative DNS Watchdog",
-      url: "pulseguard.io",
+      name: "SteadyStack Authoritative DNS Watchdog",
+      url: "steadystack.dev",
       type: "DNS",
       interval: 60,
       timeout: 5,
@@ -808,8 +808,8 @@ export async function seedDatabase(options: SeedOptions = {}) {
       groupName: "Public Feeds, Badges & Network Security",
     },
     {
-      name: "PulseGuard Domain Registration & WHOIS Expiration Watchdog",
-      url: "pulseguard.io",
+      name: "SteadyStack Domain Registration & WHOIS Expiration Watchdog",
+      url: "steadystack.dev",
       type: "DOMAIN",
       interval: 86400,
       timeout: 15,
@@ -822,7 +822,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
       groupName: "Public Feeds, Badges & Network Security",
     },
     {
-      name: "PulseGuard Cloudflare AS13335 BGP Route & RPKI Sentinel",
+      name: "SteadyStack Cloudflare AS13335 BGP Route & RPKI Sentinel",
       url: "AS13335",
       type: "BGP",
       interval: 300,
@@ -840,9 +840,9 @@ export async function seedDatabase(options: SeedOptions = {}) {
       groupName: "Public Feeds, Badges & Network Security",
     },
     {
-      name: "PulseGuard Worker Cron Dead Man's Snitch",
-      url: "heartbeat://pulseguard-worker-snitch-live",
-      heartbeatToken: "pulseguard-worker-snitch-live",
+      name: "SteadyStack Worker Cron Dead Man's Snitch",
+      url: "heartbeat://steadystack-worker-snitch-live",
+      heartbeatToken: "steadystack-worker-snitch-live",
       type: "HEARTBEAT",
       interval: 60,
       timeout: 10,
@@ -850,15 +850,15 @@ export async function seedDatabase(options: SeedOptions = {}) {
       checkRegions: [],
       alertThreshold: 1,
       dynamicThresholding: false,
-      runbookUrl: "https://docs.pulseguard.io/runbooks/worker-cron-snitch",
+      runbookUrl: "https://docs.steadystack.dev/runbooks/worker-cron-snitch",
       tags: ["heartbeat", "deadmans-snitch", "worker", "cron"],
       baseLatencyMs: 2,
       groupName: "Edge Worker & Realtime Streaming",
     },
     {
-      name: "PulseGuard Nightly Database S3 Backup Snitch",
-      url: "heartbeat://pulseguard-nightly-db-backup",
-      heartbeatToken: "pulseguard-nightly-db-backup",
+      name: "SteadyStack Nightly Database S3 Backup Snitch",
+      url: "heartbeat://steadystack-nightly-db-backup",
+      heartbeatToken: "steadystack-nightly-db-backup",
       type: "HEARTBEAT",
       interval: 86400,
       timeout: 30,
@@ -880,12 +880,12 @@ export async function seedDatabase(options: SeedOptions = {}) {
       checkRegions: ["us-east-1", "eu-central-1", "ap-northeast-1"],
       alertThreshold: 2,
       dynamicThresholding: true,
-      runbookUrl: "https://docs.pulseguard.io/runbooks/synthetic-auth",
+      runbookUrl: "https://docs.steadystack.dev/runbooks/synthetic-auth",
       script: [
         { action: "goto", value: "http://localhost:3000/login", selector: "" },
         {
           action: "fill",
-          value: "admin@pulseguard.io",
+          value: "admin@steadystack.dev",
           selector: "input[name='email']",
         },
         {
@@ -911,7 +911,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
       checkRegions: ["us-east-1", "eu-central-1", "ap-southeast-1"],
       alertThreshold: 2,
       dynamicThresholding: true,
-      runbookUrl: "https://docs.pulseguard.io/runbooks/api-chain",
+      runbookUrl: "https://docs.steadystack.dev/runbooks/api-chain",
       script: [
         {
           name: "1. Core API Health Check",
@@ -954,7 +954,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
   ];
 
   log(
-    `📡 Seeding ${monitorDefinitions.length} Real PulseGuard Monitors across all types and verification configurations...`,
+    `📡 Seeding ${monitorDefinitions.length} Real SteadyStack Monitors across all types and verification configurations...`,
   );
 
   const seededMonitors: any[] = [];
@@ -1098,7 +1098,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
           monitorId: monitor.id,
           pingedAt: new Date(now - p * (def.interval * 1000)),
           sourceIp: `198.51.100.${10 + p}`,
-          userAgent: "PulseGuard-Cron-Snitch/2.4 (Bun-Edge)",
+          userAgent: "SteadyStack-Cron-Snitch/2.4 (Bun-Edge)",
         });
       }
       await prisma.heartbeatPing.createMany({ data: pings });
@@ -1218,7 +1218,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
   // 8. Seed Realistic Resolved Incident & Post-Mortem
   log("🚨 Creating Historical Resolved Incident & Post-Mortem...");
   const dbProbeMonitor = seededMonitors.find(
-    (m) => m.def.name === "PulseGuard Database Connection Probe",
+    (m) => m.def.name === "SteadyStack Database Connection Probe",
   );
 
   if (dbProbeMonitor) {
@@ -1273,7 +1273,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
         rootCause:
           "Unindexed aggregation query ran in parallel across 4 background workers simultaneously.",
         impactScope: "API response latency elevated by 240ms for 30 minutes. Zero data loss.",
-        detectionMethod: "PulseGuard Synthetic Database Health Probe",
+        detectionMethod: "SteadyStack Synthetic Database Health Probe",
         timeline:
           "T-48h: Saturation detected -> T-47.5h: Pool limit expanded -> T-47.5h: Health verified and resolved",
         actionItems:
@@ -1285,7 +1285,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
 
   // Active Maintenance Window
   const edgeWorkerMonitor = seededMonitors.find(
-    (m) => m.def.name === "PulseGuard Cloudflare Worker Edge Engine",
+    (m) => m.def.name === "SteadyStack Cloudflare Worker Edge Engine",
   );
   if (edgeWorkerMonitor) {
     await prisma.maintenanceWindow.deleteMany({
@@ -1307,7 +1307,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
     where: { monitor: { userId } },
   });
 
-  const apiMonitor = seededMonitors.find((m) => m.def.name === "PulseGuard Core API Health Check");
+  const apiMonitor = seededMonitors.find((m) => m.def.name === "SteadyStack Core API Health Check");
   if (apiMonitor) {
     await prisma.monitorInsight.create({
       data: {
@@ -1324,7 +1324,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
   }
 
   const sslMonitor = seededMonitors.find(
-    (m) => m.def.name === "PulseGuard Production Edge TLS 1.3 Certificate Watchdog",
+    (m) => m.def.name === "SteadyStack Production Edge TLS 1.3 Certificate Watchdog",
   );
   if (sslMonitor) {
     await prisma.monitorInsight.create({
@@ -1339,7 +1339,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
   }
 
   const p95Monitor = seededMonitors.find(
-    (m) => m.def.name === "PulseGuard Cloudflare Anycast CDN Mesh",
+    (m) => m.def.name === "SteadyStack Cloudflare Anycast CDN Mesh",
   );
   if (p95Monitor) {
     await prisma.monitorInsight.create({
@@ -1356,16 +1356,16 @@ export async function seedDatabase(options: SeedOptions = {}) {
 
   // 10. Create / Update Public Status Page with Grouped Monitors
   log("🌐 Creating Global Status Page & Grouped Components...");
-  const statusPageSlug = "pulseguard-global-status";
+  const statusPageSlug = "steadystack-global-status";
   let statusPage = await prisma.statusPage.findFirst({
     where: { userId, slug: statusPageSlug },
   });
 
   const statusPageData = {
     slug: statusPageSlug,
-    title: "PulseGuard Global Infrastructure Status",
+    title: "SteadyStack Global Infrastructure Status",
     description:
-      "Real-time operational status for PulseGuard core API gateways, Cloudflare edge workers, PostgreSQL clusters, and public feeds.",
+      "Real-time operational status for SteadyStack core API gateways, Cloudflare edge workers, PostgreSQL clusters, and public feeds.",
     theme: {
       mode: "dark",
       colors: {
@@ -1441,7 +1441,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
   }
 
   // Seed Status Page Subscriber
-  const subscriberEmail = "subscriber@pulseguard.io";
+  const subscriberEmail = "subscriber@steadystack.dev";
   await prisma.statusPageSubscriber.upsert({
     where: {
       statusPageId_email: {
@@ -1454,7 +1454,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
       statusPageId: statusPage.id,
       email: subscriberEmail,
       verified: true,
-      manageToken: "token_sub_pulseguard_admin_manage",
+      manageToken: "token_sub_steadystack_admin_manage",
       notifyIncidents: true,
       notifyMaintenance: true,
     },
@@ -1486,7 +1486,7 @@ export async function seedDatabase(options: SeedOptions = {}) {
   }
 
   log("\n========================================================");
-  log("🎉 [PulseGuard Seed Complete] Successfully seeded database!");
+  log("🎉 [SteadyStack Seed Complete] Successfully seeded database!");
   log(`👤 Target User: ${targetUser.email} (${targetUser.id})`);
   log(`🔑 CLI API Key: ${rawApiKey}`);
   log(`📡 Total Real Monitors Seeded: ${seededMonitors.length}`);

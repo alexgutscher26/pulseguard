@@ -1,4 +1,4 @@
-import type { MonitorAlertData } from "@pulseguard/email";
+import type { MonitorAlertData } from "@steadystack/email";
 import { NotificationType, type NotificationTypeValue } from "../../constants";
 
 // Embed color constants (Discord uses decimal RGB values)
@@ -42,7 +42,7 @@ export async function sendDiscordAlert(
   }
 
   const payload = {
-    username: "PulseGuard",
+    username: "SteadyStack",
     embeds: [
       {
         title: title,
@@ -90,7 +90,7 @@ export async function sendDiscordAlert(
             : []),
         ],
         footer: {
-          text: "PulseGuard Sentinel • Monitoring Infrastructure",
+          text: "SteadyStack Sentinel • Monitoring Infrastructure",
         },
         timestamp: data.timestamp,
       },

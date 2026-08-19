@@ -1,5 +1,5 @@
 import { DurableObject } from "cloudflare:workers";
-import { getPrisma, LatencyGranularity } from "@pulseguard/db";
+import { getPrisma, LatencyGranularity } from "@steadystack/db";
 import { LatencyBuffer } from "../lib/latency-calculator";
 
 interface LatencyRecord {

@@ -1,4 +1,4 @@
-import { auth } from "@pulseguard/auth";
+import { auth } from "@steadystack/auth";
 import { toNextJsHandler } from "better-auth/next-js";
 import { NextRequest, NextResponse } from "next/server";
 

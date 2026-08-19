@@ -167,7 +167,7 @@ export function ServiceStatusCard({ service, initialProbe }: ServiceStatusCardPr
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-border/60">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
-            <span>Telemetry verified by PulseGuard Autonomous Edge Network</span>
+            <span>Telemetry verified by SteadyStack Autonomous Edge Network</span>
           </div>
 
           <div className="flex items-center gap-2.5 w-full sm:w-auto">

@@ -1,6 +1,6 @@
 {
   "ignores": [
-    "@pulseguard/config",
+    "@steadystack/config",
     "@types/bun",
     "@types/node",
     "@types/react",
@@ -27,13 +27,5 @@
     "@storybook/addon-vitest",
     "@storybook/nextjs-vite"
   ],
-  "ignorePatterns": [
-    "dist",
-    ".next",
-    ".open-next",
-    ".expo",
-    ".wrangler",
-    "src/generated",
-    "*.d.ts"
-  ]
+  "ignorePatterns": ["dist", ".next", ".open-next", ".expo", ".wrangler", "src/generated", "*.d.ts"]
 }

@@ -4,7 +4,7 @@ import { CheckCircle, ExternalLink } from "lucide-react";
 import { toggleMonitor } from "@/actions/monitors";
 import { toast } from "@/components/ui/sonner";
 import { useTransition } from "react";
-import { AVAILABLE_REGIONS } from "@pulseguard/shared";
+import { AVAILABLE_REGIONS } from "@steadystack/shared";
 import { useHaptic } from "@/hooks/use-haptic";
 
 /**

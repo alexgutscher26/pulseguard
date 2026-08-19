@@ -99,7 +99,7 @@ export function useLiveMonitor(monitorId: string) {
       }
 
       const connect = () => {
-        console.log("[PulseGuard] Connecting to Live Feed:", urlObj.toString());
+        console.log("[SteadyStack] Connecting to Live Feed:", urlObj.toString());
         ws = new WebSocket(urlObj.toString());
 
         ws.onopen = () => {
@@ -113,7 +113,7 @@ export function useLiveMonitor(monitorId: string) {
               setLastEvent(data);
             }
           } catch (e) {
-            console.warn("[PulseGuard] Failed to parse live event:", e);
+            console.warn("[SteadyStack] Failed to parse live event:", e);
           }
         };
 
@@ -128,7 +128,7 @@ export function useLiveMonitor(monitorId: string) {
 
         ws.onerror = () => {
           console.warn(
-            "[PulseGuard] Live Feed WebSocket connection encountered an error (reconnecting...).",
+            "[SteadyStack] Live Feed WebSocket connection encountered an error (reconnecting...).",
           );
           ws?.close();
         };

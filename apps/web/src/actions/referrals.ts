@@ -1,7 +1,7 @@
 "use server";
 
-import { auth } from "@pulseguard/auth";
-import db from "@pulseguard/db";
+import { auth } from "@steadystack/auth";
+import db from "@steadystack/db";
 import { headers } from "next/headers";
 
 export interface ReferredUserItem {
@@ -168,7 +168,7 @@ export async function trackReferralClick(code: string): Promise<void> {
  * Ensures a referral code exists for a given user ID and returns it.
  */
 export async function ensureUserReferralCode(userId: string): Promise<string> {
-  if (!userId) return "pulseguard";
+  if (!userId) return "steadystack";
   try {
     const client = await getReferralDb();
     if (!client.referralCode) return `pg_${userId.slice(-6)}`;

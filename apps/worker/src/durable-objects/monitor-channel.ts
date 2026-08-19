@@ -1,5 +1,5 @@
 import { DurableObject } from "cloudflare:workers";
-import { getPrisma } from "@pulseguard/db";
+import { getPrisma } from "@steadystack/db";
 
 interface Env {
   // Add other bindings here if needed

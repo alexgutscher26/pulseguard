@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 
 /**
  * GET /api/widget/embed.js?slug=xxx
@@ -67,9 +67,9 @@ export async function GET(request: NextRequest) {
 (function() {
   'use strict';
   
-  var PulseGuard = window.PulseGuard || {};
-  var config = PulseGuard.config || {};
-  var targetId = config.target || 'pulseguard-status';
+  var SteadyStack = window.SteadyStack || {};
+  var config = SteadyStack.config || {};
+  var targetId = config.target || 'steadystack-status';
   var slug = '${slug}';
   var apiUrl = '${baseUrl}/api/widget/' + slug + '/status';
   
@@ -132,7 +132,7 @@ export async function GET(request: NextRequest) {
   function createWidget(data) {
     var container = document.getElementById(targetId);
     if (!container) {
-      console.warn('[PulseGuard] Container #' + targetId + ' not found');
+      console.warn('[SteadyStack] Container #' + targetId + ' not found');
       return;
     }
     
@@ -175,7 +175,7 @@ export async function GET(request: NextRequest) {
         createWidget(data);
       })
       .catch(function(error) {
-        console.error('[PulseGuard] Failed to fetch status:', error);
+        console.error('[SteadyStack] Failed to fetch status:', error);
         showError();
       });
   }

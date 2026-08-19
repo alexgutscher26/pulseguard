@@ -1,5 +1,5 @@
 # Build stage using Bun (multi-stage build from workspace root)
-# Build command: docker build -f apps/web/Dockerfile -t pulseguard-web .
+# Build command: docker build -f apps/web/Dockerfile -t steadystack-web .
 FROM oven/bun:1.2-alpine AS build
 WORKDIR /app
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma, { IncidentStatus, IncidentEventType } from "@pulseguard/db";
+import prisma, { IncidentStatus, IncidentEventType } from "@steadystack/db";
 
 const MAX_REQUEST_BODY_SIZE = 1_048_576;
 

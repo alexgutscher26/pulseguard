@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@pulseguard/auth";
+import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
 import { getComprehensiveSlaReport } from "@/actions/sla-reports";
 import { assertFeatureFlag } from "@/lib/billing-server";
-import { renderSlaReportToBuffer, type SlaReportData } from "@pulseguard/email";
+import { renderSlaReportToBuffer, type SlaReportData } from "@steadystack/email";
 
 export async function GET(req: NextRequest) {
   try {
@@ -61,7 +61,7 @@ export async function GET(req: NextRequest) {
 
     // 5. Handle CSV Format
     if (format === "csv") {
-      let csv = "PulseGuard SLA Compliance Report\n";
+      let csv = "SteadyStack SLA Compliance Report\n";
       csv += `Scope,${slaReport.scopeName}\n`;
       csv += `Client,${clientName || slaReport.scopeName}\n`;
       csv += `Audit Window,${slaReport.startDate} to ${slaReport.endDate}\n`;

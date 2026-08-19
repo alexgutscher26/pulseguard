@@ -22,7 +22,7 @@ import { SAMPLE_INCIDENTS, type IncidentRecord } from "@/content/benchmarks-data
 export function IncidentExplorer() {
   const [searchQuery, setSearchQuery] = useState("");
   const [providerFilter, setProviderFilter] = useState<
-    "all" | "pulseguard" | "uptimerobot" | "pingdom"
+    "all" | "steadystack" | "uptimerobot" | "pingdom"
   >("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<"all" | "true_outage" | "spurious">("all");
@@ -53,7 +53,7 @@ export function IncidentExplorer() {
       if (statusFilter === "spurious" && item.groundTruthDown) return false;
 
       // Provider filter
-      if (providerFilter === "pulseguard" && !item.pulseguard.alertTriggered) return false;
+      if (providerFilter === "steadystack" && !item.steadystack.alertTriggered) return false;
       if (providerFilter === "uptimerobot" && !item.uptimerobot.alertTriggered) return false;
       if (providerFilter === "pingdom" && !item.pingdom.alertTriggered) return false;
 
@@ -116,7 +116,7 @@ export function IncidentExplorer() {
             className="px-3 py-2 bg-background border border-border rounded-xl text-xs text-foreground font-mono focus:outline-none focus:ring-1 focus:ring-primary"
           >
             <option value="all">All Providers</option>
-            <option value="pulseguard">PulseGuard Alerts Only</option>
+            <option value="steadystack">SteadyStack Alerts Only</option>
             <option value="uptimerobot">UptimeRobot Alerts Only</option>
             <option value="pingdom">Pingdom Alerts Only</option>
           </select>
@@ -202,16 +202,16 @@ export function IncidentExplorer() {
                     {/* Verdicts Pill Row */}
                     <div className="flex items-center gap-3 self-end md:self-auto">
                       <div className="flex items-center gap-1.5 text-[11px] font-mono">
-                        {/* PulseGuard Status */}
+                        {/* SteadyStack Status */}
                         <div
                           className={`px-2 py-0.5 rounded-md border ${
-                            incident.pulseguard.alertTriggered
+                            incident.steadystack.alertTriggered
                               ? "border-rose-500/30 bg-rose-500/10 text-rose-400 font-bold"
                               : "border-emerald-500/30 bg-emerald-500/10 text-emerald-400 font-semibold"
                           }`}
-                          title="PulseGuard Alert State"
+                          title="SteadyStack Alert State"
                         >
-                          PG: {incident.pulseguard.alertTriggered ? "PAGED" : "REJECTED"}
+                          PG: {incident.steadystack.alertTriggered ? "PAGED" : "REJECTED"}
                         </div>
 
                         {/* UptimeRobot Status */}
@@ -254,18 +254,18 @@ export function IncidentExplorer() {
                   {isExpanded && (
                     <div className="px-4 sm:px-6 pb-6 pt-2 bg-muted/15 border-t border-border/40 font-mono text-xs">
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                        {/* PulseGuard Consensus Audit */}
+                        {/* SteadyStack Consensus Audit */}
                         <div className="p-3.5 rounded-xl border border-emerald-500/20 bg-emerald-950/10">
                           <div className="flex items-center justify-between text-emerald-400 font-bold mb-2">
-                            <span>PulseGuard Verdict</span>
-                            <span>{incident.pulseguard.timeToVerdictMs}ms</span>
+                            <span>SteadyStack Verdict</span>
+                            <span>{incident.steadystack.timeToVerdictMs}ms</span>
                           </div>
                           <p className="text-[11px] text-muted-foreground font-sans leading-relaxed mb-2">
-                            {incident.pulseguard.verdictDescription}
+                            {incident.steadystack.verdictDescription}
                           </p>
                           <div className="text-[10px] text-emerald-400/80">
-                            Failed Nodes: {incident.pulseguard.regionsFailed} /{" "}
-                            {incident.pulseguard.regionsTested} (Quorum target: 4)
+                            Failed Nodes: {incident.steadystack.regionsFailed} /{" "}
+                            {incident.steadystack.regionsTested} (Quorum target: 4)
                           </div>
                         </div>
 

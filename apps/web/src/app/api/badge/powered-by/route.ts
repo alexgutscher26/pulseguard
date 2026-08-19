@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 
 /**
- * Serves a "Powered by PulseGuard" SVG badge.
+ * Serves a "Powered by SteadyStack" SVG badge.
  *
  * Query params:
  *   theme  — "dark" | "light"  (default: "dark")
@@ -23,12 +23,12 @@ export async function GET(request: NextRequest): Promise<Response> {
   const paddingX = isLg ? 10 : 7;
 
   const labelText = "POWERED BY";
-  const valueText = "PULSEGUARD";
+  const valueText = "STEADYSTACK";
   const labelWidth = isLg ? 70 : 56;
   const valueWidth = valueText.length * (isLg ? 6.8 : 5.8) + paddingX * 2;
   const totalWidth = labelWidth + valueWidth;
 
-  // Brand accent — electric cyan matches the PulseGuard primary
+  // Brand accent — electric cyan matches the SteadyStack primary
   const accent = "#22c55e";
 
   let svgContent: string;

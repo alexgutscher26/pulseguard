@@ -133,7 +133,7 @@ export function PublicView({
           <div className="bg-primary/5 border border-primary/20 p-4 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-bold uppercase tracking-wider text-primary rounded-sm shadow-[0_0_15px_-5px_rgba(var(--primary-page),0.3)]">
             <div className="flex items-center gap-2">
               <Sparkles className="size-4 animate-pulse" />
-              <span>PulseGuard Interactive Theme Demo ({theme.value})</span>
+              <span>SteadyStack Interactive Theme Demo ({theme.value})</span>
             </div>
             <a
               href="/showcase"
@@ -541,7 +541,7 @@ export function PublicView({
                       rel="noopener noreferrer"
                       className="text-primary font-bold hover:underline decoration-dotted underline-offset-4"
                     >
-                      PulseGuard
+                      SteadyStack
                     </a>
                   </p>
                 );

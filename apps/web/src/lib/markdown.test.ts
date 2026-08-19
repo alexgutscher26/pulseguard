@@ -9,8 +9,8 @@ describe("markdown utilities", () => {
         "consensus-across-50-regions-sub-second-latency",
       );
       expect(slugify("SLA 99.9% Uptime")).toBe("sla-999-uptime");
-      expect(slugify("PulseGuard vs. Better Stack: 2026 Comparison")).toBe(
-        "pulseguard-vs-better-stack-2026-comparison",
+      expect(slugify("SteadyStack vs. Better Stack: 2026 Comparison")).toBe(
+        "steadystack-vs-better-stack-2026-comparison",
       );
     });
   });

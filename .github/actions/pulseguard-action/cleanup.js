@@ -1,9 +1,9 @@
 const apiKey = process.env.INPUT_API_KEY;
-const apiUrl = process.env.INPUT_API_URL || "https://pulseguard.io";
+const apiUrl = process.env.INPUT_API_URL || "https://steadystack.dev";
 const transientMonitorId = process.env["STATE_transient-monitor-id"];
 
 if (!apiKey) {
-  console.log("PulseGuard API Key not found. Skipping cleanup.");
+  console.log("SteadyStack API Key not found. Skipping cleanup.");
   process.exit(0);
 }
 
@@ -20,19 +20,15 @@ async function run() {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${apiKey}`,
-      "User-Agent": "pulseguard-action/1.0.0",
+      "User-Agent": "steadystack-action/1.0.0",
     },
   });
 
   if (response.ok) {
-    console.log(
-      `Successfully deleted transient monitor: ${transientMonitorId}`,
-    );
+    console.log(`Successfully deleted transient monitor: ${transientMonitorId}`);
   } else {
     const text = await response.text();
-    console.error(
-      `Failed to delete transient monitor (${response.status}): ${text}`,
-    );
+    console.error(`Failed to delete transient monitor (${response.status}): ${text}`);
   }
 }
 

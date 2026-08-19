@@ -118,7 +118,7 @@ async function fetchBGPViewIP(ip: string): Promise<BGPViewIPResponse | null> {
     const response = await fetch(`https://api.bgpview.io/ip/${ip}`, {
       headers: {
         Accept: "application/json",
-        "User-Agent": "PulseGuard-BGP-Monitor/1.0",
+        "User-Agent": "SteadyStack-BGP-Monitor/1.0",
       },
       signal: AbortSignal.timeout(10000),
     });
@@ -134,7 +134,7 @@ async function fetchBGPViewPrefix(prefix: string): Promise<BGPViewPrefixResponse
     const response = await fetch(`https://api.bgpview.io/prefix/${prefix}`, {
       headers: {
         Accept: "application/json",
-        "User-Agent": "PulseGuard-BGP-Monitor/1.0",
+        "User-Agent": "SteadyStack-BGP-Monitor/1.0",
       },
       signal: AbortSignal.timeout(10000),
     });
@@ -153,7 +153,7 @@ async function fetchRIPEVisibility(ip: string): Promise<number | null> {
       {
         headers: {
           Accept: "application/json",
-          "User-Agent": "PulseGuard-BGP-Monitor/1.0",
+          "User-Agent": "SteadyStack-BGP-Monitor/1.0",
         },
         signal: AbortSignal.timeout(5000),
       },

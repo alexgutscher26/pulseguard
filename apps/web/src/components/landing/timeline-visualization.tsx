@@ -8,12 +8,12 @@ function IntervalBar({
   label,
   interval,
   color,
-  isPulseguard,
+  isSteadyStack,
 }: {
   label: string;
   interval: number;
   color: string;
-  isPulseguard: boolean;
+  isSteadyStack: boolean;
 }) {
   const maxInterval = 300;
   const widthPct = (interval / maxInterval) * 100;
@@ -22,10 +22,10 @@ function IntervalBar({
   return (
     <div className="flex items-center gap-4 group">
       <div className="w-32 shrink-0 flex items-center gap-2">
-        {isPulseguard && <Zap className="size-3 text-primary" />}
+        {isSteadyStack && <Zap className="size-3 text-primary" />}
         <span
           className={`text-xs font-mono font-bold ${
-            isPulseguard ? "text-primary" : "text-muted-foreground"
+            isSteadyStack ? "text-primary" : "text-muted-foreground"
           }`}
         >
           {label}
@@ -58,9 +58,9 @@ function DowntimeTimeline({ scenario }: { scenario: (typeof downtimeScenarios)[0
   const competitorGapEnd = Math.min(scenario.competitorDetect, scenario.recoveryStart);
   const competitorUndetectedMinutes = competitorGapEnd - competitorGapStart;
 
-  const pulseguardGapStart = Math.max(0, scenario.downtimeStart);
-  const pulseguardGapEnd = Math.min(scenario.pulseguardDetect, scenario.recoveryStart);
-  const pulseguardUndetectedMinutes = pulseguardGapEnd - pulseguardGapStart;
+  const steadystackGapStart = Math.max(0, scenario.downtimeStart);
+  const steadystackGapEnd = Math.min(scenario.steadystackDetect, scenario.recoveryStart);
+  const steadystackUndetectedMinutes = steadystackGapEnd - steadystackGapStart;
 
   return (
     <div className="border border-border/50 bg-black/20 p-4 md:p-6">
@@ -131,35 +131,35 @@ function DowntimeTimeline({ scenario }: { scenario: (typeof downtimeScenarios)[0
               </span>
             </div>
 
-            {/* PulseGuard detection bar */}
+            {/* SteadyStack detection bar */}
             <div className="absolute top-14 left-0 right-0 h-7">
               <div className="relative h-full">
                 {/* Undetected downtime */}
                 <div
                   className="absolute h-full bg-red-500/20 border-y border-red-500/30"
                   style={{
-                    left: `${pulseguardGapStart * scale}%`,
-                    width: `${pulseguardUndetectedMinutes * scale}%`,
+                    left: `${steadystackGapStart * scale}%`,
+                    width: `${steadystackUndetectedMinutes * scale}%`,
                   }}
                 />
                 {/* Detected downtime */}
                 <div
                   className="absolute h-full bg-primary/30 border-y border-primary/40"
                   style={{
-                    left: `${pulseguardGapEnd * scale}%`,
-                    width: `${Math.max(0, scenario.recoveryStart - pulseguardGapEnd) * scale}%`,
+                    left: `${steadystackGapEnd * scale}%`,
+                    width: `${Math.max(0, scenario.recoveryStart - steadystackGapEnd) * scale}%`,
                   }}
                 />
                 {/* Detection point */}
                 <div
                   className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 z-10"
-                  style={{ left: `${scenario.pulseguardDetect * scale}%` }}
+                  style={{ left: `${scenario.steadystackDetect * scale}%` }}
                 >
                   <div className="size-3 rounded-full bg-primary border-2 border-primary/30 animate-pulse" />
                 </div>
               </div>
               <span className="absolute -top-5 left-0 text-[9px] font-mono text-primary font-bold uppercase tracking-wider">
-                {scenario.pulseguardLabel}
+                {scenario.steadystackLabel}
               </span>
             </div>
           </div>
@@ -173,7 +173,7 @@ function DowntimeTimeline({ scenario }: { scenario: (typeof downtimeScenarios)[0
             <div className="flex items-center gap-1.5">
               <div className="size-2.5 bg-primary/30 border border-primary/40" />
               <span className="text-[9px] font-mono text-muted-foreground">
-                Detected early by PulseGuard
+                Detected early by SteadyStack
               </span>
             </div>
             <div className="flex items-center gap-1.5">
@@ -182,7 +182,9 @@ function DowntimeTimeline({ scenario }: { scenario: (typeof downtimeScenarios)[0
             </div>
             <div className="flex items-center gap-1.5">
               <div className="size-2.5 rounded-full bg-primary" />
-              <span className="text-[9px] font-mono text-muted-foreground">PulseGuard detects</span>
+              <span className="text-[9px] font-mono text-muted-foreground">
+                SteadyStack detects
+              </span>
             </div>
           </div>
         </div>
@@ -200,10 +202,10 @@ function DowntimeTimeline({ scenario }: { scenario: (typeof downtimeScenarios)[0
           </div>
           <div className="border border-primary/10 bg-primary/5 p-3">
             <span className="text-[9px] font-mono text-primary/70 uppercase tracking-wider">
-              {scenario.pulseguardLabel}
+              {scenario.steadystackLabel}
             </span>
             <p className="text-lg font-bold font-mono text-primary mt-1">
-              ~{pulseguardUndetectedMinutes}m
+              ~{steadystackUndetectedMinutes}m
             </p>
             <span className="text-[9px] font-mono text-primary/50">undetected downtime</span>
           </div>
@@ -224,10 +226,10 @@ export function IntervalComparison() {
       </div>
       <div className="flex flex-col gap-2">
         <IntervalBar
-          label="PulseGuard Free"
-          interval={intervalComparison.pulseguard.interval}
-          color={intervalComparison.pulseguard.color}
-          isPulseguard={true}
+          label="SteadyStack Free"
+          interval={intervalComparison.steadystack.interval}
+          color={intervalComparison.steadystack.color}
+          isSteadyStack={true}
         />
         {intervalComparison.competitors.map((c: any) => (
           <IntervalBar
@@ -235,12 +237,12 @@ export function IntervalComparison() {
             label={c.label}
             interval={c.interval}
             color={c.color}
-            isPulseguard={false}
+            isSteadyStack={false}
           />
         ))}
       </div>
       <p className="text-[10px] text-muted-foreground font-mono mt-1 leading-relaxed">
-        PulseGuard gives you{" "}
+        SteadyStack gives you{" "}
         <span className="text-primary font-bold">1-minute checks for free</span> — that&apos;s{" "}
         <span className="text-primary font-bold">400% faster</span> than the industry standard
         5-minute tier. Over 24 hours, you get{" "}
@@ -334,7 +336,7 @@ export function FeatureComparisonTable() {
                 Feature
               </th>
               <th className="text-center py-3 px-3 text-[10px] font-bold text-primary uppercase tracking-wider bg-primary/5 border-x border-border/30">
-                PulseGuard
+                SteadyStack
               </th>
               <th className="text-center py-3 px-3 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                 <a
@@ -388,9 +390,9 @@ export function FeatureComparisonTable() {
                   <span
                     className={`${
                       val.toLowerCase().includes("paid") &&
-                      !val.toLowerCase().includes("pulseguard")
+                      !val.toLowerCase().includes("steadystack")
                         ? "text-yellow-500/80"
-                        : val.toLowerCase().includes("pulseguard")
+                        : val.toLowerCase().includes("steadystack")
                           ? "text-primary font-bold"
                           : val === "false" || val === "—"
                             ? "text-muted-foreground/30"
@@ -420,7 +422,7 @@ export function FeatureComparisonTable() {
                     )}
                   </td>
                   <td className="py-2.5 px-3 text-center bg-primary/[0.03] border-x border-border/20">
-                    {renderCell(feature.pulseguard)}
+                    {renderCell(feature.steadystack)}
                   </td>
                   <td className="py-2.5 px-3 text-center">
                     {renderCell(feature.competitor1 ?? false)}
@@ -505,7 +507,7 @@ export function TimeSavingCalculator() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="border border-border/50 bg-black/20 p-4">
           <span className="text-[9px] font-mono text-primary/70 uppercase tracking-wider">
-            PulseGuard Free (1min)
+            SteadyStack Free (1min)
           </span>
           <p className="text-3xl font-bold font-mono text-primary mt-1">{dailyChecks}</p>
           <span className="text-[10px] font-mono text-muted-foreground">checks per day</span>
@@ -551,7 +553,7 @@ export function TimeSavingCalculator() {
       </div>
 
       <p className="text-[10px] text-muted-foreground font-mono leading-relaxed">
-        With PulseGuard&apos;s{" "}
+        With SteadyStack&apos;s{" "}
         <span className="text-primary font-bold">1-minute free interval</span>, you get{" "}
         <span className="text-primary font-bold">{extraPercent}% more data points</span> compared to
         the industry 5-minute standard. That&apos;s{" "}

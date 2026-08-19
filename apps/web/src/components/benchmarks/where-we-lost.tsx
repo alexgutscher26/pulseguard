@@ -21,7 +21,7 @@ export function WhereWeLost() {
             Radical Transparency
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
-            Where PulseGuard Lost
+            Where SteadyStack Lost
           </h2>
           <p className="text-muted-foreground text-sm max-w-2xl mt-3 leading-relaxed">
             Engineers don&apos;t trust benchmark studies that claim 100% wins across every
@@ -58,14 +58,14 @@ export function WhereWeLost() {
                   <p className="text-xs text-muted-foreground leading-relaxed">{loss.scenario}</p>
                 </div>
 
-                {/* Why PulseGuard Lost */}
+                {/* Why SteadyStack Lost */}
                 <div className="p-3.5 rounded-xl border border-border/70 bg-background/80 mb-4">
                   <span className="text-[10px] font-mono uppercase text-rose-400 font-bold tracking-wider block mb-1 flex items-center gap-1">
                     <TrendingDown className="size-3 text-rose-400" />
                     Why Competitor Won ({loss.competitorWinner}):
                   </span>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    {loss.whyPulseGuardLost}
+                    {loss.whySteadyStackLost}
                   </p>
                 </div>
 

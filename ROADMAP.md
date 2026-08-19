@@ -1,4 +1,4 @@
-# PulseGuard Public Roadmap 🗺️
+# SteadyStack Public Roadmap 🗺️
 
 > Our vision: **Edge-native, zero-false-positive operational intelligence for modern infrastructure.**
 > We believe in radical transparency, zero vendor lock-in, and treating self-hosters as first-class citizens.
@@ -38,7 +38,7 @@
 - [x] **PagerDuty & Opsgenie Multi-Channel Alerting**: Direct PagerDuty Events v2 & Atlassian Opsgenie API v2 (US & EU) with alert deduplication and recovery auto-closing.
 - [x] **Official HashiCorp Terraform Provider**: Monitoring-as-code provider for provisioning monitors, alert channels, and sovereign regions via Terraform Registry.
 - [x] **Prometheus Metrics Streamer & Grafana NOC Dashboard**: Expose `/api/v1/metrics/prometheus` for seamless integration into Grafana and Prometheus observability stacks.
-- [x] **PulseGuard Edge Preview GitHub Action**: Automated multi-region synthetic edge health verification and sticky PR comments on pull request preview deployments.
+- [x] **SteadyStack Edge Preview GitHub Action**: Automated multi-region synthetic edge health verification and sticky PR comments on pull request preview deployments.
 - [x] **One-Command Uptime Kuma Importer**:
   - CLI: `pulse import kuma backup.json`
   - Web: Instant drag-and-drop backup import with live dry-run preview table.
@@ -54,7 +54,7 @@
   - Declarative YAML/JSON browser test runner (login flows, cart checkout, token exchanges).
   - Headless Chromium execution with visual step-by-step failure screenshot diffs.
 - [ ] **OpenTelemetry (OTel) Native Ingestion**:
-  - Accept OpenTelemetry metrics, traces, and logs directly into PulseGuard edge receivers.
+  - Accept OpenTelemetry metrics, traces, and logs directly into SteadyStack edge receivers.
   - Prometheus remote-write compatibility (`/api/v1/write`).
 - [ ] **SAML 2.0 & Enterprise SSO**:
   - Okta, Google Workspace, Azure AD, and Keycloak single sign-on for organization accounts.
@@ -78,6 +78,6 @@
 
 We shape this roadmap based on community feedback.
 
-- Vote on upcoming features or pitch new ideas in [GitHub Discussions → Ideas](https://github.com/alexgutscher26/pulseguard/discussions/categories/ideas).
-- Report bugs via [GitHub Issues](https://github.com/alexgutscher26/pulseguard/issues).
-- Want to contribute? Check our [`good first issue`](https://github.com/alexgutscher26/pulseguard/labels/good%20first%20issue) label in [CONTRIBUTING.md](./CONTRIBUTING.md).
+- Vote on upcoming features or pitch new ideas in [GitHub Discussions → Ideas](https://github.com/getsteadystack/SteadyStack/discussions/categories/ideas).
+- Report bugs via [GitHub Issues](https://github.com/getsteadystack/SteadyStack/issues).
+- Want to contribute? Check our [`good first issue`](https://github.com/getsteadystack/SteadyStack/labels/good%20first%20issue) label in [CONTRIBUTING.md](./CONTRIBUTING.md).

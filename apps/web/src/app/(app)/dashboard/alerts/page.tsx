@@ -1,4 +1,4 @@
-import { auth } from "@pulseguard/auth";
+import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { NotificationChannels } from "@/components/alerts/notification-channels";

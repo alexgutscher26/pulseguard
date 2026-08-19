@@ -1,8 +1,8 @@
 import { describe, test, expect } from "bun:test";
-import { hashPassword, verifyPassword, signAuthToken, verifyAuthToken } from "@pulseguard/core";
+import { hashPassword, verifyPassword, signAuthToken, verifyAuthToken } from "@steadystack/core";
 
 describe("Status Page Security & Cryptographic Gate Tests (P0-SEC-01)", () => {
-  const secretKey = "pulseguard-test-secret-key-32chars-minimum-safe-entropy";
+  const secretKey = "steadystack-test-secret-key-32chars-minimum-safe-entropy";
   const pageId = "page_cm7890123456789";
 
   test("status page password is hashed and verified securely", async () => {

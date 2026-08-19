@@ -210,7 +210,7 @@ export default function ResetPasswordClient() {
   return (
     <AuthLayout
       title="Set New Password"
-      subtitle="Enter a new password for your PulseGuard account"
+      subtitle="Enter a new password for your SteadyStack account"
     >
       <Suspense fallback={<Loader />}>
         <ResetPasswordFormContent />

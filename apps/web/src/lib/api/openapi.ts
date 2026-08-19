@@ -1,5 +1,5 @@
 /**
- * OpenAPI 3.1 document for the PulseGuard REST API.
+ * OpenAPI 3.1 document for the SteadyStack REST API.
  *
  * Hand-maintained against the route handlers in `src/app/api`. Served
  * interactively at /docs/api (Scalar) and as JSON at /docs/api/openapi.json.
@@ -7,9 +7,9 @@
 export const openApiSpec = {
   openapi: "3.1.0",
   info: {
-    title: "PulseGuard API",
+    title: "SteadyStack API",
     description:
-      "REST API for PulseGuard — uptime monitoring, status pages, incidents, and CI/CD gates.\n\n" +
+      "REST API for SteadyStack — uptime monitoring, status pages, incidents, and CI/CD gates.\n\n" +
       "## Authentication\n\n" +
       "Most endpoints under `/api/cli/*` use API keys created in the dashboard or via " +
       "`POST /api/cli/api-keys`. Send the key in the `Authorization` header:\n\n" +
@@ -17,9 +17,9 @@ export const openApiSpec = {
       "Keys are scoped (`read` / `write`). Write-scoped operations return 403 when the key " +
       "only has `read`. Public endpoints (badges, widgets, feeds, status pages) need no auth.",
     version: "1.0.0",
-    contact: { url: "https://github.com/alexgutscher26/pulseguard" },
+    contact: { url: "https://github.com/getsteadystack/SteadyStack" },
   },
-  servers: [{ url: "/", description: "Same origin (self-hosted or pulseguard.com)" }],
+  servers: [{ url: "/", description: "Same origin (self-hosted or steadystack.dev)" }],
   tags: [
     {
       name: "Monitors",

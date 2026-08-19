@@ -86,7 +86,7 @@ export function IntegrationsManager() {
 
   useEffect(() => {
     if (activeProvider) {
-      const savedToken = localStorage.getItem(`pulseguard_token_${activeProvider}`);
+      const savedToken = localStorage.getItem(`steadystack_token_${activeProvider}`);
       if (savedToken) {
         setToken(savedToken);
         setHasSavedToken(true);
@@ -109,7 +109,7 @@ export function IntegrationsManager() {
 
   const handleClearToken = () => {
     if (activeProvider) {
-      localStorage.removeItem(`pulseguard_token_${activeProvider}`);
+      localStorage.removeItem(`steadystack_token_${activeProvider}`);
       setToken("");
       setHasSavedToken(false);
       toast.success("Saved credentials cleared successfully");
@@ -282,7 +282,7 @@ export function IntegrationsManager() {
 
         // Save the valid token in localStorage
         if (token && token !== "db" && activeProvider) {
-          localStorage.setItem(`pulseguard_token_${activeProvider}`, token);
+          localStorage.setItem(`steadystack_token_${activeProvider}`, token);
           setHasSavedToken(true);
         }
       } else {
@@ -345,7 +345,7 @@ export function IntegrationsManager() {
           Zero-Code Integrations
         </h2>
         <p className="text-xs text-muted-foreground">
-          Import websites, repos, and cloud deployments automatically. PulseGuard connects directly
+          Import websites, repos, and cloud deployments automatically. SteadyStack connects directly
           to your providers.
         </p>
       </div>
@@ -597,7 +597,7 @@ export function IntegrationsManager() {
                           </label>
                           <p className="text-[10px] text-muted-foreground leading-relaxed">
                             Create a token in your Vercel Account Settings and paste it below.
-                            PulseGuard will persistently link your personal account and all
+                            SteadyStack will persistently link your personal account and all
                             accessible teams to your database account.
                           </p>
                           <div className="flex gap-2">
@@ -691,7 +691,7 @@ export function IntegrationsManager() {
                           </label>
                           <p className="text-[10px] text-muted-foreground leading-relaxed">
                             Create a Personal Access Token in your Netlify User Settings and paste
-                            it below. PulseGuard will persistently link your site index to your
+                            it below. SteadyStack will persistently link your site index to your
                             database account.
                           </p>
                           <div className="flex gap-2">
@@ -785,8 +785,8 @@ export function IntegrationsManager() {
                           </label>
                           <p className="text-[10px] text-muted-foreground leading-relaxed">
                             Create a Personal Access Token (PAT) with `repo` scope in your GitHub
-                            Developer Settings and paste it below. PulseGuard will persistently link
-                            your repository targets to your database account.
+                            Developer Settings and paste it below. SteadyStack will persistently
+                            link your repository targets to your database account.
                           </p>
                           <div className="flex gap-2">
                             <Input

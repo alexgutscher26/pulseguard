@@ -40,7 +40,7 @@ export async function checkSSL(targetUrl: string): Promise<SSLResult> {
   try {
     response = await fetch(url, {
       method: "HEAD",
-      headers: { "User-Agent": "PulseGuard-SSL-Check/1.0" },
+      headers: { "User-Agent": "SteadyStack-SSL-Check/1.0" },
       signal: AbortSignal.timeout(10000), // 10s timeout
     });
   } catch (err: any) {
@@ -56,7 +56,7 @@ export async function checkSSL(targetUrl: string): Promise<SSLResult> {
   let certData: any = null;
   try {
     apiResponse = await fetch(`https://networkcalc.com/api/security/certificate/${domain}`, {
-      headers: { "User-Agent": "PulseGuard-Worker/1.0" },
+      headers: { "User-Agent": "SteadyStack-Worker/1.0" },
       signal: AbortSignal.timeout(10000),
     });
 

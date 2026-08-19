@@ -1,4 +1,4 @@
-module github.com/alexgutscher26/pulseguard/terraform-provider-pulseguard
+module github.com/getsteadystack/SteadyStack/terraform-provider-steadystack
 
 go 1.22.0
 

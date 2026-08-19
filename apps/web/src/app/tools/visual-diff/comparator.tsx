@@ -34,7 +34,7 @@ const MOCK_ASSETS = {
     after:
       "https://images.unsplash.com/photo-1542744094-3a31f272c490?q=80&w=1200&auto=format&fit=crop",
   },
-  "pulseguard.ai": {
+  "steadystack.ai": {
     before:
       "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1200&auto=format&fit=crop",
     after:
@@ -94,11 +94,11 @@ export function VisualDiffComparator() {
   // Mock URLs (Demo)
   const imgA = url1.includes("google")
     ? MOCK_ASSETS["google.com"].before
-    : MOCK_ASSETS["pulseguard.ai"].before;
+    : MOCK_ASSETS["steadystack.ai"].before;
   const imgB =
     url2 || url1.includes("google")
       ? MOCK_ASSETS["google.com"].after
-      : MOCK_ASSETS["pulseguard.ai"].after;
+      : MOCK_ASSETS["steadystack.ai"].after;
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto">
@@ -390,7 +390,7 @@ export function VisualDiffComparator() {
                 onClick={() => {
                   const link = document.createElement("a");
                   link.href = imgB;
-                  link.download = `pulseguard-evidence-${new Date().getTime()}.jpg`;
+                  link.download = `steadystack-evidence-${new Date().getTime()}.jpg`;
                   document.body.appendChild(link);
                   link.click();
                   document.body.removeChild(link);

@@ -12,7 +12,7 @@ import { LayoutTemplate } from "lucide-react";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Incidents | PulseGuard",
+  title: "Incidents | SteadyStack",
   description: "Manage system incidents",
 };
 

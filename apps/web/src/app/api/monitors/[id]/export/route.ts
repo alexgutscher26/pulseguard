@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@pulseguard/auth";
-import prisma from "@pulseguard/db";
+import { auth } from "@steadystack/auth";
+import prisma from "@steadystack/db";
 import { headers } from "next/headers";
 
 export async function GET(req: NextRequest, context: { params: Promise<{ id: string }> }) {

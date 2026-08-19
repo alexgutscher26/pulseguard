@@ -1,5 +1,5 @@
 {
-  "name": "@pulseguard/infra",
+  "name": "@steadystack/infra",
   "private": true,
   "type": "module",
   "scripts": {
@@ -12,7 +12,7 @@
     "dotenv": "catalog:"
   },
   "devDependencies": {
-    "@pulseguard/config": "workspace:*",
+    "@steadystack/config": "workspace:*",
     "alchemy": "catalog:",
     "typescript": "catalog:"
   }

@@ -12,13 +12,13 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Changelog — PulseGuard Platform Releases & Updates",
+  title: "Changelog — SteadyStack Platform Releases & Updates",
   description:
-    "Explore the latest features, edge consensus engine improvements, CLI updates, and bug fixes shipped in PulseGuard.",
+    "Explore the latest features, edge consensus engine improvements, CLI updates, and bug fixes shipped in SteadyStack.",
   openGraph: {
-    title: "PulseGuard Changelog — Edge-Native Monitoring Releases",
+    title: "SteadyStack Changelog — Edge-Native Monitoring Releases",
     description:
-      "Continuous updates to the PulseGuard edge monitoring platform, CLI tools, and self-hosted infrastructure.",
+      "Continuous updates to the SteadyStack edge monitoring platform, CLI tools, and self-hosted infrastructure.",
   },
 };
 
@@ -120,7 +120,7 @@ const CHANGELOG_DATA: ChangelogEntry[] = [
         category: "CLI",
         title: "One-Command Uptime Kuma Importer (pulse import kuma)",
         description:
-          "Instantly migrate entire monitor fleets, intervals, custom headers, and alert triggers from Uptime Kuma backup JSON files into PulseGuard via CLI or Web Dashboard.",
+          "Instantly migrate entire monitor fleets, intervals, custom headers, and alert triggers from Uptime Kuma backup JSON files into SteadyStack via CLI or Web Dashboard.",
       },
       {
         category: "Feature",
@@ -180,11 +180,11 @@ const CHANGELOG_DATA: ChangelogEntry[] = [
   {
     version: "v1.0.0",
     date: "June 2026",
-    title: "PulseGuard Public Release",
+    title: "SteadyStack Public Release",
     badge: "Initial Release",
     badgeColor: "bg-muted text-muted-foreground border-border",
     description:
-      "The initial open-source release of PulseGuard: 16 monitor types, real-time WebSocket dashboard via Cloudflare Durable Objects, multi-channel alerting, and public status pages.",
+      "The initial open-source release of SteadyStack: 16 monitor types, real-time WebSocket dashboard via Cloudflare Durable Objects, multi-channel alerting, and public status pages.",
     highlights: [
       {
         category: "Feature",
@@ -220,15 +220,15 @@ export default function ChangelogPage() {
             Product Releases & Updates
           </div>
           <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-foreground">
-            What&apos;s New in PulseGuard
+            What&apos;s New in SteadyStack
           </h1>
           <p className="text-muted-foreground text-sm max-w-xl leading-relaxed">
             Follow the latest engine improvements, CLI features, edge consensus upgrades, and
-            open-source releases shipped by the PulseGuard team.
+            open-source releases shipped by the SteadyStack team.
           </p>
           <div className="flex items-center gap-3 pt-2">
             <Link
-              href="https://github.com/alexgutscher26/pulseguard/releases"
+              href="https://github.com/getsteadystack/SteadyStack/releases"
               target="_blank"
               className="inline-flex items-center gap-2 px-4 py-2 text-xs font-mono font-bold rounded-lg border border-border bg-muted/30 hover:bg-muted text-foreground transition-all"
             >
@@ -236,7 +236,7 @@ export default function ChangelogPage() {
               GitHub Releases
             </Link>
             <Link
-              href="https://github.com/alexgutscher26/pulseguard/blob/master/docs/self-hosted.md"
+              href="https://github.com/getsteadystack/SteadyStack/blob/master/docs/self-hosted.md"
               target="_blank"
               className="inline-flex items-center gap-2 px-4 py-2 text-xs font-mono font-bold rounded-lg border border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 transition-all"
             >
@@ -305,7 +305,7 @@ export default function ChangelogPage() {
       {/* CTA Footer */}
       <section className="py-16 border-t border-border bg-muted/[0.1]">
         <div className="max-w-4xl mx-auto px-6 text-center space-y-4">
-          <h3 className="text-2xl font-bold text-foreground">Ready to test PulseGuard?</h3>
+          <h3 className="text-2xl font-bold text-foreground">Ready to test SteadyStack?</h3>
           <p className="text-xs text-muted-foreground max-w-md mx-auto">
             Self-host the full stack on Docker or start free with 60-second checks across 7 global
             edge regions.
@@ -321,7 +321,7 @@ export default function ChangelogPage() {
               href="/vs/uptime-kuma"
               className="inline-flex items-center px-5 py-2.5 border border-border text-foreground font-semibold text-xs rounded-lg hover:border-primary/40 transition-all font-mono"
             >
-              PulseGuard vs Uptime Kuma
+              SteadyStack vs Uptime Kuma
             </Link>
           </div>
         </div>

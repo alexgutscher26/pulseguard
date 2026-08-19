@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 import React from "react";
-import { env } from "@pulseguard/env/server";
+import { env } from "@steadystack/env/server";
 import type { PasswordResetEmailData } from "./templates/password-reset";
 
 // ============================================================================
@@ -97,15 +97,15 @@ export * from "./styles/theme";
 // ============================================================================
 
 export const EMAIL_SENDERS = {
-  alerts: "PulseGuard <alerts@steadystack.dev>",
-  auth: "PulseGuard <auth@steadystack.dev>",
-  billing: "PulseGuard Billing <billing@steadystack.dev>",
-  general: "PulseGuard <hello@steadystack.dev>",
-  reports: "PulseGuard <reports@steadystack.dev>",
-  status: "PulseGuard <status@steadystack.dev>",
-  teams: "PulseGuard Teams <invitations@steadystack.dev>",
-  updates: "PulseGuard <updates@steadystack.dev>",
-  verify: "PulseGuard <verify@steadystack.dev>",
+  alerts: "SteadyStack <alerts@steadystack.dev>",
+  auth: "SteadyStack <auth@steadystack.dev>",
+  billing: "SteadyStack Billing <billing@steadystack.dev>",
+  general: "SteadyStack <hello@steadystack.dev>",
+  reports: "SteadyStack <reports@steadystack.dev>",
+  status: "SteadyStack <status@steadystack.dev>",
+  teams: "SteadyStack Teams <invitations@steadystack.dev>",
+  updates: "SteadyStack <updates@steadystack.dev>",
+  verify: "SteadyStack <verify@steadystack.dev>",
 } as const;
 
 // ============================================================================
@@ -180,7 +180,7 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
       console.log(`==================================================\n`);
       return { id: "dev-mock-email-id" };
     }
-    throw new Error("[PulseGuard Email] RESEND_API_KEY is not configured. Email cannot be sent.");
+    throw new Error("[SteadyStack Email] RESEND_API_KEY is not configured. Email cannot be sent.");
   }
 
   try {
@@ -206,11 +206,11 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
     }
 
     const errorMessage = result.error?.message || "Failed to send email";
-    console.error(`[PulseGuard Email] Error sending to ${to}:`, errorMessage);
+    console.error(`[SteadyStack Email] Error sending to ${to}:`, errorMessage);
     return { error: errorMessage };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "Unknown email error";
-    console.error(`[PulseGuard Email] Exception sending to ${to}:`, error);
+    console.error(`[SteadyStack Email] Exception sending to ${to}:`, error);
     return { error: errorMessage };
   }
 }
@@ -286,7 +286,7 @@ export async function sendWelcomeEmail(
     to,
     from: EMAIL_SENDERS.general,
     replyTo: "hello@steadystack.dev",
-    subject: "Welcome to PulseGuard - Your Monitors Await",
+    subject: "Welcome to SteadyStack - Your Monitors Await",
     html,
     text,
     apiKey,
@@ -304,7 +304,7 @@ export async function sendVerificationEmail(
   return sendEmail({
     to,
     from: EMAIL_SENDERS.verify,
-    subject: "Verify Your Email - PulseGuard",
+    subject: "Verify Your Email - SteadyStack",
     html,
     apiKey,
   });
@@ -321,7 +321,7 @@ export async function sendPasswordResetEmail(
   return sendEmail({
     to,
     from: EMAIL_SENDERS.auth,
-    subject: "🔑 Reset Your Password - PulseGuard",
+    subject: "🔑 Reset Your Password - SteadyStack",
     html,
     apiKey,
   });
@@ -417,7 +417,7 @@ export async function sendMonthlyReport(
     html: `<p>Please find attached your monthly performance report for <strong>${monthName}</strong>.</p>`,
     attachments: [
       {
-        filename: `PulseGuard-Report-${monthName}.pdf`,
+        filename: `SteadyStack-Report-${monthName}.pdf`,
         content: pdfBuffer,
       },
     ],
@@ -435,7 +435,7 @@ export async function sendUsageLimitWarning(
     userName: data.userName,
     planName: data.planName,
     warnings: data.warnings,
-    upgradeUrl: data.upgradeUrl ?? "https://pulseguard.io/dashboard/settings?tab=billing",
+    upgradeUrl: data.upgradeUrl ?? "https://steadystack.dev/dashboard/settings?tab=billing",
   });
 
   return sendEmail({
@@ -459,13 +459,13 @@ export async function sendDunningNotice(
     amountDue: data.amountDue,
     failureReason: data.failureReason ?? "Card declined",
     billingPortalUrl:
-      data.billingPortalUrl ?? "https://pulseguard.io/dashboard/settings?tab=billing",
+      data.billingPortalUrl ?? "https://steadystack.dev/dashboard/settings?tab=billing",
   });
 
   return sendEmail({
     to,
     from: EMAIL_SENDERS.billing,
-    subject: "⚠️ Payment Failed: Action Required for Your PulseGuard Subscription",
+    subject: "⚠️ Payment Failed: Action Required for Your SteadyStack Subscription",
     html,
     apiKey,
   });
@@ -482,7 +482,7 @@ export async function sendTeamInvitationEmail(
   return sendEmail({
     to,
     from: EMAIL_SENDERS.teams,
-    subject: `👋 You've been invited to join ${data.organizationName} on PulseGuard`,
+    subject: `👋 You've been invited to join ${data.organizationName} on SteadyStack`,
     html,
     apiKey,
   });

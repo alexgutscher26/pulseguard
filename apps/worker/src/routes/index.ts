@@ -80,5 +80,5 @@ export async function handleFetch(
     return new Response(null, { headers: getCorsHeaders(env) });
   }
 
-  return new Response("PulseGuard Worker is Running", { status: 200 });
+  return new Response("SteadyStack Worker is Running", { status: 200 });
 }

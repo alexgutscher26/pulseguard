@@ -45,7 +45,7 @@ export function ReferralForm() {
   const handleShareTwitter = () => {
     if (!summary?.referralLink) return;
     const text = encodeURIComponent(
-      `Join me on PulseGuard for real-time Cloudflare-edge API & web monitoring! Get an extended trial using my referral link: ${summary.referralLink}`,
+      `Join me on SteadyStack for real-time Cloudflare-edge API & web monitoring! Get an extended trial using my referral link: ${summary.referralLink}`,
     );
     window.open(`https://twitter.com/intent/tweet?text=${text}`, "_blank");
   };
@@ -58,9 +58,9 @@ export function ReferralForm() {
 
   const handleShareEmail = () => {
     if (!summary?.referralLink) return;
-    const subject = encodeURIComponent("Try PulseGuard Cloud Monitoring");
+    const subject = encodeURIComponent("Try SteadyStack Cloud Monitoring");
     const body = encodeURIComponent(
-      `Hey!\n\nI'm using PulseGuard for global endpoint monitoring. Sign up with my link to get full Pro features: ${summary.referralLink}\n\nCheers!`,
+      `Hey!\n\nI'm using SteadyStack for global endpoint monitoring. Sign up with my link to get full Pro features: ${summary.referralLink}\n\nCheers!`,
     );
     window.open(`mailto:?subject=${subject}&body=${body}`, "_blank");
   };
@@ -82,7 +82,7 @@ export function ReferralForm() {
           <div className="space-y-1">
             <div className="flex items-center gap-3">
               <span className="font-mono text-xs uppercase tracking-widest text-cyan-400 font-semibold">
-                PulseGuard Partner Network
+                SteadyStack Partner Network
               </span>
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
                 <Gift className="size-3" />

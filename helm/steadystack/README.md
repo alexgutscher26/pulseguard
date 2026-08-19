@@ -1,34 +1,34 @@
-# PulseGuard Helm Chart
+# SteadyStack Helm Chart
 
-Helm chart for self-hosting the [PulseGuard](https://github.com/alexgutscher26/pulseguard) web dashboard on Kubernetes.
+Helm chart for self-hosting the [SteadyStack](https://github.com/getsteadystack/SteadyStack) web dashboard on Kubernetes.
 
 ## Prerequisites
 
 - Kubernetes 1.25+
 - [Helm](https://helm.sh/) 3.14+
-- The PulseGuard web image `ghcr.io/alexgutscher26/pulseguard-web` (pushed on every release)
-- An external PulseGuard Worker (Cloudflare) and the matching `probeSecret` — the web dashboard and probe communicate through it
+- The SteadyStack web image `ghcr.io/getsteadystack/SteadyStack-web` (pushed on every release)
+- An external SteadyStack Worker (Cloudflare) and the matching `probeSecret` — the web dashboard and probe communicate through it
 
 ## Install
 
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
-helm dependency build helm/pulseguard
+helm dependency build helm/steadystack
 
-helm install pulseguard helm/pulseguard \
-  --namespace pulseguard --create-namespace \
+helm install steadystack helm/steadystack \
+  --namespace steadystack --create-namespace \
   --set secrets.betterAuthSecret=$(openssl rand -base64 48) \
-  --set secrets.betterAuthUrl=https://pulseguard.yourdomain.com \
-  --set secrets.nextPublicAppUrl=https://pulseguard.yourdomain.com \
-  --set secrets.corsOrigin=https://pulseguard.yourdomain.com \
+  --set secrets.betterAuthUrl=https://steadystack.yourdomain.com \
+  --set secrets.nextPublicAppUrl=https://steadystack.yourdomain.com \
+  --set secrets.corsOrigin=https://steadystack.yourdomain.com \
   --set secrets.probeSecret=$(openssl rand -hex 32) \
-  --set ingress.hosts[0].host=pulseguard.yourdomain.com \
-  --set ingress.tls[0].hosts[0]=pulseguard.yourdomain.com \
-  --set ingress.tls[0].secretName=pulseguard-tls \
+  --set ingress.hosts[0].host=steadystack.yourdomain.com \
+  --set ingress.tls[0].hosts[0]=steadystack.yourdomain.com \
+  --set ingress.tls[0].secretName=steadystack-tls \
   --set postgresql.auth.password=$(openssl rand -base64 24)
 ```
 
-After install, run the database migrations (see the `helm install` output) and `helm test pulseguard -n pulseguard`.
+After install, run the database migrations (see the `helm install` output) and `helm test steadystack -n steadystack`.
 
 ## Configuration
 
@@ -40,7 +40,7 @@ The chart bundles a PostgreSQL subchart (Bitnami). When `secrets.databaseUrl` / 
 | ---------------------------------------- | -------------------------------------------------------- | --------------------------------------- |
 | `web.enabled`                            | Deploy the web dashboard                                 | `true`                                  |
 | `web.replicaCount`                       | Web replicas                                             | `2`                                     |
-| `web.image.repository` / `web.image.tag` | Web image; tag defaults to `appVersion`                  | `ghcr.io/alexgutscher26/pulseguard-web` |
+| `web.image.repository` / `web.image.tag` | Web image; tag defaults to `appVersion`                  | `ghcr.io/getsteadystack/SteadyStack-web` |
 | `web.autoscaling.enabled`                | Enable HPA                                               | `false`                                 |
 | `probe.enabled`                          | Deploy a private probe pointing at your Worker           | `false`                                 |
 | `probe.config.apiUrl`                    | Worker URL the probe reports to                          | `https://worker.yourdomain.com`         |
@@ -64,16 +64,16 @@ Use a secret manager (ExternalSecrets, Sealed Secrets, Vault) in production inst
 ### External database
 
 ```bash
-helm install pulseguard helm/pulseguard \
+helm install steadystack helm/steadystack \
   --set postgresql.enabled=false \
-  --set secrets.databaseUrl=postgresql://user:pass@db.example.com:5432/pulseguard \
-  --set secrets.directUrl=postgresql://user:pass@db.example.com:5432/pulseguard
+  --set secrets.databaseUrl=postgresql://user:pass@db.example.com:5432/steadystack \
+  --set secrets.directUrl=postgresql://user:pass@db.example.com:5432/steadystack
 ```
 
 ### Private probe
 
 ```bash
-helm install pulseguard helm/pulseguard \
+helm install steadystack helm/steadystack \
   --set probe.enabled=true \
   --set probe.config.apiUrl=https://worker.yourdomain.com \
   --set secrets.probeSecret=<token shared with your Worker>
@@ -92,8 +92,8 @@ bunx prisma migrate deploy --schema packages/db/prisma/schema/schema.prisma
 
 ```bash
 helm repo update
-helm dependency update helm/pulseguard
-helm upgrade pulseguard helm/pulseguard --namespace pulseguard
+helm dependency update helm/steadystack
+helm upgrade steadystack helm/steadystack --namespace steadystack
 ```
 
 The web deployment rolls automatically when the secret content changes (via a `checksum/secret` annotation).
@@ -101,7 +101,7 @@ The web deployment rolls automatically when the secret content changes (via a `c
 ## Uninstall
 
 ```bash
-helm uninstall pulseguard --namespace pulseguard
+helm uninstall steadystack --namespace steadystack
 ```
 
 > Note: PVCs for the bundled PostgreSQL are not deleted by default. Remove them with `kubectl delete pvc` if you intend to destroy the data.

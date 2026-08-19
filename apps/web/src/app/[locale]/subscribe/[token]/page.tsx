@@ -85,7 +85,7 @@ export default async function VerifySubscriptionPage({ params }: VerifyPageProps
             rel="noopener noreferrer"
             className="text-primary hover:underline decoration-dotted underline-offset-4 font-bold"
           >
-            PulseGuard
+            SteadyStack
           </a>
         </p>
       </div>

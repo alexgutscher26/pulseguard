@@ -30,7 +30,7 @@
     "VERCEL_CLIENT_ID",
     "VERCEL_CLIENT_SECRET",
     "VERCEL_REDIRECT_URI",
-    "PULSEGUARD_WORKER_URL",
+    "STEADYSTACK_WORKER_URL",
     "ALLOWED_DEV_ORIGINS",
     "DEADMAN_SNITCH_URL",
     "HEALTHCHECK_PING_URL",
@@ -52,7 +52,7 @@
   },
   "tasks": {
     "build": {
-      "dependsOn": ["^build", "@pulseguard/db#db:generate"],
+      "dependsOn": ["^build", "@steadystack/db#db:generate"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },

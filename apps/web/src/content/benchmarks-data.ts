@@ -1,7 +1,7 @@
 /**
  * 30-Day False-Positive Benchmark Study Data
  * Evaluated June 1, 2026 00:00:00 UTC - June 30, 2026 23:59:59 UTC
- * PulseGuard (4-of-7 Edge Quorum) vs UptimeRobot (Sequential Retry) vs Pingdom (Double-Check Poller)
+ * SteadyStack (4-of-7 Edge Quorum) vs UptimeRobot (Sequential Retry) vs Pingdom (Double-Check Poller)
  */
 
 export interface BenchmarkEndpoint {
@@ -37,7 +37,7 @@ export interface IncidentRecord {
   failureTypeLabel: string;
   durationSeconds: number;
   groundTruthDown: boolean;
-  pulseguard: {
+  steadystack: {
     alertTriggered: boolean;
     consensusState: "VERIFIED_DOWN" | "QUORUM_REJECTED" | "DEGRADED_REGIONAL_NOISE";
     regionsFailed: number;
@@ -86,7 +86,7 @@ export interface LossAnalysis {
   competitorWinner: "Pingdom" | "UptimeRobot";
   delta: string;
   scenario: string;
-  whyPulseGuardLost: string;
+  whySteadyStackLost: string;
   whyWeAcceptThisTradeoff: string;
   engineeringTakeaway: string;
 }
@@ -103,14 +103,14 @@ export const BENCHMARK_METADATA = {
   endpointsCount: 10,
   groundTruthAuditHashSha256: "5d3bb3fa22e8a7672a023bf022ac46db4cf96d9c2ea5689f2de2d26cd88f1652",
   citationMarkdown:
-    "PulseGuard Research Team. (2026). *The False-Positive Benchmark Study: Measuring Spurious On-Call Alerts Across Edge Consensus vs Single-Probe Monitoring (30 Days, 1.29M Probes)*. https://pulseguard.io/benchmarks/false-positives",
+    "SteadyStack Research Team. (2026). *The False-Positive Benchmark Study: Measuring Spurious On-Call Alerts Across Edge Consensus vs Single-Probe Monitoring (30 Days, 1.29M Probes)*. https://steadystack.dev/benchmarks/false-positives",
 };
 
 export const BENCHMARK_ENDPOINTS: BenchmarkEndpoint[] = [
   {
     id: "ep-1",
     name: "Edge API Gateway",
-    url: "https://edge-api.pulseguard-bench.net/v1/health",
+    url: "https://edge-api.steadystack-bench.net/v1/health",
     provider: "Cloudflare Edge",
     protocol: "HTTPS / HTTP/2",
     purpose: "Tests Anycast routing, edge micro-bursts, and sub-100ms global response times.",
@@ -119,7 +119,7 @@ export const BENCHMARK_ENDPOINTS: BenchmarkEndpoint[] = [
   {
     id: "ep-2",
     name: "AWS Monolith Ingress",
-    url: "https://us-east.pulseguard-bench.net/status",
+    url: "https://us-east.steadystack-bench.net/status",
     provider: "AWS us-east-1",
     protocol: "HTTPS / TLS 1.3",
     purpose: "Tests centralized VM ingress under standard North American tier-1 ISP transit.",
@@ -128,7 +128,7 @@ export const BENCHMARK_ENDPOINTS: BenchmarkEndpoint[] = [
   {
     id: "ep-3",
     name: "Hetzner Bare Metal",
-    url: "https://eu-central.pulseguard-bench.net/ping",
+    url: "https://eu-central.steadystack-bench.net/ping",
     provider: "Hetzner Frankfurt",
     protocol: "HTTPS / TLS 1.3",
     purpose: "Tests dedicated European bare metal compute with strict TCP windowing.",
@@ -137,7 +137,7 @@ export const BENCHMARK_ENDPOINTS: BenchmarkEndpoint[] = [
   {
     id: "ep-4",
     name: "Asia-Pacific Fly.io Node",
-    url: "https://asia-south.pulseguard-bench.net/alive",
+    url: "https://asia-south.steadystack-bench.net/alive",
     provider: "Fly.io Singapore",
     protocol: "HTTPS / HTTP/2",
     purpose: "Tests trans-Pacific and intra-Asia submarine cable latency variance.",
@@ -146,7 +146,7 @@ export const BENCHMARK_ENDPOINTS: BenchmarkEndpoint[] = [
   {
     id: "ep-5",
     name: "BGP Route Flapping Injector",
-    url: "https://flapping-route.pulseguard-bench.net/check",
+    url: "https://flapping-route.steadystack-bench.net/check",
     provider: "AWS us-west-2",
     protocol: "HTTPS / TLS 1.3",
     purpose: "Simulates controlled 8-15 second single-AS route withdrawal every 48 hours.",
@@ -155,7 +155,7 @@ export const BENCHMARK_ENDPOINTS: BenchmarkEndpoint[] = [
   {
     id: "ep-6",
     name: "Dynamic Geo-DNS Endpoint",
-    url: "https://geo-dns-split.pulseguard-bench.net/resolve",
+    url: "https://geo-dns-split.steadystack-bench.net/resolve",
     provider: "AWS us-east-1",
     protocol: "Geo-DNS / HTTPS",
     purpose:
@@ -165,7 +165,7 @@ export const BENCHMARK_ENDPOINTS: BenchmarkEndpoint[] = [
   {
     id: "ep-7",
     name: "Micro-Drop Transient Simulator",
-    url: "https://micro-drop.pulseguard-bench.net/transient",
+    url: "https://micro-drop.steadystack-bench.net/transient",
     provider: "GCP us-central1",
     protocol: "HTTPS / HTTP/2",
     purpose: "Injects controlled 200ms HTTP 503 transient drop bursts once daily.",
@@ -174,7 +174,7 @@ export const BENCHMARK_ENDPOINTS: BenchmarkEndpoint[] = [
   {
     id: "ep-8",
     name: "Strict SNI / TLS Handshake",
-    url: "https://tls-sni-strict.pulseguard-bench.net/verify",
+    url: "https://tls-sni-strict.steadystack-bench.net/verify",
     provider: "Hetzner Frankfurt",
     protocol: "HTTPS / TLS 1.3",
     purpose: "Tests TLS 1.3 0-RTT session resumption failures and cipher negotiation quirks.",
@@ -183,7 +183,7 @@ export const BENCHMARK_ENDPOINTS: BenchmarkEndpoint[] = [
   {
     id: "ep-9",
     name: "Chunked Stream Payload",
-    url: "https://chunked-stream.pulseguard-bench.net/stream",
+    url: "https://chunked-stream.steadystack-bench.net/stream",
     provider: "Cloudflare Edge",
     protocol: "HTTPS / Chunked Stream",
     purpose: "Tests 5MB chunked transfer encoding with occasional trailing byte delays.",
@@ -192,7 +192,7 @@ export const BENCHMARK_ENDPOINTS: BenchmarkEndpoint[] = [
   {
     id: "ep-10",
     name: "Scheduled True Downtime Target",
-    url: "https://scheduled-downtime.pulseguard-bench.net/healthz",
+    url: "https://scheduled-downtime.steadystack-bench.net/healthz",
     provider: "AWS us-east-1",
     protocol: "HTTPS / TLS 1.3",
     purpose:
@@ -203,7 +203,7 @@ export const BENCHMARK_ENDPOINTS: BenchmarkEndpoint[] = [
 
 export const PROVIDER_SUMMARIES: ProviderBenchmarkSummary[] = [
   {
-    providerName: "PulseGuard",
+    providerName: "SteadyStack",
     logoBadge: "PG Edge Quorum (4-of-7)",
     totalChecks: 432000,
     trueOutagesEvaluated: 4,
@@ -267,8 +267,8 @@ export const WHERE_WE_LOST_ANALYSIS: LossAnalysis[] = [
     delta: "+910ms slower to dispatch",
     scenario:
       "On Day 27 (45m full datacenter power failure on ep-10), the server went completely dark instantly.",
-    whyPulseGuardLost:
-      "Pingdom's single primary probe in Virginia observed a TCP RST and immediately fired its webhook queue in 3,210ms. PulseGuard required parallel pings to be received and verified across 4 independent edge regions (enam, wnam, weur, apac) before the Durable Object Quorum Actor stamped the incident as hard-down, resulting in 4,120ms first-webhook dispatch (+910ms slower).",
+    whySteadyStackLost:
+      "Pingdom's single primary probe in Virginia observed a TCP RST and immediately fired its webhook queue in 3,210ms. SteadyStack required parallel pings to be received and verified across 4 independent edge regions (enam, wnam, weur, apac) before the Durable Object Quorum Actor stamped the incident as hard-down, resulting in 4,120ms first-webhook dispatch (+910ms slower).",
     whyWeAcceptThisTradeoff:
       "Saving 900 milliseconds on a 45-minute outage is not worth suffering 41 false alarms over the preceding 26 days. A 4-second verified alert is vastly superior to a 3-second unverified guess.",
     engineeringTakeaway:
@@ -282,8 +282,8 @@ export const WHERE_WE_LOST_ANALYSIS: LossAnalysis[] = [
     delta: "Classified as Regional Jitter vs Down Alert",
     scenario:
       "On Day 16, a tier-2 ISP in Mumbai experienced routing table corruption, breaking connectivity specifically to Singapore (ep-4) for 4 minutes, while Europe and North America had 100% healthy traffic.",
-    whyPulseGuardLost:
-      "Pingdom had a probe routed through that specific transit path and fired a global 'SERVICE DOWN' alert. PulseGuard recorded 1 of 7 probe failures (`apac-se`), while the other 6 regions (`enam`, `wnam`, `weur`, `eeur`, `apac-ne`, `apac-s`) reported `200 OK`. PulseGuard flagged the incident as 'Localized Degradation' on telemetry graphs but did NOT trigger an on-call page.",
+    whySteadyStackLost:
+      "Pingdom had a probe routed through that specific transit path and fired a global 'SERVICE DOWN' alert. SteadyStack recorded 1 of 7 probe failures (`apac-se`), while the other 6 regions (`enam`, `wnam`, `weur`, `eeur`, `apac-ne`, `apac-s`) reported `200 OK`. SteadyStack flagged the incident as 'Localized Degradation' on telemetry graphs but did NOT trigger an on-call page.",
     whyWeAcceptThisTradeoff:
       "If your server is operating normally for 98% of world traffic, waking up your entire platform on-call team at 3:15 AM with a 'CRITICAL OUTAGE' notification is an antipattern. For regional visibility, we provide regional degradation feeds without high-urgency pager escalation.",
     engineeringTakeaway: "True outages must be distinguished from localized transit partitions.",
@@ -296,10 +296,10 @@ export const WHERE_WE_LOST_ANALYSIS: LossAnalysis[] = [
     delta: "+18ms jitter on isolate spin-up",
     scenario:
       "Evaluating raw ping time stability on low-frequency test targets during off-peak hours.",
-    whyPulseGuardLost:
-      "UptimeRobot's dedicated long-lived poller VMs have zero isolate warm-up delay. PulseGuard edge workers executing on infrequently accessed edge POPs occasionally incur a 15–20ms V8 isolate instantiation delay on the first tick.",
+    whySteadyStackLost:
+      "UptimeRobot's dedicated long-lived poller VMs have zero isolate warm-up delay. SteadyStack edge workers executing on infrequently accessed edge POPs occasionally incur a 15–20ms V8 isolate instantiation delay on the first tick.",
     whyWeAcceptThisTradeoff:
-      "PulseGuard pre-warms isolates across all major POPs for 60-second checks. The 18ms latency jitter only impacts raw latency percentile variance by <0.02% and has zero impact on uptime consensus accuracy.",
+      "SteadyStack pre-warms isolates across all major POPs for 60-second checks. The 18ms latency jitter only impacts raw latency percentile variance by <0.02% and has zero impact on uptime consensus accuracy.",
     engineeringTakeaway:
       "Serverless edge architecture saves 90% in infrastructure costs with a negligible isolate warm-up trade-off.",
   },
@@ -309,7 +309,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 1,
     date: "Jun 01",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 1,
     pingdomSpurious: 2,
     trueOutages: 0,
@@ -317,7 +317,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 2,
     date: "Jun 02",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 0,
     pingdomSpurious: 1,
     trueOutages: 0,
@@ -325,7 +325,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 3,
     date: "Jun 03",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 1,
     pingdomSpurious: 1,
     trueOutages: 1,
@@ -333,7 +333,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 4,
     date: "Jun 04",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 2,
     pingdomSpurious: 3,
     trueOutages: 0,
@@ -341,7 +341,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 5,
     date: "Jun 05",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 0,
     pingdomSpurious: 1,
     trueOutages: 0,
@@ -349,7 +349,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 6,
     date: "Jun 06",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 1,
     pingdomSpurious: 2,
     trueOutages: 0,
@@ -357,7 +357,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 7,
     date: "Jun 07",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 1,
     pingdomSpurious: 2,
     trueOutages: 0,
@@ -365,7 +365,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 8,
     date: "Jun 08",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 0,
     pingdomSpurious: 0,
     trueOutages: 0,
@@ -373,7 +373,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 9,
     date: "Jun 09",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 2,
     pingdomSpurious: 2,
     trueOutages: 0,
@@ -381,7 +381,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 10,
     date: "Jun 10",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 1,
     pingdomSpurious: 1,
     trueOutages: 0,
@@ -389,7 +389,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 11,
     date: "Jun 11",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 0,
     pingdomSpurious: 2,
     trueOutages: 1,
@@ -397,7 +397,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 12,
     date: "Jun 12",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 1,
     pingdomSpurious: 1,
     trueOutages: 0,
@@ -405,7 +405,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 13,
     date: "Jun 13",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 1,
     pingdomSpurious: 2,
     trueOutages: 0,
@@ -413,7 +413,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 14,
     date: "Jun 14",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 2,
     pingdomSpurious: 2,
     trueOutages: 0,
@@ -421,7 +421,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 15,
     date: "Jun 15",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 0,
     pingdomSpurious: 1,
     trueOutages: 0,
@@ -429,7 +429,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 16,
     date: "Jun 16",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 1,
     pingdomSpurious: 2,
     trueOutages: 0,
@@ -437,7 +437,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 17,
     date: "Jun 17",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 1,
     pingdomSpurious: 1,
     trueOutages: 0,
@@ -445,7 +445,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 18,
     date: "Jun 18",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 0,
     pingdomSpurious: 1,
     trueOutages: 0,
@@ -453,7 +453,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 19,
     date: "Jun 19",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 1,
     pingdomSpurious: 2,
     trueOutages: 1,
@@ -461,7 +461,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 20,
     date: "Jun 20",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 2,
     pingdomSpurious: 2,
     trueOutages: 0,
@@ -469,7 +469,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 21,
     date: "Jun 21",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 0,
     pingdomSpurious: 1,
     trueOutages: 0,
@@ -477,7 +477,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 22,
     date: "Jun 22",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 1,
     pingdomSpurious: 1,
     trueOutages: 0,
@@ -485,7 +485,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 23,
     date: "Jun 23",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 1,
     pingdomSpurious: 2,
     trueOutages: 0,
@@ -493,7 +493,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 24,
     date: "Jun 24",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 2,
     pingdomSpurious: 2,
     trueOutages: 0,
@@ -501,7 +501,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 25,
     date: "Jun 25",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 0,
     pingdomSpurious: 1,
     trueOutages: 0,
@@ -509,7 +509,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 26,
     date: "Jun 26",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 1,
     pingdomSpurious: 1,
     trueOutages: 0,
@@ -517,7 +517,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 27,
     date: "Jun 27",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 1,
     pingdomSpurious: 2,
     trueOutages: 1,
@@ -525,7 +525,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 28,
     date: "Jun 28",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 2,
     pingdomSpurious: 1,
     trueOutages: 0,
@@ -533,7 +533,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 29,
     date: "Jun 29",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 1,
     pingdomSpurious: 1,
     trueOutages: 0,
@@ -541,7 +541,7 @@ export const DAILY_ALERT_SERIES = [
   {
     day: 30,
     date: "Jun 30",
-    pulseguardSpurious: 0,
+    steadystackSpurious: 0,
     uptimerobotSpurious: 1,
     pingdomSpurious: 1,
     trueOutages: 0,
@@ -553,42 +553,42 @@ export const FAILURE_MODE_DISTRIBUTION = [
     mode: "BGP Route Flapping",
     pingdom: 14,
     uptimerobot: 9,
-    pulseguard: 0,
+    steadystack: 0,
     description: "Single-AS transit withdrawal for 8-15s",
   },
   {
     mode: "Local DNS Resolver Timeout",
     pingdom: 11,
     uptimerobot: 8,
-    pulseguard: 0,
+    steadystack: 0,
     description: "Recursive DNS lookup dropped by 1 ISP node",
   },
   {
     mode: "200ms Micro-Drop (<300ms)",
     pingdom: 8,
     uptimerobot: 5,
-    pulseguard: 0,
+    steadystack: 0,
     description: "Transient sub-second 503 during rolling deploy",
   },
   {
     mode: "TLS 1.3 0-RTT Session Reset",
     pingdom: 5,
     uptimerobot: 4,
-    pulseguard: 0,
+    steadystack: 0,
     description: "Handshake reset during certificate rotation",
   },
   {
     mode: "Trailing Chunk Timeout",
     pingdom: 3,
     uptimerobot: 2,
-    pulseguard: 0,
+    steadystack: 0,
     description: "Large payload stream socket pause",
   },
   {
     mode: "True Outage (Verified Down)",
     pingdom: 4,
     uptimerobot: 4,
-    pulseguard: 4,
+    steadystack: 4,
     description: "Real ground-truth crash confirmed across all nodes",
   },
 ];
@@ -604,7 +604,7 @@ export const SAMPLE_INCIDENTS: IncidentRecord[] = [
     failureTypeLabel: "True Outage (5m Injected Crash)",
     durationSeconds: 300,
     groundTruthDown: true,
-    pulseguard: {
+    steadystack: {
       alertTriggered: true,
       consensusState: "VERIFIED_DOWN",
       regionsFailed: 7,
@@ -630,7 +630,7 @@ export const SAMPLE_INCIDENTS: IncidentRecord[] = [
     serverIngressSummary:
       "NGINX process terminated via SIGKILL. Ingress returned 0 successful connections during the 5-minute window.",
     postMortem:
-      "True Positive for all 3 monitoring services. PulseGuard reached quorum in 820ms vs 27.9s-32.4s for retry-based services.",
+      "True Positive for all 3 monitoring services. SteadyStack reached quorum in 820ms vs 27.9s-32.4s for retry-based services.",
   },
   {
     id: "INC-2026-0604-02",
@@ -642,7 +642,7 @@ export const SAMPLE_INCIDENTS: IncidentRecord[] = [
     failureTypeLabel: "Single-AS BGP Route Flap (12s)",
     durationSeconds: 12,
     groundTruthDown: false,
-    pulseguard: {
+    steadystack: {
       alertTriggered: false,
       consensusState: "QUORUM_REJECTED",
       regionsFailed: 1,
@@ -668,7 +668,7 @@ export const SAMPLE_INCIDENTS: IncidentRecord[] = [
     serverIngressSummary:
       "Server received 4,120 successful HTTP requests per minute from all other global origins. Zero ground-truth downtime.",
     postMortem:
-      "Spurious alert for UptimeRobot and Pingdom. PulseGuard quorum consensus prevented a 3:14 AM false alarm.",
+      "Spurious alert for UptimeRobot and Pingdom. SteadyStack quorum consensus prevented a 3:14 AM false alarm.",
   },
   {
     id: "INC-2026-0607-03",
@@ -680,7 +680,7 @@ export const SAMPLE_INCIDENTS: IncidentRecord[] = [
     failureTypeLabel: "Local Recursive DNS Timeout",
     durationSeconds: 8,
     groundTruthDown: false,
-    pulseguard: {
+    steadystack: {
       alertTriggered: false,
       consensusState: "DEGRADED_REGIONAL_NOISE",
       regionsFailed: 1,
@@ -717,7 +717,7 @@ export const SAMPLE_INCIDENTS: IncidentRecord[] = [
     failureTypeLabel: "True Outage (12m Database Lockup)",
     durationSeconds: 720,
     groundTruthDown: true,
-    pulseguard: {
+    steadystack: {
       alertTriggered: true,
       consensusState: "VERIFIED_DOWN",
       regionsFailed: 7,
@@ -752,7 +752,7 @@ export const SAMPLE_INCIDENTS: IncidentRecord[] = [
     failureTypeLabel: "Transient 200ms Micro-Drop",
     durationSeconds: 1,
     groundTruthDown: false,
-    pulseguard: {
+    steadystack: {
       alertTriggered: false,
       consensusState: "QUORUM_REJECTED",
       regionsFailed: 2,
@@ -789,7 +789,7 @@ export const SAMPLE_INCIDENTS: IncidentRecord[] = [
     failureTypeLabel: "True Outage (2m Kernel Panic Restart)",
     durationSeconds: 120,
     groundTruthDown: true,
-    pulseguard: {
+    steadystack: {
       alertTriggered: true,
       consensusState: "VERIFIED_DOWN",
       regionsFailed: 7,
@@ -824,7 +824,7 @@ export const SAMPLE_INCIDENTS: IncidentRecord[] = [
     failureTypeLabel: "True Outage (45m Power Interruption)",
     durationSeconds: 2700,
     groundTruthDown: true,
-    pulseguard: {
+    steadystack: {
       alertTriggered: true,
       consensusState: "VERIFIED_DOWN",
       regionsFailed: 7,
@@ -848,6 +848,6 @@ export const SAMPLE_INCIDENTS: IncidentRecord[] = [
     },
     serverIngressSummary: "Datacenter power loss resulted in total unavailability for 45 minutes.",
     postMortem:
-      "True Positive for all services. Pingdom fired its initial webhook 910ms faster than PulseGuard due to zero quorum wait.",
+      "True Positive for all services. Pingdom fired its initial webhook 910ms faster than SteadyStack due to zero quorum wait.",
   },
 ];

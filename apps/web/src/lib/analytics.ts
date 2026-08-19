@@ -1,7 +1,7 @@
 import { createHash } from "crypto";
 
 // Ideally this should be in .env
-const SALT = process.env.ANALYTICS_SALT || "pulseguard-analytics-salt";
+const SALT = process.env.ANALYTICS_SALT || "steadystack-analytics-salt";
 
 /**
  * Generates a privacy-preserving hash for a visitor.

@@ -8,7 +8,6 @@
     "devops",
     "monitoring",
     "monitoring-as-code",
-    "pulseguard",
     "status-page",
     "steadystack",
     "synthetic-monitoring",
@@ -26,8 +25,7 @@
     "directory": "apps/cli"
   },
   "bin": {
-    "pulse": "./dist/index.js",
-    "pulseguard": "./dist/index.js",
+    "ss": "./dist/index.js",
     "steadystack": "./dist/index.js"
   },
   "files": [
@@ -45,7 +43,7 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "prepublishOnly": "bun run build",
-    "depcheck": "depcheck"
+    "depcheck": "depcheck --ignores=\"tsx\""
   },
   "dependencies": {
     "chalk": "^5.3.0",

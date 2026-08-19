@@ -1,4 +1,4 @@
-# PulseGuard Edge Preview Check GitHub Action 🛡️
+# SteadyStack Edge Preview Check GitHub Action 🛡️
 
 Automate zero-false-positive multi-region edge verification for PR preview deployments (Vercel, Cloudflare Pages, Netlify, Kubernetes staging).
 
@@ -23,10 +23,10 @@ jobs:
           # Your preview deployment step (e.g. Vercel / Cloudflare Pages)
           echo "preview_url=https://pr-142.preview.example.com" >> $GITHUB_OUTPUT
 
-      - name: PulseGuard Edge Health Check
-        uses: pulseguard/action@v1
+      - name: SteadyStack Edge Health Check
+        uses: steadystack/action@v1
         with:
-          api_key: ${{ secrets.PULSEGUARD_API_KEY }}
+          api_key: ${{ secrets.STEADYSTACK_API_KEY }}
           url: ${{ steps.deploy.outputs.preview_url }}
           regions: "wnam,weur,apac"
           fail_on_down: true
@@ -37,7 +37,7 @@ jobs:
 
 | Input           | Required | Default               | Description                            |
 | :-------------- | :------- | :-------------------- | :------------------------------------- |
-| `api_key`       | **Yes**  | —                     | PulseGuard API key (`pg_live_...`)     |
+| `api_key`       | **Yes**  | —                     | SteadyStack API key (`pg_live_...`)    |
 | `url`           | **Yes**  | —                     | Target preview URL to test             |
 | `regions`       | No       | `wnam,weur,apac`      | Comma-separated sovereign region codes |
 | `fail_on_down`  | No       | `true`                | Fail CI step if quorum check fails     |

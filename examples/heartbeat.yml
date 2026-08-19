@@ -1,14 +1,14 @@
 # Heartbeat / dead man's switch monitors.
 #
 # Your cron job or background task must ping the heartbeat URL
-# within the `grace_period`. If it misses, PulseGuard alerts.
+# within the `grace_period`. If it misses, SteadyStack alerts.
 #
 # Ping URL format:
-#   https://app.pulseguard.dev/api/heartbeat/<monitor-id>
+#   https://app.steadystack.dev/api/heartbeat/<monitor-id>
 #   (found in monitor details after first apply)
 #
 # Example cron integration:
-#   0 * * * * /usr/bin/my-job.sh && curl -s https://app.pulseguard.dev/api/heartbeat/my-backup-job
+#   0 * * * * /usr/bin/my-job.sh && curl -s https://app.steadystack.dev/api/heartbeat/my-backup-job
 #
 # Apply with:
 #   pulse monitors apply heartbeat.yml

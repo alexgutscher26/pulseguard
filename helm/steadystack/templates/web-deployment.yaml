@@ -2,10 +2,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "pulseguard.fullname" . }}-web
+  name: {{ include "steadystack.fullname" . }}-web
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "pulseguard.labels" . | nindent 4 }}
+    {{- include "steadystack.labels" . | nindent 4 }}
     app.kubernetes.io/component: web
 spec:
   {{- if not .Values.web.autoscaling.enabled }}
@@ -13,7 +13,7 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      {{- include "pulseguard.web.selectorLabels" . | nindent 6 }}
+      {{- include "steadystack.web.selectorLabels" . | nindent 6 }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -28,18 +28,18 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
-        {{- include "pulseguard.web.selectorLabels" . | nindent 8 }}
+        {{- include "steadystack.web.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.global.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "pulseguard.serviceAccountName" . }}
+      serviceAccountName: {{ include "steadystack.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.web.podSecurityContext | nindent 8 }}
       containers:
         - name: web
-          image: "{{ .Values.web.image.repository }}:{{ include "pulseguard.web.imageTag" . }}"
+          image: "{{ .Values.web.image.repository }}:{{ include "steadystack.web.imageTag" . }}"
           imagePullPolicy: {{ .Values.web.image.pullPolicy }}
           securityContext:
             {{- toYaml .Values.web.securityContext | nindent 12 }}
@@ -49,7 +49,7 @@ spec:
               protocol: TCP
           envFrom:
             - secretRef:
-                name: {{ include "pulseguard.fullname" . }}-secrets
+                name: {{ include "steadystack.fullname" . }}-secrets
           livenessProbe:
             {{- toYaml .Values.web.livenessProbe | nindent 12 }}
           readinessProbe:

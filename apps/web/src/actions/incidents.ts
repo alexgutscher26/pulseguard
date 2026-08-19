@@ -1,7 +1,7 @@
 "use server";
 
-import prisma, { IncidentEventType } from "@pulseguard/db";
-import { auth } from "@pulseguard/auth";
+import prisma, { IncidentEventType } from "@steadystack/db";
+import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 

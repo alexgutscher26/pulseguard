@@ -1,12 +1,12 @@
 import Stripe from "stripe";
-import db from "@pulseguard/db";
+import db from "@steadystack/db";
 import { PLANS, type PlanTier } from "./billing";
 
 // Initialize Stripe SDK instance
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_mock_pulseguard_key", {
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_mock_steadystack_key", {
   apiVersion: "2025-02-24.acacia" as Stripe.LatestApiVersion,
   appInfo: {
-    name: "PulseGuard Cloud Monitoring",
+    name: "SteadyStack Cloud Monitoring",
     version: "1.0.0",
   },
 });
@@ -111,14 +111,14 @@ export async function createStripePromotionCode({
     try {
       await stripe.coupons.create({
         id: cleanCode,
-        name: `PulseGuard VIP (${cleanCode})`.slice(0, 40),
+        name: `SteadyStack VIP (${cleanCode})`.slice(0, 40),
         percent_off: percentOff,
         duration: durationMonths > 1 ? "repeating" : "once",
         duration_in_months: durationMonths > 1 ? durationMonths : undefined,
         max_redemptions: maxRedemptions,
         metadata: {
           ...metadata,
-          system: "pulseguard_vip",
+          system: "steadystack_vip",
           vip_code: cleanCode,
           durationMonths: String(durationMonths),
         },
@@ -165,7 +165,7 @@ export async function createStripePromotionCode({
       max_redemptions: maxRedemptions,
       metadata: {
         ...metadata,
-        created_via: "pulseguard_design_partners",
+        created_via: "steadystack_design_partners",
         vip_code: cleanCode,
       },
     });
@@ -277,7 +277,7 @@ export async function createCheckoutSession({
             price_data: {
               currency: "usd",
               product_data: {
-                name: `PulseGuard ${planDetails.name}`,
+                name: `SteadyStack ${planDetails.name}`,
                 description: planDetails.description,
                 metadata: {
                   plan,

@@ -9,7 +9,7 @@ async function main() {
 
   if (args.includes("--help") || args.includes("-h")) {
     console.log(`
-PulseGuard Continuous Global Verification Seed Tool
+SteadyStack Continuous Global Verification Seed Tool
 
 Usage:
   bun scripts/seed-monitors.ts [options]

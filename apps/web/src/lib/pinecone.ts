@@ -1,7 +1,7 @@
 import { Pinecone, type Index, type RecordMetadata } from "@pinecone-database/pinecone";
 import { embed } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
-import { env } from "@pulseguard/env/server";
+import { env } from "@steadystack/env/server";
 import { resolveHeliconeBaseUrl, buildHeliconeHeaders, isHeliconeConfigured } from "./helicone";
 
 let cachedPineconeClient: Pinecone | null = null;
@@ -89,7 +89,7 @@ export function getIncidentIndex(indexName?: string): Index<IncidentVectorMetada
     indexName ||
     process.env.PINECONE_INDEX_NAME ||
     env.PINECONE_INDEX_NAME ||
-    "pulseguard-incidents";
+    "steadystack-incidents";
 
   return client.index<IncidentVectorMetadata>(targetIndex);
 }
@@ -127,7 +127,7 @@ function getEmbeddingModel() {
       headers: {
         "HTTP-Referer":
           process.env.NEXT_PUBLIC_APP_URL || env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-        "X-Title": "PulseGuard Pinecone Embeddings",
+        "X-Title": "SteadyStack Pinecone Embeddings",
         ...buildHeliconeHeaders({ feature: "pinecone-embeddings" }),
       },
     });

@@ -4,7 +4,7 @@
 [changelog]
 header = """
 # Changelog\n
-All notable changes to PulseGuard are documented here.\n
+All notable changes to SteadyStack are documented here.\n
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\n
 """
@@ -19,7 +19,7 @@ body = """
 ### {{ group | striptags | trim | upper_first }}
 {% for commit in commits %}
 - {% if commit.scope %}**{{ commit.scope }}**: {% endif %}\
-  {{ commit.message | upper_first }} ([`{{ commit.id | truncate(length=7, end="") }}`](https://github.com/alexgutscher26/pulseguard/commit/{{ commit.id }}))\
+  {{ commit.message | upper_first }} ([`{{ commit.id | truncate(length=7, end="") }}`](https://github.com/getsteadystack/SteadyStack/commit/{{ commit.id }}))\
   {% if commit.breaking %} ⚠️ **BREAKING**{% endif %}\
 {% endfor %}
 {% endfor %}\n
@@ -30,10 +30,10 @@ footer = """
   {% if release.version %}\
     {% if release.previous.version %}\
 [{{ release.version | trim_start_matches(pat="v") }}]: \
-  https://github.com/alexgutscher26/pulseguard/compare/{{ release.previous.version }}...{{ release.version }}
+  https://github.com/getsteadystack/SteadyStack/compare/{{ release.previous.version }}...{{ release.version }}
     {% endif %}\
   {% else %}\
-[Unreleased]: https://github.com/alexgutscher26/pulseguard/compare/{{ release.previous.version }}...HEAD
+[Unreleased]: https://github.com/getsteadystack/SteadyStack/compare/{{ release.previous.version }}...HEAD
   {% endif %}\
 {% endfor %}
 """

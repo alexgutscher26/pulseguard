@@ -43,13 +43,13 @@ jobs:
           context: .
           file: apps/probe/Dockerfile
           load: true
-          tags: pulseguard-probe:ci
+          tags: steadystack-probe:ci
 
       - name: Run Trivy vulnerability scanner on probe image
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: "image"
-          image-ref: "pulseguard-probe:ci"
+          image-ref: "steadystack-probe:ci"
           ignore-unfixed: true
           format: "table"
           # Fail the build if critical vulnerabilities are found

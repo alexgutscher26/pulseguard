@@ -1,6 +1,6 @@
-# PulseGuard Grafana Integration 📊
+# SteadyStack Grafana Integration 📊
 
-Seamlessly stream real-time uptime statuses, quorum consensus metrics, and multi-region edge latency from **PulseGuard** into your existing Grafana dashboards.
+Seamlessly stream real-time uptime statuses, quorum consensus metrics, and multi-region edge latency from **SteadyStack** into your existing Grafana dashboards.
 
 ---
 
@@ -10,15 +10,15 @@ Add a scrape job to your `prometheus.yml`:
 
 ```yaml
 scrape_configs:
-  - job_name: 'pulseguard'
+  - job_name: 'steadystack'
     scrape_interval: 30s
     metrics_path: '/api/v1/metrics/prometheus'
     scheme: 'https'
     static_configs:
-      - targets: ['app.pulseguard.io'] # or your self-hosted instance domain
+      - targets: ['app.steadystack.dev'] # or your self-hosted instance domain
     authorization:
       type: Bearer
-      credentials: 'pg_live_xxxxxxxxxxxxxxxxxxxx' # Your PulseGuard API Key
+      credentials: 'pg_live_xxxxxxxxxxxxxxxxxxxx' # Your SteadyStack API Key
 ```
 
 ---
@@ -34,8 +34,8 @@ scrape_configs:
 
 ## 3. Metrics Reference
 
-| Metric Name                           | Type  | Description                                                                                                 |
-| :------------------------------------ | :---- | :---------------------------------------------------------------------------------------------------------- |
-| `pulseguard_monitor_status`           | Gauge | `1` for UP, `0` for DOWN, `2` for PAUSED/MAINTENANCE                                                        |
-| `pulseguard_monitor_latency_ms`       | Gauge | Average round-trip response time (ms) partitioned by sovereign edge region (`wnam`, `enam`, `weur`, `apac`) |
-| `pulseguard_monitor_interval_seconds` | Gauge | Configured check frequency in seconds                                                                       |
+| Metric Name                            | Type  | Description                                                                                                 |
+| :------------------------------------- | :---- | :---------------------------------------------------------------------------------------------------------- |
+| `steadystack_monitor_status`           | Gauge | `1` for UP, `0` for DOWN, `2` for PAUSED/MAINTENANCE                                                        |
+| `steadystack_monitor_latency_ms`       | Gauge | Average round-trip response time (ms) partitioned by sovereign edge region (`wnam`, `enam`, `weur`, `apac`) |
+| `steadystack_monitor_interval_seconds` | Gauge | Configured check frequency in seconds                                                                       |

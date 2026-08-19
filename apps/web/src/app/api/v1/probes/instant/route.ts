@@ -147,7 +147,7 @@ export async function POST(req: NextRequest) {
         const res = await fetch(safeUrl, {
           method: method.toUpperCase(),
           headers: {
-            "User-Agent": `PulseGuard-Edge-Probe/1.0 (${regionCode})`,
+            "User-Agent": `SteadyStack-Edge-Probe/1.0 (${regionCode})`,
           },
           signal: controller.signal,
         });

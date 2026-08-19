@@ -11,7 +11,7 @@
     "license": "CC-BY-4.0"
   },
   "summary": {
-    "pulseguard": {
+    "steadystack": {
       "checks_run": 432000,
       "true_outages_evaluated": 4,
       "true_outages_detected": 4,
@@ -55,61 +55,61 @@
     {
       "id": "ep-1",
       "name": "Edge API Gateway",
-      "url": "https://edge-api.pulseguard-bench.net/v1/health",
+      "url": "https://edge-api.steadystack-bench.net/v1/health",
       "provider": "Cloudflare Edge"
     },
     {
       "id": "ep-2",
       "name": "AWS Monolith Ingress",
-      "url": "https://us-east.pulseguard-bench.net/status",
+      "url": "https://us-east.steadystack-bench.net/status",
       "provider": "AWS us-east-1"
     },
     {
       "id": "ep-3",
       "name": "Hetzner Bare Metal",
-      "url": "https://eu-central.pulseguard-bench.net/ping",
+      "url": "https://eu-central.steadystack-bench.net/ping",
       "provider": "Hetzner Frankfurt"
     },
     {
       "id": "ep-4",
       "name": "Asia-Pacific Fly.io Node",
-      "url": "https://asia-south.pulseguard-bench.net/alive",
+      "url": "https://asia-south.steadystack-bench.net/alive",
       "provider": "Fly.io Singapore"
     },
     {
       "id": "ep-5",
       "name": "BGP Route Flapping Injector",
-      "url": "https://flapping-route.pulseguard-bench.net/check",
+      "url": "https://flapping-route.steadystack-bench.net/check",
       "provider": "AWS us-west-2"
     },
     {
       "id": "ep-6",
       "name": "Dynamic Geo-DNS Endpoint",
-      "url": "https://geo-dns-split.pulseguard-bench.net/resolve",
+      "url": "https://geo-dns-split.steadystack-bench.net/resolve",
       "provider": "AWS us-east-1"
     },
     {
       "id": "ep-7",
       "name": "Micro-Drop Transient Simulator",
-      "url": "https://micro-drop.pulseguard-bench.net/transient",
+      "url": "https://micro-drop.steadystack-bench.net/transient",
       "provider": "GCP us-central1"
     },
     {
       "id": "ep-8",
       "name": "Strict SNI / TLS Handshake",
-      "url": "https://tls-sni-strict.pulseguard-bench.net/verify",
+      "url": "https://tls-sni-strict.steadystack-bench.net/verify",
       "provider": "Hetzner Frankfurt"
     },
     {
       "id": "ep-9",
       "name": "Chunked Stream Payload",
-      "url": "https://chunked-stream.pulseguard-bench.net/stream",
+      "url": "https://chunked-stream.steadystack-bench.net/stream",
       "provider": "Cloudflare Edge"
     },
     {
       "id": "ep-10",
       "name": "Scheduled True Downtime Target",
-      "url": "https://scheduled-downtime.pulseguard-bench.net/healthz",
+      "url": "https://scheduled-downtime.steadystack-bench.net/healthz",
       "provider": "AWS us-east-1"
     }
   ],
@@ -123,7 +123,7 @@
       "failure_type": "bgp_flap",
       "duration_seconds": 10,
       "ground_truth_down": false,
-      "pulseguard": {
+      "steadystack": {
         "alert_triggered": false,
         "consensus_state": "QUORUM_REJECTED",
         "regions_failed": 1,
@@ -151,7 +151,7 @@
       "failure_type": "dns_timeout",
       "duration_seconds": 7,
       "ground_truth_down": false,
-      "pulseguard": {
+      "steadystack": {
         "alert_triggered": false,
         "consensus_state": "DEGRADED_REGIONAL_NOISE",
         "regions_failed": 1,
@@ -179,7 +179,7 @@
       "failure_type": "micro_drop",
       "duration_seconds": 1,
       "ground_truth_down": false,
-      "pulseguard": {
+      "steadystack": {
         "alert_triggered": false,
         "consensus_state": "QUORUM_REJECTED",
         "regions_failed": 2,
@@ -207,7 +207,7 @@
       "failure_type": "true_outage",
       "duration_seconds": 300,
       "ground_truth_down": true,
-      "pulseguard": {
+      "steadystack": {
         "alert_triggered": true,
         "consensus_state": "VERIFIED_DOWN",
         "regions_failed": 7,
@@ -235,7 +235,7 @@
       "failure_type": "bgp_flap",
       "duration_seconds": 12,
       "ground_truth_down": false,
-      "pulseguard": {
+      "steadystack": {
         "alert_triggered": false,
         "consensus_state": "QUORUM_REJECTED",
         "regions_failed": 1,
@@ -263,7 +263,7 @@
       "failure_type": "tls_resets",
       "duration_seconds": 5,
       "ground_truth_down": false,
-      "pulseguard": {
+      "steadystack": {
         "alert_triggered": false,
         "consensus_state": "DEGRADED_REGIONAL_NOISE",
         "regions_failed": 1,
@@ -291,7 +291,7 @@
       "failure_type": "chunk_timeout",
       "duration_seconds": 6,
       "ground_truth_down": false,
-      "pulseguard": {
+      "steadystack": {
         "alert_triggered": false,
         "consensus_state": "QUORUM_REJECTED",
         "regions_failed": 1,
@@ -319,7 +319,7 @@
       "failure_type": "single_transit_drop",
       "duration_seconds": 9,
       "ground_truth_down": false,
-      "pulseguard": {
+      "steadystack": {
         "alert_triggered": false,
         "consensus_state": "QUORUM_REJECTED",
         "regions_failed": 1,
@@ -347,7 +347,7 @@
       "failure_type": "dns_timeout",
       "duration_seconds": 8,
       "ground_truth_down": false,
-      "pulseguard": {
+      "steadystack": {
         "alert_triggered": false,
         "consensus_state": "DEGRADED_REGIONAL_NOISE",
         "regions_failed": 1,
@@ -375,7 +375,7 @@
       "failure_type": "dns_timeout",
       "duration_seconds": 8,
       "ground_truth_down": false,
-      "pulseguard": {
+      "steadystack": {
         "alert_triggered": false,
         "consensus_state": "DEGRADED_REGIONAL_NOISE",
         "regions_failed": 1,
@@ -403,7 +403,7 @@
       "failure_type": "bgp_flap",
       "duration_seconds": 14,
       "ground_truth_down": false,
-      "pulseguard": {
+      "steadystack": {
         "alert_triggered": false,
         "consensus_state": "QUORUM_REJECTED",
         "regions_failed": 1,
@@ -431,7 +431,7 @@
       "failure_type": "micro_drop",
       "duration_seconds": 1,
       "ground_truth_down": false,
-      "pulseguard": {
+      "steadystack": {
         "alert_triggered": false,
         "consensus_state": "QUORUM_REJECTED",
         "regions_failed": 2,
@@ -459,7 +459,7 @@
       "failure_type": "single_transit_drop",
       "duration_seconds": 11,
       "ground_truth_down": false,
-      "pulseguard": {
+      "steadystack": {
         "alert_triggered": false,
         "consensus_state": "QUORUM_REJECTED",
         "regions_failed": 1,
@@ -487,7 +487,7 @@
       "failure_type": "tls_resets",
       "duration_seconds": 4,
       "ground_truth_down": false,
-      "pulseguard": {
+      "steadystack": {
         "alert_triggered": false,
         "consensus_state": "DEGRADED_REGIONAL_NOISE",
         "regions_failed": 1,
@@ -515,7 +515,7 @@
       "failure_type": "true_outage",
       "duration_seconds": 720,
       "ground_truth_down": true,
-      "pulseguard": {
+      "steadystack": {
         "alert_triggered": true,
         "consensus_state": "VERIFIED_DOWN",
         "regions_failed": 7,
@@ -543,7 +543,7 @@
       "failure_type": "bgp_flap",
       "duration_seconds": 9,
       "ground_truth_down": false,
-      "pulseguard": {
+      "steadystack": {
         "alert_triggered": false,
         "consensus_state": "QUORUM_REJECTED",
         "regions_failed": 1,
@@ -571,7 +571,7 @@
       "failure_type": "dns_timeout",
       "duration_seconds": 6,
       "ground_truth_down": false,
-      "pulseguard": {
+      "steadystack": {
         "alert_triggered": false,
         "consensus_state": "DEGRADED_REGIONAL_NOISE",
         "regions_failed": 1,
@@ -599,7 +599,7 @@
       "failure_type": "micro_drop",
       "duration_seconds": 1,
       "ground_truth_down": false,
-      "pulseguard": {
+      "steadystack": {
         "alert_triggered": false,
         "consensus_state": "QUORUM_REJECTED",
         "regions_failed": 2,
@@ -627,7 +627,7 @@
       "failure_type": "chunk_timeout",
       "duration_seconds": 5,
       "ground_truth_down": false,
-      "pulseguard": {
+      "steadystack": {
         "alert_triggered": false,
         "consensus_state": "QUORUM_REJECTED",
         "regions_failed": 1,
@@ -655,7 +655,7 @@
       "failure_type": "micro_drop",
       "duration_seconds": 1,
       "ground_truth_down": false,
-      "pulseguard": {
+      "steadystack": {
         "alert_triggered": false,
         "consensus_state": "QUORUM_REJECTED",
         "regions_failed": 2,
@@ -683,7 +683,7 @@
       "failure_type": "bgp_flap",
       "duration_seconds": 11,
       "ground_truth_down": false,
-      "pulseguard": {
+      "steadystack": {
         "alert_triggered": false,
         "consensus_state": "QUORUM_REJECTED",
         "regions_failed": 1,
@@ -711,7 +711,7 @@
       "failure_type": "single_transit_drop",
       "duration_seconds": 240,
       "ground_truth_down": false,
-      "pulseguard": {
+      "steadystack": {
         "alert_triggered": false,
         "consensus_state": "DEGRADED_REGIONAL_NOISE",
         "regions_failed": 1,
@@ -739,7 +739,7 @@
       "failure_type": "true_outage",
       "duration_seconds": 120,
       "ground_truth_down": true,
-      "pulseguard": {
+      "steadystack": {
         "alert_triggered": true,
         "consensus_state": "VERIFIED_DOWN",
         "regions_failed": 7,
@@ -767,7 +767,7 @@
       "failure_type": "true_outage",
       "duration_seconds": 2700,
       "ground_truth_down": true,
-      "pulseguard": {
+      "steadystack": {
         "alert_triggered": true,
         "consensus_state": "VERIFIED_DOWN",
         "regions_failed": 7,

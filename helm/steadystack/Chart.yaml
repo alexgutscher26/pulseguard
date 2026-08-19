@@ -1,5 +1,5 @@
 apiVersion: v2
-name: pulseguard
+name: steadystack
 description: Edge-native monitoring platform — Helm chart for Kubernetes self-hosted deployment
 type: application
 version: 0.1.0
@@ -9,12 +9,12 @@ keywords:
   - uptime
   - status-page
   - observability
-home: https://github.com/alexgutscher26/pulseguard
+home: https://github.com/getsteadystack/SteadyStack
 sources:
-  - https://github.com/alexgutscher26/pulseguard
+  - https://github.com/getsteadystack/SteadyStack
 maintainers:
-  - name: PulseGuard Contributors
-    url: https://github.com/alexgutscher26/pulseguard
+  - name: SteadyStack Contributors
+    url: https://github.com/getsteadystack/SteadyStack
 dependencies:
   # Bundled PostgreSQL for a batteries-included install.
   # Set postgresql.enabled=false to use an external database instead.

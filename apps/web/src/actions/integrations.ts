@@ -1,10 +1,10 @@
 "use server";
 
-import prisma from "@pulseguard/db";
-import { auth } from "@pulseguard/auth";
+import prisma from "@steadystack/db";
+import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { env } from "@pulseguard/env/server";
+import { env } from "@steadystack/env/server";
 
 export interface IntegrationProject {
   name: string;
@@ -20,7 +20,7 @@ export interface ExternalResource {
 }
 
 /**
- * Bulk imports third-party projects/domains and registers them as active PulseGuard HTTP/PING monitors.
+ * Bulk imports third-party projects/domains and registers them as active SteadyStack HTTP/PING monitors.
  */
 export async function importThirdPartyMonitors(projects: IntegrationProject[]) {
   const session = await auth.api.getSession({
@@ -558,8 +558,8 @@ export async function fetchGitHubRepos(
       data: [
         {
           id: "g1",
-          name: "pulseguard-agent-kit",
-          url: "github.com/alexgutscher26/pulseguard",
+          name: "steadystack-agent-kit",
+          url: "github.com/getsteadystack/SteadyStack",
           type: "PING",
         },
         {
@@ -606,7 +606,7 @@ export async function fetchGitHubRepos(
       headers: {
         Authorization: `Bearer ${finalToken}`,
         Accept: "application/vnd.github.v3+json",
-        "User-Agent": "PulseGuard",
+        "User-Agent": "SteadyStack",
       },
     });
 
@@ -662,7 +662,7 @@ export async function connectGitHubWithToken(token: string) {
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: "application/vnd.github.v3+json",
-        "User-Agent": "PulseGuard",
+        "User-Agent": "SteadyStack",
       },
     });
 

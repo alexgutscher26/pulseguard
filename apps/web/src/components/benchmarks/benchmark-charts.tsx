@@ -28,14 +28,14 @@ export function BenchmarkCharts() {
     let pdSum = 0;
 
     return DAILY_ALERT_SERIES.map((item) => {
-      pgSum += item.pulseguardSpurious;
+      pgSum += item.steadystackSpurious;
       urSum += item.uptimerobotSpurious;
       pdSum += item.pingdomSpurious;
 
       return {
         date: item.date,
         day: item.day,
-        "PulseGuard (Edge Quorum)": pgSum,
+        "SteadyStack (Edge Quorum)": pgSum,
         "UptimeRobot (Pro)": urSum,
         "Pingdom (Advanced)": pdSum,
         trueOutages: item.trueOutages,
@@ -113,7 +113,7 @@ export function BenchmarkCharts() {
                 <div className="hidden sm:flex items-center gap-4 text-xs font-mono">
                   <span className="flex items-center gap-1.5">
                     <span className="size-2.5 rounded-full bg-emerald-500" />
-                    PulseGuard: <strong className="text-emerald-400">0</strong>
+                    SteadyStack: <strong className="text-emerald-400">0</strong>
                   </span>
                   <span className="flex items-center gap-1.5">
                     <span className="size-2.5 rounded-full bg-sky-500" />
@@ -173,7 +173,7 @@ export function BenchmarkCharts() {
                                 <div className="flex items-center justify-between gap-6 text-emerald-400 font-semibold">
                                   <span className="flex items-center gap-1.5">
                                     <span className="size-2 rounded-full bg-emerald-500" />
-                                    PulseGuard:
+                                    SteadyStack:
                                   </span>
                                   <span>0 false alerts</span>
                                 </div>
@@ -227,7 +227,7 @@ export function BenchmarkCharts() {
                     />
                     <Area
                       type="monotone"
-                      dataKey="PulseGuard (Edge Quorum)"
+                      dataKey="SteadyStack (Edge Quorum)"
                       stroke="#10b981"
                       strokeWidth={3}
                       fillOpacity={1}
@@ -286,9 +286,9 @@ export function BenchmarkCharts() {
                               </p>
                               <div className="space-y-1.5">
                                 <div className="flex items-center justify-between text-emerald-400 font-semibold">
-                                  <span>PulseGuard:</span>
+                                  <span>SteadyStack:</span>
                                   <span>
-                                    {payload.find((p) => p.dataKey === "pulseguard")?.value}
+                                    {payload.find((p) => p.dataKey === "steadystack")?.value}
                                   </span>
                                 </div>
                                 <div className="flex items-center justify-between text-sky-400">
@@ -314,8 +314,8 @@ export function BenchmarkCharts() {
                       wrapperStyle={{ fontSize: "12px", fontFamily: "monospace" }}
                     />
                     <Bar
-                      dataKey="pulseguard"
-                      name="PulseGuard (Edge Quorum)"
+                      dataKey="steadystack"
+                      name="SteadyStack (Edge Quorum)"
                       fill="#10b981"
                       radius={[4, 4, 0, 0]}
                     />
@@ -376,7 +376,7 @@ export function BenchmarkCharts() {
                               <p className="font-bold text-foreground mb-2 text-sm">{label}</p>
                               <div className="space-y-1.5">
                                 <div className="flex items-center justify-between text-emerald-400">
-                                  <span>PulseGuard False Alerts:</span>
+                                  <span>SteadyStack False Alerts:</span>
                                   <span>0</span>
                                 </div>
                                 <div className="flex items-center justify-between text-sky-400">
@@ -407,8 +407,8 @@ export function BenchmarkCharts() {
                       wrapperStyle={{ fontSize: "12px", fontFamily: "monospace" }}
                     />
                     <Bar
-                      dataKey="pulseguardSpurious"
-                      name="PulseGuard (Edge Quorum)"
+                      dataKey="steadystackSpurious"
+                      name="SteadyStack (Edge Quorum)"
                       fill="#10b981"
                       radius={[3, 3, 0, 0]}
                     />

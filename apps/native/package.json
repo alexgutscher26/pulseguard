@@ -17,11 +17,11 @@
     "@expo/metro-runtime": "~57.0.8",
     "@expo/vector-icons": "^15.0.3",
     "@gorhom/bottom-sheet": "^5",
-    "@pulseguard/api": "workspace:*",
-    "@pulseguard/db": "workspace:*",
-    "@pulseguard/env": "workspace:*",
     "@react-navigation/drawer": "^7.3.9",
     "@react-navigation/elements": "^2.8.1",
+    "@steadystack/api": "workspace:*",
+    "@steadystack/db": "workspace:*",
+    "@steadystack/env": "workspace:*",
     "@tanstack/react-query": "catalog:",
     "@trpc/client": "catalog:",
     "@trpc/server": "catalog:",
@@ -56,7 +56,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@pulseguard/config": "workspace:*",
+    "@steadystack/config": "workspace:*",
     "@types/node": "^24.10.0",
     "@types/react": "~19.2.4",
     "typescript": "~6.0.3"

@@ -10,7 +10,7 @@ import {
 } from "../index";
 
 describe("Field-Level AES-256-GCM Encryption & Decryption (P0-SEC-02)", () => {
-  const testSecretKey = "pulseguard-test-secret-key-32chars-minimum-safe-entropy";
+  const testSecretKey = "steadystack-test-secret-key-32chars-minimum-safe-entropy";
 
   test("correctly detects whether a string is encrypted with enc:v1: prefix", async () => {
     expect(isEncrypted("enc:v1:YWJjZGVmZ2hpams=")).toBe(true);
@@ -102,7 +102,7 @@ describe("Status Page PBKDF2 Password Hashing (P0-SEC-01)", () => {
 });
 
 describe("Status Page Cryptographic HMAC Token Authentication (P0-SEC-01)", () => {
-  const secretKey = "pulseguard-test-secret-key-32chars-minimum-safe-entropy";
+  const secretKey = "steadystack-test-secret-key-32chars-minimum-safe-entropy";
   const pageId = "page_cm7183019481948194";
 
   test("generates and verifies signed HMAC token for status page auth", async () => {

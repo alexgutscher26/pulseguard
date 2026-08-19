@@ -7,7 +7,7 @@ export const authCmd = new Command("auth").description("Manage authentication");
 
 authCmd
   .command("login")
-  .description("Authenticate with a PulseGuard API key")
+  .description("Authenticate with a SteadyStack API key")
   .option("--key <apiKey>", "API key (pg_live_...)")
   .option("--url <baseUrl>", "Custom base URL (self-hosted instances)")
   .action(async (opts) => {
@@ -17,7 +17,7 @@ authCmd
     if (!apiKey) {
       console.log(
         chalk.dim("Generate an API key at: ") +
-          chalk.cyan("https://pulseguard.io/dashboard/settings?tab=api-keys"),
+          chalk.cyan("https://steadystack.dev/dashboard/settings?tab=api-keys"),
       );
       console.error(chalk.red("✖ --key is required"));
       process.exit(1);
@@ -52,8 +52,7 @@ authCmd
     const config = getConfig();
     if (!config.apiKey) {
       console.log(
-        chalk.yellow("Not logged in. Run: ") +
-          chalk.bold("pulse auth login --key <API_KEY>"),
+        chalk.yellow("Not logged in. Run: ") + chalk.bold("pulse auth login --key <API_KEY>"),
       );
       return;
     }

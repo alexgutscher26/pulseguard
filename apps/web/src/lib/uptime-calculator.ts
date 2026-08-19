@@ -1,4 +1,4 @@
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 
 /**
  * Default badge text for widget status display

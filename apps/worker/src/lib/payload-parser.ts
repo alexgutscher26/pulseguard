@@ -1,5 +1,5 @@
 /**
- * PulseGuard Sentinel: High-Performance Payload Validation Engine
+ * SteadyStack Sentinel: High-Performance Payload Validation Engine
  *
  * Provides a WASM-identical API for validating response bodies and status codes
  * against complex expectations (regex, JSON paths).

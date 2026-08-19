@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 import { authenticateApiKey } from "../../_lib/auth";
 
 // GET /api/v1/alert-channels/:id

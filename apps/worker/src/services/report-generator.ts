@@ -1,6 +1,6 @@
-import type { PrismaClient } from "@pulseguard/db";
+import type { PrismaClient } from "@steadystack/db";
 import { getMonthlyStats } from "./analytics-service";
-import { renderMonthlyReportToBuffer, sendMonthlyReport } from "@pulseguard/email";
+import { renderMonthlyReportToBuffer, sendMonthlyReport } from "@steadystack/email";
 
 export async function generateAndSendMonthlyReports(
   prisma: PrismaClient,

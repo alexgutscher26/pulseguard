@@ -1,6 +1,6 @@
 import { describe, test, expect } from "bun:test";
 import { evaluateQuorum, QuorumEngine, DEFAULT_QUORUM_CONFIG } from "../services/quorum-engine";
-import type { ProbeCheckResult } from "@pulseguard/types";
+import type { ProbeCheckResult } from "@steadystack/types";
 
 describe("Quorum Engine — Zero False Positive Consensus Verification", () => {
   const createMockResults = (overrides: Partial<ProbeCheckResult>[]): ProbeCheckResult[] => {

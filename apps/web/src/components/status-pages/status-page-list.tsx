@@ -1,6 +1,6 @@
 "use client";
 
-import { env } from "@pulseguard/env/web";
+import { env } from "@steadystack/env/web";
 import { useState } from "react";
 import Link from "next/link";
 import { Plus, Globe, ExternalLink, Settings } from "lucide-react";

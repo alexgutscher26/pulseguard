@@ -1,14 +1,14 @@
 blank_issues_enabled: false
 contact_links:
   - name: 💬 Q&A — Ask a Question
-    url: https://github.com/alexgutscher26/pulseguard/discussions/categories/q-a
+    url: https://github.com/getsteadystack/SteadyStack/discussions/categories/q-a
     about: Ask questions about setup, configuration, and usage in GitHub Discussions.
   - name: ✨ Ideas & Feature Requests
-    url: https://github.com/alexgutscher26/pulseguard/discussions/categories/ideas
+    url: https://github.com/getsteadystack/SteadyStack/discussions/categories/ideas
     about: Share feature ideas and vote on what the community wants next.
   - name: 🔒 Security Vulnerability
-    url: https://github.com/alexgutscher26/pulseguard/blob/main/SECURITY.md
+    url: https://github.com/getsteadystack/SteadyStack/blob/main/SECURITY.md
     about: Please DO NOT open a public issue for security vulnerabilities. Read our Security policy instead.
   - name: 📣 Show & Tell
-    url: https://github.com/alexgutscher26/pulseguard/discussions/categories/show-and-tell
-    about: Share how you're using PulseGuard — projects, integrations, and setups.
+    url: https://github.com/getsteadystack/SteadyStack/discussions/categories/show-and-tell
+    about: Share how you're using SteadyStack — projects, integrations, and setups.

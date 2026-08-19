@@ -1,6 +1,6 @@
 "use server";
 
-import { isPrivateOrInternalUrl } from "@pulseguard/core";
+import { isPrivateOrInternalUrl } from "@steadystack/core";
 
 export interface RegionalProbeResult {
   region: string;
@@ -142,7 +142,7 @@ export async function checkServiceLiveStatus(
         method: "HEAD",
         redirect: "error",
         headers: {
-          "User-Agent": "PulseGuard-Edge-Status-Probe/2.0 (+https://pulseguard.io)",
+          "User-Agent": "SteadyStack-Edge-Status-Probe/2.0 (+https://steadystack.dev)",
           Accept: "*/*",
         },
         signal: AbortSignal.timeout(6000),
@@ -160,7 +160,7 @@ export async function checkServiceLiveStatus(
         const getRes = await fetch(targetUrl, {
           method: "GET",
           headers: {
-            "User-Agent": "PulseGuard-Edge-Status-Probe/2.0 (+https://pulseguard.io)",
+            "User-Agent": "SteadyStack-Edge-Status-Probe/2.0 (+https://steadystack.dev)",
             Accept: "*/*",
           },
           signal: AbortSignal.timeout(6000),

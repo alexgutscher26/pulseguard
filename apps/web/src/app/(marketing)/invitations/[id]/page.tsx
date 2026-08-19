@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
-import { auth } from "@pulseguard/auth";
+import { auth } from "@steadystack/auth";
 import { getInvitationDetails } from "@/actions/team";
 import { InvitationClient } from "./invitation-client";
 import type { Metadata } from "next";
@@ -17,14 +17,14 @@ export async function generateMetadata({
 
   if (!invitation) {
     return {
-      title: "Invitation Not Found | PulseGuard",
+      title: "Invitation Not Found | SteadyStack",
       description: "This team invitation is invalid or has expired.",
     };
   }
 
   return {
-    title: `Join ${invitation.organization.name} | PulseGuard`,
-    description: `You have been invited to join the ${invitation.organization.name} workspace on PulseGuard.`,
+    title: `Join ${invitation.organization.name} | SteadyStack`,
+    description: `You have been invited to join the ${invitation.organization.name} workspace on SteadyStack.`,
   };
 }
 

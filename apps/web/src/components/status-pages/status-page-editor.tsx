@@ -1,6 +1,6 @@
 "use client";
 
-import { env } from "@pulseguard/env/web";
+import { env } from "@steadystack/env/web";
 
 import { useState, useEffect } from "react";
 import {

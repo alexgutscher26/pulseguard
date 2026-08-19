@@ -4,8 +4,8 @@ import { useState } from "react";
 import {
   CLOUDFLARE_PROBE_REGIONS,
   type Region,
-  PULSEGUARD_CANONICAL_USER_AGENT,
-} from "@pulseguard/shared";
+  STEADYSTACK_CANONICAL_USER_AGENT,
+} from "@steadystack/shared";
 import {
   Copy,
   Check,
@@ -45,12 +45,12 @@ export default function LocationsClient({ probes }: LocationsClientProps) {
 # Subrequests include an authentic, un-spoofable CF-Worker header.
 #
 # Match Expression:
-(http.request.headers["cf-worker"][0] eq "pulseguard.io")
+(http.request.headers["cf-worker"][0] eq "steadystack.dev")
 # Action: Skip / Bypass WAF & Rate Limiting
 
 # 2. General WAF & Reverse Proxy Headers (Fastly / AWS WAF / Nginx)
-CF-Worker: pulseguard.io
-User-Agent: ${PULSEGUARD_CANONICAL_USER_AGENT}`;
+CF-Worker: steadystack.dev
+User-Agent: ${STEADYSTACK_CANONICAL_USER_AGENT}`;
 
   return (
     <div className="min-h-screen bg-background text-foreground pt-32 pb-24 px-4 sm:px-6 lg:px-8">
@@ -171,7 +171,9 @@ User-Agent: ${PULSEGUARD_CANONICAL_USER_AGENT}`;
               edge runtimes egress via Cloudflare&apos;s shared global edge IP pool, IP allowlisting
               is neither deterministic nor secure. Instead, configure your WAF or reverse proxy to
               match on our cryptographic{" "}
-              <code className="text-primary font-mono font-semibold">CF-Worker: pulseguard.io</code>{" "}
+              <code className="text-primary font-mono font-semibold">
+                CF-Worker: steadystack.dev
+              </code>{" "}
               header and verified{" "}
               <code className="text-primary font-mono font-semibold">User-Agent</code>.
             </p>
@@ -200,7 +202,7 @@ User-Agent: ${PULSEGUARD_CANONICAL_USER_AGENT}`;
           {/* Quick Copy Action Buttons */}
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <button
-              onClick={() => handleCopy("CF-Worker: pulseguard.io", "cf-worker")}
+              onClick={() => handleCopy("CF-Worker: steadystack.dev", "cf-worker")}
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-muted/60 border border-border text-xs font-mono font-medium hover:bg-muted transition-colors cursor-pointer"
             >
               {copiedSection === "cf-worker" ? (
@@ -215,7 +217,7 @@ User-Agent: ${PULSEGUARD_CANONICAL_USER_AGENT}`;
 
             <button
               onClick={() =>
-                handleCopy("PulseGuard-Monitor/1.0 (+https://pulseguard.io/bot)", "user-agent")
+                handleCopy("SteadyStack-Monitor/1.0 (+https://steadystack.dev/bot)", "user-agent")
               }
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-muted/60 border border-border text-xs font-mono font-medium hover:bg-muted transition-colors cursor-pointer"
             >
@@ -231,7 +233,7 @@ User-Agent: ${PULSEGUARD_CANONICAL_USER_AGENT}`;
 
             <button
               onClick={() =>
-                handleCopy('http.request.headers["cf-worker"][0] eq "pulseguard.io"', "waf-rule")
+                handleCopy('http.request.headers["cf-worker"][0] eq "steadystack.dev"', "waf-rule")
               }
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-muted/60 border border-border text-xs font-mono font-medium hover:bg-muted transition-colors cursor-pointer"
             >

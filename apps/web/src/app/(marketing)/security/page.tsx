@@ -4,11 +4,11 @@ import LegalPage from "@/components/legal-page";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Security | PulseGuard",
+  title: "Security | SteadyStack",
   description:
-    "PulseGuard Security — how we protect your monitoring infrastructure, credentials, and data.",
+    "SteadyStack Security — how we protect your monitoring infrastructure, credentials, and data.",
   openGraph: {
-    title: "Security | PulseGuard",
+    title: "Security | SteadyStack",
     description: "How we protect your monitoring infrastructure, credentials, and data.",
   },
 };
@@ -17,17 +17,17 @@ const sections = [
   {
     title: "Infrastructure Security",
     content:
-      "PulseGuard runs on high-availability, enterprise-grade cloud infrastructure powered by Cloudflare's Edge network and secure cloud providers. Our database, monitoring workers, and distributed probes operate in isolated virtual environments. All physical data centers utilized by our providers comply with strict security standards, including SOC 2 Type II, ISO 27001, and PCI-DSS compliance.",
+      "SteadyStack runs on high-availability, enterprise-grade cloud infrastructure powered by Cloudflare's Edge network and secure cloud providers. Our database, monitoring workers, and distributed probes operate in isolated virtual environments. All physical data centers utilized by our providers comply with strict security standards, including SOC 2 Type II, ISO 27001, and PCI-DSS compliance.",
   },
   {
     title: "Data Protection & Encryption",
     content:
-      "All data transmitted to or from PulseGuard is encrypted in transit using TLS 1.3/1.2 protocols with secure cipher suites. Data at rest is encrypted using industry-standard AES-256 encryption. We strictly enforce HTTPS across all endpoints, utilizing HTTP Strict Transport Security (HSTS) to prevent unauthorized interception. Sensitive database fields, such as credential tokens, are hashed or encrypted at the database level.",
+      "All data transmitted to or from SteadyStack is encrypted in transit using TLS 1.3/1.2 protocols with secure cipher suites. Data at rest is encrypted using industry-standard AES-256 encryption. We strictly enforce HTTPS across all endpoints, utilizing HTTP Strict Transport Security (HSTS) to prevent unauthorized interception. Sensitive database fields, such as credential tokens, are hashed or encrypted at the database level.",
   },
   {
     title: "Application Security & Hardening",
     content:
-      "We design and build PulseGuard with security-first principles. We employ robust rate limiting, strict CORS policies, and automated input validation (via Zod validation schemas) to protect our APIs from SQL injection, Cross-Site Scripting (XSS), and other OWASP Top 10 vulnerabilities. Our dependency stack is continuously scanned for security advisories, and we perform daily automated package audits to eliminate vulnerabilities before deployment.",
+      "We design and build SteadyStack with security-first principles. We employ robust rate limiting, strict CORS policies, and automated input validation (via Zod validation schemas) to protect our APIs from SQL injection, Cross-Site Scripting (XSS), and other OWASP Top 10 vulnerabilities. Our dependency stack is continuously scanned for security advisories, and we perform daily automated package audits to eliminate vulnerabilities before deployment.",
   },
   {
     title: "Authentication & Access Control",
@@ -47,7 +47,7 @@ const sections = [
   {
     title: "Responsible Disclosure Policy",
     content:
-      "We value the contribution of security researchers in keeping PulseGuard secure. If you believe you have discovered a security vulnerability in our application, API, edge workers, or infrastructure, please report it privately to security@steadystack.dev. We request that you do not disclose the vulnerability publicly or to any third party until we have had a reasonable opportunity to investigate and address the issue.",
+      "We value the contribution of security researchers in keeping SteadyStack secure. If you believe you have discovered a security vulnerability in our application, API, edge workers, or infrastructure, please report it privately to security@steadystack.dev. We request that you do not disclose the vulnerability publicly or to any third party until we have had a reasonable opportunity to investigate and address the issue.",
   },
 ];
 

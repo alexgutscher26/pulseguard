@@ -115,13 +115,13 @@ export function DispatchClient() {
     "summary": "payment-api-gateway latency exceeds 2000ms threshold",
     "timestamp": "${new Date().toISOString()}",
     "severity": "critical",
-    "source": "pulseguard-global-sentinel"
+    "source": "steadystack-global-sentinel"
   },
   "routing_key": "pd_service_key_982x1"
 }`;
       default:
         return `{
-  "subject": "PulseGuard Alert: payment-api-gateway DEGRADED",
+  "subject": "SteadyStack Alert: payment-api-gateway DEGRADED",
   "body": "Your monitor payment-api-gateway is failing health checks from Frankfurt and London nodes..."
 }`;
     }

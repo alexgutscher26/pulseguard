@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"log"
-	"github.com/alexgutscher26/pulseguard/terraform-provider-pulseguard/internal/provider"
+	"github.com/getsteadystack/SteadyStack/terraform-provider-steadystack/internal/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 )
 
@@ -19,7 +19,7 @@ func main() {
 	flag.Parse()
 
 	opts := providerserver.ServeOpts{
-		Address: "registry.terraform.io/alexgutscher26/pulseguard",
+		Address: "registry.terraform.io/getsteadystack/SteadyStack",
 		Debug:   debug,
 	}
 

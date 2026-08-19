@@ -18,7 +18,7 @@
         "y": 0
       },
       "id": 100,
-      "title": "PulseGuard Overview",
+      "title": "SteadyStack Overview",
       "type": "row"
     },
     {
@@ -26,7 +26,7 @@
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
       },
-      "description": "Total active monitors monitored by PulseGuard edge network",
+      "description": "Total active monitors monitored by SteadyStack edge network",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -72,7 +72,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "count(pulseguard_monitor_status)",
+          "expr": "count(steadystack_monitor_status)",
           "legendFormat": "Total Monitors",
           "range": true,
           "refId": "A"
@@ -135,7 +135,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "count(pulseguard_monitor_status == 0) or vector(0)",
+          "expr": "count(steadystack_monitor_status == 0) or vector(0)",
           "legendFormat": "Down Monitors",
           "range": true,
           "refId": "A"
@@ -197,7 +197,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "pulseguard_monitor_latency_ms{name=~\"$monitor\"}",
+          "expr": "steadystack_monitor_latency_ms{name=~\"$monitor\"}",
           "legendFormat": "{{name}} ({{region}})",
           "range": true,
           "refId": "A"
@@ -210,7 +210,7 @@
   "refresh": "30s",
   "schemaVersion": 38,
   "style": "dark",
-  "tags": ["pulseguard", "uptime", "edge", "sre"],
+  "tags": ["steadystack", "uptime", "edge", "sre"],
   "templating": {
     "list": [
       {
@@ -237,7 +237,7 @@
           "type": "prometheus",
           "uid": "${DS_PROMETHEUS}"
         },
-        "definition": "label_values(pulseguard_monitor_status, name)",
+        "definition": "label_values(steadystack_monitor_status, name)",
         "hide": 0,
         "includeAll": true,
         "label": "Monitor",
@@ -245,7 +245,7 @@
         "name": "monitor",
         "options": [],
         "query": {
-          "query": "label_values(pulseguard_monitor_status, name)",
+          "query": "label_values(steadystack_monitor_status, name)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
@@ -262,7 +262,7 @@
     "refresh_intervals": ["5s", "10s", "30s", "1m", "5m"]
   },
   "timezone": "browser",
-  "title": "PulseGuard - Edge Uptime & Latency NOC",
-  "uid": "pulseguard-edge-noc",
+  "title": "SteadyStack - Edge Uptime & Latency NOC",
+  "uid": "steadystack-edge-noc",
   "version": 1
 }

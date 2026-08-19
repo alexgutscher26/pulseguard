@@ -1,12 +1,12 @@
 import { DurableObject } from "cloudflare:workers";
-import type { ProbeCheckResult, ProbeHealthState } from "@pulseguard/types";
-import { isPrivateOrInternalUrlAsync, decryptSecret } from "@pulseguard/core";
+import type { ProbeCheckResult, ProbeHealthState } from "@steadystack/types";
+import { isPrivateOrInternalUrlAsync, decryptSecret } from "@steadystack/core";
 import {
   getRegionByCode,
   type DOLocationHint,
-  PULSEGUARD_CANONICAL_USER_AGENT,
-} from "@pulseguard/shared";
-import { getPrisma } from "@pulseguard/db";
+  STEADYSTACK_CANONICAL_USER_AGENT,
+} from "@steadystack/shared";
+import { getPrisma } from "@steadystack/db";
 import type { Env } from "../env";
 
 interface ProbeStorageState {
@@ -91,7 +91,7 @@ export class RegionalProbe extends DurableObject<Env> {
   private async measureColo(): Promise<{ colo: string; ip: string }> {
     try {
       const traceRes = await fetch("https://www.cloudflare.com/cdn-cgi/trace", {
-        headers: { "User-Agent": "PulseGuard-Probe-Bootstrap/1.0" },
+        headers: { "User-Agent": "SteadyStack-Probe-Bootstrap/1.0" },
         signal: AbortSignal.timeout(4000),
       });
       if (traceRes.ok) {
@@ -187,7 +187,7 @@ export class RegionalProbe extends DurableObject<Env> {
           res = await fetch(currentUrl, {
             method: hops === 0 ? monitor.method || "GET" : "GET",
             headers: {
-              "User-Agent": PULSEGUARD_CANONICAL_USER_AGENT,
+              "User-Agent": STEADYSTACK_CANONICAL_USER_AGENT,
               Accept:
                 "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
               "Accept-Language": "en-US,en;q=0.9",

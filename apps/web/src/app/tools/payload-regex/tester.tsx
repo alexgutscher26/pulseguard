@@ -26,7 +26,7 @@ import { GlitchText } from "@/components/ui/effects/glitch-text";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { PRODUCT_CONFIG } from "@pulseguard/shared";
+import { PRODUCT_CONFIG } from "@steadystack/shared";
 
 const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";
 
@@ -68,10 +68,10 @@ const MOCK_SITES: Record<string, string> = {
   </main>
 </body>
 </html>`,
-  "pulseguard.com": `<!DOCTYPE html>
+  "steadystack.dev": `<!DOCTYPE html>
 <html>
 <head>
-  <title>PulseGuard | Global Infrastructure Monitoring & Telemetry</title>
+  <title>SteadyStack | Global Infrastructure Monitoring & Telemetry</title>
   <meta name="status" content="operational">
 </head>
 <body>

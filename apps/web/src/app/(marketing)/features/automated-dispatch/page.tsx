@@ -4,11 +4,11 @@ import { DispatchClient } from "./dispatch-client";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Automated Incident Alert Dispatching | PulseGuard Features",
+  title: "Automated Incident Alert Dispatching | SteadyStack Features",
   description:
     "Zero delay integration pipeline. Automatically dispatch alerts, invoke custom webhooks, and page on-call engineering schedules the instant an outage is validated.",
   openGraph: {
-    title: "Automated Incident Alert Dispatching | PulseGuard",
+    title: "Automated Incident Alert Dispatching | SteadyStack",
     description:
       "Configure instant webhook triggers and on-call routing to minimize incident response times.",
     type: "website",

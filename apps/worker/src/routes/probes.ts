@@ -1,4 +1,4 @@
-import { getPrisma } from "@pulseguard/db";
+import { getPrisma } from "@steadystack/db";
 import { AppError } from "../errors";
 import { json, requireJsonBody, withErrorHandling } from "./http";
 import type { RouteHandler } from "./types";

@@ -1,5 +1,5 @@
 {
-  "name": "@pulseguard/api",
+  "name": "@steadystack/api",
   "version": "0.0.0",
   "type": "module",
   "exports": {
@@ -14,14 +14,14 @@
     "publint": "publint"
   },
   "dependencies": {
-    "@pulseguard/auth": "workspace:*",
-    "@pulseguard/db": "workspace:*",
+    "@steadystack/auth": "workspace:*",
+    "@steadystack/db": "workspace:*",
     "@trpc/server": "catalog:",
     "next": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@pulseguard/config": "workspace:*",
+    "@steadystack/config": "workspace:*",
     "typescript": "catalog:"
   }
 }

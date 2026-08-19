@@ -2,45 +2,45 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "pulseguard.fullname" . }}-probe
+  name: {{ include "steadystack.fullname" . }}-probe
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "pulseguard.labels" . | nindent 4 }}
+    {{- include "steadystack.labels" . | nindent 4 }}
     app.kubernetes.io/component: probe
 spec:
   replicas: {{ .Values.probe.replicaCount }}
   selector:
     matchLabels:
-      {{- include "pulseguard.probe.selectorLabels" . | nindent 6 }}
+      {{- include "steadystack.probe.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
         # Force pod restart when secrets change
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
       labels:
-        {{- include "pulseguard.probe.selectorLabels" . | nindent 8 }}
+        {{- include "steadystack.probe.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.global.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "pulseguard.serviceAccountName" . }}
+      serviceAccountName: {{ include "steadystack.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.probe.podSecurityContext | nindent 8 }}
       containers:
         - name: probe
-          image: "{{ .Values.probe.image.repository }}:{{ include "pulseguard.probe.imageTag" . }}"
+          image: "{{ .Values.probe.image.repository }}:{{ include "steadystack.probe.imageTag" . }}"
           imagePullPolicy: {{ .Values.probe.image.pullPolicy }}
           securityContext:
             {{- toYaml .Values.probe.securityContext | nindent 12 }}
           env:
-            - name: PULSEGUARD_API_URL
+            - name: STEADYSTACK_API_URL
               value: {{ .Values.probe.config.apiUrl | quote }}
-            - name: PULSEGUARD_PROBE_TOKEN
+            - name: STEADYSTACK_PROBE_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "pulseguard.fullname" . }}-secrets
-                  key: PULSEGUARD_PROBE_TOKEN
+                  name: {{ include "steadystack.fullname" . }}-secrets
+                  key: STEADYSTACK_PROBE_TOKEN
                   optional: true
             - name: PROBE_REGION
               value: {{ .Values.probe.config.region | quote }}

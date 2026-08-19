@@ -25,7 +25,7 @@ export function BenchmarkScorecard() {
         {/* 3 Contenders Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {PROVIDER_SUMMARIES.map((p) => {
-            const isPG = p.providerName === "PulseGuard";
+            const isPG = p.providerName === "SteadyStack";
             const isUR = p.providerName === "UptimeRobot";
 
             return (
@@ -169,7 +169,7 @@ export function BenchmarkScorecard() {
                 <tr>
                   <th className="py-3.5 px-4 font-semibold">Evaluation Dimension</th>
                   <th className="py-3.5 px-4 font-semibold text-emerald-400">
-                    PulseGuard (Edge Quorum)
+                    SteadyStack (Edge Quorum)
                   </th>
                   <th className="py-3.5 px-4 font-semibold">UptimeRobot (Pro)</th>
                   <th className="py-3.5 px-4 font-semibold">Pingdom (Advanced)</th>
@@ -198,7 +198,7 @@ export function BenchmarkScorecard() {
                   <td className="py-3.5 px-4 text-rose-400 font-bold">28 false alarms</td>
                   <td className="py-3.5 px-4 text-rose-400 font-bold">41 false alarms</td>
                   <td className="py-3.5 px-4 text-right text-emerald-400 font-bold">
-                    PulseGuard (100% clean)
+                    SteadyStack (100% clean)
                   </td>
                 </tr>
 
@@ -210,7 +210,7 @@ export function BenchmarkScorecard() {
                   <td className="py-3.5 px-4 text-amber-400">12.5%</td>
                   <td className="py-3.5 px-4 text-amber-400">8.9%</td>
                   <td className="py-3.5 px-4 text-right text-emerald-400 font-bold">
-                    PulseGuard +87.5%
+                    SteadyStack +87.5%
                   </td>
                 </tr>
 
@@ -234,7 +234,7 @@ export function BenchmarkScorecard() {
                   <td className="py-3.5 px-4 text-rose-400">87.5%</td>
                   <td className="py-3.5 px-4 text-rose-400">91.1%</td>
                   <td className="py-3.5 px-4 text-right text-emerald-400 font-bold">
-                    PulseGuard (Zero fatigue)
+                    SteadyStack (Zero fatigue)
                   </td>
                 </tr>
 
@@ -248,7 +248,7 @@ export function BenchmarkScorecard() {
                   <td className="py-3.5 px-4 text-muted-foreground">31,400ms (+30s retry)</td>
                   <td className="py-3.5 px-4 text-muted-foreground">28,200ms (+25s probe 2)</td>
                   <td className="py-3.5 px-4 text-right text-emerald-400 font-bold">
-                    PulseGuard (33x faster)
+                    SteadyStack (33x faster)
                   </td>
                 </tr>
 
@@ -273,7 +273,7 @@ export function BenchmarkScorecard() {
                   <td className="py-3.5 px-4 text-muted-foreground">$0.000080</td>
                   <td className="py-3.5 px-4 text-muted-foreground">$0.000195</td>
                   <td className="py-3.5 px-4 text-right text-emerald-400 font-bold">
-                    PulseGuard (6.6x - 16x cheaper)
+                    SteadyStack (6.6x - 16x cheaper)
                   </td>
                 </tr>
               </tbody>

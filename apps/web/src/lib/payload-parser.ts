@@ -1,5 +1,5 @@
 /**
- * PulseGuard Sentinel: High-Performance Payload Validation Engine
+ * SteadyStack Sentinel: High-Performance Payload Validation Engine
  */
 
 export interface ValidationResult {

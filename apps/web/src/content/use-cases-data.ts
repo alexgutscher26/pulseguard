@@ -19,7 +19,7 @@ export const USE_CASES: Record<string, UseCaseItem> = {
       "Eliminate 3 AM pager noise with 4-of-7 multi-region consensus validation and native Docker probes.",
     badge: "For DevOps & SREs",
     description:
-      "PulseGuard executes multi-region edge checks across 7 sovereign global regions. When an endpoint fails in one region, our 4-of-7 quorum consensus engine verifies the outage across independent vantage points to eliminate localized ISP glitches.",
+      "SteadyStack executes multi-region edge checks across 7 sovereign global regions. When an endpoint fails in one region, our 4-of-7 quorum consensus engine verifies the outage across independent vantage points to eliminate localized ISP glitches.",
     heroGraphic: "terminal",
     keyMetrics: [
       {
@@ -82,7 +82,7 @@ export const USE_CASES: Record<string, UseCaseItem> = {
       },
     ],
     quote: {
-      text: "PulseGuard eliminated our nightly false alarm fatigue. We only get alerted when real incidents impact our infrastructure.",
+      text: "SteadyStack eliminated our nightly false alarm fatigue. We only get alerted when real incidents impact our infrastructure.",
       author: "Alex Rivers",
       role: "Lead SRE",
       company: "CloudScale Systems",
@@ -95,7 +95,7 @@ export const USE_CASES: Record<string, UseCaseItem> = {
       "Every minute of checkout downtime costs revenue. Detect payment gateway and cart failures instantly.",
     badge: "For E-Commerce Stores",
     description:
-      "During peak shopping events like Black Friday, 5-minute check intervals are too slow. PulseGuard monitors your checkout funnel, payment gateway endpoints, and search APIs every 60 seconds.",
+      "During peak shopping events like Black Friday, 5-minute check intervals are too slow. SteadyStack monitors your checkout funnel, payment gateway endpoints, and search APIs every 60 seconds.",
     heroGraphic: "shopping-cart",
     keyMetrics: [
       {
@@ -155,7 +155,7 @@ export const USE_CASES: Record<string, UseCaseItem> = {
       },
     ],
     quote: {
-      text: "PulseGuard caught a silent Stripe webhook failure during our holiday sale. Saved us thousands in lost orders.",
+      text: "SteadyStack caught a silent Stripe webhook failure during our holiday sale. Saved us thousands in lost orders.",
       author: "Elena Rostova",
       role: "VP of E-Commerce",
       company: "Nordic Goods",
@@ -168,7 +168,7 @@ export const USE_CASES: Record<string, UseCaseItem> = {
       "Custom domain status pages, automated SLA reporting, and transparent incident management for SaaS.",
     badge: "For SaaS Companies",
     description:
-      "Enterprise buyers demand strict uptime SLAs and total transparency. PulseGuard gives your SaaS application beautiful white-label status pages, automatic SLA calculations, and AI-driven incident post-mortems.",
+      "Enterprise buyers demand strict uptime SLAs and total transparency. SteadyStack gives your SaaS application beautiful white-label status pages, automatic SLA calculations, and AI-driven incident post-mortems.",
     heroGraphic: "layers",
     keyMetrics: [
       {
@@ -231,7 +231,7 @@ export const USE_CASES: Record<string, UseCaseItem> = {
       },
     ],
     quote: {
-      text: "Our enterprise deals require 99.9% SLA proof. PulseGuard automated all our status reporting effortlessly.",
+      text: "Our enterprise deals require 99.9% SLA proof. SteadyStack automated all our status reporting effortlessly.",
       author: "Marcus Chen",
       role: "CTO & Co-Founder",
       company: "SyncMesh Data",
@@ -244,7 +244,7 @@ export const USE_CASES: Record<string, UseCaseItem> = {
       "Assert JSON responses, validate headers, and test multi-step OAuth API sequences worldwide.",
     badge: "For API & Microservice Devs",
     description:
-      "Simple HTTP GET pings aren't enough for modern APIs. PulseGuard validates payload regex matches, verifies JSON schemas, checks SSL certificate expirations, and executes multi-step HTTP sequences.",
+      "Simple HTTP GET pings aren't enough for modern APIs. SteadyStack validates payload regex matches, verifies JSON schemas, checks SSL certificate expirations, and executes multi-step HTTP sequences.",
     heroGraphic: "code",
     keyMetrics: [
       {

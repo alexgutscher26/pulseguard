@@ -72,8 +72,8 @@ export function HallOfFameClient({ initialEntries }: { initialEntries: Leaderboa
           Uptime Performers
         </h1>
         <p className="text-muted-foreground text-sm leading-relaxed max-w-xl">
-          The indie hackers and teams running the most reliable infrastructure on PulseGuard. Ranked
-          by weighted SLA across all monitors. Opt in from your settings to claim your spot.
+          The indie hackers and teams running the most reliable infrastructure on SteadyStack.
+          Ranked by weighted SLA across all monitors. Opt in from your settings to claim your spot.
         </p>
       </div>
 

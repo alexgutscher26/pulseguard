@@ -1,5 +1,5 @@
 {
-  "name": "@pulseguard/email",
+  "name": "@steadystack/email",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -13,14 +13,14 @@
     "publint": "publint"
   },
   "dependencies": {
-    "@pulseguard/env": "workspace:*",
     "@react-pdf/renderer": "^4.3.2",
+    "@steadystack/env": "workspace:*",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "resend": "^4.0.0"
   },
   "devDependencies": {
-    "@pulseguard/config": "workspace:*",
+    "@steadystack/config": "workspace:*",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "typescript": "catalog:"

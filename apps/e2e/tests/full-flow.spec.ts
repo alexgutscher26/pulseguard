@@ -3,7 +3,7 @@ import { db } from "../lib/db";
 
 const TEST_USER = {
   name: "E2E Tester",
-  email: `e2e_${Date.now()}@pulseguard.io`,
+  email: `e2e_${Date.now()}@steadystack.dev`,
   password: "Password123!",
 };
 
@@ -28,9 +28,7 @@ test.describe("E2E Critical Flow", () => {
     }
   });
 
-  test("Complete Lifecycle: SignUp -> Create -> Verify -> Delete", async ({
-    page,
-  }) => {
+  test("Complete Lifecycle: SignUp -> Create -> Verify -> Delete", async ({ page }) => {
     await test.step("Sign Up", async () => {
       await page.goto("/signup");
       await expect(page).toHaveTitle(/Registration|Sign Up/i);

@@ -35,10 +35,10 @@ export async function generateMetadata({
   if (!post) return {};
 
   const { title, description, date, tags } = post.meta;
-  const url = `https://pulseguard.com/vs/${competitor}`;
+  const url = `https://steadystack.dev/vs/${competitor}`;
 
   return {
-    title: `${title} | PulseGuard Architecture`,
+    title: `${title} | SteadyStack Architecture`,
     description,
     keywords: tags,
     alternates: { canonical: url },
@@ -47,7 +47,7 @@ export async function generateMetadata({
       url,
       title,
       description,
-      siteName: "PulseGuard",
+      siteName: "SteadyStack",
       publishedTime: date,
       tags,
     },
@@ -83,10 +83,10 @@ export default async function VsCompetitorPage({
     author: { "@type": "Person", name: author },
     publisher: {
       "@type": "Organization",
-      name: "PulseGuard",
-      url: "https://pulseguard.com",
+      name: "SteadyStack",
+      url: "https://steadystack.dev",
     },
-    mainEntityOfPage: `https://pulseguard.com/vs/${competitor}`,
+    mainEntityOfPage: `https://steadystack.dev/vs/${competitor}`,
     keywords: tags.join(", "),
   };
 

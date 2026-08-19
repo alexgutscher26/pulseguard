@@ -1,6 +1,6 @@
 # Changesets
 
-This folder contains metadata about version changes for the PulseGuard project. Changesets are used to track
+This folder contains metadata about version changes for the SteadyStack project. Changesets are used to track
 and manage version bumps for packages within the monorepo. Each file in this directory represents a
 single changeset that has been created by a developer to indicate what changed in a specific version bump.
 
@@ -49,9 +49,9 @@ A typical changeset file looks like this:
 
 ```yaml
 ---
-"@pulseguard/core": minor
+"@steadystack/core": minor
 
-"@pulseguard/worker": minor
+"@steadystack/worker": minor
 
 ---
 ## Added
@@ -60,7 +60,7 @@ A typical changeset file looks like this:
 
 ## Changed
 
-- Updated @pulseguard/db schema to include invite tracking.
+- Updated @steadystack/db schema to include invite tracking.
 ```
 
 ## Common Questions

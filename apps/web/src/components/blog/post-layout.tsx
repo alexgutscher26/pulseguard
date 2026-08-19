@@ -41,7 +41,7 @@ export default function PostLayout({
   relatedPosts = [],
   children,
 }: PostLayoutProps) {
-  const currentUrl = slug ? `https://pulseguard.com/blog/${slug}` : undefined;
+  const currentUrl = slug ? `https://steadystack.dev/blog/${slug}` : undefined;
 
   const categoryColor =
     category === "Engineering"
@@ -99,7 +99,7 @@ export default function PostLayout({
                 <span className="text-xs font-semibold text-foreground flex items-center gap-1">
                   {author}
                 </span>
-                <span className="text-[11px] text-muted-foreground">PulseGuard Engineering</span>
+                <span className="text-[11px] text-muted-foreground">SteadyStack Engineering</span>
               </div>
             </div>
 
@@ -162,7 +162,7 @@ export default function PostLayout({
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground leading-relaxed m-0">
-                    Core engineer and distributed systems enthusiast at PulseGuard. Building global
+                    Core engineer and distributed systems enthusiast at SteadyStack. Building global
                     edge monitoring mesh networks and 4-of-7 quorum incident alert pipelines.
                   </p>
                 </div>
@@ -185,7 +185,7 @@ export default function PostLayout({
                     Quorum-Verified Monitoring
                   </div>
                   <h3 className="text-xl sm:text-2xl font-extrabold text-foreground tracking-tight m-0">
-                    Stop 3 AM false alarms with PulseGuard
+                    Stop 3 AM false alarms with SteadyStack
                   </h3>
                   <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed m-0 max-w-xl">
                     Get 60-second checks across 7 global regions, 4-of-7 multi-region consensus
@@ -219,7 +219,7 @@ export default function PostLayout({
                 <div className="p-4 rounded-xl border border-border/80 bg-card/40 text-xs">
                   <div className="flex items-center gap-2 font-semibold text-foreground mb-2">
                     <ShieldCheck className="size-3.5 text-primary" />
-                    <span>PulseGuard Free</span>
+                    <span>SteadyStack Free</span>
                   </div>
                   <p className="text-[11px] text-muted-foreground leading-relaxed mb-3">
                     50 monitors, 60s intervals, 7 global edge regions, and multi-node quorum
@@ -229,7 +229,7 @@ export default function PostLayout({
                     href={"/auth/sign-up" as any}
                     className="inline-flex items-center justify-center w-full py-1.5 text-[11px] font-semibold bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground border border-primary/30 rounded-md transition-colors"
                   >
-                    Try PulseGuard Free
+                    Try SteadyStack Free
                   </Link>
                 </div>
               </aside>

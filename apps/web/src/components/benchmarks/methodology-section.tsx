@@ -87,7 +87,7 @@ export function MethodologySection() {
               Benchmark Endpoint Fleet Specification
             </h3>
             <p className="text-xs text-muted-foreground mt-0.5">
-              The 10 production endpoints monitored simultaneously by PulseGuard, UptimeRobot, and
+              The 10 production endpoints monitored simultaneously by SteadyStack, UptimeRobot, and
               Pingdom at 60-second intervals.
             </p>
           </div>
@@ -137,7 +137,7 @@ export function MethodologySection() {
               <div className="text-primary font-bold text-sm my-2">P = TP / (TP + FP)</div>
               <p className="text-[11px] text-muted-foreground font-sans leading-relaxed">
                 Percentage of alerts dispatched that corresponded to real, verified outages.
-                PulseGuard scored 100%, UptimeRobot 12.5%, Pingdom 8.9%.
+                SteadyStack scored 100%, UptimeRobot 12.5%, Pingdom 8.9%.
               </p>
             </div>
 
@@ -148,7 +148,7 @@ export function MethodologySection() {
               <div className="text-rose-400 font-bold text-sm my-2">FDR = FP / (TP + FP)</div>
               <p className="text-[11px] text-muted-foreground font-sans leading-relaxed">
                 Probability that an alert received by an on-call engineer is a false alarm.
-                PulseGuard = 0.0%, Pingdom = 91.1%.
+                SteadyStack = 0.0%, Pingdom = 91.1%.
               </p>
             </div>
 

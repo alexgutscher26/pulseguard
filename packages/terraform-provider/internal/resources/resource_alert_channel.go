@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/alexgutscher26/pulseguard/terraform-provider-pulseguard/internal/client"
+	"github.com/getsteadystack/SteadyStack/terraform-provider-steadystack/internal/client"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -41,7 +41,7 @@ func (r *AlertChannelResource) Metadata(ctx context.Context, req resource.Metada
 
 func (r *AlertChannelResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Manages a PulseGuard alert notification channel (PagerDuty, Opsgenie, Slack, Discord, Webhook, Email, Telegram, SMS).",
+		Description: "Manages a SteadyStack alert notification channel (PagerDuty, Opsgenie, Slack, Discord, Webhook, Email, Telegram, SMS).",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Description: "The unique identifier of the alert channel.",
@@ -104,7 +104,7 @@ func (r *AlertChannelResource) Create(ctx context.Context, req resource.CreateRe
 
 	created, err := r.client.CreateAlertChannel(ch)
 	if err != nil {
-		resp.Diagnostics.AddError("Error Creating PulseGuard Alert Channel", err.Error())
+		resp.Diagnostics.AddError("Error Creating SteadyStack Alert Channel", err.Error())
 		return
 	}
 
@@ -124,7 +124,7 @@ func (r *AlertChannelResource) Read(ctx context.Context, req resource.ReadReques
 
 	ch, err := r.client.GetAlertChannel(state.ID.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("Error Reading PulseGuard Alert Channel", err.Error())
+		resp.Diagnostics.AddError("Error Reading SteadyStack Alert Channel", err.Error())
 		return
 	}
 
@@ -159,7 +159,7 @@ func (r *AlertChannelResource) Update(ctx context.Context, req resource.UpdateRe
 
 	updated, err := r.client.UpdateAlertChannel(plan.ID.ValueString(), ch)
 	if err != nil {
-		resp.Diagnostics.AddError("Error Updating PulseGuard Alert Channel", err.Error())
+		resp.Diagnostics.AddError("Error Updating SteadyStack Alert Channel", err.Error())
 		return
 	}
 
@@ -182,7 +182,7 @@ func (r *AlertChannelResource) Delete(ctx context.Context, req resource.DeleteRe
 
 	err := r.client.DeleteAlertChannel(state.ID.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("Error Deleting PulseGuard Alert Channel", err.Error())
+		resp.Diagnostics.AddError("Error Deleting SteadyStack Alert Channel", err.Error())
 		return
 	}
 }

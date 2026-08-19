@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 import { getOverallStatus } from "@/lib/uptime-calculator";
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {

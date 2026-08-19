@@ -1,6 +1,6 @@
 import type { ExecutionContext } from "@cloudflare/workers-types";
-import type { MonitorStatus } from "@pulseguard/types";
-import { checkHttpUniversal, checkPortUniversal } from "@pulseguard/core";
+import type { MonitorStatus } from "@steadystack/types";
+import { checkHttpUniversal, checkPortUniversal } from "@steadystack/core";
 import { CheckErrorReason, MonitorStatus as Status, MonitorType } from "./constants";
 import type { Env } from "./env";
 
@@ -358,7 +358,7 @@ export async function performInternalRequest(
         try {
           let rawHeaders = monitor.headers;
           if (rawHeaders.startsWith("enc:v1:")) {
-            const { decryptSecret } = await import("@pulseguard/core");
+            const { decryptSecret } = await import("@steadystack/core");
             rawHeaders = await decryptSecret(rawHeaders, env?.ENCRYPTION_SECRET);
           }
           const parsed = JSON.parse(rawHeaders);

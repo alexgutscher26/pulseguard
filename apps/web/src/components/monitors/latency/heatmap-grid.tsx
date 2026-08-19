@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { useHeatmapScale, type MetricType } from "./hooks/use-heatmap-scale";
 import type { LatencyHeatmapData } from "./hooks/use-latency-data";
 import { cn } from "@/lib/utils";
-import { AVAILABLE_REGIONS } from "@pulseguard/shared";
+import { AVAILABLE_REGIONS } from "@steadystack/shared";
 
 interface HeatmapGridProps {
   data: LatencyHeatmapData;

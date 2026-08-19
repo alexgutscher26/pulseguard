@@ -4,8 +4,8 @@ import type {
   ProbeHealthState,
   QuorumEvaluation,
   StateChangeEvent,
-} from "@pulseguard/types";
-import { getRegionByCode, VALID_DO_LOCATION_HINTS } from "@pulseguard/shared";
+} from "@steadystack/types";
+import { getRegionByCode, VALID_DO_LOCATION_HINTS } from "@steadystack/shared";
 import type { Env } from "../env";
 
 /**

@@ -86,7 +86,7 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
   const statusPageUrl = `${baseUrl}/status-page/${pageSlug}`;
 
   const shieldMarkdown = `[![Status](${shieldUrl})](${statusPageUrl})`;
-  const shieldHtml = `<a href="${statusPageUrl}"><img src="${shieldUrl}" alt="PulseGuard Status" /></a>`;
+  const shieldHtml = `<a href="${statusPageUrl}"><img src="${shieldUrl}" alt="SteadyStack Status" /></a>`;
 
   const handleCopyShieldMd = async () => {
     try {

@@ -7,7 +7,7 @@ import { getAdminStatus } from "@/actions/admin";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Design Partner Applications | Admin | PulseGuard",
+  title: "Design Partner Applications | Admin | SteadyStack",
   description: "Review, approve, and manage Design Partner applications.",
 };
 

@@ -1,4 +1,4 @@
-# Default values for pulseguard.
+# Default values for steadystack.
 # Override by passing --values my-values.yaml to helm install.
 
 # ── Global ───────────────────────────────────────────────────────────────────
@@ -15,7 +15,7 @@ web:
   replicaCount: 2
 
   image:
-    repository: ghcr.io/alexgutscher26/pulseguard-web
+    repository: ghcr.io/getsteadystack/SteadyStack-web
     pullPolicy: IfNotPresent
     tag: "" # defaults to .Chart.AppVersion
 
@@ -73,12 +73,12 @@ probe:
   replicaCount: 1
 
   image:
-    repository: ghcr.io/alexgutscher26/pulseguard-probe
+    repository: ghcr.io/getsteadystack/SteadyStack-probe
     pullPolicy: IfNotPresent
     tag: ""
 
   config:
-    # URL of your PulseGuard Worker (Cloudflare)
+    # URL of your SteadyStack Worker (Cloudflare)
     apiUrl: "https://worker.yourdomain.com"
     region: "k8s-cluster"
 
@@ -109,14 +109,14 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
   hosts:
-    - host: pulseguard.yourdomain.com
+    - host: steadystack.yourdomain.com
       paths:
         - path: /
           pathType: Prefix
   tls:
-    - secretName: pulseguard-tls
+    - secretName: steadystack-tls
       hosts:
-        - pulseguard.yourdomain.com
+        - steadystack.yourdomain.com
 
 # ── Application Secrets ───────────────────────────────────────────────────────
 # All values here are written into a Kubernetes Secret.
@@ -126,7 +126,7 @@ secrets:
   databaseUrl: "" # postgresql://user:pass@host:5432/db — auto-derived from the bundled subchart if empty
   directUrl: "" # same or direct (non-pooled) connection — auto-derived if empty
   betterAuthSecret: "" # min 32 random chars
-  betterAuthUrl: "" # https://pulseguard.yourdomain.com
+  betterAuthUrl: "" # https://steadystack.yourdomain.com
   nextPublicAppUrl: "" # same as betterAuthUrl
   corsOrigin: "" # same as betterAuthUrl
 
@@ -146,9 +146,9 @@ secrets:
 postgresql:
   enabled: true # set false to use an external database
   auth:
-    username: pulseguard
+    username: steadystack
     password: changeme # override in production
-    database: pulseguard
+    database: steadystack
   primary:
     persistence:
       enabled: true
@@ -168,8 +168,8 @@ postgresql:
 externalDatabase:
   host: ""
   port: 5432
-  database: pulseguard
-  username: pulseguard
+  database: steadystack
+  username: steadystack
   # Reference an existing Kubernetes Secret instead of hardcoding:
   existingSecret: ""
   existingSecretPasswordKey: "password"

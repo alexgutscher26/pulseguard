@@ -1,5 +1,5 @@
 /**
- * PulseGuard Verified Probe Regions
+ * SteadyStack Verified Probe Regions
  *
  * Pinned geographically via Cloudflare Durable Object location hints.
  * Cloudflare strictly supports 7 functional location hints:
@@ -33,7 +33,7 @@ export interface Region {
   defaultHealthStatus?: ProbeHealthStatus;
 }
 
-export const PULSEGUARD_CANONICAL_USER_AGENT =
+export const STEADYSTACK_CANONICAL_USER_AGENT =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36";
 
 export const CLOUDFLARE_PROBE_REGIONS: Region[] = [

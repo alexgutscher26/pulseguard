@@ -21,7 +21,7 @@ export default function AuthLayout({
   const subtitle =
     customSubtitle ??
     (title === "System Login"
-      ? "Log in to your PulseGuard dashboard"
+      ? "Log in to your SteadyStack dashboard"
       : title === "New User Registration"
         ? "Start monitoring your infrastructure globally"
         : "");

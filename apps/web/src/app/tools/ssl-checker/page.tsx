@@ -6,7 +6,7 @@ import { ToolSchema } from "@/components/seo/tool-schema";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Free SSL Certificate Checker | PulseGuard",
+  title: "Free SSL Certificate Checker | SteadyStack",
   description:
     "Analyze your SSL/TLS security health. Check for expired certificates, legacy protocols, and HSTS configuration issues instantly.",
   keywords: ["ssl checker", "tls health", "certificate expiry", "https check", "security scan"],
@@ -21,7 +21,7 @@ export default function SSLCheckerPage() {
       <ToolSchema
         name="Free SSL Certificate Checker"
         description="Analyze your SSL/TLS security health. Check for expired certificates, legacy protocols, and HSTS configuration issues instantly."
-        url="https://pulseguard.io/tools/ssl-checker"
+        url="https://steadystack.dev/tools/ssl-checker"
       />
       <LandingHeader />
       <main className="container mx-auto pt-32 pb-12 px-4 md:px-6">

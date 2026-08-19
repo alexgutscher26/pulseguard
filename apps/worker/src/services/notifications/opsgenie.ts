@@ -1,4 +1,4 @@
-import type { MonitorAlertData } from "@pulseguard/email";
+import type { MonitorAlertData } from "@steadystack/email";
 import { NotificationType, type NotificationTypeValue } from "../../constants";
 
 export interface OpsgenieConfig {
@@ -11,7 +11,7 @@ function getBaseUrl(region?: "us" | "eu"): string {
 }
 
 function dedupAlias(monitorId: string): string {
-  return `pulseguard-${monitorId}`;
+  return `steadystack-${monitorId}`;
 }
 
 function mapPriority(type?: NotificationTypeValue | string): "P1" | "P2" | "P3" | "P4" | "P5" {
@@ -58,8 +58,8 @@ export async function sendOpsgenieAlert(
         Authorization: `GenieKey ${parsedConfig.apiKey}`,
       },
       body: JSON.stringify({
-        user: "PulseGuard",
-        source: "PulseGuard Edge Monitor",
+        user: "SteadyStack",
+        source: "SteadyStack Edge Monitor",
         note: `Resolved: ${data.monitorName} recovered at ${data.timestamp}. ${data.downtimeDuration ? `Downtime: ${data.downtimeDuration}` : ""}`,
       }),
     });
@@ -73,11 +73,11 @@ export async function sendOpsgenieAlert(
   }
 
   // Trigger alert
-  let message = `[PulseGuard] ${data.monitorName} is DOWN`;
+  let message = `[SteadyStack] ${data.monitorName} is DOWN`;
   if (type === NotificationType.HIGH_LATENCY) {
-    message = `[PulseGuard] High Latency Warning: ${data.monitorName}`;
+    message = `[SteadyStack] High Latency Warning: ${data.monitorName}`;
   } else if (type === NotificationType.SSL_EXPIRY) {
-    message = `[PulseGuard] SSL Expiry Warning: ${data.monitorName}`;
+    message = `[SteadyStack] SSL Expiry Warning: ${data.monitorName}`;
   }
 
   const payload = {
@@ -85,7 +85,7 @@ export async function sendOpsgenieAlert(
     alias,
     description: `Target: ${data.url}\nReason: ${data.reason || "Health check failed"}\nRegions Failed: ${(data.failedRegions || []).join(", ") || "Global"}`,
     priority: mapPriority(type),
-    source: "PulseGuard Edge Monitor",
+    source: "SteadyStack Edge Monitor",
     details: {
       monitorId: data.monitorId,
       url: data.url,

@@ -50,11 +50,11 @@ export default function Dashboard({
   const [showGlobe, setShowGlobe] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem("pulseguard_dashboard_view_mode");
+    const saved = localStorage.getItem("steadystack_dashboard_view_mode");
     if (saved === "list" || saved === "grid") {
       setViewMode(saved);
     }
-    const savedGlobe = localStorage.getItem("pulseguard_dashboard_show_globe");
+    const savedGlobe = localStorage.getItem("steadystack_dashboard_show_globe");
     if (savedGlobe === "true") {
       setShowGlobe(true);
     }
@@ -62,13 +62,13 @@ export default function Dashboard({
 
   const handleToggleView = (mode: "list" | "grid") => {
     setViewMode(mode);
-    localStorage.setItem("pulseguard_dashboard_view_mode", mode);
+    localStorage.setItem("steadystack_dashboard_view_mode", mode);
   };
 
   const handleToggleGlobe = () => {
     setShowGlobe((prev) => {
       const next = !prev;
-      localStorage.setItem("pulseguard_dashboard_show_globe", String(next));
+      localStorage.setItem("steadystack_dashboard_show_globe", String(next));
       return next;
     });
   };

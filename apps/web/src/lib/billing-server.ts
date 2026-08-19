@@ -1,4 +1,4 @@
-import db from "@pulseguard/db";
+import db from "@steadystack/db";
 import {
   PLANS,
   getPlanLimits,
@@ -7,7 +7,7 @@ import {
   type UsageWarning,
 } from "./billing";
 import { isFeatureEnabled, getFeatureError, type FeatureFlag } from "./feature-flags";
-import { sendUsageLimitWarning } from "@pulseguard/email";
+import { sendUsageLimitWarning } from "@steadystack/email";
 
 /**
  * Resolves active plan tier for a user (Server-only).

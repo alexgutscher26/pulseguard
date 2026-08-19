@@ -1,4 +1,4 @@
-import { getPrisma } from "@pulseguard/db";
+import { getPrisma } from "@steadystack/db";
 import { verifyMonitorAccess, verifySession } from "../lib/auth";
 import { performCheck } from "../check-runner";
 import { AppError } from "../errors";

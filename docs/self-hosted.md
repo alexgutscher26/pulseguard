@@ -1,6 +1,6 @@
-# Self-Hosted PulseGuard — Single-Server Installation Guide
+# Self-Hosted SteadyStack — Single-Server Installation Guide
 
-> Deploy the full PulseGuard stack on a single Linux server using Docker Compose.
+> Deploy the full SteadyStack stack on a single Linux server using Docker Compose.
 > Suitable for teams that want full data sovereignty or air-gapped environments.
 
 ---
@@ -26,7 +26,7 @@
 └──────────────────────────────────────────────────────────┘
 ```
 
-> **Note on the Worker**: PulseGuard's monitoring engine runs on Cloudflare Workers. Self-hosted deployments connect to Cloudflare for the Worker layer. The guide below covers hosting the **dashboard (Next.js)** and **all stateful infrastructure** (PostgreSQL, and optionally Redis as a resilience fallback) on your own server.
+> **Note on the Worker**: SteadyStack's monitoring engine runs on Cloudflare Workers. Self-hosted deployments connect to Cloudflare for the Worker layer. The guide below covers hosting the **dashboard (Next.js)** and **all stateful infrastructure** (PostgreSQL, and optionally Redis as a resilience fallback) on your own server.
 
 ---
 
@@ -57,8 +57,8 @@ docker --version   # Docker version 24.x.x
 ## Step 1 — Clone and Configure
 
 ```bash
-git clone https://github.com/alexgutscher26/pulseguard.git
-cd pulseguard
+git clone https://github.com/getsteadystack/SteadyStack.git
+cd steadystack
 cp .env.example .env.production
 ```
 
@@ -70,27 +70,27 @@ nano .env.production
 
 ### Required Variables
 
-| Variable              | Example                                           | Notes                                |
-| --------------------- | ------------------------------------------------- | ------------------------------------ |
-| `DATABASE_URL`        | `postgresql://pg:secret@postgres:5432/pulseguard` | Internal Docker hostname `postgres`  |
-| `DIRECT_URL`          | same as above                                     | Used for migrations                  |
-| `BETTER_AUTH_SECRET`  | `$(openssl rand -hex 32)`                         | Generate with `openssl rand -hex 32` |
-| `BETTER_AUTH_URL`     | `https://pulseguard.yourdomain.com`               | Your public domain                   |
-| `NEXT_PUBLIC_APP_URL` | `https://pulseguard.yourdomain.com`               | Must match `BETTER_AUTH_URL`         |
-| `CORS_ORIGIN`         | `https://pulseguard.yourdomain.com`               | Same domain                          |
+| Variable              | Example                                            | Notes                                |
+| --------------------- | -------------------------------------------------- | ------------------------------------ |
+| `DATABASE_URL`        | `postgresql://pg:secret@postgres:5432/steadystack` | Internal Docker hostname `postgres`  |
+| `DIRECT_URL`          | same as above                                      | Used for migrations                  |
+| `BETTER_AUTH_SECRET`  | `$(openssl rand -hex 32)`                          | Generate with `openssl rand -hex 32` |
+| `BETTER_AUTH_URL`     | `https://steadystack.yourdomain.com`               | Your public domain                   |
+| `NEXT_PUBLIC_APP_URL` | `https://steadystack.yourdomain.com`               | Must match `BETTER_AUTH_URL`         |
+| `CORS_ORIGIN`         | `https://steadystack.yourdomain.com`               | Same domain                          |
 
 If you run the optional private probe (`docker-compose.prod.yml` ships the `probe` service):
 
-| Variable                 | Example                         | Notes                                    |
-| ------------------------ | ------------------------------- | ---------------------------------------- |
-| `PULSEGUARD_API_URL`     | `https://worker.yourdomain.com` | Your PulseGuard Worker URL               |
-| `PULSEGUARD_PROBE_TOKEN` | `$(openssl rand -hex 32)`       | Must match the token your Worker accepts |
-| `PROBE_REGION`           | `self-hosted`                   | Label shown in the dashboard             |
+| Variable                  | Example                         | Notes                                    |
+| ------------------------- | ------------------------------- | ---------------------------------------- |
+| `STEADYSTACK_API_URL`     | `https://worker.yourdomain.com` | Your SteadyStack Worker URL              |
+| `STEADYSTACK_PROBE_TOKEN` | `$(openssl rand -hex 32)`       | Must match the token your Worker accepts |
+| `PROBE_REGION`            | `self-hosted`                   | Label shown in the dashboard             |
 
 Generate secrets:
 
 ```bash
-openssl rand -hex 32   # use as BETTER_AUTH_SECRET and PULSEGUARD_PROBE_TOKEN
+openssl rand -hex 32   # use as BETTER_AUTH_SECRET and STEADYSTACK_PROBE_TOKEN
 ```
 
 ---
@@ -117,7 +117,7 @@ docker compose -f docker-compose.prod.yml config   # sanity check
 Create `Caddyfile` in the project root:
 
 ```caddyfile
-pulseguard.yourdomain.com {
+steadystack.yourdomain.com {
     reverse_proxy web:3000
 
     # Security headers
@@ -141,7 +141,7 @@ pulseguard.yourdomain.com {
 }
 ```
 
-Replace `pulseguard.yourdomain.com` with your actual domain.
+Replace `steadystack.yourdomain.com` with your actual domain.
 
 > Caddy automatically obtains and renews a Let's Encrypt TLS certificate. Ensure ports 80 and 443 are open in your firewall.
 
@@ -151,11 +151,11 @@ Replace `pulseguard.yourdomain.com` with your actual domain.
 
 Point your domain to the server IP before starting:
 
-| Record | Host         | Value              | TTL |
-| ------ | ------------ | ------------------ | --- |
-| A      | `pulseguard` | `<your-server-ip>` | 300 |
+| Record | Host          | Value              | TTL |
+| ------ | ------------- | ------------------ | --- |
+| A      | `steadystack` | `<your-server-ip>` | 300 |
 
-Wait for DNS to propagate (`dig pulseguard.yourdomain.com`).
+Wait for DNS to propagate (`dig steadystack.yourdomain.com`).
 
 ---
 
@@ -189,7 +189,7 @@ Check that all services are healthy:
 docker compose -f docker-compose.prod.yml ps
 ```
 
-Dashboard is now live at `https://pulseguard.yourdomain.com`. 🎉
+Dashboard is now live at `https://steadystack.yourdomain.com`. 🎉
 
 ---
 
@@ -211,7 +211,7 @@ Set your dashboard URL as `BETTER_AUTH_URL` in your Cloudflare Worker environmen
 
 ## Maintenance
 
-### Updating PulseGuard
+### Updating SteadyStack
 
 ```bash
 git pull origin main
@@ -224,17 +224,17 @@ docker compose -f docker-compose.prod.yml up -d
 
 ```bash
 # Manual backup
-docker exec pulseguard-postgres pg_dump -U pulseguard pulseguard > backup_$(date +%Y%m%d).sql
+docker exec steadystack-postgres pg_dump -U steadystack steadystack > backup_$(date +%Y%m%d).sql
 
 # Restore
-docker exec -i pulseguard-postgres psql -U pulseguard pulseguard < backup_20240101.sql
+docker exec -i steadystack-postgres psql -U steadystack steadystack < backup_20240101.sql
 ```
 
 ### Automated Daily Backups (cron)
 
 ```bash
 # Add to root crontab (crontab -e)
-0 2 * * * docker exec pulseguard-postgres pg_dump -U pulseguard pulseguard | gzip > /backups/pulseguard_$(date +\%Y\%m\%d).sql.gz
+0 2 * * * docker exec steadystack-postgres pg_dump -U steadystack steadystack | gzip > /backups/steadystack_$(date +\%Y\%m\%d).sql.gz
 ```
 
 ### Viewing Logs
@@ -262,12 +262,12 @@ sudo ufw enable
 
 ## Troubleshooting
 
-| Symptom                      | Likely Cause                  | Fix                                                   |
-| ---------------------------- | ----------------------------- | ----------------------------------------------------- |
-| Caddy certificate error      | DNS not yet propagated        | Wait 5–10 min, then `docker restart pulseguard-caddy` |
-| Database connection refused  | Wrong `DATABASE_URL` hostname | Use `postgres` (Docker hostname), not `localhost`     |
-| Auth redirect loop           | `BETTER_AUTH_URL` mismatch    | Must exactly match the browser-visible domain         |
-| Worker can't reach dashboard | Firewall or CORS              | Check `CORS_ORIGIN` matches Worker origin             |
+| Symptom                      | Likely Cause                  | Fix                                                    |
+| ---------------------------- | ----------------------------- | ------------------------------------------------------ |
+| Caddy certificate error      | DNS not yet propagated        | Wait 5–10 min, then `docker restart steadystack-caddy` |
+| Database connection refused  | Wrong `DATABASE_URL` hostname | Use `postgres` (Docker hostname), not `localhost`      |
+| Auth redirect loop           | `BETTER_AUTH_URL` mismatch    | Must exactly match the browser-visible domain          |
+| Worker can't reach dashboard | Firewall or CORS              | Check `CORS_ORIGIN` matches Worker origin              |
 
 ---
 

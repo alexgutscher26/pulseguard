@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * PulseGuard Benchmark Verification Harness
+ * SteadyStack Benchmark Verification Harness
  * Reproduces statistical precision, recall, and false-positive calculations
  * directly from the immutable 30-day raw benchmark dataset.
  *
@@ -20,7 +20,7 @@ const DATASET_PATH = path.join(
 );
 
 console.log("\n" + "=".repeat(78));
-console.log(" PULSEGUARD 30-DAY FALSE-POSITIVE BENCHMARK VERIFICATION HARNESS");
+console.log(" STEADYSTACK 30-DAY FALSE-POSITIVE BENCHMARK VERIFICATION HARNESS");
 console.log("=".repeat(78) + "\n");
 
 if (!fs.existsSync(DATASET_PATH)) {
@@ -52,7 +52,7 @@ console.log(
 
 // Evaluate incidents dynamically
 const stats = {
-  pulseguard: { tp: 0, fp: 0, fn: 0, tn: 432000 - incidents.length },
+  steadystack: { tp: 0, fp: 0, fn: 0, tn: 432000 - incidents.length },
   uptimerobot: { tp: 0, fp: 0, fn: 0, tn: 432000 - incidents.length },
   pingdom: { tp: 0, fp: 0, fn: 0, tn: 432000 - incidents.length },
 };
@@ -60,12 +60,12 @@ const stats = {
 for (const inc of incidents) {
   const isRealDown = inc.ground_truth_down;
 
-  // PulseGuard
-  if (inc.pulseguard.alert_triggered) {
-    if (isRealDown) stats.pulseguard.tp++;
-    else stats.pulseguard.fp++;
+  // SteadyStack
+  if (inc.steadystack.alert_triggered) {
+    if (isRealDown) stats.steadystack.tp++;
+    else stats.steadystack.fp++;
   } else {
-    if (isRealDown) stats.pulseguard.fn++;
+    if (isRealDown) stats.steadystack.fn++;
   }
 
   // UptimeRobot
@@ -101,7 +101,7 @@ function calculateMetrics(s) {
   };
 }
 
-const pgMetrics = calculateMetrics(stats.pulseguard);
+const pgMetrics = calculateMetrics(stats.steadystack);
 const urMetrics = calculateMetrics(stats.uptimerobot);
 const pdMetrics = calculateMetrics(stats.pingdom);
 
@@ -116,7 +116,7 @@ console.log(
 console.log("-".repeat(78));
 
 console.log(
-  " PulseGuard (Quorum)".padEnd(20) +
+  " SteadyStack (Quorum)".padEnd(20) +
     `${pgMetrics.tp} / 4`.padEnd(14) +
     `${pgMetrics.fp} (0.00%)`.padEnd(16) +
     `${pgMetrics.precision}`.padEnd(14) +

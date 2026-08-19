@@ -1,4 +1,4 @@
-import type { MonitorAlertData } from "@pulseguard/email";
+import type { MonitorAlertData } from "@steadystack/email";
 import { NotificationType, type NotificationTypeValue } from "../../constants";
 
 /**
@@ -7,7 +7,7 @@ import { NotificationType, type NotificationTypeValue } from "../../constants";
  * when the monitor recovers.
  */
 function dedupKey(monitorId: string): string {
-  return `pulseguard-${monitorId}`;
+  return `steadystack-${monitorId}`;
 }
 
 /**
@@ -34,7 +34,7 @@ function severity(type?: NotificationTypeValue | string): "critical" | "warning"
  * @param routingKey - The PagerDuty integration routing key (32-char hex string).
  * @param data       - Monitor alert data from the notification handler.
  * @param type       - Optional notification type discriminator.
- * @param incidentId - Optional PulseGuard incident ID (used in PD custom_details).
+ * @param incidentId - Optional SteadyStack incident ID (used in PD custom_details).
  * @throws Error if the PagerDuty API rejects the event after all retries.
  */
 export async function sendPagerDutyAlert(
@@ -88,13 +88,13 @@ export async function sendPagerDutyAlert(
               ? { failed_regions: data.failedRegions.join(", ") }
               : {}),
             ...(data.downtimeDuration ? { downtime_duration: data.downtimeDuration } : {}),
-            ...(incidentId ? { pulseguard_incident_id: incidentId } : {}),
+            ...(incidentId ? { steadystack_incident_id: incidentId } : {}),
           },
         },
         links: [
           {
             href: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/monitors/${data.monitorId}`,
-            text: "View in PulseGuard",
+            text: "View in SteadyStack",
           },
           ...(data.runbookUrl ? [{ href: data.runbookUrl, text: "Runbook" }] : []),
         ],

@@ -1,4 +1,4 @@
-import { auth } from "@pulseguard/auth";
+import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import ResetPasswordClient from "@/app/reset-password/reset-password-client";

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createHash } from "crypto";
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 
 export interface AuthenticatedUser {
   userId: string;
@@ -10,7 +10,7 @@ export interface AuthenticatedUser {
 
 /**
  * Verifies Bearer API Key from Authorization header.
- * PulseGuard API Keys are formatted as "pg_live_..." and stored hashed (SHA-256).
+ * SteadyStack API Keys are formatted as "pg_live_..." and stored hashed (SHA-256).
  */
 export async function authenticateApiKey(
   req: NextRequest,

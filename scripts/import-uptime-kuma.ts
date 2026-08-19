@@ -154,7 +154,7 @@ async function main() {
 
   if (help || args.length === 0) {
     console.log(`
-PulseGuard Uptime Kuma Importer CLI
+SteadyStack Uptime Kuma Importer CLI
 
 Usage:
   bun scripts/import-uptime-kuma.ts <path-to-kuma-backup.json> [options]
@@ -215,12 +215,14 @@ Options:
     : await prisma.user.findFirst();
 
   if (!targetUser) {
-    console.log("No user found in database. Creating default admin user (admin@pulseguard.io)...");
+    console.log(
+      "No user found in database. Creating default admin user (admin@steadystack.dev)...",
+    );
     targetUser = await prisma.user.create({
       data: {
         id: "admin-import-user",
         name: "Admin User",
-        email: userEmail || "admin@pulseguard.io",
+        email: userEmail || "admin@steadystack.dev",
         emailVerified: true,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -300,7 +302,7 @@ Options:
   console.log(`  Created: ${created}`);
   console.log(`  Updated: ${updated}`);
   console.log(`  Skipped: ${skipped}`);
-  console.log(`All checks are now live on PulseGuard's edge consensus network.\n`);
+  console.log(`All checks are now live on SteadyStack's edge consensus network.\n`);
   process.exit(0);
 }
 

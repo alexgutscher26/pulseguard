@@ -1,16 +1,16 @@
 "use server";
 
-import { env } from "@pulseguard/env/server";
+import { env } from "@steadystack/env/server";
 import net from "net";
 
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { auth } from "@pulseguard/auth";
+import { auth } from "@steadystack/auth";
 import { headers, cookies } from "next/headers";
-import { sendMonitorAlert, type MonitorAlertData } from "@pulseguard/email";
-import { isPrivateOrInternalUrlAsync, encryptSecret, decryptSecret } from "@pulseguard/core";
-import { PULSEGUARD_CANONICAL_USER_AGENT } from "@pulseguard/shared";
+import { sendMonitorAlert, type MonitorAlertData } from "@steadystack/email";
+import { isPrivateOrInternalUrlAsync, encryptSecret, decryptSecret } from "@steadystack/core";
+import { STEADYSTACK_CANONICAL_USER_AGENT } from "@steadystack/shared";
 import {
   assertMonitorLimits,
   assertManualCheckRateLimit,
@@ -773,7 +773,7 @@ export async function checkMonitor(
 
   try {
     if (monitor.type === "BROWSER" || monitor.type === "SEQUENCE" || monitor.type === "SSL") {
-      const workerUrl = env.PULSEGUARD_WORKER_URL;
+      const workerUrl = env.STEADYSTACK_WORKER_URL;
       const cookieHeader = (await headers()).get("Cookie");
 
       const response = await fetch(`${workerUrl}/api/check-now`, {
@@ -870,7 +870,7 @@ export async function checkMonitor(
             method,
             redirect: "follow",
             headers: {
-              "User-Agent": PULSEGUARD_CANONICAL_USER_AGENT,
+              "User-Agent": STEADYSTACK_CANONICAL_USER_AGENT,
               Accept:
                 "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
               "Accept-Language": "en-US,en;q=0.9",
@@ -1058,7 +1058,7 @@ export async function checkMonitor(
 
     // Broadcast live event to worker
     try {
-      const workerUrl = env.PULSEGUARD_WORKER_URL;
+      const workerUrl = env.STEADYSTACK_WORKER_URL;
       await fetch(`${workerUrl}/api/broadcast`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1201,7 +1201,7 @@ async function sendDiscordAlert(url: string, data: MonitorAlertData, type?: stri
     if (type === "INCIDENT_RESOLVED") title = `✅ Incident Resolved: ${data.monitorName}`;
 
     const payload = {
-      username: "PulseGuard",
+      username: "SteadyStack",
       embeds: [
         {
           title: title,
@@ -1226,7 +1226,7 @@ async function sendDiscordAlert(url: string, data: MonitorAlertData, type?: stri
                 ]
               : []),
           ],
-          footer: { text: "PulseGuard Sentinel • Monitoring Infrastructure" },
+          footer: { text: "SteadyStack Sentinel • Monitoring Infrastructure" },
           timestamp: data.timestamp,
         },
       ],

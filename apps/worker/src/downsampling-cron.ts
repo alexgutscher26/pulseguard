@@ -1,4 +1,4 @@
-import { getPrisma } from "@pulseguard/db";
+import { getPrisma } from "@steadystack/db";
 
 interface Env {
   DATABASE_URL: string;

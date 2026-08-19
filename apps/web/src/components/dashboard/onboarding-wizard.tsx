@@ -96,7 +96,7 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
     if (!open) return;
 
     try {
-      const storedDemoPrefill = localStorage.getItem("pulseguard_prefill_monitor");
+      const storedDemoPrefill = localStorage.getItem("steadystack_prefill_monitor");
       if (storedDemoPrefill) {
         const parsed = JSON.parse(storedDemoPrefill);
         if (parsed.url) {
@@ -167,7 +167,7 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
       return;
     }
 
-    localStorage.removeItem("pulseguard_prefill_monitor");
+    localStorage.removeItem("steadystack_prefill_monitor");
     setStep(2);
   };
 
@@ -299,7 +299,7 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] p-0 border border-border bg-card/95 backdrop-blur-2xl shadow-2xl text-foreground overflow-hidden rounded-2xl sm:rounded-2xl flex flex-col [&>button]:hidden">
         <DialogHeader className="sr-only">
-          <DialogTitle>PulseGuard Setup</DialogTitle>
+          <DialogTitle>SteadyStack Setup</DialogTitle>
           <DialogDescription>
             {step === 1 &&
               "Create monitor or 1-click import from UptimeRobot, Better Stack, or StatusCake."}
@@ -317,7 +317,7 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-base font-bold font-mono text-foreground uppercase tracking-wider">
-                  PulseGuard Setup
+                  SteadyStack Setup
                 </h2>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full border border-primary/30 bg-primary/10 text-primary font-bold">
                   Step {step} of 3
@@ -450,7 +450,7 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                         autoFocus
                       />
                       <p className="text-[11px] text-muted-foreground font-mono">
-                        PulseGuard will probe this URL every 60 seconds across multi-region edge
+                        SteadyStack will probe this URL every 60 seconds across multi-region edge
                         nodes.
                       </p>
                     </div>
@@ -634,7 +634,7 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                         {importSuccessCount !== null ? (
                           <div className="p-3.5 rounded-xl bg-primary/15 border border-primary/40 text-primary font-mono text-xs text-center font-bold flex items-center justify-center gap-2">
                             <CheckCircle2 className="size-4 text-primary" />
-                            Successfully imported {importSuccessCount} monitors into PulseGuard!
+                            Successfully imported {importSuccessCount} monitors into SteadyStack!
                             Proceeding to alert setup...
                           </div>
                         ) : (

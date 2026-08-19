@@ -1,12 +1,12 @@
 "use server";
 
-import prisma from "@pulseguard/db";
-import { auth } from "@pulseguard/auth";
+import prisma from "@steadystack/db";
+import { auth } from "@steadystack/auth";
 import { headers, cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { assertTeamLimits, getUserPlan } from "@/lib/billing-server";
-import { sendTeamInvitationEmail } from "@pulseguard/email";
-import { env } from "@pulseguard/env/server";
+import { sendTeamInvitationEmail } from "@steadystack/email";
+import { env } from "@steadystack/env/server";
 
 export type Role = "owner" | "admin" | "member" | "viewer" | "billing";
 

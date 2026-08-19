@@ -83,7 +83,7 @@ export async function performSequenceCheck(
 
       // 2. Resolve Headers
       const stepHeaders: Record<string, string> = {
-        "User-Agent": "PulseGuard-SequenceMonitor/1.0",
+        "User-Agent": "SteadyStack-SequenceMonitor/1.0",
         Accept: "*/*",
       };
       if (step.headers && Array.isArray(step.headers)) {

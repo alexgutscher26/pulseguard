@@ -1,8 +1,8 @@
-# Contributing to PulseGuard
+# Contributing to SteadyStack
 
 First off — thank you for taking the time to contribute! 🎉
 
-This document covers everything you need to know to contribute code, documentation, translations, or bug reports to PulseGuard.
+This document covers everything you need to know to contribute code, documentation, translations, or bug reports to SteadyStack.
 
 ---
 
@@ -29,14 +29,14 @@ By participating in this project you agree to abide by our [Code of Conduct](./C
 
 ## Ways to Contribute
 
-| Contribution        | Where                                                                                                   |
-| ------------------- | ------------------------------------------------------------------------------------------------------- |
-| 🐛 Bug reports      | [Bug Report template](https://github.com/alexgutscher26/pulseguard/issues/new?template=bug_report.yml)  |
-| ✨ Feature requests | [GitHub Discussions → Ideas](https://github.com/alexgutscher26/pulseguard/discussions/categories/ideas) |
-| 📖 Documentation    | Open a PR against `master` — see [Documentation Guidelines](#documentation-guidelines)                  |
-| 🌐 Translations     | See [Translation Guidelines](#translation-guidelines)                                                   |
-| 💬 Community help   | [GitHub Discussions → Q&A](https://github.com/alexgutscher26/pulseguard/discussions/categories/q-a)     |
-| 🔒 Security issues  | See [SECURITY.md](./SECURITY.md) — **do not** open a public issue                                       |
+| Contribution        | Where                                                                                                    |
+| ------------------- | -------------------------------------------------------------------------------------------------------- |
+| 🐛 Bug reports      | [Bug Report template](https://github.com/getsteadystack/SteadyStack/issues/new?template=bug_report.yml)  |
+| ✨ Feature requests | [GitHub Discussions → Ideas](https://github.com/getsteadystack/SteadyStack/discussions/categories/ideas) |
+| 📖 Documentation    | Open a PR against `master` — see [Documentation Guidelines](#documentation-guidelines)                   |
+| 🌐 Translations     | See [Translation Guidelines](#translation-guidelines)                                                    |
+| 💬 Community help   | [GitHub Discussions → Q&A](https://github.com/getsteadystack/SteadyStack/discussions/categories/q-a)     |
+| 🔒 Security issues  | See [SECURITY.md](./SECURITY.md) — **do not** open a public issue                                        |
 
 ---
 
@@ -54,11 +54,11 @@ By participating in this project you agree to abide by our [Code of Conduct](./C
 
 ```bash
 # 1. Fork the repo on GitHub, then:
-git clone https://github.com/<your-username>/pulseguard.git
-cd pulseguard
+git clone https://github.com/<your-username>/steadystack.git
+cd steadystack
 
 # 2. Add upstream remote
-git remote add upstream https://github.com/alexgutscher26/pulseguard.git
+git remote add upstream https://github.com/getsteadystack/SteadyStack.git
 ```
 
 ### Environment Setup
@@ -129,7 +129,7 @@ bun --cwd apps/web run check-types   # type-check only the web app
 
 ## Code Guidelines
 
-PulseGuard is a TypeScript-first monorepo. Follow these rules regardless of the package you're working in.
+SteadyStack is a TypeScript-first monorepo. Follow these rules regardless of the package you're working in.
 
 ### General
 
@@ -232,7 +232,7 @@ Interactive mode: `bunx vitest` from `apps/web`. Component tests live alongside 
 
 ## Documentation Guidelines
 
-Good docs are as valuable as good code. PulseGuard documentation lives in:
+Good docs are as valuable as good code. SteadyStack documentation lives in:
 
 | Location               | Purpose                          |
 | ---------------------- | -------------------------------- |
@@ -263,7 +263,7 @@ Copy the structure from an existing one (e.g., `packages/db/README.md`) and fill
 
 ## Translation Guidelines
 
-PulseGuard status pages support multiple locales via the `i18n` system in `apps/web`.
+SteadyStack status pages support multiple locales via the `i18n` system in `apps/web`.
 
 ### Adding a New Locale
 
@@ -304,7 +304,7 @@ Before opening a PR, confirm:
 
 ### Release Notes
 
-PulseGuard uses [changesets](https://github.com/changesets/changesets). If your PR changes published packages (`packages/*`), add a changeset:
+SteadyStack uses [changesets](https://github.com/changesets/changesets). If your PR changes published packages (`packages/*`), add a changeset:
 
 ```bash
 bun run changeset
@@ -341,13 +341,13 @@ If you want to help with issue triage:
 - Add `needs-repro` to issues without reproduction steps.
 - Add `good first issue` to well-scoped bugs with clear acceptance criteria.
 - Close duplicates with a link to the original.
-- Move feature discussions to [GitHub Discussions](https://github.com/alexgutscher26/pulseguard/discussions).
+- Move feature discussions to [GitHub Discussions](https://github.com/getsteadystack/SteadyStack/discussions).
 
 ---
 
 ## Community
 
-- **GitHub Discussions** — for questions, ideas, and show-and-tell: [github.com/alexgutscher26/pulseguard/discussions](https://github.com/alexgutscher26/pulseguard/discussions)
+- **GitHub Discussions** — for questions, ideas, and show-and-tell: [github.com/getsteadystack/SteadyStack/discussions](https://github.com/getsteadystack/SteadyStack/discussions)
 - **Security issues** — see [SECURITY.md](./SECURITY.md)
 
-We're happy to have you here. Thank you for making PulseGuard better. 🚀
+We're happy to have you here. Thank you for making SteadyStack better. 🚀

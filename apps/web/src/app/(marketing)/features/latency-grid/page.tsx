@@ -4,11 +4,11 @@ import { LatencyGridClient } from "./latency-grid-client";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Live Latency Grid Monitoring | PulseGuard Features",
+  title: "Live Latency Grid Monitoring | SteadyStack Features",
   description:
     "Track performance dynamically. Run high-frequency checks from global edge centers and inspect payload structures with our Live Latency Grid sentinel.",
   openGraph: {
-    title: "Live Latency Grid Monitoring | PulseGuard",
+    title: "Live Latency Grid Monitoring | SteadyStack",
     description:
       "High-frequency latency monitoring and regional analysis across a global network of testing nodes.",
     type: "website",

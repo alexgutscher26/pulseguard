@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@pulseguard/auth";
-import prisma from "@pulseguard/db";
+import { auth } from "@steadystack/auth";
+import prisma from "@steadystack/db";
 import { headers } from "next/headers";
 
 export async function GET(req: NextRequest) {
@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
       return { host, port };
     };
 
-    // 1. Full PulseGuard Backup
+    // 1. Full SteadyStack Backup
     if (format === "json") {
       const backup = {
         exportedAt: new Date().toISOString(),
@@ -105,7 +105,7 @@ export async function GET(req: NextRequest) {
       return new NextResponse(JSON.stringify(backup, null, 2), {
         headers: {
           "Content-Type": "application/json",
-          "Content-Disposition": `attachment; filename="pulseguard-workspace-export.json"`,
+          "Content-Disposition": `attachment; filename="steadystack-workspace-export.json"`,
         },
       });
     }
@@ -195,7 +195,7 @@ export async function GET(req: NextRequest) {
           return `${target.host}:${target.port}`;
         });
 
-      const prometheusYaml = `# Prometheus Scrape Configuration for PulseGuard Migrated Monitors
+      const prometheusYaml = `# Prometheus Scrape Configuration for SteadyStack Migrated Monitors
 global:
   scrape_interval: 15s
 

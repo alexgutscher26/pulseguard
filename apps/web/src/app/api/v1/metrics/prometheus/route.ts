@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 import { authenticateApiKey } from "../../_lib/auth";
 
 function escapeLabel(val: string): string {
@@ -23,21 +23,21 @@ export async function GET(req: NextRequest) {
   });
 
   const lines: string[] = [
-    "# HELP pulseguard_monitor_status Monitor operational status (1 = UP, 0 = DOWN, 2 = PAUSED/MAINTENANCE)",
-    "# TYPE pulseguard_monitor_status gauge",
+    "# HELP steadystack_monitor_status Monitor operational status (1 = UP, 0 = DOWN, 2 = PAUSED/MAINTENANCE)",
+    "# TYPE steadystack_monitor_status gauge",
   ];
 
   for (const m of monitors) {
     const statusVal = m.status === "UP" ? 1 : m.status === "DOWN" ? 0 : 2;
     lines.push(
-      `pulseguard_monitor_status{id="${escapeLabel(m.id)}",name="${escapeLabel(m.name)}",url="${escapeLabel(m.url)}",type="${escapeLabel(m.type)}",method="${escapeLabel(m.method)}"} ${statusVal}`,
+      `steadystack_monitor_status{id="${escapeLabel(m.id)}",name="${escapeLabel(m.name)}",url="${escapeLabel(m.url)}",type="${escapeLabel(m.type)}",method="${escapeLabel(m.method)}"} ${statusVal}`,
     );
   }
 
   lines.push(
     "",
-    "# HELP pulseguard_monitor_latency_ms Average round-trip response time in milliseconds",
-    "# TYPE pulseguard_monitor_latency_ms gauge",
+    "# HELP steadystack_monitor_latency_ms Average round-trip response time in milliseconds",
+    "# TYPE steadystack_monitor_latency_ms gauge",
   );
 
   for (const m of monitors) {
@@ -51,12 +51,12 @@ export async function GET(req: NextRequest) {
     if (latestByRegion.size === 0) {
       // Fallback zero gauge
       lines.push(
-        `pulseguard_monitor_latency_ms{id="${escapeLabel(m.id)}",name="${escapeLabel(m.name)}",region="global"} 0`,
+        `steadystack_monitor_latency_ms{id="${escapeLabel(m.id)}",name="${escapeLabel(m.name)}",region="global"} 0`,
       );
     } else {
       for (const [region, latency] of latestByRegion.entries()) {
         lines.push(
-          `pulseguard_monitor_latency_ms{id="${escapeLabel(m.id)}",name="${escapeLabel(m.name)}",region="${escapeLabel(region)}"} ${latency.toFixed(2)}`,
+          `steadystack_monitor_latency_ms{id="${escapeLabel(m.id)}",name="${escapeLabel(m.name)}",region="${escapeLabel(region)}"} ${latency.toFixed(2)}`,
         );
       }
     }
@@ -64,13 +64,13 @@ export async function GET(req: NextRequest) {
 
   lines.push(
     "",
-    "# HELP pulseguard_monitor_interval_seconds Configured check frequency",
-    "# TYPE pulseguard_monitor_interval_seconds gauge",
+    "# HELP steadystack_monitor_interval_seconds Configured check frequency",
+    "# TYPE steadystack_monitor_interval_seconds gauge",
   );
 
   for (const m of monitors) {
     lines.push(
-      `pulseguard_monitor_interval_seconds{id="${escapeLabel(m.id)}",name="${escapeLabel(m.name)}"} ${m.interval}`,
+      `steadystack_monitor_interval_seconds{id="${escapeLabel(m.id)}",name="${escapeLabel(m.name)}"} ${m.interval}`,
     );
   }
 

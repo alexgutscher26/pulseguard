@@ -1,5 +1,5 @@
 {
-  "name": "@pulseguard/auth",
+  "name": "@steadystack/auth",
   "version": "0.0.0",
   "type": "module",
   "exports": {
@@ -13,13 +13,13 @@
   },
   "dependencies": {
     "@better-auth/expo": "catalog:",
-    "@pulseguard/db": "workspace:*",
-    "@pulseguard/email": "workspace:*",
-    "@pulseguard/env": "workspace:*",
+    "@steadystack/db": "workspace:*",
+    "@steadystack/email": "workspace:*",
+    "@steadystack/env": "workspace:*",
     "better-auth": "catalog:"
   },
   "devDependencies": {
-    "@pulseguard/config": "workspace:*",
+    "@steadystack/config": "workspace:*",
     "typescript": "catalog:"
   }
 }

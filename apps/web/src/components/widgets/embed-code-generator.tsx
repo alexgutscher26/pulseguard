@@ -16,8 +16,8 @@ export function EmbedCodeGenerator({ slug }: EmbedCodeGeneratorProps) {
     process.env.NEXT_PUBLIC_APP_URL ||
     (typeof window !== "undefined" ? window.location.origin : "https://your-domain.com");
 
-  const embedCode = `<!-- PulseGuard Status Widget -->
-<div id="pulseguard-status"></div>
+  const embedCode = `<!-- SteadyStack Status Widget -->
+<div id="steadystack-status"></div>
 <script src="${baseUrl}/api/widget/embed.js?slug=${slug}"></script>`;
 
   const handleCopy = async () => {
@@ -97,7 +97,7 @@ export function EmbedCodeGenerator({ slug }: EmbedCodeGeneratorProps) {
           </p>
           <pre className="bg-zinc-950 border border-zinc-800 rounded-sm p-3 text-xs font-mono text-zinc-300 overflow-x-auto">
             {`<script>
-  window.PulseGuard = {
+  window.SteadyStack = {
     config: {
       target: 'my-custom-element-id'
     }

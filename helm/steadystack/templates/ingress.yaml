@@ -2,10 +2,10 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "pulseguard.fullname" . }}
+  name: {{ include "steadystack.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "pulseguard.labels" . | nindent 4 }}
+    {{- include "steadystack.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -34,7 +34,7 @@ spec:
             pathType: {{ .pathType }}
             backend:
               service:
-                name: {{ include "pulseguard.fullname" $ }}-web
+                name: {{ include "steadystack.fullname" $ }}-web
                 port:
                   name: http
           {{- end }}

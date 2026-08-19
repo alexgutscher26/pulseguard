@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@pulseguard/auth";
-import prisma from "@pulseguard/db";
-import { encryptSecret } from "@pulseguard/core";
+import { auth } from "@steadystack/auth";
+import prisma from "@steadystack/db";
+import { encryptSecret } from "@steadystack/core";
 import { headers } from "next/headers";
 import { assertMonitorLimits } from "@/lib/billing-server";
 import { getPlanLimits } from "@/lib/billing";
-import type { MonitorType } from "@pulseguard/db";
+import type { MonitorType } from "@steadystack/db";
 
 interface ParsedMonitor {
   name: string;
@@ -148,7 +148,7 @@ function parseUptimeKumaFormat(data: any): ParsedMonitor[] {
   });
 }
 
-function parsePulseGuardFormat(data: any): ParsedMonitor[] {
+function parseSteadyStackFormat(data: any): ParsedMonitor[] {
   const list = Array.isArray(data.monitors) ? data.monitors : [];
   return list.map((m: any): ParsedMonitor => {
     return {
@@ -168,7 +168,7 @@ function parsePulseGuardFormat(data: any): ParsedMonitor[] {
             ? JSON.stringify(m.expectation)
             : null,
       alertThreshold: 1,
-      tags: ["imported", "pulseguard-backup"],
+      tags: ["imported", "steadystack-backup"],
     };
   });
 }
@@ -213,7 +213,7 @@ export async function POST(req: NextRequest) {
         payload?.workspaceId &&
         Array.isArray(payload?.monitors)
       ) {
-        format = "pulseguard";
+        format = "steadystack";
       } else if (Array.isArray(payload) && payload.length > 0 && "type" in payload[0]) {
         format = "uptime-kuma";
       } else if (Array.isArray(payload?.monitors)) {
@@ -226,8 +226,8 @@ export async function POST(req: NextRequest) {
     let parsedMonitors: ParsedMonitor[] = [];
     if (format === "uptime-kuma") {
       parsedMonitors = parseUptimeKumaFormat(payload);
-    } else if (format === "pulseguard") {
-      parsedMonitors = parsePulseGuardFormat(payload);
+    } else if (format === "steadystack") {
+      parsedMonitors = parseSteadyStackFormat(payload);
     } else {
       parsedMonitors = parseUptimeKumaFormat(payload);
     }

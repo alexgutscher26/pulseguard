@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getPrisma } from "@pulseguard/db";
-import { auth } from "@pulseguard/auth";
+import { getPrisma } from "@steadystack/db";
+import { auth } from "@steadystack/auth";
 
 interface LatencyHeatmapParams {
   params: Promise<{

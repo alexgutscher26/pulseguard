@@ -1,5 +1,5 @@
 {
-  "name": "@pulseguard/worker",
+  "name": "@steadystack/worker",
   "version": "0.1.0",
   "private": true,
   "main": "src/index.ts",
@@ -11,11 +11,11 @@
   },
   "dependencies": {
     "@cloudflare/puppeteer": "^0.0.9",
-    "@pulseguard/core": "workspace:*",
-    "@pulseguard/db": "workspace:*",
-    "@pulseguard/email": "workspace:*",
-    "@pulseguard/shared": "workspace:*",
-    "@pulseguard/types": "workspace:*",
+    "@steadystack/core": "workspace:*",
+    "@steadystack/db": "workspace:*",
+    "@steadystack/email": "workspace:*",
+    "@steadystack/shared": "workspace:*",
+    "@steadystack/types": "workspace:*",
     "@upstash/redis": "^1.37.0"
   },
   "devDependencies": {

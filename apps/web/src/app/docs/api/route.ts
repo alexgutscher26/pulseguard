@@ -8,10 +8,10 @@ const SCALAR_HTML = `<!DOCTYPE html>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>PulseGuard API Reference</title>
+    <title>SteadyStack API Reference</title>
     <meta
       name="description"
-      content="Interactive reference for the PulseGuard REST API — monitors, status pages, badges, feeds, and CI/CD gates."
+      content="Interactive reference for the SteadyStack REST API — monitors, status pages, badges, feeds, and CI/CD gates."
     />
     <style>
       body { margin: 0; }
@@ -23,7 +23,7 @@ const SCALAR_HTML = `<!DOCTYPE html>
     <script>
       Scalar.createApiReference("#app", {
         spec: { url: "/docs/api/openapi.json" },
-        pageTitle: "PulseGuard API",
+        pageTitle: "SteadyStack API",
         defaultHttpClient: { targetKey: "fetch" },
         hideModels: false,
         showSidebar: true,

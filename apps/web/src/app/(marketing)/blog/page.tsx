@@ -6,17 +6,17 @@ import { BlogListing } from "@/components/blog/blog-listing";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Engineering Blog & Architecture Insights | PulseGuard",
+  title: "Engineering Blog & Architecture Insights | SteadyStack",
   description:
-    "Engineering deep-dives, distributed consensus architectures, uptime benchmarking, and incident response guides from the PulseGuard team.",
+    "Engineering deep-dives, distributed consensus architectures, uptime benchmarking, and incident response guides from the SteadyStack team.",
   openGraph: {
-    title: "Engineering Blog & Architecture Insights | PulseGuard",
+    title: "Engineering Blog & Architecture Insights | SteadyStack",
     description:
       "Engineering deep-dives, distributed consensus architectures, uptime benchmarking, and incident response guides.",
-    siteName: "PulseGuard",
+    siteName: "SteadyStack",
   },
   alternates: {
-    canonical: "https://pulseguard.com/blog",
+    canonical: "https://steadystack.dev/blog",
   },
 };
 

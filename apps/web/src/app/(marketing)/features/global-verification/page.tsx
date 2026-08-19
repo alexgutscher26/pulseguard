@@ -4,11 +4,11 @@ import { VerificationClient } from "./verification-client";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Multi-Region Global Verification | PulseGuard Features",
+  title: "Multi-Region Global Verification | SteadyStack Features",
   description:
     "Multi-region quorum consensus checking. Avoid alert fatigue by cross-referencing outages using multiple global vantage nodes before triggering alarms.",
   openGraph: {
-    title: "Multi-Region Global Verification | PulseGuard",
+    title: "Multi-Region Global Verification | SteadyStack",
     description:
       "Avoid alert fatigue. Nodes verify outage consensus across global centers to prevent false downtime alerts.",
     type: "website",

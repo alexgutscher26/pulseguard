@@ -1,4 +1,4 @@
-import type { MonitorAlertData } from "@pulseguard/email";
+import type { MonitorAlertData } from "@steadystack/email";
 import { NotificationType, type NotificationTypeValue } from "../../constants";
 
 /**

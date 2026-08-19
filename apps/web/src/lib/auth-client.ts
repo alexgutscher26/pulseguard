@@ -1,4 +1,4 @@
-import { env } from "@pulseguard/env/web";
+import { env } from "@steadystack/env/web";
 import { organizationClient } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 

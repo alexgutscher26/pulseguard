@@ -262,7 +262,7 @@ export function TerminalView() {
     const trimmed = cmdStr.trim();
     if (!trimmed) return;
 
-    addLog(`PG_operator@pulseguard:~$ ${trimmed}`, "input");
+    addLog(`PG_operator@steadystack:~$ ${trimmed}`, "input");
     setCmdHistory((prev) => [trimmed, ...prev.filter((c) => c !== trimmed)]);
     setHistoryIndex(-1);
     setInputVal("");
@@ -273,7 +273,7 @@ export function TerminalView() {
 
     switch (command) {
       case "help":
-        addLog("PulseGuard Cybernetic System Console Commands:", "info");
+        addLog("SteadyStack Cybernetic System Console Commands:", "info");
         addLog("  list / ls              List all active monitors and statuses", "info");
         addLog("  check <id/name>        Query diagnostic check sequence on monitor", "info");
         addLog("  ping <url/id>          Execute live HTTP ping probe latency test", "info");
@@ -437,7 +437,7 @@ export function TerminalView() {
       case "status": {
         const upCount = monitors.filter((m: any) => m.status === "UP").length;
         const downCount = monitors.filter((m: any) => m.status === "DOWN").length;
-        addLog("=== PULSEGUARD GLOBAL SYSTEM HEALTH MATRIX ===", "info");
+        addLog("=== STEADYSTACK GLOBAL SYSTEM HEALTH MATRIX ===", "info");
         addLog(`Active Monitors Count : ${monitors.length}`, "output");
         addLog(`Operational Nodes     : ${upCount}`, "success");
         addLog(`Degraded / Down Nodes : ${downCount}`, downCount > 0 ? "error" : "output");
@@ -475,7 +475,7 @@ export function TerminalView() {
 
       case "curl": {
         if (args.length === 0) {
-          addLog("Syntax error: curl <url>. Example: curl https://api.pulseguard.io", "error");
+          addLog("Syntax error: curl <url>. Example: curl https://api.steadystack.dev", "error");
           break;
         }
         let url = args[0];
@@ -563,7 +563,7 @@ export function TerminalView() {
           <span
             className={`font-extrabold uppercase tracking-widest text-[11px] ${currentTheme.accent}`}
           >
-            PulseGuard System Console Terminal
+            SteadyStack System Console Terminal
           </span>
           <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded text-[9px] bg-zinc-900/80 border border-zinc-800 text-zinc-400 font-mono">
             <span className="size-1.5 rounded-full bg-emerald-500 animate-ping" />
@@ -640,7 +640,7 @@ export function TerminalView() {
       >
         <ArrowRight className={`size-3.5 ${currentTheme.accent} shrink-0`} />
         <span className={`font-bold ${currentTheme.accent} tracking-tight shrink-0 text-xs`}>
-          guest@pulseguard:~$
+          guest@steadystack:~$
         </span>
         <div className="flex-1 relative flex items-center">
           <input

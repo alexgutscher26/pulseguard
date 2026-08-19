@@ -48,18 +48,18 @@ Now multiply that by 5. That's the blind spot the industry has been accepting as
 
 ---
 
-## How PulseGuard Delivers 60-Second Checks at the Edge
+## How SteadyStack Delivers 60-Second Checks at the Edge
 
 Running 60-second checks at scale is computationally intensive for centralized server fleets. Traditional tools avoid it on free tiers because every 5x increase in frequency increases infrastructure overhead by 500%.
 
-PulseGuard solves this by deploying check probes directly to **Cloudflare's serverless edge network**:
+SteadyStack solves this by deploying check probes directly to **Cloudflare's serverless edge network**:
 
 1. **Distributed Compute:** Checks execute asynchronously on edge nodes nearest to your origin servers.
 2. **Multi-Node Quorum:** Failed checks are instantly verified by secondary edge regions before paging engineers.
 3. **Zero Idle Overhead:** Serverless workers spin up, execute sub-second pings, and terminate without paying for idle VM fleets.
 
 ```ts
-// PulseGuard 60-Second Check Configuration
+// SteadyStack 60-Second Check Configuration
 export const monitor = {
   name: "Production API Health",
   url: "https://api.yourdomain.com/health",

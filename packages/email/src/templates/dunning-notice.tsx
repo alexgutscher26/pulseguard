@@ -22,7 +22,7 @@ export interface DunningNoticeEmailProps {
 }
 
 export const DunningNoticeEmail: React.FC<Readonly<DunningNoticeEmailProps>> = ({
-  userName = "PulseGuard Operator",
+  userName = "SteadyStack Operator",
   planName = "Enterprise",
   amountDue = "$49.00",
   failureReason = "Card declined by issuing bank",
@@ -30,7 +30,7 @@ export const DunningNoticeEmail: React.FC<Readonly<DunningNoticeEmailProps>> = (
 }) => (
   <Html>
     <Head>
-      <title>Payment Action Required - PulseGuard</title>
+      <title>Payment Action Required - SteadyStack</title>
       <style>{`
         body { margin: 0; padding: 0; background-color: #09090b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         @media only screen and (max-width: 600px) {
@@ -179,7 +179,7 @@ export const DunningNoticeEmail: React.FC<Readonly<DunningNoticeEmailProps>> = (
 
         {/* Footer */}
         <EmailFooter
-          customMessage="PulseGuard Invoicing & Subscription Management Engine."
+          customMessage="SteadyStack Invoicing & Subscription Management Engine."
           unsubscribeUrl="https://steadystack.dev/dashboard/settings?tab=billing"
         />
       </Container>

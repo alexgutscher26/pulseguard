@@ -1,10 +1,10 @@
-# Helicone & Pinecone Integration Architecture for PulseGuard
+# Helicone & Pinecone Integration Architecture for SteadyStack
 
 ## Executive Summary
 
-PulseGuard is an edge-first monitoring and incident management platform built on Cloudflare Workers, Next.js, and tRPC. As PulseGuard introduces AI-native capabilities—such as **AI Incident Summaries**, **Automated Post-Mortems**, **Root Cause Analysis (RCA)**, and **Synthetic Monitoring AI Agents**—managing LLM costs, response latencies, and long-term incident context becomes critical.
+SteadyStack is an edge-first monitoring and incident management platform built on Cloudflare Workers, Next.js, and tRPC. As SteadyStack introduces AI-native capabilities—such as **AI Incident Summaries**, **Automated Post-Mortems**, **Root Cause Analysis (RCA)**, and **Synthetic Monitoring AI Agents**—managing LLM costs, response latencies, and long-term incident context becomes critical.
 
-By integrating **Helicone** (LLM Observability, Proxy, Caching & Cost Tracking) and **Pinecone** (Managed Vector Database for Similarity Search & RAG), PulseGuard can deliver enterprise-grade AI intelligence while strictly controlling infrastructure costs and delivering sub-second contextual incident diagnostics.
+By integrating **Helicone** (LLM Observability, Proxy, Caching & Cost Tracking) and **Pinecone** (Managed Vector Database for Similarity Search & RAG), SteadyStack can deliver enterprise-grade AI intelligence while strictly controlling infrastructure costs and delivering sub-second contextual incident diagnostics.
 
 ---
 
@@ -12,7 +12,7 @@ By integrating **Helicone** (LLM Observability, Proxy, Caching & Cost Tracking) 
 
 ```mermaid
 flowchart TD
-    subgraph PulseGuard Platform
+    subgraph SteadyStack Platform
         Worker[apps/worker: Edge Monitor Engine]
         Web[apps/web: Next.js & Server Actions]
         DB[(Prisma Postgres DB)]
@@ -52,9 +52,9 @@ flowchart TD
 
 ## 2. Helicone Integration Strategy
 
-**Helicone** acts as a lightweight proxy between PulseGuard and AI model providers (OpenAI, Anthropic, OpenRouter).
+**Helicone** acts as a lightweight proxy between SteadyStack and AI model providers (OpenAI, Anthropic, OpenRouter).
 
-### Key Features & Benefits for PulseGuard
+### Key Features & Benefits for SteadyStack
 
 1. **Multi-Tenant LLM Cost & Usage Tracking**
    - Track token usage, prompt execution costs, and latency down to individual workspaces (`tenantId`), monitors (`monitorId`), and user plans (Free, Pro, Enterprise).
@@ -78,16 +78,16 @@ flowchart TD
    - Automatically retry failed requests on rate-limit responses (`429 Too Many Requests`).
 
 4. **Prompt Management & A/B Testing**
-   - Version control system prompts for RCA generation directly in Helicone without redeploying PulseGuard code.
+   - Version control system prompts for RCA generation directly in Helicone without redeploying SteadyStack code.
    - A/B test system prompts to determine which post-mortem structure receives the highest customer satisfaction score.
 
 ---
 
 ## 3. Pinecone Integration Strategy
 
-**Pinecone** serves as PulseGuard's **Incident Memory System** and **Vector Intelligence Engine**.
+**Pinecone** serves as SteadyStack's **Incident Memory System** and **Vector Intelligence Engine**.
 
-### Key Use Cases for PulseGuard
+### Key Use Cases for SteadyStack
 
 1. **Incident Memory & Retrieval-Augmented Generation (RAG)**
    - When an endpoint fails, query Pinecone for past incidents with similar error payloads, stack traces, and status codes within the workspace.
@@ -113,7 +113,7 @@ flowchart TD
 
 ### Phase 1: Environment Configuration
 
-Update `@pulseguard/env` (`packages/env/src/server.ts`) with new provider keys:
+Update `@steadystack/env` (`packages/env/src/server.ts`) with new provider keys:
 
 ```typescript
 // packages/env/src/server.ts
@@ -123,7 +123,7 @@ export const server = createEnv({
     HELICONE_API_KEY: z.string().optional(),
     HELICONE_BASE_PATH: z.string().default("https://oai.helicone.ai/v1"),
     PINECONE_API_KEY: z.string().optional(),
-    PINECONE_INDEX_NAME: z.string().default("pulseguard-incidents"),
+    PINECONE_INDEX_NAME: z.string().default("steadystack-incidents"),
   },
   // ...
 });
@@ -135,7 +135,7 @@ Create `apps/web/src/lib/ai/helicone-client.ts`:
 
 ```typescript
 import { createOpenAI } from "@ai-sdk/openai";
-import { env } from "@pulseguard/env/server";
+import { env } from "@steadystack/env/server";
 
 export function getHeliconeOpenAI(metadata: {
   workspaceId: string;
@@ -171,7 +171,7 @@ Create `apps/web/src/lib/ai/pinecone-client.ts`:
 import { Pinecone } from "@pinecone-database/pinecone";
 import { embed } from "ai";
 import { openai } from "@ai-sdk/openai";
-import { env } from "@pulseguard/env/server";
+import { env } from "@steadystack/env/server";
 
 const pinecone = new Pinecone({
   apiKey: env.PINECONE_API_KEY!,
@@ -313,7 +313,7 @@ Provide a structured Markdown post-mortem with Summary, Root Cause Analysis, Imp
 
 ## 5. Monetization & Pricing Tier Matrix
 
-Integrate Helicone usage stats & Pinecone RAG features directly into PulseGuard's subscription plans:
+Integrate Helicone usage stats & Pinecone RAG features directly into SteadyStack's subscription plans:
 
 | Feature / Capability                 | Starter / Free          | Pro ($29/mo)            | Enterprise ($99+/mo)                   |
 | :----------------------------------- | :---------------------- | :---------------------- | :------------------------------------- |
@@ -328,7 +328,7 @@ Integrate Helicone usage stats & Pinecone RAG features directly into PulseGuard'
 ## 6. Security, Compliance & Multi-Tenancy
 
 1. **Namespace Isolation in Pinecone**:
-   - Each PulseGuard workspace gets a dedicated namespace in Pinecone (`workspace_${workspaceId}`).
+   - Each SteadyStack workspace gets a dedicated namespace in Pinecone (`workspace_${workspaceId}`).
    - Cross-workspace vector data leaks are strictly prevented at the query API level.
 
 2. **Data Privacy & Helicone PII Scrubbing**:
@@ -346,4 +346,4 @@ Integrate Helicone usage stats & Pinecone RAG features directly into PulseGuard'
 - [ ] **Milestone 3**: Implement `getHeliconeOpenAI` wrapper in `apps/web/src/lib/ai/helicone-client.ts`.
 - [ ] **Milestone 4**: Create `pinecone-client.ts` helper and index first batch of historical post-mortems.
 - [ ] **Milestone 5**: Connect post-mortem server action to Helicone and Pinecone RAG.
-- [ ] **Milestone 6**: Expose LLM Usage / Token metrics on the PulseGuard Organization Billing page via Helicone APIs.
+- [ ] **Milestone 6**: Expose LLM Usage / Token metrics on the SteadyStack Organization Billing page via Helicone APIs.

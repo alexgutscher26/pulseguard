@@ -47,10 +47,10 @@ const iconMap: Record<string, any> = {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const useCase = USE_CASES[slug];
-  if (!useCase) return { title: "Use Case Not Found | PulseGuard" };
+  if (!useCase) return { title: "Use Case Not Found | SteadyStack" };
 
   return {
-    title: `${useCase.title} | PulseGuard`,
+    title: `${useCase.title} | SteadyStack`,
     description: useCase.subtitle,
   };
 }
@@ -161,7 +161,7 @@ export default async function UseCasePage({ params }: { params: Promise<{ slug: 
         {/* How It Works Architecture Pipeline */}
         <div className="mb-20 p-8 rounded-2xl border border-border bg-card/80 backdrop-blur-xl">
           <h2 className="text-2xl font-bold font-mono text-foreground mb-8 text-center">
-            How PulseGuard Operates
+            How SteadyStack Operates
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {useCase.architecturePoints.map((point, idx) => (
@@ -202,7 +202,7 @@ export default async function UseCasePage({ params }: { params: Promise<{ slug: 
         {/* Bottom CTA Card */}
         <div className="p-8 sm:p-12 rounded-2xl border border-primary/30 bg-card/90 text-center relative overflow-hidden shadow-2xl">
           <h2 className="text-3xl font-extrabold font-mono text-foreground mb-3">
-            Get Started with PulseGuard Today
+            Get Started with SteadyStack Today
           </h2>
           <p className="text-sm text-muted-foreground font-sans max-w-xl mx-auto mb-8">
             Deploy 1-minute monitoring checks for your endpoints in less than 60 seconds. Free

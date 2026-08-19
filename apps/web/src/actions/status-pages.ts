@@ -1,13 +1,13 @@
 "use server";
 
-import prisma, { Prisma } from "@pulseguard/db";
+import prisma, { Prisma } from "@steadystack/db";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { auth } from "@pulseguard/auth";
+import { auth } from "@steadystack/auth";
 import { headers, cookies } from "next/headers";
-import { env } from "@pulseguard/env/server";
+import { env } from "@steadystack/env/server";
 import { assertStatusPageLimits, checkAndNotifyUsageLimits } from "@/lib/billing-server";
-import { hashPassword, verifyPassword, signAuthToken } from "@pulseguard/core";
+import { hashPassword, verifyPassword, signAuthToken } from "@steadystack/core";
 
 /**
  * Adds a custom domain to a Vercel project via their API.

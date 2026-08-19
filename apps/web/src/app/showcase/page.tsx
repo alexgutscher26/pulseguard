@@ -7,12 +7,12 @@ import { getShowcaseEntries } from "@/actions/showcase";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Cyberpunk Status Page Showcase | PulseGuard",
+  title: "Cyberpunk Status Page Showcase | SteadyStack",
   description:
-    "Browse beautifully designed cyberpunk-themed status pages from PulseGuard users. Get inspired and build your own.",
+    "Browse beautifully designed cyberpunk-themed status pages from SteadyStack users. Get inspired and build your own.",
   openGraph: {
     title: "Cyberpunk Status Page Showcase",
-    description: "See what PulseGuard status pages look like in the wild.",
+    description: "See what SteadyStack status pages look like in the wild.",
   },
 };
 

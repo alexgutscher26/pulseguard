@@ -1,13 +1,13 @@
-name: "PulseGuard Edge Preview Check"
+name: "SteadyStack Edge Preview Check"
 description: "Zero-false-positive multi-region edge verification for PR preview deployments"
-author: "PulseGuard"
+author: "SteadyStack"
 branding:
   icon: "activity"
   color: "emerald"
 
 inputs:
   api_key:
-    description: "PulseGuard API Key (pg_live_...)"
+    description: "SteadyStack API Key (pg_live_...)"
     required: true
   url:
     description: "Preview deployment URL or target endpoint to verify"
@@ -29,8 +29,8 @@ inputs:
     default: "${{ github.token }}"
     required: false
   host_url:
-    description: "PulseGuard API host URL"
-    default: "https://app.pulseguard.io"
+    description: "SteadyStack API host URL"
+    default: "https://app.steadystack.dev"
     required: false
 
 outputs:

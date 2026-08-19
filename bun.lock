@@ -6,7 +6,7 @@
       "name": "pulseguard",
       "dependencies": {
         "@opennextjs/cloudflare": "^1.20.2",
-        "@pulseguard/env": "workspace:*",
+        "@steadystack/env": "workspace:*",
         "@types/inquirer": "^9.0.10",
         "dotenv": "catalog:",
         "next-intl": "4.13.6",
@@ -18,7 +18,7 @@
         "@cloudflare/workers-types": "catalog:",
         "@commitlint/cli": "^21.2.1",
         "@commitlint/config-conventional": "^21.2.0",
-        "@pulseguard/config": "workspace:*",
+        "@steadystack/config": "workspace:*",
         "@types/bun": "^1.3.14",
         "@types/node": "^22.13.14",
         "depcheck": "^1.4.7",
@@ -58,7 +58,7 @@
       "name": "e2e",
       "version": "0.0.0",
       "dependencies": {
-        "@pulseguard/db": "workspace:*",
+        "@steadystack/db": "workspace:*",
         "dotenv": "^16.4.1",
       },
       "devDependencies": {
@@ -75,11 +75,11 @@
         "@expo/metro-runtime": "~57.0.8",
         "@expo/vector-icons": "^15.0.3",
         "@gorhom/bottom-sheet": "^5",
-        "@pulseguard/api": "workspace:*",
-        "@pulseguard/db": "workspace:*",
-        "@pulseguard/env": "workspace:*",
         "@react-navigation/drawer": "^7.3.9",
         "@react-navigation/elements": "^2.8.1",
+        "@steadystack/api": "workspace:*",
+        "@steadystack/db": "workspace:*",
+        "@steadystack/env": "workspace:*",
         "@tanstack/react-query": "catalog:",
         "@trpc/client": "catalog:",
         "@trpc/server": "catalog:",
@@ -114,19 +114,19 @@
         "zod": "catalog:",
       },
       "devDependencies": {
-        "@pulseguard/config": "workspace:*",
+        "@steadystack/config": "workspace:*",
         "@types/node": "^24.10.0",
         "@types/react": "~19.2.4",
         "typescript": "~6.0.3",
       },
     },
     "apps/probe": {
-      "name": "@pulseguard/probe",
+      "name": "@steadystack/probe",
       "version": "0.1.0",
       "dependencies": {
-        "@pulseguard/core": "workspace:*",
-        "@pulseguard/env": "workspace:*",
-        "@pulseguard/types": "workspace:*",
+        "@steadystack/core": "workspace:*",
+        "@steadystack/env": "workspace:*",
+        "@steadystack/types": "workspace:*",
       },
       "devDependencies": {
         "@types/node": "^22.0.0",
@@ -142,13 +142,6 @@
         "@hookform/resolvers": "^5.2.2",
         "@pinecone-database/pinecone": "^8.2.0",
         "@prisma/client": "catalog:",
-        "@pulseguard/api": "workspace:*",
-        "@pulseguard/auth": "workspace:*",
-        "@pulseguard/core": "workspace:*",
-        "@pulseguard/db": "workspace:*",
-        "@pulseguard/email": "workspace:*",
-        "@pulseguard/env": "workspace:*",
-        "@pulseguard/shared": "workspace:*",
         "@radix-ui/react-dialog": "^1.1.15",
         "@radix-ui/react-label": "^2.1.8",
         "@radix-ui/react-select": "^2.2.6",
@@ -156,6 +149,13 @@
         "@radix-ui/react-tabs": "^1.1.13",
         "@radix-ui/react-toggle": "^1.1.10",
         "@radix-ui/react-toggle-group": "^1.1.11",
+        "@steadystack/api": "workspace:*",
+        "@steadystack/auth": "workspace:*",
+        "@steadystack/core": "workspace:*",
+        "@steadystack/db": "workspace:*",
+        "@steadystack/email": "workspace:*",
+        "@steadystack/env": "workspace:*",
+        "@steadystack/shared": "workspace:*",
         "@tanstack/react-form": "^1.27.3",
         "@tanstack/react-query": "catalog:",
         "@trpc/client": "catalog:",
@@ -196,8 +196,8 @@
         "@chromatic-com/storybook": "^5.2.1",
         "@cloudflare/workers-types": "catalog:",
         "@opennextjs/cloudflare": "^1.20.2",
-        "@pulseguard/config": "workspace:*",
         "@size-limit/preset-app": "^13.0.3",
+        "@steadystack/config": "workspace:*",
         "@storybook/addon-a11y": "^10.5.6",
         "@storybook/addon-docs": "^10.5.6",
         "@storybook/addon-mcp": "^0.7.0",
@@ -227,15 +227,15 @@
       },
     },
     "apps/worker": {
-      "name": "@pulseguard/worker",
+      "name": "@steadystack/worker",
       "version": "0.1.0",
       "dependencies": {
         "@cloudflare/puppeteer": "^0.0.9",
-        "@pulseguard/core": "workspace:*",
-        "@pulseguard/db": "workspace:*",
-        "@pulseguard/email": "workspace:*",
-        "@pulseguard/shared": "workspace:*",
-        "@pulseguard/types": "workspace:*",
+        "@steadystack/core": "workspace:*",
+        "@steadystack/db": "workspace:*",
+        "@steadystack/email": "workspace:*",
+        "@steadystack/shared": "workspace:*",
+        "@steadystack/types": "workspace:*",
         "@upstash/redis": "^1.37.0",
       },
       "devDependencies": {
@@ -245,37 +245,37 @@
       },
     },
     "packages/api": {
-      "name": "@pulseguard/api",
+      "name": "@steadystack/api",
       "version": "0.0.0",
       "dependencies": {
-        "@pulseguard/auth": "workspace:*",
-        "@pulseguard/db": "workspace:*",
+        "@steadystack/auth": "workspace:*",
+        "@steadystack/db": "workspace:*",
         "@trpc/server": "catalog:",
         "next": "catalog:",
         "zod": "catalog:",
       },
       "devDependencies": {
-        "@pulseguard/config": "workspace:*",
+        "@steadystack/config": "workspace:*",
         "typescript": "catalog:",
       },
     },
     "packages/auth": {
-      "name": "@pulseguard/auth",
+      "name": "@steadystack/auth",
       "version": "0.0.0",
       "dependencies": {
         "@better-auth/expo": "catalog:",
-        "@pulseguard/db": "workspace:*",
-        "@pulseguard/email": "workspace:*",
-        "@pulseguard/env": "workspace:*",
+        "@steadystack/db": "workspace:*",
+        "@steadystack/email": "workspace:*",
+        "@steadystack/env": "workspace:*",
         "better-auth": "catalog:",
       },
       "devDependencies": {
-        "@pulseguard/config": "workspace:*",
+        "@steadystack/config": "workspace:*",
         "typescript": "catalog:",
       },
     },
     "packages/config": {
-      "name": "@pulseguard/config",
+      "name": "@steadystack/config",
       "version": "0.0.0",
       "devDependencies": {
         "@cloudflare/workers-types": "catalog:",
@@ -285,18 +285,18 @@
       },
     },
     "packages/core": {
-      "name": "@pulseguard/core",
+      "name": "@steadystack/core",
       "version": "0.1.0",
       "dependencies": {
-        "@pulseguard/types": "workspace:*",
+        "@steadystack/types": "workspace:*",
       },
       "devDependencies": {
-        "@pulseguard/config": "workspace:*",
+        "@steadystack/config": "workspace:*",
         "typescript": "catalog:",
       },
     },
     "packages/db": {
-      "name": "@pulseguard/db",
+      "name": "@steadystack/db",
       "version": "0.0.0",
       "dependencies": {
         "@prisma/adapter-pg": "^7.4.0",
@@ -307,31 +307,31 @@
         "pg-cloudflare": "^1.3.0",
       },
       "devDependencies": {
-        "@pulseguard/config": "workspace:*",
+        "@steadystack/config": "workspace:*",
         "@types/pg": "^8.16.0",
         "prisma": "^7.4.0",
         "typescript": "catalog:",
       },
     },
     "packages/email": {
-      "name": "@pulseguard/email",
+      "name": "@steadystack/email",
       "version": "0.1.0",
       "dependencies": {
-        "@pulseguard/env": "workspace:*",
         "@react-pdf/renderer": "^4.3.2",
+        "@steadystack/env": "workspace:*",
         "react": "^19.2.3",
         "react-dom": "^19.2.3",
         "resend": "^4.0.0",
       },
       "devDependencies": {
-        "@pulseguard/config": "workspace:*",
+        "@steadystack/config": "workspace:*",
         "@types/react": "^19.0.0",
         "@types/react-dom": "^19.0.0",
         "typescript": "catalog:",
       },
     },
     "packages/env": {
-      "name": "@pulseguard/env",
+      "name": "@steadystack/env",
       "version": "0.0.0",
       "dependencies": {
         "@t3-oss/env-core": "^0.13.1",
@@ -339,35 +339,35 @@
         "zod": "catalog:",
       },
       "devDependencies": {
-        "@pulseguard/config": "workspace:*",
+        "@steadystack/config": "workspace:*",
         "@types/node": "^22.13.14",
         "typescript": "catalog:",
       },
     },
     "packages/infra": {
-      "name": "@pulseguard/infra",
+      "name": "@steadystack/infra",
       "dependencies": {
         "dotenv": "catalog:",
       },
       "devDependencies": {
-        "@pulseguard/config": "workspace:*",
+        "@steadystack/config": "workspace:*",
         "alchemy": "catalog:",
         "typescript": "catalog:",
       },
     },
     "packages/shared": {
-      "name": "@pulseguard/shared",
+      "name": "@steadystack/shared",
       "version": "0.1.0",
       "devDependencies": {
-        "@pulseguard/config": "workspace:*",
+        "@steadystack/config": "workspace:*",
         "typescript": "catalog:",
       },
     },
     "packages/types": {
-      "name": "@pulseguard/types",
+      "name": "@steadystack/types",
       "version": "0.1.0",
       "devDependencies": {
-        "@pulseguard/config": "workspace:*",
+        "@steadystack/config": "workspace:*",
         "typescript": "catalog:",
       },
     },
@@ -1354,30 +1354,6 @@
 
     "@publint/pack": ["@publint/pack@0.1.6", "", { "dependencies": { "tinyexec": "^1.2.4" } }, "sha512-3uVNyGcVplhPZSLVyeIpL7+cIRn1YCSNHLG/rUIlBQMVH8YuN9++YF+5+UDIIO9RW98dujiUoTltO7RDB5bFJA=="],
 
-    "@pulseguard/api": ["@pulseguard/api@workspace:packages/api"],
-
-    "@pulseguard/auth": ["@pulseguard/auth@workspace:packages/auth"],
-
-    "@pulseguard/config": ["@pulseguard/config@workspace:packages/config"],
-
-    "@pulseguard/core": ["@pulseguard/core@workspace:packages/core"],
-
-    "@pulseguard/db": ["@pulseguard/db@workspace:packages/db"],
-
-    "@pulseguard/email": ["@pulseguard/email@workspace:packages/email"],
-
-    "@pulseguard/env": ["@pulseguard/env@workspace:packages/env"],
-
-    "@pulseguard/infra": ["@pulseguard/infra@workspace:packages/infra"],
-
-    "@pulseguard/probe": ["@pulseguard/probe@workspace:apps/probe"],
-
-    "@pulseguard/shared": ["@pulseguard/shared@workspace:packages/shared"],
-
-    "@pulseguard/types": ["@pulseguard/types@workspace:packages/types"],
-
-    "@pulseguard/worker": ["@pulseguard/worker@workspace:apps/worker"],
-
     "@puppeteer/browsers": ["@puppeteer/browsers@2.10.10", "", { "dependencies": { "debug": "^4.4.3", "extract-zip": "^2.0.1", "progress": "^2.0.3", "proxy-agent": "^6.5.0", "semver": "^7.7.2", "tar-fs": "^3.1.0", "yargs": "^17.7.2" }, "bin": { "browsers": "lib/cjs/main-cli.js" } }, "sha512-3ZG500+ZeLql8rE0hjfhkycJjDj0pI/btEh3L9IkWUYcOrgP0xCNRq3HbtbqOPbvDhFaAWD88pDFtlLv8ns8gA=="],
 
     "@radix-ui/number": ["@radix-ui/number@1.1.1", "", {}, "sha512-MkKCwxlXTgz6CFoJx3pCwn07GKp36+aZyu/u2Ln2VrA5DcdyCZkASEDBTd8x5whTQQL5CiYf4prXKLcgQdv29g=="],
@@ -1681,6 +1657,30 @@
     "@standard-schema/spec": ["@standard-schema/spec@1.0.0-beta.4", "", {}, "sha512-d3IxtzLo7P1oZ8s8YNvxzBUXRXojSut8pbPrTYtzsc5sn4+53jVqbk66pQerSZbZSJZQux6LkclB/+8IDordHg=="],
 
     "@standard-schema/utils": ["@standard-schema/utils@0.3.0", "", {}, "sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g=="],
+
+    "@steadystack/api": ["@steadystack/api@workspace:packages/api"],
+
+    "@steadystack/auth": ["@steadystack/auth@workspace:packages/auth"],
+
+    "@steadystack/config": ["@steadystack/config@workspace:packages/config"],
+
+    "@steadystack/core": ["@steadystack/core@workspace:packages/core"],
+
+    "@steadystack/db": ["@steadystack/db@workspace:packages/db"],
+
+    "@steadystack/email": ["@steadystack/email@workspace:packages/email"],
+
+    "@steadystack/env": ["@steadystack/env@workspace:packages/env"],
+
+    "@steadystack/infra": ["@steadystack/infra@workspace:packages/infra"],
+
+    "@steadystack/probe": ["@steadystack/probe@workspace:apps/probe"],
+
+    "@steadystack/shared": ["@steadystack/shared@workspace:packages/shared"],
+
+    "@steadystack/types": ["@steadystack/types@workspace:packages/types"],
+
+    "@steadystack/worker": ["@steadystack/worker@workspace:apps/worker"],
 
     "@storybook/addon-a11y": ["@storybook/addon-a11y@10.5.6", "", { "dependencies": { "@storybook/global": "^5.0.0", "axe-core": "^4.2.0" }, "peerDependencies": { "storybook": "^10.5.6" } }, "sha512-pMqbmtvkIgb7/kVE2BTNovGhSerRXWsVag62zpwQe0SwYYkgN+1Q9h4TYuIe2+npGkxgwALCjwtqkcnpOoND+A=="],
 

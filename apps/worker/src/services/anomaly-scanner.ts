@@ -8,7 +8,7 @@
  * 3. Creates MonitorInsight records for anomalies (latency > mean + 3*stddev)
  */
 
-import type { PrismaClient } from "@pulseguard/db";
+import type { PrismaClient } from "@steadystack/db";
 
 const BASELINE_LOOKBACK_DAYS = 28;
 const RECENT_WINDOW_MINUTES = 10;

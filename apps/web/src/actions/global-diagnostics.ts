@@ -1,6 +1,6 @@
 "use server";
 
-import { isPrivateOrInternalUrl } from "@pulseguard/core";
+import { isPrivateOrInternalUrl } from "@steadystack/core";
 
 export interface GlobalpingProbeResult {
   city: string;
@@ -54,7 +54,7 @@ const COUNTRY_FLAGS: Record<string, string> = {
 /**
  * Execute ad-hoc, on-demand global latency and reachability test via Globalping API.
  * This is strictly used for manual troubleshooting, while automated critical alerts
- * remain 100% on PulseGuard's deterministic pinned RegionalProbe mesh.
+ * remain 100% on SteadyStack's deterministic pinned RegionalProbe mesh.
  */
 export async function runGlobalpingDiagnostics(targetUrl: string): Promise<{
   success: boolean;
@@ -131,7 +131,7 @@ export async function runGlobalpingDiagnostics(targetUrl: string): Promise<{
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "User-Agent": "PulseGuard-AdHoc-Diagnostics/2.0 (+https://pulseguard.io)",
+        "User-Agent": "SteadyStack-AdHoc-Diagnostics/2.0 (+https://steadystack.dev)",
       },
       body: JSON.stringify(reqBody),
       signal: AbortSignal.timeout(10_000),
@@ -162,7 +162,7 @@ export async function runGlobalpingDiagnostics(targetUrl: string): Promise<{
 
       const pollRes = await fetch(`https://api.globalping.io/v1/measurements/${id}`, {
         headers: {
-          "User-Agent": "PulseGuard-AdHoc-Diagnostics/2.0 (+https://pulseguard.io)",
+          "User-Agent": "SteadyStack-AdHoc-Diagnostics/2.0 (+https://steadystack.dev)",
         },
         signal: AbortSignal.timeout(6000),
       });

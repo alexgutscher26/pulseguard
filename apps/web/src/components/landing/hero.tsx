@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight, Activity, ShieldCheck, Zap, Server, RefreshCw } from "lucide-react";
-import { AVAILABLE_REGIONS } from "@pulseguard/shared";
+import { AVAILABLE_REGIONS } from "@steadystack/shared";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
@@ -100,7 +100,7 @@ export default function Hero() {
 
         {/* Subhead */}
         <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mb-8 text-balance font-sans">
-          PulseGuard checks your endpoints every 60 seconds from seven global regions. One region
+          SteadyStack checks your endpoints every 60 seconds from seven global regions. One region
           seeing a failure is a network blip, and we ignore it. When four regions independently
           agree, you get paged. Every alert you receive has already been confirmed four times over.
         </p>
@@ -186,7 +186,7 @@ export default function Hero() {
             </div>
             <div className="text-[10px] font-bold text-muted-foreground tracking-widest font-mono uppercase flex items-center gap-1.5">
               <Server className="size-3 text-primary" />
-              PULSEGUARD_7_REGION_CONSENSUS_TELEMETRY
+              STEADYSTACK_7_REGION_CONSENSUS_TELEMETRY
             </div>
             <div className="flex items-center gap-2 text-[10px] font-mono text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded">
               <span className="size-1.5 rounded-full bg-primary animate-ping" />

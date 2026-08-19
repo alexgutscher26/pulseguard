@@ -7,7 +7,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Good documentation makes PulseGuard accessible to everyone. Thank you for helping us improve it!
+        Good documentation makes SteadyStack accessible to everyone. Thank you for helping us improve it!
 
   - type: dropdown
     id: doc_type

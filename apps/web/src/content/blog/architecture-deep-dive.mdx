@@ -1,6 +1,6 @@
 ---
 title: "Building a Global Monitoring Mesh: Architecture Deep Dive"
-description: "How we designed PulseGuard's distributed check infrastructure for reliability, low latency, and horizontal scalability across 7 pinned global edge regions."
+description: "How we designed SteadyStack's distributed check infrastructure for reliability, low latency, and horizontal scalability across 7 pinned global edge regions."
 date: "2026-06-05"
 category: "Engineering"
 readTime: "12 min read"
@@ -15,7 +15,7 @@ tags:
   ]
 ---
 
-PulseGuard's monitoring infrastructure is built as a distributed mesh — a network of lightweight check nodes pinned across 7 global edge regions via Cloudflare Durable Object location hints that coordinate to verify endpoint availability and response times. Here's how it works under the hood.
+SteadyStack's monitoring infrastructure is built as a distributed mesh — a network of lightweight check nodes pinned across 7 global edge regions via Cloudflare Durable Object location hints that coordinate to verify endpoint availability and response times. Here's how it works under the hood.
 
 ---
 

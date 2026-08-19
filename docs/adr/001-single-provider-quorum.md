@@ -6,7 +6,7 @@ Accepted
 
 ## Context
 
-PulseGuard's primary synthetic probe fleet runs on geographically pinned Cloudflare Durable Objects across 7 sovereign location hints (`wnam`, `enam`, `weur`, `eeur`, `apac`, `oc`, `sam`). By default, all Cloudflare Workers and Durable Objects egress traffic through Cloudflare's autonomous system (AS13335).
+SteadyStack's primary synthetic probe fleet runs on geographically pinned Cloudflare Durable Objects across 7 sovereign location hints (`wnam`, `enam`, `weur`, `eeur`, `apac`, `oc`, `sam`). By default, all Cloudflare Workers and Durable Objects egress traffic through Cloudflare's autonomous system (AS13335).
 
 A theoretical failure mode exists where a Cloudflare-internal network routing anomaly or egress partition causes all 7 Cloudflare DOs to fail in reaching a specific origin, while the origin remains accessible to the broader internet.
 

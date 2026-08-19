@@ -2,14 +2,14 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "pulseguard.fullname" . }}-web
+  name: {{ include "steadystack.fullname" . }}-web
   namespace: {{ default .Release.Namespace .Values.metrics.serviceMonitor.namespace }}
   labels:
-    {{- include "pulseguard.labels" . | nindent 4 }}
+    {{- include "steadystack.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      {{- include "pulseguard.web.selectorLabels" . | nindent 6 }}
+      {{- include "steadystack.web.selectorLabels" . | nindent 6 }}
   endpoints:
     - port: http
       path: /api/health

@@ -57,7 +57,7 @@ export function CreateStatusPageModal({ isOpen, onClose }: Props) {
               />
             </div>
             <p className="text-[10px] text-muted-foreground font-mono">
-              Public URL: pulseguard.com/status-page/slug
+              Public URL: steadystack.dev/status-page/slug
             </p>
           </div>
 

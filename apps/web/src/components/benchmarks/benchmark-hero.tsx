@@ -56,7 +56,7 @@ export function BenchmarkHero() {
 
         {/* Subtitle / Positioning */}
         <p className="text-muted-foreground text-base sm:text-lg md:text-xl max-w-3xl leading-relaxed mb-8">
-          We ran <span className="text-foreground font-semibold">PulseGuard</span>,{" "}
+          We ran <span className="text-foreground font-semibold">SteadyStack</span>,{" "}
           <span className="text-foreground font-semibold">UptimeRobot</span>, and{" "}
           <span className="text-foreground font-semibold">Pingdom</span> against 10 identical
           endpoints for 30 days. We counted every single spurious alert, measured detection latency,
@@ -169,12 +169,12 @@ export function BenchmarkHero() {
           </span>
           <span className="text-border">•</span>
           <Link
-            href="https://github.com/alexgutscher26/pulseguard"
+            href="https://github.com/getsteadystack/SteadyStack"
             target="_blank"
             className="hover:text-foreground transition-colors flex items-center gap-1"
           >
             <Terminal className="size-3 text-primary" />
-            github.com/alexgutscher26/pulseguard
+            github.com/getsteadystack/SteadyStack
             <ExternalLink className="size-2.5 opacity-60" />
           </Link>
         </div>

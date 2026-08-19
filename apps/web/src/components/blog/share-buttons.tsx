@@ -39,7 +39,7 @@ export function ShareButtons({ title, url }: ShareButtonsProps) {
 
   const handleShareX = () => {
     const shareUrl = getShareUrl();
-    const text = encodeURIComponent(`"${title}" by @PulseGuard`);
+    const text = encodeURIComponent(`"${title}" by @SteadyStack`);
     const shareHref = `https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(shareUrl)}`;
     window.open(shareHref, "_blank", "noopener,noreferrer");
   };

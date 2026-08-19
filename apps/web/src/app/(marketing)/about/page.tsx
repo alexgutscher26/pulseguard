@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 import { Activity, Globe, Shield, Bell, Brain, Cpu, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { PRODUCT_CONFIG, AVAILABLE_REGIONS } from "@pulseguard/shared";
+import { PRODUCT_CONFIG, AVAILABLE_REGIONS } from "@steadystack/shared";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "About PulseGuard | Global Uptime Monitoring",
+  title: "About SteadyStack | Global Uptime Monitoring",
   description:
-    "PulseGuard was built to make infrastructure monitoring fast, accurate, and beautiful. Learn our story and meet the team.",
+    "SteadyStack was built to make infrastructure monitoring fast, accurate, and beautiful. Learn our story and meet the team.",
   openGraph: {
-    title: "About PulseGuard",
+    title: "About SteadyStack",
     description: "Built to make infrastructure monitoring fast, accurate, and beautiful.",
   },
 };
@@ -73,13 +73,13 @@ export default function AboutPage() {
         <div className="max-w-5xl mx-auto px-6 md:px-12 flex flex-col items-center text-center gap-6 relative">
           <div className="inline-flex items-center gap-2 px-3 py-1 border border-primary/20 bg-primary/5 text-primary text-[10px] font-bold font-mono uppercase tracking-widest">
             <Activity className="size-3" />
-            About PulseGuard
+            About SteadyStack
           </div>
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-foreground max-w-3xl leading-[1.1]">
             Monitoring infrastructure shouldn&apos;t feel like infrastructure
           </h1>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-xl">
-            PulseGuard was created to solve a simple problem: most monitoring tools are either too
+            SteadyStack was created to solve a simple problem: most monitoring tools are either too
             slow, too noisy, or too ugly. We fixed all three.
           </p>
         </div>
@@ -120,7 +120,7 @@ export default function AboutPage() {
                 an alert. In 2026, that&apos;s unacceptable.
               </p>
               <p>
-                We built PulseGuard to do better. Our free tier checks every{" "}
+                We built SteadyStack to do better. Our free tier checks every{" "}
                 {PRODUCT_CONFIG.DEFAULT_CHECK_INTERVAL_SECONDS} seconds from{" "}
                 {AVAILABLE_REGIONS.length} global regions. We verify failures across multiple nodes
                 before alerting — so you never chase a ghost.
@@ -143,7 +143,7 @@ export default function AboutPage() {
               <span>Core Principles</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground mb-4">
-              The PulseGuard way
+              The SteadyStack way
             </h2>
             <p className="text-muted-foreground text-sm leading-relaxed">
               Every decision we make is guided by these principles.

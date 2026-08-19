@@ -6,13 +6,13 @@ import { ToolSchema } from "@/components/seo/tool-schema";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "MX & DNS Record Lookup Analyzer | PulseGuard",
+  title: "MX & DNS Record Lookup Analyzer | SteadyStack",
   description:
-    "Free MX and DNS record lookup tool to audit SPF/DKIM/DMARC health scores. Verify email deliverability and security with PulseGuard's DNS sentinel.",
+    "Free MX and DNS record lookup tool to audit SPF/DKIM/DMARC health scores. Verify email deliverability and security with SteadyStack's DNS sentinel.",
   openGraph: {
     title: "MX & DNS Record Lookup Analyzer",
     description:
-      "Audit your domain's email security and deliverability with PulseGuard's DNS pulse sentinel.",
+      "Audit your domain's email security and deliverability with SteadyStack's DNS pulse sentinel.",
     type: "website",
   },
 };
@@ -22,8 +22,8 @@ export default function DNSSentinelPage() {
     <div className="min-h-screen bg-background">
       <ToolSchema
         name="MX & DNS Record Lookup Analyzer"
-        description="Free MX and DNS record lookup tool to audit SPF/DKIM/DMARC health scores. Verify email deliverability and security with PulseGuard's DNS sentinel."
-        url="https://pulseguard.io/tools/dns-sentinel"
+        description="Free MX and DNS record lookup tool to audit SPF/DKIM/DMARC health scores. Verify email deliverability and security with SteadyStack's DNS sentinel."
+        url="https://steadystack.dev/tools/dns-sentinel"
       />
       <LandingHeader />
       <main className="container mx-auto pt-32 pb-12 px-4 md:px-6">

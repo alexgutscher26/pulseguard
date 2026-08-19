@@ -59,7 +59,7 @@ export default function HowItWorks() {
               all.
             </p>
             <p className="text-foreground font-semibold font-mono text-sm">
-              PulseGuard never alerts on one opinion.
+              SteadyStack never alerts on one opinion.
             </p>
           </div>
         </div>

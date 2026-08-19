@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createHash, randomBytes } from "crypto";
-import { auth } from "@pulseguard/auth";
-import prisma from "@pulseguard/db";
+import { auth } from "@steadystack/auth";
+import prisma from "@steadystack/db";
 import { headers } from "next/headers";
 
 // GET /api/cli/api-keys — list keys (web session auth)

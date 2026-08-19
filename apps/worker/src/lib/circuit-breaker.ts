@@ -8,8 +8,8 @@ export type CircuitState = "CLOSED" | "OPEN" | "HALF_OPEN";
  */
 export class DatabaseCircuitBreaker {
   private redis: Redis;
-  private STATE_KEY = "pulseguard:cb:tripped_at";
-  private FAIL_COUNT_KEY = "pulseguard:cb:fail_count";
+  private STATE_KEY = "steadystack:cb:tripped_at";
+  private FAIL_COUNT_KEY = "steadystack:cb:fail_count";
 
   // Threshold of failures before tripping (e.g., 5 failures in a short window)
   private THRESHOLD = 5;

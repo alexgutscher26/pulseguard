@@ -470,7 +470,8 @@ export function RoastMyStack() {
             <div className="border border-dashed border-primary/20 bg-primary/[0.02] p-5 text-center">
               <p className="text-[10px] font-mono text-muted-foreground mb-3">
                 Want <span className="text-primary font-bold">real-time monitoring</span> for{" "}
-                {report.url}? PulseGuard checks every 30 seconds and alerts you before users notice.
+                {report.url}? SteadyStack checks every 30 seconds and alerts you before users
+                notice.
               </p>
               <a
                 href="/signup"

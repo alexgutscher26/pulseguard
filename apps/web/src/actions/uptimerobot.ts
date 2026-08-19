@@ -1,8 +1,8 @@
 "use server";
 
-import { auth } from "@pulseguard/auth";
+import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 import { revalidatePath } from "next/cache";
 import { assertMonitorLimits, checkAndNotifyUsageLimits } from "@/lib/billing-server";
 
@@ -95,7 +95,7 @@ export async function fetchUptimeRobotMonitors(apiKey: string): Promise<{
         name: m.friendly_name || m.url || `Monitor ${m.id}`,
         url: m.url || "",
         type: mappedType,
-        interval: 60, // Upgrade to PulseGuard standard 60-second polling!
+        interval: 60, // Upgrade to SteadyStack standard 60-second polling!
         port: parsedPort,
         selected: true,
       };
@@ -116,7 +116,7 @@ export async function fetchUptimeRobotMonitors(apiKey: string): Promise<{
 }
 
 /**
- * Bulk imports monitors fetched from UptimeRobot into PulseGuard DB.
+ * Bulk imports monitors fetched from UptimeRobot into SteadyStack DB.
  */
 export async function importUptimeRobotMonitors(
   monitorsToImport: NormalizedImportMonitor[],

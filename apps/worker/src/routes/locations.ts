@@ -2,7 +2,7 @@ import {
   CLOUDFLARE_PROBE_REGIONS,
   OUT_OF_BAND_SENTINEL_REGION,
   type DOLocationHint,
-} from "@pulseguard/shared";
+} from "@steadystack/shared";
 import { json, withErrorHandling } from "./http";
 import type { RouteHandler } from "./types";
 
@@ -71,11 +71,11 @@ export const locationsRoute: RouteHandler = withErrorHandling(async ({ env }, ur
     probes: liveProbes,
     identificationMethod: "CF-Worker Header Verification",
     identificationHeaders: {
-      "CF-Worker": "pulseguard.io",
-      "User-Agent": "PulseGuard-Synthetic-Monitor/2.0 (+https://pulseguard.io/bot)",
+      "CF-Worker": "steadystack.dev",
+      "User-Agent": "SteadyStack-Synthetic-Monitor/2.0 (+https://steadystack.dev/bot)",
     },
     wafRule: {
-      expression: 'http.request.headers["cf-worker"][0] eq "pulseguard.io"',
+      expression: 'http.request.headers["cf-worker"][0] eq "steadystack.dev"',
       action: "Skip / Bypass WAF & Rate Limiting",
     },
     timestamp: new Date().toISOString(),

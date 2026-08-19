@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 import { verifyApiKey, unauthorized } from "../../../_lib/auth";
 
 type Ctx = { params: Promise<{ id: string }> };

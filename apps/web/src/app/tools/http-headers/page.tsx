@@ -6,13 +6,13 @@ import { ToolSchema } from "@/components/seo/tool-schema";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "HTTP Security Header Analyzer | PulseGuard",
+  title: "HTTP Security Header Analyzer | SteadyStack",
   description:
     "Free HTTP header analyzer to audit website security. Scan HSTS, CSP, X-Frame-Options and more with our security sentinel tool.",
   openGraph: {
     title: "HTTP Security Header Analyzer",
     description:
-      "Audit your website's security posture with PulseGuard's header analysis sentinel.",
+      "Audit your website's security posture with SteadyStack's header analysis sentinel.",
     type: "website",
   },
 };
@@ -23,7 +23,7 @@ export default function SecurityHeadersPage() {
       <ToolSchema
         name="HTTP Security Header Analyzer"
         description="Free HTTP header analyzer to audit website security. Scan HSTS, CSP, X-Frame-Options and more with our security sentinel tool."
-        url="https://pulseguard.io/tools/http-headers"
+        url="https://steadystack.dev/tools/http-headers"
       />
       <LandingHeader />
       <main className="container mx-auto pt-32 pb-12 px-4 md:px-6">

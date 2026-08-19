@@ -6,13 +6,13 @@ import { ToolSchema } from "@/components/seo/tool-schema";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Cron Expression Generator & Debugger | PulseGuard",
+  title: "Cron Expression Generator & Debugger | SteadyStack",
   description:
     "Free cron expression generator and debugger for infrastructure monitoring. Visualize schedules, humanize cron strings, and plan next executions.",
   openGraph: {
     title: "Cron Expression Generator & Debugger",
     description:
-      "Visualize and plan your monitoring schedule with PulseGuard's cron pulse sentinel.",
+      "Visualize and plan your monitoring schedule with SteadyStack's cron pulse sentinel.",
     type: "website",
   },
 };
@@ -23,7 +23,7 @@ export default function CronSentinelPage() {
       <ToolSchema
         name="Cron Expression Generator & Debugger"
         description="Free cron expression generator and debugger for infrastructure monitoring. Visualize schedules, humanize cron strings, and plan next executions."
-        url="https://pulseguard.io/tools/cron-sentinel"
+        url="https://steadystack.dev/tools/cron-sentinel"
       />
       <LandingHeader />
       <main className="container mx-auto pt-32 pb-12 px-4 md:px-6">

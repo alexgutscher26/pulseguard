@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 import { protectedProcedure, rateLimitedProcedure, router } from "../index";
 
 const roleEnum = z.enum(["owner", "admin", "member", "viewer", "billing"]);

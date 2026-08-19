@@ -19,23 +19,23 @@
 [**🚀 Quickstart**](#-getting-started) •
 [**🐳 Self-Host Guide**](#-self-host-in-60-seconds) •
 [**🔄 Uptime Kuma Importer**](#-one-command-uptime-kuma-migration) •
-[**⚖️ vs Uptime Kuma**](#-pulseguard-vs-uptime-kuma-an-honest-comparison) •
+[**⚖️ vs Uptime Kuma**](#-steadystack-vs-uptime-kuma-an-honest-comparison) •
 [**🗺️ Public Roadmap**](./ROADMAP.md) •
-[**💬 Discussions**](https://github.com/alexgutscher26/pulseguard/discussions)
+[**💬 Discussions**](https://github.com/getsteadystack/SteadyStack/discussions)
 
 </div>
 
 ---
 
-## ⚡ Why PulseGuard?
+## ⚡ Why SteadyStack?
 
 Traditional monitoring tools force you into a frustrating tradeoff: either pay exorbitant per-seat SaaS prices for basic 5-minute ping checks, or run a single-box open-source container that wakes you up at 3:14 AM because of a localized ISP glitch.
 
-PulseGuard combines the **sovereignty of open source** with the **power of global edge consensus**:
+SteadyStack combines the **sovereignty of open source** with the **power of global edge consensus**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  PulseGuard Multi-Region Edge Quorum Consensus                              │
+│  SteadyStack Multi-Region Edge Quorum Consensus                              │
 │                                                                             │
 │  [wnam]  [enam]  [weur]  [eeur]  [apac]  [apac-ne]  [apac-se]               │
 │    │       │       │       │       │        │          │                    │
@@ -66,11 +66,11 @@ $ pulse monitors list
 ┌────────┬─────────────────────────────┬──────────┬──────────────────────────────────────────┬──────────┬────────────┐
 │ STATUS │ NAME                        │ TYPE     │ URL                                      │ INTERVAL │ LAST CHECK │
 ├────────┼─────────────────────────────┼──────────┼──────────────────────────────────────────┼──────────┼────────────┤
-│ UP     │ Production API Gateway      │ HTTP     │ https://api.pulseguard.io/health         │ 60s      │ 13:49:12   │
-│ UP     │ Auth Service Edge           │ HTTP     │ https://auth.pulseguard.io/api/health    │ 60s      │ 13:49:08   │
-│ UP     │ Primary PostgreSQL Cluster  │ DATABASE │ pg.internal.pulseguard.io:5432           │ 30s      │ 13:49:15   │
-│ UP     │ WebSocket Real-Time Gateway │ WEBSOCKET│ wss://ws.pulseguard.io/v1/stream         │ 60s      │ 13:49:01   │
-│ UP     │ European DNS Sentinel       │ DNS      │ ns1.pulseguard.io                        │ 120s     │ 13:48:30   │
+│ UP     │ Production API Gateway      │ HTTP     │ https://api.steadystack.dev/health         │ 60s      │ 13:49:12   │
+│ UP     │ Auth Service Edge           │ HTTP     │ https://auth.steadystack.dev/api/health    │ 60s      │ 13:49:08   │
+│ UP     │ Primary PostgreSQL Cluster  │ DATABASE │ pg.internal.steadystack.dev:5432           │ 30s      │ 13:49:15   │
+│ UP     │ WebSocket Real-Time Gateway │ WEBSOCKET│ wss://ws.steadystack.dev/v1/stream         │ 60s      │ 13:49:01   │
+│ UP     │ European DNS Sentinel       │ DNS      │ ns1.steadystack.dev                        │ 120s     │ 13:48:30   │
 └────────┴─────────────────────────────┴──────────┴──────────────────────────────────────────┴──────────┴────────────┘
   5 monitors total (Verified by 7 Cloudflare Edge Regions)
 
@@ -79,7 +79,7 @@ $ pulse import kuma uptime-kuma-backup.json
 [+] Created: Production API Gateway (HTTP - 60s)
 [+] Created: Redis Main Cache (PORT - 30s)
 [+] Created: Stripe Webhook Ingestion (HTTP - 60s)
-All checks are now live on PulseGuard's multi-region edge network! 🎉
+All checks are now live on SteadyStack's multi-region edge network! 🎉
 ```
 
 ---
@@ -144,11 +144,11 @@ graph TD
 
 ---
 
-## ⚖️ PulseGuard vs Uptime Kuma: An Honest Comparison
+## ⚖️ SteadyStack vs Uptime Kuma: An Honest Comparison
 
 We have huge respect for [Uptime Kuma](https://github.com/louislam/uptime-kuma) and its creator Louis Lam. Uptime Kuma is a gold standard for single-container homelab monitoring. Here is an honest, engineering-grounded comparison of where each tool excels:
 
-| Dimension / Feature     | Uptime Kuma                                | PulseGuard                                                                                         |
+| Dimension / Feature     | Uptime Kuma                                | SteadyStack                                                                                        |
 | :---------------------- | :----------------------------------------- | :------------------------------------------------------------------------------------------------- |
 | **Primary Sweet Spot**  | **Homelabs, local NAS, single-box setups** | **Distributed microservices, production APIs, cloud infrastructure**                               |
 | **Hosting Complexity**  | Single Docker container (`docker run`)     | Docker Compose, Kubernetes (Helm), or Cloudflare Serverless                                        |
@@ -167,13 +167,13 @@ We have huge respect for [Uptime Kuma](https://github.com/louislam/uptime-kuma) 
 - If your environment is 100% air-gapped without WAN internet access.
 - If you want the simplest possible single-container setup with zero external databases.
 
-### When should you move to PulseGuard?
+### When should you move to SteadyStack?
 
 - When you outgrow a single box and cannot tolerate false alerts from localized ISP blips at 3 AM.
 - When you need multi-region edge verification to know whether downtime is global or localized.
 - When you want GitOps Monitoring as Code (`pulse monitors apply`) in your CI/CD pipelines.
 
-👉 [Read the full in-depth engineering breakdown: /vs/uptime-kuma](https://pulseguard.io/vs/uptime-kuma)
+👉 [Read the full in-depth engineering breakdown: /vs/uptime-kuma](https://steadystack.dev/vs/uptime-kuma)
 
 ---
 
@@ -185,7 +185,7 @@ Migrate your entire Uptime Kuma setup in 10 seconds:
 
 In Uptime Kuma, go to **Settings** → **Backup** → **Export Backup (JSON)**.
 
-### 2. Import into PulseGuard
+### 2. Import into SteadyStack
 
 **Via CLI:**
 
@@ -213,14 +213,14 @@ All monitor types (`HTTP`, `Keyword`, `Port`, `Ping`, `DNS`, `Push`), intervals,
 ## 🐳 Self-Host in 60 Seconds
 
 > **Our Philosophy on Self-Hosting:**
-> The engineers who self-host PulseGuard and never pay us are our primary distribution network. You get the exact same edge-consensus architecture, full data sovereignty, and zero artificial feature paywalls.
+> The engineers who self-host SteadyStack and never pay us are our primary distribution network. You get the exact same edge-consensus architecture, full data sovereignty, and zero artificial feature paywalls.
 
 ### Quickstart with Docker Compose
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/alexgutscher26/pulseguard.git
-cd pulseguard
+git clone https://github.com/getsteadystack/SteadyStack.git
+cd steadystack
 
 # 2. Configure environment
 cp .env.example .env.production
@@ -229,9 +229,9 @@ cp .env.example .env.production
 docker compose -f docker-compose.prod.yml up -d
 ```
 
-- Dashboard is live at `https://pulseguard.yourdomain.com` with automated Let's Encrypt TLS.
+- Dashboard is live at `https://steadystack.yourdomain.com` with automated Let's Encrypt TLS.
 - Read the complete [Single-Server Production Installation Guide →](./docs/self-hosted.md)
-- Kubernetes users: Deploy via our [Helm Chart (`helm/pulseguard`) →](./helm/pulseguard)
+- Kubernetes users: Deploy via our [Helm Chart (`helm/steadystack`) →](./helm/steadystack)
 
 ---
 
@@ -328,20 +328,20 @@ bun run dev
 
 ## 🤝 Community, Roadmap & Contributing
 
-PulseGuard is an open-source project built with and for the DevOps community.
+SteadyStack is an open-source project built with and for the DevOps community.
 
 - 🗺️ **[Public Product Roadmap](./ROADMAP.md)**: Explore what we are building in Q3/Q4 and vote on upcoming features.
 - 📰 **[Changelog](./CHANGELOG.md)**: Keep track of every release and milestone.
-- 💬 **[GitHub Discussions](https://github.com/alexgutscher26/pulseguard/discussions)**:
+- 💬 **[GitHub Discussions](https://github.com/getsteadystack/SteadyStack/discussions)**:
   - 📢 `#announcements`: Platform updates and major releases
   - 💡 `#ideas`: Pitch new monitor types and features
   - 🛠️ `#self-hosting-support`: Troubleshooting Docker and Kubernetes setups
   - 💬 `#q-and-a`: General questions and integration guides
-- 🏷️ **[Good First Issues](https://github.com/alexgutscher26/pulseguard/labels/good%20first%20issue)**: Looking to contribute? Start with beginner-friendly issues tagged `good first issue`.
+- 🏷️ **[Good First Issues](https://github.com/getsteadystack/SteadyStack/labels/good%20first%20issue)**: Looking to contribute? Start with beginner-friendly issues tagged `good first issue`.
 - 📖 **[Contributing Guide](./CONTRIBUTING.md)**: Review our coding standards, PR workflow, and branch conventions.
 
 ---
 
 ## 📄 License
 
-PulseGuard is licensed under the [MIT License](./LICENSE). Built with zero vendor lock-in.
+SteadyStack is licensed under the [MIT License](./LICENSE). Built with zero vendor lock-in.

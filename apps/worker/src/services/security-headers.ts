@@ -11,7 +11,7 @@ export async function checkSecurityHeaders(targetUrl: string) {
     const response = await fetch(targetUrl, {
       method: "GET",
       headers: {
-        "User-Agent": "PulseGuard-Security-Scanner/1.0",
+        "User-Agent": "SteadyStack-Security-Scanner/1.0",
       },
       redirect: "follow",
     });

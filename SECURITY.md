@@ -1,6 +1,6 @@
 # Security Policy
 
-At **PulseGuard**, we treat the security of our **Operational Intelligence Node** as paramount. We adhere to enterprise-grade standards, minimize the attack surface, and enforce zero-trust architecture. We sincerely appreciate the global security community's efforts in participating in responsible disclosure.
+At **SteadyStack**, we treat the security of our **Operational Intelligence Node** as paramount. We adhere to enterprise-grade standards, minimize the attack surface, and enforce zero-trust architecture. We sincerely appreciate the global security community's efforts in participating in responsible disclosure.
 
 > **Philosophy**: _"Assume breach. Trust nothing. Verify everything. Defense in depth."_
 
@@ -12,7 +12,7 @@ As a continuously deployed SaaS platform, we only actively protect and maintain 
 
 | Component          | Version | Supported          | Notes                                      |
 | :----------------- | :------ | :----------------- | :----------------------------------------- |
-| **Cloud Platform** | Current | :white_check_mark: | The latest deployment on `pulseguard.com`  |
+| **Cloud Platform** | Current | :white_check_mark: | The latest deployment on `steadystack.dev` |
 | **Edge Workers**   | Current | :white_check_mark: | The active regional monitoring ping assets |
 | **Self-Hosted**    | < 1.0.0 | :x:                | Local installations are not yet supported  |
 
@@ -20,11 +20,11 @@ As a continuously deployed SaaS platform, we only actively protect and maintain 
 
 ## Reporting a Vulnerability
 
-If you've identified a vulnerability within the PulseGuard infrastructure, we ask that you act in good faith and report it to us privately before making any public disclosure.
+If you've identified a vulnerability within the SteadyStack infrastructure, we ask that you act in good faith and report it to us privately before making any public disclosure.
 
 ### 1. How to Report
 
-Please encrypt your findings and email them to **security@pulseguard.com**.
+Please encrypt your findings and email them to **security@steadystack.dev**.
 
 **Must Include:**
 
@@ -41,7 +41,7 @@ To protect sensitive disclosures, please encrypt your payload using our public P
 Key Fingerprint: F01F B94B 7137 896D 7204  2757 702A FB2A EB67 BCF1
 ```
 
-[Download Public Key](https://pulseguard.com/pgp-key.txt)
+[Download Public Key](https://steadystack.dev/pgp-key.txt)
 
 ### 3. Response SLA
 

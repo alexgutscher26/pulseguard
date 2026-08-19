@@ -4,10 +4,10 @@ import LegalPage from "@/components/legal-page";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | PulseGuard",
-  description: "PulseGuard Privacy Policy — how we collect, use, and protect your data.",
+  title: "Privacy Policy | SteadyStack",
+  description: "SteadyStack Privacy Policy — how we collect, use, and protect your data.",
   openGraph: {
-    title: "Privacy Policy | PulseGuard",
+    title: "Privacy Policy | SteadyStack",
     description: "How we collect, use, and protect your data.",
   },
 };
@@ -21,7 +21,7 @@ const sections = [
   {
     title: "How We Use Your Information",
     content:
-      "We use the information we collect to operate, maintain, and improve PulseGuard, process transactions, send technical notices and support messages, respond to your comments and questions, and communicate with you about the service. Monitoring data (uptime checks, latency measurements) is used solely to provide the service you requested and is not sold or shared with third parties for advertising.",
+      "We use the information we collect to operate, maintain, and improve SteadyStack, process transactions, send technical notices and support messages, respond to your comments and questions, and communicate with you about the service. Monitoring data (uptime checks, latency measurements) is used solely to provide the service you requested and is not sold or shared with third parties for advertising.",
   },
   {
     title: "Data Retention",
@@ -31,7 +31,7 @@ const sections = [
   {
     title: "Data Sharing & Disclosure",
     content:
-      "We do not sell your personal information. We may share your data with trusted third-party service providers who assist in operating our infrastructure (cloud hosting, payment processing, email delivery) under strict confidentiality agreements. We may disclose information if required by law or to protect the rights, property, or safety of PulseGuard, our users, or others.",
+      "We do not sell your personal information. We may share your data with trusted third-party service providers who assist in operating our infrastructure (cloud hosting, payment processing, email delivery) under strict confidentiality agreements. We may disclose information if required by law or to protect the rights, property, or safety of SteadyStack, our users, or others.",
   },
   {
     title: "Security",
@@ -41,7 +41,7 @@ const sections = [
   {
     title: "Your Rights",
     content:
-      "Depending on your jurisdiction, you may have the right to access, correct, delete, or port your personal data. You may also object to or restrict certain processing. To exercise these rights, contact us at privacy@pulseguard.app. We will respond to your request within 30 days.",
+      "Depending on your jurisdiction, you may have the right to access, correct, delete, or port your personal data. You may also object to or restrict certain processing. To exercise these rights, contact us at privacy@steadystack.app. We will respond to your request within 30 days.",
   },
   {
     title: "Cookies",
@@ -51,7 +51,7 @@ const sections = [
   {
     title: "Changes to This Policy",
     content:
-      "We may update this Privacy Policy from time to time. Material changes will be notified via email or through the service. Your continued use of PulseGuard after changes constitutes acceptance of the updated policy.",
+      "We may update this Privacy Policy from time to time. Material changes will be notified via email or through the service. Your continued use of SteadyStack after changes constitutes acceptance of the updated policy.",
   },
   {
     title: "Contact",
@@ -71,7 +71,7 @@ export default function PrivacyPage() {
       otherPage={{
         href: "/terms",
         label: "Terms of Service",
-        description: "Read the terms governing your use of PulseGuard.",
+        description: "Read the terms governing your use of SteadyStack.",
       }}
     />
   );

@@ -16,7 +16,7 @@ export function OnboardingChecklist({ status, userEmail = "" }: OnboardingCheckl
   useEffect(() => {
     setMounted(true);
     const hasPrefill =
-      typeof window !== "undefined" && localStorage.getItem("pulseguard_prefill_monitor");
+      typeof window !== "undefined" && localStorage.getItem("steadystack_prefill_monitor");
     if (
       (!status.hasCreatedMonitor && !status.isComplete && !status.onboardingCompleted) ||
       hasPrefill

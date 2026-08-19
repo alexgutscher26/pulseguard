@@ -19,7 +19,7 @@ export function Verification({ data }: { data: VerificationEmailData }) {
   return (
     <Html>
       <Head>
-        <title>Verify Your Email - PulseGuard</title>
+        <title>Verify Your Email - SteadyStack</title>
         <style>{`
           body { margin: 0; padding: 0; background-color: #09090b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
           @media only screen and (max-width: 600px) {
@@ -71,7 +71,7 @@ export function Verification({ data }: { data: VerificationEmailData }) {
                 lineHeight: 1.6,
               }}
             >
-              Hi {data.userName}, thank you for registering with PulseGuard. Please confirm your
+              Hi {data.userName}, thank you for registering with SteadyStack. Please confirm your
               email to activate your account and access global edge monitoring.
             </Text>
 
@@ -107,7 +107,7 @@ export function Verification({ data }: { data: VerificationEmailData }) {
                   lineHeight: 1.5,
                 }}
               >
-                This verification link expires in 24 hours. If you did not create a PulseGuard
+                This verification link expires in 24 hours. If you did not create a SteadyStack
                 account, please disregard this email.
               </Text>
             </div>
@@ -140,7 +140,7 @@ export function Verification({ data }: { data: VerificationEmailData }) {
           </Section>
 
           {/* Footer */}
-          <EmailFooter customMessage="PulseGuard Identity & Access Management System" />
+          <EmailFooter customMessage="SteadyStack Identity & Access Management System" />
         </Container>
       </Body>
     </Html>

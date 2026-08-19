@@ -20,7 +20,7 @@ import {
   deleteNotificationChannel,
   sendTestNotification,
 } from "@/actions/notifications";
-import type { NotificationChannel } from "@pulseguard/db";
+import type { NotificationChannel } from "@steadystack/db";
 
 function getIcon(type: string) {
   switch (type) {

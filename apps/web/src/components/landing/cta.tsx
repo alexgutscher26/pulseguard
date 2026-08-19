@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { PRODUCT_CONFIG } from "@pulseguard/shared";
+import { PRODUCT_CONFIG } from "@steadystack/shared";
 
 export default function CTA() {
   return (

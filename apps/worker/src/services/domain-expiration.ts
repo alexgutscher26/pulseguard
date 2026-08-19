@@ -51,7 +51,7 @@ export async function checkDomainExpiration(domain: string): Promise<DomainExpir
     const response = await fetch(`https://rdap.org/domain/${hostname}`, {
       headers: {
         Accept: "application/rdap+json",
-        "User-Agent": "PulseGuard-Domain-Expiration/1.0",
+        "User-Agent": "SteadyStack-Domain-Expiration/1.0",
       },
       signal: AbortSignal.timeout(10000),
     });
@@ -68,7 +68,7 @@ export async function checkDomainExpiration(domain: string): Promise<DomainExpir
       const fallbackRes = await fetch(
         `https://whois.freeaes.com/?query=${encodeURIComponent(hostname)}&output=json`,
         {
-          headers: { "User-Agent": "PulseGuard-Domain-Expiration/1.0" },
+          headers: { "User-Agent": "SteadyStack-Domain-Expiration/1.0" },
           signal: AbortSignal.timeout(10000),
         },
       );

@@ -70,7 +70,7 @@ False alarms are not just an annoyance — they actively destroy team operationa
 
 ---
 
-## How PulseGuard Eliminates False Alarms: Multi-Region Quorum Consensus
+## How SteadyStack Eliminates False Alarms: Multi-Region Quorum Consensus
 
 To solve false alarm fatigue permanently, we redesigned monitoring checks from the ground up using **Quorum Consensus**.
 
@@ -92,7 +92,7 @@ To solve false alarm fatigue permanently, we redesigned monitoring checks from t
 
 ### The 2/3 Voting Protocol
 
-When a primary PulseGuard edge node detects a failed ping (HTTP 5xx, TCP timeout, or DNS resolution failure), it **never pages immediately**.
+When a primary SteadyStack edge node detects a failed ping (HTTP 5xx, TCP timeout, or DNS resolution failure), it **never pages immediately**.
 
 Instead, it instantly dispatches sub-second RPC requests to two secondary edge nodes located in independent geographical regions (e.g., Frankfurt, Virginia, and Singapore).
 
@@ -101,7 +101,7 @@ Instead, it instantly dispatches sub-second RPC requests to two secondary edge n
 3. An incident is declared **only if at least 2 out of 3 nodes (>=66% consensus)** confirm the target is down.
 
 ```typescript
-// PulseGuard Multi-Region Consensus Pipeline
+// SteadyStack Multi-Region Consensus Pipeline
 interface ProbeResult {
   region: string;
   success: boolean;
@@ -147,8 +147,8 @@ export async function evaluateConsensus(
 
 ## The Results: 99.4% Reduction in Ghost Pages
 
-By requiring multi-region edge quorum before firing alerts, PulseGuard filters out localized ISP blips, CDN edge flaps, and single-datacenter transit drops.
+By requiring multi-region edge quorum before firing alerts, SteadyStack filters out localized ISP blips, CDN edge flaps, and single-datacenter transit drops.
 
-When PulseGuard pages your phone at 3 AM, **it means your application is genuinely down for users across multiple continents**. You can get out of bed knowing that your alert is real, actionable, and urgent.
+When SteadyStack pages your phone at 3 AM, **it means your application is genuinely down for users across multiple continents**. You can get out of bed knowing that your alert is real, actionable, and urgent.
 
-Stop suffering from false alarm fatigue. **[Start monitoring with PulseGuard free](https://pulseguard.io/signup)** and sleep through the night again.
+Stop suffering from false alarm fatigue. **[Start monitoring with SteadyStack free](https://steadystack.dev/signup)** and sleep through the night again.

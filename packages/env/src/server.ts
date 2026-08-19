@@ -20,7 +20,7 @@ export const env = createEnv({
     HELICONE_CACHE_ENABLED: z.enum(["true", "false"]).default("true"),
     // Pinecone Vector Database Configuration
     PINECONE_API_KEY: z.string().min(1).optional(),
-    PINECONE_INDEX_NAME: z.string().default("pulseguard-incidents"),
+    PINECONE_INDEX_NAME: z.string().default("steadystack-incidents"),
     // Ollama Local AI Configuration (for testing)
     OLLAMA_BASE_URL: z.string().url().default("http://localhost:11434/v1"),
     OLLAMA_MODEL: z.string().default("llama3.2"),
@@ -38,9 +38,9 @@ export const env = createEnv({
     VERCEL_PROJECT_ID: z.string().min(1).optional(),
     VERCEL_TEAM_ID: z.string().min(1).optional(),
     // Server-side worker URL (used by web actions to proxy check-now requests)
-    PULSEGUARD_WORKER_URL: z.string().url().default("http://localhost:8787"),
+    STEADYSTACK_WORKER_URL: z.string().url().default("http://localhost:8787"),
     // Analytics hashing salt
-    ANALYTICS_SALT: z.string().min(1).default("pulseguard-analytics-salt"),
+    ANALYTICS_SALT: z.string().min(1).default("steadystack-analytics-salt"),
     // Discord OAuth integration
     DISCORD_CLIENT_ID: z.string().min(1).optional(),
     DISCORD_CLIENT_SECRET: z.string().min(1).optional(),

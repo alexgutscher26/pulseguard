@@ -99,12 +99,12 @@ export function ConversionCta({ service }: ConversionCtaProps) {
           <div className="flex items-center justify-between text-muted-foreground/60 mb-2 border-b border-border/40 pb-2">
             <div className="flex items-center gap-2">
               <Terminal className="h-3.5 w-3.5 text-primary" />
-              <span>pulseguard.config.ts</span>
+              <span>steadystack.config.ts</span>
             </div>
             <span>Auto-provisioned Monitor</span>
           </div>
           <pre className="text-emerald-400">
-            {`import { defineMonitor } from "@pulseguard/core";
+            {`import { defineMonitor } from "@steadystack/core";
 
 export default defineMonitor({
   name: "${service.name} API & Health",

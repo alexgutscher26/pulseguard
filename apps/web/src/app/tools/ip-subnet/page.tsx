@@ -6,13 +6,13 @@ import { ToolSchema } from "@/components/seo/tool-schema";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "IP Subnet Calculator | PulseGuard",
+  title: "IP Subnet Calculator | SteadyStack",
   description:
     "Free IP Subnet Calculator to visualize network masks, broadcast addresses, and host ranges. Decode binary bitmasks and optimize your infrastructure topology.",
   openGraph: {
     title: "IP Subnet Calculator",
     description:
-      "Visualize and decompose your network topology with PulseGuard's IP pulse sentinel.",
+      "Visualize and decompose your network topology with SteadyStack's IP pulse sentinel.",
     type: "website",
   },
 };
@@ -23,7 +23,7 @@ export default function IPSubnetPage() {
       <ToolSchema
         name="IP Subnet Calculator"
         description="Free IP Subnet Calculator to visualize network masks, broadcast addresses, and host ranges. Decode binary bitmasks and optimize your infrastructure topology."
-        url="https://pulseguard.io/tools/ip-subnet"
+        url="https://steadystack.dev/tools/ip-subnet"
       />
       <LandingHeader />
       <main className="container mx-auto pt-32 pb-12 px-4 md:px-6">

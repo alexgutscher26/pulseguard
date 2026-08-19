@@ -1,10 +1,10 @@
 "use server";
 
-import prisma, { MonitorType } from "@pulseguard/db";
-import { auth } from "@pulseguard/auth";
+import prisma, { MonitorType } from "@steadystack/db";
+import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { getTemplateById } from "@pulseguard/shared/stack-templates";
+import { getTemplateById } from "@steadystack/shared/stack-templates";
 
 export type ApplyTemplateResult = {
   success: boolean;

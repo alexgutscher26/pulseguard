@@ -1,4 +1,4 @@
-import { checkPortUniversal } from "@pulseguard/core";
+import { checkPortUniversal } from "@steadystack/core";
 
 export interface PortResult {
   host: string;

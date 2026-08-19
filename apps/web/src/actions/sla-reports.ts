@@ -1,7 +1,7 @@
 "use server";
 
-import prisma from "@pulseguard/db";
-import { auth } from "@pulseguard/auth";
+import prisma from "@steadystack/db";
+import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
 
 export type DailySlaData = {

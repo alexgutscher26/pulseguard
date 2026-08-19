@@ -1,5 +1,5 @@
 -- Migration: add showInShowcase to StatusPage
--- Generated for PulseGuard production database
+-- Generated for SteadyStack production database
 
 ALTER TABLE "StatusPage"
   ADD COLUMN IF NOT EXISTS "showInShowcase" BOOLEAN NOT NULL DEFAULT FALSE;

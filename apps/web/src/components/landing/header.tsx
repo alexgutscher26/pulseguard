@@ -150,7 +150,7 @@ export default function LandingHeader() {
           <div className="p-1.5 bg-primary/10 border border-primary/20 rounded-lg group-hover:border-primary/40 group-hover:bg-primary/15 transition-all duration-300">
             <Activity className="size-4 text-primary" />
           </div>
-          <span className="font-bold text-foreground text-sm tracking-tight">PulseGuard</span>
+          <span className="font-bold text-foreground text-sm tracking-tight">SteadyStack</span>
         </Link>
 
         {/* Desktop Navigation Links */}

@@ -1,4 +1,4 @@
-import { getPrisma } from "@pulseguard/db";
+import { getPrisma } from "@steadystack/db";
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";

@@ -28,15 +28,11 @@ export const waitCmd = new Command("wait")
     const baseUrl = getBaseUrl();
 
     if (!apiKey) {
-      console.error(
-        chalk.red("✖ Not logged in. Run: pulse auth login --key <API_KEY>"),
-      );
+      console.error(chalk.red("✖ Not logged in. Run: pulse auth login --key <API_KEY>"));
       process.exit(1);
     }
 
-    const spinner = ora(
-      `Waiting for monitor to become UP (timeout: ${timeout}s)…`,
-    ).start();
+    const spinner = ora(`Waiting for monitor to become UP (timeout: ${timeout}s)…`).start();
 
     const deadline = Date.now() + timeout * 1000;
     try {
@@ -45,7 +41,7 @@ export const waitCmd = new Command("wait")
         const res = await fetch(url, {
           headers: {
             Authorization: `Bearer ${apiKey}`,
-            "User-Agent": "pulseguard-cli/0.1.0",
+            "User-Agent": "steadystack-cli/0.1.0",
           },
         });
 
@@ -91,16 +87,14 @@ export const waitCmd = new Command("wait")
       const res = await fetch(url, {
         headers: {
           Authorization: `Bearer ${apiKey}`,
-          "User-Agent": "pulseguard-cli/0.1.0",
+          "User-Agent": "steadystack-cli/0.1.0",
         },
       });
       const data = (await res.json()) as any;
       const monitor = data.monitor;
 
       spinner.fail(chalk.red(`✖ Monitor did not recover within ${timeout}s`));
-      console.log(
-        chalk.dim(`  Monitor status: ${monitor?.status ?? "UNKNOWN"}`),
-      );
+      console.log(chalk.dim(`  Monitor status: ${monitor?.status ?? "UNKNOWN"}`));
       console.error(
         chalk.yellow(
           `\n  Deployment gate failed. Check your monitor at:\n  ${baseUrl}/dashboard/monitors/${id}`,

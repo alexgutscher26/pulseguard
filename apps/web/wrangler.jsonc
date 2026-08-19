@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/wrangler/config-schema.json",
-  "name": "pulseguard-web",
+  "name": "steadystack-web",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-01-24",
   "compatibility_flags": ["nodejs_compat"],

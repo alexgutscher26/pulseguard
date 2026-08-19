@@ -20,7 +20,7 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: pulseguard
+          POSTGRES_DB: steadystack
         ports:
           - 5432:5432
         options: >-
@@ -30,8 +30,8 @@ jobs:
           --health-retries 5
 
     env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/pulseguard
-      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/pulseguard
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/steadystack
+      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/steadystack
       UPSTASH_REDIS_REST_URL: http://localhost:8079
       UPSTASH_REDIS_REST_TOKEN: mock-token
       BETTER_AUTH_SECRET: mock-auth-secret
@@ -170,20 +170,20 @@ jobs:
         run: helm repo add bitnami https://charts.bitnami.com/bitnami
 
       - name: Build chart dependencies
-        run: helm dependency build helm/pulseguard
+        run: helm dependency build helm/steadystack
 
       - name: Lint chart
-        run: helm lint helm/pulseguard
+        run: helm lint helm/steadystack
 
       - name: Render default values
-        run: helm template pulseguard helm/pulseguard --namespace pulseguard
+        run: helm template steadystack helm/steadystack --namespace steadystack
 
       - name: Render external database + probe
         run: >
-          helm template pulseguard helm/pulseguard --namespace pulseguard
+          helm template steadystack helm/steadystack --namespace steadystack
           --set postgresql.enabled=false
-          --set secrets.databaseUrl=postgresql://u:p@db.example.com:5432/pulseguard
-          --set secrets.directUrl=postgresql://u:p@db.example.com:5432/pulseguard
+          --set secrets.databaseUrl=postgresql://u:p@db.example.com:5432/steadystack
+          --set secrets.directUrl=postgresql://u:p@db.example.com:5432/steadystack
           --set probe.enabled=true
           --set metrics.enabled=true
           --set metrics.serviceMonitor.enabled=true

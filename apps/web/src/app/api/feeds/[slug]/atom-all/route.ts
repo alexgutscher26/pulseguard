@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 import { generateAtomFeed, type AtomEntry } from "@/lib/feeds/atom-generator";
 
 export const dynamic = "force-dynamic";
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
       for (const incident of m.monitor.incidents) {
         entries.push({
-          id: `urn:pulseguard:incident:${incident.id}`,
+          id: `urn:steadystack:incident:${incident.id}`,
           title: `[INCIDENT] ${incident.title}`,
           content: `
             <p><strong>Status:</strong> ${incident.status}</p>
@@ -77,7 +77,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       for (const event of m.monitor.events) {
         const statusText = event.status === "DOWN" ? "went DOWN" : "is UP";
         entries.push({
-          id: `urn:pulseguard:event:${event.id}`,
+          id: `urn:steadystack:event:${event.id}`,
           title: `${monitorName} ${statusText}`,
           content: `
             <p><strong>Monitor:</strong> ${monitorName}</p>
@@ -100,7 +100,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     // Generate Atom feed
     const atom = generateAtomFeed({
-      id: `urn:pulseguard:status:${statusPage.id}:all`,
+      id: `urn:steadystack:status:${statusPage.id}:all`,
       title: `${statusPage.title} - All Status Events`,
       subtitle: `All status updates and events for ${statusPage.title}`,
       link: pageUrl,

@@ -1,10 +1,10 @@
 "use server";
 
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 import { revalidatePath } from "next/cache";
 import { randomBytes } from "crypto";
-import { sendSubscriptionConfirm } from "@pulseguard/email";
-import { env } from "@pulseguard/env/server";
+import { sendSubscriptionConfirm } from "@steadystack/email";
+import { env } from "@steadystack/env/server";
 
 // Generate a secure random token
 function generateToken(): string {
@@ -340,7 +340,7 @@ export async function unsubscribe(manageToken: string): Promise<SubscriptionResu
  */
 export async function getVerifiedSubscribers(statusPageId: string, monitorId?: string) {
   try {
-    const { auth } = await import("@pulseguard/auth");
+    const { auth } = await import("@steadystack/auth");
     const { headers } = await import("next/headers");
     let reqHeaders: any;
     try {

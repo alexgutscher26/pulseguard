@@ -1,5 +1,5 @@
 {
-  "name": "@pulseguard/env",
+  "name": "@steadystack/env",
   "version": "0.0.0",
   "type": "module",
   "exports": {
@@ -18,7 +18,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@pulseguard/config": "workspace:*",
+    "@steadystack/config": "workspace:*",
     "@types/node": "^22.13.14",
     "typescript": "catalog:"
   }

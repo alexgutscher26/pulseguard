@@ -2,13 +2,13 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ include "pulseguard.fullname" . }}-web
+  name: {{ include "steadystack.fullname" . }}-web
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "pulseguard.labels" . | nindent 4 }}
+    {{- include "steadystack.labels" . | nindent 4 }}
 spec:
   minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
   selector:
     matchLabels:
-      {{- include "pulseguard.web.selectorLabels" . | nindent 6 }}
+      {{- include "steadystack.web.selectorLabels" . | nindent 6 }}
 {{- end }}

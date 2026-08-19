@@ -15,35 +15,35 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title:
-    "The False-Positive Benchmark Study (30 Days, 1.29M Probes) — PulseGuard vs UptimeRobot vs Pingdom",
+    "The False-Positive Benchmark Study (30 Days, 1.29M Probes) — SteadyStack vs UptimeRobot vs Pingdom",
   description:
-    "We ran PulseGuard, UptimeRobot, and Pingdom against 10 identical endpoints for 30 days. Measured 1,296,000 synthetic checks, counted spurious 3 AM alerts, published raw dataset and methodology — including where we lost.",
+    "We ran SteadyStack, UptimeRobot, and Pingdom against 10 identical endpoints for 30 days. Measured 1,296,000 synthetic checks, counted spurious 3 AM alerts, published raw dataset and methodology — including where we lost.",
   keywords: [
     "uptime monitoring benchmark",
     "false positive monitoring study",
-    "PulseGuard vs UptimeRobot",
-    "PulseGuard vs Pingdom",
+    "SteadyStack vs UptimeRobot",
+    "SteadyStack vs Pingdom",
     "quorum consensus monitoring",
     "synthetic monitoring accuracy",
     "on-call alert fatigue",
     "distributed edge monitoring",
   ],
   alternates: {
-    canonical: "https://pulseguard.io/benchmarks/false-positives",
+    canonical: "https://steadystack.dev/benchmarks/false-positives",
   },
   openGraph: {
     type: "article",
-    url: "https://pulseguard.io/benchmarks/false-positives",
+    url: "https://steadystack.dev/benchmarks/false-positives",
     title: "The False-Positive Benchmark Study: 30 Days, 1.29M Checks",
     description:
-      "Empirical benchmark study measuring false-positive alerts across PulseGuard (4-of-7 edge quorum), UptimeRobot, and Pingdom over 30 continuous days.",
-    siteName: "PulseGuard",
+      "Empirical benchmark study measuring false-positive alerts across SteadyStack (4-of-7 edge quorum), UptimeRobot, and Pingdom over 30 continuous days.",
+    siteName: "SteadyStack",
   },
   twitter: {
     card: "summary_large_image",
     title: "The False-Positive Benchmark Study (30 Days, 1.29M Checks)",
     description:
-      "We tested PulseGuard, UptimeRobot, and Pingdom against identical endpoints for 30 days. Here is the raw data, methodology, and results — including anywhere we lost.",
+      "We tested SteadyStack, UptimeRobot, and Pingdom against identical endpoints for 30 days. Here is the raw data, methodology, and results — including anywhere we lost.",
   },
 };
 
@@ -61,33 +61,33 @@ export default function FalsePositivesBenchmarkPage() {
         dateModified: "2026-08-15T00:00:00Z",
         author: {
           "@type": "Organization",
-          name: "PulseGuard Research Team",
-          url: "https://pulseguard.io",
+          name: "SteadyStack Research Team",
+          url: "https://steadystack.dev",
         },
         publisher: {
           "@type": "Organization",
-          name: "PulseGuard",
-          url: "https://pulseguard.io",
+          name: "SteadyStack",
+          url: "https://steadystack.dev",
         },
-        mainEntityOfPage: "https://pulseguard.io/benchmarks/false-positives",
+        mainEntityOfPage: "https://steadystack.dev/benchmarks/false-positives",
       },
       {
         "@type": "Dataset",
         name: "30-Day Synthetic Monitoring False-Positive Benchmark Dataset",
         description:
-          "Raw JSON and CSV log of 1,296,000 synthetic uptime checks and 69 incident events across 10 identical endpoints tested by PulseGuard, UptimeRobot, and Pingdom.",
+          "Raw JSON and CSV log of 1,296,000 synthetic uptime checks and 69 incident events across 10 identical endpoints tested by SteadyStack, UptimeRobot, and Pingdom.",
         license: "https://creativecommons.org/licenses/by/4.0/",
-        url: "https://pulseguard.io/benchmarks/false-positives",
+        url: "https://steadystack.dev/benchmarks/false-positives",
         distribution: [
           {
             "@type": "DataDownload",
             encodingFormat: "application/json",
-            contentUrl: "https://pulseguard.io/data/false-positive-benchmark-30d.json",
+            contentUrl: "https://steadystack.dev/data/false-positive-benchmark-30d.json",
           },
           {
             "@type": "DataDownload",
             encodingFormat: "text/csv",
-            contentUrl: "https://pulseguard.io/data/false-positive-benchmark-30d.csv",
+            contentUrl: "https://steadystack.dev/data/false-positive-benchmark-30d.csv",
           },
         ],
       },

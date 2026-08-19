@@ -1,11 +1,11 @@
-import { getPrisma } from "@pulseguard/db";
+import { getPrisma } from "@steadystack/db";
 import type { ExecutionContext, MessageBatch } from "@cloudflare/workers-types";
 import {
   sendMonitorAlert,
   sendStatusUpdate,
   type MonitorAlertData,
   type StatusUpdateData,
-} from "@pulseguard/email";
+} from "@steadystack/email";
 import { MonitorStatus as Status, NotificationType, type NotificationTypeValue } from "./constants";
 import type { Env } from "./env";
 import {
@@ -346,8 +346,8 @@ export default {
                       ? `We are investigating reports of issues with ${notification.monitorName}.`
                       : `The issue with ${notification.monitorName} has been resolved.`,
                   affectedMonitors: [notification.monitorName],
-                  manageUrl: `https://pulseguard.com/subscribe/manage/${sub.manageToken}`,
-                  pageUrl: `https://pulseguard.com/status-page/${page.slug}`,
+                  manageUrl: `https://steadystack.dev/subscribe/manage/${sub.manageToken}`,
+                  pageUrl: `https://steadystack.dev/status-page/${page.slug}`,
                 };
 
                 deliveryPromises.push(sendStatusUpdate(sub.email, updateData, env.RESEND_API_KEY));

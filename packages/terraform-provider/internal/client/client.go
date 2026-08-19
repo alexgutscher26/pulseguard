@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-// Client handles all REST API v1 communications with PulseGuard
+// Client handles all REST API v1 communications with SteadyStack
 type Client struct {
 	HostURL    string
 	APIKey     string
@@ -55,10 +55,10 @@ type APIResponse[T any] struct {
 	Error string `json:"error,omitempty"`
 }
 
-// NewClient initializes a new PulseGuard API client
+// NewClient initializes a new SteadyStack API client
 func NewClient(host, apiKey string) *Client {
 	if host == "" {
-		host = "https://app.pulseguard.io"
+		host = "https://app.steadystack.dev"
 	}
 	host = strings.TrimSuffix(host, "/")
 
@@ -74,7 +74,7 @@ func NewClient(host, apiKey string) *Client {
 func (c *Client) sendRequest(req *http.Request, v interface{}) error {
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.APIKey))
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("User-Agent", "terraform-provider-pulseguard/1.0.0")
+	req.Header.Set("User-Agent", "terraform-provider-steadystack/1.0.0")
 
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {
@@ -84,7 +84,7 @@ func (c *Client) sendRequest(req *http.Request, v interface{}) error {
 
 	if res.StatusCode < 200 || res.StatusCode >= 300 {
 		bodyBytes, _ := io.ReadAll(res.Body)
-		return fmt.Errorf("PulseGuard API error (HTTP %d): %s", res.StatusCode, string(bodyBytes))
+		return fmt.Errorf("SteadyStack API error (HTTP %d): %s", res.StatusCode, string(bodyBytes))
 	}
 
 	if v != nil {

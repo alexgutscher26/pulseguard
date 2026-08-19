@@ -1,4 +1,4 @@
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 import { notFound } from "next/navigation";
 import { PublicView } from "@/components/status-pages/public-view";
 import { headers, cookies } from "next/headers";
@@ -8,10 +8,10 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { getI18nOverrides } from "@/actions/i18n";
 import set from "lodash.set";
-import { auth } from "@pulseguard/auth";
+import { auth } from "@steadystack/auth";
 import { getMockStatusPage } from "@/components/status-pages/mock-data";
-import { env } from "@pulseguard/env/server";
-import { verifyAuthToken } from "@pulseguard/core";
+import { env } from "@steadystack/env/server";
+import { verifyAuthToken } from "@steadystack/core";
 
 export const dynamic = "force-dynamic";
 

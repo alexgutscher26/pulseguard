@@ -1,4 +1,4 @@
-# PulseGuard Architecture
+# SteadyStack Architecture
 
 > Operational Intelligence Node — unified monitoring platform
 
@@ -6,7 +6,7 @@
 
 ## Overview
 
-PulseGuard is a **multi-tenant monitoring SaaS** built as a Turborepo monorepo. It runs across two Cloudflare Workers (one for the Next.js UI, one for the monitoring engine) with support for private on-premise probes.
+SteadyStack is a **multi-tenant monitoring SaaS** built as a Turborepo monorepo. It runs across two Cloudflare Workers (one for the Next.js UI, one for the monitoring engine) with support for private on-premise probes.
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
@@ -46,7 +46,7 @@ PulseGuard is a **multi-tenant monitoring SaaS** built as a Turborepo monorepo. 
 ## Monorepo Structure
 
 ```
-pulseguard/
+steadystack/
 ├── apps/
 │   ├── web/          # Next.js 16 app (dashboard, status pages, tools)
 │   ├── worker/       # Cloudflare Worker (monitoring engine)
@@ -135,7 +135,7 @@ pulseguard/
 
 1. Registers with worker (`POST /api/probes/register`)
 2. Polls for assignments (`POST /api/probes/poll`)
-3. Executes local checks via `@pulseguard/core` (`checkHttpUniversal`, `checkPortUniversal`)
+3. Executes local checks via `@steadystack/core` (`checkHttpUniversal`, `checkPortUniversal`)
 4. Sends results back (`POST /api/probes/result`)
 5. Sends heartbeats every `PROBE_HEARTBEAT_INTERVAL`
 

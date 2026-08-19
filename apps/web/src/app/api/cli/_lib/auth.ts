@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createHash } from "crypto";
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 
 /** Verify API key from Authorization: Bearer <key> header */
 export async function verifyApiKey(req: NextRequest) {

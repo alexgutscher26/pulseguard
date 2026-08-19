@@ -52,7 +52,7 @@ export function PortChecker() {
 
   // Load unlock state
   useEffect(() => {
-    const token = localStorage.getItem("pulseguard_tools_unlocked");
+    const token = localStorage.getItem("steadystack_tools_unlocked");
     if (token) setUnlocked(true);
     addLog("System initialized. Ready for scan.");
   }, []);
@@ -153,7 +153,7 @@ export function PortChecker() {
     }
     setIsEmailSubmitting(true);
     await new Promise((r) => setTimeout(r, 1000));
-    localStorage.setItem("pulseguard_tools_unlocked", "true");
+    localStorage.setItem("steadystack_tools_unlocked", "true");
     setUnlocked(true);
     setGateOpen(false);
     setIsEmailSubmitting(false);

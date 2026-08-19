@@ -218,7 +218,7 @@ export default function DesignPartnerClient({
   const pingdomEstimatedCost = Math.round(
     calcMonitors > 10 ? 45 * 12 + (calcMonitors - 10) * 2.0 * 12 : 45 * 12,
   );
-  const pulseguardPartnerCost = 0;
+  const steadystackPartnerCost = 0;
   const netrunnerProRetailValue = 228;
   const annualSavings = Math.max(netrunnerProRetailValue, betterStackEstimatedCost);
 
@@ -233,7 +233,7 @@ export default function DesignPartnerClient({
     },
     {
       q: "What is expected in exchange for the 1-Year Pro license ($228 Value)?",
-      a: "Only two things: (1) Set up and use PulseGuard for real uptime and latency monitoring, and (2) Provide a brief 15-minute feedback session or an honest 2-sentence testimonial on launch day for our Product Hunt & social proof directory.",
+      a: "Only two things: (1) Set up and use SteadyStack for real uptime and latency monitoring, and (2) Provide a brief 15-minute feedback session or an honest 2-sentence testimonial on launch day for our Product Hunt & social proof directory.",
     },
     {
       q: "What happens after the 1-year complimentary period ends?",
@@ -244,7 +244,7 @@ export default function DesignPartnerClient({
       a: "Our founding engineering team reviews all applications in batches every 12 to 24 hours. Once approved, your VIP code is issued automatically, and you can look up or redeem it directly on this page.",
     },
     {
-      q: "How does PulseGuard's multi-region edge verification work?",
+      q: "How does SteadyStack's multi-region edge verification work?",
       a: "When an endpoint returns a non-2xx status code or times out, our Cloudflare edge quorum immediately triggers secondary and tertiary validation checks across North America, Europe, and Asia-Pacific within milliseconds before dispatching alerts. This eliminates 99.4% of false alarms caused by localized transit blips.",
     },
   ];
@@ -263,7 +263,7 @@ export default function DesignPartnerClient({
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-primary" />
             </span>
             <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground">
-              <span className="text-foreground font-semibold">PulseGuard Edge Mesh:</span>
+              <span className="text-foreground font-semibold">SteadyStack Edge Mesh:</span>
               <span className="hidden sm:inline">7 Sovereign Regions Operational</span>
               <span className="sm:hidden">7 Regions</span>
               <span className="text-border">|</span>
@@ -594,7 +594,7 @@ export default function DesignPartnerClient({
                 Calculate Your Annual Monitoring Savings
               </h2>
               <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                See how much your engineering team saves with PulseGuard Design Partner status vs
+                See how much your engineering team saves with SteadyStack Design Partner status vs
                 legacy uptime vendors.
               </p>
             </div>
@@ -690,7 +690,7 @@ export default function DesignPartnerClient({
                 <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-[9px] font-mono font-black uppercase px-2 py-0.5 rounded-bl-lg">
                   VIP PARTNER
                 </div>
-                <span className="text-xs font-bold text-primary">PulseGuard</span>
+                <span className="text-xs font-bold text-primary">SteadyStack</span>
                 <span className="text-2xl font-black font-mono text-emerald-500">$0.00</span>
                 <span className="text-[10px] text-foreground font-semibold leading-tight">
                   1 Year Netrunner Pro ($228 retail) 100% Free.
@@ -704,7 +704,7 @@ export default function DesignPartnerClient({
         <section className="flex flex-col gap-8">
           <div className="text-center flex flex-col items-center gap-2 max-w-2xl mx-auto">
             <h2 className="text-2xl sm:text-4xl font-extrabold text-foreground tracking-tight">
-              What You Unlock as a PulseGuard Design Partner
+              What You Unlock as a SteadyStack Design Partner
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground">
               Everything in our flagship Netrunner Pro tier, plus direct executive access to the
@@ -767,7 +767,7 @@ export default function DesignPartnerClient({
               </div>
               <h3 className="font-bold text-foreground text-sm">Private Founder War Room</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Direct Telegram / Discord private channel with PulseGuard core maintainers. Request
+                Direct Telegram / Discord private channel with SteadyStack core maintainers. Request
                 custom features and get priority roadmap execution.
               </p>
             </div>
@@ -857,8 +857,8 @@ export default function DesignPartnerClient({
                   Application Received!
                 </h2>
                 <p className="text-xs sm:text-sm text-muted-foreground mt-2 leading-relaxed">
-                  Thank you for applying to the PulseGuard Design Partner Program. Our founding team
-                  reviews every application within 24 hours.
+                  Thank you for applying to the SteadyStack Design Partner Program. Our founding
+                  team reviews every application within 24 hours.
                 </p>
               </div>
 
@@ -1162,7 +1162,7 @@ export default function DesignPartnerClient({
                   className="text-xs text-muted-foreground leading-relaxed cursor-pointer"
                 >
                   <strong className="text-foreground">Founder's Agreement:</strong> I agree to use
-                  PulseGuard for real uptime monitoring and share an honest 2-sentence testimonial
+                  SteadyStack for real uptime monitoring and share an honest 2-sentence testimonial
                   on launch day in exchange for 1 year of free Netrunner Pro ($228 value).
                 </label>
               </div>
@@ -1196,7 +1196,7 @@ export default function DesignPartnerClient({
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2">
               <span className="font-bold text-foreground text-sm">
-                A Note from the PulseGuard Maintainers
+                A Note from the SteadyStack Maintainers
               </span>
               <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-muted text-muted-foreground">
                 CORE TEAM
@@ -1205,9 +1205,9 @@ export default function DesignPartnerClient({
 
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
               "Most uptime monitoring tools are either bloated enterprise dinosaurs or simple
-              hobbyist wrappers around single-server ping scripts. We engineered PulseGuard natively
-              on Cloudflare's global edge workers with distributed quorum consensus to eliminate
-              false alarms forever.
+              hobbyist wrappers around single-server ping scripts. We engineered SteadyStack
+              natively on Cloudflare's global edge workers with distributed quorum consensus to
+              eliminate false alarms forever.
             </p>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
               We are providing 15 engineering teams with full 1-year Netrunner Pro licenses because
@@ -1278,7 +1278,7 @@ export default function DesignPartnerClient({
               View Comparison Matrix
             </Link>
             <span>•</span>
-            <a href="mailto:founders@pulseguard.io" className="hover:text-foreground underline">
+            <a href="mailto:founders@steadystack.dev" className="hover:text-foreground underline">
               Contact Founders
             </a>
           </div>

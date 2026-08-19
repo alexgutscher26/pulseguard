@@ -1,6 +1,6 @@
 import { expo } from "@better-auth/expo";
-import { getPrisma } from "@pulseguard/db";
-import { env } from "@pulseguard/env/server";
+import { getPrisma } from "@steadystack/db";
+import { env } from "@steadystack/env/server";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
@@ -10,7 +10,7 @@ import {
   sendPasswordResetEmail,
   sendTeamInvitationEmail,
   sendWelcomeEmail,
-} from "@pulseguard/email";
+} from "@steadystack/email";
 import { organization } from "better-auth/plugins";
 
 console.log("🔧 Initializing BetterAuth with config:", {
@@ -138,7 +138,7 @@ export const auth = betterAuth({
             if (rawCookie) {
               const match = rawCookie
                 .split("; ")
-                .find((row: string) => row.startsWith("pulseguard_ref="));
+                .find((row: string) => row.startsWith("steadystack_ref="));
               if (match) {
                 try {
                   const val = decodeURIComponent(match.split("=")[1]);

@@ -90,7 +90,7 @@ export async function queueNotification(
         token: env.UPSTASH_REDIS_REST_TOKEN,
       });
       await redis.lpush(
-        "pulseguard:dlq:notifications",
+        "steadystack:dlq:notifications",
         JSON.stringify({
           payload,
           droppedAt: new Date().toISOString(),
@@ -98,7 +98,7 @@ export async function queueNotification(
         }),
       );
       console.log(
-        `[Notification] Persisted dropped alert to Redis DLQ: pulseguard:dlq:notifications`,
+        `[Notification] Persisted dropped alert to Redis DLQ: steadystack:dlq:notifications`,
       );
     } catch (redisErr) {
       console.error("[Notification] Failed to record dropped alert to Redis DLQ:", redisErr);

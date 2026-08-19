@@ -32,7 +32,7 @@ import {
   getTemplateById,
   type StackTemplate,
   type StackMonitorPreset,
-} from "@pulseguard/shared/stack-templates";
+} from "@steadystack/shared/stack-templates";
 import { toast } from "@/components/ui/sonner";
 import { useRouter } from "next/navigation";
 

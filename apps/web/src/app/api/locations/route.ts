@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { ALL_PROBE_REGIONS } from "@pulseguard/shared";
+import { ALL_PROBE_REGIONS } from "@steadystack/shared";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60;
@@ -24,17 +24,17 @@ export async function GET() {
 
   return NextResponse.json(
     {
-      platform: "PulseGuard Global Edge Mesh",
+      platform: "SteadyStack Global Edge Mesh",
       consensusEngine: "4-of-7 Quorum + Multi-ASN Sentinel Verification",
       totalRegions: ALL_PROBE_REGIONS.length,
       lastUpdated: new Date().toISOString(),
       identificationMethod: "CF-Worker Header Verification",
       identificationHeaders: {
-        "CF-Worker": "pulseguard.io",
-        "User-Agent": "PulseGuard-Monitor/1.0 (+https://pulseguard.io/bot)",
+        "CF-Worker": "steadystack.dev",
+        "User-Agent": "SteadyStack-Monitor/1.0 (+https://steadystack.dev/bot)",
       },
       wafRule: {
-        expression: 'http.request.headers["cf-worker"][0] eq "pulseguard.io"',
+        expression: 'http.request.headers["cf-worker"][0] eq "steadystack.dev"',
         action: "Skip / Bypass WAF & Rate Limiting",
       },
       probes: probeNodes,

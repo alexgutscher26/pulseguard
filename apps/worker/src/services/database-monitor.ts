@@ -75,7 +75,7 @@ export async function checkDatabase(
   if (query && dbType === "postgresql") {
     let prisma: any = null;
     try {
-      const { getPrisma } = await import("@pulseguard/db");
+      const { getPrisma } = await import("@steadystack/db");
       prisma = getPrisma(connectionUrl);
 
       const queryStart = performance.now();

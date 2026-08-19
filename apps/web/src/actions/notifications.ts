@@ -1,12 +1,12 @@
 "use server";
 
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { auth } from "@pulseguard/auth";
+import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
-import { sendMonitorAlert } from "@pulseguard/email";
-import { env } from "@pulseguard/env/server";
+import { sendMonitorAlert } from "@steadystack/email";
+import { env } from "@steadystack/env/server";
 import { assertNotificationChannelLimits, checkAndNotifyUsageLimits } from "@/lib/billing-server";
 
 const channelSchema = z.object({
@@ -171,7 +171,7 @@ export async function sendTestNotification(id: string) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          username: "PulseGuard Sentinel",
+          username: "SteadyStack Sentinel",
           avatar_url: `${env.NEXT_PUBLIC_APP_URL}/icon.png`, // Optional: Add app icon if available
           embeds: [
             {
@@ -191,7 +191,7 @@ export async function sendTestNotification(id: string) {
                 },
                 { name: "Error", value: "Connection Refused", inline: true },
               ],
-              footer: { text: "PulseGuard Sentinel • Mock Event" },
+              footer: { text: "SteadyStack Sentinel • Mock Event" },
               timestamp: new Date().toISOString(),
             },
           ],
@@ -245,7 +245,7 @@ export async function sendTestNotification(id: string) {
                   type: "mrkdwn",
                   text: "⏱ Timestamp: " + new Date().toISOString(),
                 },
-                { type: "mrkdwn", text: "• PulseGuard Sentinel" },
+                { type: "mrkdwn", text: "• SteadyStack Sentinel" },
               ],
             },
             {
@@ -273,7 +273,7 @@ export async function sendTestNotification(id: string) {
         };
 
       const PD_EVENTS_URL = "https://events.pagerduty.com/v2/enqueue";
-      const dedupKey = `pulseguard-test-${Date.now()}`;
+      const dedupKey = `steadystack-test-${Date.now()}`;
 
       // Fire a test trigger
       const triggerRes = await fetch(PD_EVENTS_URL, {
@@ -284,20 +284,20 @@ export async function sendTestNotification(id: string) {
           dedup_key: dedupKey,
           event_action: "trigger",
           payload: {
-            summary: "🔴 PulseGuard Test Alert: Monitor Down",
+            summary: "🔴 SteadyStack Test Alert: Monitor Down",
             source: "https://example.com",
             severity: "critical",
             custom_details: {
               monitor_name: "Test Monitor",
               target_url: "https://example.com",
               status: "DOWN",
-              reason: "This is a test notification from PulseGuard",
+              reason: "This is a test notification from SteadyStack",
             },
           },
           links: [
             {
               href: `${env.NEXT_PUBLIC_APP_URL}/dashboard`,
-              text: "Open PulseGuard",
+              text: "Open SteadyStack",
             },
           ],
         }),
@@ -334,7 +334,7 @@ export async function sendTestNotification(id: string) {
 
       const baseUrl =
         config.region === "eu" ? "https://api.eu.opsgenie.com/v2" : "https://api.opsgenie.com/v2";
-      const alias = `pulseguard-test-${Date.now()}`;
+      const alias = `steadystack-test-${Date.now()}`;
 
       // Fire a test alert
       const triggerRes = await fetch(`${baseUrl}/alerts`, {
@@ -344,11 +344,11 @@ export async function sendTestNotification(id: string) {
           Authorization: `GenieKey ${config.apiKey}`,
         },
         body: JSON.stringify({
-          message: "🔴 PulseGuard Test Alert: Monitor Down",
+          message: "🔴 SteadyStack Test Alert: Monitor Down",
           alias,
-          description: "This is a test notification from PulseGuard",
+          description: "This is a test notification from SteadyStack",
           priority: "P3",
-          source: "PulseGuard Test Event",
+          source: "SteadyStack Test Event",
           details: {
             monitor_name: "Test Monitor",
             target_url: "https://example.com",
@@ -373,8 +373,8 @@ export async function sendTestNotification(id: string) {
           Authorization: `GenieKey ${config.apiKey}`,
         },
         body: JSON.stringify({
-          user: "PulseGuard System",
-          source: "PulseGuard Test Event",
+          user: "SteadyStack System",
+          source: "SteadyStack Test Event",
           note: "Test notification completed successfully.",
         }),
       });

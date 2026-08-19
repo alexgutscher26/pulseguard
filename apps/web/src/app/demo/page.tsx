@@ -10,9 +10,9 @@ import { cn } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Live Product Demo & Sandbox | PulseGuard",
+  title: "Live Product Demo & Sandbox | SteadyStack",
   description:
-    "Explore PulseGuard's edge monitoring platform with live pre-seeded telemetry data. No signup required.",
+    "Explore SteadyStack's edge monitoring platform with live pre-seeded telemetry data. No signup required.",
 };
 
 export default function DemoPage() {
@@ -32,7 +32,7 @@ export default function DemoPage() {
               <div className="size-7 rounded-lg bg-primary/10 border border-primary/30 flex items-center justify-center text-primary">
                 <Activity className="size-4 animate-pulse" />
               </div>
-              <span>PulseGuard</span>
+              <span>SteadyStack</span>
             </Link>
             <span className="text-border text-sm hidden sm:inline">/</span>
             <div className="hidden sm:flex items-center gap-1.5 text-xs font-mono text-muted-foreground">

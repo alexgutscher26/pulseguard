@@ -1,6 +1,6 @@
 ---
 title: "How We Run Multi-Region Quorum Consensus Checks at Sub-Second Latency"
-description: "An architectural deep-dive into PulseGuard's edge monitoring mesh: Pinned Regional Durable Objects, 4-of-7 quorum consensus voting, and zero-overhead latency aggregation."
+description: "An architectural deep-dive into SteadyStack's edge monitoring mesh: Pinned Regional Durable Objects, 4-of-7 quorum consensus voting, and zero-overhead latency aggregation."
 date: "2026-08-06"
 category: "Engineering"
 readTime: "9 min read"
@@ -25,13 +25,13 @@ At scale, this centralized architecture suffers from three major flaws:
 2. **Alert Latency:** Serialized database writes and queue polling add 10 to 30 seconds of latency between failure detection and dispatch.
 3. **Rotating Origin False Positives:** Unpinned cron executions jump continents and trigger false degradation alarms on geo-routed targets.
 
-To solve this, we built PulseGuard directly on top of **Cloudflare's geographically pinned Durable Objects and our 4-of-7 Quorum Consensus Engine**. Here is how the architecture works under the hood.
+To solve this, we built SteadyStack directly on top of **Cloudflare's geographically pinned Durable Objects and our 4-of-7 Quorum Consensus Engine**. Here is how the architecture works under the hood.
 
 ---
 
 ## The System Architecture Overview
 
-PulseGuard's monitoring engine consists of three decoupled layers:
+SteadyStack's monitoring engine consists of three decoupled layers:
 
 ```
 [Target Application / Server]
@@ -61,7 +61,7 @@ PulseGuard's monitoring engine consists of three decoupled layers:
 
 ## 1. Executing 60-Second Checks at the Edge
 
-Instead of running long-lived timer processes on virtual machines, PulseGuard uses **Cloudflare Scheduled Triggers (Cron Triggers)** synchronized down to the minute.
+Instead of running long-lived timer processes on virtual machines, SteadyStack uses **Cloudflare Scheduled Triggers (Cron Triggers)** synchronized down to the minute.
 
 Each minute, scheduled edge workers pull target configurations cached in **Cloudflare KV** with a 60-second TTL:
 
@@ -205,25 +205,25 @@ Unlike traditional databases that require locking and complex SQL transactions t
 
 No architecture is without trade-offs. Here is where our edge consensus approach requires explicit engineering choices:
 
-1. **Non-HTTP Protocol Constraints at the Edge:** Cloudflare Workers excel at HTTP/HTTPS, SSL, and DNS checks. For raw ICMP PING or custom TCP port checks, edge workers cannot issue raw IP sockets. To handle TCP/Port checks, we deploy lightweight private probe binaries (`pulseguard-probe`) that connect back to Durable Objects via WebSockets.
+1. **Non-HTTP Protocol Constraints at the Edge:** Cloudflare Workers excel at HTTP/HTTPS, SSL, and DNS checks. For raw ICMP PING or custom TCP port checks, edge workers cannot issue raw IP sockets. To handle TCP/Port checks, we deploy lightweight private probe binaries (`steadystack-probe`) that connect back to Durable Objects via WebSockets.
 2. **Cold-Start Jitter on Low-Traffic Workers:** If an edge POP hasn't executed a scheduled job in several hours, the worker script initialization can add 10-20ms of execution latency. We mitigate this by pre-warming worker isolates across major POP hubs.
 
 ---
 
 ## Benchmark Comparison: Detection Speed & Cost
 
-| Metric                    | Traditional Cloud VM Architecture | PulseGuard Edge Consensus Mesh |
-| :------------------------ | :-------------------------------: | :----------------------------: |
-| **Check Resolution**      |       5 minutes (Standard)        |   **60 seconds (1 minute)**    |
-| **Consensus Latency**     |           15–30 seconds           |    **< 1.2 seconds total**     |
-| **Sovereign Probe Nodes** |          3–8 Datacenters          |     **7 Pinned Edge DOs**      |
-| **Compute Overhead / Mo** |      $400–$1,200 (VM Fleets)      |    **$5 (Serverless Edge)**    |
-| **False Positive Rate**   |          ~3.2% of alerts          |  **< 0.02% (Quorum Locked)**   |
+| Metric                    | Traditional Cloud VM Architecture | SteadyStack Edge Consensus Mesh |
+| :------------------------ | :-------------------------------: | :-----------------------------: |
+| **Check Resolution**      |       5 minutes (Standard)        |    **60 seconds (1 minute)**    |
+| **Consensus Latency**     |           15–30 seconds           |     **< 1.2 seconds total**     |
+| **Sovereign Probe Nodes** |          3–8 Datacenters          |      **7 Pinned Edge DOs**      |
+| **Compute Overhead / Mo** |      $400–$1,200 (VM Fleets)      |    **$5 (Serverless Edge)**     |
+| **False Positive Rate**   |          ~3.2% of alerts          |   **< 0.02% (Quorum Locked)**   |
 
 ---
 
 ## Conclusion
 
-By combining Cloudflare's 7 pinned global edge regions with Durable Object state coordination, PulseGuard achieves sub-second consensus verification without paying the multi-region cloud VM tax or suffering from rotating origin jitter.
+By combining Cloudflare's 7 pinned global edge regions with Durable Object state coordination, SteadyStack achieves sub-second consensus verification without paying the multi-region cloud VM tax or suffering from rotating origin jitter.
 
-If you are interested in exploring the codebase or deploying private edge probes in your own homelab or VPC, **[check out PulseGuard on GitHub](https://github.com/alexgutscher26/pulseguard)** or **[start monitoring for free](https://pulseguard.io/signup)**.
+If you are interested in exploring the codebase or deploying private edge probes in your own homelab or VPC, **[check out SteadyStack on GitHub](https://github.com/getsteadystack/SteadyStack)** or **[start monitoring for free](https://steadystack.dev/signup)**.

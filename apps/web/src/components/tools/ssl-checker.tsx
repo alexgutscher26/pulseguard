@@ -61,7 +61,7 @@ export function SSLChecker() {
   const [gateOpen, setGateOpen] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("pulseguard_tools_unlocked");
+    const token = localStorage.getItem("steadystack_tools_unlocked");
     if (token) setUnlocked(true);
   }, []);
 
@@ -108,7 +108,7 @@ export function SSLChecker() {
     }
     setIsEmailSubmitting(true);
     await new Promise((r) => setTimeout(r, 1000)); // Simulate API
-    localStorage.setItem("pulseguard_tools_unlocked", "true");
+    localStorage.setItem("steadystack_tools_unlocked", "true");
     setUnlocked(true);
     setGateOpen(false);
     setIsEmailSubmitting(false);

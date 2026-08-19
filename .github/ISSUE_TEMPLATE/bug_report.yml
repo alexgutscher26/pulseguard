@@ -1,5 +1,5 @@
 name: 🐛 Bug Report
-description: Report a reproducible bug in PulseGuard
+description: Report a reproducible bug in SteadyStack
 title: "[Bug]: "
 labels: ["bug", "needs-triage"]
 assignees: []
@@ -17,18 +17,18 @@ body:
       label: Prerequisites
       description: Please confirm the following before submitting.
       options:
-        - label: I have searched existing [issues](https://github.com/alexgutscher26/pulseguard/issues) and this is not a duplicate.
+        - label: I have searched existing [issues](https://github.com/getsteadystack/SteadyStack/issues) and this is not a duplicate.
           required: true
-        - label: I am using the latest version of PulseGuard.
+        - label: I am using the latest version of SteadyStack.
           required: true
-        - label: I have read the [documentation](https://github.com/alexgutscher26/pulseguard/blob/main/README.md).
+        - label: I have read the [documentation](https://github.com/getsteadystack/SteadyStack/blob/main/README.md).
           required: false
 
   - type: dropdown
     id: area
     attributes:
       label: Affected Area
-      description: Which part of PulseGuard is affected?
+      description: Which part of SteadyStack is affected?
       options:
         - Dashboard (web)
         - Cloudflare Worker (monitoring engine)
@@ -90,7 +90,7 @@ body:
         - OS:
         - Bun version (`bun --version`):
         - Node version (`node --version`):
-        - PulseGuard version / commit hash:
+        - SteadyStack version / commit hash:
         - Browser (if applicable):
         - Cloudflare Worker (yes/no):
         - Private probe (yes/no):

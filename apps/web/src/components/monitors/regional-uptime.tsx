@@ -1,6 +1,6 @@
 "use client";
 
-import { getRegionByCode } from "@pulseguard/shared/regions";
+import { getRegionByCode } from "@steadystack/shared/regions";
 import { Activity } from "lucide-react";
 
 interface RegionalUptimeProps {

@@ -1,8 +1,8 @@
 "use server";
 
-import { auth } from "@pulseguard/auth";
+import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 import { revalidatePath } from "next/cache";
 
 export interface AdminStatusResponse {

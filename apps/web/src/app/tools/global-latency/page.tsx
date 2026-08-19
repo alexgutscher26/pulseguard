@@ -6,7 +6,7 @@ import { ToolSchema } from "@/components/seo/tool-schema";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Global Website Latency Test | PulseGuard Free Tools",
+  title: "Global Website Latency Test | SteadyStack Free Tools",
   description:
     "Instantly ping your website from 10 global locations. Check server latency, uptime, and regional performance for free.",
   keywords: [
@@ -27,7 +27,7 @@ export default function GlobalLatencyPage() {
       <ToolSchema
         name="Global Website Latency Test"
         description="Instantly ping your website from 10 global locations. Check server latency, uptime, and regional performance for free."
-        url="https://pulseguard.io/tools/global-latency"
+        url="https://steadystack.dev/tools/global-latency"
       />
       <LandingHeader />
       <main className="container mx-auto pt-32 pb-12 px-4 md:px-6">

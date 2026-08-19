@@ -94,7 +94,7 @@ export async function checkGraphQL(
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        "User-Agent": "PulseGuard-GraphQL-Monitor/1.0",
+        "User-Agent": "SteadyStack-GraphQL-Monitor/1.0",
       },
       body: JSON.stringify(bodyObj),
       signal: AbortSignal.timeout(15000),

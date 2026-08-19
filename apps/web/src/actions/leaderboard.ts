@@ -1,6 +1,6 @@
 "use server";
 
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 
 export interface LeaderboardEntry {
   rank: number;

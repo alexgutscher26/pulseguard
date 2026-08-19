@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 
 import { TRPCError } from "@trpc/server";
-import { auth } from "@pulseguard/auth";
+import { auth } from "@steadystack/auth";
 
 /** HTTP methods that mutate state and require CSRF protection. */
 const MUTATING_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);

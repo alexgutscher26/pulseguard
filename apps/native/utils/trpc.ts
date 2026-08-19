@@ -1,6 +1,6 @@
-import type { AppRouter } from "@pulseguard/api/routers/index";
+import type { AppRouter } from "@steadystack/api/routers/index";
 
-import { env } from "@pulseguard/env/native";
+import { env } from "@steadystack/env/native";
 import { QueryClient } from "@tanstack/react-query";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import { createTRPCOptionsProxy } from "@trpc/tanstack-react-query";

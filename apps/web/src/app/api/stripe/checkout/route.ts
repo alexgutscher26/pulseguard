@@ -1,4 +1,4 @@
-import { auth } from "@pulseguard/auth";
+import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { createCheckoutSession } from "@/lib/stripe";

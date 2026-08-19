@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@pulseguard/auth";
+import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
-import { getPrisma } from "@pulseguard/db";
+import { getPrisma } from "@steadystack/db";
 
 // Slack OAuth Code Exchange
 export async function GET(req: NextRequest) {

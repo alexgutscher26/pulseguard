@@ -1,6 +1,6 @@
 export type CompetitorFeature = {
   name: string;
-  pulseguard: string | boolean;
+  steadystack: string | boolean;
   competitor1: string | boolean;
   competitor2: string | boolean;
   competitor3: string | boolean;
@@ -21,7 +21,7 @@ export type FeatureComparisonItem = {
   category: string;
   name: string;
   description?: string;
-  pulseguard: string | boolean;
+  steadystack: string | boolean;
   uptimerobot: string | boolean;
   checkly: string | boolean;
   betteruptime: string | boolean;
@@ -33,9 +33,9 @@ export type FeatureComparisonItem = {
 
 export const competitors: CompetitorInfo[] = [
   {
-    id: "pulseguard",
-    name: "PulseGuard",
-    url: "https://pulseguard.io",
+    id: "steadystack",
+    name: "SteadyStack",
+    url: "https://steadystack.dev",
     pricingUrl: "/pricing",
     description:
       "Cloudflare edge-native monitoring with 60-second checks and 4-of-7 quorum verification.",
@@ -71,7 +71,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
     category: "Consensus & Verification",
     name: "Failure confirmation rule",
     description: "How many locations must agree before you're paged",
-    pulseguard: "4 of 7 regions · Published",
+    steadystack: "4 of 7 regions · Published",
     uptimerobot: "Multi-node within one region",
     betteruptime: "3 of 4 locations",
     checkly: "Not published",
@@ -81,7 +81,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
     category: "Consensus & Verification",
     name: "Monitoring regions",
     description: "Number of independent geographic probe zones deployed",
-    pulseguard: "7",
+    steadystack: "7",
     uptimerobot: "4",
     betteruptime: "4 by default",
     checkly: "22",
@@ -91,7 +91,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
     category: "Consensus & Verification",
     name: "Multi-region checks on free tier",
     description: "Whether synthetic checks run from all regions without paying",
-    pulseguard: "✓ Included",
+    steadystack: "✓ Included",
     uptimerobot: "Paid plans only",
     betteruptime: "Limited",
     checkly: "✓ 6 locations",
@@ -101,7 +101,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
     category: "Consensus & Verification",
     name: "Regional vs. global outage classification",
     description: "Distinguishes regional route flaps from true global outages",
-    pulseguard: "✓",
+    steadystack: "✓",
     uptimerobot: "✓ Region-specific incidents",
     betteruptime: "—",
     checkly: "—",
@@ -112,7 +112,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
     name: "Multi-ASN provider partition protection",
     description:
       "Out-of-band sentinel nodes on independent ASNs prevent single-cloud false positive storms",
-    pulseguard: "✓ Multi-ASN Quorum",
+    steadystack: "✓ Multi-ASN Quorum",
     uptimerobot: "Single-vendor egress",
     betteruptime: "Single-vendor egress",
     checkly: "AWS only",
@@ -124,7 +124,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
     category: "Transparency & Allowlisting",
     name: "Probe locations & health published",
     description: "Every city, network ASN, and DO location hint with live health",
-    pulseguard: "✓ Full list + live status",
+    steadystack: "✓ Full list + live status",
     uptimerobot: "Regions only",
     betteruptime: "Not published",
     checkly: "List only",
@@ -135,7 +135,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
     name: "WAF & probe allowlisting",
     description:
       "CF-Worker cryptographic header + User-Agent matching (immune to shared Cloudflare edge egress IP spoofing)",
-    pulseguard: "✓ CF-Worker header",
+    steadystack: "✓ CF-Worker header",
     uptimerobot: "Static IPs (shared)",
     betteruptime: "Static IPs only",
     checkly: "Static IPs (AWS)",
@@ -145,7 +145,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
     category: "Transparency & Allowlisting",
     name: "Probe health & flapping telemetry",
     description: "Automated flapping probe removal from quorum consensus",
-    pulseguard: true,
+    steadystack: true,
     uptimerobot: false,
     betteruptime: false,
     checkly: false,
@@ -157,7 +157,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
     category: "Pricing & Limits",
     name: "Free tier check interval",
     description: "Frequency of health checks on free plan",
-    pulseguard: "60 seconds",
+    steadystack: "60 seconds",
     uptimerobot: "5 minutes",
     betteruptime: "3 minutes",
     checkly: "1 minute",
@@ -167,7 +167,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
     category: "Pricing & Limits",
     name: "Free monitor limit",
     description: "Number of active targets on free plan",
-    pulseguard: "50 monitors",
+    steadystack: "50 monitors",
     uptimerobot: "50 monitors",
     betteruptime: "10 monitors",
     checkly: "10 monitors",
@@ -177,7 +177,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
     category: "Pricing & Limits",
     name: "Commercial use on free tier",
     description: "Legally permitted for business and production workloads",
-    pulseguard: "✓ Permitted in writing",
+    steadystack: "✓ Permitted in writing",
     uptimerobot: "Banned since Nov 2024",
     betteruptime: "Unstated",
     checkly: "✓",
@@ -189,7 +189,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
     category: "Monitor Types & Protocols",
     name: "SSL Certificate & Expiry Monitoring",
     description: "Full certificate chain verification with 30-day expiry warning",
-    pulseguard: true,
+    steadystack: true,
     uptimerobot: true,
     betteruptime: true,
     checkly: true,
@@ -199,7 +199,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
     category: "Monitor Types & Protocols",
     name: "DNS Record Integrity Monitoring",
     description: "Track DNS changes for A, AAAA, MX, TXT, CAA records",
-    pulseguard: true,
+    steadystack: true,
     uptimerobot: "Paid Only",
     betteruptime: true,
     checkly: "Paid Only",
@@ -209,7 +209,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
     category: "Monitor Types & Protocols",
     name: "TCP Port & Service Reachability",
     description: "Raw TCP socket handshakes for databases, mail, and custom ports",
-    pulseguard: true,
+    steadystack: true,
     uptimerobot: true,
     betteruptime: true,
     checkly: false,
@@ -219,7 +219,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
     category: "Monitor Types & Protocols",
     name: "Heartbeat & Cron Job Monitoring",
     description: "Dead-man switch monitoring for scheduled jobs and workers",
-    pulseguard: true,
+    steadystack: true,
     uptimerobot: true,
     betteruptime: true,
     checkly: true,
@@ -231,7 +231,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
     category: "Advanced Platform Capabilities",
     name: "Private Probe Agents (Docker VPC)",
     description: "Deploy internal probes inside private VPCs or homelabs",
-    pulseguard: true,
+    steadystack: true,
     uptimerobot: false,
     betteruptime: false,
     checkly: "Enterprise",
@@ -241,7 +241,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
     category: "Advanced Platform Capabilities",
     name: "Browser / Synthetic Journey Testing",
     description: "Multi-step headless browser user journeys with assertion checks",
-    pulseguard: true,
+    steadystack: true,
     uptimerobot: false,
     betteruptime: false,
     checkly: true,
@@ -251,7 +251,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
     category: "Advanced Platform Capabilities",
     name: "AI Root Cause Diagnosis",
     description: "Edge LLM automated stack trace & latency anomaly breakdown",
-    pulseguard: true,
+    steadystack: true,
     uptimerobot: false,
     betteruptime: false,
     checkly: false,
@@ -263,7 +263,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
     category: "Status Pages & Alerts",
     name: "Status Page with Custom Domain",
     description: "Branded public status portal with automated SSL",
-    pulseguard: "Included",
+    steadystack: "Included",
     uptimerobot: "Paid Only ($7/mo+)",
     betteruptime: "Paid Only",
     checkly: "Paid Only",
@@ -273,7 +273,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
     category: "Status Pages & Alerts",
     name: "Slack & Discord Alerts (Free Tier)",
     description: "Instant chat and webhook dispatches without upgrading",
-    pulseguard: true,
+    steadystack: true,
     uptimerobot: "Paid Only",
     betteruptime: true,
     checkly: true,
@@ -283,7 +283,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
     category: "Status Pages & Alerts",
     name: "Native REST API & CLI Access",
     description: "Terminal CLI tool and REST API for automation & CI/CD",
-    pulseguard: true,
+    steadystack: true,
     uptimerobot: "Limited API",
     betteruptime: true,
     checkly: "Paid Only",
@@ -292,7 +292,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
 ];
 
 export const intervalComparison = {
-  pulseguard: { label: "PulseGuard Free", interval: 60, color: "bg-primary" },
+  steadystack: { label: "SteadyStack Free", interval: 60, color: "bg-primary" },
   competitors: [
     { label: "UptimeRobot", interval: 300, color: "bg-red-500/60" },
     { label: "Better Uptime", interval: 300, color: "bg-yellow-500/60" },
@@ -307,8 +307,8 @@ export type DowntimeScenario = {
   recoveryStart: number;
   competitorLabel: string;
   competitorDetect: number;
-  pulseguardLabel: string;
-  pulseguardDetect: number;
+  steadystackLabel: string;
+  steadystackDetect: number;
 };
 
 export const downtimeScenarios: DowntimeScenario[] = [
@@ -320,8 +320,8 @@ export const downtimeScenarios: DowntimeScenario[] = [
     recoveryStart: 8,
     competitorLabel: "Competitor (5min check)",
     competitorDetect: 5,
-    pulseguardLabel: "PulseGuard (3min check)",
-    pulseguardDetect: 3,
+    steadystackLabel: "SteadyStack (3min check)",
+    steadystackDetect: 3,
   },
   {
     name: "DNS Propagation Delay",
@@ -331,8 +331,8 @@ export const downtimeScenarios: DowntimeScenario[] = [
     recoveryStart: 12,
     competitorLabel: "Competitor (5min check)",
     competitorDetect: 5,
-    pulseguardLabel: "PulseGuard (3min check)",
-    pulseguardDetect: 3,
+    steadystackLabel: "SteadyStack (3min check)",
+    steadystackDetect: 3,
   },
   {
     name: "Database Failover",
@@ -341,7 +341,7 @@ export const downtimeScenarios: DowntimeScenario[] = [
     recoveryStart: 15,
     competitorLabel: "Competitor (5min check)",
     competitorDetect: 5,
-    pulseguardLabel: "PulseGuard (3min check)",
-    pulseguardDetect: 3,
+    steadystackLabel: "SteadyStack (3min check)",
+    steadystackDetect: 3,
   },
 ];

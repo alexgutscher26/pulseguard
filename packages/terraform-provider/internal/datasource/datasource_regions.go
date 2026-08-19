@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/alexgutscher26/pulseguard/terraform-provider-pulseguard/internal/client"
+	"github.com/getsteadystack/SteadyStack/terraform-provider-steadystack/internal/client"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -40,7 +40,7 @@ func (d *RegionsDataSource) Metadata(ctx context.Context, req datasource.Metadat
 
 func (d *RegionsDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Data source for retrieving all available PulseGuard sovereign edge probe regions.",
+		Description: "Data source for retrieving all available SteadyStack sovereign edge probe regions.",
 		Attributes: map[string]schema.Attribute{
 			"regions": schema.ListNestedAttribute{
 				Description: "List of available sovereign edge probe regions.",
@@ -87,7 +87,7 @@ func (d *RegionsDataSource) Read(ctx context.Context, req datasource.ReadRequest
 
 	regions, err := d.client.GetRegions()
 	if err != nil {
-		resp.Diagnostics.AddError("Error Reading PulseGuard Sovereign Regions", err.Error())
+		resp.Diagnostics.AddError("Error Reading SteadyStack Sovereign Regions", err.Error())
 		return
 	}
 

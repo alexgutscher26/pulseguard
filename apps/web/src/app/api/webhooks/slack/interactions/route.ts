@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { env } from "@pulseguard/env/server";
+import { env } from "@steadystack/env/server";
 
 const MAX_REQUEST_BODY_SIZE = 1_048_576;
 

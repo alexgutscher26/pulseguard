@@ -1,4 +1,4 @@
-import "@pulseguard/env/web";
+import "@steadystack/env/web";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 

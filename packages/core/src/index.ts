@@ -1,4 +1,4 @@
-import type { MonitorStatus } from "@pulseguard/types";
+import type { MonitorStatus } from "@steadystack/types";
 
 /**
  * Validates a target URL string to prevent Server-Side Request Forgery (SSRF)
@@ -699,7 +699,7 @@ async function deriveKey(secret: string): Promise<CryptoKey> {
     ["deriveKey"],
   );
   // Fixed domain-separated salt for deterministic key derivation from secret
-  const salt = enc.encode("pulseguard:credential-store:v1");
+  const salt = enc.encode("steadystack:credential-store:v1");
   return await crypto.subtle.deriveKey(
     {
       name: "PBKDF2",

@@ -1,4 +1,4 @@
-# PulseGuard — Comprehensive TODO & Roadmap
+# SteadyStack — Comprehensive TODO & Roadmap
 
 > Last updated: 2026-07-21
 > Status legend: `[ ]` = not started · `[/]` = in progress · `[x]` = done · `[~]` = deprioritized
@@ -65,17 +65,17 @@
 - [ ] Build UI forms for PagerDuty/Opsgenie channel config (routing key, team, escalation policy)
 - [ ] Add incident auto-resolve callback to close PagerDuty incidents when monitor recovers
 - [ ] Test alert deduplication with PagerDuty's dedup key
-- [ ] Add PagerDuty Webhooks → PulseGuard inbound integration (sync PD incident state back)
+- [ ] Add PagerDuty Webhooks → SteadyStack inbound integration (sync PD incident state back)
 
 ### 🌐 Terraform / OpenTofu Provider (Official Roadmap Item)
 
-- [ ] Design Terraform resource schema for `pulseguard_monitor`, `pulseguard_status_page`, `pulseguard_alert_rule`
+- [ ] Design Terraform resource schema for `steadystack_monitor`, `steadystack_status_page`, `steadystack_alert_rule`
 - [ ] Scaffold Terraform provider using `hashicorp/terraform-plugin-framework` (Go)
-- [ ] Implement CRUD operations for each resource via the PulseGuard REST API
+- [ ] Implement CRUD operations for each resource via the SteadyStack REST API
 - [ ] Write acceptance tests for all resources
 - [ ] Publish to Terraform Registry
 - [ ] Add `examples/` directory with common Terraform configurations
-- [ ] Create documentation page at `pulseguard.com/docs/terraform`
+- [ ] Create documentation page at `steadystack.dev/docs/terraform`
 
 ---
 
@@ -220,8 +220,8 @@
 - [ ] Add `--output json` flag to all commands for programmatic use
 - [ ] Add `--format table|yaml|json` flag to list commands
 - [ ] Publish `pulse` CLI to npm, brew, and winget
-- [ ] Add Docker image for the CLI (`ghcr.io/pulseguard/cli`)
-- [ ] Add GitHub Action: `pulseguard/action-wait` wrapping `pulse wait`
+- [ ] Add Docker image for the CLI (`ghcr.io/steadystack/cli`)
+- [ ] Add GitHub Action: `steadystack/action-wait` wrapping `pulse wait`
 
 ### 🔌 Integrations & Webhooks
 
@@ -234,12 +234,12 @@
 - [ ] Add `Statuspage.io` import tool (migrate existing status pages)
 - [ ] Add `Freshservice` / `Freshdesk` notification channel
 - [ ] Add `Zapier` webhook trigger (verified Zap trigger event schema)
-- [ ] Add `Make (Integromat)` module for PulseGuard
+- [ ] Add `Make (Integromat)` module for SteadyStack
 - [ ] Add OAuth 2.0 flow for third-party app integrations
 - [ ] Build a public integration marketplace page listing all available channels
 - [ ] Add `ServiceNow` incident integration
 - [ ] Add `Splunk` log forwarding for all monitoring events
-- [ ] Implement outbound webhook signing with HMAC-SHA256 (`X-PulseGuard-Signature` header)
+- [ ] Implement outbound webhook signing with HMAC-SHA256 (`X-SteadyStack-Signature` header)
 - [ ] Add webhook retry logic with exponential backoff on delivery failure
 - [ ] Add webhook delivery log UI (view past delivery attempts, status, response)
 - [ ] Implement `EventBridge` / `SNS` forwarding for AWS-native customers
@@ -401,7 +401,7 @@
 - [x] Build interactive onboarding checklist (create monitor → set alert → share status page)
 - [x] Add product demo mode with pre-seeded data (no signup required to explore)
 - [x] Improve landing page hero with animated monitor status visualization
-- [x] Add feature comparison table: PulseGuard vs UptimeRobot vs Checkly vs Better Uptime
+- [x] Add feature comparison table: SteadyStack vs UptimeRobot vs Checkly vs Better Uptime
 - [ ] Add "Testimonials" section with customer quotes and logos
 - [ ] Add pricing page with feature matrix and FAQ
 - [x] Add use-case pages: DevOps, E-commerce, SaaS, API Monitoring
@@ -668,7 +668,7 @@
 - [x] Add `CHANGELOG.md` and set up automated release notes via GitHub Actions
 - [ ] Create public roadmap (GitHub Project or Linear public board)
 - [x] Set up Hall of Fame / Showcase automatic submission from the UI
-- [x] Add "Powered by PulseGuard" badge for open-source status page users
+- [x] Add "Powered by SteadyStack" badge for open-source status page users
 - [ ] Build official Discord community server
 - [ ] Holiday mode Suspend all alerts & notifications until a specific date.
 

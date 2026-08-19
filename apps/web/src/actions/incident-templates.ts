@@ -1,11 +1,11 @@
 "use server";
 
-import prisma from "@pulseguard/db";
-import { auth } from "@pulseguard/auth";
+import prisma from "@steadystack/db";
+import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 
-import { $Enums } from "@pulseguard/db";
+import { $Enums } from "@steadystack/db";
 
 export type IncidentTemplateData = {
   name: string;

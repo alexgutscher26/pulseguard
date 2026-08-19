@@ -56,9 +56,9 @@ kubectl rollout restart deployment/api-gateway -n production
 
 ---
 
-## Automating Runbooks with PulseGuard
+## Automating Runbooks with SteadyStack
 
-PulseGuard bridges monitoring alerts with runbook execution:
+SteadyStack bridges monitoring alerts with runbook execution:
 
 - **Direct Runbook Linking:** Every webhook alert payload and Slack notification includes a direct link to the specific runbook for that endpoint.
 - **Automated Webhook Remediation:** Trigger serverless webhooks or AWS Lambda scripts to automatically cycle containers when a 2/3 edge quorum confirms an outage.

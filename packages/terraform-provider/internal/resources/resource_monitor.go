@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/alexgutscher26/pulseguard/terraform-provider-pulseguard/internal/client"
+	"github.com/getsteadystack/SteadyStack/terraform-provider-steadystack/internal/client"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -54,7 +54,7 @@ func (r *MonitorResource) Metadata(ctx context.Context, req resource.MetadataReq
 
 func (r *MonitorResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Manages a PulseGuard edge uptime monitor.",
+		Description: "Manages a SteadyStack edge uptime monitor.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Description: "The unique identifier of the monitor.",
@@ -198,7 +198,7 @@ func (r *MonitorResource) Create(ctx context.Context, req resource.CreateRequest
 
 	created, err := r.client.CreateMonitor(m)
 	if err != nil {
-		resp.Diagnostics.AddError("Error Creating PulseGuard Monitor", err.Error())
+		resp.Diagnostics.AddError("Error Creating SteadyStack Monitor", err.Error())
 		return
 	}
 
@@ -243,7 +243,7 @@ func (r *MonitorResource) Read(ctx context.Context, req resource.ReadRequest, re
 
 	m, err := r.client.GetMonitor(state.ID.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("Error Reading PulseGuard Monitor", err.Error())
+		resp.Diagnostics.AddError("Error Reading SteadyStack Monitor", err.Error())
 		return
 	}
 
@@ -335,7 +335,7 @@ func (r *MonitorResource) Update(ctx context.Context, req resource.UpdateRequest
 
 	updated, err := r.client.UpdateMonitor(plan.ID.ValueString(), m)
 	if err != nil {
-		resp.Diagnostics.AddError("Error Updating PulseGuard Monitor", err.Error())
+		resp.Diagnostics.AddError("Error Updating SteadyStack Monitor", err.Error())
 		return
 	}
 
@@ -379,7 +379,7 @@ func (r *MonitorResource) Delete(ctx context.Context, req resource.DeleteRequest
 
 	err := r.client.DeleteMonitor(state.ID.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("Error Deleting PulseGuard Monitor", err.Error())
+		resp.Diagnostics.AddError("Error Deleting SteadyStack Monitor", err.Error())
 		return
 	}
 }

@@ -25,18 +25,18 @@ pnpm add -g steadystack
 Or run instantly without installation using `npx` or `bunx`:
 
 ```bash
-npx pulseguard --help
+npx steadystack --help
 # or
-bunx pulseguard --help
+bunx steadystack --help
 ```
 
-> **Binary Aliases**: Both `pulse` and `pulseguard` are available when installed globally.
+> **Binary Aliases**: Both `pulse` and `steadystack` are available when installed globally.
 
 ---
 
 ## 🔑 Authentication
 
-Before using the CLI, authenticate with your PulseGuard API key:
+Before using the CLI, authenticate with your SteadyStack API key:
 
 ```bash
 pulse auth login --key pg_live_your_api_key
@@ -59,8 +59,8 @@ pulse auth status
 In automated environments like GitHub Actions, GitLab CI, or Docker containers, you can set environment variables instead of running `pulse auth login`:
 
 ```bash
-export PULSEGUARD_API_KEY="pg_live_..."
-export PULSEGUARD_BASE_URL="https://pulseguard.io" # Optional, defaults to https://pulseguard.io
+export STEADYSTACK_API_KEY="pg_live_..."
+export STEADYSTACK_BASE_URL="https://steadystack.dev" # Optional, defaults to https://steadystack.dev
 ```
 
 ---
@@ -72,7 +72,7 @@ export PULSEGUARD_BASE_URL="https://pulseguard.io" # Optional, defaults to https
 Define your uptime checks, API endpoints, SSL certificates, DNS records, and TCP ports in declarative YAML files:
 
 ```yaml
-# pulseguard.yaml
+# steadystack.yaml
 monitors:
   - name: production-api
     type: HTTP
@@ -94,16 +94,16 @@ Apply the configuration idempotently:
 
 ```bash
 # Apply a single YAML file
-pulse monitors apply pulseguard.yaml
+pulse monitors apply steadystack.yaml
 
 # Preview changes before applying (Dry Run)
-pulse monitors apply pulseguard.yaml --dry-run
+pulse monitors apply steadystack.yaml --dry-run
 
 # Apply all YAML files in a directory
 pulse monitors apply ./monitors/
 
 # Diff local YAML files against remote state
-pulse monitors diff pulseguard.yaml
+pulse monitors diff steadystack.yaml
 ```
 
 ---
@@ -126,7 +126,7 @@ pulse monitors create
 pulse monitors delete <MONITOR_ID>
 
 # Export all current remote monitors into a YAML snapshot
-pulse monitors import -o pulseguard.yaml
+pulse monitors import -o steadystack.yaml
 ```
 
 ---
@@ -147,9 +147,9 @@ pulse wait <MONITOR_ID> --timeout 300 --interval 15
   run: ./deploy.sh
 
 - name: Gate — Wait for Healthy State
-  run: npx pulseguard wait ${{ secrets.CANARY_MONITOR_ID }} --timeout 180
+  run: npx steadystack wait ${{ secrets.CANARY_MONITOR_ID }} --timeout 180
   env:
-    PULSEGUARD_API_KEY: ${{ secrets.PULSEGUARD_API_KEY }}
+    STEADYSTACK_API_KEY: ${{ secrets.STEADYSTACK_API_KEY }}
 ```
 
 ---
@@ -191,4 +191,4 @@ pulse import kuma -f uptime-kuma-export.json
 
 ## 📄 License
 
-Apache-2.0. See [LICENSE](https://github.com/alexgutscher26/pulseguard/blob/master/LICENSE) for details.
+Apache-2.0. See [LICENSE](https://github.com/getsteadystack/SteadyStack/blob/master/LICENSE) for details.

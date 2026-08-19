@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 import { authenticateApiKey } from "../../_lib/auth";
 import { assertMonitorLimits } from "@/lib/billing-server";
 

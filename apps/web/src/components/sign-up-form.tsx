@@ -27,9 +27,9 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
       return;
     }
 
-    // 2. Fallback to pulseguard_ref cookie
+    // 2. Fallback to steadystack_ref cookie
     if (typeof document !== "undefined") {
-      const match = document.cookie.split("; ").find((row) => row.startsWith("pulseguard_ref="));
+      const match = document.cookie.split("; ").find((row) => row.startsWith("steadystack_ref="));
       if (match) {
         try {
           const cookieVal = decodeURIComponent(match.split("=")[1]);
@@ -70,7 +70,7 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
               }
               // Clear cookie upon successful registration
               if (typeof document !== "undefined") {
-                document.cookie = "pulseguard_ref=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                document.cookie = "steadystack_ref=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
               }
             }
             router.push("/dashboard");
@@ -112,7 +112,7 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
             onClick={() => {
               setRefCode(null);
               if (typeof document !== "undefined") {
-                document.cookie = "pulseguard_ref=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                document.cookie = "steadystack_ref=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
               }
             }}
             className="text-primary/60 hover:text-primary transition-colors p-1 rounded hover:bg-primary/20"

@@ -37,7 +37,7 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
 
     if (success === "true" || sessionId) {
       toast.success("Payment successful! Your subscription is now active.", {
-        description: "Thank you for upgrading with PulseGuard.",
+        description: "Thank you for upgrading with SteadyStack.",
       });
     } else if (canceled === "true") {
       toast.info("Checkout was canceled. No charges were made.");

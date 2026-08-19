@@ -17,7 +17,7 @@ export const postSchema = z.object({
   category: z.enum(["Engineering", "Product", "Guides"]),
   readTime: z.string(),
   tags: z.array(z.string()).default([]),
-  author: z.string().default("PulseGuard Team"),
+  author: z.string().default("SteadyStack Team"),
 });
 
 export function getAllPosts(): BlogPost[] {

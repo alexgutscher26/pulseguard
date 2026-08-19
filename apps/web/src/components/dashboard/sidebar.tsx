@@ -49,7 +49,7 @@ export function Sidebar() {
 
   // Restore collapse preference from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem("pulseguard_main_sidebar_collapsed");
+    const saved = localStorage.getItem("steadystack_main_sidebar_collapsed");
     if (saved !== null) {
       setIsCollapsed(saved === "true");
     }
@@ -58,7 +58,7 @@ export function Sidebar() {
   const toggleCollapse = () => {
     setIsCollapsed((prev) => {
       const next = !prev;
-      localStorage.setItem("pulseguard_main_sidebar_collapsed", String(next));
+      localStorage.setItem("steadystack_main_sidebar_collapsed", String(next));
       return next;
     });
   };
@@ -106,7 +106,7 @@ export function Sidebar() {
             {!isCollapsed && (
               <div className="flex flex-col">
                 <span className="font-mono text-sm font-bold tracking-wider text-foreground">
-                  PULSEGUARD
+                  STEADYSTACK
                 </span>
                 <span className="font-mono text-[9px] text-muted-foreground tracking-widest uppercase">
                   ZERO_FP_MESH

@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Is It Down? Live Outage Tracker & Global Service Status Directory | PulseGuard",
+  title: "Is It Down? Live Outage Tracker & Global Service Status Directory | SteadyStack",
   description:
     "Real-time outage checker and uptime status directory for 300+ cloud, AI, developer, payment, and database services including Stripe, GitHub, OpenAI, AWS, Vercel, and Twilio. Stop checking manually.",
   keywords: [
@@ -25,21 +25,21 @@ export const metadata: Metadata = {
     "cloud status monitoring",
   ],
   alternates: {
-    canonical: "https://pulseguard.io/is-down",
+    canonical: "https://steadystack.dev/is-down",
   },
   openGraph: {
     type: "website",
-    url: "https://pulseguard.io/is-down",
-    title: "Is It Down? Live Outage Tracker & Global Service Status Directory | PulseGuard",
+    url: "https://steadystack.dev/is-down",
+    title: "Is It Down? Live Outage Tracker & Global Service Status Directory | SteadyStack",
     description:
       "Check live status, multi-region edge latency, and outage reports for 300+ developer and cloud services.",
-    siteName: "PulseGuard",
+    siteName: "SteadyStack",
   },
   twitter: {
     card: "summary_large_image",
     title: "Is It Down? Live Outage Tracker & Global Service Status Directory",
     description:
-      "Real-time outage checker for 300+ services. Stop checking manually — get instant edge alerts with PulseGuard.",
+      "Real-time outage checker for 300+ services. Stop checking manually — get instant edge alerts with SteadyStack.",
   },
 };
 
@@ -49,14 +49,14 @@ export default function IsDownHubPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    name: "PulseGuard Outage Tracker & Service Status Directory",
+    name: "SteadyStack Outage Tracker & Service Status Directory",
     description:
       "Real-time status, latency, and outage tracking directory for 300+ developer, cloud, and tech services.",
-    url: "https://pulseguard.io/is-down",
+    url: "https://steadystack.dev/is-down",
     publisher: {
       "@type": "Organization",
-      name: "PulseGuard",
-      url: "https://pulseguard.io",
+      name: "SteadyStack",
+      url: "https://steadystack.dev",
     },
     mainEntity: {
       "@type": "ItemList",
@@ -64,7 +64,7 @@ export default function IsDownHubPage() {
         "@type": "ListItem",
         position: index + 1,
         name: `Is ${service.name} Down?`,
-        url: `https://pulseguard.io/is-down/${service.slug}`,
+        url: `https://steadystack.dev/is-down/${service.slug}`,
       })),
     },
   };
@@ -107,7 +107,7 @@ export default function IsDownHubPage() {
               Don't see your internal service or custom API?
             </h3>
             <p className="text-sm text-muted-foreground">
-              PulseGuard gives you 50 free synthetic monitors with 10-second checks from 15 global
+              SteadyStack gives you 50 free synthetic monitors with 10-second checks from 15 global
               edge locations, multi-region consensus, and instant Slack / Discord alerts.
             </p>
           </div>

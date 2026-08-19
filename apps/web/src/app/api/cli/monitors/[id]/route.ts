@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 import { verifyApiKey, unauthorized } from "../../_lib/auth";
 
 const MAX_REQUEST_BODY_SIZE = 1_048_576;

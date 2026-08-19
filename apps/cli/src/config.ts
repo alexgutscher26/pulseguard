@@ -7,7 +7,7 @@ interface PulseConfig {
 }
 
 const conf = new Conf<PulseConfig>({
-  projectName: "pulseguard-cli",
+  projectName: "steadystack-cli",
   schema: {
     apiKey: { type: "string" },
     baseUrl: { type: "string" },
@@ -15,7 +15,7 @@ const conf = new Conf<PulseConfig>({
   },
 });
 
-export const DEFAULT_BASE_URL = "https://pulseguard.io";
+export const DEFAULT_BASE_URL = "https://steadystack.dev";
 
 export function getConfig(): PulseConfig {
   return {
@@ -36,16 +36,12 @@ export function clearConfig() {
 }
 
 export function getApiKey(): string | undefined {
-  return (
-    process.env.PULSEGUARD_API_KEY ||
-    process.env.PULSE_API_KEY ||
-    conf.get("apiKey")
-  );
+  return process.env.STEADYSTACK_API_KEY || process.env.PULSE_API_KEY || conf.get("apiKey");
 }
 
 export function getBaseUrl(): string {
   return (
-    process.env.PULSEGUARD_BASE_URL ||
+    process.env.STEADYSTACK_BASE_URL ||
     process.env.PULSE_BASE_URL ||
     conf.get("baseUrl") ||
     DEFAULT_BASE_URL

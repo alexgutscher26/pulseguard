@@ -125,7 +125,7 @@ export function ApiKeysForm() {
             </h3>
             <p className="text-xs text-primary/60 font-mono mt-0.5">
               Authenticate the <code className="bg-primary/10 px-1 rounded">
-                pulseguard-cli
+                steadystack-cli
               </code>{" "}
               and external integrations
             </p>
@@ -263,7 +263,7 @@ export function ApiKeysForm() {
         </div>
         <div className="space-y-3">
           {[
-            { label: "Install", cmd: "npm install -g pulseguard-cli" },
+            { label: "Install", cmd: "npm install -g steadystack-cli" },
             {
               label: "Login with key",
               cmd: "pulse auth login --key pg_live_...",
@@ -271,7 +271,7 @@ export function ApiKeysForm() {
             { label: "List monitors", cmd: "pulse monitors list" },
             {
               label: "Apply from YAML",
-              cmd: "pulse monitors apply -f pulseguard.yaml",
+              cmd: "pulse monitors apply -f steadystack.yaml",
             },
             {
               label: "CI/CD gate",

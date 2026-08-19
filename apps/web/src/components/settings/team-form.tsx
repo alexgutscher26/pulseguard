@@ -213,7 +213,8 @@ export function TeamForm() {
   };
 
   const copyInviteLink = async (invitationId: string) => {
-    const origin = typeof window !== "undefined" ? window.location.origin : "https://pulseguard.io";
+    const origin =
+      typeof window !== "undefined" ? window.location.origin : "https://steadystack.dev";
     const link = `${origin}/invitations/${invitationId}`;
     await navigator.clipboard.writeText(link);
     setCopiedId(invitationId);

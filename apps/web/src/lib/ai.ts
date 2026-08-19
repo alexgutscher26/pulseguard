@@ -1,6 +1,6 @@
 import { createOpenAI } from "@ai-sdk/openai";
 import { generateText } from "ai";
-import { env } from "@pulseguard/env/server";
+import { env } from "@steadystack/env/server";
 import {
   type HeliconeMetadata,
   buildHeliconeHeaders,
@@ -46,18 +46,18 @@ export interface InsightAnalysisResult {
  * 5. Fallback -> Heuristic SRE synthesis engine
  */
 export function getAIProviderClient(metadata?: HeliconeMetadata) {
-  const providerPreference = (env.AI_PROVIDER || process.env.AI_PROVIDER || "auto").toLowerCase();
-  const openRouterKey = env.OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY;
+  const providerPreference = (process.env.AI_PROVIDER || env.AI_PROVIDER || "auto").toLowerCase();
+  const openRouterKey = process.env.OPENROUTER_API_KEY || env.OPENROUTER_API_KEY;
   const openRouterModel =
-    env.OPENROUTER_MODEL || process.env.OPENROUTER_MODEL || "meta-llama/llama-3.3-70b-instruct";
+    process.env.OPENROUTER_MODEL || env.OPENROUTER_MODEL || "meta-llama/llama-3.3-70b-instruct";
   const openRouterBaseUrl =
-    env.OPENROUTER_BASE_URL || process.env.OPENROUTER_BASE_URL || "https://openrouter.ai/api/v1";
+    process.env.OPENROUTER_BASE_URL || env.OPENROUTER_BASE_URL || "https://openrouter.ai/api/v1";
 
   const ollamaBaseUrl =
-    env.OLLAMA_BASE_URL || process.env.OLLAMA_BASE_URL || "http://localhost:11434/v1";
-  const ollamaModel = env.OLLAMA_MODEL || process.env.OLLAMA_MODEL || "llama3.2";
+    process.env.OLLAMA_BASE_URL || env.OLLAMA_BASE_URL || "http://localhost:11434/v1";
+  const ollamaModel = process.env.OLLAMA_MODEL || env.OLLAMA_MODEL || "llama3.2";
 
-  const openAiKey = env.OPENAI_API_KEY || process.env.OPENAI_API_KEY;
+  const openAiKey = process.env.OPENAI_API_KEY || env.OPENAI_API_KEY;
   const heliconeActive = isHeliconeConfigured();
   const heliconeHeaders = buildHeliconeHeaders(metadata);
 
@@ -69,7 +69,7 @@ export function getAIProviderClient(metadata?: HeliconeMetadata) {
       apiKey: openRouterKey,
       headers: {
         "HTTP-Referer": env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-        "X-Title": "PulseGuard Edge Monitoring",
+        "X-Title": "SteadyStack Edge Monitoring",
         ...heliconeHeaders,
       },
     });
@@ -181,7 +181,7 @@ export async function generateDeepInsightAnalysis(params: {
         )
         .join("\n");
 
-      const prompt = `You are a Principal Site Reliability Engineer (SRE) and distributed systems architect at PulseGuard.
+      const prompt = `You are a Principal Site Reliability Engineer (SRE) and distributed systems architect at SteadyStack.
 Analyze the following monitoring alert and telemetry data to generate an intelligent diagnostic breakdown.
 
 MONITOR SPECIFICATIONS:
@@ -294,6 +294,6 @@ function generateHeuristicAnalysis(params: {
         : ["us-east-1", "eu-central-1", "ap-northeast-1"],
     },
     provider: "heuristic",
-    modelName: "PulseGuard Telemetry SRE Engine",
+    modelName: "SteadyStack Telemetry SRE Engine",
   };
 }

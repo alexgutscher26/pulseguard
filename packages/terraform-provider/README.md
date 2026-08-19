@@ -1,6 +1,6 @@
-# Terraform Provider for PulseGuard 🛡️
+# Terraform Provider for SteadyStack 🛡️
 
-The official HashiCorp Terraform provider for [PulseGuard](https://pulseguard.io) — Edge-native, zero-false-positive uptime and synthetic monitoring platform.
+The official HashiCorp Terraform provider for [SteadyStack](https://steadystack.dev) — Edge-native, zero-false-positive uptime and synthetic monitoring platform.
 
 ## Features
 
@@ -15,22 +15,22 @@ The official HashiCorp Terraform provider for [PulseGuard](https://pulseguard.io
 ```hcl
 terraform {
   required_providers {
-    pulseguard = {
-      source  = "alexgutscher26/pulseguard"
+    steadystack = {
+      source  = "getsteadystack/SteadyStack"
       version = "~> 1.0"
     }
   }
 }
 
-provider "pulseguard" {
-  api_key = var.pulseguard_api_key # or export PULSEGUARD_API_KEY
+provider "steadystack" {
+  api_key = var.steadystack_api_key # or export STEADYSTACK_API_KEY
 }
 
 # Fetch available edge probe regions
-data "pulseguard_regions" "edge" {}
+data "steadystack_regions" "edge" {}
 
 # Create an Edge Uptime Monitor
-resource "pulseguard_monitor" "app_gateway" {
+resource "steadystack_monitor" "app_gateway" {
   name     = "App Gateway"
   url      = "https://app.example.com/health"
   type     = "HTTP"
@@ -39,7 +39,7 @@ resource "pulseguard_monitor" "app_gateway" {
   method   = "GET"
 
   headers = {
-    "X-Synthetic-Check" = "PulseGuard-Edge"
+    "X-Synthetic-Check" = "SteadyStack-Edge"
   }
 
   check_regions   = ["wnam", "weur", "apac"]
@@ -50,7 +50,7 @@ resource "pulseguard_monitor" "app_gateway" {
 }
 
 # Configure an Alert Notification Channel
-resource "pulseguard_alert_channel" "pagerduty_sre" {
+resource "steadystack_alert_channel" "pagerduty_sre" {
   name = "PagerDuty SRE High Priority"
   type = "PAGERDUTY"
   config_json = jsonencode({
@@ -61,13 +61,13 @@ resource "pulseguard_alert_channel" "pagerduty_sre" {
 
 ## Authentication
 
-Generate a scoped API key in your PulseGuard dashboard under **Workspace Settings → API Keys**.
+Generate a scoped API key in your SteadyStack dashboard under **Workspace Settings → API Keys**.
 
 Set via provider config or environment variable:
 
 ```bash
-export PULSEGUARD_API_KEY="pg_live_xxxxxxxxxxxxxxxx"
-export PULSEGUARD_HOST_URL="https://app.pulseguard.io" # Optional, defaults to production
+export STEADYSTACK_API_KEY="pg_live_xxxxxxxxxxxxxxxx"
+export STEADYSTACK_HOST_URL="https://app.steadystack.dev" # Optional, defaults to production
 ```
 
 ## Development & Building
@@ -76,7 +76,7 @@ To build the provider binary locally for Terraform CLI development:
 
 ```bash
 cd packages/terraform-provider
-go build -o terraform-provider-pulseguard
+go build -o terraform-provider-steadystack
 ```
 
 To configure local overrides in `~/.terraformrc` or `%APPDATA%/terraform.rc`:
@@ -84,7 +84,7 @@ To configure local overrides in `~/.terraformrc` or `%APPDATA%/terraform.rc`:
 ```hcl
 provider_installation {
   dev_overrides {
-    "alexgutscher26/pulseguard" = "<path-to-pulseguard>/packages/terraform-provider"
+    "getsteadystack/SteadyStack" = "<path-to-steadystack>/packages/terraform-provider"
   }
   direct {}
 }

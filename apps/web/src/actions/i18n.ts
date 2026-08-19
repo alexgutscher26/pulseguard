@@ -1,6 +1,6 @@
 "use server";
 
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 import { revalidatePath } from "next/cache";
 
 export type I18nSettings = {

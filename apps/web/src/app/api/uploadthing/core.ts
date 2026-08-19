@@ -1,6 +1,6 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
-import { auth } from "@pulseguard/auth";
+import { auth } from "@steadystack/auth";
 
 const f = createUploadthing();
 

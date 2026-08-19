@@ -11,11 +11,11 @@ import {
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "PulseGuard vs Competitors — Better Monitoring, Faster Checks",
+  title: "SteadyStack vs Competitors — Better Monitoring, Faster Checks",
   description:
-    "See how PulseGuard beats UptimeRobot, Better Uptime, and OpenStatus. 1-minute free checks vs the industry 5-minute standard. Faster detection means less downtime.",
+    "See how SteadyStack beats UptimeRobot, Better Uptime, and OpenStatus. 1-minute free checks vs the industry 5-minute standard. Faster detection means less downtime.",
   openGraph: {
-    title: "PulseGuard vs Competitors — Better Monitoring, Faster Checks",
+    title: "SteadyStack vs Competitors — Better Monitoring, Faster Checks",
     description:
       "1-minute free checks vs the industry 5-minute standard. 400% faster detection, 5x more checks per day.",
   },
@@ -41,7 +41,7 @@ export default function ComparisonPage() {
           </h1>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-xl">
             The monitoring industry has settled on a 5-minute free tier as &ldquo;standard.&rdquo;
-            We think that&apos;s a relic. PulseGuard gives you{" "}
+            We think that&apos;s a relic. SteadyStack gives you{" "}
             <span className="text-foreground font-bold">1-minute checks for free</span> — 400%
             faster detection, 5x more data points, and less downtime you have to explain to your
             customers.
@@ -74,7 +74,7 @@ export default function ComparisonPage() {
               See the difference 240 seconds makes
             </h2>
             <p className="text-muted-foreground text-sm leading-relaxed mb-10">
-              Scroll through the check intervals side by side. PulseGuard&apos;s free 1-minute
+              Scroll through the check intervals side by side. SteadyStack&apos;s free 1-minute
               interval means you detect problems before your competitors even run their first check.
             </p>
           </div>
@@ -93,7 +93,7 @@ export default function ComparisonPage() {
               How downtime plays out
             </h2>
             <p className="text-muted-foreground text-sm leading-relaxed mb-10">
-              When your server goes down, every second counts. See how PulseGuard&apos;s faster
+              When your server goes down, every second counts. See how SteadyStack&apos;s faster
               check interval catches failures up to 4 minutes earlier than the competition.
             </p>
           </div>
@@ -112,7 +112,7 @@ export default function ComparisonPage() {
               Do the math yourself
             </h2>
             <p className="text-muted-foreground text-sm leading-relaxed mb-10">
-              Adjust the slider to see how PulseGuard&apos;s faster checks compound across your
+              Adjust the slider to see how SteadyStack&apos;s faster checks compound across your
               monitoring fleet.
             </p>
           </div>
@@ -131,7 +131,7 @@ export default function ComparisonPage() {
               Full feature comparison
             </h2>
             <p className="text-muted-foreground text-sm leading-relaxed mb-10">
-              PulseGuard doesn&apos;t just win on check intervals. See how we stack up across every
+              SteadyStack doesn&apos;t just win on check intervals. See how we stack up across every
               feature that matters for modern infrastructure monitoring.
             </p>
           </div>

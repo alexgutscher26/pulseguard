@@ -97,10 +97,10 @@ export function GlobalDiagnosticsModal({ url, monitorName, trigger }: GlobalDiag
         <div className="p-3.5 rounded-xl bg-muted/40 border border-border text-xs flex items-start gap-3">
           <ShieldCheck className="size-4 text-primary shrink-0 mt-0.5" />
           <div className="space-y-1">
-            <p className="font-semibold text-foreground">PulseGuard Architectural Guarantee</p>
+            <p className="font-semibold text-foreground">SteadyStack Architectural Guarantee</p>
             <p className="text-[11px] text-muted-foreground leading-normal">
               Automated critical alerts, quorum consensus, and uptime SLAs run exclusively on
-              PulseGuard&apos;s <strong>deterministic, geographically pinned edge mesh</strong>.
+              SteadyStack&apos;s <strong>deterministic, geographically pinned edge mesh</strong>.
               Globalping is used strictly for manual, on-demand debugging to prevent external
               telemetry noise.
             </p>

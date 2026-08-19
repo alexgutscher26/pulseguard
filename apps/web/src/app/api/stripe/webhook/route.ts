@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { stripe, resolvePlanFromStripeSubscriptionAsync } from "@/lib/stripe";
-import db from "@pulseguard/db";
-import { sendDunningNotice } from "@pulseguard/email";
+import db from "@steadystack/db";
+import { sendDunningNotice } from "@steadystack/email";
 import { PLANS, type PlanTier } from "@/lib/billing";
 import Stripe from "stripe";
 
@@ -161,7 +161,7 @@ export async function POST(req: Request) {
           });
 
           const userEmail = subRecord.user?.email || invoice.customer_email;
-          const userName = subRecord.user?.name || "PulseGuard Operator";
+          const userName = subRecord.user?.name || "SteadyStack Operator";
           const amountDue = invoice.amount_due
             ? `$${(invoice.amount_due / 100).toFixed(2)}`
             : "$19.00";

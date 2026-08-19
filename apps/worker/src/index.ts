@@ -1,9 +1,9 @@
-import { getPrisma } from "@pulseguard/db";
+import { getPrisma } from "@steadystack/db";
 import type { ExecutionContext, MessageBatch, ScheduledEvent } from "@cloudflare/workers-types";
 export { LatencyAggregator } from "./durable-objects/latency-aggregator";
 export { MonitorChannel } from "./durable-objects/monitor-channel";
 export { RegionalProbe } from "./durable-objects/regional-probe";
-import { CLOUDFLARE_PROBE_REGIONS, type DOLocationHint } from "@pulseguard/shared";
+import { CLOUDFLARE_PROBE_REGIONS, type DOLocationHint } from "@steadystack/shared";
 import type { Env } from "./env";
 export type { Env };
 import { handleFetch } from "./routes";
@@ -255,7 +255,7 @@ export default {
           fetch(pingUrl, {
             method: "POST",
             headers: {
-              "User-Agent": "PulseGuard-Cron-Sentinel/1.0",
+              "User-Agent": "SteadyStack-Cron-Sentinel/1.0",
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
@@ -278,7 +278,7 @@ export default {
           fetch(pingUrl, {
             method: "POST",
             headers: {
-              "User-Agent": "PulseGuard-Cron-Sentinel/1.0",
+              "User-Agent": "SteadyStack-Cron-Sentinel/1.0",
               "Content-Type": "application/json",
             },
             body: JSON.stringify({

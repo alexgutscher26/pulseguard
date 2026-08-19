@@ -11,7 +11,7 @@
     "depcheck": "depcheck"
   },
   "dependencies": {
-    "@pulseguard/db": "workspace:*",
+    "@steadystack/db": "workspace:*",
     "dotenv": "^16.4.1"
   },
   "devDependencies": {

@@ -61,7 +61,7 @@ Your check interval sets the mathematical limit for how quickly you can discover
                      ^-- 3-min outage occurs here --^
                      (Customer checkout fails; zero alerts)
 
-PulseGuard 60-Second Poller:
+SteadyStack 60-Second Poller:
 00:00 [200 OK] - 1m - 00:01 [200 OK] - 1m - 00:02 [500 DOWN] ==> Paged in 60s
 ```
 
@@ -71,4 +71,4 @@ PulseGuard 60-Second Poller:
 
 Never configure your alerts to page an engineer on a single failed ping from a single location. Internet routing anomalies, local ISP packet loss, and CDN edge refreshes happen continuously.
 
-Require **multi-region quorum verification** (such as PulseGuard's 2/3 edge consensus) to confirm failures before triggering high-priority notification channels.
+Require **multi-region quorum verification** (such as SteadyStack's 2/3 edge consensus) to confirm failures before triggering high-priority notification channels.

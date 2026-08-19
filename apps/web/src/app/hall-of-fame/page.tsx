@@ -7,11 +7,11 @@ import { getLeaderboard } from "@/actions/leaderboard";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Community Hall of Fame | PulseGuard",
+  title: "Community Hall of Fame | SteadyStack",
   description:
-    "Meet the indie hackers and teams with the highest uptime SLAs on PulseGuard. Powered by relentless monitoring.",
+    "Meet the indie hackers and teams with the highest uptime SLAs on SteadyStack. Powered by relentless monitoring.",
   openGraph: {
-    title: "PulseGuard Community Hall of Fame",
+    title: "SteadyStack Community Hall of Fame",
     description: "Top-tier uptime performers ranked by SLA.",
   },
 };

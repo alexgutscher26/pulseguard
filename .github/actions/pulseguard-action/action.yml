@@ -1,13 +1,13 @@
-name: "PulseGuard Deployment Gates"
+name: "SteadyStack Deployment Gates"
 description: "Trigger synthetic checks, wait for recovery, and post PR metrics summaries"
 inputs:
   api-key:
-    description: "PulseGuard API key"
+    description: "SteadyStack API key"
     required: true
   api-url:
-    description: "PulseGuard Base API URL"
+    description: "SteadyStack Base API URL"
     required: false
-    default: "https://pulseguard.io"
+    default: "https://steadystack.dev"
   monitor-ids:
     description: "Comma-separated list of monitor IDs to run deployment gates on"
     required: false

@@ -4,13 +4,13 @@ import { SleepModeClient } from "./sleep-mode-client";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Sleep Mode — PulseGuard",
+  title: "Sleep Mode — SteadyStack",
   description:
-    "False-positive prevention that lets solo devs sleep through the night. PulseGuard filters out 2-second blips so if we call you, it's real.",
+    "False-positive prevention that lets solo devs sleep through the night. SteadyStack filters out 2-second blips so if we call you, it's real.",
   openGraph: {
-    title: "Sleep Mode — PulseGuard",
+    title: "Sleep Mode — SteadyStack",
     description:
-      "Multi-vector verification, flapping detection, and dynamic thresholding. If PulseGuard calls you at 3 AM, it's a real outage.",
+      "Multi-vector verification, flapping detection, and dynamic thresholding. If SteadyStack calls you at 3 AM, it's a real outage.",
   },
 };
 

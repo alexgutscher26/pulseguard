@@ -10,7 +10,7 @@ export interface FallbackEvent {
 
 export class FallbackQueue {
   private redis: Redis;
-  private QUEUE_KEY = "pulseguard:fallback:events";
+  private QUEUE_KEY = "steadystack:fallback:events";
 
   constructor(url: string, token: string) {
     this.redis = new Redis({
@@ -68,7 +68,7 @@ export class FallbackQueue {
    */
   async getDlqLength(): Promise<number> {
     try {
-      return await this.redis.llen("pulseguard:dlq:notifications");
+      return await this.redis.llen("steadystack:dlq:notifications");
     } catch {
       return 0;
     }

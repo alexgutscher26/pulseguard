@@ -99,7 +99,7 @@ export function PrivacyForm() {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `pulseguard-personal-data-${new Date().toISOString().split("T")[0]}.json`;
+      a.download = `steadystack-personal-data-${new Date().toISOString().split("T")[0]}.json`;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -141,7 +141,7 @@ export function PrivacyForm() {
           Privacy Intelligence
         </h2>
         <p className="text-xs text-muted-foreground leading-relaxed">
-          Full transparency on what data PulseGuard collects, how it is used, and how long it is
+          Full transparency on what data SteadyStack collects, how it is used, and how long it is
           retained. Your uptime metrics belong to you.
         </p>
       </div>
@@ -358,8 +358,8 @@ export function PrivacyForm() {
                   Data Minimization
                 </span>
                 <span className="text-[10px] text-primary/60 font-mono leading-relaxed">
-                  PulseGuard collects only the data necessary to perform monitoring and alerting. No
-                  superfluous tracking, telemetry, or behavioral analytics.
+                  SteadyStack collects only the data necessary to perform monitoring and alerting.
+                  No superfluous tracking, telemetry, or behavioral analytics.
                 </span>
               </div>
             </div>
@@ -483,7 +483,7 @@ function LeaderboardSection({
               </span>
             </div>
             <textarea
-              placeholder="e.g. Indie developer monitoring 10 side-projects with PulseGuard..."
+              placeholder="e.g. Indie developer monitoring 10 side-projects with SteadyStack..."
               rows={2}
               maxLength={150}
               className="w-full p-3 rounded-lg bg-background/50 border border-primary/20 font-mono text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary text-foreground placeholder:text-muted-foreground/30"

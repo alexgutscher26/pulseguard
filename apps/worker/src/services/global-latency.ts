@@ -142,7 +142,7 @@ export async function checkGlobalLatency(targetUrl: string): Promise<LatencyResu
   try {
     const res = await fetch(url, {
       method: "HEAD", // Use HEAD which is lighter
-      headers: { "User-Agent": "PulseGuard-Global-latency/1.0" },
+      headers: { "User-Agent": "SteadyStack-Global-latency/1.0" },
       signal: AbortSignal.timeout(5000),
     });
     baseStatus = "UP";
@@ -221,7 +221,7 @@ export async function checkGlobalLatency(targetUrl: string): Promise<LatencyResu
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "User-Agent": "PulseGuard-Global-Latency-Checker",
+        "User-Agent": "SteadyStack-Global-Latency-Checker",
       },
       body: JSON.stringify(reqBody),
       signal: AbortSignal.timeout(8000),
@@ -239,7 +239,7 @@ export async function checkGlobalLatency(targetUrl: string): Promise<LatencyResu
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
         const getRes = await fetch(`https://api.globalping.io/v1/measurements/${id}`, {
-          headers: { "User-Agent": "PulseGuard-Global-Latency-Checker" },
+          headers: { "User-Agent": "SteadyStack-Global-Latency-Checker" },
           signal: AbortSignal.timeout(5000),
         });
 

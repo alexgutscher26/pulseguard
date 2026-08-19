@@ -13,7 +13,7 @@ export const debugFetchRoute: RouteHandler = withErrorHandling(async (_ctx, url)
   if (!targetUrl) throw new AppError(400, "Missing ?url= param");
 
   try {
-    const { checkHttpUniversal } = await import("@pulseguard/core");
+    const { checkHttpUniversal } = await import("@steadystack/core");
     const checkRes = await checkHttpUniversal(targetUrl);
     return json({
       url: targetUrl,

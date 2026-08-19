@@ -6,9 +6,9 @@ import { ToolSchema } from "@/components/seo/tool-schema";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Free Roast My Stack Analyzer | PulseGuard",
+  title: "Free Roast My Stack Analyzer | SteadyStack",
   description:
-    "Get roasted by PulseGuard: analyze your stack for slow TTFB, weak SSL, missing DNS records, and more. Free instant audit.",
+    "Get roasted by SteadyStack: analyze your stack for slow TTFB, weak SSL, missing DNS records, and more. Free instant audit.",
   keywords: [
     "website analyzer",
     "stack audit",
@@ -24,8 +24,8 @@ export default function RoastMyStackPage() {
     <div className="min-h-screen bg-background">
       <ToolSchema
         name="Free Roast My Stack Analyzer"
-        description="Get roasted by PulseGuard: analyze your stack for slow TTFB, weak SSL, missing DNS records, and more. Free instant audit."
-        url="https://pulseguard.io/tools/roast-my-stack"
+        description="Get roasted by SteadyStack: analyze your stack for slow TTFB, weak SSL, missing DNS records, and more. Free instant audit."
+        url="https://steadystack.dev/tools/roast-my-stack"
       />
       <LandingHeader />
       <main className="container mx-auto pt-32 pb-12 px-4 md:px-6">
@@ -35,7 +35,7 @@ export default function RoastMyStackPage() {
               Roast My Stack
             </h1>
             <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto">
-              Enter a URL and PulseGuard will ruthlessly analyze your tech stack. TTFB, SSL, DNS,
+              Enter a URL and SteadyStack will ruthlessly analyze your tech stack. TTFB, SSL, DNS,
               headers &mdash; we check everything so you can fix what's broken.
             </p>
           </div>

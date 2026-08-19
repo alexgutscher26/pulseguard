@@ -71,7 +71,7 @@ export function ServiceDiagnostics({ service, probeResult }: ServiceDiagnosticsP
                 Global Edge Reachability & Regional Latency
               </h3>
               <p className="text-sm text-muted-foreground">
-                Synthetic probe response times tested from PulseGuard worldwide vantage points.
+                Synthetic probe response times tested from SteadyStack worldwide vantage points.
               </p>
             </div>
           </div>
@@ -249,7 +249,7 @@ export function ServiceDiagnostics({ service, probeResult }: ServiceDiagnosticsP
                   <strong className="text-foreground">
                     Multi-Region Edge Synthetic Consensus:
                   </strong>{" "}
-                  Rely on PulseGuard to alert your team before end-users notice degradation.
+                  Rely on SteadyStack to alert your team before end-users notice degradation.
                 </p>
               </div>
             </div>

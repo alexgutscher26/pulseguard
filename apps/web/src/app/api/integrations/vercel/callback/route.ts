@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@pulseguard/auth";
+import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
-import prisma from "@pulseguard/db";
+import prisma from "@steadystack/db";
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;

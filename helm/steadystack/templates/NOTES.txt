@@ -1,4 +1,4 @@
-1. PulseGuard has been deployed! 🚀
+1. SteadyStack has been deployed! 🚀
 
 2. Get the application URL:
 {{- if .Values.ingress.enabled }}
@@ -6,11 +6,11 @@
   https://{{ $host.host }}
 {{- end }}
 {{- else if contains "NodePort" .Values.web.service.type }}
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "pulseguard.fullname" . }}-web)
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "steadystack.fullname" . }}-web)
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo http://$NODE_IP:$NODE_PORT
 {{- else if contains "ClusterIP" .Values.web.service.type }}
-  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "pulseguard.fullname" . }}-web 3000:3000
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "steadystack.fullname" . }}-web 3000:3000
   echo "Visit http://127.0.0.1:3000"
 {{- end }}
 
@@ -26,4 +26,4 @@
    helm test {{ .Release.Name }} -n {{ .Release.Namespace }}
 
 5. View logs:
-   kubectl logs -f deployment/{{ include "pulseguard.fullname" . }}-web -n {{ .Release.Namespace }}
+   kubectl logs -f deployment/{{ include "steadystack.fullname" . }}-web -n {{ .Release.Namespace }}

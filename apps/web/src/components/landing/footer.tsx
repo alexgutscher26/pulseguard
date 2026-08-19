@@ -13,7 +13,9 @@ export default function LandingFooter() {
               <div className="p-1 bg-primary/5 border border-primary/10 rounded-lg">
                 <Activity className="size-4 text-primary" />
               </div>
-              <span className="text-foreground font-bold tracking-tight text-base">PulseGuard</span>
+              <span className="text-foreground font-bold tracking-tight text-base">
+                SteadyStack
+              </span>
             </div>
             <p className="text-muted-foreground text-xs font-medium max-w-xs leading-relaxed">
               Autonomous global edge uptime, synthetic surveillance, and developer monitoring.
@@ -219,7 +221,7 @@ export default function LandingFooter() {
         {/* Footer Bottom */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-border">
           <span className="text-muted-foreground text-xs font-medium">
-            © {new Date().getFullYear()} PulseGuard. All rights reserved.
+            © {new Date().getFullYear()} SteadyStack. All rights reserved.
           </span>
           <div className="flex items-center gap-4 text-muted-foreground">
             <Link
@@ -229,7 +231,7 @@ export default function LandingFooter() {
               <Twitter className="size-[17px]" />
             </Link>
             <Link
-              href="https://github.com/alexgutscher26/pulseguard"
+              href="https://github.com/getsteadystack/SteadyStack"
               className="hover:text-foreground transition-all"
             >
               <Github className="size-[17px]" />

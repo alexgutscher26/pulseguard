@@ -1,5 +1,5 @@
 {
-  "name": "@pulseguard/core",
+  "name": "@steadystack/core",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -11,10 +11,10 @@
     "publint": "publint"
   },
   "dependencies": {
-    "@pulseguard/types": "workspace:*"
+    "@steadystack/types": "workspace:*"
   },
   "devDependencies": {
-    "@pulseguard/config": "workspace:*",
+    "@steadystack/config": "workspace:*",
     "typescript": "catalog:"
   }
 }

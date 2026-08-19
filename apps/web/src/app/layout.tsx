@@ -18,17 +18,18 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://pulseguard.io";
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://steadystack.dev";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "PulseGuard — Uptime monitoring that confirms failures from 7 regions before alerting",
-    template: "%s | PulseGuard",
+    default:
+      "SteadyStack — Uptime monitoring that confirms failures from 7 regions before alerting",
+    template: "%s | SteadyStack",
   },
   description:
-    "Four of seven global regions must agree before PulseGuard pages you. 60-second checks, 50 monitors, multi-region verification — free, and free for commercial use.",
-  applicationName: "PulseGuard",
+    "Four of seven global regions must agree before SteadyStack pages you. 60-second checks, 50 monitors, multi-region verification — free, and free for commercial use.",
+  applicationName: "SteadyStack",
   alternates: {
     canonical: "./",
   },
@@ -44,23 +45,23 @@ export const metadata: Metadata = {
     "multi-region monitoring",
     "quorum verification",
   ],
-  authors: [{ name: "PulseGuard Team", url: BASE_URL }],
-  creator: "PulseGuard",
+  authors: [{ name: "SteadyStack Team", url: BASE_URL }],
+  creator: "SteadyStack",
   openGraph: {
     type: "website",
     locale: "en_US",
     url: BASE_URL,
-    siteName: "PulseGuard",
-    title: "PulseGuard — Uptime monitoring that confirms failures from 7 regions before alerting",
+    siteName: "SteadyStack",
+    title: "SteadyStack — Uptime monitoring that confirms failures from 7 regions before alerting",
     description:
-      "Four of seven global regions must agree before PulseGuard pages you. 60-second checks, 50 monitors, multi-region verification — free, and free for commercial use.",
+      "Four of seven global regions must agree before SteadyStack pages you. 60-second checks, 50 monitors, multi-region verification — free, and free for commercial use.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "PulseGuard — Uptime monitoring that confirms failures from 7 regions before alerting",
+    title: "SteadyStack — Uptime monitoring that confirms failures from 7 regions before alerting",
     description:
-      "Four of seven global regions must agree before PulseGuard pages you. 60-second checks, 50 monitors, multi-region verification — free, and free for commercial use.",
-    creator: "@pulseguard",
+      "Four of seven global regions must agree before SteadyStack pages you. 60-second checks, 50 monitors, multi-region verification — free, and free for commercial use.",
+    creator: "@steadystack",
   },
   robots: {
     index: true,
@@ -81,22 +82,22 @@ const jsonLd = {
     {
       "@type": "Organization",
       "@id": `${BASE_URL}/#organization`,
-      name: "PulseGuard",
+      name: "SteadyStack",
       url: BASE_URL,
       logo: `${BASE_URL}/logo.png`,
-      sameAs: ["https://github.com/alexgutscher26/pulseguard", "https://twitter.com/pulseguard"],
+      sameAs: ["https://github.com/getsteadystack/SteadyStack", "https://twitter.com/steadystack"],
     },
     {
       "@type": "WebSite",
       "@id": `${BASE_URL}/#website`,
       url: BASE_URL,
-      name: "PulseGuard",
+      name: "SteadyStack",
       publisher: { "@id": `${BASE_URL}/#organization` },
     },
     {
       "@type": "SoftwareApplication",
       "@id": `${BASE_URL}/#software`,
-      name: "PulseGuard Telemetry & Monitoring",
+      name: "SteadyStack Telemetry & Monitoring",
       operatingSystem: "All",
       applicationCategory: "DeveloperApplication",
       description:

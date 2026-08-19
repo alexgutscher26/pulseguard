@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to PulseGuard are documented here.
+All notable changes to SteadyStack are documented here.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -41,5 +41,5 @@ Release notes are generated automatically from [Conventional Commits](https://ww
 
 ---
 
-[Unreleased]: https://github.com/alexgutscher26/pulseguard/compare/v1.1.2...HEAD
-[1.1.2]: https://github.com/alexgutscher26/pulseguard/releases/tag/v1.1.2
+[Unreleased]: https://github.com/getsteadystack/SteadyStack/compare/v1.1.2...HEAD
+[1.1.2]: https://github.com/getsteadystack/SteadyStack/releases/tag/v1.1.2

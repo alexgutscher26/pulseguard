@@ -141,7 +141,7 @@ export function IsDownDirectory({ services }: IsDownDirectoryProps) {
               href={"/signup" as any}
               className={cn(buttonVariants({ size: "sm" }), "mt-4 inline-flex")}
             >
-              Create Custom Monitor on PulseGuard
+              Create Custom Monitor on SteadyStack
             </Link>
           </div>
         ) : (

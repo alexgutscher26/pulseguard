@@ -49,7 +49,7 @@ export async function GET(
     timestamp: Date.now(),
   });
 
-  response.cookies.set("pulseguard_ref", cookiePayload, {
+  response.cookies.set("steadystack_ref", cookiePayload, {
     maxAge: 60 * 60 * 24 * 30, // 30 days
     path: "/",
     sameSite: "lax",

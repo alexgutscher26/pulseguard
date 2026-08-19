@@ -313,7 +313,7 @@ export function DNSAnalyzer() {
                     className="px-8 h-12 uppercase font-mono font-bold tracking-tighter border-primary/20"
                     onClick={() => {
                       const report =
-                        `PULSEGUARD DNS INTEGRITY REPORT\n` +
+                        `STEADYSTACK DNS INTEGRITY REPORT\n` +
                         `DOMAIN: ${auditData.domain}\n` +
                         `INTEGRITY SCORE: ${auditData.score}% (${auditData.grade})\n` +
                         `DATE: ${new Date().toISOString()}\n\n` +

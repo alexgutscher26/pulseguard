@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Activity, Check, Moon } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { PRODUCT_CONFIG } from "@pulseguard/shared";
+import { PRODUCT_CONFIG } from "@steadystack/shared";
 
 // Fixed heights so SSR/client markup match (no Math.random at render time).
 // index 6 sits slightly low + amber — a small honest "we had one blip" beat,
@@ -41,7 +41,7 @@ export default function Pricing() {
         <div className="flex flex-col items-center text-center mb-16">
           <div className="inline-flex items-center gap-2 mb-5 text-xs font-mono text-muted-foreground">
             <span className="text-primary/60">$</span>
-            <span>pulseguard --list-plans</span>
+            <span>steadystack --list-plans</span>
             <span className="inline-block w-[6px] h-[13px] bg-primary/60 motion-safe:animate-pulse" />
           </div>
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-4">
@@ -146,7 +146,7 @@ export default function Pricing() {
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
-                  <span>1 Public Status page (PulseGuard footer)</span>
+                  <span>1 Public Status page (SteadyStack footer)</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
@@ -359,7 +359,7 @@ export default function Pricing() {
               <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-75 motion-safe:animate-ping" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
             </span>
-            this page is monitored by pulseguard
+            this page is monitored by steadystack
           </div>
 
           <div className="flex items-end gap-[3px]" aria-hidden="true">

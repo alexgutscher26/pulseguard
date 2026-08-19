@@ -3,7 +3,7 @@ export async function auditPayload(targetUrl: string, pattern: string) {
     const response = await fetch(targetUrl, {
       method: "GET",
       headers: {
-        "User-Agent": "PulseGuard-Payload-Scanner/1.0",
+        "User-Agent": "SteadyStack-Payload-Scanner/1.0",
       },
       redirect: "follow",
     });
@@ -15,7 +15,7 @@ export async function auditPayload(targetUrl: string, pattern: string) {
     const body = await response.text();
     const truncatedBody =
       body.length > 200000
-        ? body.substring(0, 200000) + "\n\n...[TRUNCATED BY PULSEGUARD SENTINEL]..."
+        ? body.substring(0, 200000) + "\n\n...[TRUNCATED BY STEADYSTACK SENTINEL]..."
         : body;
 
     let matches: { index: number; length: number }[] = [];

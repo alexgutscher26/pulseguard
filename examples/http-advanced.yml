@@ -20,7 +20,7 @@ monitors:
       - sa-east
     headers:
       Accept: application/json
-      X-Probe-Source: pulseguard
+      X-Probe-Source: steadystack
     assertions:
       - type: status_code
         value: "200"

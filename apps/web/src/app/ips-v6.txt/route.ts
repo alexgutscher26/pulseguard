@@ -1,20 +1,20 @@
 import { NextResponse } from "next/server";
-import { CLOUDFLARE_PROBE_REGIONS } from "@pulseguard/shared";
+import { CLOUDFLARE_PROBE_REGIONS } from "@steadystack/shared";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60;
 
 export async function GET() {
   const content = [
-    "# PulseGuard Synthetic Probe Allowlist Spec (IPv6)",
+    "# SteadyStack Synthetic Probe Allowlist Spec (IPv6)",
     "# Durable Objects egress from Cloudflare's shared global network.",
     "# Static IPv6 allowlisting cannot uniquely identify probe traffic.",
     "# Configure WAF / Reverse Proxy matching with edge headers:",
-    "CF-Worker: pulseguard.io",
-    "User-Agent: PulseGuard-Monitor/1.0 (+https://pulseguard.io/bot)",
+    "CF-Worker: steadystack.dev",
+    "User-Agent: SteadyStack-Monitor/1.0 (+https://steadystack.dev/bot)",
     "",
     "# Cloudflare WAF Custom Rule:",
-    '# http.request.headers["cf-worker"][0] eq "pulseguard.io"',
+    '# http.request.headers["cf-worker"][0] eq "steadystack.dev"',
   ].join("\n");
 
   return new NextResponse(content + "\n", {

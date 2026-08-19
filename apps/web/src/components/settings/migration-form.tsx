@@ -140,12 +140,12 @@ export function MigrationForm() {
   const exportOptions = [
     {
       id: "json",
-      title: "PulseGuard Backup (JSON)",
+      title: "SteadyStack Backup (JSON)",
       description:
         "Complete dataset containing all monitors, alert rules, status pages, and incident templates.",
       icon: Database,
       buttonText: "Export Backup",
-      filename: "pulseguard-workspace-export.json",
+      filename: "steadystack-workspace-export.json",
       badge: "Full Dump",
     },
     {
@@ -188,7 +188,7 @@ export function MigrationForm() {
           Migration, Import & Export
         </h2>
         <p className="text-xs text-muted-foreground leading-relaxed">
-          PulseGuard runs on a zero-vendor-lock-in philosophy. Seamlessly import from Uptime Kuma,
+          SteadyStack runs on a zero-vendor-lock-in philosophy. Seamlessly import from Uptime Kuma,
           dump your full workspace configuration, or export blackbox exporter YAML for self-hosted
           daemons.
         </p>
@@ -209,7 +209,7 @@ export function MigrationForm() {
             </CardTitle>
           </div>
           <CardDescription className="text-xs leading-relaxed">
-            Drag and drop your Uptime Kuma JSON export file or PulseGuard backup to instantly
+            Drag and drop your Uptime Kuma JSON export file or SteadyStack backup to instantly
             migrate all monitors, check intervals, custom headers, and alert triggers.
           </CardDescription>
         </CardHeader>
@@ -237,7 +237,7 @@ export function MigrationForm() {
                 </p>
                 <p className="text-[11px] text-muted-foreground">
                   Supports Uptime Kuma <code className="text-primary font-mono">backup.json</code>,
-                  OpenStatus JSON, or PulseGuard dumps.
+                  OpenStatus JSON, or SteadyStack dumps.
                 </p>
               </div>
             </div>
@@ -334,7 +334,7 @@ export function MigrationForm() {
                 <p className="text-xs leading-relaxed text-foreground/80">
                   Successfully imported {importResult.total} monitors ({importResult.created}{" "}
                   created, {importResult.updated} updated). All checks are now active on
-                  PulseGuard&apos;s multi-region edge consensus engine.
+                  SteadyStack&apos;s multi-region edge consensus engine.
                 </p>
               </div>
             </div>
@@ -437,7 +437,7 @@ export function MigrationForm() {
                 Migration Guarantee & Zero Lock-In
               </h4>
               <p className="text-[11px] text-muted-foreground leading-relaxed">
-                All exporter formats generate structural JSON or YAML configurations. PulseGuard
+                All exporter formats generate structural JSON or YAML configurations. SteadyStack
                 checks comply with industry monitoring schemas, letting you easily self-host a
                 Blackbox exporter daemon, Uptime Kuma instance, or standard container cluster should
                 you choose to change platforms.
