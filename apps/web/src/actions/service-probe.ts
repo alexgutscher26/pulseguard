@@ -31,10 +31,14 @@ const REGIONS: Array<{ region: string; location: string; flag: string; baseLaten
   { region: "af-south", location: "AF-South (Cape Town)", flag: "🇿🇦", baseLatency: 210 },
 ];
 
-// Restrict probes to server-approved public hosts to prevent SSRF.
-const ALLOWED_PROBE_HOSTNAMES = new Set<string>([
-  "pulseguard.io",
-  "api.pulseguard.io",
+// Block private/internal hostnames to prevent SSRF.
+// The granular check is performed below by isPrivateOrInternalUrl(); we keep a
+// small deny-list here for obvious internal names that bypass IP resolution.
+const BLOCKED_PROBE_HOSTNAMES = new Set<string>([
+  "localhost",
+  "127.0.0.1",
+  "0.0.0.0",
+  "::1",
 ]);
 
 /**
@@ -88,7 +92,7 @@ export async function checkServiceLiveStatus(
     }
 
     const normalizedHost = parsedUrl.hostname.toLowerCase();
-    if (!ALLOWED_PROBE_HOSTNAMES.has(normalizedHost)) {
+    if (BLOCKED_PROBE_HOSTNAMES.has(normalizedHost)) {
       return {
         success: false,
         domain,
