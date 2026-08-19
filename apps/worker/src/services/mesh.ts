@@ -65,10 +65,15 @@ export class ProxyMesh {
         return { status: Status.UP, latency, source: "18-1-0" };
       }
 
-      // If allorigins couldn't fetch at all (http_code 0 or missing), treat as proxy failure
-      if (!data.status || data.status.http_code === 0) {
+      // If allorigins couldn't fetch at all or was blocked by target WAF (403/429), treat as proxy failure
+      if (
+        !data.status ||
+        data.status.http_code === 0 ||
+        data.status.http_code === 403 ||
+        data.status.http_code === 429
+      ) {
         console.warn(
-          `[Mesh 18-1-0] Proxy returned http_code=0 — proxy could not reach target, skipping.`,
+          `[Mesh 18-1-0] Proxy returned http_code=${data.status?.http_code || 0} — proxy blocked or could not reach target, skipping.`,
         );
         return {
           status: Status.DOWN,
@@ -122,6 +127,15 @@ export class ProxyMesh {
       const latency = Date.now() - start;
       if (response.ok) {
         return { status: Status.UP, latency, source: "18-1-1" };
+      }
+
+      if (response.status === 403 || response.status === 429) {
+        return {
+          status: Status.DOWN,
+          latency,
+          error: ProxyError.PROXY_FETCH_FAILED,
+          source: "18-1-1",
+        };
       }
 
       return {
