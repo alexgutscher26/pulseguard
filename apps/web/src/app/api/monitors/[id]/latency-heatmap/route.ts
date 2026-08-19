@@ -120,7 +120,8 @@ export async function GET(request: NextRequest, props: LatencyHeatmapParams) {
           { latencies: number[]; timestamp: Date; region: string }
         >();
         for (const ev of rawEvents) {
-          const region = ev.region || configuredRegions[0] || "global";
+          const region =
+            ev.region || (configuredRegions.length === 1 ? configuredRegions[0] : "global");
           const d = new Date(ev.timestamp);
           d.setSeconds(0);
           d.setMilliseconds(0);
@@ -184,7 +185,7 @@ export async function GET(request: NextRequest, props: LatencyHeatmapParams) {
       configuredRegions = ["global"];
     }
 
-    // Initialize region map with all configured regions so all monitored regions are always listed
+    // Initialize region map with all configured regions
     const regionMap = new Map<string, any[]>();
     for (const reg of configuredRegions) {
       regionMap.set(reg, []);
@@ -196,8 +197,15 @@ export async function GET(request: NextRequest, props: LatencyHeatmapParams) {
       regionMap.get(agg.region)!.push(agg);
     }
 
+    // If only a subset of regions have recorded data, filter out empty rows for clean presentation
+    const activeRegionEntries = Array.from(regionMap.entries()).filter(
+      ([_, data]) => data.length > 0,
+    );
+    const selectedEntries =
+      activeRegionEntries.length > 0 ? activeRegionEntries : Array.from(regionMap.entries());
+
     // Build response
-    const regions = Array.from(regionMap.entries()).map(([region, data]) => {
+    const regions = selectedEntries.map(([region, data]) => {
       const baseline = baselines.find((b) => b.region === region);
       const incident = activeIncidents.find((i) => i.region === region);
 

@@ -651,12 +651,13 @@ export async function recordLatencyBatchToAggregator(
 ): Promise<void> {
   if (records.length === 0) return;
 
+  // 1. Broadcast to LatencyAggregator DO for live subscribers & websocket streaming
   if (env?.LATENCY_AGGREGATOR) {
     try {
       const id = env.LATENCY_AGGREGATOR.idFromName("global-latency-aggregator");
       const stub = env.LATENCY_AGGREGATOR.get(id);
 
-      const res = await stub.fetch("https://latency-aggregator/record-batch", {
+      await stub.fetch("https://latency-aggregator/record-batch", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -671,17 +672,12 @@ export async function recordLatencyBatchToAggregator(
           flush,
         }),
       });
-
-      if (res.ok) return;
     } catch (error) {
-      console.warn(
-        `[LatencyAggregator] DO record-batch failed, falling back to direct DB write:`,
-        error,
-      );
+      console.warn(`[LatencyAggregator] DO record-batch notification failed (non-fatal):`, error);
     }
   }
 
-  // Fallback: direct write to database
+  // 2. Persist direct to Postgres database for guaranteed dashboard querying
   if (prisma) {
     try {
       const now = new Date();
@@ -704,7 +700,7 @@ export async function recordLatencyBatchToAggregator(
         })),
       });
     } catch (err) {
-      console.error("[LatencyAggregator] Direct DB fallback failed:", err);
+      console.error("[LatencyAggregator] Direct DB persistence failed:", err);
     }
   }
 }

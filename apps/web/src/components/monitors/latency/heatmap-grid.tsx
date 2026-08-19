@@ -86,10 +86,18 @@ export function HeatmapGrid({ data, metricType, onRegionClick }: HeatmapGridProp
                   }
 
                   const color = getColorForPoint(point);
-                  const value =
-                    metricType === "absolute"
-                      ? point.absolute.avg
-                      : (point.relative?.vsBaseline ?? point.absolute.avg);
+
+                  let displayValue: string;
+                  if (metricType === "absolute") {
+                    displayValue = `${Math.round(point.absolute.avg)}ms`;
+                  } else if (metricType === "relative") {
+                    displayValue = point.relative
+                      ? `${point.relative.vsBaseline.toFixed(2)}x`
+                      : `${Math.round(point.absolute.avg)}ms`;
+                  } else {
+                    // Both
+                    displayValue = `${Math.round(point.absolute.avg)}ms`;
+                  }
 
                   return (
                     <div
@@ -105,9 +113,7 @@ export function HeatmapGrid({ data, metricType, onRegionClick }: HeatmapGridProp
                       title={getTooltipText(point, metricType)}
                       onClick={() => onRegionClick?.(region.region)}
                     >
-                      {metricType === "absolute"
-                        ? `${Math.round(value)}ms`
-                        : `${value.toFixed(2)}x`}
+                      {displayValue}
                     </div>
                   );
                 })}
@@ -121,7 +127,10 @@ export function HeatmapGrid({ data, metricType, onRegionClick }: HeatmapGridProp
 }
 
 // Pre-compute region names for O(1) lookup
-const REGION_NAME_MAP = new Map(AVAILABLE_REGIONS.map((r) => [r.code, `${r.flag} ${r.name}`]));
+const REGION_NAME_MAP = new Map([
+  ...AVAILABLE_REGIONS.map((r) => [r.code, `${r.flag} ${r.name}`] as [string, string]),
+  ["global", "🌐 Global Edge"],
+]);
 
 /**
  * Get human-readable region name with flag
