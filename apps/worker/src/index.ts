@@ -27,8 +27,12 @@ export default {
   async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
     console.log(`Cron triggered: ${event.cron}`);
 
-    // --- DOWNSAMPLING & DATA RETENTION: Run on daily cron trigger ---
-    if (event.cron === "0 0 * * *") {
+    const now = new Date();
+    const isFiveMinuteMark = now.getUTCMinutes() % 5 === 0;
+    const isMidnight = now.getUTCHours() === 0 && now.getUTCMinutes() === 0;
+
+    // --- DOWNSAMPLING & DATA RETENTION: Run daily at midnight ---
+    if (event.cron === "0 0 * * *" || isMidnight) {
       ctx.waitUntil(
         (async () => {
           try {
@@ -41,8 +45,8 @@ export default {
       );
     }
 
-    // --- ANOMALY SCANNER: Run on 5-minute or hourly triggers ---
-    if (event.cron === "*/5 * * * *" || event.cron === "0 * * * *") {
+    // --- ANOMALY SCANNER: Run every 5 minutes ---
+    if (event.cron === "*/5 * * * *" || event.cron === "0 * * * *" || isFiveMinuteMark) {
       ctx.waitUntil(
         (async () => {
           try {
@@ -54,6 +58,11 @@ export default {
           }
         })(),
       );
+    }
+
+    // If an auxiliary cron fired separately, skip monitor batch to avoid duplicate execution
+    if (event.cron && event.cron !== "* * * * *") {
+      return;
     }
 
     let prisma = getPrisma(env.DATABASE_URL);

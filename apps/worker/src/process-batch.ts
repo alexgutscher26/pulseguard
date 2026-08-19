@@ -468,12 +468,12 @@ export async function processBatch(
             throw new Error("CircuitBreaker: OPEN. Avoiding database writes.");
           }
 
-          const isStatusChange = currentStatus !== monitor.status || Boolean(errorReason);
+          const isRegional = Boolean(monitor.checkRegions);
 
           const executePersistence = async (retry: boolean = true): Promise<void> => {
             try {
-              if (isStatusChange) {
-                // Record state transitions, outages, and degradations in history
+              if (!isRegional) {
+                // For standard single-origin monitors, record the check event and update monitor
                 await prisma.$transaction(
                   [
                     prisma.monitorEvent.create({
@@ -482,6 +482,7 @@ export async function processBatch(
                         status: currentStatus as any,
                         latency: latency,
                         errorReason: errorReason,
+                        region: "global",
                         timestamp: new Date(),
                       },
                     }),
@@ -497,7 +498,8 @@ export async function processBatch(
                   { maxWait: 5000, timeout: 10000 },
                 );
               } else {
-                // Steady-state healthy check: update check timestamps without bloating raw event table
+                // Regional checks already wrote summary & incident events in batch (line 252).
+                // Update monitor metadata directly to avoid duplicate event records.
                 await prisma.monitor.update({
                   where: { id: monitor.id },
                   data: {

@@ -425,14 +425,25 @@ export async function processProbeResultsBatch(
         }
       }
     } else {
-      // Periodic nextCheck bump without writing a raw MonitorEvent row
-      await prisma.monitor.update({
-        where: { id: monitorId },
-        data: {
-          lastCheck: now,
-          nextCheck: new Date(now.getTime() + (monitor.interval || 60) * 1000),
-        },
-      });
+      // Steady-state check: record event and bump nextCheck
+      await prisma.$transaction([
+        prisma.monitorEvent.create({
+          data: {
+            monitorId,
+            status: newStatus === "DEGRADED" ? "DOWN" : newStatus,
+            latency: evaluation.averageLatency,
+            region: "global",
+            timestamp: now,
+          },
+        }),
+        prisma.monitor.update({
+          where: { id: monitorId },
+          data: {
+            lastCheck: now,
+            nextCheck: new Date(now.getTime() + (monitor.interval || 60) * 1000),
+          },
+        }),
+      ]);
     }
 
     // 5. Record 1-minute aggregates to LatencyAggregator DO

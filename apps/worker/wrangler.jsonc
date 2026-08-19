@@ -20,7 +20,7 @@
     "TOTAL_SHARDS": 1,
   },
   "triggers": {
-    "crons": ["* * * * *", "*/5 * * * *", "0 * * * *", "0 0 * * *"],
+    "crons": ["* * * * *"],
   },
   // Local dev config: connect to real remote bindings instead of local simulation
   // This prevents "proxy request failed" errors when crons fire in wrangler dev
