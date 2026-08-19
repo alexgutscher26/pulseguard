@@ -43,8 +43,8 @@ export function createPrisma(databaseUrl?: string) {
     ...(isWorkerd ? {} : { keepAlive: true, keepAliveInitialDelayMillis: 5_000 }),
   };
 
-  // Always enable SSL for managed Postgres providers
-  if (isSsl || poolUrl.includes("supabase") || poolUrl.includes("neon.tech")) {
+  // Only enable SSL if explicitly specified in the connection string (sslmode=require/verify) or provider requires it
+  if (isSsl || poolUrl.includes("neon.tech")) {
     poolConfig.ssl = { rejectUnauthorized: false };
   }
 
