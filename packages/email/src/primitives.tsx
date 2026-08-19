@@ -198,7 +198,7 @@ export function EmailHeader({
                     verticalAlign: "middle",
                   }}
                 >
-                  Pulse<span style={{ color: "#10b981" }}>Guard</span>
+                  Steady<span style={{ color: "#10b981" }}>Stack</span>
                 </span>
               </div>
             </td>
@@ -279,7 +279,7 @@ export function EmailFooter({
                 </Link>
                 <span style={{ color: "#3f3f46", fontSize: "12px" }}>•</span>
                 <Link
-                  href="https://steadystack.dev/status"
+                  href="https://steadystack.dev/en/status-page/steadystack"
                   style={{
                     fontSize: "12px",
                     color: "#a1a1aa",
