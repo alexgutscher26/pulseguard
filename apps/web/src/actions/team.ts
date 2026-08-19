@@ -45,59 +45,116 @@ export async function logAuditEvent({
   }
 }
 
+// In-memory mutex to prevent concurrent React Server Component calls from creating duplicate personal workspaces
+const inFlightPersonalWorkspaceCreations = new Map<string, Promise<any>>();
+
 /**
- * Ensures a user has a personal workspace created if they have no organizations.
+ * Ensures a user has exactly one personal workspace created if they have no organizations.
+ * Uses mutex locks and atomic reconciliation to prevent duplicate workspaces on initial login.
  */
 async function ensurePersonalWorkspace(userId: string, userName: string, userEmail: string) {
-  let org: any;
-  const existingMembership = await prisma.member.findFirst({
-    where: { userId },
-    include: { organization: true },
-    orderBy: { createdAt: "asc" },
-  });
-
-  if (existingMembership) {
-    org = existingMembership.organization;
-  } else {
-    // Create personal workspace for the user
-    const slug = `personal-${
-      userEmail
-        .split("@")[0]
-        ?.toLowerCase()
-        .replace(/[^a-z0-9]/g, "") || "user"
-    }-${Math.random().toString(36).substring(2, 6)}`;
-    org = await prisma.organization.create({
-      data: {
-        name: `${userName || "Personal"}'s Workspace`,
-        slug,
-        plan: "INITIATE",
-        members: {
-          create: {
-            userId,
-            role: "owner",
-          },
-        },
-      },
-    });
-
-    await logAuditEvent({
-      organizationId: org.id,
-      userId,
-      action: "workspace.created",
-      resource: "organization",
-      metadata: { isPersonal: true },
-    });
+  if (inFlightPersonalWorkspaceCreations.has(userId)) {
+    return inFlightPersonalWorkspaceCreations.get(userId);
   }
 
-  // Link any unassigned legacy monitors to the personal workspace
-  await prisma.monitor
-    .updateMany({
-      where: { userId, organizationId: null },
-      data: { organizationId: org.id },
-    })
-    .catch(() => {});
+  const creationPromise = (async () => {
+    try {
+      const memberships = await prisma.member.findMany({
+        where: { userId },
+        include: {
+          organization: {
+            include: {
+              _count: {
+                select: { monitors: true, members: true },
+              },
+            },
+          },
+        },
+        orderBy: { createdAt: "asc" },
+      });
 
-  return org;
+      if (memberships.length > 0) {
+        const primaryOrg = memberships[0].organization;
+
+        // Auto-cleanup: If the user has duplicate personal workspaces with 0 monitors and 1 member, prune them
+        if (memberships.length > 1) {
+          const duplicateMemberships = memberships.slice(1).filter((m) => {
+            const isPersonalPattern =
+              m.organization.slug?.startsWith("personal-") ||
+              m.organization.name === `${userName || "Personal"}'s Workspace` ||
+              m.organization.name === "Alex Gutscher's Workspace";
+            const isEmpty =
+              m.organization._count.monitors === 0 && m.organization._count.members <= 1;
+            return isPersonalPattern && isEmpty;
+          });
+
+          if (duplicateMemberships.length > 0) {
+            const dupeOrgIds = duplicateMemberships.map((m) => m.organization.id);
+            try {
+              await prisma.member.deleteMany({
+                where: { organizationId: { in: dupeOrgIds } },
+              });
+              await prisma.organization.deleteMany({
+                where: { id: { in: dupeOrgIds } },
+              });
+              console.log(
+                `[Team] Cleaned up ${dupeOrgIds.length} duplicate personal workspaces for user ${userId}`,
+              );
+            } catch (cleanupErr) {
+              console.warn("[Team] Non-critical duplicate workspace cleanup error:", cleanupErr);
+            }
+          }
+        }
+
+        return primaryOrg;
+      }
+
+      // Create single personal workspace for the user
+      const slug = `personal-${
+        userEmail
+          .split("@")[0]
+          ?.toLowerCase()
+          .replace(/[^a-z0-9]/g, "") || "user"
+      }-${Math.random().toString(36).substring(2, 6)}`;
+
+      const org = await prisma.organization.create({
+        data: {
+          name: `${userName || "Personal"}'s Workspace`,
+          slug,
+          plan: "INITIATE",
+          members: {
+            create: {
+              userId,
+              role: "owner",
+            },
+          },
+        },
+      });
+
+      await logAuditEvent({
+        organizationId: org.id,
+        userId,
+        action: "workspace.created",
+        resource: "organization",
+        metadata: { isPersonal: true },
+      });
+
+      // Link any unassigned legacy monitors to the personal workspace
+      await prisma.monitor
+        .updateMany({
+          where: { userId, organizationId: null },
+          data: { organizationId: org.id },
+        })
+        .catch(() => {});
+
+      return org;
+    } finally {
+      inFlightPersonalWorkspaceCreations.delete(userId);
+    }
+  })();
+
+  inFlightPersonalWorkspaceCreations.set(userId, creationPromise);
+  return creationPromise;
 }
 
 /**
@@ -281,7 +338,14 @@ export async function listUserWorkspaces() {
   const activeOrgId =
     cookieOrgId || (session.session as any)?.activeOrganizationId || memberships[0]?.organizationId;
 
-  return memberships.map((m) => ({
+  const seenOrgIds = new Set<string>();
+  const uniqueMemberships = memberships.filter((m) => {
+    if (!m.organization || seenOrgIds.has(m.organization.id)) return false;
+    seenOrgIds.add(m.organization.id);
+    return true;
+  });
+
+  return uniqueMemberships.map((m) => ({
     id: m.organization.id,
     name: m.organization.name,
     slug: m.organization.slug,

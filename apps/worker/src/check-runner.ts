@@ -292,7 +292,7 @@ export async function performCheck(monitor: any, env?: Env, prisma?: any): Promi
   const urlStr = monitor.url;
 
   // 1. Initial Standard Check
-  let result = await performInternalRequest(monitor, urlStr);
+  let result = await performInternalRequest(monitor, urlStr, undefined, env);
 
   // 2. DNS Fallback Layer: If DNS failed but we have a cached IP
   if (
@@ -306,14 +306,17 @@ export async function performCheck(monitor: any, env?: Env, prisma?: any): Promi
 
       const cachedValue = await env.DNS_CACHE.get(`dns:${hostname}`);
       if (cachedValue) {
-        const { ip } = JSON.parse(cachedValue) as { ip: string };
-        console.warn(`[DNSFallback] DNS failed for ${hostname}. Retrying via IP ${ip}...`);
+        console.warn(`[DNSFallback] DNS failed for ${hostname}. Retrying via IP...`);
 
         // Re-map the hostname to IP for the fetch
+        const { ip } = JSON.parse(cachedValue) as { ip: string };
         const ipUrl = urlStr.replace(hostname, ip);
-        const fallbackResult = await performInternalRequest(monitor, ipUrl, {
-          Host: hostname,
-        });
+        const fallbackResult = await performInternalRequest(
+          monitor,
+          ipUrl,
+          { Host: hostname },
+          env,
+        );
 
         if (fallbackResult.status === Status.UP) {
           console.log(
@@ -323,7 +326,7 @@ export async function performCheck(monitor: any, env?: Env, prisma?: any): Promi
         }
       }
     } catch (err) {
-      // Fallback-of-fallback failure
+      console.error(`[DNSFallback] Failed fallback for ${urlStr}:`, err);
     }
   }
 
@@ -337,6 +340,7 @@ export async function performInternalRequest(
   monitor: any,
   urlStr: string,
   extraHeaders?: Record<string, string>,
+  env?: Env,
 ): Promise<{
   status: MonitorStatus;
   latency: number;

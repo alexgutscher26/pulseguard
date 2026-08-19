@@ -94,6 +94,39 @@ export const auth = betterAuth({
         after: async (user) => {
           const appUrl = env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
+          // 1. Immediately ensure exactly one personal workspace exists for the new user
+          try {
+            const existingMembership = await prisma.member.findFirst({
+              where: { userId: user.id },
+            });
+
+            if (!existingMembership) {
+              const slug = `personal-${
+                user.email
+                  .split("@")[0]
+                  ?.toLowerCase()
+                  .replace(/[^a-z0-9]/g, "") || "user"
+              }-${Math.random().toString(36).substring(2, 6)}`;
+
+              await prisma.organization.create({
+                data: {
+                  name: `${user.name || "Personal"}'s Workspace`,
+                  slug,
+                  plan: "INITIATE",
+                  members: {
+                    create: {
+                      userId: user.id,
+                      role: "owner",
+                    },
+                  },
+                },
+              });
+              console.log(`[Auth] Created single personal workspace for ${user.email}`);
+            }
+          } catch (orgErr) {
+            console.error("[Auth] Failed to create initial personal workspace:", orgErr);
+          }
+
           // Fire-and-forget: failures here must never break signup
           void (async () => {
             try {
