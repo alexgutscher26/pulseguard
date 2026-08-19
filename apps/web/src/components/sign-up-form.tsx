@@ -52,6 +52,7 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
       name: "",
     },
     onSubmit: async ({ value }) => {
+      setIsPending(true);
       await authClient.signUp.email(
         {
           email: value.email,
@@ -60,9 +61,10 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
         },
         {
           onSuccess: async (ctx: any) => {
+            const userId = ctx?.data?.user?.id || ctx?.data?.id;
             if (refCode) {
               try {
-                await recordReferralSignup(refCode, ctx?.data?.user?.id);
+                await recordReferralSignup(refCode, userId, value.email);
               } catch (e) {
                 console.error("Failed to attribute referral:", e);
               }
@@ -71,6 +73,7 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
             toast.success("Sign up successful");
           },
           onError: (error) => {
+            setIsPending(false);
             toast.error(error.error.message || error.error.statusText);
           },
         },

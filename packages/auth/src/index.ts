@@ -91,7 +91,7 @@ export const auth = betterAuth({
   databaseHooks: {
     user: {
       create: {
-        after: async (user) => {
+        after: async (user, ctx: any) => {
           const appUrl = env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
           // 1. Immediately ensure exactly one personal workspace exists for the new user
@@ -125,6 +125,78 @@ export const auth = betterAuth({
             }
           } catch (orgErr) {
             console.error("[Auth] Failed to create initial personal workspace:", orgErr);
+          }
+
+          // 2. Automatically attribute referral from cookie or request context
+          try {
+            const rawCookie =
+              ctx?.headers?.get?.("cookie") ||
+              ctx?.request?.headers?.get?.("cookie") ||
+              ctx?.context?.headers?.get?.("cookie") ||
+              "";
+            let referralCode = "";
+            if (rawCookie) {
+              const match = rawCookie
+                .split("; ")
+                .find((row: string) => row.startsWith("pulseguard_ref="));
+              if (match) {
+                try {
+                  const val = decodeURIComponent(match.split("=")[1]);
+                  const parsed = JSON.parse(val);
+                  referralCode = parsed?.code || val;
+                } catch {
+                  referralCode = match.split("=")[1];
+                }
+              }
+            }
+
+            if (referralCode) {
+              const refRecord = await prisma.referralCode.findUnique({
+                where: { code: referralCode },
+                select: { id: true, userId: true },
+              });
+
+              if (refRecord && refRecord.userId !== user.id) {
+                const existing = await prisma.referral.findUnique({
+                  where: { referredUserId: user.id },
+                });
+
+                if (!existing) {
+                  await prisma.referral.create({
+                    data: {
+                      referralCodeId: refRecord.id,
+                      referredUserId: user.id,
+                      status: "PENDING",
+                      rewardAmount: 10.0,
+                    },
+                  });
+                  console.log(
+                    `[Auth] Automatically attributed referral for user ${user.email} (code: ${referralCode})`,
+                  );
+                }
+              }
+            }
+          } catch (refErr) {
+            console.error("[Auth] Failed to auto-attribute referral:", refErr);
+          }
+
+          // 3. Automatically generate referral code for this new user
+          try {
+            const existingCode = await prisma.referralCode.findUnique({
+              where: { userId: user.id },
+            });
+            if (!existingCode) {
+              const code = `pg_${Math.random().toString(36).substring(2, 9)}`;
+              await prisma.referralCode.create({
+                data: {
+                  userId: user.id,
+                  code,
+                },
+              });
+              console.log(`[Auth] Generated referral code ${code} for ${user.email}`);
+            }
+          } catch (codeErr) {
+            console.error("[Auth] Failed to create initial referral code:", codeErr);
           }
 
           // Fire-and-forget: failures here must never break signup

@@ -206,6 +206,7 @@ export async function ensureUserReferralCode(userId: string): Promise<string> {
 export async function recordReferralSignup(
   code: string,
   newUserId?: string,
+  userEmail?: string,
 ): Promise<{ success: boolean; error?: string }> {
   if (!code) return { success: false, error: "Missing referral code" };
 
@@ -215,17 +216,50 @@ export async function recordReferralSignup(
       return { success: true };
     }
 
-    const referralCodeRecord = await client.referralCode.findUnique({
+    let referralCodeRecord = await client.referralCode.findUnique({
       where: { code },
       select: { id: true, userId: true },
     });
+
+    // If code not explicitly found but matches a valid user, auto-provision the code record
+    if (!referralCodeRecord && code.startsWith("pg_")) {
+      const suffix = code.replace("pg_", "");
+      const possibleUser = await client.user.findFirst({
+        where: { id: { endsWith: suffix } },
+        select: { id: true },
+      });
+      if (possibleUser) {
+        try {
+          referralCodeRecord = await client.referralCode.create({
+            data: { userId: possibleUser.id, code },
+            select: { id: true, userId: true },
+          });
+        } catch {
+          referralCodeRecord = await client.referralCode.findUnique({
+            where: { code },
+            select: { id: true, userId: true },
+          });
+        }
+      }
+    }
 
     if (!referralCodeRecord) {
       return { success: false, error: "Referral code not found" };
     }
 
-    // Determine the new user's ID from session or argument
+    // Determine the new user's ID from argument, email, or session
     let targetUserId = newUserId;
+
+    if (!targetUserId && userEmail) {
+      const userRecord = await client.user.findUnique({
+        where: { email: userEmail },
+        select: { id: true },
+      });
+      if (userRecord?.id) {
+        targetUserId = userRecord.id;
+      }
+    }
+
     if (!targetUserId) {
       try {
         const session = await auth.api.getSession({
