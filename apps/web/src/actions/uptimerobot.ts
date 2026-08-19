@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import prisma from "@steadystack/db";
 import { revalidatePath } from "next/cache";
 import { assertMonitorLimits, checkAndNotifyUsageLimits } from "@/lib/billing-server";
+import { getActiveWorkspace } from "@/actions/team";
 
 export interface UptimeRobotMonitorItem {
   id: number;
@@ -148,6 +149,7 @@ export async function importUptimeRobotMonitors(
       };
     }
 
+    const active = await getActiveWorkspace();
     let createdCount = 0;
     for (const item of monitorsToImport) {
       let targetUrl = item.url || "https://example.com";
@@ -174,6 +176,7 @@ export async function importUptimeRobotMonitors(
           status: "UP",
           checkRegions: JSON.stringify(["us-east", "eu-central", "ap-tokyo"]),
           userId: session.user.id,
+          organizationId: active?.id,
         },
       });
       createdCount++;

@@ -5,6 +5,7 @@ import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { env } from "@steadystack/env/server";
+import { getActiveWorkspace } from "@/actions/team";
 
 export interface IntegrationProject {
   name: string;
@@ -32,6 +33,7 @@ export async function importThirdPartyMonitors(projects: IntegrationProject[]) {
   }
 
   const userId = session.user.id;
+  const active = await getActiveWorkspace();
 
   try {
     // 1. Fetch user tier
@@ -74,6 +76,7 @@ export async function importThirdPartyMonitors(projects: IntegrationProject[]) {
           interval: defaultInterval,
           timeout: 10,
           userId,
+          organizationId: active?.id,
           checkRegions: defaultRegions,
           alertThreshold: 1,
           dynamicThresholding: false,

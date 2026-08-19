@@ -5,6 +5,7 @@ import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { getTemplateById } from "@steadystack/shared/stack-templates";
+import { getActiveWorkspace } from "@/actions/team";
 
 export type ApplyTemplateResult = {
   success: boolean;
@@ -24,6 +25,7 @@ export async function applyTemplate(
     throw new Error("Unauthorized");
   }
 
+  const active = await getActiveWorkspace();
   const template = getTemplateById(templateId);
   if (!template) {
     throw new Error("Template not found");
@@ -141,6 +143,7 @@ export async function applyTemplate(
           body: monitorData.body as string | undefined,
           expectation: monitorData.expectation as string | undefined,
           userId,
+          organizationId: active?.id,
           checkRegions: JSON.stringify(["us-east"]),
         },
       });

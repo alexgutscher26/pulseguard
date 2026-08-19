@@ -629,7 +629,7 @@ export async function getMonitors() {
     const monitors = await prisma.monitor.findMany({
       where: active?.id
         ? {
-            organizationId: active.id,
+            OR: [{ organizationId: active.id }, { userId: session.user.id }],
           }
         : {
             userId: session.user.id,
@@ -1371,7 +1371,11 @@ export async function getDashboardStats() {
   }
 
   const active = await getActiveWorkspace();
-  const monitorScope = active?.id ? { organizationId: active.id } : { userId: session.user.id };
+  const monitorScope = active?.id
+    ? {
+        OR: [{ organizationId: active.id }, { userId: session.user.id }],
+      }
+    : { userId: session.user.id };
 
   try {
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
@@ -1421,17 +1425,12 @@ export async function getDashboardStats() {
         }),
       ]);
 
-    let globalUptime = 0;
-    if (totalEventsCount > 0) {
-      globalUptime = (upEventsCount / totalEventsCount) * 100;
-    }
-
-    const avgLatency = Math.round(latencyAgg._avg.latency || 0);
+    const globalUptime = totalEventsCount > 0 ? (upEventsCount / totalEventsCount) * 100 : 100;
 
     return {
       activeMonitors: activeMonitorsCount,
-      globalUptime: Number(globalUptime.toFixed(2)),
-      avgLatency,
+      globalUptime: Math.round(globalUptime * 10) / 10,
+      avgLatency: Math.round(latencyAgg._avg.latency || 0),
       activeAlerts: activeAlertsCount,
     };
   } catch (error) {
@@ -1446,7 +1445,10 @@ export async function getDashboardStats() {
 }
 
 /**
- * Retrieve active (non-dismissed) AI insights for the current user's monitors.
+ * Retrieves AI-generated insights and root-cause analyses for monitors.
+ *
+ * @param monitorId Optional ID of a specific monitor to filter insights.
+ * @returns Array of monitor insights with associated monitor details.
  */
 export async function getMonitorInsights(monitorId?: string) {
   const session = await auth.api.getSession({
@@ -1456,7 +1458,11 @@ export async function getMonitorInsights(monitorId?: string) {
   if (!session?.user) return [];
 
   const active = await getActiveWorkspace();
-  const monitorScope = active?.id ? { organizationId: active.id } : { userId: session.user.id };
+  const monitorScope = active?.id
+    ? {
+        OR: [{ organizationId: active.id }, { userId: session.user.id }],
+      }
+    : { userId: session.user.id };
 
   try {
     const insights = await prisma.monitorInsight.findMany({
