@@ -39,6 +39,7 @@
     "@trpc/client": "catalog:",
     "@trpc/tanstack-react-query": "catalog:",
     "@uploadthing/react": "^7.3.3",
+    "@vercel/analytics": "^2.0.1",
     "ai": "^6.0.69",
     "better-auth": "catalog:",
     "class-variance-authority": "^0.7.1",
