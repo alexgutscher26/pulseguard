@@ -468,8 +468,7 @@ export async function processBatch(
             throw new Error("CircuitBreaker: OPEN. Avoiding database writes.");
           }
 
-          const isStatusChange =
-            currentStatus !== monitor.status || Boolean(errorReason);
+          const isStatusChange = currentStatus !== monitor.status || Boolean(errorReason);
 
           const executePersistence = async (retry: boolean = true): Promise<void> => {
             try {

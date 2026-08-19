@@ -27,7 +27,9 @@ function isAllowedProbeHostname(hostname: string): boolean {
   return ALLOWED_PROBE_HOSTS.some((allowed) => h === allowed || h.endsWith(`.${allowed}`));
 }
 
-async function validateProbeUrl(rawUrl: string): Promise<{ ok: true; normalizedUrl: string } | { ok: false; error: string }> {
+async function validateProbeUrl(
+  rawUrl: string,
+): Promise<{ ok: true; normalizedUrl: string } | { ok: false; error: string }> {
   let parsed: URL;
   try {
     parsed = new URL(rawUrl);
@@ -58,7 +60,12 @@ async function validateProbeUrl(rawUrl: string): Promise<{ ok: true; normalizedU
 
   if (hostname.includes(":")) {
     const lowered = hostname.toLowerCase();
-    if (lowered === "::1" || lowered.startsWith("fc") || lowered.startsWith("fd") || lowered.startsWith("fe80:")) {
+    if (
+      lowered === "::1" ||
+      lowered.startsWith("fc") ||
+      lowered.startsWith("fd") ||
+      lowered.startsWith("fe80:")
+    ) {
       return { ok: false, error: "private/internal addresses are not allowed" };
     }
   }
@@ -71,7 +78,12 @@ async function validateProbeUrl(rawUrl: string): Promise<{ ok: true; normalizedU
         return { ok: false, error: "private/internal addresses are not allowed" };
       }
       const lowerIp = ip.toLowerCase();
-      if (lowerIp === "::1" || lowerIp.startsWith("fc") || lowerIp.startsWith("fd") || lowerIp.startsWith("fe80:")) {
+      if (
+        lowerIp === "::1" ||
+        lowerIp.startsWith("fc") ||
+        lowerIp.startsWith("fd") ||
+        lowerIp.startsWith("fe80:")
+      ) {
         return { ok: false, error: "private/internal addresses are not allowed" };
       }
     }

@@ -65,9 +65,7 @@ console.log(`Searching for pg-cloudflare in: ${rootNodeModules}`);
 const packageDirectories = findPgCloudflareDirectories(rootNodeModules);
 
 if (packageDirectories.length === 0) {
-  throw new Error(
-    `No pg-cloudflare package found under: ${rootNodeModules}`
-  );
+  throw new Error(`No pg-cloudflare package found under: ${rootNodeModules}`);
 }
 
 for (const packageDirectory of packageDirectories) {
@@ -87,15 +85,11 @@ for (const packageDirectory of packageDirectories) {
       : "(missing dist directory)";
 
     throw new Error(
-      `Cannot patch ${packageDirectory}. Expected dist/index.cjs; found: ${contents}`
+      `Cannot patch ${packageDirectory}. Expected dist/index.cjs; found: ${contents}`,
     );
   }
 
-  fs.writeFileSync(
-    target,
-    'module.exports = require("./index.cjs");\n',
-    "utf8"
-  );
+  fs.writeFileSync(target, 'module.exports = require("./index.cjs");\n', "utf8");
 
   console.log(`Created missing pg-cloudflare entrypoint: ${target}`);
 }

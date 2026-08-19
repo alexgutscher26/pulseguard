@@ -393,9 +393,9 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
               <div className="bg-black/40 border border-white/5 rounded-sm p-4 flex items-center justify-center min-h-[60px]">
                 <img
                   src={`/api/badge/${encodeURIComponent(pageSlug)}.svg?style=${encodeURIComponent(
-                    sanitizeShieldStyle(shieldStyle)
+                    sanitizeShieldStyle(shieldStyle),
                   )}&theme=${encodeURIComponent(sanitizeShieldTheme(shieldTheme))}&size=${encodeURIComponent(
-                    sanitizeShieldSize(shieldSize)
+                    sanitizeShieldSize(shieldSize),
                   )}&t=${Date.now()}`}
                   alt="Status Badge Preview"
                   className="max-w-full"

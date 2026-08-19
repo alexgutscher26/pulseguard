@@ -71,8 +71,7 @@ const sections = [
   },
   {
     title: "Contact",
-    content:
-      "For questions about these terms, contact legal@steadystack.dev",
+    content: "For questions about these terms, contact legal@steadystack.dev",
   },
 ];
 

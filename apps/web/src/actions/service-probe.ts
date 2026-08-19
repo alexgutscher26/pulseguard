@@ -34,12 +34,7 @@ const REGIONS: Array<{ region: string; location: string; flag: string; baseLaten
 // Block private/internal hostnames to prevent SSRF.
 // The granular check is performed below by isPrivateOrInternalUrl(); we keep a
 // small deny-list here for obvious internal names that bypass IP resolution.
-const BLOCKED_PROBE_HOSTNAMES = new Set<string>([
-  "localhost",
-  "127.0.0.1",
-  "0.0.0.0",
-  "::1",
-]);
+const BLOCKED_PROBE_HOSTNAMES = new Set<string>(["localhost", "127.0.0.1", "0.0.0.0", "::1"]);
 
 /**
  * Executes a fast, lightweight real-time reachability and latency probe

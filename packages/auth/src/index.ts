@@ -5,7 +5,12 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
 
-import { getResendClient, sendPasswordResetEmail, sendTeamInvitationEmail, sendWelcomeEmail } from "@pulseguard/email";
+import {
+  getResendClient,
+  sendPasswordResetEmail,
+  sendTeamInvitationEmail,
+  sendWelcomeEmail,
+} from "@pulseguard/email";
 import { organization } from "better-auth/plugins";
 
 console.log("🔧 Initializing BetterAuth with config:", {

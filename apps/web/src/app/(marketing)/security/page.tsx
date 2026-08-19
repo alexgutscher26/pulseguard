@@ -5,7 +5,8 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Security | PulseGuard",
-  description: "PulseGuard Security — how we protect your monitoring infrastructure, credentials, and data.",
+  description:
+    "PulseGuard Security — how we protect your monitoring infrastructure, credentials, and data.",
   openGraph: {
     title: "Security | PulseGuard",
     description: "How we protect your monitoring infrastructure, credentials, and data.",

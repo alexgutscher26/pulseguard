@@ -6,5 +6,4 @@ create a comprehensive and detailed todo.md file for improvements and features (
 
 bun --cwd apps/worker wrangler deploy
 
-
 publish the cli package

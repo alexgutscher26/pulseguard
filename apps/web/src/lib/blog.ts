@@ -24,7 +24,10 @@ export function getAllPosts(): BlogPost[] {
   const files = fs.readdirSync(POSTS_DIR).filter((file) => file.endsWith(".mdx"));
 
   const posts = files.flatMap((file) => {
-    const slug = file.replace(/\.mdx$/, "").trim().toLowerCase();
+    const slug = file
+      .replace(/\.mdx$/, "")
+      .trim()
+      .toLowerCase();
     const isSafeSlug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug);
     if (!isSafeSlug) return [];
 
