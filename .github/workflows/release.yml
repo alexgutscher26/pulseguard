@@ -52,19 +52,9 @@ jobs:
         id: notes
         run: |
           # Generate notes for just this tag (between previous tag and HEAD)
-          git cliff --latest --strip header --output release-notes.md
+          git cliff --latest --strip header --output release-notes.md || echo "Release notes" > release-notes.md
           echo "Generated release notes:"
           cat release-notes.md
-
-      - name: Update CHANGELOG.md
-        run: |
-          # Insert the new release entry after the [Unreleased] section
-          git cliff --output CHANGELOG.md
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add CHANGELOG.md
-          git commit -m "chore(release): update CHANGELOG for ${{ steps.version.outputs.tag }}" || echo "No changelog changes"
-          git push origin HEAD:master
 
       # ── Build Docker images ──────────────────────────────────────────────────
       - name: Set up Docker Buildx
