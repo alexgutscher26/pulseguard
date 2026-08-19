@@ -38,11 +38,46 @@ interface ChangelogEntry {
 
 const CHANGELOG_DATA: ChangelogEntry[] = [
   {
+    version: "v1.1.2",
+    date: "August 2026",
+    title: "Atomic Workspace Provisioning, Edge Client Hints & WAF Resilience",
+    badge: "Latest Release",
+    badgeColor: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+    description:
+      "Eliminated parallel onboarding workspace race conditions, upgraded multi-region edge probes with authentic desktop Client Hints to prevent false-positive WAF blocks, and hardened encrypted header resolution.",
+    highlights: [
+      {
+        category: "Security",
+        title: "Atomic Personal Workspace Provisioning & Mutex Locking",
+        description:
+          "Added instant signup-hook workspace creation and in-flight mutex synchronization across React Server Components to guarantee exactly one personal workspace per account.",
+      },
+      {
+        category: "Performance",
+        title: "Authentic Chrome 133 Client Hints & WAF False-Positive Prevention",
+        description:
+          "Upgraded Regional Probes and Edge Check Engines with Sec-CH-UA and Sec-Fetch-* browser headers to bypass CDN bot challenges and accurately monitor Cloudflare and Vercel protected endpoints.",
+      },
+      {
+        category: "Security",
+        title: "Encrypted Header Resolution Pipeline",
+        description:
+          "Hardened AES-256-GCM field-level secret decryption across all background worker queues, Durable Objects, and manual verification triggers.",
+      },
+      {
+        category: "Feature",
+        title: "Dedicated Security & Compliance Portal",
+        description:
+          "Published platform security overview, encryption at rest specifications, and vulnerability disclosure policies at /security.",
+      },
+    ],
+  },
+  {
     version: "v1.2.0",
     date: "August 2026",
     title: "Uptime Kuma Migration Suite, SLA Reports & Quorum Consensus v2",
-    badge: "Latest Release",
-    badgeColor: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+    badge: "Platform Release",
+    badgeColor: "bg-primary/10 text-primary border-primary/20",
     description:
       "Seamless 1-command migration from Uptime Kuma, automated SLA compliance report exports (PDF & JSON), improved 4-of-7 edge quorum consensus engine, and public roadmap.",
     highlights: [

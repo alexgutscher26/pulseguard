@@ -9,19 +9,20 @@ Release notes are generated automatically from [Conventional Commits](https://ww
 
 ---
 
-## [Unreleased]
+## [1.1.2] - 2026-08-19
+
+### Fixed
+
+- **Auth / Workspaces:** Fixed race condition causing duplicate personal workspace creation on initial user onboarding with atomic Better-Auth signup hook, in-memory mutex synchronization, and self-healing duplicate cleanup.
+- **Monitoring Engine:** Upgraded Regional Probes, Durable Objects, and Edge Check services to send authentic Chrome 133 Client Hints (`Sec-CH-UA`, `Sec-Fetch-Dest`, `Sec-Fetch-Mode`) preventing false-positive WAF blocks on Cloudflare and Vercel.
+- **Secret Management:** Hardened AES-256-GCM encrypted header resolution across worker queues and manual verification triggers.
+- **Database Connectivity:** Fixed SSL negotiation logic in Supabase Supavisor pooler client adapters.
 
 ### Added
 
-- Self-hosted installation guide (`docs/self-hosted.md`)
-- Helm chart for Kubernetes deployment (`helm/pulseguard/`)
-- `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, and GitHub issue templates
-- `examples/` directory with Monitoring as Code YAML templates
-- `docker-compose.yml` for full local development stack (PostgreSQL, Redis, MailHog)
-- Automated release notes via GitHub Actions (`release.yml`)
+- **Security Portal:** Added platform security documentation, encryption specifications, and vulnerability disclosure policy at `/security`.
 
 ---
 
-<!-- Releases are inserted here automatically by the release workflow -->
-
-[Unreleased]: https://github.com/alexgutscher26/pulseguard/compare/HEAD...HEAD
+[Unreleased]: https://github.com/alexgutscher26/pulseguard/compare/v1.1.2...HEAD
+[1.1.2]: https://github.com/alexgutscher26/pulseguard/releases/tag/v1.1.2
