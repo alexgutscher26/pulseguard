@@ -148,7 +148,7 @@ export default {
         // Find active monitors that are due for a check, skipping abandoned free-tier accounts (>60d inactive)
         const targetIds: { id: string }[] = await prisma.$queryRaw`
           SELECT m.id FROM "Monitor" m
-          INNER JOIN "User" u ON m."userId" = u.id
+          INNER JOIN "user" u ON m."userId" = u.id
           WHERE (m."status" IN ('UP', 'DOWN', 'MAINTENANCE'))
           AND NOT (m."type" = 'HEARTBEAT' AND m."status" = 'DOWN')
           AND (m."nextCheck" IS NULL OR m."nextCheck" <= NOW())
