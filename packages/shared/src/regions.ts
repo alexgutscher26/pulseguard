@@ -34,7 +34,7 @@ export interface Region {
 }
 
 export const PULSEGUARD_CANONICAL_USER_AGENT =
-  "PulseGuard-Synthetic-Monitor/2.0 (+https://pulseguard.io/bot)";
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 PulseGuard/1.0";
 
 export const CLOUDFLARE_PROBE_REGIONS: Region[] = [
   {

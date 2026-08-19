@@ -69,9 +69,12 @@ export async function POST(req: NextRequest) {
         method: monitor.method || "GET",
         redirect: "follow",
         headers: {
-          "User-Agent": "Mozilla/5.0 (compatible; PulseGuard/1.0; +https://pulseguard.io/bot)",
+          "User-Agent":
+            userHeaders["User-Agent"] ||
+            userHeaders["user-agent"] ||
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 PulseGuard/1.0",
           Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-          "Accept-Language": "en-US,en;q=0.5",
+          "Accept-Language": "en-US,en;q=0.9",
           ...userHeaders,
         },
         body: ["POST", "PUT", "PATCH"].includes(monitor.method || "GET")
