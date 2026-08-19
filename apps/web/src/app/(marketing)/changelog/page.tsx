@@ -38,7 +38,7 @@ interface ChangelogEntry {
 
 const CHANGELOG_DATA: ChangelogEntry[] = [
   {
-    version: "v1.1.2",
+    version: "v1.2.0",
     date: "August 2026",
     title: "Atomic Workspace Provisioning, Edge Client Hints & WAF Resilience",
     badge: "Latest Release",
@@ -73,7 +73,7 @@ const CHANGELOG_DATA: ChangelogEntry[] = [
     ],
   },
   {
-    version: "v1.2.0",
+    version: "v1.1.2",
     date: "August 2026",
     title: "Uptime Kuma Migration Suite, SLA Reports & Quorum Consensus v2",
     badge: "Platform Release",
