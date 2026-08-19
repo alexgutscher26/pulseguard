@@ -68,7 +68,11 @@ function SignIn() {
         </TextField>
 
         <Button onPress={handleLogin} isDisabled={isLoading} className="mt-1">
-          {isLoading ? <Spinner size="sm" color="default" /> : <Button.Label>Sign In</Button.Label>}
+          {isLoading ? (
+            <Spinner size="sm" color="default" />
+          ) : (
+            <Button.Label>Sign In</Button.Label>
+          )}
         </Button>
       </View>
     </Surface>
