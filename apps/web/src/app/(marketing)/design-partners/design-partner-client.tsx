@@ -259,15 +259,15 @@ export default function DesignPartnerClient({
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-3 sm:p-4 rounded-2xl bg-card/60 backdrop-blur-md border border-border shadow-xs">
           <div className="flex items-center gap-3">
             <span className="relative flex h-2.5 w-2.5">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75 animate-ping" />
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
+              <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-75 animate-ping" />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-primary" />
             </span>
             <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground">
               <span className="text-foreground font-semibold">PulseGuard Edge Mesh:</span>
               <span className="hidden sm:inline">7 Sovereign Regions Operational</span>
               <span className="sm:hidden">7 Regions</span>
               <span className="text-border">|</span>
-              <span className="text-emerald-500 font-bold">4-of-7 Quorum Active</span>
+              <span className="text-primary font-bold">4-of-7 Quorum Active</span>
             </div>
           </div>
 

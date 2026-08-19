@@ -38,11 +38,46 @@ interface ChangelogEntry {
 
 const CHANGELOG_DATA: ChangelogEntry[] = [
   {
+    version: "v1.3.0",
+    date: "August 2026",
+    title: "Modern Design System, Precision Theme Modes & Streamlined Navigation",
+    badge: "Latest Release",
+    badgeColor: "bg-primary/10 text-primary border-primary/20",
+    description:
+      "Reimagined the visual theme architecture with 5 modern precision colorways (Obsidian Dark, Midnight Slate, Carbon Ember, Nordic Emerald, Clean Light), converted all hardcoded dashboard components to dynamic CSS tokens, and streamlined header navigation with grouped mega-menus and responsive mobile drawers.",
+    highlights: [
+      {
+        category: "Feature",
+        title: "5 Precision Dark & Light Theme Modes",
+        description:
+          "Added Obsidian Dark (deep zinc/slate monochrome), Midnight Slate (electric blue), Carbon Ember (warm amber), Nordic Emerald, and Clean Light with refined HSL contrast ratios.",
+      },
+      {
+        category: "Feature",
+        title: "Streamlined Navigation & Mobile Drawer",
+        description:
+          "Consolidated top-level links into intuitive Product and Free Tools dropdown menus with rich descriptions, quick action shortcuts, and a full-screen mobile drawer.",
+      },
+      {
+        category: "Performance",
+        title: "Dynamic Tokenized SaaS & Landing UI",
+        description:
+          "Refactored onboarding wizards, sidebar badges, workspace switchers, and hero consensus telemetry charts to adapt dynamically to the active theme.",
+      },
+      {
+        category: "CLI",
+        title: "Turborepo Watch Engine Optimization",
+        description:
+          "Updated CLI task watch configurations to ensure smooth background daemon execution during local monorepo development.",
+      },
+    ],
+  },
+  {
     version: "v1.2.0",
     date: "August 2026",
     title: "Atomic Workspace Provisioning, Edge Client Hints & WAF Resilience",
-    badge: "Latest Release",
-    badgeColor: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+    badge: "Platform Release",
+    badgeColor: "bg-muted text-muted-foreground border-border",
     description:
       "Eliminated parallel onboarding workspace race conditions, upgraded multi-region edge probes with authentic desktop Client Hints to prevent false-positive WAF blocks, and hardened encrypted header resolution.",
     highlights: [

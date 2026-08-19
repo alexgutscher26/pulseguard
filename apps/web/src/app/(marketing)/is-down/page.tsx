@@ -86,7 +86,7 @@ export default function IsDownHubPage() {
 
           <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-foreground leading-tight">
             Is it down? <br className="hidden sm:inline" />
-            <span className="bg-linear-to-r from-primary to-emerald-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-foreground via-foreground/90 to-muted-foreground bg-clip-text text-transparent">
               Real-time outage tracker.
             </span>
           </h1>

@@ -160,12 +160,10 @@ export default function Hero() {
             <span className="text-primary font-bold">✓</span> 60-second checks on the free tier
           </div>
           <div className="flex items-center justify-center gap-2">
-            <span className="text-primary font-bold">✓</span> 7-region verification, included
-            free
+            <span className="text-primary font-bold">✓</span> 7-region verification, included free
           </div>
           <div className="flex items-center justify-center gap-2">
-            <span className="text-primary font-bold">✓</span> Commercial use permitted, in
-            writing
+            <span className="text-primary font-bold">✓</span> Commercial use permitted, in writing
           </div>
         </div>
 
@@ -264,9 +262,7 @@ export default function Hero() {
                     <div
                       key={idx}
                       className={`flex-1 h-6 rounded-sm transition-all duration-300 ${
-                        activeNodes.includes(idx)
-                          ? "bg-primary shadow-xs"
-                          : "bg-muted/40"
+                        activeNodes.includes(idx) ? "bg-primary shadow-xs" : "bg-muted/40"
                       }`}
                       style={{
                         opacity: activeNodes.includes(idx) ? 1 : 0.2,
@@ -290,7 +286,9 @@ export default function Hero() {
                   <div className="flex items-center justify-between p-2 rounded bg-card/40 border border-border">
                     <div className="flex items-center gap-2 text-xs">
                       <span className="size-2 bg-primary rounded-full animate-pulse" />
-                      <span className="text-muted-foreground font-sans text-[11px]">wnam (San Jose)</span>
+                      <span className="text-muted-foreground font-sans text-[11px]">
+                        wnam (San Jose)
+                      </span>
                     </div>
                     <span className="text-xs font-bold text-primary">{latencies.wnam}ms</span>
                   </div>
@@ -299,7 +297,9 @@ export default function Hero() {
                   <div className="flex items-center justify-between p-2 rounded bg-card/40 border border-border">
                     <div className="flex items-center gap-2 text-xs">
                       <span className="size-2 bg-primary rounded-full animate-pulse" />
-                      <span className="text-muted-foreground font-sans text-[11px]">enam (Ashburn)</span>
+                      <span className="text-muted-foreground font-sans text-[11px]">
+                        enam (Ashburn)
+                      </span>
                     </div>
                     <span className="text-xs font-bold text-primary">{latencies.enam}ms</span>
                   </div>
@@ -308,7 +308,9 @@ export default function Hero() {
                   <div className="flex items-center justify-between p-2 rounded bg-card/40 border border-border">
                     <div className="flex items-center gap-2 text-xs">
                       <span className="size-2 bg-primary rounded-full animate-pulse" />
-                      <span className="text-muted-foreground font-sans text-[11px]">weur (London)</span>
+                      <span className="text-muted-foreground font-sans text-[11px]">
+                        weur (London)
+                      </span>
                     </div>
                     <span className="text-xs font-bold text-primary">{latencies.weur}ms</span>
                   </div>
@@ -317,7 +319,9 @@ export default function Hero() {
                   <div className="flex items-center justify-between p-2 rounded bg-card/40 border border-border">
                     <div className="flex items-center gap-2 text-xs">
                       <span className="size-2 bg-primary rounded-full animate-pulse" />
-                      <span className="text-muted-foreground font-sans text-[11px]">apac-ne (Tokyo)</span>
+                      <span className="text-muted-foreground font-sans text-[11px]">
+                        apac-ne (Tokyo)
+                      </span>
                     </div>
                     <span className="text-xs font-bold text-primary">{latencies.apac}ms</span>
                   </div>

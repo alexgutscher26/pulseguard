@@ -6,15 +6,18 @@ import {
   ChevronDown,
   Globe,
   ShieldCheck,
-  Terminal,
   ArrowRight,
-  Code2,
   Clock,
   Network,
   Sun,
   Moon,
   Monitor,
   Flame,
+  Zap,
+  Layers,
+  BarChart3,
+  Menu,
+  X,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { motion, AnimatePresence } from "framer-motion";
@@ -47,8 +50,9 @@ function ThemeToggleButton() {
   return (
     <button
       onClick={cycleTheme}
-      className="flex items-center justify-center size-8 rounded-lg border border-border bg-background/50 hover:bg-accent text-muted-foreground hover:text-foreground transition-all"
-      title={`Active Theme: ${theme || "dark"}. Click to change.`}
+      className="flex items-center justify-center size-8 rounded-lg border border-border bg-background/50 hover:bg-accent text-muted-foreground hover:text-foreground transition-all cursor-pointer"
+      title={`Theme: ${theme}. Click to switch.`}
+      aria-label="Toggle theme"
     >
       {theme === "light" ? (
         <Sun className="size-4" />
@@ -63,121 +67,143 @@ function ThemeToggleButton() {
 
 export default function LandingHeader() {
   const { data: session } = authClient.useSession();
-  const [isToolsOpen, setIsToolsOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const productLinks = [
+    {
+      name: "Core Features",
+      description: "7-region quorum consensus & zero false-positive alerts",
+      href: "/#features",
+      icon: <Zap className="size-4 text-primary" />,
+    },
+    {
+      name: "Global Edge Mesh",
+      description: "Explore sovereign edge probe locations and latency",
+      href: "/locations",
+      icon: <Globe className="size-4 text-primary" />,
+    },
+    {
+      name: "Interactive Demo",
+      description: "Live telemetry test sandbox with simulated regional blips",
+      href: "/demo",
+      icon: <Activity className="size-4 text-primary" />,
+    },
+    {
+      name: "Use Cases",
+      description: "Tailored architectures for APIs, SaaS, and infrastructure",
+      href: "/use-cases",
+      icon: <Layers className="size-4 text-primary" />,
+    },
+    {
+      name: "30-Day Benchmark",
+      description: "Independent telemetry study on false positive elimination",
+      href: "/benchmarks/false-positives",
+      icon: <BarChart3 className="size-4 text-primary" />,
+    },
+  ];
+
+  const toolLinks = [
+    {
+      name: "Is It Down? Hub",
+      description: "Real-time status tracking for 300+ cloud services",
+      href: "/is-down",
+      icon: <Activity className="size-4 text-primary" />,
+    },
+    {
+      name: "Global Ping Latency",
+      description: "Instant multi-region HTTP & ICMP response times",
+      href: "/tools/global-latency",
+      icon: <Globe className="size-4 text-primary" />,
+    },
+    {
+      name: "DNS & SSL Sentinel",
+      description: "Cryptographic certificate validation and DNS audit",
+      href: "/tools/dns-sentinel",
+      icon: <ShieldCheck className="size-4 text-primary" />,
+    },
+    {
+      name: "IP Subnet Analyzer",
+      description: "Inspect network ranges, CIDR blocks, and reverse DNS",
+      href: "/tools/ip-subnet",
+      icon: <Network className="size-4 text-primary" />,
+    },
+    {
+      name: "Cron Heartbeat Watch",
+      description: "Dead-man switches for background jobs and pipelines",
+      href: "/tools/cron-sentinel",
+      icon: <Clock className="size-4 text-primary" />,
+    },
+    {
+      name: "Roast My Stack",
+      description: "AI-driven architecture and resilience teardown",
+      href: "/tools/roast-my-stack",
+      icon: <Flame className="size-4 text-primary" />,
+    },
+  ];
 
   return (
     <header className="fixed top-5 left-0 right-0 z-50 flex justify-center px-4 w-full">
-      <div className="flex items-center justify-between px-6 h-14 bg-background/70 backdrop-blur-md border border-border shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)] rounded-2xl w-full max-w-5xl transition-all duration-300">
+      <div className="flex items-center justify-between px-5 sm:px-6 h-14 bg-background/80 backdrop-blur-xl border border-border shadow-[0_8px_32px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] rounded-2xl w-full max-w-4xl transition-all duration-300">
         {/* Brand Logo */}
-        <div className="flex items-center gap-4">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="p-1.5 bg-primary/5 border border-primary/10 rounded-lg group-hover:border-primary/30 group-hover:bg-primary/10 transition-all duration-300">
-              <Activity className="size-4.5 text-primary" />
-            </div>
-            <span className="font-bold text-foreground text-sm tracking-tight">PulseGuard</span>
-          </Link>
-        </div>
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="p-1.5 bg-primary/10 border border-primary/20 rounded-lg group-hover:border-primary/40 group-hover:bg-primary/15 transition-all duration-300">
+            <Activity className="size-4 text-primary" />
+          </div>
+          <span className="font-bold text-foreground text-sm tracking-tight">PulseGuard</span>
+        </Link>
 
-        {/* Navigation Links */}
-        <nav className="hidden md:flex items-center gap-8 font-medium text-xs">
-          {/* Tools Dropdown */}
+        {/* Desktop Navigation Links */}
+        <nav className="hidden md:flex items-center gap-1 font-medium text-xs">
+          {/* Product Dropdown */}
           <div
             className="relative"
-            onMouseEnter={() => setIsToolsOpen(true)}
-            onMouseLeave={() => setIsToolsOpen(false)}
+            onMouseEnter={() => setActiveDropdown("product")}
+            onMouseLeave={() => setActiveDropdown(null)}
           >
-            <button className="flex items-center gap-1 py-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer group focus:outline-none">
-              Tools
+            <button
+              className={cn(
+                "flex items-center gap-1 px-3 py-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors cursor-pointer focus:outline-none",
+                activeDropdown === "product" && "text-foreground bg-accent/50",
+              )}
+            >
+              Product
               <ChevronDown
                 className={cn(
-                  "h-3.5 w-3.5 transition-transform duration-300 text-muted-foreground/60 group-hover:text-foreground",
-                  isToolsOpen && "rotate-180",
+                  "size-3.5 transition-transform duration-200 text-muted-foreground/70",
+                  activeDropdown === "product" && "rotate-180 text-foreground",
                 )}
               />
             </button>
 
             <AnimatePresence>
-              {isToolsOpen && (
+              {activeDropdown === "product" && (
                 <motion.div
-                  initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                  initial={{ opacity: 0, y: 6, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                  transition={{ duration: 0.18, ease: "easeOut" }}
-                  className="absolute top-full left-1/2 -translate-x-1/2 pt-2 w-64 z-[100]"
+                  exit={{ opacity: 0, y: 6, scale: 0.98 }}
+                  transition={{ duration: 0.15, ease: "easeOut" }}
+                  className="absolute top-full left-0 pt-2 w-80 z-[100]"
                 >
-                  <div className="bg-popover border border-border p-2 rounded-xl shadow-[0_12px_38px_rgba(0,0,0,0.125)] dark:shadow-[0_12px_38px_rgba(0,0,0,0.5)] grid grid-cols-1 gap-1 relative overflow-hidden">
-                    {[
-                      {
-                        name: "30-Day Benchmark Study",
-                        href: "/benchmarks/false-positives",
-                        icon: <Activity className="h-4 w-4 text-primary" />,
-                      },
-                      {
-                        name: "Is It Down? (300+ Services)",
-                        href: "/is-down",
-                        icon: <Activity className="h-4 w-4 text-primary" />,
-                      },
-                      {
-                        name: "IP Subnet Analyzer",
-                        href: "/tools/ip-subnet",
-                        icon: <Network className="h-4 w-4" />,
-                      },
-                      {
-                        name: "Global Ping Latency",
-                        href: "/tools/global-latency",
-                        icon: <Globe className="h-4 w-4" />,
-                      },
-                      {
-                        name: "DNS Sentinel Verify",
-                        href: "/tools/dns-sentinel",
-                        icon: <Globe className="h-4 w-4" />,
-                      },
-                      {
-                        name: "Cron Heartbeat Watch",
-                        href: "/tools/cron-sentinel",
-                        icon: <Clock className="h-4 w-4" />,
-                      },
-                      {
-                        name: "Payload RegEx Parser",
-                        href: "/tools/payload-regex",
-                        icon: <Code2 className="h-4 w-4" />,
-                      },
-                      {
-                        name: "HTTP Header Audit",
-                        href: "/tools/http-headers",
-                        icon: <ShieldCheck className="h-4 w-4" />,
-                      },
-                      {
-                        name: "SSL Cryptographic",
-                        href: "/tools/ssl-checker",
-                        icon: <ShieldCheck className="h-4 w-4" />,
-                      },
-                      {
-                        name: "Network Port Prober",
-                        href: "/tools/port-checker",
-                        icon: <Terminal className="h-4 w-4" />,
-                      },
-                      {
-                        name: "Visual Monitor Diff",
-                        href: "/tools/visual-diff",
-                        icon: <Activity className="h-4 w-4" />,
-                      },
-                      {
-                        name: "Roast My Stack",
-                        href: "/tools/roast-my-stack",
-                        icon: <Flame className="h-4 w-4" />,
-                      },
-                    ].map((tool) => (
+                  <div className="bg-popover/95 backdrop-blur-xl border border-border p-2 rounded-xl shadow-2xl grid grid-cols-1 gap-1">
+                    {productLinks.map((item) => (
                       <Link
-                        key={tool.name}
-                        href={tool.href as any}
-                        className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent/50 transition-all text-muted-foreground hover:text-foreground group/item w-full text-xs font-medium"
-                        onClick={() => setIsToolsOpen(false)}
+                        key={item.name}
+                        href={item.href as any}
+                        className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-accent transition-colors group/item"
+                        onClick={() => setActiveDropdown(null)}
                       >
-                        <span className="text-muted-foreground group-hover/item:text-primary transition-colors shrink-0">
-                          {tool.icon}
-                        </span>
-                        <span className="truncate">{tool.name}</span>
+                        <div className="p-1.5 rounded-md bg-muted/60 border border-border shrink-0 mt-0.5 group-hover/item:border-primary/30">
+                          {item.icon}
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-semibold text-foreground text-xs group-hover/item:text-primary transition-colors">
+                            {item.name}
+                          </span>
+                          <span className="text-[11px] text-muted-foreground leading-snug">
+                            {item.description}
+                          </span>
+                        </div>
                       </Link>
                     ))}
                   </div>
@@ -186,37 +212,91 @@ export default function LandingHeader() {
             </AnimatePresence>
           </div>
 
-          {[
-            { name: "Features", href: "/#features" },
-            { name: "Benchmark", href: "/benchmarks/false-positives" },
-            { name: "Locations", href: "/locations" },
-            { name: "Use Cases", href: "/use-cases" },
-            { name: "Demo", href: "/demo" },
-            { name: "Pricing", href: "/#pricing" },
-            {
-              name: "Docs",
-              href: "https://pulse-41cf5b0d.mintlify.site/introduction",
-            },
-          ].map((item) => (
-            <Link
-              key={item.name}
-              href={item.href as any}
-              className="text-muted-foreground hover:text-foreground transition-colors py-2"
+          {/* Tools Dropdown */}
+          <div
+            className="relative"
+            onMouseEnter={() => setActiveDropdown("tools")}
+            onMouseLeave={() => setActiveDropdown(null)}
+          >
+            <button
+              className={cn(
+                "flex items-center gap-1 px-3 py-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors cursor-pointer focus:outline-none",
+                activeDropdown === "tools" && "text-foreground bg-accent/50",
+              )}
             >
-              {item.name}
-            </Link>
-          ))}
+              Tools
+              <ChevronDown
+                className={cn(
+                  "size-3.5 transition-transform duration-200 text-muted-foreground/70",
+                  activeDropdown === "tools" && "rotate-180 text-foreground",
+                )}
+              />
+            </button>
+
+            <AnimatePresence>
+              {activeDropdown === "tools" && (
+                <motion.div
+                  initial={{ opacity: 0, y: 6, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 6, scale: 0.98 }}
+                  transition={{ duration: 0.15, ease: "easeOut" }}
+                  className="absolute top-full left-0 pt-2 w-80 z-[100]"
+                >
+                  <div className="bg-popover/95 backdrop-blur-xl border border-border p-2 rounded-xl shadow-2xl grid grid-cols-1 gap-1">
+                    {toolLinks.map((item) => (
+                      <Link
+                        key={item.name}
+                        href={item.href as any}
+                        className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-accent transition-colors group/item"
+                        onClick={() => setActiveDropdown(null)}
+                      >
+                        <div className="p-1.5 rounded-md bg-muted/60 border border-border shrink-0 mt-0.5 group-hover/item:border-primary/30">
+                          {item.icon}
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-semibold text-foreground text-xs group-hover/item:text-primary transition-colors">
+                            {item.name}
+                          </span>
+                          <span className="text-[11px] text-muted-foreground leading-snug">
+                            {item.description}
+                          </span>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Pricing Direct Link */}
+          <Link
+            href="/#pricing"
+            className="px-3 py-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
+          >
+            Pricing
+          </Link>
+
+          {/* Docs Direct Link */}
+          <Link
+            href="https://pulse-41cf5b0d.mintlify.site/introduction"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3 py-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
+          >
+            Docs
+          </Link>
         </nav>
 
         {/* Action Panel */}
-        <div className="flex items-center gap-3.5">
+        <div className="flex items-center gap-2.5">
           {/* Theme switcher */}
           <ThemeToggleButton />
 
           {session ? (
             <Link
               href="/dashboard"
-              className="flex items-center justify-center h-8.5 px-4 bg-primary text-primary-foreground font-semibold text-xs rounded-lg border border-primary hover:bg-primary/90 transition-all duration-300"
+              className="flex items-center justify-center h-8.5 px-3.5 bg-primary text-primary-foreground font-semibold text-xs rounded-lg hover:bg-primary/90 transition-all duration-200"
             >
               Dashboard <ArrowRight className="ml-1.5 size-3.5" />
             </Link>
@@ -224,20 +304,106 @@ export default function LandingHeader() {
             <>
               <Link
                 href="/login"
-                className="hidden sm:inline-flex text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+                className="hidden sm:inline-flex px-2.5 py-1 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
               >
                 Log in
               </Link>
               <Link
                 href="/signup"
-                className="flex items-center justify-center h-8.5 px-4 bg-primary text-primary-foreground font-semibold text-xs rounded-lg border border-primary hover:bg-primary/90 transition-all duration-300"
+                className="flex items-center justify-center h-8.5 px-3.5 bg-primary text-primary-foreground font-semibold text-xs rounded-lg hover:bg-primary/90 transition-all duration-200"
               >
                 Get Started
               </Link>
             </>
           )}
+
+          {/* Mobile Menu Toggle */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="flex md:hidden items-center justify-center size-8 rounded-lg border border-border bg-background/50 hover:bg-accent text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+            aria-label="Toggle mobile menu"
+          >
+            {isMobileMenuOpen ? <X className="size-4" /> : <Menu className="size-4" />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Drawer */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden fixed top-20 left-4 right-4 bg-popover/95 backdrop-blur-xl border border-border rounded-2xl p-4 shadow-2xl z-50 max-h-[80vh] overflow-y-auto"
+          >
+            <div className="flex flex-col gap-4 text-xs">
+              <div className="font-mono text-[10px] uppercase font-bold text-muted-foreground tracking-wider px-2">
+                Product
+              </div>
+              <div className="grid grid-cols-1 gap-1">
+                {productLinks.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href as any}
+                    className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-accent text-foreground transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {item.icon}
+                    <span>{item.name}</span>
+                  </Link>
+                ))}
+              </div>
+
+              <div className="font-mono text-[10px] uppercase font-bold text-muted-foreground tracking-wider px-2 pt-2 border-t border-border">
+                Free Tools
+              </div>
+              <div className="grid grid-cols-1 gap-1">
+                {toolLinks.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href as any}
+                    className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-accent text-foreground transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {item.icon}
+                    <span>{item.name}</span>
+                  </Link>
+                ))}
+              </div>
+
+              <div className="pt-2 border-t border-border flex flex-col gap-1">
+                <Link
+                  href="/#pricing"
+                  className="p-2 rounded-lg hover:bg-accent text-foreground font-semibold"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Pricing
+                </Link>
+                <Link
+                  href="https://pulse-41cf5b0d.mintlify.site/introduction"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg hover:bg-accent text-foreground font-semibold"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Documentation
+                </Link>
+                {!session && (
+                  <Link
+                    href="/login"
+                    className="p-2 rounded-lg hover:bg-accent text-foreground font-semibold"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Log in
+                  </Link>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

@@ -98,7 +98,7 @@ export default function Pricing() {
                 <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/50">
                   tier_00
                 </p>
-                <span className="text-[9px] font-mono font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                <span className="text-[9px] font-mono font-semibold bg-primary/10 text-primary px-2 py-0.5 rounded-full border border-primary/20">
                   Grandfathered
                 </span>
               </div>
@@ -181,10 +181,10 @@ export default function Pricing() {
               aria-label="Live monitoring status: active"
             >
               <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75 motion-safe:animate-ping" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-75 motion-safe:animate-ping" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
               </span>
-              <span className="text-[9px] font-mono uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
+              <span className="text-[9px] font-mono uppercase tracking-widest text-primary font-bold">
                 live
               </span>
             </div>
@@ -356,8 +356,8 @@ export default function Pricing() {
         <div className="mt-16 flex flex-col items-center gap-5 text-center border-t border-border/50 pt-10">
           <div className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/60">
             <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75 motion-safe:animate-ping" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-75 motion-safe:animate-ping" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
             </span>
             this page is monitored by pulseguard
           </div>

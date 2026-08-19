@@ -9,6 +9,23 @@ Release notes are generated automatically from [Conventional Commits](https://ww
 
 ---
 
+## [1.3.0] - 2026-08-19
+
+### Added
+
+- **Design System & Theme Modes:** Introduced 5 modern, refined dark & light colorways (`Obsidian Dark`, `Midnight Slate`, `Carbon Ember`, `Nordic Emerald`, `Clean Light`) with balanced HSL contrast and crisp typography.
+- **Navigation Architecture:** Reorganized landing navigation into high-density `Product` and `Tools` mega-menus with rich descriptors, dedicated mobile drawer, and quick actions.
+
+### Changed
+
+- **UI Tokenization:** Converted all hardcoded emerald and neon styling across the dashboard sidebar, onboarding setup wizard, workspace switcher, and hero consensus telemetry visualizations into dynamic CSS `--primary` and theme-aware design tokens.
+
+### Fixed
+
+- **Turborepo Dev Pipeline:** Updated CLI dev watch script and filter rules to prevent daemon server exits during root `bun dev`.
+
+---
+
 ## [1.1.2] - 2026-08-19
 
 ### Fixed

@@ -94,8 +94,8 @@ export function InvitationClient({
 
   if (status === "accepted") {
     return (
-      <div className="max-w-md mx-auto my-16 p-8 rounded-2xl border border-emerald-500/30 bg-card shadow-xl text-center font-mono space-y-4 animate-in fade-in zoom-in-95">
-        <div className="size-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mx-auto">
+      <div className="max-w-md mx-auto my-16 p-8 rounded-2xl border border-border bg-card shadow-xl text-center font-mono space-y-4 animate-in fade-in zoom-in-95">
+        <div className="size-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mx-auto">
           <CheckCircle2 className="size-6" />
         </div>
         <h2 className="text-xl font-bold text-foreground">Welcome to the Team!</h2>
