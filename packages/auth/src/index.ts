@@ -96,7 +96,10 @@ export const auth = betterAuth({
                 userName: user.name || user.email,
                 dashboardUrl: `${appUrl}/dashboard`,
               });
+              console.log(`[Auth] Welcome email sent to ${user.email}`);
             } catch (err) {
+              // This is intentionally fire-and-forget, but we want visibility.
+              // A missing RESEND_API_KEY will throw here — check your .env.
               console.error("[Auth] Failed to send welcome email:", err);
             }
 

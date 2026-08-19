@@ -469,7 +469,7 @@ export async function processBatch(
           }
 
           const isStatusChange =
-            currentStatus !== monitor.status || currentStatus !== "UP" || Boolean(errorReason);
+            currentStatus !== monitor.status || Boolean(errorReason);
 
           const executePersistence = async (retry: boolean = true): Promise<void> => {
             try {
@@ -644,7 +644,7 @@ export async function processBatch(
       // --- INCIDENT MANAGEMENT ---
       if (currentStatus === Status.DOWN && !maintenanceActive) {
         const activeIncident = activeIncidentsMap.get(monitor.id);
-        const alertable = await shouldSendAlert(monitor.id, eventCountsMap, env);
+        const alertable = await shouldSendAlert(monitor.id, eventCountsMap, env, prisma);
 
         if (!activeIncident && alertable) {
           // CREATE NEW INCIDENT

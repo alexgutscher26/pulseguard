@@ -459,6 +459,7 @@ export async function shouldSendAlert(
   monitorId: string,
   eventCounts: Map<string, number>,
   env?: Env,
+  prisma?: any,
 ): Promise<boolean> {
   const recentEvents = eventCounts.get(monitorId) || 0;
 
@@ -500,9 +501,41 @@ export async function shouldSendAlert(
           }
         }
       }
+
+      // Redis responded successfully — trust it as the source of truth.
+      return true;
     } catch (err) {
       console.error(`[AlertDedup] Redis check failed for ${monitorId}:`, err);
-      // On Redis failure, allow the alert through (fail-open)
+      // Redis is unavailable — fall through to the DB-backed fallback below
+      // instead of failing open and flooding the user with alerts.
+    }
+  }
+
+  // DB-backed cooldown fallback: used when Redis is unavailable or not configured.
+  // Check whether an incident was already created for this monitor within the base
+  // cooldown window. If one exists (open or recently resolved), suppress the alert.
+  if (prisma) {
+    try {
+      const since = new Date(Date.now() - ALERT_COOLDOWN_BASE);
+      const recentIncident = await prisma.incident.findFirst({
+        where: {
+          monitorId,
+          createdAt: { gte: since },
+        },
+        orderBy: { createdAt: "desc" },
+        select: { id: true, createdAt: true },
+      });
+
+      if (recentIncident) {
+        console.warn(
+          `[AlertDedup] DB fallback: suppressing alert for ${monitorId} — incident ${recentIncident.id} created at ${recentIncident.createdAt.toISOString()} is within cooldown window.`,
+        );
+        return false;
+      }
+    } catch (dbErr) {
+      console.error(`[AlertDedup] DB fallback check failed for ${monitorId}:`, dbErr);
+      // Both Redis and DB failed. Fail-closed to protect the user's inbox.
+      return false;
     }
   }
 

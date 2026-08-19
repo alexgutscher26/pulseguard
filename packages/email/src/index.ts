@@ -147,10 +147,11 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
   } = options;
 
   const key = apiKey ?? env.RESEND_API_KEY;
+  // Treat as dev/test only when NODE_ENV is explicitly set to those values.
+  // An unset NODE_ENV (e.g. edge runtime, build time) is NOT treated as dev — that
+  // was the root cause of the welcome email silently no-oping in production.
   const isDevOrTest =
-    process.env.NODE_ENV === "development" ||
-    process.env.NODE_ENV === "test" ||
-    !process.env.NODE_ENV;
+    process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test";
 
   if (!key) {
     if (isDevOrTest) {
@@ -166,7 +167,11 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
       console.log(`==================================================\n`);
       return { id: "dev-mock-email-id" };
     }
-    return { error: "RESEND_API_KEY is not set" };
+    // In production, a missing API key is a hard error — surface it so it doesn't
+    // silently disappear into a fire-and-forget catch block.
+    throw new Error(
+      "[PulseGuard Email] RESEND_API_KEY is not configured. Email cannot be sent.",
+    );
   }
 
   try {
