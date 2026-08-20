@@ -94,15 +94,15 @@ export default function Hero() {
 
         {/* H1 */}
         <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-[1.05] mb-8 text-balance text-foreground max-w-4xl">
-          Four regions have to agree <br className="hidden sm:inline" />
-          <span className="text-muted-foreground">before we wake you.</span>
+          Know the second <br className="hidden sm:inline" />
+          <span className="text-muted-foreground">your stack breaks.</span>
         </h1>
 
         {/* Subhead */}
         <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mb-8 text-balance font-sans">
-          SteadyStack checks your endpoints every 60 seconds from seven global regions. One region
-          seeing a failure is a network blip, and we ignore it. When four regions independently
-          agree, you get paged. Every alert you receive has already been confirmed four times over.
+          SteadyStack monitors your endpoints every 60 seconds across global edge regions. Four
+          sovereign regions must independently confirm a failure before we page you — zero false
+          positives, zero alert fatigue.
         </p>
 
         {/* Probe Input Form */}

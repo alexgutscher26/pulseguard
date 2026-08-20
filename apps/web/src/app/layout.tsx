@@ -23,12 +23,11 @@ const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://steadystack.dev";
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default:
-      "SteadyStack — Uptime monitoring that confirms failures from 7 regions before alerting",
+    default: "SteadyStack — Know the second your stack breaks",
     template: "%s | SteadyStack",
   },
   description:
-    "Four of seven global regions must agree before SteadyStack pages you. 60-second checks, 50 monitors, multi-region verification — free, and free for commercial use.",
+    "Know the second your stack breaks. Edge-native synthetic uptime monitoring that confirms failures across global regions before alerting. 60-second checks, live latency tracking, and zero false positives — free for commercial use.",
   applicationName: "SteadyStack",
   alternates: {
     canonical: "./",
@@ -36,6 +35,7 @@ export const metadata: Metadata = {
   keywords: [
     "website monitoring",
     "uptime tracker",
+    "synthetic monitoring",
     "latency checker",
     "SSL monitor",
     "cron check",
@@ -44,6 +44,8 @@ export const metadata: Metadata = {
     "SaaS dashboard",
     "multi-region monitoring",
     "quorum verification",
+    "uptime monitoring",
+    "developer tools",
   ],
   authors: [{ name: "SteadyStack Team", url: BASE_URL }],
   creator: "SteadyStack",
@@ -52,15 +54,15 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: BASE_URL,
     siteName: "SteadyStack",
-    title: "SteadyStack — Uptime monitoring that confirms failures from 7 regions before alerting",
+    title: "SteadyStack — Know the second your stack breaks",
     description:
-      "Four of seven global regions must agree before SteadyStack pages you. 60-second checks, 50 monitors, multi-region verification — free, and free for commercial use.",
+      "Know the second your stack breaks. Edge-native synthetic uptime monitoring that confirms failures across global regions before alerting. 60-second checks, live latency tracking, and zero false positives — free for commercial use.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "SteadyStack — Uptime monitoring that confirms failures from 7 regions before alerting",
+    title: "SteadyStack — Know the second your stack breaks",
     description:
-      "Four of seven global regions must agree before SteadyStack pages you. 60-second checks, 50 monitors, multi-region verification — free, and free for commercial use.",
+      "Know the second your stack breaks. Edge-native synthetic uptime monitoring that confirms failures across global regions before alerting. 60-second checks, live latency tracking, and zero false positives — free for commercial use.",
     creator: "@steadystack",
   },
   robots: {
@@ -92,6 +94,7 @@ const jsonLd = {
       "@id": `${BASE_URL}/#website`,
       url: BASE_URL,
       name: "SteadyStack",
+      headline: "Know the second your stack breaks",
       publisher: { "@id": `${BASE_URL}/#organization` },
     },
     {
@@ -101,7 +104,7 @@ const jsonLd = {
       operatingSystem: "All",
       applicationCategory: "DeveloperApplication",
       description:
-        "Cloudflare edge-native monitoring platform with 60-second checks, 7-region verification, and 4-of-7 quorum failure confirmation.",
+        "Know the second your stack breaks. Cloudflare edge-native monitoring platform with 60-second checks, 7-region verification, and 4-of-7 quorum failure confirmation.",
       offers: {
         "@type": "AggregateOffer",
         priceCurrency: "USD",

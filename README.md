@@ -2,7 +2,7 @@
 
 # SteadyStack ⚡
 
-**Edge-native, zero-false-positive operational intelligence platform for modern infrastructure.**
+**Know the second your stack breaks. Edge-native, zero-false-positive operational intelligence platform for modern infrastructure.**
 
 [![Status](https://steadystack.dev/api/badge/steadystack.svg?style=flat&theme=dark&size=sm)](https://steadystack.dev/status-page/steadystack)
 [![Next.js 16](https://img.shields.io/badge/Next.js-16_App_Router-black?style=flat-square&logo=next.js)](https://nextjs.org/)
