@@ -10,7 +10,8 @@ import { PRODUCT_CONFIG } from "@steadystack/shared";
 // index 6 sits slightly low + amber — a small honest "we had one blip" beat,
 // since a perfectly flat green strip on a monitoring company's own site reads as fake.
 const UPTIME_BARS = [
-  8, 8, 8, 8, 8, 8, 4, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
+  8, 8, 8, 8, 8, 8, 4, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
+  8, 8,
 ];
 
 export default function Pricing() {
@@ -48,7 +49,8 @@ export default function Pricing() {
             Select your plan
           </h2>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-lg">
-            Simple, developer-friendly options designed to scale with your backend infrastructure.
+            Simple, developer-friendly options designed to scale with your
+            backend infrastructure.
           </p>
 
           {/* Minimalist Billing Toggle */}
@@ -113,7 +115,9 @@ export default function Pricing() {
                   <span className="text-4xl font-extrabold tracking-tight text-foreground font-mono">
                     $0
                   </span>
-                  <span className="text-muted-foreground text-xs font-medium">/mo</span>
+                  <span className="text-muted-foreground text-xs font-medium">
+                    /mo
+                  </span>
                 </div>
                 <span className="text-[10px] text-muted-foreground/70 font-mono font-bold uppercase tracking-wider">
                   Free Forever • Launch Cohort Guaranteed
@@ -126,8 +130,8 @@ export default function Pricing() {
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
                   <span className="text-foreground font-semibold">
-                    <span className="font-mono font-bold">50</span> Monitors (3m standard, 1m for
-                    first 10)
+                    <span className="font-mono font-bold">50</span> Monitors (3m
+                    standard, 1m for first 10)
                   </span>
                 </li>
                 <li className="flex items-center gap-3">
@@ -201,8 +205,15 @@ export default function Pricing() {
               </p>
 
               {/* Heartbeat trace */}
-              <div className="mt-4 h-7 w-full text-primary/70" aria-hidden="true">
-                <svg viewBox="0 0 300 32" className="w-full h-full" preserveAspectRatio="none">
+              <div
+                className="mt-4 h-7 w-full text-primary/70"
+                aria-hidden="true"
+              >
+                <svg
+                  viewBox="0 0 300 32"
+                  className="w-full h-full"
+                  preserveAspectRatio="none"
+                >
                   <path
                     d="M0,16 L100,16 L112,16 L122,3 L134,29 L146,16 L300,16"
                     fill="none"
@@ -225,7 +236,9 @@ export default function Pricing() {
                   <span className="text-4xl font-extrabold tracking-tight text-foreground font-mono">
                     {billing === "yearly" ? "$15" : "$19"}
                   </span>
-                  <span className="text-muted-foreground text-xs font-medium">/mo</span>
+                  <span className="text-muted-foreground text-xs font-medium">
+                    /mo
+                  </span>
                 </div>
                 {billing === "yearly" && (
                   <span className="text-[10px] text-primary/80 font-mono font-bold uppercase tracking-wider">
@@ -240,7 +253,8 @@ export default function Pricing() {
                 <li className="flex items-center gap-3">
                   <Check className="size-4 text-primary shrink-0" />
                   <span className="text-foreground font-semibold">
-                    <span className="font-mono">250</span> Active Monitors (30s interval)
+                    <span className="font-mono">250</span> Active Monitors (30s
+                    interval)
                   </span>
                 </li>
                 <li className="flex items-center gap-3">
@@ -300,7 +314,9 @@ export default function Pricing() {
                   <span className="text-4xl font-extrabold tracking-tight text-foreground font-mono">
                     {billing === "yearly" ? "$65" : "$79"}
                   </span>
-                  <span className="text-muted-foreground text-xs font-medium">/mo</span>
+                  <span className="text-muted-foreground text-xs font-medium">
+                    /mo
+                  </span>
                 </div>
                 {billing === "yearly" && (
                   <span className="text-[10px] text-muted-foreground/60 font-mono font-bold uppercase tracking-wider">
@@ -380,19 +396,23 @@ export default function Pricing() {
 
           <div className="flex flex-col sm:flex-row items-center gap-6 text-xs text-muted-foreground pt-2">
             <div className="flex items-center gap-2">
-              <span className="text-primary font-bold">✓</span> Free plan includes commercial use
+              <span className="text-primary font-bold">✓</span> Free plan
+              includes commercial use
             </div>
             <div className="hidden sm:block text-muted-foreground/30">•</div>
             <div className="flex items-center gap-2">
-              <span className="text-primary font-bold">✓</span> 14-day free trial on paid plans
+              <span className="text-primary font-bold">✓</span> 14-day free
+              trial on paid plans
             </div>
             <div className="hidden sm:block text-muted-foreground/30">•</div>
             <div className="flex items-center gap-2">
-              <span className="text-primary font-bold">✓</span> No credit card required to start
+              <span className="text-primary font-bold">✓</span> No credit card
+              required to start
             </div>
             <div className="hidden sm:block text-muted-foreground/30">•</div>
             <div className="flex items-center gap-2">
-              <span className="text-primary font-bold">✓</span> Instant setup in less than 2 minutes
+              <span className="text-primary font-bold">✓</span> Instant setup in
+              less than 2 minutes
             </div>
           </div>
         </div>

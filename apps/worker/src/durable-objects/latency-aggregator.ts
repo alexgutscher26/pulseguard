@@ -133,7 +133,8 @@ export class LatencyAggregator extends DurableObject {
             if (insertAttempts >= maxInsertAttempts) {
               throw writeErr;
             }
-            const delayMs = 250 * Math.pow(2, insertAttempts - 1) + Math.random() * 50;
+            const delayMs =
+              250 * Math.pow(2, insertAttempts - 1) + Math.random() * 50;
             console.warn(
               `[LatencyAggregator] Flush DB retry ${insertAttempts}/${maxInsertAttempts} after ${Math.round(delayMs)}ms:`,
               writeErr?.message,
@@ -147,7 +148,9 @@ export class LatencyAggregator extends DurableObject {
           buf.reset();
         }
 
-        console.log(`[LatencyAggregator] Flushed ${aggregates.length} aggregates`);
+        console.log(
+          `[LatencyAggregator] Flushed ${aggregates.length} aggregates`,
+        );
 
         // Notify subscribers
         this.notifySubscribers({
@@ -205,7 +208,8 @@ export class LatencyAggregator extends DurableObject {
 
         if (existing) {
           // Exponential moving average (alpha = 0.1 for ~30-day equivalent)
-          const newBaseline = existing.baselineLatency * 0.9 + u.currentAvg * 0.1;
+          const newBaseline =
+            existing.baselineLatency * 0.9 + u.currentAvg * 0.1;
 
           updatePromises.push(
             prisma.regionalBaseline.update({
@@ -261,7 +265,10 @@ export class LatencyAggregator extends DurableObject {
       try {
         callback(data);
       } catch (error) {
-        console.error("[LatencyAggregator] Subscriber notification error:", error);
+        console.error(
+          "[LatencyAggregator] Subscriber notification error:",
+          error,
+        );
       }
     }
   }
@@ -296,9 +303,12 @@ export class LatencyAggregator extends DurableObject {
       if (flush) {
         await this.flushAggregates();
       }
-      return new Response(JSON.stringify({ success: true, count: records?.length || 0 }), {
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({ success: true, count: records?.length || 0 }),
+        {
+          headers: { "Content-Type": "application/json" },
+        },
+      );
     }
 
     if (request.method === "POST" && url.pathname === "/flush") {

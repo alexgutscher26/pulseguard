@@ -1,9 +1,15 @@
 import { describe, test, expect } from "bun:test";
-import { evaluateQuorum, QuorumEngine, DEFAULT_QUORUM_CONFIG } from "../services/quorum-engine";
+import {
+  evaluateQuorum,
+  QuorumEngine,
+  DEFAULT_QUORUM_CONFIG,
+} from "../services/quorum-engine";
 import type { ProbeCheckResult } from "@steadystack/types";
 
 describe("Quorum Engine — Zero False Positive Consensus Verification", () => {
-  const createMockResults = (overrides: Partial<ProbeCheckResult>[]): ProbeCheckResult[] => {
+  const createMockResults = (
+    overrides: Partial<ProbeCheckResult>[],
+  ): ProbeCheckResult[] => {
     const defaultRegions = [
       { region: "wnam", colo: "SJC", asn: "AS13335" },
       { region: "enam", colo: "IAD", asn: "AS13335" },
@@ -234,7 +240,11 @@ describe("Quorum Engine — Zero False Positive Consensus Verification", () => {
     };
 
     // Single failure among 3 is DEGRADED, not DOWN (Zero false positives!)
-    const singleFailEval = evaluateQuorum("mon-free", freeTierResults, freeTierConfig);
+    const singleFailEval = evaluateQuorum(
+      "mon-free",
+      freeTierResults,
+      freeTierConfig,
+    );
     expect(singleFailEval.finalStatus).toBe("DEGRADED");
     expect(singleFailEval.isGlobalOutage).toBe(false);
     expect(singleFailEval.totalEligibleProbes).toBe(3);
@@ -255,7 +265,11 @@ describe("Quorum Engine — Zero False Positive Consensus Verification", () => {
       freeTierResults[2]!,
     ];
 
-    const twoFailEval = evaluateQuorum("mon-free", twoFailResults, freeTierConfig);
+    const twoFailEval = evaluateQuorum(
+      "mon-free",
+      twoFailResults,
+      freeTierConfig,
+    );
     expect(twoFailEval.finalStatus).toBe("DOWN");
     expect(twoFailEval.isGlobalOutage).toBe(true);
     expect(twoFailEval.confirmedDownCount).toBe(2);
@@ -266,13 +280,48 @@ describe("Quorum Engine — Zero False Positive Consensus Verification", () => {
     // 7 Cloudflare regions (AS13335) all report DOWN due to Cloudflare internal egress incident
     // 1 Out-of-band sentinel probe (AS24940) reports UP
     const mockCloudflareFailures = createMockResults([
-      { region: "wnam", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
-      { region: "enam", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
-      { region: "weur", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
-      { region: "eeur", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
-      { region: "apac", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
-      { region: "apac-ne", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
-      { region: "apac-se", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
+      {
+        region: "wnam",
+        asn: "AS13335",
+        status: "DOWN",
+        isVerificationRetry: true,
+      },
+      {
+        region: "enam",
+        asn: "AS13335",
+        status: "DOWN",
+        isVerificationRetry: true,
+      },
+      {
+        region: "weur",
+        asn: "AS13335",
+        status: "DOWN",
+        isVerificationRetry: true,
+      },
+      {
+        region: "eeur",
+        asn: "AS13335",
+        status: "DOWN",
+        isVerificationRetry: true,
+      },
+      {
+        region: "apac",
+        asn: "AS13335",
+        status: "DOWN",
+        isVerificationRetry: true,
+      },
+      {
+        region: "apac-ne",
+        asn: "AS13335",
+        status: "DOWN",
+        isVerificationRetry: true,
+      },
+      {
+        region: "apac-se",
+        asn: "AS13335",
+        status: "DOWN",
+        isVerificationRetry: true,
+      },
     ]);
 
     const outOfBandSentinelResult: ProbeCheckResult = {
@@ -302,13 +351,48 @@ describe("Quorum Engine — Zero False Positive Consensus Verification", () => {
 
   test("Genuine Outage across Multi-ASN: Cloudflare DOs and Out-of-Band sentinel both fail -> Confirms GLOBAL_OUTAGE", () => {
     const mockCloudflareFailures = createMockResults([
-      { region: "wnam", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
-      { region: "enam", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
-      { region: "weur", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
-      { region: "eeur", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
-      { region: "apac", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
-      { region: "oc", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
-      { region: "sam", asn: "AS13335", status: "DOWN", isVerificationRetry: true },
+      {
+        region: "wnam",
+        asn: "AS13335",
+        status: "DOWN",
+        isVerificationRetry: true,
+      },
+      {
+        region: "enam",
+        asn: "AS13335",
+        status: "DOWN",
+        isVerificationRetry: true,
+      },
+      {
+        region: "weur",
+        asn: "AS13335",
+        status: "DOWN",
+        isVerificationRetry: true,
+      },
+      {
+        region: "eeur",
+        asn: "AS13335",
+        status: "DOWN",
+        isVerificationRetry: true,
+      },
+      {
+        region: "apac",
+        asn: "AS13335",
+        status: "DOWN",
+        isVerificationRetry: true,
+      },
+      {
+        region: "oc",
+        asn: "AS13335",
+        status: "DOWN",
+        isVerificationRetry: true,
+      },
+      {
+        region: "sam",
+        asn: "AS13335",
+        status: "DOWN",
+        isVerificationRetry: true,
+      },
     ]);
 
     const outOfBandFailureResult: ProbeCheckResult = {

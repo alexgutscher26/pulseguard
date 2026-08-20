@@ -1,6 +1,9 @@
 import type { PrismaClient } from "@steadystack/db";
 import { getMonthlyStats } from "./analytics-service";
-import { renderMonthlyReportToBuffer, sendMonthlyReport } from "@steadystack/email";
+import {
+  renderMonthlyReportToBuffer,
+  sendMonthlyReport,
+} from "@steadystack/email";
 
 export async function generateAndSendMonthlyReports(
   prisma: PrismaClient,
@@ -23,7 +26,10 @@ export async function generateAndSendMonthlyReports(
       select: { email: true },
     });
   } catch (e) {
-    console.warn("[ReportGenerator] Could not fetch verified users. Fetching recent users...", e);
+    console.warn(
+      "[ReportGenerator] Could not fetch verified users. Fetching recent users...",
+      e,
+    );
     // Fallback: Fetch all users
     recipients = await prisma.user.findMany({
       take: 5,
@@ -60,7 +66,12 @@ export async function generateAndSendMonthlyReports(
 
   for (const user of recipients) {
     console.log(`[ReportGenerator] Sending to ${user.email}...`);
-    await sendMonthlyReport(user.email, pdfBuffer, monthName, env.RESEND_API_KEY);
+    await sendMonthlyReport(
+      user.email,
+      pdfBuffer,
+      monthName,
+      env.RESEND_API_KEY,
+    );
     // Simple rate limit prevention
     await new Promise((r) => setTimeout(r, 200));
   }

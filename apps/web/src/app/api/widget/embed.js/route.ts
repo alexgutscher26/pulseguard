@@ -60,7 +60,8 @@ export async function GET(request: NextRequest) {
   const majorText = badgeText.major || "Major Outage";
 
   // Get the base URL for API calls
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || request.headers.get("origin") || "";
+  const baseUrl =
+    process.env.NEXT_PUBLIC_APP_URL || request.headers.get("origin") || "";
 
   // Generate the embeddable JavaScript
   const script = `

@@ -218,7 +218,9 @@ export async function reportResultsBatch(
     where: { id: { in: monitorIds } },
     select: { id: true, interval: true },
   });
-  const intervalMap = new Map<string, number>(monitors.map((m: any) => [m.id, m.interval || 60]));
+  const intervalMap = new Map<string, number>(
+    monitors.map((m: any) => [m.id, m.interval || 60]),
+  );
 
   // 3. Update monitor status concurrently (keep only the latest result per monitorId to avoid write contention)
   const latestResultsMap = new Map<string, ProbeResult>();
@@ -259,7 +261,9 @@ export async function recordHeartbeat(
   });
 }
 
-export async function checkProbeHeartbeats(prisma: any): Promise<ProbeHeartbeatResult[]> {
+export async function checkProbeHeartbeats(
+  prisma: any,
+): Promise<ProbeHeartbeatResult[]> {
   const probes = await prisma.probe.findMany({
     where: { status: { not: "DISCONNECTED" } },
     select: { id: true, lastHeartbeat: true, heartbeatInterval: true },
@@ -278,7 +282,9 @@ export async function checkProbeHeartbeats(prisma: any): Promise<ProbeHeartbeatR
       continue;
     }
 
-    const secondsSince = Math.floor((now - probe.lastHeartbeat.getTime()) / 1000);
+    const secondsSince = Math.floor(
+      (now - probe.lastHeartbeat.getTime()) / 1000,
+    );
     const maxGap = probe.heartbeatInterval * 3; // 3x grace multiplier
     const status = secondsSince > maxGap ? "DOWN" : "UP";
 

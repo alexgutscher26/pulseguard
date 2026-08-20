@@ -1,9 +1,16 @@
 import { getPrisma } from "@steadystack/db";
-import type { ExecutionContext, MessageBatch, ScheduledEvent } from "@cloudflare/workers-types";
+import type {
+  ExecutionContext,
+  MessageBatch,
+  ScheduledEvent,
+} from "@cloudflare/workers-types";
 export { LatencyAggregator } from "./durable-objects/latency-aggregator";
 export { MonitorChannel } from "./durable-objects/monitor-channel";
 export { RegionalProbe } from "./durable-objects/regional-probe";
-import { CLOUDFLARE_PROBE_REGIONS, type DOLocationHint } from "@steadystack/shared";
+import {
+  CLOUDFLARE_PROBE_REGIONS,
+  type DOLocationHint,
+} from "@steadystack/shared";
 import type { Env } from "./env";
 export type { Env };
 import { handleFetch } from "./routes";
@@ -46,12 +53,17 @@ export default {
     }
 
     // --- ANOMALY SCANNER: Run every 5 minutes ---
-    if (event.cron === "*/5 * * * *" || event.cron === "0 * * * *" || isFiveMinuteMark) {
+    if (
+      event.cron === "*/5 * * * *" ||
+      event.cron === "0 * * * *" ||
+      isFiveMinuteMark
+    ) {
       ctx.waitUntil(
         (async () => {
           try {
             const scanPrisma = getPrisma(env.DATABASE_URL);
-            const { runAnomalyScan } = await import("./services/anomaly-scanner");
+            const { runAnomalyScan } =
+              await import("./services/anomaly-scanner");
             await runAnomalyScan(scanPrisma);
           } catch (err) {
             console.error("[AnomalyScan] Scheduled run failed:", err);
@@ -93,7 +105,10 @@ export default {
             );
             await queue.inspectBacklogAndAlarm(100);
           } catch (qErr) {
-            console.warn("[QueueMetrics] Failed to inspect queue backlog:", qErr);
+            console.warn(
+              "[QueueMetrics] Failed to inspect queue backlog:",
+              qErr,
+            );
           }
         })(),
       );
@@ -120,7 +135,9 @@ export default {
         (async () => {
           for (const reg of CLOUDFLARE_PROBE_REGIONS) {
             try {
-              const probeId = env.REGIONAL_PROBE.idFromName(`probe-${reg.code}`);
+              const probeId = env.REGIONAL_PROBE.idFromName(
+                `probe-${reg.code}`,
+              );
               const probe = env.REGIONAL_PROBE.get(probeId, {
                 locationHint: reg.code as any,
               });
@@ -143,7 +160,10 @@ export default {
     const totalShards = Number(env.TOTAL_SHARDS || 1);
     const shardId = Number(env.SHARD_ID || 0);
 
-    const runWithRetry = async (retryCount: number = 0, maxRetries: number = 2): Promise<any> => {
+    const runWithRetry = async (
+      retryCount: number = 0,
+      maxRetries: number = 2,
+    ): Promise<any> => {
       try {
         // Find active monitors that are due for a check, skipping abandoned free-tier accounts (>60d inactive)
         const targetIds: { id: string }[] = await prisma.$queryRaw`
@@ -223,7 +243,9 @@ export default {
 
         if (monitors.length === 0) break;
 
-        console.log(`[Cron Chunk ${chunkIdx + 1}] Processing ${monitors.length} monitors...`);
+        console.log(
+          `[Cron Chunk ${chunkIdx + 1}] Processing ${monitors.length} monitors...`,
+        );
         const { remaining } = await processBatch(monitors, prisma, env, ctx);
         totalProcessedCount += monitors.length - remaining.length;
 
@@ -246,7 +268,9 @@ export default {
         if (targetIds.length < CHUNK_SIZE) break;
       }
 
-      console.log(`Cron execution completed. Total monitors checked: ${totalProcessedCount}.`);
+      console.log(
+        `Cron execution completed. Total monitors checked: ${totalProcessedCount}.`,
+      );
 
       // Outbound dead-man's switch / external heartbeat ping to verify worker check-loop liveness
       const pingUrl = env.DEADMAN_SNITCH_URL || env.HEALTHCHECK_PING_URL;
@@ -264,7 +288,10 @@ export default {
               timestamp: new Date().toISOString(),
             }),
           }).catch((pingErr) => {
-            console.warn("[Sentinel] Failed to ping outbound heartbeat URL:", pingErr);
+            console.warn(
+              "[Sentinel] Failed to ping outbound heartbeat URL:",
+              pingErr,
+            );
           }),
         );
       }
@@ -287,7 +314,10 @@ export default {
               timestamp: new Date().toISOString(),
             }),
           }).catch((pingErr) => {
-            console.warn("[Sentinel] Failed to ping error heartbeat URL:", pingErr);
+            console.warn(
+              "[Sentinel] Failed to ping error heartbeat URL:",
+              pingErr,
+            );
           }),
         );
       }
@@ -301,19 +331,27 @@ export default {
     if (env.CHAOS_ENGINEERING === "true") {
       // 1. Simulate batch/isolate level crash (10% chance)
       if (Math.random() < 0.1) {
-        console.warn("[Chaos Mode] Simulating fatal worker instance crash / V8 isolate eviction!");
-        throw new Error("IsolateEvictionError: Cloudflare Worker instance killed by Chaos Engine");
+        console.warn(
+          "[Chaos Mode] Simulating fatal worker instance crash / V8 isolate eviction!",
+        );
+        throw new Error(
+          "IsolateEvictionError: Cloudflare Worker instance killed by Chaos Engine",
+        );
       }
 
       // 2. Simulate message level failure (10% chance per message)
       const failedMessageIds = new Set<string>();
       for (const msg of batch.messages) {
-        const msgId = msg.id || (msg.body && msg.body.id) || `mock_${Math.random()}`;
+        const msgId =
+          msg.id || (msg.body && msg.body.id) || `mock_${Math.random()}`;
         // Systematic failure for 1 in 15 messages (e.g. msg_event_0, 15, 30...) to force DLQ escalation
         const shouldSystematicFail =
-          msgId.startsWith("msg_event_") && parseInt(msgId.replace("msg_event_", "")) % 15 === 0;
+          msgId.startsWith("msg_event_") &&
+          parseInt(msgId.replace("msg_event_", "")) % 15 === 0;
         if (Math.random() < 0.1 || shouldSystematicFail) {
-          console.warn(`[Chaos Mode] Simulating message processing failure for message: ${msgId}`);
+          console.warn(
+            `[Chaos Mode] Simulating message processing failure for message: ${msgId}`,
+          );
           msg.retry();
           failedMessageIds.add(msgId);
         }
@@ -340,7 +378,8 @@ export default {
 
     // Dispatch based on queue name
     if (activeBatch.queue === "notifications") {
-      const { default: notificationHandler } = await import("./notification-handler");
+      const { default: notificationHandler } =
+        await import("./notification-handler");
       await notificationHandler.queue(activeBatch, env, ctx);
       return;
     }

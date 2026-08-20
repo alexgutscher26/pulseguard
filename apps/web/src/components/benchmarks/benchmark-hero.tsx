@@ -56,12 +56,16 @@ export function BenchmarkHero() {
 
         {/* Subtitle / Positioning */}
         <p className="text-muted-foreground text-base sm:text-lg md:text-xl max-w-3xl leading-relaxed mb-8">
-          We ran <span className="text-foreground font-semibold">SteadyStack</span>,{" "}
-          <span className="text-foreground font-semibold">UptimeRobot</span>, and{" "}
-          <span className="text-foreground font-semibold">Pingdom</span> against 10 identical
-          endpoints for 30 days. We counted every single spurious alert, measured detection latency,
-          published the methodology, and released the complete dataset —{" "}
-          <span className="text-primary font-bold">including the 3 scenarios where we lost.</span>
+          We ran{" "}
+          <span className="text-foreground font-semibold">SteadyStack</span>,{" "}
+          <span className="text-foreground font-semibold">UptimeRobot</span>,
+          and <span className="text-foreground font-semibold">Pingdom</span>{" "}
+          against 10 identical endpoints for 30 days. We counted every single
+          spurious alert, measured detection latency, published the methodology,
+          and released the complete dataset —{" "}
+          <span className="text-primary font-bold">
+            including the 3 scenarios where we lost.
+          </span>
         </p>
 
         {/* Executive Highlights Grid */}
@@ -71,12 +75,16 @@ export function BenchmarkHero() {
               Spurious Alerts (PG)
             </span>
             <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-3xl sm:text-4xl font-extrabold text-emerald-500">0</span>
+              <span className="text-3xl sm:text-4xl font-extrabold text-emerald-500">
+                0
+              </span>
               <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400 font-mono">
                 0.00% error
               </span>
             </div>
-            <span className="text-[10px] text-muted-foreground/80 mt-1">vs 28 (UR) & 41 (PD)</span>
+            <span className="text-[10px] text-muted-foreground/80 mt-1">
+              vs 28 (UR) & 41 (PD)
+            </span>
           </div>
 
           <div className="p-4 rounded-xl border border-border/70 bg-card/60 backdrop-blur-sm shadow-sm flex flex-col justify-between">
@@ -84,8 +92,12 @@ export function BenchmarkHero() {
               Consensus Speed
             </span>
             <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-3xl sm:text-4xl font-extrabold text-foreground">840</span>
-              <span className="text-xs font-medium text-muted-foreground font-mono">ms</span>
+              <span className="text-3xl sm:text-4xl font-extrabold text-foreground">
+                840
+              </span>
+              <span className="text-xs font-medium text-muted-foreground font-mono">
+                ms
+              </span>
             </div>
             <span className="text-[10px] text-muted-foreground/80 mt-1">
               Parallel 4-of-7 Quorum
@@ -97,10 +109,16 @@ export function BenchmarkHero() {
               True Recall Rate
             </span>
             <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-3xl sm:text-4xl font-extrabold text-teal-400">100%</span>
-              <span className="text-xs font-medium text-muted-foreground font-mono">4 / 4</span>
+              <span className="text-3xl sm:text-4xl font-extrabold text-teal-400">
+                100%
+              </span>
+              <span className="text-xs font-medium text-muted-foreground font-mono">
+                4 / 4
+              </span>
             </div>
-            <span className="text-[10px] text-muted-foreground/80 mt-1">All outages caught</span>
+            <span className="text-[10px] text-muted-foreground/80 mt-1">
+              All outages caught
+            </span>
           </div>
 
           <div className="p-4 rounded-xl border border-border/70 bg-card/60 backdrop-blur-sm shadow-sm flex flex-col justify-between">
@@ -108,10 +126,16 @@ export function BenchmarkHero() {
               Raw Probes Analyzed
             </span>
             <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-3xl sm:text-4xl font-extrabold text-foreground">1.29M</span>
-              <span className="text-xs font-medium text-muted-foreground font-mono">checks</span>
+              <span className="text-3xl sm:text-4xl font-extrabold text-foreground">
+                1.29M
+              </span>
+              <span className="text-xs font-medium text-muted-foreground font-mono">
+                checks
+              </span>
             </div>
-            <span className="text-[10px] text-muted-foreground/80 mt-1">30 days @ 60s cadence</span>
+            <span className="text-[10px] text-muted-foreground/80 mt-1">
+              30 days @ 60s cadence
+            </span>
           </div>
         </div>
 
@@ -150,7 +174,9 @@ export function BenchmarkHero() {
             {copiedCitation ? (
               <>
                 <Check className="size-3.5 text-emerald-500" />
-                <span className="text-emerald-500 font-sans font-medium">Citation Copied!</span>
+                <span className="text-emerald-500 font-sans font-medium">
+                  Citation Copied!
+                </span>
               </>
             ) : (
               <>

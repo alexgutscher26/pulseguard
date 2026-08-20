@@ -71,12 +71,15 @@ export function Verification({ data }: { data: VerificationEmailData }) {
                 lineHeight: 1.6,
               }}
             >
-              Hi {data.userName}, thank you for registering with SteadyStack. Please confirm your
-              email to activate your account and access global edge monitoring.
+              Hi {data.userName}, thank you for registering with SteadyStack.
+              Please confirm your email to activate your account and access
+              global edge monitoring.
             </Text>
 
             {/* CTA Button */}
-            <PrimaryButton href={data.verificationUrl}>Verify Email Address</PrimaryButton>
+            <PrimaryButton href={data.verificationUrl}>
+              Verify Email Address
+            </PrimaryButton>
 
             {/* Expiry / Security Note */}
             <div
@@ -107,8 +110,8 @@ export function Verification({ data }: { data: VerificationEmailData }) {
                   lineHeight: 1.5,
                 }}
               >
-                This verification link expires in 24 hours. If you did not create a SteadyStack
-                account, please disregard this email.
+                This verification link expires in 24 hours. If you did not
+                create a SteadyStack account, please disregard this email.
               </Text>
             </div>
 
@@ -147,6 +150,8 @@ export function Verification({ data }: { data: VerificationEmailData }) {
   );
 }
 
-export async function renderVerification(data: VerificationEmailData): Promise<string> {
+export async function renderVerification(
+  data: VerificationEmailData,
+): Promise<string> {
   return await render(<Verification data={data} />);
 }

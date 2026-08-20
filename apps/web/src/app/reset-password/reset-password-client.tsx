@@ -46,7 +46,10 @@ function ResetPasswordFormContent() {
             }, 1500);
           },
           onError: (error: { error: { message?: string } }) => {
-            toast.error(error.error.message || "Failed to reset password. Link may be expired.");
+            toast.error(
+              error.error.message ||
+                "Failed to reset password. Link may be expired.",
+            );
           },
         },
       );
@@ -73,9 +76,12 @@ function ResetPasswordFormContent() {
           </div>
         </div>
         <div className="space-y-2">
-          <h2 className="text-xl font-bold text-foreground">Invalid Reset Link</h2>
+          <h2 className="text-xl font-bold text-foreground">
+            Invalid Reset Link
+          </h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            This password reset link is missing a valid security token or has expired.
+            This password reset link is missing a valid security token or has
+            expired.
           </p>
         </div>
         <div className="pt-4">
@@ -98,9 +104,12 @@ function ResetPasswordFormContent() {
           </div>
         </div>
         <div className="space-y-2">
-          <h2 className="text-xl font-bold text-foreground">Password Reset Complete</h2>
+          <h2 className="text-xl font-bold text-foreground">
+            Password Reset Complete
+          </h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Your password has been updated successfully. Redirecting you to sign in...
+            Your password has been updated successfully. Redirecting you to sign
+            in...
           </p>
         </div>
         <div className="pt-4">
@@ -127,7 +136,10 @@ function ResetPasswordFormContent() {
         <form.Field name="password">
           {(field) => (
             <div className="space-y-2">
-              <Label htmlFor={field.name} className="text-[13px] font-semibold text-foreground/80">
+              <Label
+                htmlFor={field.name}
+                className="text-[13px] font-semibold text-foreground/80"
+              >
                 New Password
               </Label>
               <div className="relative">
@@ -144,7 +156,10 @@ function ResetPasswordFormContent() {
                 <Lock className="size-5 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
               {field.state.meta.errors.map((error) => (
-                <p key={error?.message} className="text-red-500 font-medium text-xs mt-1">
+                <p
+                  key={error?.message}
+                  className="text-red-500 font-medium text-xs mt-1"
+                >
                   {error?.message}
                 </p>
               ))}
@@ -155,7 +170,10 @@ function ResetPasswordFormContent() {
         <form.Field name="confirmPassword">
           {(field) => (
             <div className="space-y-2">
-              <Label htmlFor={field.name} className="text-[13px] font-semibold text-foreground/80">
+              <Label
+                htmlFor={field.name}
+                className="text-[13px] font-semibold text-foreground/80"
+              >
                 Confirm New Password
               </Label>
               <div className="relative">
@@ -172,7 +190,10 @@ function ResetPasswordFormContent() {
                 <Lock className="size-5 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
               {field.state.meta.errors.map((error) => (
-                <p key={error?.message} className="text-red-500 font-medium text-xs mt-1">
+                <p
+                  key={error?.message}
+                  className="text-red-500 font-medium text-xs mt-1"
+                >
                   {error?.message}
                 </p>
               ))}

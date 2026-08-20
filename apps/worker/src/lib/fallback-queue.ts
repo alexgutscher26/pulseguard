@@ -26,10 +26,15 @@ export class FallbackQueue {
     try {
       // We use LPUSH to add to the head
       await this.redis.lpush(this.QUEUE_KEY, JSON.stringify(event));
-      console.log(`[Fallback] Pushed event for monitor ${event.monitorId} to Redis.`);
+      console.log(
+        `[Fallback] Pushed event for monitor ${event.monitorId} to Redis.`,
+      );
     } catch (err) {
       // If even Redis fails, we log it. This is our last resort of visibility.
-      console.error(`[Fallback] CRITICAL ERROR: Failed to push to Redis fallback:`, err);
+      console.error(
+        `[Fallback] CRITICAL ERROR: Failed to push to Redis fallback:`,
+        err,
+      );
     }
   }
 
@@ -40,7 +45,10 @@ export class FallbackQueue {
   async popBatch(count: number = 50): Promise<FallbackEvent[]> {
     try {
       // RPOP with count is supported by Upstash Redis
-      const results = await this.redis.rpop<string | string[]>(this.QUEUE_KEY, count);
+      const results = await this.redis.rpop<string | string[]>(
+        this.QUEUE_KEY,
+        count,
+      );
 
       if (!results) return [];
 

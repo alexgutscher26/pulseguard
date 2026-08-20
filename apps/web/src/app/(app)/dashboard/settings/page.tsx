@@ -14,7 +14,10 @@ import { PrivacyForm } from "@/components/settings/privacy-form";
 import { BillingForm } from "@/components/settings/billing-form";
 import { ReferralForm } from "@/components/settings/referral-form";
 import { getUserUsageSummary } from "@/lib/billing-server";
-import { verifyAndApplyCheckoutSession, syncUserSubscriptionFromStripe } from "@/lib/stripe";
+import {
+  verifyAndApplyCheckoutSession,
+  syncUserSubscriptionFromStripe,
+} from "@/lib/stripe";
 
 export const dynamic = "force-dynamic";
 
@@ -56,7 +59,9 @@ export default async function SettingsPage({
   } else if (
     isMockCheckout &&
     mockPlan &&
-    (mockPlan === "CONSTRUCT" || mockPlan === "NETRUNNER" || mockPlan === "INITIATE")
+    (mockPlan === "CONSTRUCT" ||
+      mockPlan === "NETRUNNER" ||
+      mockPlan === "INITIATE")
   ) {
     const prisma = (await import("@steadystack/db")).default;
     const oneYearFromNow = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
@@ -103,7 +108,8 @@ export default async function SettingsPage({
     "privacy",
   ];
   const tab = validTabs.includes(cleanTab) ? cleanTab : "general";
-  const usageSummary = tab === "billing" ? await getUserUsageSummary(session.user.id) : undefined;
+  const usageSummary =
+    tab === "billing" ? await getUserUsageSummary(session.user.id) : undefined;
 
   return (
     <div className="flex flex-col md:flex-row gap-8 max-w-6xl">

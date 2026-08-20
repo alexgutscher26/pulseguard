@@ -6,13 +6,18 @@ import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { auth } from "@steadystack/auth";
 import { getAdminStatus } from "./admin";
-import { createStripePromotionCode, createStripeRenewalDiscountCode } from "@/lib/stripe";
+import {
+  createStripePromotionCode,
+  createStripeRenewalDiscountCode,
+} from "@/lib/stripe";
 
 const designPartnerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Please enter a valid work email"),
   company: z.string().optional().default("Indie / Personal"),
-  website: z.string().url("Please enter a valid URL (e.g. https://yourcompany.com)"),
+  website: z
+    .string()
+    .url("Please enter a valid URL (e.g. https://yourcompany.com)"),
   monitorsCount: z.string().default("10-50"),
   currentTool: z.string().default("UptimeRobot"),
   techStack: z.string().optional().default("Next.js / Cloudflare / Node"),
@@ -170,7 +175,10 @@ export async function submitDesignPartnerApplication(
 
     const spotsInfo = await getDesignPartnerSpots();
 
-    console.log(`[DesignPartner] New Application Submitted (PENDING):`, payload);
+    console.log(
+      `[DesignPartner] New Application Submitted (PENDING):`,
+      payload,
+    );
 
     revalidatePath("/design-partners");
     revalidatePath("/dashboard/design-partners");
@@ -193,7 +201,8 @@ export async function submitDesignPartnerApplication(
     }
     return {
       success: false,
-      error: error.message || "Failed to process application. Please try again.",
+      error:
+        error.message || "Failed to process application. Please try again.",
     };
   }
 }
@@ -201,7 +210,9 @@ export async function submitDesignPartnerApplication(
 /**
  * Fetch all design partner applications for admin review
  */
-export async function getAllDesignPartnerApplications(): Promise<DesignPartnerRecord[]> {
+export async function getAllDesignPartnerApplications(): Promise<
+  DesignPartnerRecord[]
+> {
   try {
     const records = await prisma.verification.findMany({
       where: { identifier: DESIGN_PARTNER_IDENTIFIER },
@@ -280,7 +291,8 @@ export async function checkDesignPartnerStatus(query: string): Promise<{
         const data = JSON.parse(r.value) as DesignPartnerRecord;
         const matchesEmail = data.email?.toLowerCase() === cleanQuery;
         const matchesId =
-          r.id.toLowerCase() === cleanQuery || data.id?.toLowerCase() === cleanQuery;
+          r.id.toLowerCase() === cleanQuery ||
+          data.id?.toLowerCase() === cleanQuery;
         const matchesVip = data.vipCode?.toLowerCase() === cleanQuery;
 
         if (matchesEmail || matchesId || matchesVip) {
@@ -356,7 +368,10 @@ export async function approveDesignPartnerApplication(
       stripePromoId = stripePromo.id;
       stripeSynced = !stripePromo.isMock;
     } catch (stripeErr) {
-      console.warn("[DesignPartner] Note on Stripe promotion code sync:", stripeErr);
+      console.warn(
+        "[DesignPartner] Note on Stripe promotion code sync:",
+        stripeErr,
+      );
     }
 
     data.status = "APPROVED";
@@ -459,7 +474,8 @@ export async function generatePartnerRenewalDiscount(
     if (data.status !== "APPROVED") {
       return {
         success: false,
-        error: "Renewal discount codes can only be generated for APPROVED design partners",
+        error:
+          "Renewal discount codes can only be generated for APPROVED design partners",
       };
     }
 
@@ -629,7 +645,8 @@ export async function redeemDesignPartnerCode(
     if (!matchedRecord || !matchedData) {
       return {
         success: false,
-        error: "VIP license key not found. Please verify your code or contact support.",
+        error:
+          "VIP license key not found. Please verify your code or contact support.",
       };
     }
 
@@ -641,10 +658,14 @@ export async function redeemDesignPartnerCode(
     }
 
     // Check if already redeemed by another user
-    if (matchedData.redeemedByUserId && matchedData.redeemedByUserId !== session.user.id) {
+    if (
+      matchedData.redeemedByUserId &&
+      matchedData.redeemedByUserId !== session.user.id
+    ) {
       return {
         success: false,
-        error: "This VIP license key has already been activated by another account.",
+        error:
+          "This VIP license key has already been activated by another account.",
       };
     }
 

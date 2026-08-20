@@ -10,15 +10,15 @@ Add a scrape job to your `prometheus.yml`:
 
 ```yaml
 scrape_configs:
-  - job_name: 'steadystack'
+  - job_name: "steadystack"
     scrape_interval: 30s
-    metrics_path: '/api/v1/metrics/prometheus'
-    scheme: 'https'
+    metrics_path: "/api/v1/metrics/prometheus"
+    scheme: "https"
     static_configs:
-      - targets: ['app.steadystack.dev'] # or your self-hosted instance domain
+      - targets: ["app.steadystack.dev"] # or your self-hosted instance domain
     authorization:
       type: Bearer
-      credentials: 'pg_live_xxxxxxxxxxxxxxxxxxxx' # Your SteadyStack API Key
+      credentials: "pg_live_xxxxxxxxxxxxxxxxxxxx" # Your SteadyStack API Key
 ```
 
 ---

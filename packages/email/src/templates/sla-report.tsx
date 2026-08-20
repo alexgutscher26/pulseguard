@@ -322,7 +322,9 @@ export interface SlaReportData {
   }[];
 }
 
-export const SlaReportDocument: React.FC<{ data: SlaReportData }> = ({ data }) => {
+export const SlaReportDocument: React.FC<{ data: SlaReportData }> = ({
+  data,
+}) => {
   const brandTitle = data.agencyName?.trim() || "SteadyStack";
   const clientTitle = data.clientName?.trim() || data.scopeName;
 
@@ -333,10 +335,14 @@ export const SlaReportDocument: React.FC<{ data: SlaReportData }> = ({ data }) =
         <View style={styles.header}>
           <View>
             <Text style={styles.brandName}>{brandTitle}</Text>
-            <Text style={styles.brandSub}>SLA Availability & Compliance Assurance</Text>
+            <Text style={styles.brandSub}>
+              SLA Availability & Compliance Assurance
+            </Text>
           </View>
           <View style={styles.reportMeta}>
-            <Text style={styles.reportTitle}>Service Level Agreement Report</Text>
+            <Text style={styles.reportTitle}>
+              Service Level Agreement Report
+            </Text>
             <Text style={styles.reportSub}>
               Ref: {data.reportId} • Generated: {data.generatedAt}
             </Text>
@@ -356,15 +362,26 @@ export const SlaReportDocument: React.FC<{ data: SlaReportData }> = ({ data }) =
             <View
               style={[
                 styles.verdictBadge,
-                data.isSlaMet ? styles.verdictBadgePass : styles.verdictBadgeFail,
+                data.isSlaMet
+                  ? styles.verdictBadgePass
+                  : styles.verdictBadgeFail,
               ]}
             >
-              <Text style={data.isSlaMet ? styles.verdictTextPass : styles.verdictTextFail}>
-                {data.isSlaMet ? "✓ SLA COMPLIANT (PASS)" : "⚠ SLA BREACHED (FAIL)"}
+              <Text
+                style={
+                  data.isSlaMet
+                    ? styles.verdictTextPass
+                    : styles.verdictTextFail
+                }
+              >
+                {data.isSlaMet
+                  ? "✓ SLA COMPLIANT (PASS)"
+                  : "⚠ SLA BREACHED (FAIL)"}
               </Text>
             </View>
             <Text style={styles.verdictSub}>
-              Target: {data.targetSla.toFixed(2)}% | Actual: {data.actualUptime.toFixed(3)}%
+              Target: {data.targetSla.toFixed(2)}% | Actual:{" "}
+              {data.actualUptime.toFixed(3)}%
             </Text>
           </View>
         </View>
@@ -372,30 +389,42 @@ export const SlaReportDocument: React.FC<{ data: SlaReportData }> = ({ data }) =
         {/* 4 Key Performance Indicators */}
         <View style={styles.kpiGrid}>
           <View style={styles.kpiCard}>
-            <Text style={data.isSlaMet ? styles.kpiValueHighlight : styles.kpiValueBreach}>
+            <Text
+              style={
+                data.isSlaMet ? styles.kpiValueHighlight : styles.kpiValueBreach
+              }
+            >
               {data.actualUptime.toFixed(3)}%
             </Text>
             <Text style={styles.kpiLabel}>Uptime Achieved</Text>
-            <Text style={styles.kpiHint}>Target: {data.targetSla.toFixed(2)}%</Text>
+            <Text style={styles.kpiHint}>
+              Target: {data.targetSla.toFixed(2)}%
+            </Text>
           </View>
 
           <View style={styles.kpiCard}>
             <Text style={styles.kpiValue}>{data.consumedDowntimeMinutes}m</Text>
             <Text style={styles.kpiLabel}>Total Outage Time</Text>
-            <Text style={styles.kpiHint}>Allowed: {data.allowedDowntimeMinutes.toFixed(1)}m</Text>
+            <Text style={styles.kpiHint}>
+              Allowed: {data.allowedDowntimeMinutes.toFixed(1)}m
+            </Text>
           </View>
 
           <View style={styles.kpiCard}>
             <Text
               style={
-                data.remainingErrorBudgetPct >= 0 ? styles.kpiValueHighlight : styles.kpiValueBreach
+                data.remainingErrorBudgetPct >= 0
+                  ? styles.kpiValueHighlight
+                  : styles.kpiValueBreach
               }
             >
               {data.remainingErrorBudgetPct.toFixed(1)}%
             </Text>
             <Text style={styles.kpiLabel}>Error Budget Left</Text>
             <Text style={styles.kpiHint}>
-              {data.remainingErrorBudgetPct >= 0 ? "Budget Healthy" : "Exceeded"}
+              {data.remainingErrorBudgetPct >= 0
+                ? "Budget Healthy"
+                : "Exceeded"}
             </Text>
           </View>
 
@@ -411,7 +440,9 @@ export const SlaReportDocument: React.FC<{ data: SlaReportData }> = ({ data }) =
         {/* Secondary KPI Bar (Checks & Latency) */}
         <View style={[styles.kpiGrid, { marginBottom: 14 }]}>
           <View style={[styles.kpiCard, { width: "31.5%" }]}>
-            <Text style={styles.kpiValue}>{data.totalChecks.toLocaleString()}</Text>
+            <Text style={styles.kpiValue}>
+              {data.totalChecks.toLocaleString()}
+            </Text>
             <Text style={styles.kpiLabel}>Total Verification Checks</Text>
             <Text style={styles.kpiHint}>Distributed Edge Quorum</Text>
           </View>
@@ -419,14 +450,18 @@ export const SlaReportDocument: React.FC<{ data: SlaReportData }> = ({ data }) =
             <Text style={styles.kpiValue}>{data.totalIncidents}</Text>
             <Text style={styles.kpiLabel}>Recorded Incidents</Text>
             <Text style={styles.kpiHint}>
-              {data.totalIncidents === 0 ? "Flawless Execution" : "Requires Review"}
+              {data.totalIncidents === 0
+                ? "Flawless Execution"
+                : "Requires Review"}
             </Text>
           </View>
           <View style={[styles.kpiCard, { width: "31.5%" }]}>
             <Text style={styles.kpiValue}>{data.avgLatencyMs}ms</Text>
             <Text style={styles.kpiLabel}>Average Latency</Text>
             <Text style={styles.kpiHint}>
-              {data.p95LatencyMs ? `p95: ${data.p95LatencyMs}ms` : "Edge Verified"}
+              {data.p95LatencyMs
+                ? `p95: ${data.p95LatencyMs}ms`
+                : "Edge Verified"}
             </Text>
           </View>
         </View>
@@ -440,10 +475,20 @@ export const SlaReportDocument: React.FC<{ data: SlaReportData }> = ({ data }) =
             </Text>
             <View style={styles.table}>
               <View style={styles.tableHeader}>
-                <Text style={[styles.tableHeaderCell, styles.colServiceName]}>Service Name</Text>
-                <Text style={[styles.tableHeaderCell, styles.colServiceType]}>Type</Text>
-                <Text style={[styles.tableHeaderCell, styles.colServiceChecks]}>Checks</Text>
-                <Text style={[styles.tableHeaderCell, styles.colServiceDowntime]}>Downtime</Text>
+                <Text style={[styles.tableHeaderCell, styles.colServiceName]}>
+                  Service Name
+                </Text>
+                <Text style={[styles.tableHeaderCell, styles.colServiceType]}>
+                  Type
+                </Text>
+                <Text style={[styles.tableHeaderCell, styles.colServiceChecks]}>
+                  Checks
+                </Text>
+                <Text
+                  style={[styles.tableHeaderCell, styles.colServiceDowntime]}
+                >
+                  Downtime
+                </Text>
                 <Text style={[styles.tableHeaderCell, styles.colServiceUptime]}>
                   Uptime & Status
                 </Text>
@@ -451,10 +496,17 @@ export const SlaReportDocument: React.FC<{ data: SlaReportData }> = ({ data }) =
               {data.services.slice(0, 10).map((srv, idx) => (
                 <View
                   key={srv.id || idx}
-                  style={[styles.tableRow, idx % 2 === 1 ? styles.tableRowAlt : {}]}
+                  style={[
+                    styles.tableRow,
+                    idx % 2 === 1 ? styles.tableRowAlt : {},
+                  ]}
                 >
-                  <Text style={[styles.tableCellBold, styles.colServiceName]}>{srv.name}</Text>
-                  <Text style={[styles.tableCell, styles.colServiceType]}>{srv.type}</Text>
+                  <Text style={[styles.tableCellBold, styles.colServiceName]}>
+                    {srv.name}
+                  </Text>
+                  <Text style={[styles.tableCell, styles.colServiceType]}>
+                    {srv.type}
+                  </Text>
                   <Text style={[styles.tableCell, styles.colServiceChecks]}>
                     {srv.checks.toLocaleString()}
                   </Text>
@@ -482,18 +534,35 @@ export const SlaReportDocument: React.FC<{ data: SlaReportData }> = ({ data }) =
           {data.incidents && data.incidents.length > 0 ? (
             <View style={styles.table}>
               <View style={styles.tableHeader}>
-                <Text style={[styles.tableHeaderCell, styles.colOutageDate]}>Timestamp (UTC)</Text>
-                <Text style={[styles.tableHeaderCell, styles.colOutageService]}>Service</Text>
-                <Text style={[styles.tableHeaderCell, styles.colOutageDuration]}>Duration</Text>
-                <Text style={[styles.tableHeaderCell, styles.colOutageReason]}>Root Cause</Text>
-                <Text style={[styles.tableHeaderCell, styles.colOutageStatus]}>Status</Text>
+                <Text style={[styles.tableHeaderCell, styles.colOutageDate]}>
+                  Timestamp (UTC)
+                </Text>
+                <Text style={[styles.tableHeaderCell, styles.colOutageService]}>
+                  Service
+                </Text>
+                <Text
+                  style={[styles.tableHeaderCell, styles.colOutageDuration]}
+                >
+                  Duration
+                </Text>
+                <Text style={[styles.tableHeaderCell, styles.colOutageReason]}>
+                  Root Cause
+                </Text>
+                <Text style={[styles.tableHeaderCell, styles.colOutageStatus]}>
+                  Status
+                </Text>
               </View>
               {data.incidents.slice(0, 6).map((inc, idx) => (
                 <View
                   key={inc.id || idx}
-                  style={[styles.tableRow, idx % 2 === 1 ? styles.tableRowAlt : {}]}
+                  style={[
+                    styles.tableRow,
+                    idx % 2 === 1 ? styles.tableRowAlt : {},
+                  ]}
                 >
-                  <Text style={[styles.tableCell, styles.colOutageDate]}>{inc.startedAt}</Text>
+                  <Text style={[styles.tableCell, styles.colOutageDate]}>
+                    {inc.startedAt}
+                  </Text>
                   <Text style={[styles.tableCellBold, styles.colOutageService]}>
                     {inc.serviceName}
                   </Text>
@@ -507,7 +576,10 @@ export const SlaReportDocument: React.FC<{ data: SlaReportData }> = ({ data }) =
                     style={[
                       styles.tableCellBold,
                       styles.colOutageStatus,
-                      { color: inc.status === "RESOLVED" ? "#16a34a" : "#ea580c" },
+                      {
+                        color:
+                          inc.status === "RESOLVED" ? "#16a34a" : "#ea580c",
+                      },
                     ]}
                   >
                     {inc.status}
@@ -518,8 +590,9 @@ export const SlaReportDocument: React.FC<{ data: SlaReportData }> = ({ data }) =
           ) : (
             <View style={styles.notesBox}>
               <Text style={styles.notesText}>
-                ✓ Zero service disruptions or confirmed downtime events were recorded during this
-                audit window. 100% continuous edge uptime verified.
+                ✓ Zero service disruptions or confirmed downtime events were
+                recorded during this audit window. 100% continuous edge uptime
+                verified.
               </Text>
             </View>
           )}
@@ -527,7 +600,9 @@ export const SlaReportDocument: React.FC<{ data: SlaReportData }> = ({ data }) =
 
         {/* Agency Executive Commentary & Sign-Off */}
         <View style={styles.notesBox}>
-          <Text style={styles.notesTitle}>Executive SLA Audit Summary & Billing Notes</Text>
+          <Text style={styles.notesTitle}>
+            Executive SLA Audit Summary & Billing Notes
+          </Text>
           <Text style={styles.notesText}>
             {data.notes?.trim()
               ? data.notes
@@ -540,7 +615,8 @@ export const SlaReportDocument: React.FC<{ data: SlaReportData }> = ({ data }) =
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            Generated by {brandTitle} SLA Engine • Powered by SteadyStack Distributed Consensus
+            Generated by {brandTitle} SLA Engine • Powered by SteadyStack
+            Distributed Consensus
           </Text>
           <Text style={styles.footerText}>
             Report ID: {data.reportId} • Confidential & Proprietary

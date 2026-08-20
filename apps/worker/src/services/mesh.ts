@@ -21,11 +21,16 @@ export class ProxyMesh {
    * Component 18-1-0: Primary Proxy Fallback Handler
    * Operates under tight latencies to prevent cascading mesh failures.
    */
-  async component_18_1_0(url: string, timeoutMs: number = 5000): Promise<ProxyResponse> {
+  async component_18_1_0(
+    url: string,
+    timeoutMs: number = 5000,
+  ): Promise<ProxyResponse> {
     this.incrementIOPS();
 
     if (ProxyMesh.iopsCount > ProxyMesh.MAX_IOPS) {
-      console.error("[Mesh] CRITICAL: IOPS limit exceeded (5000+). Preventing cascading failure.");
+      console.error(
+        "[Mesh] CRITICAL: IOPS limit exceeded (5000+). Preventing cascading failure.",
+      );
       return {
         status: Status.DOWN,
         latency: 0,
@@ -61,7 +66,11 @@ export class ProxyMesh {
       const latency = Date.now() - start;
 
       // Extract actual target status from proxy wrapper
-      if (data.status && data.status.http_code >= 200 && data.status.http_code < 400) {
+      if (
+        data.status &&
+        data.status.http_code >= 200 &&
+        data.status.http_code < 400
+      ) {
         return { status: Status.UP, latency, source: "18-1-0" };
       }
 
@@ -93,7 +102,8 @@ export class ProxyMesh {
       return {
         status: Status.DOWN,
         latency: Date.now() - start,
-        error: err.name === "TimeoutError" ? ProxyError.MESH_TIMEOUT : err.message,
+        error:
+          err.name === "TimeoutError" ? ProxyError.MESH_TIMEOUT : err.message,
         source: "18-1-0",
       };
     }
@@ -103,7 +113,10 @@ export class ProxyMesh {
    * Component 18-1-1: Secondary Proxy Fallback Handler
    * Uses corsproxy.io as a distinct verification vector.
    */
-  async component_18_1_1(url: string, timeoutMs: number = 5000): Promise<ProxyResponse> {
+  async component_18_1_1(
+    url: string,
+    timeoutMs: number = 5000,
+  ): Promise<ProxyResponse> {
     this.incrementIOPS();
 
     if (ProxyMesh.iopsCount > ProxyMesh.MAX_IOPS) {
@@ -148,7 +161,8 @@ export class ProxyMesh {
       return {
         status: Status.DOWN,
         latency: Date.now() - start,
-        error: err.name === "TimeoutError" ? ProxyError.MESH_TIMEOUT : err.message,
+        error:
+          err.name === "TimeoutError" ? ProxyError.MESH_TIMEOUT : err.message,
         source: "18-1-1",
       };
     }
@@ -185,7 +199,10 @@ export class ProxyMesh {
       });
 
       const latency = Date.now() - start;
-      const anomaly = QuantumAnomalyDetector.detect(latency, historicalLatencies);
+      const anomaly = QuantumAnomalyDetector.detect(
+        latency,
+        historicalLatencies,
+      );
 
       if (response.ok) {
         return { status: Status.UP, latency, source: "19-3-1", anomaly };
@@ -201,7 +218,10 @@ export class ProxyMesh {
       return {
         status: Status.DOWN,
         latency: Date.now() - start,
-        error: err.name === "TimeoutError" ? ProxyError.CLUSTER_TIMEOUT : err.message,
+        error:
+          err.name === "TimeoutError"
+            ? ProxyError.CLUSTER_TIMEOUT
+            : err.message,
         source: "19-3-1",
       };
     }
@@ -235,7 +255,9 @@ export class QuantumAnomalyDetector {
     const n = historicalLatencies.length;
     const mean = historicalLatencies.reduce((a, b) => a + b, 0) / n;
     const stdDev = Math.sqrt(
-      historicalLatencies.map((x) => Math.pow(x - mean, 2)).reduce((a, b) => a + b, 0) / n,
+      historicalLatencies
+        .map((x) => Math.pow(x - mean, 2))
+        .reduce((a, b) => a + b, 0) / n,
     );
 
     // If stdDev is 0, avoid division by zero

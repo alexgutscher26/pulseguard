@@ -1,7 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Trophy, Medal, Crown, ExternalLink, Shield, Activity, Users, Zap } from "lucide-react";
+import {
+  Trophy,
+  Medal,
+  Crown,
+  ExternalLink,
+  Shield,
+  Activity,
+  Users,
+  Zap,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type { LeaderboardEntry } from "@/actions/leaderboard";
@@ -10,7 +19,11 @@ function RankIcon({ rank }: { rank: number }) {
   if (rank === 1) return <Crown className="size-5 text-yellow-500" />;
   if (rank === 2) return <Medal className="size-5 text-gray-400" />;
   if (rank === 3) return <Medal className="size-5 text-amber-700" />;
-  return <span className="text-xs font-mono text-muted-foreground w-5 text-center">{rank}</span>;
+  return (
+    <span className="text-xs font-mono text-muted-foreground w-5 text-center">
+      {rank}
+    </span>
+  );
 }
 
 function UptimeBadge({ pct }: { pct: number }) {
@@ -26,7 +39,9 @@ function UptimeBadge({ pct }: { pct: number }) {
             : "text-orange-500 bg-orange-500/10 border-orange-500/20";
 
   return (
-    <span className={`text-[10px] font-bold font-mono px-2 py-0.5 border ${color}`}>
+    <span
+      className={`text-[10px] font-bold font-mono px-2 py-0.5 border ${color}`}
+    >
       {pct.toFixed(2)}%
     </span>
   );
@@ -48,7 +63,11 @@ function TierBadge({ tier }: { tier: string }) {
   );
 }
 
-export function HallOfFameClient({ initialEntries }: { initialEntries: LeaderboardEntry[] }) {
+export function HallOfFameClient({
+  initialEntries,
+}: {
+  initialEntries: LeaderboardEntry[];
+}) {
   const [entries] = useState(initialEntries);
   const [rankBy, setRankBy] = useState<"uptime" | "monitors">("uptime");
 
@@ -72,8 +91,9 @@ export function HallOfFameClient({ initialEntries }: { initialEntries: Leaderboa
           Uptime Performers
         </h1>
         <p className="text-muted-foreground text-sm leading-relaxed max-w-xl">
-          The indie hackers and teams running the most reliable infrastructure on SteadyStack.
-          Ranked by weighted SLA across all monitors. Opt in from your settings to claim your spot.
+          The indie hackers and teams running the most reliable infrastructure
+          on SteadyStack. Ranked by weighted SLA across all monitors. Opt in
+          from your settings to claim your spot.
         </p>
       </div>
 
@@ -137,7 +157,8 @@ export function HallOfFameClient({ initialEntries }: { initialEntries: Leaderboa
         <div className="border border-dashed border-border p-12 text-center">
           <Trophy className="size-8 mx-auto mb-3 text-muted-foreground/40" />
           <p className="text-sm text-muted-foreground font-mono">
-            No participants yet. Be the first — enable "Show on Leaderboard" in your settings.
+            No participants yet. Be the first — enable "Show on Leaderboard" in
+            your settings.
           </p>
         </div>
       ) : (
@@ -194,7 +215,9 @@ export function HallOfFameClient({ initialEntries }: { initialEntries: Leaderboa
                   <UptimeBadge pct={entry.uptimePct} />
                 </div>
                 <div className="text-[10px] font-mono text-muted-foreground">
-                  <span className="text-foreground font-semibold">{entry.monitorCount}</span>{" "}
+                  <span className="text-foreground font-semibold">
+                    {entry.monitorCount}
+                  </span>{" "}
                   monitors
                 </div>
                 <div className="text-[10px] font-mono text-muted-foreground">
@@ -223,8 +246,9 @@ export function HallOfFameClient({ initialEntries }: { initialEntries: Leaderboa
           Want your spot on the leaderboard?
         </p>
         <p className="text-[11px] text-muted-foreground font-mono max-w-md mx-auto mb-4">
-          Enable "Show on Leaderboard" in your privacy settings. Your monitors' uptime will be
-          aggregated and ranked against the community. Only users with 100+ checks qualify.
+          Enable "Show on Leaderboard" in your privacy settings. Your monitors'
+          uptime will be aggregated and ranked against the community. Only users
+          with 100+ checks qualify.
         </p>
         <Link
           href="/dashboard/settings?tab=privacy"

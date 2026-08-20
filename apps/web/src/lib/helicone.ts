@@ -62,7 +62,9 @@ export function resolveHeliconeBaseUrl(
  * Constructs Helicone metadata and control headers for observability,
  * semantic caching, multi-tenant cost tracking, and quota policies.
  */
-export function buildHeliconeHeaders(metadata?: HeliconeMetadata): Record<string, string> {
+export function buildHeliconeHeaders(
+  metadata?: HeliconeMetadata,
+): Record<string, string> {
   const apiKey = process.env.HELICONE_API_KEY || env.HELICONE_API_KEY;
   if (!apiKey) {
     return {};
@@ -70,7 +72,8 @@ export function buildHeliconeHeaders(metadata?: HeliconeMetadata): Record<string
 
   const headers: Record<string, string> = {
     "Helicone-Auth": `Bearer ${apiKey}`,
-    "Helicone-Property-Environment": process.env.NODE_ENV || env.NODE_ENV || "development",
+    "Helicone-Property-Environment":
+      process.env.NODE_ENV || env.NODE_ENV || "development",
   };
 
   if (!metadata) {
@@ -95,7 +98,8 @@ export function buildHeliconeHeaders(metadata?: HeliconeMetadata): Record<string
 
   // Semantic caching configuration (defaults to true if enabled globally)
   const isCacheExplicitlyDisabled = metadata.cacheEnabled === false;
-  const globalCacheSetting = process.env.HELICONE_CACHE_ENABLED || env.HELICONE_CACHE_ENABLED;
+  const globalCacheSetting =
+    process.env.HELICONE_CACHE_ENABLED || env.HELICONE_CACHE_ENABLED;
   const isCacheGloballyDisabled = globalCacheSetting === "false";
 
   if (!isCacheExplicitlyDisabled && !isCacheGloballyDisabled) {

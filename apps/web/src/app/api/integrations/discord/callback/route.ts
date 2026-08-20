@@ -10,11 +10,15 @@ export async function GET(req: NextRequest) {
   const error = searchParams.get("error");
 
   if (error) {
-    return NextResponse.redirect(new URL("/dashboard/alerts?error=discord_auth_failed", req.url));
+    return NextResponse.redirect(
+      new URL("/dashboard/alerts?error=discord_auth_failed", req.url),
+    );
   }
 
   if (!code) {
-    return NextResponse.redirect(new URL("/dashboard/alerts?error=no_code", req.url));
+    return NextResponse.redirect(
+      new URL("/dashboard/alerts?error=no_code", req.url),
+    );
   }
 
   // 1. Exchange code for access token
@@ -49,7 +53,10 @@ export async function GET(req: NextRequest) {
 
     if (!data.webhook) {
       return NextResponse.redirect(
-        new URL("/dashboard/alerts?error=discord_no_webhook_permission", req.url),
+        new URL(
+          "/dashboard/alerts?error=discord_no_webhook_permission",
+          req.url,
+        ),
       );
     }
 
@@ -83,9 +90,13 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    return NextResponse.redirect(new URL("/dashboard/alerts?success=discord_connected", req.url));
+    return NextResponse.redirect(
+      new URL("/dashboard/alerts?success=discord_connected", req.url),
+    );
   } catch (err) {
     console.error("Discord OAuth Exception:", err);
-    return NextResponse.redirect(new URL("/dashboard/alerts?error=internal_error", req.url));
+    return NextResponse.redirect(
+      new URL("/dashboard/alerts?error=internal_error", req.url),
+    );
   }
 }

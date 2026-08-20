@@ -1,7 +1,11 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getMonitors, getDashboardStats, checkMonitor } from "@/actions/monitors";
+import {
+  getMonitors,
+  getDashboardStats,
+  checkMonitor,
+} from "@/actions/monitors";
 import { useEffect, useRef } from "react";
 
 /**
@@ -31,7 +35,9 @@ export function useMonitors(initialMonitors: any[], isDemo = false) {
     if (isDemo || !query.data) return;
 
     query.data.forEach((monitor: any) => {
-      const lastCheck = monitor.lastCheck ? new Date(monitor.lastCheck).getTime() : 0;
+      const lastCheck = monitor.lastCheck
+        ? new Date(monitor.lastCheck).getTime()
+        : 0;
       const intervalMs = (monitor.interval || 60) * 1000;
       // Allow 15s grace period over interval
       const isStale = Date.now() - lastCheck > intervalMs + 15000;

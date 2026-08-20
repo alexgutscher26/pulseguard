@@ -25,7 +25,9 @@ export function TeamInvitation({ data }: { data: TeamInvitationEmailData }) {
   return (
     <Html>
       <Head>
-        <title>You've been invited to join {data.organizationName} - SteadyStack</title>
+        <title>
+          You've been invited to join {data.organizationName} - SteadyStack
+        </title>
         <style>{`
           body { margin: 0; padding: 0; background-color: #09090b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
           @media only screen and (max-width: 600px) {
@@ -77,10 +79,12 @@ export function TeamInvitation({ data }: { data: TeamInvitationEmailData }) {
                 lineHeight: 1.6,
               }}
             >
-              <strong style={{ color: "#f4f4f5" }}>{data.inviterName}</strong> has invited you to
-              collaborate on the{" "}
-              <strong style={{ color: "#f4f4f5" }}>{data.organizationName}</strong> workspace on
-              SteadyStack.
+              <strong style={{ color: "#f4f4f5" }}>{data.inviterName}</strong>{" "}
+              has invited you to collaborate on the{" "}
+              <strong style={{ color: "#f4f4f5" }}>
+                {data.organizationName}
+              </strong>{" "}
+              workspace on SteadyStack.
             </Text>
 
             {/* Team Details Card */}
@@ -93,7 +97,13 @@ export function TeamInvitation({ data }: { data: TeamInvitationEmailData }) {
                 marginBottom: "24px",
               }}
             >
-              <table width="100%" border={0} cellPadding="0" cellSpacing="0" role="presentation">
+              <table
+                width="100%"
+                border={0}
+                cellPadding="0"
+                cellSpacing="0"
+                role="presentation"
+              >
                 <tbody>
                   <tr>
                     <td
@@ -163,8 +173,8 @@ export function TeamInvitation({ data }: { data: TeamInvitationEmailData }) {
                         lineHeight: 1.5,
                       }}
                     >
-                      Access live uptime monitors, incident war rooms, automated alerting, and SLA
-                      compliance reports.
+                      Access live uptime monitors, incident war rooms, automated
+                      alerting, and SLA compliance reports.
                     </td>
                   </tr>
                 </tbody>
@@ -172,7 +182,9 @@ export function TeamInvitation({ data }: { data: TeamInvitationEmailData }) {
             </div>
 
             {/* CTA Button */}
-            <PrimaryButton href={data.inviteUrl}>Accept Invitation</PrimaryButton>
+            <PrimaryButton href={data.inviteUrl}>
+              Accept Invitation
+            </PrimaryButton>
 
             {/* Expiry Note */}
             <Text
@@ -212,6 +224,8 @@ export function TeamInvitation({ data }: { data: TeamInvitationEmailData }) {
   );
 }
 
-export async function renderTeamInvitation(data: TeamInvitationEmailData): Promise<string> {
+export async function renderTeamInvitation(
+  data: TeamInvitationEmailData,
+): Promise<string> {
   return await render(<TeamInvitation data={data} />);
 }

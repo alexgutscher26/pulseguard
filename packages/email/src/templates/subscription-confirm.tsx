@@ -18,7 +18,11 @@ export interface SubscriptionConfirmData {
   verifyUrl: string;
 }
 
-export function SubscriptionConfirm({ data }: { data: SubscriptionConfirmData }) {
+export function SubscriptionConfirm({
+  data,
+}: {
+  data: SubscriptionConfirmData;
+}) {
   return (
     <Html>
       <Head>
@@ -88,7 +92,8 @@ export function SubscriptionConfirm({ data }: { data: SubscriptionConfirmData })
                 lineHeight: 1.6,
               }}
             >
-              You've requested to receive real-time incident and maintenance notifications for:
+              You've requested to receive real-time incident and maintenance
+              notifications for:
             </Text>
 
             {/* Target Status Page Card */}
@@ -101,7 +106,13 @@ export function SubscriptionConfirm({ data }: { data: SubscriptionConfirmData })
                 marginBottom: "24px",
               }}
             >
-              <table width="100%" border={0} cellPadding="0" cellSpacing="0" role="presentation">
+              <table
+                width="100%"
+                border={0}
+                cellPadding="0"
+                cellSpacing="0"
+                role="presentation"
+              >
                 <tbody>
                   <tr>
                     <td align="left">
@@ -148,7 +159,9 @@ export function SubscriptionConfirm({ data }: { data: SubscriptionConfirmData })
             </div>
 
             {/* CTA Button */}
-            <PrimaryButton href={data.verifyUrl}>Confirm Email Subscription</PrimaryButton>
+            <PrimaryButton href={data.verifyUrl}>
+              Confirm Email Subscription
+            </PrimaryButton>
 
             <Text
               style={{
@@ -159,8 +172,8 @@ export function SubscriptionConfirm({ data }: { data: SubscriptionConfirmData })
                 lineHeight: 1.5,
               }}
             >
-              If you did not request this subscription, you can safely ignore this email and you
-              won't be added to any lists.
+              If you did not request this subscription, you can safely ignore
+              this email and you won't be added to any lists.
             </Text>
           </Section>
 
@@ -172,6 +185,8 @@ export function SubscriptionConfirm({ data }: { data: SubscriptionConfirmData })
   );
 }
 
-export async function renderSubscriptionConfirm(data: SubscriptionConfirmData): Promise<string> {
+export async function renderSubscriptionConfirm(
+  data: SubscriptionConfirmData,
+): Promise<string> {
   return await render(<SubscriptionConfirm data={data} />);
 }

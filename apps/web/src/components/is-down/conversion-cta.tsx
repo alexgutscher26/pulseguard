@@ -30,10 +30,14 @@ export function ConversionCta({ service }: ConversionCtaProps) {
             </h2>
 
             <p className="text-base md:text-lg text-muted-foreground max-w-2xl leading-relaxed">
-              When <span className="font-semibold text-foreground">{service.name}</span> goes down
-              or suffers silent latency degradation, you shouldn't be refreshing status pages,
-              searching social feeds, or waiting for angry user reports. Get alerted the exact
-              second {service.name} fails.
+              When{" "}
+              <span className="font-semibold text-foreground">
+                {service.name}
+              </span>{" "}
+              goes down or suffers silent latency degradation, you shouldn't be
+              refreshing status pages, searching social feeds, or waiting for
+              angry user reports. Get alerted the exact second {service.name}{" "}
+              fails.
             </p>
           </div>
 
@@ -61,9 +65,12 @@ export function ConversionCta({ service }: ConversionCtaProps) {
               <Zap className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-foreground">10-Second Edge Intervals</h3>
+              <h3 className="text-sm font-bold text-foreground">
+                10-Second Edge Intervals
+              </h3>
               <p className="text-xs text-muted-foreground mt-1">
-                Continuous HTTP, WebSocket & DNS checks from 15+ global edge nodes.
+                Continuous HTTP, WebSocket & DNS checks from 15+ global edge
+                nodes.
               </p>
             </div>
           </div>
@@ -73,10 +80,12 @@ export function ConversionCta({ service }: ConversionCtaProps) {
               <ShieldCheck className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-foreground">4-of-7 Quorum Verification</h3>
+              <h3 className="text-sm font-bold text-foreground">
+                4-of-7 Quorum Verification
+              </h3>
               <p className="text-xs text-muted-foreground mt-1">
-                Multi-region consensus verification prevents 3 AM wakeups from transient routing
-                blips.
+                Multi-region consensus verification prevents 3 AM wakeups from
+                transient routing blips.
               </p>
             </div>
           </div>
@@ -86,9 +95,12 @@ export function ConversionCta({ service }: ConversionCtaProps) {
               <BellRing className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-foreground">Multi-Channel Escalation</h3>
+              <h3 className="text-sm font-bold text-foreground">
+                Multi-Channel Escalation
+              </h3>
               <p className="text-xs text-muted-foreground mt-1">
-                Instant alerts to Slack, Discord, Telegram, SMS, PagerDuty & Webhooks.
+                Instant alerts to Slack, Discord, Telegram, SMS, PagerDuty &
+                Webhooks.
               </p>
             </div>
           </div>

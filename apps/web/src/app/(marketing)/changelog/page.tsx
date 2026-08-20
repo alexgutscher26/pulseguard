@@ -40,7 +40,8 @@ const CHANGELOG_DATA: ChangelogEntry[] = [
   {
     version: "v1.3.0",
     date: "August 2026",
-    title: "Modern Design System, Precision Theme Modes & Streamlined Navigation",
+    title:
+      "Modern Design System, Precision Theme Modes & Streamlined Navigation",
     badge: "Latest Release",
     badgeColor: "bg-primary/10 text-primary border-primary/20",
     description:
@@ -89,7 +90,8 @@ const CHANGELOG_DATA: ChangelogEntry[] = [
       },
       {
         category: "Performance",
-        title: "Authentic Chrome 133 Client Hints & WAF False-Positive Prevention",
+        title:
+          "Authentic Chrome 133 Client Hints & WAF False-Positive Prevention",
         description:
           "Upgraded Regional Probes and Edge Check Engines with Sec-CH-UA and Sec-Fetch-* browser headers to bypass CDN bot challenges and accurately monitor Cloudflare and Vercel protected endpoints.",
       },
@@ -223,8 +225,8 @@ export default function ChangelogPage() {
             What&apos;s New in SteadyStack
           </h1>
           <p className="text-muted-foreground text-sm max-w-xl leading-relaxed">
-            Follow the latest engine improvements, CLI features, edge consensus upgrades, and
-            open-source releases shipped by the SteadyStack team.
+            Follow the latest engine improvements, CLI features, edge consensus
+            upgrades, and open-source releases shipped by the SteadyStack team.
           </p>
           <div className="flex items-center gap-3 pt-2">
             <Link
@@ -260,7 +262,9 @@ export default function ChangelogPage() {
                 <span className="text-lg font-mono font-extrabold text-foreground tracking-tight">
                   {entry.version}
                 </span>
-                <span className="text-xs font-mono text-muted-foreground">{entry.date}</span>
+                <span className="text-xs font-mono text-muted-foreground">
+                  {entry.date}
+                </span>
                 <span
                   className={`px-2 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wider rounded border ${entry.badgeColor}`}
                 >
@@ -269,7 +273,9 @@ export default function ChangelogPage() {
               </div>
 
               {/* Title & Description */}
-              <h2 className="text-xl font-bold text-foreground mb-2">{entry.title}</h2>
+              <h2 className="text-xl font-bold text-foreground mb-2">
+                {entry.title}
+              </h2>
               <p className="text-xs text-muted-foreground leading-relaxed mb-6 max-w-2xl">
                 {entry.description}
               </p>
@@ -288,7 +294,9 @@ export default function ChangelogPage() {
                         <span className="text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/15">
                           {h.category}
                         </span>
-                        <h3 className="text-xs font-bold text-foreground truncate">{h.title}</h3>
+                        <h3 className="text-xs font-bold text-foreground truncate">
+                          {h.title}
+                        </h3>
                       </div>
                       <p className="text-[11px] text-muted-foreground leading-relaxed">
                         {h.description}
@@ -305,10 +313,12 @@ export default function ChangelogPage() {
       {/* CTA Footer */}
       <section className="py-16 border-t border-border bg-muted/[0.1]">
         <div className="max-w-4xl mx-auto px-6 text-center space-y-4">
-          <h3 className="text-2xl font-bold text-foreground">Ready to test SteadyStack?</h3>
+          <h3 className="text-2xl font-bold text-foreground">
+            Ready to test SteadyStack?
+          </h3>
           <p className="text-xs text-muted-foreground max-w-md mx-auto">
-            Self-host the full stack on Docker or start free with 60-second checks across 7 global
-            edge regions.
+            Self-host the full stack on Docker or start free with 60-second
+            checks across 7 global edge regions.
           </p>
           <div className="flex justify-center gap-3 pt-2">
             <Link

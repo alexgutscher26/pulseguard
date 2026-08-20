@@ -135,7 +135,13 @@ function TemplateCard({
   );
 }
 
-function DifficultyFilter({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+function DifficultyFilter({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+}) {
   const options = [
     { label: "All", value: "all" },
     { label: "Beginner", value: "beginner" },
@@ -194,11 +200,15 @@ function TemplateDetailModal({
       const res = await applyTemplate(template.id, urlMapping);
       setResult(res);
       if (res.created.length > 0) {
-        toast.success(`Created ${res.created.length} monitor${res.created.length > 1 ? "s" : ""}`);
+        toast.success(
+          `Created ${res.created.length} monitor${res.created.length > 1 ? "s" : ""}`,
+        );
         router.refresh();
       }
       if (res.errors.length > 0) {
-        toast.error(`${res.errors.length} monitor${res.errors.length > 1 ? "s" : ""} failed`);
+        toast.error(
+          `${res.errors.length} monitor${res.errors.length > 1 ? "s" : ""} failed`,
+        );
       }
     } catch (error) {
       toast.error("Failed to apply template");
@@ -239,7 +249,9 @@ function TemplateDetailModal({
               <h2 className="text-lg font-bold text-foreground font-mono uppercase tracking-tight">
                 {template.name}
               </h2>
-              <p className="text-xs text-primary/60 font-mono">{template.description}</p>
+              <p className="text-xs text-primary/60 font-mono">
+                {template.description}
+              </p>
             </div>
           </div>
         </div>
@@ -247,15 +259,18 @@ function TemplateDetailModal({
         {!result ? (
           <div className="p-6 flex flex-col gap-4">
             <p className="text-[11px] font-mono text-primary/70 border-l-2 border-primary/30 pl-3 leading-relaxed">
-              Review the monitors this template will create. Replace the example URLs with your
-              actual endpoints before applying.
+              Review the monitors this template will create. Replace the example
+              URLs with your actual endpoints before applying.
             </p>
 
             <div className="flex flex-col gap-3">
               {template.monitors.map((monitor, idx) => {
                 const TypeIcon = monitorTypeIcons[monitor.type] || Globe;
                 return (
-                  <div key={idx} className="border border-primary/10 bg-black/30 p-4">
+                  <div
+                    key={idx}
+                    className="border border-primary/10 bg-black/30 p-4"
+                  >
                     <div className="flex items-center gap-2 mb-3">
                       <div className="p-1 bg-primary/10 border border-primary/20">
                         <TypeIcon className="size-3 text-primary" />
@@ -368,7 +383,9 @@ function TemplateDetailModal({
                     className="flex items-center gap-2 border border-green-500/10 bg-green-500/5 p-2.5"
                   >
                     <CheckCircle2 className="size-3 text-green-500 shrink-0" />
-                    <span className="text-[11px] font-mono text-foreground">{m.name}</span>
+                    <span className="text-[11px] font-mono text-foreground">
+                      {m.name}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -386,8 +403,12 @@ function TemplateDetailModal({
                   >
                     <AlertTriangle className="size-3 text-red-500 shrink-0 mt-0.5" />
                     <div className="flex flex-col">
-                      <span className="text-[11px] font-mono text-foreground">{err.name}</span>
-                      <span className="text-[9px] font-mono text-red-500/70">{err.reason}</span>
+                      <span className="text-[11px] font-mono text-foreground">
+                        {err.name}
+                      </span>
+                      <span className="text-[9px] font-mono text-red-500/70">
+                        {err.reason}
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -433,8 +454,8 @@ export function TemplateGallery() {
           Stack Templates
         </h2>
         <p className="text-xs text-muted-foreground leading-relaxed">
-          One-click monitoring setups for your specific tech stack. Pick a template, replace the
-          example URLs, and deploy in seconds.
+          One-click monitoring setups for your specific tech stack. Pick a
+          template, replace the example URLs, and deploy in seconds.
         </p>
       </div>
 
@@ -451,7 +472,10 @@ export function TemplateGallery() {
       </div>
 
       {selected && (
-        <TemplateDetailModal template={selected} onClose={() => setSelectedTemplate(null)} />
+        <TemplateDetailModal
+          template={selected}
+          onClose={() => setSelectedTemplate(null)}
+        />
       )}
     </div>
   );

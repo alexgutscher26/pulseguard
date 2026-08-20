@@ -9,7 +9,11 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@steadystack/auth";
 import { headers, cookies } from "next/headers";
 import { sendMonitorAlert, type MonitorAlertData } from "@steadystack/email";
-import { isPrivateOrInternalUrlAsync, encryptSecret, decryptSecret } from "@steadystack/core";
+import {
+  isPrivateOrInternalUrlAsync,
+  encryptSecret,
+  decryptSecret,
+} from "@steadystack/core";
 import { STEADYSTACK_CANONICAL_USER_AGENT } from "@steadystack/shared";
 import {
   assertMonitorLimits,
@@ -65,7 +69,11 @@ const baseSchema = z.object({
   checkRegions: z.string().optional(), // JSON stringified array of region codes
   alertThreshold: z.coerce.number().min(1).default(1),
   dynamicThresholding: z.boolean().optional(),
-  runbookUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  runbookUrl: z
+    .string()
+    .url("Must be a valid URL")
+    .optional()
+    .or(z.literal("")),
   method: z.string().optional().default("GET"),
   headers: z.string().optional(),
   body: z.string().optional(),
@@ -85,7 +93,10 @@ const monitorSchema = baseSchema.superRefine((data, ctx) => {
         });
         return;
       }
-      const urlCheck = z.string().url("Must be a valid URL").safeParse(data.url);
+      const urlCheck = z
+        .string()
+        .url("Must be a valid URL")
+        .safeParse(data.url);
       if (!urlCheck.success) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -157,7 +168,10 @@ const monitorSchema = baseSchema.superRefine((data, ctx) => {
         });
         return;
       }
-      const urlCheck = z.string().url("Must be a valid URL").safeParse(data.url);
+      const urlCheck = z
+        .string()
+        .url("Must be a valid URL")
+        .safeParse(data.url);
       if (!urlCheck.success) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -182,7 +196,10 @@ const monitorSchema = baseSchema.superRefine((data, ctx) => {
         });
         return;
       }
-      const urlCheck = z.string().url("Must be a valid URL").safeParse(data.url);
+      const urlCheck = z
+        .string()
+        .url("Must be a valid URL")
+        .safeParse(data.url);
       if (!urlCheck.success) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -255,7 +272,9 @@ export async function createMonitor(prevState: any, formData: FormData) {
       timeout: Number(formData.get("timeout") || 10),
       port: formData.get("port") ? Number(formData.get("port")) : undefined,
       checkRegions: (formData.get("checkRegions") as string) || undefined,
-      alertThreshold: formData.get("alertThreshold") ? Number(formData.get("alertThreshold")) : 1,
+      alertThreshold: formData.get("alertThreshold")
+        ? Number(formData.get("alertThreshold"))
+        : 1,
       dynamicThresholding: formData.get("dynamicThresholding") === "on",
       runbookUrl: (formData.get("runbookUrl") as string) || undefined,
       method: (formData.get("method") as string) || "GET",
@@ -364,9 +383,13 @@ export async function createMonitor(prevState: any, formData: FormData) {
             },
           },
         });
-        console.log(`[AutoConfig] Created default alert rule for monitor ${monitor.name}`);
+        console.log(
+          `[AutoConfig] Created default alert rule for monitor ${monitor.name}`,
+        );
       } else {
-        console.log(`[AutoConfig] No notification channels found. Skipping default alert rule.`);
+        console.log(
+          `[AutoConfig] No notification channels found. Skipping default alert rule.`,
+        );
       }
     } catch (alertError) {
       // Don't fail monitor creation if alert rule creation fails
@@ -418,7 +441,11 @@ export async function quickCreateMonitor(data: {
     let targetUrl = data.url?.trim() || "";
 
     if (monitorType === "HTTP" || monitorType === "SSL") {
-      if (targetUrl && !targetUrl.startsWith("http://") && !targetUrl.startsWith("https://")) {
+      if (
+        targetUrl &&
+        !targetUrl.startsWith("http://") &&
+        !targetUrl.startsWith("https://")
+      ) {
         targetUrl = `https://${targetUrl}`;
       }
     } else if (monitorType === "PING" && targetUrl) {
@@ -427,7 +454,9 @@ export async function quickCreateMonitor(data: {
         : `ping://${targetUrl.replace(/^ping:\/\//, "")}`;
     } else if (monitorType === "PORT" && targetUrl) {
       const portNum = data.port || 80;
-      targetUrl = targetUrl.startsWith("tcp://") ? targetUrl : `tcp://${targetUrl}:${portNum}`;
+      targetUrl = targetUrl.startsWith("tcp://")
+        ? targetUrl
+        : `tcp://${targetUrl}:${portNum}`;
     }
 
     const newMonitor = await prisma.monitor.create({
@@ -474,7 +503,11 @@ export async function quickCreateMonitor(data: {
  * @param formData - The form data containing the updated monitor information.
  * @returns An object indicating the success of the operation and any error messages.
  */
-export async function updateMonitor(id: string, prevState: any, formData: FormData) {
+export async function updateMonitor(
+  id: string,
+  prevState: any,
+  formData: FormData,
+) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -502,7 +535,9 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
     timeout: Number(formData.get("timeout") || 10),
     port: formData.get("port") ? Number(formData.get("port")) : undefined,
     checkRegions: (formData.get("checkRegions") as string) || undefined,
-    alertThreshold: formData.get("alertThreshold") ? Number(formData.get("alertThreshold")) : 1,
+    alertThreshold: formData.get("alertThreshold")
+      ? Number(formData.get("alertThreshold"))
+      : 1,
     dynamicThresholding: formData.get("dynamicThresholding") === "on",
     runbookUrl: (formData.get("runbookUrl") as string) || undefined,
     method: (formData.get("method") as string) || "GET",
@@ -741,7 +776,10 @@ export async function checkMonitor(
   if (!monitor) return { success: false, error: "Monitor not found" };
 
   // Check for active maintenance
-  if ((monitor as any).maintenanceWindows && (monitor as any).maintenanceWindows.length > 0) {
+  if (
+    (monitor as any).maintenanceWindows &&
+    (monitor as any).maintenanceWindows.length > 0
+  ) {
     console.log(`[Maintenance] Manual check skipped for ${monitor.name}`);
     await prisma.$transaction([
       prisma.monitor.update({
@@ -772,7 +810,11 @@ export async function checkMonitor(
   let errorReason: string | undefined = undefined;
 
   try {
-    if (monitor.type === "BROWSER" || monitor.type === "SEQUENCE" || monitor.type === "SSL") {
+    if (
+      monitor.type === "BROWSER" ||
+      monitor.type === "SEQUENCE" ||
+      monitor.type === "SSL"
+    ) {
       const workerUrl = env.STEADYSTACK_WORKER_URL;
       const cookieHeader = (await headers()).get("Cookie");
 
@@ -803,7 +845,10 @@ export async function checkMonitor(
         errorReason = `Worker HTTP ${response.status}: ${text.substring(0, 50)}`;
       }
     } else {
-      if (monitor.url.startsWith("ping://") || monitor.url.startsWith("tcp://")) {
+      if (
+        monitor.url.startsWith("ping://") ||
+        monitor.url.startsWith("tcp://")
+      ) {
         const isPing = monitor.url.startsWith("ping://");
         const part = monitor.url.replace(isPing ? "ping://" : "tcp://", "");
         const [hostname, portStr] = part.split(":");
@@ -839,7 +884,10 @@ export async function checkMonitor(
         });
 
         latency = Math.round(Date.now() - start);
-      } else if (monitor.url.startsWith("http://") || monitor.url.startsWith("https://")) {
+      } else if (
+        monitor.url.startsWith("http://") ||
+        monitor.url.startsWith("https://")
+      ) {
         // Enforce SSRF validation for manual web checks
         const ssrfCheck = await isPrivateOrInternalUrlAsync(monitor.url);
         if (ssrfCheck.isForbidden) {
@@ -874,7 +922,8 @@ export async function checkMonitor(
               Accept:
                 "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
               "Accept-Language": "en-US,en;q=0.9",
-              "Sec-CH-UA": '"Chromium";v="133", "Not(A:Brand";v="99", "Google Chrome";v="133"',
+              "Sec-CH-UA":
+                '"Chromium";v="133", "Not(A:Brand";v="99", "Google Chrome";v="133"',
               "Sec-CH-UA-Mobile": "?0",
               "Sec-CH-UA-Platform": '"Windows"',
               "Sec-Fetch-Dest": "document",
@@ -884,7 +933,9 @@ export async function checkMonitor(
               "Upgrade-Insecure-Requests": "1",
               ...userHeaders,
             },
-            body: ["POST", "PUT", "PATCH"].includes(method) ? monitor.body : undefined,
+            body: ["POST", "PUT", "PATCH"].includes(method)
+              ? monitor.body
+              : undefined,
             signal: AbortSignal.timeout((monitor.timeout || 10) * 1000),
           });
 
@@ -895,15 +946,23 @@ export async function checkMonitor(
           const isRateLimited = statusNum === 429;
           const isIPBlocked = statusNum === 403;
           const isHealthyStatus =
-            response.ok || (statusNum >= 300 && statusNum < 400) || isRateLimited || isIPBlocked;
+            response.ok ||
+            (statusNum >= 300 && statusNum < 400) ||
+            isRateLimited ||
+            isIPBlocked;
           currentStatus = isHealthyStatus ? "UP" : "DOWN";
 
           if (currentStatus === "UP" && monitor.expectation) {
             const { validatePayload } = await import("@/lib/payload-parser");
-            const validation = validatePayload(body, response.status, monitor.expectation);
+            const validation = validatePayload(
+              body,
+              response.status,
+              monitor.expectation,
+            );
             if (!validation.success) {
               currentStatus = "DOWN";
-              errorReason = validation.errorMessage || "Payload validation failed";
+              errorReason =
+                validation.errorMessage || "Payload validation failed";
             }
           } else if (currentStatus === "DOWN") {
             errorReason = `HTTP_${response.status}`;
@@ -950,7 +1009,11 @@ export async function checkMonitor(
             orderBy: { createdAt: "desc" },
           });
         },
-        createIncident: async (monitorId: string, title: string, description: string) => {
+        createIncident: async (
+          monitorId: string,
+          title: string,
+          description: string,
+        ) => {
           // Check for flapping (recently resolved)
           const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
           const recent = await prisma.incident.findFirst({
@@ -1014,7 +1077,9 @@ export async function checkMonitor(
       };
 
       if (currentStatus === "DOWN") {
-        const activeIncident = await incidentService.findActiveIncident(monitor.id);
+        const activeIncident = await incidentService.findActiveIncident(
+          monitor.id,
+        );
         const checkSource = context?.checkRegions || ["Manual Check (Server)"];
         const baseReason = context?.reason || "Manual Check Failed";
 
@@ -1029,12 +1094,20 @@ export async function checkMonitor(
           );
 
           // Notify
-          await dispatchNotifications(monitor, "DOWN", incident.id, baseReason, checkSource);
+          await dispatchNotifications(
+            monitor,
+            "DOWN",
+            incident.id,
+            baseReason,
+            checkSource,
+          );
         } else {
           await incidentService.logStillDown(activeIncident.id);
           // FORCE NOTIFICATION for Manual Check
           // User explicitly clicked "Run Check", so they expect to verify alerts work.
-          console.log("[ManualCheck] Forcing alert dispatch for existing incident");
+          console.log(
+            "[ManualCheck] Forcing alert dispatch for existing incident",
+          );
           await dispatchNotifications(
             monitor,
             "DOWN",
@@ -1044,7 +1117,9 @@ export async function checkMonitor(
           );
         }
       } else if (currentStatus === "UP") {
-        const activeIncident = await incidentService.findActiveIncident(monitor.id);
+        const activeIncident = await incidentService.findActiveIncident(
+          monitor.id,
+        );
         if (activeIncident) {
           await incidentService.resolveIncident(activeIncident.id);
           // Notify Resolved
@@ -1052,7 +1127,10 @@ export async function checkMonitor(
         }
       }
     } catch (notifError) {
-      console.error("Failed to process incidents/notifications in manual check:", notifError);
+      console.error(
+        "Failed to process incidents/notifications in manual check:",
+        notifError,
+      );
     }
     // -----------------------------------------------------
 
@@ -1120,7 +1198,9 @@ async function dispatchNotifications(
     return false;
   });
 
-  console.log(`[Notification] Active rules matching trigger: ${activeRules.length}`);
+  console.log(
+    `[Notification] Active rules matching trigger: ${activeRules.length}`,
+  );
 
   if (activeRules.length === 0) return;
 
@@ -1134,7 +1214,8 @@ async function dispatchNotifications(
   activeRules.forEach((rule: any) => {
     rule.channels.forEach((channel: any) => {
       const config = channel.config as any;
-      if (channel.type === "EMAIL" && config?.email) emailChannels.add(config.email);
+      if (channel.type === "EMAIL" && config?.email)
+        emailChannels.add(config.email);
       else if (channel.type === "SLACK" && config?.webhookUrl)
         slackChannels.add({
           url: config.webhookUrl,
@@ -1162,13 +1243,16 @@ async function dispatchNotifications(
     // downtimeDuration: ... calculation omitted for brevity in manual check
   };
 
-  const notificationType = status === "DOWN" ? "INCIDENT_CREATED" : "INCIDENT_RESOLVED";
+  const notificationType =
+    status === "DOWN" ? "INCIDENT_CREATED" : "INCIDENT_RESOLVED";
   const apiKey = env.RESEND_API_KEY;
 
   if (!apiKey) console.warn("[Notification] RESEND_API_KEY is missing!");
 
   const promises = [
-    ...Array.from(emailChannels).map((email) => sendMonitorAlert(email, emailData, apiKey)),
+    ...Array.from(emailChannels).map((email) =>
+      sendMonitorAlert(email, emailData, apiKey),
+    ),
     ...Array.from(slackChannels).map((target) =>
       sendSlackAlert(target.url, emailData, notificationType, incidentId),
     ),
@@ -1183,13 +1267,19 @@ async function dispatchNotifications(
     console.error(`[Notification] ${rejected.length} alerts failed to send.`);
     rejected.forEach((r) => console.error((r as PromiseRejectedResult).reason));
   } else {
-    console.log(`[Notification] All ${results.length} alerts sent successfully.`);
+    console.log(
+      `[Notification] All ${results.length} alerts sent successfully.`,
+    );
   }
 }
 
 // --- Adapters (Mirrored from Worker) ---
 
-async function sendDiscordAlert(url: string, data: MonitorAlertData, type?: string) {
+async function sendDiscordAlert(
+  url: string,
+  data: MonitorAlertData,
+  type?: string,
+) {
   try {
     const isDown = data.status === "DOWN";
     let color = isDown ? 15548997 : 5763719;
@@ -1197,8 +1287,10 @@ async function sendDiscordAlert(url: string, data: MonitorAlertData, type?: stri
       ? "🚨 System Critical: " + data.monitorName + " is DOWN"
       : "✅ System Recovered: " + data.monitorName + " is ONLINE";
 
-    if (type === "INCIDENT_CREATED") title = `🔥 Incident Opened: ${data.monitorName}`;
-    if (type === "INCIDENT_RESOLVED") title = `✅ Incident Resolved: ${data.monitorName}`;
+    if (type === "INCIDENT_CREATED")
+      title = `🔥 Incident Opened: ${data.monitorName}`;
+    if (type === "INCIDENT_RESOLVED")
+      title = `✅ Incident Resolved: ${data.monitorName}`;
 
     const payload = {
       username: "SteadyStack",
@@ -1206,7 +1298,8 @@ async function sendDiscordAlert(url: string, data: MonitorAlertData, type?: stri
         {
           title: title,
           description:
-            data.reason || (isDown ? "Connection timeout or error" : "Service is reachable"),
+            data.reason ||
+            (isDown ? "Connection timeout or error" : "Service is reachable"),
           url: data.url,
           color: color,
           fields: [
@@ -1258,8 +1351,10 @@ async function sendSlackAlert(
       ? "🚨 Alert: " + data.monitorName + " Unreachable"
       : "✅ Recovery: " + data.monitorName + " Restored";
 
-    if (type === "INCIDENT_CREATED") headerText = `🔥 Incident: ${data.monitorName} is DOWN`;
-    if (type === "INCIDENT_RESOLVED") headerText = `✅ Resolved: ${data.monitorName} Recovered`;
+    if (type === "INCIDENT_CREATED")
+      headerText = `🔥 Incident: ${data.monitorName} is DOWN`;
+    if (type === "INCIDENT_RESOLVED")
+      headerText = `✅ Resolved: ${data.monitorName} Recovered`;
 
     const payload = {
       text: headerText,
@@ -1290,7 +1385,9 @@ async function sendSlackAlert(
           elements: [
             {
               type: "mrkdwn",
-              text: "⏱ Detected at " + new Date(data.timestamp).toLocaleTimeString(),
+              text:
+                "⏱ Detected at " +
+                new Date(data.timestamp).toLocaleTimeString(),
             },
           ],
         },
@@ -1380,52 +1477,58 @@ export async function getDashboardStats() {
   try {
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
-    const [activeMonitorsCount, activeAlertsCount, totalEventsCount, upEventsCount, latencyAgg] =
-      await Promise.all([
-        // 1. Active Monitors
-        prisma.monitor.count({
-          where: {
-            ...monitorScope,
-            status: { not: "PAUSED" },
-          },
-        }),
-        // 2. Active Alerts (Monitors currently DOWN)
-        prisma.monitor.count({
-          where: {
-            ...monitorScope,
-            status: "DOWN",
-          },
-        }),
-        // 3. Total Events (Last 24h)
-        prisma.monitorEvent.count({
-          where: {
-            monitor: monitorScope,
-            timestamp: { gte: oneDayAgo },
-          },
-        }),
-        // 4. UP Events (Last 24h)
-        prisma.monitorEvent.count({
-          where: {
-            monitor: monitorScope,
-            timestamp: { gte: oneDayAgo },
-            status: "UP",
-          },
-        }),
-        // 5. Avg Latency for UP events (Last 24h)
-        prisma.monitorEvent.aggregate({
-          where: {
-            monitor: monitorScope,
-            timestamp: { gte: oneDayAgo },
-            status: "UP",
-            latency: { gt: 0 },
-          },
-          _avg: {
-            latency: true,
-          },
-        }),
-      ]);
+    const [
+      activeMonitorsCount,
+      activeAlertsCount,
+      totalEventsCount,
+      upEventsCount,
+      latencyAgg,
+    ] = await Promise.all([
+      // 1. Active Monitors
+      prisma.monitor.count({
+        where: {
+          ...monitorScope,
+          status: { not: "PAUSED" },
+        },
+      }),
+      // 2. Active Alerts (Monitors currently DOWN)
+      prisma.monitor.count({
+        where: {
+          ...monitorScope,
+          status: "DOWN",
+        },
+      }),
+      // 3. Total Events (Last 24h)
+      prisma.monitorEvent.count({
+        where: {
+          monitor: monitorScope,
+          timestamp: { gte: oneDayAgo },
+        },
+      }),
+      // 4. UP Events (Last 24h)
+      prisma.monitorEvent.count({
+        where: {
+          monitor: monitorScope,
+          timestamp: { gte: oneDayAgo },
+          status: "UP",
+        },
+      }),
+      // 5. Avg Latency for UP events (Last 24h)
+      prisma.monitorEvent.aggregate({
+        where: {
+          monitor: monitorScope,
+          timestamp: { gte: oneDayAgo },
+          status: "UP",
+          latency: { gt: 0 },
+        },
+        _avg: {
+          latency: true,
+        },
+      }),
+    ]);
 
-    const globalUptime = totalEventsCount > 0 ? (upEventsCount / totalEventsCount) * 100 : 100;
+    const globalUptime =
+      totalEventsCount > 0 ? (upEventsCount / totalEventsCount) * 100 : 100;
 
     return {
       activeMonitors: activeMonitorsCount,
@@ -1668,7 +1771,9 @@ export async function generateLiveAIInsights() {
       const recent = monitor.events;
       if (recent.length === 0) continue;
 
-      const avgLatency = Math.round(recent.reduce((a, b) => a + b.latency, 0) / recent.length);
+      const avgLatency = Math.round(
+        recent.reduce((a, b) => a + b.latency, 0) / recent.length,
+      );
       const failures = recent.filter((e) => e.status === "DOWN").length;
 
       // Anomaly detection criteria

@@ -2,7 +2,15 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Search, Clock, ArrowRight, Sparkles, BookOpen, Calendar, X } from "lucide-react";
+import {
+  Search,
+  Clock,
+  ArrowRight,
+  Sparkles,
+  BookOpen,
+  Calendar,
+  X,
+} from "lucide-react";
 import type { BlogPost } from "@/lib/blog-types";
 import { formatPostDate } from "@/lib/blog-types";
 
@@ -18,7 +26,8 @@ export function BlogListing({ posts }: BlogListingProps) {
 
   const filteredPosts = useMemo(() => {
     return posts.filter((post) => {
-      const matchesCategory = selectedCategory === "All" || post.meta.category === selectedCategory;
+      const matchesCategory =
+        selectedCategory === "All" || post.meta.category === selectedCategory;
 
       if (!matchesCategory) return false;
 
@@ -27,7 +36,9 @@ export function BlogListing({ posts }: BlogListingProps) {
       const query = searchQuery.toLowerCase().trim();
       const inTitle = post.meta.title.toLowerCase().includes(query);
       const inDesc = post.meta.description.toLowerCase().includes(query);
-      const inTags = post.meta.tags.some((tag) => tag.toLowerCase().includes(query));
+      const inTags = post.meta.tags.some((tag) =>
+        tag.toLowerCase().includes(query),
+      );
       const inCategory = post.meta.category.toLowerCase().includes(query);
 
       return inTitle || inDesc || inTags || inCategory;
@@ -43,10 +54,14 @@ export function BlogListing({ posts }: BlogListingProps) {
   }, [posts]);
 
   // Featured post: the first post when no filters are active
-  const isFiltering = selectedCategory !== "All" || searchQuery.trim().length > 0;
-  const featuredPost = !isFiltering && filteredPosts.length > 0 ? filteredPosts[0] : null;
+  const isFiltering =
+    selectedCategory !== "All" || searchQuery.trim().length > 0;
+  const featuredPost =
+    !isFiltering && filteredPosts.length > 0 ? filteredPosts[0] : null;
   const gridPosts =
-    !isFiltering && filteredPosts.length > 0 ? filteredPosts.slice(1) : filteredPosts;
+    !isFiltering && filteredPosts.length > 0
+      ? filteredPosts.slice(1)
+      : filteredPosts;
 
   return (
     <div className="flex flex-col gap-10">
@@ -238,10 +253,12 @@ export function BlogListing({ posts }: BlogListingProps) {
         /* Empty State */
         <div className="flex flex-col items-center justify-center py-20 px-6 text-center rounded-2xl border border-dashed border-border bg-card/30">
           <BookOpen className="size-10 text-muted-foreground/40 mb-3" />
-          <h3 className="text-base font-bold text-foreground mb-1">No articles found</h3>
+          <h3 className="text-base font-bold text-foreground mb-1">
+            No articles found
+          </h3>
           <p className="text-xs text-muted-foreground max-w-sm mb-4">
-            We couldn&apos;t find any posts matching &ldquo;{searchQuery}&rdquo; in{" "}
-            {selectedCategory}.
+            We couldn&apos;t find any posts matching &ldquo;{searchQuery}&rdquo;
+            in {selectedCategory}.
           </p>
           <button
             type="button"

@@ -12,7 +12,9 @@ export type I18nSettings = {
 /**
  * Retrieves language settings for a given status page ID.
  */
-export async function getLanguageSettings(statusPageId: string): Promise<I18nSettings[]> {
+export async function getLanguageSettings(
+  statusPageId: string,
+): Promise<I18nSettings[]> {
   const settings = await prisma.statusPageI18n.findMany({
     where: { statusPageId },
   });

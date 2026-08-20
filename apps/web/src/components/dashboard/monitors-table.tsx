@@ -37,15 +37,23 @@ function UptimeBar({ status }: { status: number }) {
 
   const opacityClass = status === 0.5 ? "opacity-50" : "";
   if (status === 0.5)
-    return <div className="h-4.5 w-1 bg-emerald-500 rounded-full opacity-50"></div>;
+    return (
+      <div className="h-4.5 w-1 bg-emerald-500 rounded-full opacity-50"></div>
+    );
 
-  return <div className={`h-4.5 w-1 rounded-full ${colorClass} ${opacityClass}`}></div>;
+  return (
+    <div
+      className={`h-4.5 w-1 rounded-full ${colorClass} ${opacityClass}`}
+    ></div>
+  );
 }
 
 /**
  * Converts events into a visual history array for the uptime bar
  */
-function getHistory(events?: { status: string; latency: number; timestamp: Date }[]): number[] {
+function getHistory(
+  events?: { status: string; latency: number; timestamp: Date }[],
+): number[] {
   if (!events || !Array.isArray(events)) {
     return Array(20).fill(-1);
   }
@@ -87,10 +95,14 @@ function getUptime(events?: { status: string }[]): string {
 /**
  * Get last response time from events
  */
-function getLastResponse(events?: { latency: number; status: string }[]): string {
+function getLastResponse(
+  events?: { latency: number; status: string }[],
+): string {
   if (!events || !Array.isArray(events) || events.length === 0) return "N/A";
   const sorted = [...events].sort(
-    (a, b) => new Date((b as any).timestamp).getTime() - new Date((a as any).timestamp).getTime(),
+    (a, b) =>
+      new Date((b as any).timestamp).getTime() -
+      new Date((a as any).timestamp).getTime(),
   );
   const latest = sorted[0];
   if (!latest || latest.status === "DOWN") return "Error";
@@ -110,7 +122,9 @@ export function MonitorsTable({ monitors }: MonitorsTableProps) {
 
   const toggleFilter = (status: FilterStatus) => {
     setFilterStatuses((prev) =>
-      prev.includes(status) ? prev.filter((s) => s !== status) : [...prev, status],
+      prev.includes(status)
+        ? prev.filter((s) => s !== status)
+        : [...prev, status],
     );
   };
 
@@ -119,7 +133,9 @@ export function MonitorsTable({ monitors }: MonitorsTableProps) {
 
     // Apply filters
     if (filterStatuses.length > 0) {
-      filtered = monitors.filter((m) => filterStatuses.includes(m.status as FilterStatus));
+      filtered = monitors.filter((m) =>
+        filterStatuses.includes(m.status as FilterStatus),
+      );
     }
 
     // Apply sorting
@@ -135,7 +151,9 @@ export function MonitorsTable({ monitors }: MonitorsTableProps) {
         );
       }
       if (sort === "uptime") {
-        return parseFloat(getUptime(b.events)) - parseFloat(getUptime(a.events));
+        return (
+          parseFloat(getUptime(b.events)) - parseFloat(getUptime(a.events))
+        );
       }
       return 0;
     });
@@ -258,10 +276,15 @@ export function MonitorsTable({ monitors }: MonitorsTableProps) {
             </thead>
             <tbody className="divide-y divide-border">
               {sortedMonitors.map((site) => (
-                <tr key={site.id} className="hover:bg-accent/30 transition-colors group">
+                <tr
+                  key={site.id}
+                  className="hover:bg-accent/30 transition-colors group"
+                >
                   <td className="px-6 py-5">
                     <div className="flex flex-col">
-                      <span className="text-xs font-bold text-foreground">{site.name}</span>
+                      <span className="text-xs font-bold text-foreground">
+                        {site.name}
+                      </span>
                       <a
                         href={site.url}
                         target="_blank"
@@ -313,7 +336,9 @@ export function MonitorsTable({ monitors }: MonitorsTableProps) {
                   <td className="px-6 py-5">
                     <span
                       className={`text-xs font-bold ${
-                        site.status === "DOWN" ? "text-red-500" : "text-muted-foreground"
+                        site.status === "DOWN"
+                          ? "text-red-500"
+                          : "text-muted-foreground"
                       }`}
                     >
                       {getLastResponse(site.events)}

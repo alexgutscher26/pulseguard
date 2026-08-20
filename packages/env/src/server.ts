@@ -7,13 +7,18 @@ export const env = createEnv({
     BETTER_AUTH_SECRET: z.string().min(32),
     BETTER_AUTH_URL: z.string().url(),
     CORS_ORIGIN: z.string().url(),
-    NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+    NODE_ENV: z
+      .enum(["development", "production", "test"])
+      .default("development"),
     SLACK_SIGNING_SECRET: z.string().min(1).optional(),
     OPENAI_API_KEY: z.string().min(1).optional(),
     // OpenRouter AI Configuration
     OPENROUTER_API_KEY: z.string().min(1).optional(),
     OPENROUTER_MODEL: z.string().default("meta-llama/llama-3.3-70b-instruct"),
-    OPENROUTER_BASE_URL: z.string().url().default("https://openrouter.ai/api/v1"),
+    OPENROUTER_BASE_URL: z
+      .string()
+      .url()
+      .default("https://openrouter.ai/api/v1"),
     // Helicone LLM Observability & Smart Proxy
     HELICONE_API_KEY: z.string().min(1).optional(),
     HELICONE_BASE_PATH: z.string().url().default("https://oai.helicone.ai/v1"),
@@ -25,7 +30,9 @@ export const env = createEnv({
     OLLAMA_BASE_URL: z.string().url().default("http://localhost:11434/v1"),
     OLLAMA_MODEL: z.string().default("llama3.2"),
     // Provider selection: "openrouter" | "ollama" | "openai" | "auto"
-    AI_PROVIDER: z.enum(["openrouter", "ollama", "openai", "auto"]).default("auto"),
+    AI_PROVIDER: z
+      .enum(["openrouter", "ollama", "openai", "auto"])
+      .default("auto"),
     UPSTASH_REDIS_REST_URL: z.string().url().optional(),
     UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
     NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
@@ -54,10 +61,14 @@ export const env = createEnv({
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
-  skipValidation: !!process.env.CI || process.env.npm_lifecycle_event === "build",
+  skipValidation:
+    !!process.env.CI || process.env.npm_lifecycle_event === "build",
   onValidationError: (issues) => {
     const formatted = (issues || [])
-      .map((issue) => `  - ${issue.path ? issue.path.join(".") : "variable"}: ${issue.message}`)
+      .map(
+        (issue) =>
+          `  - ${issue.path ? issue.path.join(".") : "variable"}: ${issue.message}`,
+      )
       .join("\n");
     console.error("❌ Invalid environment variables:\n" + formatted);
     throw new Error("Invalid environment variables:\n" + formatted);

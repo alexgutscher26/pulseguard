@@ -36,20 +36,20 @@ The chart bundles a PostgreSQL subchart (Bitnami). When `secrets.databaseUrl` / 
 
 ### Key values
 
-| Value                                    | Description                                              | Default                                 |
-| ---------------------------------------- | -------------------------------------------------------- | --------------------------------------- |
-| `web.enabled`                            | Deploy the web dashboard                                 | `true`                                  |
-| `web.replicaCount`                       | Web replicas                                             | `2`                                     |
+| Value                                    | Description                                              | Default                                  |
+| ---------------------------------------- | -------------------------------------------------------- | ---------------------------------------- |
+| `web.enabled`                            | Deploy the web dashboard                                 | `true`                                   |
+| `web.replicaCount`                       | Web replicas                                             | `2`                                      |
 | `web.image.repository` / `web.image.tag` | Web image; tag defaults to `appVersion`                  | `ghcr.io/getsteadystack/SteadyStack-web` |
-| `web.autoscaling.enabled`                | Enable HPA                                               | `false`                                 |
-| `probe.enabled`                          | Deploy a private probe pointing at your Worker           | `false`                                 |
-| `probe.config.apiUrl`                    | Worker URL the probe reports to                          | `https://worker.yourdomain.com`         |
-| `ingress.enabled`                        | Create an Ingress                                        | `true`                                  |
-| `secrets.*`                              | Application secrets (see below)                          | —                                       |
-| `postgresql.enabled`                     | Bundle the Bitnami PostgreSQL subchart                   | `true`                                  |
-| `externalDatabase.*`                     | External DB connection (when `postgresql.enabled=false`) | —                                       |
-| `metrics.serviceMonitor.enabled`         | Create a ServiceMonitor for Prometheus Operator          | `false`                                 |
-| `networkPolicy.enabled`                  | Default-deny network policy for the web pods             | `false`                                 |
+| `web.autoscaling.enabled`                | Enable HPA                                               | `false`                                  |
+| `probe.enabled`                          | Deploy a private probe pointing at your Worker           | `false`                                  |
+| `probe.config.apiUrl`                    | Worker URL the probe reports to                          | `https://worker.yourdomain.com`          |
+| `ingress.enabled`                        | Create an Ingress                                        | `true`                                   |
+| `secrets.*`                              | Application secrets (see below)                          | —                                        |
+| `postgresql.enabled`                     | Bundle the Bitnami PostgreSQL subchart                   | `true`                                   |
+| `externalDatabase.*`                     | External DB connection (when `postgresql.enabled=false`) | —                                        |
+| `metrics.serviceMonitor.enabled`         | Create a ServiceMonitor for Prometheus Operator          | `false`                                  |
+| `networkPolicy.enabled`                  | Default-deny network policy for the web pods             | `false`                                  |
 
 ### Required secrets
 

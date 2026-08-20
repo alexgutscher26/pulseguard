@@ -83,22 +83,46 @@ function resolveDateBounds(options: SlaReportOptions): {
   const now = new Date();
   let startUtc: Date;
   let endUtc: Date = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 23, 59, 59, 999),
+    Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate(),
+      23,
+      59,
+      59,
+      999,
+    ),
   );
   let periodLabel: string = options.range || "30d";
 
   if (options.range === "custom" && options.startDate && options.endDate) {
     const s = new Date(options.startDate);
     const e = new Date(options.endDate);
-    startUtc = new Date(Date.UTC(s.getUTCFullYear(), s.getUTCMonth(), s.getUTCDate()));
+    startUtc = new Date(
+      Date.UTC(s.getUTCFullYear(), s.getUTCMonth(), s.getUTCDate()),
+    );
     endUtc = new Date(
-      Date.UTC(e.getUTCFullYear(), e.getUTCMonth(), e.getUTCDate(), 23, 59, 59, 999),
+      Date.UTC(
+        e.getUTCFullYear(),
+        e.getUTCMonth(),
+        e.getUTCDate(),
+        23,
+        59,
+        59,
+        999,
+      ),
     );
     periodLabel = `${startUtc.toISOString().split("T")[0]} - ${endUtc.toISOString().split("T")[0]}`;
   } else if (options.range === "last-month") {
-    const prevMonthDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 1));
-    startUtc = new Date(Date.UTC(prevMonthDate.getUTCFullYear(), prevMonthDate.getUTCMonth(), 1));
-    const lastDay = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 0)).getUTCDate();
+    const prevMonthDate = new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 1),
+    );
+    startUtc = new Date(
+      Date.UTC(prevMonthDate.getUTCFullYear(), prevMonthDate.getUTCMonth(), 1),
+    );
+    const lastDay = new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 0),
+    ).getUTCDate();
     endUtc = new Date(
       Date.UTC(
         prevMonthDate.getUTCFullYear(),
@@ -150,7 +174,13 @@ export async function getComprehensiveSlaReport(
   const { startUtc, endUtc, periodLabel } = resolveDateBounds(options);
 
   // 1. Resolve Monitors in Scope
-  let monitors: { id: string; name: string; type: string; url: string; interval: number }[] = [];
+  let monitors: {
+    id: string;
+    name: string;
+    type: string;
+    url: string;
+    interval: number;
+  }[] = [];
   let scopeName = "All Workspace Monitors";
 
   if (options.monitorId) {
@@ -177,7 +207,13 @@ export async function getComprehensiveSlaReport(
         monitors: {
           select: {
             monitor: {
-              select: { id: true, name: true, type: true, url: true, interval: true },
+              select: {
+                id: true,
+                name: true,
+                type: true,
+                url: true,
+                interval: true,
+              },
             },
           },
         },
@@ -238,12 +274,19 @@ export async function getComprehensiveSlaReport(
 
   // 3. Fetch Live Monitor Events for today / unsummarized window
   const todayUtc = new Date(
-    Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate()),
+    Date.UTC(
+      new Date().getUTCFullYear(),
+      new Date().getUTCMonth(),
+      new Date().getUTCDate(),
+    ),
   );
   const liveEvents = await prisma.monitorEvent.findMany({
     where: {
       monitorId: { in: monitorIds },
-      timestamp: { gte: todayUtc > startUtc ? todayUtc : startUtc, lte: endUtc },
+      timestamp: {
+        gte: todayUtc > startUtc ? todayUtc : startUtc,
+        lte: endUtc,
+      },
     },
     select: {
       monitorId: true,
@@ -395,8 +438,14 @@ export async function getComprehensiveSlaReport(
   });
 
   // 8. Overall Aggregate Calculations
-  const totalUp = Array.from(monitorStatsMap.values()).reduce((sum, s) => sum + s.checksUp, 0);
-  const totalDown = Array.from(monitorStatsMap.values()).reduce((sum, s) => sum + s.checksDown, 0);
+  const totalUp = Array.from(monitorStatsMap.values()).reduce(
+    (sum, s) => sum + s.checksUp,
+    0,
+  );
+  const totalDown = Array.from(monitorStatsMap.values()).reduce(
+    (sum, s) => sum + s.checksDown,
+    0,
+  );
   const totalChecks = Array.from(monitorStatsMap.values()).reduce(
     (sum, s) => sum + s.checksTotal,
     0,
@@ -406,7 +455,8 @@ export async function getComprehensiveSlaReport(
     0,
   );
 
-  const overallUptimePct = totalUp + totalDown > 0 ? (totalUp / (totalUp + totalDown)) * 100 : 100;
+  const overallUptimePct =
+    totalUp + totalDown > 0 ? (totalUp / (totalUp + totalDown)) * 100 : 100;
   const isSlaMet = overallUptimePct >= targetSla;
 
   // Total monitored minutes in the period
@@ -416,10 +466,14 @@ export async function getComprehensiveSlaReport(
   );
   const allowedDowntimeMinutes = (totalPeriodMinutes * (100 - targetSla)) / 100;
   const avgDowntimeMinutes =
-    monitors.length > 0 ? totalDowntimeMinutes / monitors.length : totalDowntimeMinutes;
+    monitors.length > 0
+      ? totalDowntimeMinutes / monitors.length
+      : totalDowntimeMinutes;
   const remainingErrorBudgetPct =
     allowedDowntimeMinutes > 0
-      ? ((allowedDowntimeMinutes - avgDowntimeMinutes) / allowedDowntimeMinutes) * 100
+      ? ((allowedDowntimeMinutes - avgDowntimeMinutes) /
+          allowedDowntimeMinutes) *
+        100
       : avgDowntimeMinutes === 0
         ? 100
         : -100;
@@ -430,7 +484,9 @@ export async function getComprehensiveSlaReport(
     .sort((a, b) => a - b);
   const avgLatencyMs =
     allLatencies.length > 0
-      ? Math.round(allLatencies.reduce((a, b) => a + b, 0) / allLatencies.length)
+      ? Math.round(
+          allLatencies.reduce((a, b) => a + b, 0) / allLatencies.length,
+        )
       : 0;
   const p95LatencyMs =
     allLatencies.length > 0
@@ -443,15 +499,23 @@ export async function getComprehensiveSlaReport(
 
   // 10. Incidents Processing & MTTR
   const incidents = incidentsRaw.map((inc) => {
-    const end = inc.resolvedAt ? new Date(inc.resolvedAt).getTime() : Date.now();
+    const end = inc.resolvedAt
+      ? new Date(inc.resolvedAt).getTime()
+      : Date.now();
     const durationMinutes = Math.max(
       1,
       Math.round((end - new Date(inc.startedAt).getTime()) / (1000 * 60)),
     );
     return {
       id: inc.id,
-      startedAt: new Date(inc.startedAt).toISOString().replace("T", " ").substring(0, 16) + " UTC",
-      resolvedAt: inc.resolvedAt ? new Date(inc.resolvedAt).toISOString() : null,
+      startedAt:
+        new Date(inc.startedAt)
+          .toISOString()
+          .replace("T", " ")
+          .substring(0, 16) + " UTC",
+      resolvedAt: inc.resolvedAt
+        ? new Date(inc.resolvedAt).toISOString()
+        : null,
       durationMinutes,
       serviceName: inc.monitor.name,
       reason: inc.description || inc.title || "Health check threshold breached",
@@ -463,14 +527,16 @@ export async function getComprehensiveSlaReport(
   const resolvedIncidents = incidents.filter((i) => i.resolvedAt !== null);
   const mttrMinutes =
     resolvedIncidents.length > 0
-      ? resolvedIncidents.reduce((sum, i) => sum + i.durationMinutes, 0) / resolvedIncidents.length
+      ? resolvedIncidents.reduce((sum, i) => sum + i.durationMinutes, 0) /
+        resolvedIncidents.length
       : totalDowntimeMinutes > 0 && incidents.length > 0
         ? totalDowntimeMinutes / incidents.length
         : 0;
 
   // MTTD estimate based on check interval (average 45s)
   const avgInterval =
-    monitors.reduce((sum, m) => sum + (m.interval || 60), 0) / (monitors.length || 1);
+    monitors.reduce((sum, m) => sum + (m.interval || 60), 0) /
+    (monitors.length || 1);
   const mttdSeconds = Math.round(avgInterval * 0.75);
 
   return {

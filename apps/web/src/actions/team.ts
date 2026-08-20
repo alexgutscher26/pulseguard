@@ -28,7 +28,10 @@ export async function logAuditEvent({
 }) {
   try {
     const reqHeaders = await headers();
-    const ip = reqHeaders.get("x-forwarded-for") || reqHeaders.get("cf-connecting-ip") || "unknown";
+    const ip =
+      reqHeaders.get("x-forwarded-for") ||
+      reqHeaders.get("cf-connecting-ip") ||
+      "unknown";
 
     await prisma.auditLog.create({
       data: {
@@ -52,7 +55,11 @@ const inFlightPersonalWorkspaceCreations = new Map<string, Promise<any>>();
  * Ensures a user has exactly one personal workspace created if they have no organizations.
  * Uses mutex locks and atomic reconciliation to prevent duplicate workspaces on initial login.
  */
-async function ensurePersonalWorkspace(userId: string, userName: string, userEmail: string) {
+async function ensurePersonalWorkspace(
+  userId: string,
+  userName: string,
+  userEmail: string,
+) {
   if (inFlightPersonalWorkspaceCreations.has(userId)) {
     return inFlightPersonalWorkspaceCreations.get(userId);
   }
@@ -84,12 +91,15 @@ async function ensurePersonalWorkspace(userId: string, userName: string, userEma
               m.organization.name === `${userName || "Personal"}'s Workspace` ||
               m.organization.name === "Alex Gutscher's Workspace";
             const isEmpty =
-              m.organization._count.monitors === 0 && m.organization._count.members <= 1;
+              m.organization._count.monitors === 0 &&
+              m.organization._count.members <= 1;
             return isPersonalPattern && isEmpty;
           });
 
           if (duplicateMemberships.length > 0) {
-            const dupeOrgIds = duplicateMemberships.map((m) => m.organization.id);
+            const dupeOrgIds = duplicateMemberships.map(
+              (m) => m.organization.id,
+            );
             try {
               await prisma.member.deleteMany({
                 where: { organizationId: { in: dupeOrgIds } },
@@ -101,7 +111,10 @@ async function ensurePersonalWorkspace(userId: string, userName: string, userEma
                 `[Team] Cleaned up ${dupeOrgIds.length} duplicate personal workspaces for user ${userId}`,
               );
             } catch (cleanupErr) {
-              console.warn("[Team] Non-critical duplicate workspace cleanup error:", cleanupErr);
+              console.warn(
+                "[Team] Non-critical duplicate workspace cleanup error:",
+                cleanupErr,
+              );
             }
           }
         }
@@ -227,7 +240,8 @@ export async function getActiveWorkspace() {
   const cookieMatch = cookieHeader.match(/pg_active_org_id=([^;]+)/);
   const cookieOrgId = cookieMatch ? decodeURIComponent(cookieMatch[1]) : null;
 
-  const activeOrgId = cookieOrgId || (session.session as any)?.activeOrganizationId;
+  const activeOrgId =
+    cookieOrgId || (session.session as any)?.activeOrganizationId;
 
   if (activeOrgId) {
     const member = await prisma.member.findUnique({
@@ -336,7 +350,9 @@ export async function listUserWorkspaces() {
   const cookieOrgId = cookieMatch ? decodeURIComponent(cookieMatch[1]) : null;
 
   const activeOrgId =
-    cookieOrgId || (session.session as any)?.activeOrganizationId || memberships[0]?.organizationId;
+    cookieOrgId ||
+    (session.session as any)?.activeOrganizationId ||
+    memberships[0]?.organizationId;
 
   const seenOrgIds = new Set<string>();
   const uniqueMemberships = memberships.filter((m) => {
@@ -361,7 +377,10 @@ export async function listUserWorkspaces() {
 /**
  * Create a new team workspace (Enforces Paid Gate on The Construct).
  */
-export async function createTeamWorkspace(params: { name: string; slug?: string }) {
+export async function createTeamWorkspace(params: {
+  name: string;
+  slug?: string;
+}) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -378,7 +397,10 @@ export async function createTeamWorkspace(params: { name: string; slug?: string 
 
   const cleanName = params.name.trim();
   if (!cleanName || cleanName.length < 2) {
-    return { success: false, error: "Workspace name must be at least 2 characters" };
+    return {
+      success: false,
+      error: "Workspace name must be at least 2 characters",
+    };
   }
 
   const baseSlug = (params.slug || cleanName)
@@ -436,7 +458,10 @@ export async function createTeamWorkspace(params: { name: string; slug?: string 
     return { success: true, organization: org };
   } catch (err) {
     console.error("Failed to create workspace:", err);
-    return { success: false, error: "Failed to create workspace. Try another name." };
+    return {
+      success: false,
+      error: "Failed to create workspace. Try another name.",
+    };
   }
 }
 
@@ -545,7 +570,11 @@ export async function getTeamDetails(organizationId?: string) {
 /**
  * Invite a member to the workspace.
  */
-export async function inviteMember(params: { organizationId: string; email: string; role: Role }) {
+export async function inviteMember(params: {
+  organizationId: string;
+  email: string;
+  role: Role;
+}) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -566,11 +595,17 @@ export async function inviteMember(params: { organizationId: string; email: stri
   });
 
   if (!caller || (caller.role !== "owner" && caller.role !== "admin")) {
-    return { success: false, error: "Only workspace owners and admins can invite members" };
+    return {
+      success: false,
+      error: "Only workspace owners and admins can invite members",
+    };
   }
 
   // Check paid gate and seat limits
-  const seatCheck = await assertTeamLimits(session.user.id, params.organizationId);
+  const seatCheck = await assertTeamLimits(
+    session.user.id,
+    params.organizationId,
+  );
   if (!seatCheck.allowed) {
     return { success: false, error: seatCheck.error, requiresUpgrade: true };
   }
@@ -581,7 +616,9 @@ export async function inviteMember(params: { organizationId: string; email: stri
   }
 
   // Check if target is already a member
-  const existingUser = await prisma.user.findUnique({ where: { email: targetEmail } });
+  const existingUser = await prisma.user.findUnique({
+    where: { email: targetEmail },
+  });
   if (existingUser) {
     const existingMember = await prisma.member.findUnique({
       where: {
@@ -593,7 +630,10 @@ export async function inviteMember(params: { organizationId: string; email: stri
     });
 
     if (existingMember) {
-      return { success: false, error: "This user is already a member of this workspace" };
+      return {
+        success: false,
+        error: "This user is already a member of this workspace",
+      };
     }
   }
 
@@ -607,7 +647,10 @@ export async function inviteMember(params: { organizationId: string; email: stri
   });
 
   if (existingInvite) {
-    return { success: false, error: "An active invitation has already been sent to this email" };
+    return {
+      success: false,
+      error: "An active invitation has already been sent to this email",
+    };
   }
 
   try {
@@ -637,21 +680,31 @@ export async function inviteMember(params: { organizationId: string; email: stri
       userId: session.user.id,
       action: "member.invited",
       resource: "invitation",
-      metadata: { email: targetEmail, role: params.role, invitationId: invitation.id },
+      metadata: {
+        email: targetEmail,
+        role: params.role,
+        invitationId: invitation.id,
+      },
     });
 
     revalidatePath("/dashboard/settings");
     return { success: true, invitation };
   } catch (err) {
     console.error("Failed to send invitation:", err);
-    return { success: false, error: "Failed to create and send team invitation" };
+    return {
+      success: false,
+      error: "Failed to create and send team invitation",
+    };
   }
 }
 
 /**
  * Cancel a pending invitation.
  */
-export async function cancelInvitation(params: { organizationId: string; invitationId: string }) {
+export async function cancelInvitation(params: {
+  organizationId: string;
+  invitationId: string;
+}) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -771,7 +824,10 @@ export async function updateMemberRole(params: {
 /**
  * Remove a member from the workspace (or leave the workspace).
  */
-export async function removeMember(params: { organizationId: string; memberId: string }) {
+export async function removeMember(params: {
+  organizationId: string;
+  memberId: string;
+}) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -884,7 +940,10 @@ export async function acceptInvitation(invitationId: string) {
   });
 
   if (!session?.user) {
-    return { success: false, error: "Please log in or sign up to accept this invitation" };
+    return {
+      success: false,
+      error: "Please log in or sign up to accept this invitation",
+    };
   }
 
   const invitation = await prisma.invitation.findUnique({
@@ -893,7 +952,10 @@ export async function acceptInvitation(invitationId: string) {
   });
 
   if (!invitation || invitation.status !== "pending") {
-    return { success: false, error: "Invitation is no longer valid or has already been accepted" };
+    return {
+      success: false,
+      error: "Invitation is no longer valid or has already been accepted",
+    };
   }
 
   if (new Date() > new Date(invitation.expiresAt)) {
@@ -939,7 +1001,10 @@ export async function acceptInvitation(invitationId: string) {
     return { success: true, organizationSlug: invitation.organization.slug };
   } catch (err) {
     console.error("Failed to accept invitation:", err);
-    return { success: false, error: "Failed to accept invitation. Please try again." };
+    return {
+      success: false,
+      error: "Failed to accept invitation. Please try again.",
+    };
   }
 }
 
@@ -963,7 +1028,10 @@ export async function rejectInvitation(invitationId: string) {
 /**
  * Fetch workspace audit logs.
  */
-export async function getWorkspaceAuditLogs(organizationId?: string, limit = 50) {
+export async function getWorkspaceAuditLogs(
+  organizationId?: string,
+  limit = 50,
+) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });

@@ -156,7 +156,13 @@ export function EmailHeader({
         borderBottom: "1px solid #27272a",
       }}
     >
-      <table width="100%" border={0} cellPadding="0" cellSpacing="0" role="presentation">
+      <table
+        width="100%"
+        border={0}
+        cellPadding="0"
+        cellSpacing="0"
+        role="presentation"
+      >
         <tbody>
           <tr>
             <td align="left" style={{ verticalAlign: "middle" }}>
@@ -246,7 +252,8 @@ export function EmailFooter({
   const dashboardUrl = `${baseUrl}/dashboard`;
   const statusUrl = `${baseUrl}/status-page/steadystack`;
   const docsUrl = `${baseUrl}/docs`;
-  const prefUrl = unsubscribeUrl || `${baseUrl}/dashboard/settings?tab=notifications`;
+  const prefUrl =
+    unsubscribeUrl || `${baseUrl}/dashboard/settings?tab=notifications`;
 
   return (
     <Section
@@ -271,7 +278,13 @@ export function EmailFooter({
           {customMessage}
         </Text>
       )}
-      <table width="100%" border={0} cellPadding="0" cellSpacing="0" role="presentation">
+      <table
+        width="100%"
+        border={0}
+        cellPadding="0"
+        cellSpacing="0"
+        role="presentation"
+      >
         <tbody>
           <tr>
             <td align="center">
@@ -440,7 +453,10 @@ export function PrimaryButton({
               borderRadius: "8px",
               backgroundColor: bg,
               border: border,
-              boxShadow: variant === "primary" ? "0 4px 14px rgba(16, 185, 129, 0.25)" : "none",
+              boxShadow:
+                variant === "primary"
+                  ? "0 4px 14px rgba(16, 185, 129, 0.25)"
+                  : "none",
             }}
           >
             <a
@@ -531,7 +547,9 @@ function styleObjectToString(style?: React.CSSProperties): string {
     if (value === null || value === undefined || value === "") continue;
     const cssKey = key.replace(/([A-Z])/g, "-$1").toLowerCase();
     const cssVal =
-      typeof value === "number" && !UNITLESS_PROPERTIES.has(key) ? `${value}px` : value;
+      typeof value === "number" && !UNITLESS_PROPERTIES.has(key)
+        ? `${value}px`
+        : value;
     entries.push(`${cssKey}:${cssVal}`);
   }
   return entries.join(";");
@@ -574,10 +592,21 @@ function renderNode(node: React.ReactNode): string {
 
       if (props) {
         for (const [propName, propValue] of Object.entries(props)) {
-          if (propName === "children" || propName === "key" || propName === "ref") continue;
+          if (
+            propName === "children" ||
+            propName === "key" ||
+            propName === "ref"
+          )
+            continue;
 
-          if (propName === "style" && propValue && typeof propValue === "object") {
-            const styleStr = styleObjectToString(propValue as React.CSSProperties);
+          if (
+            propName === "style" &&
+            propValue &&
+            typeof propValue === "object"
+          ) {
+            const styleStr = styleObjectToString(
+              propValue as React.CSSProperties,
+            );
             if (styleStr) {
               attributes.push(`style="${escapeHtml(styleStr)}"`);
             }
@@ -612,7 +641,9 @@ function renderNode(node: React.ReactNode): string {
           }
 
           if (propValue !== null && propValue !== undefined) {
-            attributes.push(`${propName.toLowerCase()}="${escapeHtml(String(propValue))}"`);
+            attributes.push(
+              `${propName.toLowerCase()}="${escapeHtml(String(propValue))}"`,
+            );
           }
         }
       }
@@ -627,7 +658,8 @@ function renderNode(node: React.ReactNode): string {
         return `<${tag}${attrStr}>${innerHtml}</${tag}>`;
       }
 
-      const childrenStr = props && "children" in props ? renderNode(props.children) : "";
+      const childrenStr =
+        props && "children" in props ? renderNode(props.children) : "";
       return `<${tag}${attrStr}>${childrenStr}</${tag}>`;
     }
 

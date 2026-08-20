@@ -16,19 +16,28 @@ export async function POST(req: NextRequest) {
   const { ids, url: bodyUrl } = body;
 
   if (bodyUrl && !user.scopes.includes("write")) {
-    return NextResponse.json({ error: "Write scope required for URL override" }, { status: 403 });
+    return NextResponse.json(
+      { error: "Write scope required for URL override" },
+      { status: 403 },
+    );
   }
 
   if (bodyUrl) {
     try {
       new URL(bodyUrl);
     } catch (_) {
-      return NextResponse.json({ error: "Invalid override URL" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid override URL" },
+        { status: 400 },
+      );
     }
   }
 
   if (!ids || !Array.isArray(ids) || ids.length === 0) {
-    return NextResponse.json({ error: "ids array is required" }, { status: 400 });
+    return NextResponse.json(
+      { error: "ids array is required" },
+      { status: 400 },
+    );
   }
 
   const monitors = await prisma.monitor.findMany({
@@ -45,7 +54,11 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  const runHttpCheck = async (monitor: any, targetUrl: string, isOverride: boolean) => {
+  const runHttpCheck = async (
+    monitor: any,
+    targetUrl: string,
+    isOverride: boolean,
+  ) => {
     const start = performance.now();
     let status: "UP" | "DOWN" = "DOWN";
     let latency = 0;
@@ -73,7 +86,8 @@ export async function POST(req: NextRequest) {
             userHeaders["User-Agent"] ||
             userHeaders["user-agent"] ||
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 SteadyStack/1.0",
-          Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+          Accept:
+            "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
           "Accept-Language": "en-US,en;q=0.9",
           ...userHeaders,
         },

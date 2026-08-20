@@ -88,7 +88,10 @@ export default async function ServiceDownPage({
   }
 
   // Perform live edge status check at request time
-  const initialProbe = await checkServiceLiveStatus(service.domain, service.apiEndpoint);
+  const initialProbe = await checkServiceLiveStatus(
+    service.domain,
+    service.apiEndpoint,
+  );
 
   // Retrieve related services in the same ecosystem
   const relatedServices: ServiceDownInfo[] = service.relatedServices
@@ -191,11 +194,16 @@ export default async function ServiceDownPage({
             <span>Home</span>
           </Link>
           <ChevronRight className="h-3.5 w-3.5" />
-          <Link href={"/is-down" as any} className="hover:text-foreground transition-colors">
+          <Link
+            href={"/is-down" as any}
+            className="hover:text-foreground transition-colors"
+          >
             Outage Directory
           </Link>
           <ChevronRight className="h-3.5 w-3.5" />
-          <span className="text-foreground font-semibold">Is {service.name} Down?</span>
+          <span className="text-foreground font-semibold">
+            Is {service.name} Down?
+          </span>
         </nav>
 
         {/* Hero Title Section */}
@@ -204,18 +212,23 @@ export default async function ServiceDownPage({
             <Badge variant="secondary" className="text-xs">
               {CATEGORY_LABELS[service.category]}
             </Badge>
-            <Badge variant="outline" className="font-mono text-xs text-muted-foreground">
+            <Badge
+              variant="outline"
+              className="font-mono text-xs text-muted-foreground"
+            >
               {service.domain}
             </Badge>
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-foreground leading-tight">
-            Is <span className="text-primary">{service.name}</span> Down Right Now?
+            Is <span className="text-primary">{service.name}</span> Down Right
+            Now?
           </h1>
 
           <p className="text-base sm:text-lg text-muted-foreground max-w-3xl leading-relaxed">
-            Live global uptime status, multi-region edge latency, official incident reports, and
-            automated monitoring for <strong className="text-foreground">{service.name}</strong>.
+            Live global uptime status, multi-region edge latency, official
+            incident reports, and automated monitoring for{" "}
+            <strong className="text-foreground">{service.name}</strong>.
           </p>
         </div>
 
@@ -236,7 +249,9 @@ export default async function ServiceDownPage({
           <div className="rounded-2xl border border-border bg-card/30 p-6 md:p-8 space-y-4">
             <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-muted-foreground">
               <Layers className="h-4 w-4 text-primary" />
-              <span>Related {CATEGORY_LABELS[service.category]} Dependencies</span>
+              <span>
+                Related {CATEGORY_LABELS[service.category]} Dependencies
+              </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">

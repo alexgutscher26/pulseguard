@@ -23,10 +23,14 @@ export function AlertFatigueCalculator() {
     // Benchmark study measured rate: ~1.37 false alerts / day / 10 endpoints on Pingdom = 0.137 false alerts / endpoint / day = ~50 false alerts / endpoint / year
     // Conservative industry rate based on UptimeRobot benchmark: ~0.93 / day / 10 endpoints = 33.9 false alerts / endpoint / year
     const falseAlertsPerEndpointYear = 28; // conservative midpoint
-    const totalFalseAlertsPerYear = Math.round(endpointsCount * falseAlertsPerEndpointYear);
+    const totalFalseAlertsPerYear = Math.round(
+      endpointsCount * falseAlertsPerEndpointYear,
+    );
 
     // Productivity loss in hours (context switch + investigation + sleep recovery)
-    const hoursWastedPerYear = Math.round(totalFalseAlertsPerYear * (interruptionMins / 60));
+    const hoursWastedPerYear = Math.round(
+      totalFalseAlertsPerYear * (interruptionMins / 60),
+    );
     const annualWastedCost = Math.round(hoursWastedPerYear * hourlyRate);
 
     // Hours wasted per engineer
@@ -72,8 +76,9 @@ export function AlertFatigueCalculator() {
             Calculate Your Team&apos;s False-Alert Cost
           </h2>
           <p className="text-muted-foreground text-sm max-w-2xl mt-3 leading-relaxed">
-            Every false alarm costs on-call engineer focus, disrupts sleep, and causes teams to mute
-            paging channels. Model the real annual cost across your engineering organization.
+            Every false alarm costs on-call engineer focus, disrupts sleep, and
+            causes teams to mute paging channels. Model the real annual cost
+            across your engineering organization.
           </p>
         </div>
 
@@ -209,14 +214,17 @@ export function AlertFatigueCalculator() {
                   ${calculations.annualWastedCost.toLocaleString()}
                 </div>
                 <span className="text-xs text-muted-foreground mt-1 block font-mono">
-                  ({calculations.hoursWastedPerYear.toLocaleString()} lost engineering hours)
+                  ({calculations.hoursWastedPerYear.toLocaleString()} lost
+                  engineering hours)
                 </span>
               </div>
 
               {/* Breakdown Stats */}
               <div className="space-y-3 font-mono text-xs mb-8">
                 <div className="flex items-center justify-between py-2 border-b border-border/40">
-                  <span className="text-muted-foreground">Estimated False Alarms / Yr:</span>
+                  <span className="text-muted-foreground">
+                    Estimated False Alarms / Yr:
+                  </span>
                   <span className="font-bold text-rose-400">
                     {calculations.totalFalseAlertsPerYear.toLocaleString()}
                   </span>
@@ -224,7 +232,8 @@ export function AlertFatigueCalculator() {
 
                 <div className="flex items-center justify-between py-2 border-b border-border/40">
                   <span className="text-muted-foreground flex items-center gap-1">
-                    <Moon className="size-3 text-muted-foreground" />3 AM Nighttime Interruptions:
+                    <Moon className="size-3 text-muted-foreground" />3 AM
+                    Nighttime Interruptions:
                   </span>
                   <span className="font-bold text-foreground">
                     {calculations.nightAlertsPerYear.toLocaleString()}
@@ -232,7 +241,9 @@ export function AlertFatigueCalculator() {
                 </div>
 
                 <div className="flex items-center justify-between py-2 border-b border-border/40">
-                  <span className="text-muted-foreground">Lost Time / Engineer / Yr:</span>
+                  <span className="text-muted-foreground">
+                    Lost Time / Engineer / Yr:
+                  </span>
                   <span className="font-bold text-foreground">
                     {calculations.hoursPerEngineer} hrs
                   </span>
@@ -257,8 +268,10 @@ export function AlertFatigueCalculator() {
                 SteadyStack 4-of-7 Quorum Solution
               </div>
               <p className="text-[11px] text-muted-foreground leading-relaxed mb-3">
-                Mathematically eliminates false alarms across your {endpointsCount} endpoints,
-                recovering ${calculations.annualWastedCost.toLocaleString()} in annual focus.
+                Mathematically eliminates false alarms across your{" "}
+                {endpointsCount} endpoints, recovering $
+                {calculations.annualWastedCost.toLocaleString()} in annual
+                focus.
               </p>
               <Link
                 href="/signup"

@@ -1,7 +1,12 @@
 import Link from "next/link";
 import DashboardClient from "@/app/(app)/dashboard/dashboard-client";
 import { DemoBanner } from "@/components/dashboard/demo-banner";
-import { DEMO_MONITORS, DEMO_STATS, DEMO_INSIGHTS, DEMO_ONBOARDING_STATUS } from "@/lib/demo-data";
+import {
+  DEMO_MONITORS,
+  DEMO_STATS,
+  DEMO_INSIGHTS,
+  DEMO_ONBOARDING_STATUS,
+} from "@/lib/demo-data";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Activity, ArrowLeft, ArrowRight } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";

@@ -1,6 +1,12 @@
 "use client";
 
-import { Wrench, Clock, CheckCircle, AlertCircle, Calendar } from "lucide-react";
+import {
+  Wrench,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  Calendar,
+} from "lucide-react";
 
 interface MaintenanceWindow {
   id: string;
@@ -18,7 +24,10 @@ interface MaintenanceTimelineProps {
 
 type MaintenanceStatus = "upcoming" | "active" | "completed";
 
-function getMaintenanceStatus(startAt: string, endAt: string): MaintenanceStatus {
+function getMaintenanceStatus(
+  startAt: string,
+  endAt: string,
+): MaintenanceStatus {
   const now = new Date();
   const start = new Date(startAt);
   const end = new Date(endAt);
@@ -80,7 +89,9 @@ function getDuration(startAt: string, endAt: string): string {
   return `${minutes}m`;
 }
 
-export function MaintenanceTimeline({ maintenanceWindows }: MaintenanceTimelineProps) {
+export function MaintenanceTimeline({
+  maintenanceWindows,
+}: MaintenanceTimelineProps) {
   if (maintenanceWindows.length === 0) {
     return (
       <div className="rounded-sm border border-primary/20 bg-card/40 p-6 backdrop-blur-sm">
@@ -92,7 +103,9 @@ export function MaintenanceTimeline({ maintenanceWindows }: MaintenanceTimelineP
         </div>
         <div className="flex flex-col items-center justify-center py-8 text-muted-foreground/40">
           <Calendar className="size-10 mb-3" />
-          <p className="text-xs font-mono uppercase tracking-widest">No scheduled maintenance</p>
+          <p className="text-xs font-mono uppercase tracking-widest">
+            No scheduled maintenance
+          </p>
         </div>
       </div>
     );
@@ -185,7 +198,9 @@ export function MaintenanceTimeline({ maintenanceWindows }: MaintenanceTimelineP
                           {window.monitor.name}
                         </span>
                         {window.description && (
-                          <p className="text-xs text-muted-foreground mt-1">{window.description}</p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {window.description}
+                          </p>
                         )}
                       </div>
                       <div className="text-right shrink-0">
@@ -228,7 +243,9 @@ export function MaintenanceTimeline({ maintenanceWindows }: MaintenanceTimelineP
                     <CheckCircle className="size-3 text-green-500/50" />
                     <span className="text-xs">{window.monitor.name}</span>
                   </div>
-                  <span className="text-[10px] font-mono">{formatDateTime(window.endAt)}</span>
+                  <span className="text-[10px] font-mono">
+                    {formatDateTime(window.endAt)}
+                  </span>
                 </div>
               ))}
             </div>

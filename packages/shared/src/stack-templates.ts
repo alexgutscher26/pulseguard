@@ -141,7 +141,9 @@ export const stackTemplates: StackTemplate[] = [
         url: "https://api.store.example.com/checkout/health",
         method: "GET",
         expectation: JSON.stringify({
-          json_assertions: [{ path: "status", operator: "==", value: "healthy" }],
+          json_assertions: [
+            { path: "status", operator: "==", value: "healthy" },
+          ],
         }),
         interval: 60,
         timeout: 15,
@@ -449,7 +451,13 @@ export const stackTemplates: StackTemplate[] = [
     tagline: "Control plane, ingress & K8s cluster telemetry",
     icon: "Boxes",
     difficulty: "advanced",
-    techStack: ["Kubernetes", "Helm", "Ingress-Nginx", "Prometheus", "Cert-Manager"],
+    techStack: [
+      "Kubernetes",
+      "Helm",
+      "Ingress-Nginx",
+      "Prometheus",
+      "Cert-Manager",
+    ],
     monitors: [
       {
         name: "K8s API Server Health",
@@ -667,6 +675,8 @@ export function getTemplateById(id: string): StackTemplate | undefined {
   return stackTemplates.find((t) => t.id === id);
 }
 
-export function getTemplatesByDifficulty(difficulty: StackTemplate["difficulty"]): StackTemplate[] {
+export function getTemplatesByDifficulty(
+  difficulty: StackTemplate["difficulty"],
+): StackTemplate[] {
   return stackTemplates.filter((t) => t.difficulty === difficulty);
 }

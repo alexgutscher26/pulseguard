@@ -7,7 +7,8 @@ import type { PasswordResetEmailData } from "./templates/password-reset";
 // Types & Interfaces
 // ============================================================================
 
-export type SendEmailResult = { id: string; error?: undefined } | { error: string; id?: undefined };
+export type SendEmailResult =
+  { id: string; error?: undefined } | { error: string; id?: undefined };
 
 export interface EmailAttachment {
   filename: string;
@@ -146,7 +147,9 @@ function stripHtmlTagsToPlainText(html: string): string {
     .trim();
 }
 
-export async function sendEmail(options: SendEmailOptions): Promise<SendEmailResult> {
+export async function sendEmail(
+  options: SendEmailOptions,
+): Promise<SendEmailResult> {
   const {
     to,
     subject,
@@ -164,7 +167,8 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
 
   const key = apiKey ?? env.RESEND_API_KEY;
   // Treat as dev/test only when NODE_ENV is explicitly set to those values.
-  const isDevOrTest = process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test";
+  const isDevOrTest =
+    process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test";
 
   if (!key) {
     if (isDevOrTest) {
@@ -175,12 +179,16 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
       console.log(`👤 To:      ${recipient}`);
       console.log(`📝 Subject: ${subject}`);
       if (attachments && attachments.length > 0) {
-        console.log(`📎 Attachments: ${attachments.map((a) => a.filename).join(", ")}`);
+        console.log(
+          `📎 Attachments: ${attachments.map((a) => a.filename).join(", ")}`,
+        );
       }
       console.log(`==================================================\n`);
       return { id: "dev-mock-email-id" };
     }
-    throw new Error("[SteadyStack Email] RESEND_API_KEY is not configured. Email cannot be sent.");
+    throw new Error(
+      "[SteadyStack Email] RESEND_API_KEY is not configured. Email cannot be sent.",
+    );
   }
 
   try {
@@ -209,7 +217,8 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
     console.error(`[SteadyStack Email] Error sending to ${to}:`, errorMessage);
     return { error: errorMessage };
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown email error";
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown email error";
     console.error(`[SteadyStack Email] Exception sending to ${to}:`, error);
     return { error: errorMessage };
   }
@@ -219,7 +228,9 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
 // PDF Rendering Utilities
 // ============================================================================
 
-export async function renderPdfToBuffer(document: React.ReactElement): Promise<Buffer> {
+export async function renderPdfToBuffer(
+  document: React.ReactElement,
+): Promise<Buffer> {
   const { renderToStream } = await import("@react-pdf/renderer");
   const stream = await renderToStream(document as any);
   const chunks: Uint8Array[] = [];
@@ -232,7 +243,9 @@ export async function renderPdfToBuffer(document: React.ReactElement): Promise<B
 
 export async function renderMonthlyReportToBuffer(stats: any): Promise<Buffer> {
   const { MonthlyReportDocument } = await import("./templates/monthly-report");
-  return renderPdfToBuffer(React.createElement(MonthlyReportDocument, { stats }));
+  return renderPdfToBuffer(
+    React.createElement(MonthlyReportDocument, { stats }),
+  );
 }
 
 export async function renderSlaReportToBuffer(
@@ -258,7 +271,10 @@ export async function sendMonitorAlert(
       ? `🔴 [CRITICAL] ${data.monitorName} is DOWN`
       : `✅ [RESOLVED] ${data.monitorName} is UP`;
 
-  if (data.reason?.includes("expires in") || data.reason?.includes("SSL certificate expires")) {
+  if (
+    data.reason?.includes("expires in") ||
+    data.reason?.includes("SSL certificate expires")
+  ) {
     subject = `⚠️ [EXPIRY WARNING] ${data.monitorName} SSL Certificate Expires Soon`;
   }
 
@@ -278,7 +294,8 @@ export async function sendWelcomeEmail(
   data: WelcomeEmailData,
   apiKey?: string,
 ): Promise<SendEmailResult> {
-  const { renderWelcome, renderWelcomeText } = await import("./templates/welcome");
+  const { renderWelcome, renderWelcomeText } =
+    await import("./templates/welcome");
   const html = await renderWelcome(data);
   const text = renderWelcomeText(data);
 
@@ -349,7 +366,8 @@ export async function sendSubscriptionConfirm(
   data: import("./templates/subscription-confirm").SubscriptionConfirmData,
   apiKey?: string,
 ): Promise<SendEmailResult> {
-  const { renderSubscriptionConfirm } = await import("./templates/subscription-confirm");
+  const { renderSubscriptionConfirm } =
+    await import("./templates/subscription-confirm");
   const html = await renderSubscriptionConfirm(data);
 
   return sendEmail({
@@ -430,12 +448,15 @@ export async function sendUsageLimitWarning(
   data: UsageLimitWarningEmailData,
   apiKey?: string,
 ): Promise<SendEmailResult> {
-  const { renderUsageLimitWarning } = await import("./templates/usage-limit-warning");
+  const { renderUsageLimitWarning } =
+    await import("./templates/usage-limit-warning");
   const html = await renderUsageLimitWarning({
     userName: data.userName,
     planName: data.planName,
     warnings: data.warnings,
-    upgradeUrl: data.upgradeUrl ?? "https://steadystack.dev/dashboard/settings?tab=billing",
+    upgradeUrl:
+      data.upgradeUrl ??
+      "https://steadystack.dev/dashboard/settings?tab=billing",
   });
 
   return sendEmail({
@@ -459,13 +480,15 @@ export async function sendDunningNotice(
     amountDue: data.amountDue,
     failureReason: data.failureReason ?? "Card declined",
     billingPortalUrl:
-      data.billingPortalUrl ?? "https://steadystack.dev/dashboard/settings?tab=billing",
+      data.billingPortalUrl ??
+      "https://steadystack.dev/dashboard/settings?tab=billing",
   });
 
   return sendEmail({
     to,
     from: EMAIL_SENDERS.billing,
-    subject: "⚠️ Payment Failed: Action Required for Your SteadyStack Subscription",
+    subject:
+      "⚠️ Payment Failed: Action Required for Your SteadyStack Subscription",
     html,
     apiKey,
   });

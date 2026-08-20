@@ -63,7 +63,10 @@ const RESOLVERS: ResolverDef[] = [
   },
 ];
 
-async function queryResolver(resolver: ResolverDef, hostname: string): Promise<string | null> {
+async function queryResolver(
+  resolver: ResolverDef,
+  hostname: string,
+): Promise<string | null> {
   try {
     const response = await fetch(resolver.url(hostname), {
       headers: resolver.headers,
@@ -81,7 +84,9 @@ export async function checkDNSWatchdog(
   domain: string,
   expectedIPs: string[] = [],
 ): Promise<DNSWatchdogResult> {
-  const hostname = (domain.replace(/^https?:\/\//, "").split("/")[0] || "").split(":")[0] || domain;
+  const hostname =
+    (domain.replace(/^https?:\/\//, "").split("/")[0] || "").split(":")[0] ||
+    domain;
 
   const resolvedPromises = RESOLVERS.map((r) => queryResolver(r, hostname));
   const results = await Promise.all(resolvedPromises);
@@ -92,7 +97,9 @@ export async function checkDNSWatchdog(
     quad9: results[2] ?? null,
   };
 
-  const allResolvedIPs = [...new Set(results.filter((r): r is string => r !== null))];
+  const allResolvedIPs = [
+    ...new Set(results.filter((r): r is string => r !== null)),
+  ];
 
   const anomalies: string[] = [];
 
@@ -114,7 +121,9 @@ export async function checkDNSWatchdog(
     }
   }
 
-  const failedResolvers = RESOLVERS.filter((_, i) => results[i] === null).map((r) => r.name);
+  const failedResolvers = RESOLVERS.filter((_, i) => results[i] === null).map(
+    (r) => r.name,
+  );
   if (failedResolvers.length > 0) {
     anomalies.push(
       `Resolver${failedResolvers.length > 1 ? "s" : ""} ${failedResolvers.join(", ")} failed to resolve`,
@@ -134,7 +143,16 @@ export async function checkDNSWatchdog(
 
   score = Math.max(0, Math.min(100, score));
 
-  const grade = score >= 90 ? "A" : score >= 75 ? "B" : score >= 60 ? "C" : score >= 40 ? "D" : "F";
+  const grade =
+    score >= 90
+      ? "A"
+      : score >= 75
+        ? "B"
+        : score >= 60
+          ? "C"
+          : score >= 40
+            ? "D"
+            : "F";
 
   return {
     domain: hostname,

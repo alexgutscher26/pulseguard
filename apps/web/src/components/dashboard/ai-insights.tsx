@@ -16,7 +16,11 @@ import {
   ShieldCheck,
   Zap,
 } from "lucide-react";
-import { dismissInsight, analyzeInsightWithAI, generateLiveAIInsights } from "@/actions/monitors";
+import {
+  dismissInsight,
+  analyzeInsightWithAI,
+  generateLiveAIInsights,
+} from "@/actions/monitors";
 import { toast } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
 import {
@@ -49,7 +53,9 @@ export function AIInsights({ insights: initialInsights }: AIInsightsProps) {
   const [isPending, startTransition] = useTransition();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [selectedInsight, setSelectedInsight] = useState<MonitorInsight | null>(null);
+  const [selectedInsight, setSelectedInsight] = useState<MonitorInsight | null>(
+    null,
+  );
 
   const handleDismiss = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -69,7 +75,9 @@ export function AIInsights({ insights: initialInsights }: AIInsightsProps) {
     try {
       const res = await analyzeInsightWithAI(insightId);
       if (res.success && res.insight) {
-        setInsights((prev) => prev.map((i) => (i.id === insightId ? (res.insight as any) : i)));
+        setInsights((prev) =>
+          prev.map((i) => (i.id === insightId ? (res.insight as any) : i)),
+        );
         setSelectedInsight(res.insight as any);
         toast.success(
           `Deep analysis updated via ${res.analysis?.provider?.toUpperCase() || "AI Engine"}`,
@@ -121,7 +129,12 @@ export function AIInsights({ insights: initialInsights }: AIInsightsProps) {
             disabled={isGenerating}
             className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground hover:text-foreground bg-accent/40 hover:bg-accent border border-border px-2.5 py-1 rounded-md transition-all cursor-pointer disabled:opacity-50"
           >
-            <RefreshCw className={cn("size-3", isGenerating && "animate-spin text-primary")} />
+            <RefreshCw
+              className={cn(
+                "size-3",
+                isGenerating && "animate-spin text-primary",
+              )}
+            />
             {isGenerating ? "Scanning AI Models..." : "Re-analyze with AI"}
           </button>
           <span className="text-[10px] font-bold text-primary bg-primary/5 px-2.5 py-0.5 rounded-full border border-primary/10 tracking-wider">
@@ -158,14 +171,19 @@ export function AIInsights({ insights: initialInsights }: AIInsightsProps) {
                     "p-2 rounded-lg border",
                     insight.type === "ANOMALY" &&
                       "bg-amber-500/5 border-amber-500/10 text-amber-500",
-                    insight.type === "ADVICE" && "bg-primary/5 border-primary/10 text-primary",
+                    insight.type === "ADVICE" &&
+                      "bg-primary/5 border-primary/10 text-primary",
                     insight.type === "PREDICTION" &&
                       "bg-cyan-500/5 border-cyan-500/10 text-cyan-500",
                   )}
                 >
-                  {insight.type === "ANOMALY" && <Activity className="size-4" />}
+                  {insight.type === "ANOMALY" && (
+                    <Activity className="size-4" />
+                  )}
                   {insight.type === "ADVICE" && <Sparkles className="size-4" />}
-                  {insight.type === "PREDICTION" && <TrendingUp className="size-4" />}
+                  {insight.type === "PREDICTION" && (
+                    <TrendingUp className="size-4" />
+                  )}
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
@@ -210,7 +228,10 @@ export function AIInsights({ insights: initialInsights }: AIInsightsProps) {
         ))}
       </div>
 
-      <Dialog open={!!selectedInsight} onOpenChange={() => setSelectedInsight(null)}>
+      <Dialog
+        open={!!selectedInsight}
+        onOpenChange={() => setSelectedInsight(null)}
+      >
         <DialogContent className="max-w-2xl bg-card border border-border text-foreground rounded-2xl overflow-hidden p-6 shadow-[0_20px_50px_rgba(0,0,0,0.1)]">
           {selectedInsight && (
             <div className="relative">
@@ -225,15 +246,21 @@ export function AIInsights({ insights: initialInsights }: AIInsightsProps) {
                   {currentAnalysis?.provider && (
                     <span className="text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded border border-primary/20 bg-primary/10 text-primary flex items-center gap-1">
                       <Zap className="size-2.5" />
-                      {currentAnalysis.provider === "openrouter" && "OpenRouter (Llama 3.3 70B)"}
-                      {currentAnalysis.provider === "ollama" && "Ollama (Llama 3.2)"}
-                      {currentAnalysis.provider === "openai" && "OpenAI (GPT-4o-mini)"}
-                      {currentAnalysis.provider === "heuristic" && "Telemetry SRE Engine"}
+                      {currentAnalysis.provider === "openrouter" &&
+                        "OpenRouter (Llama 3.3 70B)"}
+                      {currentAnalysis.provider === "ollama" &&
+                        "Ollama (Llama 3.2)"}
+                      {currentAnalysis.provider === "openai" &&
+                        "OpenAI (GPT-4o-mini)"}
+                      {currentAnalysis.provider === "heuristic" &&
+                        "Telemetry SRE Engine"}
                     </span>
                   )}
                 </div>
                 <DialogTitle className="text-xl font-extrabold tracking-tight">
-                  {selectedInsight.type === "ANOMALY" ? "Anomaly Detection" : "Diagnostic Advice"}{" "}
+                  {selectedInsight.type === "ANOMALY"
+                    ? "Anomaly Detection"
+                    : "Diagnostic Advice"}{" "}
                   Report
                 </DialogTitle>
                 <DialogDescription className="text-muted-foreground text-xs mt-1">
@@ -257,7 +284,9 @@ export function AIInsights({ insights: initialInsights }: AIInsightsProps) {
                       selectedInsight.metadata?.zScore ||
                       selectedInsight.metadata?.score) && (
                       <div className="flex justify-between items-center text-xs">
-                        <span className="text-muted-foreground">Significance Z-Score:</span>
+                        <span className="text-muted-foreground">
+                          Significance Z-Score:
+                        </span>
                         <span className="font-bold text-amber-500">
                           {Number(
                             currentAnalysis?.technicalMetrics?.zScore ||
@@ -270,7 +299,9 @@ export function AIInsights({ insights: initialInsights }: AIInsightsProps) {
                     {(currentAnalysis?.technicalMetrics?.latency ||
                       selectedInsight.metadata?.latency) && (
                       <div className="flex justify-between items-center text-xs">
-                        <span className="text-muted-foreground">Observed Latency:</span>
+                        <span className="text-muted-foreground">
+                          Observed Latency:
+                        </span>
                         <span className="font-bold text-primary">
                           {currentAnalysis?.technicalMetrics?.latency ||
                             selectedInsight.metadata?.latency}
@@ -279,7 +310,9 @@ export function AIInsights({ insights: initialInsights }: AIInsightsProps) {
                       </div>
                     )}
                     <div className="flex justify-between items-center text-xs">
-                      <span className="text-muted-foreground">Detection Time:</span>
+                      <span className="text-muted-foreground">
+                        Detection Time:
+                      </span>
                       <span className="text-foreground/75 font-semibold">
                         {new Date(selectedInsight.createdAt).toLocaleString()}
                       </span>
@@ -328,8 +361,8 @@ export function AIInsights({ insights: initialInsights }: AIInsightsProps) {
               {currentAnalysis?.preventativeAction && (
                 <div className="bg-accent/30 border border-border rounded-xl p-4 mb-2">
                   <div className="text-[10px] font-bold text-muted-foreground mb-1.5 flex items-center gap-1.5 uppercase tracking-wider">
-                    <ShieldCheck className="size-3.5 text-emerald-500" /> Architectural Preventative
-                    Strategy
+                    <ShieldCheck className="size-3.5 text-emerald-500" />{" "}
+                    Architectural Preventative Strategy
                   </div>
                   <p className="text-xs text-foreground/80 leading-relaxed font-medium">
                     {currentAnalysis.preventativeAction}
@@ -343,8 +376,12 @@ export function AIInsights({ insights: initialInsights }: AIInsightsProps) {
                   disabled={isAnalyzing}
                   className="px-3.5 py-2 border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                 >
-                  <RefreshCw className={cn("size-3.5", isAnalyzing && "animate-spin")} />
-                  {isAnalyzing ? "Executing Deep LLM Diagnosis..." : "⚡ Deep AI Re-Scan"}
+                  <RefreshCw
+                    className={cn("size-3.5", isAnalyzing && "animate-spin")}
+                  />
+                  {isAnalyzing
+                    ? "Executing Deep LLM Diagnosis..."
+                    : "⚡ Deep AI Re-Scan"}
                 </button>
 
                 <div className="flex gap-3">

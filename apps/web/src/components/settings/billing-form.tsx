@@ -23,7 +23,9 @@ interface BillingFormProps {
 
 export function BillingForm({ initialUsage }: BillingFormProps) {
   const searchParams = useSearchParams();
-  const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("annual");
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">(
+    "annual",
+  );
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [loadingPortal, setLoadingPortal] = useState(false);
   const [syncingStripe, setSyncingStripe] = useState(false);
@@ -119,7 +121,8 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
       });
 
       const data = (await res.json()) as { url?: string; error?: string };
-      if (!res.ok) throw new Error(data.error || "Failed to open customer portal");
+      if (!res.ok)
+        throw new Error(data.error || "Failed to open customer portal");
 
       if (data.url) {
         window.location.href = data.url;
@@ -151,8 +154,8 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
                 </span>
               </div>
               <p className="text-xs text-slate-300 mt-0.5">
-                Enjoy full Netrunner Pro telemetry checks, quorum-verified alerts, and multi-region
-                monitoring.
+                Enjoy full Netrunner Pro telemetry checks, quorum-verified
+                alerts, and multi-region monitoring.
               </p>
             </div>
           </div>
@@ -172,7 +175,9 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
                 {currentPlan.name}
               </span>
             </div>
-            <h2 className="text-xl font-bold text-slate-100">{currentPlan.description}</h2>
+            <h2 className="text-xl font-bold text-slate-100">
+              {currentPlan.description}
+            </h2>
             <p className="text-xs text-slate-400 font-mono">
               Monthly telemetry checks performed this cycle:{" "}
               <span className="text-slate-200 font-bold">
@@ -298,7 +303,9 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
             onClick={() => {
               if (!promoCode.trim()) return;
               setAppliedPromo(promoCode.trim());
-              toast.success(`Promo code "${promoCode.trim()}" applied for checkout!`);
+              toast.success(
+                `Promo code "${promoCode.trim()}" applied for checkout!`,
+              );
             }}
             className="px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-semibold hover:bg-cyan-500/20 transition-all shrink-0 cursor-pointer"
           >
@@ -315,7 +322,8 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
             Upgrade Plan & Quotas
           </h3>
           <p className="text-xs text-slate-400">
-            Select simple, developer-friendly options designed to scale with your infrastructure.
+            Select simple, developer-friendly options designed to scale with
+            your infrastructure.
           </p>
         </div>
 
@@ -353,7 +361,10 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
           const plan = PLANS[tierKey];
           const isCurrent = usage.plan === tierKey;
           const isSleepPlan = plan.id === "NETRUNNER";
-          const price = billingCycle === "annual" ? plan.annualPriceMonthly : plan.monthlyPrice;
+          const price =
+            billingCycle === "annual"
+              ? plan.annualPriceMonthly
+              : plan.monthlyPrice;
 
           return (
             <div
@@ -375,8 +386,12 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
 
               <div className="space-y-4">
                 <div className="space-y-1">
-                  <h4 className="text-base font-bold text-slate-100">{plan.name}</h4>
-                  <p className="text-xs text-slate-400 min-h-[32px]">{plan.description}</p>
+                  <h4 className="text-base font-bold text-slate-100">
+                    {plan.name}
+                  </h4>
+                  <p className="text-xs text-slate-400 min-h-[32px]">
+                    {plan.description}
+                  </p>
                 </div>
 
                 <div className="flex flex-col gap-1 py-2 border-y border-slate-800/60">
@@ -390,7 +405,10 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
                       ${price}
                     </span>
                     <span className="text-xs text-slate-400 font-mono">
-                      / mo {billingCycle === "annual" && price > 0 ? "(billed annually)" : ""}
+                      / mo{" "}
+                      {billingCycle === "annual" && price > 0
+                        ? "(billed annually)"
+                        : ""}
                     </span>
                   </div>
                   {plan.monthlyPrice === 0 && (
@@ -446,7 +464,10 @@ export function BillingForm({ initialUsage }: BillingFormProps) {
       {/* Stripe Tax & VAT/GST Compliance Footer Badge */}
       <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-slate-400 font-mono text-[11px] pt-4 border-t border-slate-800/60">
         <ShieldCheck className="size-4 text-emerald-400 shrink-0" />
-        <span>Automated VAT/GST & Stripe Tax compliance enabled for all international regions</span>
+        <span>
+          Automated VAT/GST & Stripe Tax compliance enabled for all
+          international regions
+        </span>
       </div>
     </div>
   );

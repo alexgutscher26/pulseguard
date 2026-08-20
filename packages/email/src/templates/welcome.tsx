@@ -73,9 +73,9 @@ export function Welcome({ data }: { data: WelcomeEmailData }) {
                 lineHeight: 1.6,
               }}
             >
-              Your enterprise monitoring station is now active. SteadyStack tracks your critical
-              APIs, websites, and infrastructure across global edge locations with sub-minute
-              precision.
+              Your enterprise monitoring station is now active. SteadyStack
+              tracks your critical APIs, websites, and infrastructure across
+              global edge locations with sub-minute precision.
             </Text>
 
             {/* Step 1 */}
@@ -108,7 +108,12 @@ export function Welcome({ data }: { data: WelcomeEmailData }) {
                 >
                   1
                 </div>
-                <div style={{ display: "inline-block", width: "calc(100% - 44px)" }}>
+                <div
+                  style={{
+                    display: "inline-block",
+                    width: "calc(100% - 44px)",
+                  }}
+                >
                   <Text
                     style={{
                       margin: "0 0 4px",
@@ -119,9 +124,16 @@ export function Welcome({ data }: { data: WelcomeEmailData }) {
                   >
                     Deploy Your First Monitor
                   </Text>
-                  <Text style={{ margin: 0, fontSize: "13px", color: "#82828e", lineHeight: 1.5 }}>
-                    Configure HTTP/S endpoints, WebSocket streams, SSL expirations, or custom TCP
-                    ports.
+                  <Text
+                    style={{
+                      margin: 0,
+                      fontSize: "13px",
+                      color: "#82828e",
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    Configure HTTP/S endpoints, WebSocket streams, SSL
+                    expirations, or custom TCP ports.
                   </Text>
                 </div>
               </div>
@@ -157,7 +169,12 @@ export function Welcome({ data }: { data: WelcomeEmailData }) {
                 >
                   2
                 </div>
-                <div style={{ display: "inline-block", width: "calc(100% - 44px)" }}>
+                <div
+                  style={{
+                    display: "inline-block",
+                    width: "calc(100% - 44px)",
+                  }}
+                >
                   <Text
                     style={{
                       margin: "0 0 4px",
@@ -168,9 +185,16 @@ export function Welcome({ data }: { data: WelcomeEmailData }) {
                   >
                     Connect Incident Channels
                   </Text>
-                  <Text style={{ margin: 0, fontSize: "13px", color: "#82828e", lineHeight: 1.5 }}>
-                    Route real-time alerts to Slack, Discord, PagerDuty, OpsGenie, or custom
-                    Webhooks.
+                  <Text
+                    style={{
+                      margin: 0,
+                      fontSize: "13px",
+                      color: "#82828e",
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    Route real-time alerts to Slack, Discord, PagerDuty,
+                    OpsGenie, or custom Webhooks.
                   </Text>
                 </div>
               </div>
@@ -206,7 +230,12 @@ export function Welcome({ data }: { data: WelcomeEmailData }) {
                 >
                   3
                 </div>
-                <div style={{ display: "inline-block", width: "calc(100% - 44px)" }}>
+                <div
+                  style={{
+                    display: "inline-block",
+                    width: "calc(100% - 44px)",
+                  }}
+                >
                   <Text
                     style={{
                       margin: "0 0 4px",
@@ -217,16 +246,25 @@ export function Welcome({ data }: { data: WelcomeEmailData }) {
                   >
                     Publish Status Pages
                   </Text>
-                  <Text style={{ margin: 0, fontSize: "13px", color: "#82828e", lineHeight: 1.5 }}>
-                    Give your users transparent uptime visibility on custom domains with automated
-                    incident logs.
+                  <Text
+                    style={{
+                      margin: 0,
+                      fontSize: "13px",
+                      color: "#82828e",
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    Give your users transparent uptime visibility on custom
+                    domains with automated incident logs.
                   </Text>
                 </div>
               </div>
             </div>
 
             {/* CTA Button */}
-            <PrimaryButton href={data.dashboardUrl}>Open Control Center</PrimaryButton>
+            <PrimaryButton href={data.dashboardUrl}>
+              Open Control Center
+            </PrimaryButton>
           </Section>
 
           {/* Footer */}

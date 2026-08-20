@@ -52,7 +52,10 @@ interface CreateIncidentModalProps {
   templates: (IncidentTemplateData & { id: string })[];
 }
 
-export function CreateIncidentModal({ monitors, templates }: CreateIncidentModalProps) {
+export function CreateIncidentModal({
+  monitors,
+  templates,
+}: CreateIncidentModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -110,7 +113,8 @@ export function CreateIncidentModal({ monitors, templates }: CreateIncidentModal
         <DialogHeader>
           <DialogTitle>Report New Incident</DialogTitle>
           <DialogDescription>
-            Create a manual incident report for a monitor. Alert notifications will be sent.
+            Create a manual incident report for a monitor. Alert notifications
+            will be sent.
           </DialogDescription>
         </DialogHeader>
 
@@ -122,7 +126,10 @@ export function CreateIncidentModal({ monitors, templates }: CreateIncidentModal
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Monitor</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select affected monitor" />
@@ -179,7 +186,10 @@ export function CreateIncidentModal({ monitors, templates }: CreateIncidentModal
                 <FormItem>
                   <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g. API Connectivity Issues" {...field} />
+                    <Input
+                      placeholder="e.g. API Connectivity Issues"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -230,7 +240,9 @@ export function CreateIncidentModal({ monitors, templates }: CreateIncidentModal
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="INVESTIGATING">Investigating</SelectItem>
+                        <SelectItem value="INVESTIGATING">
+                          Investigating
+                        </SelectItem>
                         <SelectItem value="IDENTIFIED">Identified</SelectItem>
                         <SelectItem value="MONITORING">Monitoring</SelectItem>
                         <SelectItem value="RESOLVED">Resolved</SelectItem>

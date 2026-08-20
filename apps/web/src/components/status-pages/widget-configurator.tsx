@@ -2,7 +2,17 @@
 
 import { useState, useTransition } from "react";
 import { cn } from "@/lib/utils";
-import { Globe, Palette, Type, Save, AlertCircle, Check, Loader2, Copy, Code2 } from "lucide-react";
+import {
+  Globe,
+  Palette,
+  Type,
+  Save,
+  AlertCircle,
+  Check,
+  Loader2,
+  Copy,
+  Code2,
+} from "lucide-react";
 import { updateWidgetConfig } from "@/actions/status-pages";
 import { StatusBadgePreview } from "@/components/widgets/status-badge-preview";
 import { EmbedCodeGenerator } from "@/components/widgets/embed-code-generator";
@@ -45,15 +55,29 @@ const ALLOWED_SHIELD_THEMES = ["dark", "light"] as const;
 const ALLOWED_SHIELD_SIZES = ["sm", "lg"] as const;
 
 const sanitizeShieldStyle = (value: string) =>
-  ALLOWED_SHIELD_STYLES.includes(value as (typeof ALLOWED_SHIELD_STYLES)[number]) ? value : "flat";
+  ALLOWED_SHIELD_STYLES.includes(
+    value as (typeof ALLOWED_SHIELD_STYLES)[number],
+  )
+    ? value
+    : "flat";
 
 const sanitizeShieldTheme = (value: string) =>
-  ALLOWED_SHIELD_THEMES.includes(value as (typeof ALLOWED_SHIELD_THEMES)[number]) ? value : "dark";
+  ALLOWED_SHIELD_THEMES.includes(
+    value as (typeof ALLOWED_SHIELD_THEMES)[number],
+  )
+    ? value
+    : "dark";
 
 const sanitizeShieldSize = (value: string) =>
-  ALLOWED_SHIELD_SIZES.includes(value as (typeof ALLOWED_SHIELD_SIZES)[number]) ? value : "sm";
+  ALLOWED_SHIELD_SIZES.includes(value as (typeof ALLOWED_SHIELD_SIZES)[number])
+    ? value
+    : "sm";
 
-export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetConfiguratorProps) {
+export function WidgetConfigurator({
+  pageId,
+  pageSlug,
+  initialConfig,
+}: WidgetConfiguratorProps) {
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState<{
     type: "success" | "error";
@@ -61,16 +85,22 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
   } | null>(null);
 
   const [enabled, setEnabled] = useState(initialConfig.widgetEnabled);
-  const [allowedDomains, setAllowedDomains] = useState(initialConfig.widgetAllowedDomains || "");
+  const [allowedDomains, setAllowedDomains] = useState(
+    initialConfig.widgetAllowedDomains || "",
+  );
   const [badgeText, setBadgeText] = useState({
-    operational: initialConfig.widgetBadgeText?.operational || DEFAULT_BADGE_TEXT.operational,
-    partial: initialConfig.widgetBadgeText?.partial || DEFAULT_BADGE_TEXT.partial,
+    operational:
+      initialConfig.widgetBadgeText?.operational ||
+      DEFAULT_BADGE_TEXT.operational,
+    partial:
+      initialConfig.widgetBadgeText?.partial || DEFAULT_BADGE_TEXT.partial,
     major: initialConfig.widgetBadgeText?.major || DEFAULT_BADGE_TEXT.major,
   });
   const [theme, setTheme] = useState({
     bgColor: initialConfig.widgetTheme?.bgColor || DEFAULT_THEME.bgColor,
     textColor: initialConfig.widgetTheme?.textColor || DEFAULT_THEME.textColor,
-    borderRadius: initialConfig.widgetTheme?.borderRadius || DEFAULT_THEME.borderRadius,
+    borderRadius:
+      initialConfig.widgetTheme?.borderRadius || DEFAULT_THEME.borderRadius,
   });
 
   // Shield badge generator states
@@ -81,7 +111,9 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
   const [copiedShieldHtml, setCopiedShieldHtml] = useState(false);
 
   const baseUrl =
-    typeof window !== "undefined" ? window.location.origin : "https://your-domain.com";
+    typeof window !== "undefined"
+      ? window.location.origin
+      : "https://your-domain.com";
   const shieldUrl = `${baseUrl}/api/badge/${pageSlug}.svg?style=${shieldStyle}&theme=${shieldTheme}&size=${shieldSize}`;
   const statusPageUrl = `${baseUrl}/status-page/${pageSlug}`;
 
@@ -193,10 +225,12 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
             <div className="mt-2 text-xs text-muted-foreground/60 font-mono space-y-1">
               <p>• One domain per line, or comma-separated</p>
               <p>
-                • Use <code className="text-primary/80">*</code> to allow all domains
+                • Use <code className="text-primary/80">*</code> to allow all
+                domains
               </p>
               <p>
-                • Use <code className="text-primary/80">*.example.com</code> for wildcard subdomains
+                • Use <code className="text-primary/80">*.example.com</code> for
+                wildcard subdomains
               </p>
               <p>• Leave empty to block all cross-origin requests</p>
             </div>
@@ -210,7 +244,9 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
                 <h3 className="text-sm font-bold font-mono uppercase tracking-tight text-foreground">
                   Badge Text
                 </h3>
-                <p className="text-xs text-muted-foreground">Customize the status messages</p>
+                <p className="text-xs text-muted-foreground">
+                  Customize the status messages
+                </p>
               </div>
             </div>
             <div className="space-y-4">
@@ -221,7 +257,9 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
                 <input
                   type="text"
                   value={badgeText.operational}
-                  onChange={(e) => setBadgeText({ ...badgeText, operational: e.target.value })}
+                  onChange={(e) =>
+                    setBadgeText({ ...badgeText, operational: e.target.value })
+                  }
                   className="w-full bg-background/50 border border-green-500/20 rounded-sm p-2 text-sm font-mono text-foreground focus:outline-none focus:border-green-500/50"
                 />
               </div>
@@ -232,7 +270,9 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
                 <input
                   type="text"
                   value={badgeText.partial}
-                  onChange={(e) => setBadgeText({ ...badgeText, partial: e.target.value })}
+                  onChange={(e) =>
+                    setBadgeText({ ...badgeText, partial: e.target.value })
+                  }
                   className="w-full bg-background/50 border border-yellow-500/20 rounded-sm p-2 text-sm font-mono text-foreground focus:outline-none focus:border-yellow-500/50"
                 />
               </div>
@@ -243,7 +283,9 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
                 <input
                   type="text"
                   value={badgeText.major}
-                  onChange={(e) => setBadgeText({ ...badgeText, major: e.target.value })}
+                  onChange={(e) =>
+                    setBadgeText({ ...badgeText, major: e.target.value })
+                  }
                   className="w-full bg-background/50 border border-red-500/20 rounded-sm p-2 text-sm font-mono text-foreground focus:outline-none focus:border-red-500/50"
                 />
               </div>
@@ -258,7 +300,9 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
                 <h3 className="text-sm font-bold font-mono uppercase tracking-tight text-foreground">
                   Widget Theme
                 </h3>
-                <p className="text-xs text-muted-foreground">Customize colors and style</p>
+                <p className="text-xs text-muted-foreground">
+                  Customize colors and style
+                </p>
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -270,13 +314,17 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
                   <input
                     type="color"
                     value={theme.bgColor}
-                    onChange={(e) => setTheme({ ...theme, bgColor: e.target.value })}
+                    onChange={(e) =>
+                      setTheme({ ...theme, bgColor: e.target.value })
+                    }
                     className="w-10 h-10 rounded-sm border border-primary/20 cursor-pointer"
                   />
                   <input
                     type="text"
                     value={theme.bgColor}
-                    onChange={(e) => setTheme({ ...theme, bgColor: e.target.value })}
+                    onChange={(e) =>
+                      setTheme({ ...theme, bgColor: e.target.value })
+                    }
                     className="flex-1 bg-background/50 border border-primary/20 rounded-sm p-2 text-sm font-mono text-foreground focus:outline-none focus:border-primary/50 uppercase"
                   />
                 </div>
@@ -289,13 +337,17 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
                   <input
                     type="color"
                     value={theme.textColor}
-                    onChange={(e) => setTheme({ ...theme, textColor: e.target.value })}
+                    onChange={(e) =>
+                      setTheme({ ...theme, textColor: e.target.value })
+                    }
                     className="w-10 h-10 rounded-sm border border-primary/20 cursor-pointer"
                   />
                   <input
                     type="text"
                     value={theme.textColor}
-                    onChange={(e) => setTheme({ ...theme, textColor: e.target.value })}
+                    onChange={(e) =>
+                      setTheme({ ...theme, textColor: e.target.value })
+                    }
                     className="flex-1 bg-background/50 border border-primary/20 rounded-sm p-2 text-sm font-mono text-foreground focus:outline-none focus:border-primary/50 uppercase"
                   />
                 </div>
@@ -306,7 +358,9 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
                 </label>
                 <select
                   value={theme.borderRadius}
-                  onChange={(e) => setTheme({ ...theme, borderRadius: e.target.value })}
+                  onChange={(e) =>
+                    setTheme({ ...theme, borderRadius: e.target.value })
+                  }
                   className="w-full bg-background/50 border border-primary/20 rounded-sm p-2 text-sm font-mono text-foreground focus:outline-none focus:border-primary/50"
                 >
                   <option value="0px">Square (0px)</option>
@@ -334,8 +388,8 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
                   Status Shield Badge (SVG)
                 </h3>
                 <p className="text-xs text-muted-foreground">
-                  Embed a dynamic, real-time status image in your GitHub README, documentation, or
-                  dashboard.
+                  Embed a dynamic, real-time status image in your GitHub README,
+                  documentation, or dashboard.
                 </p>
               </div>
             </div>
@@ -348,7 +402,9 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
                 </label>
                 <select
                   value={shieldStyle}
-                  onChange={(e) => setShieldStyle(sanitizeShieldStyle(e.target.value))}
+                  onChange={(e) =>
+                    setShieldStyle(sanitizeShieldStyle(e.target.value))
+                  }
                   className="w-full bg-background/50 border border-primary/20 rounded-sm p-2 text-xs font-mono text-foreground focus:outline-none focus:border-primary/50"
                 >
                   <option value="flat">Flat (Shields.io style)</option>
@@ -362,7 +418,9 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
                 </label>
                 <select
                   value={shieldTheme}
-                  onChange={(e) => setShieldTheme(sanitizeShieldTheme(e.target.value))}
+                  onChange={(e) =>
+                    setShieldTheme(sanitizeShieldTheme(e.target.value))
+                  }
                   className="w-full bg-background/50 border border-primary/20 rounded-sm p-2 text-xs font-mono text-foreground focus:outline-none focus:border-primary/50"
                 >
                   <option value="dark">Dark Theme</option>
@@ -376,7 +434,9 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
                 </label>
                 <select
                   value={shieldSize}
-                  onChange={(e) => setShieldSize(sanitizeShieldSize(e.target.value))}
+                  onChange={(e) =>
+                    setShieldSize(sanitizeShieldSize(e.target.value))
+                  }
                   className="w-full bg-background/50 border border-primary/20 rounded-sm p-2 text-xs font-mono text-foreground focus:outline-none focus:border-primary/50"
                 >
                   <option value="sm">Small (20px)</option>
@@ -415,7 +475,11 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
                     onClick={handleCopyShieldMd}
                     className="flex items-center gap-1.5 px-2.5 py-1 rounded-sm border bg-primary/10 border-primary/20 text-primary hover:bg-primary/20 font-mono text-[10px] font-bold uppercase transition-all"
                   >
-                    {copiedShieldMd ? <Check className="size-3" /> : <Copy className="size-3" />}
+                    {copiedShieldMd ? (
+                      <Check className="size-3" />
+                    ) : (
+                      <Copy className="size-3" />
+                    )}
                     {copiedShieldMd ? "Copied" : "Copy"}
                   </button>
                 </div>
@@ -434,7 +498,11 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
                     onClick={handleCopyShieldHtml}
                     className="flex items-center gap-1.5 px-2.5 py-1 rounded-sm border bg-primary/10 border-primary/20 text-primary hover:bg-primary/20 font-mono text-[10px] font-bold uppercase transition-all"
                   >
-                    {copiedShieldHtml ? <Check className="size-3" /> : <Copy className="size-3" />}
+                    {copiedShieldHtml ? (
+                      <Check className="size-3" />
+                    ) : (
+                      <Copy className="size-3" />
+                    )}
                     {copiedShieldHtml ? "Copied" : "Copy"}
                   </button>
                 </div>
@@ -472,7 +540,11 @@ export function WidgetConfigurator({ pageId, pageSlug, initialConfig }: WidgetCo
             isPending ? "opacity-50 cursor-not-allowed" : "hover:bg-primary/90",
           )}
         >
-          {isPending ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
+          {isPending ? (
+            <Loader2 className="size-4 animate-spin" />
+          ) : (
+            <Save className="size-4" />
+          )}
           Save Widget Settings
         </button>
       </div>

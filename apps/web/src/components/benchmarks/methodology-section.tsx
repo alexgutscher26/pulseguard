@@ -25,8 +25,8 @@ export function MethodologySection() {
             Experimental Methodology &amp; Setup
           </h2>
           <p className="text-muted-foreground text-sm max-w-2xl mt-3 leading-relaxed">
-            How we designed the 30-day benchmark fleet, calibrated ground truth measurement, and
-            validated mathematical error bounds without bias.
+            How we designed the 30-day benchmark fleet, calibrated ground truth
+            measurement, and validated mathematical error bounds without bias.
           </p>
         </div>
 
@@ -41,9 +41,10 @@ export function MethodologySection() {
               1. The 10-Endpoint Target Fleet
             </h3>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              We deployed 10 geographically isolated server endpoints across Cloudflare Workers, AWS
-              us-east-1, Hetzner Frankfurt, Fly.io Singapore, and GCP. Endpoints were calibrated to
-              exercise edge HTTP/2, TLS 1.3 session resumption, chunked streaming, and dynamic
+              We deployed 10 geographically isolated server endpoints across
+              Cloudflare Workers, AWS us-east-1, Hetzner Frankfurt, Fly.io
+              Singapore, and GCP. Endpoints were calibrated to exercise edge
+              HTTP/2, TLS 1.3 session resumption, chunked streaming, and dynamic
               Geo-DNS resolution.
             </p>
           </div>
@@ -57,10 +58,11 @@ export function MethodologySection() {
               2. Ingress Ground-Truth Audit
             </h3>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Every server endpoint streamed raw kernel and NGINX/Envoy ingress logs into an
-              immutable ClickHouse cluster. An alert was classified as a{" "}
-              <strong>Spurious Alert (False Positive)</strong> if and only if server ingress logs
-              proved the endpoint was responding 200 OK to other traffic during that minute.
+              Every server endpoint streamed raw kernel and NGINX/Envoy ingress
+              logs into an immutable ClickHouse cluster. An alert was classified
+              as a <strong>Spurious Alert (False Positive)</strong> if and only
+              if server ingress logs proved the endpoint was responding 200 OK
+              to other traffic during that minute.
             </p>
           </div>
 
@@ -73,9 +75,10 @@ export function MethodologySection() {
               3. Controlled Fault Injection
             </h3>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Over the 30-day run, we injected 4 real catastrophic server outages (5m, 12m, 2m, 45m)
-              alongside realistic transient network noise: 12-second single-AS BGP route flaps,
-              200ms 503 micro-bursts, and localized DNS TTL cache drops.
+              Over the 30-day run, we injected 4 real catastrophic server
+              outages (5m, 12m, 2m, 45m) alongside realistic transient network
+              noise: 12-second single-AS BGP route flaps, 200ms 503
+              micro-bursts, and localized DNS TTL cache drops.
             </p>
           </div>
         </div>
@@ -87,8 +90,8 @@ export function MethodologySection() {
               Benchmark Endpoint Fleet Specification
             </h3>
             <p className="text-xs text-muted-foreground mt-0.5">
-              The 10 production endpoints monitored simultaneously by SteadyStack, UptimeRobot, and
-              Pingdom at 60-second intervals.
+              The 10 production endpoints monitored simultaneously by
+              SteadyStack, UptimeRobot, and Pingdom at 60-second intervals.
             </p>
           </div>
 
@@ -101,16 +104,29 @@ export function MethodologySection() {
                   <th className="py-3 px-4 font-semibold">Hosting Infra</th>
                   <th className="py-3 px-4 font-semibold">Protocol / Stack</th>
                   <th className="py-3 px-4 font-semibold">Testing Purpose</th>
-                  <th className="py-3 px-4 font-semibold text-right">Avg Latency</th>
+                  <th className="py-3 px-4 font-semibold text-right">
+                    Avg Latency
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/60 text-foreground">
                 {BENCHMARK_ENDPOINTS.map((ep) => (
-                  <tr key={ep.id} className="hover:bg-muted/10 transition-colors">
-                    <td className="py-3 px-4 font-bold text-primary">{ep.id}</td>
-                    <td className="py-3 px-4 font-sans font-medium text-foreground">{ep.name}</td>
-                    <td className="py-3 px-4 text-muted-foreground">{ep.provider}</td>
-                    <td className="py-3 px-4 text-muted-foreground">{ep.protocol}</td>
+                  <tr
+                    key={ep.id}
+                    className="hover:bg-muted/10 transition-colors"
+                  >
+                    <td className="py-3 px-4 font-bold text-primary">
+                      {ep.id}
+                    </td>
+                    <td className="py-3 px-4 font-sans font-medium text-foreground">
+                      {ep.name}
+                    </td>
+                    <td className="py-3 px-4 text-muted-foreground">
+                      {ep.provider}
+                    </td>
+                    <td className="py-3 px-4 text-muted-foreground">
+                      {ep.protocol}
+                    </td>
                     <td className="py-3 px-4 font-sans text-xs text-muted-foreground/90 max-w-xs">
                       {ep.purpose}
                     </td>
@@ -134,10 +150,13 @@ export function MethodologySection() {
               <span className="text-[11px] font-bold text-foreground block mb-1">
                 Precision [P]
               </span>
-              <div className="text-primary font-bold text-sm my-2">P = TP / (TP + FP)</div>
+              <div className="text-primary font-bold text-sm my-2">
+                P = TP / (TP + FP)
+              </div>
               <p className="text-[11px] text-muted-foreground font-sans leading-relaxed">
-                Percentage of alerts dispatched that corresponded to real, verified outages.
-                SteadyStack scored 100%, UptimeRobot 12.5%, Pingdom 8.9%.
+                Percentage of alerts dispatched that corresponded to real,
+                verified outages. SteadyStack scored 100%, UptimeRobot 12.5%,
+                Pingdom 8.9%.
               </p>
             </div>
 
@@ -145,10 +164,12 @@ export function MethodologySection() {
               <span className="text-[11px] font-bold text-foreground block mb-1">
                 False Discovery Rate [FDR]
               </span>
-              <div className="text-rose-400 font-bold text-sm my-2">FDR = FP / (TP + FP)</div>
+              <div className="text-rose-400 font-bold text-sm my-2">
+                FDR = FP / (TP + FP)
+              </div>
               <p className="text-[11px] text-muted-foreground font-sans leading-relaxed">
-                Probability that an alert received by an on-call engineer is a false alarm.
-                SteadyStack = 0.0%, Pingdom = 91.1%.
+                Probability that an alert received by an on-call engineer is a
+                false alarm. SteadyStack = 0.0%, Pingdom = 91.1%.
               </p>
             </div>
 
@@ -160,8 +181,9 @@ export function MethodologySection() {
                 &sum; Votes &ge; 4 (n=7)
               </div>
               <p className="text-[11px] text-muted-foreground font-sans leading-relaxed">
-                Requires minimum 4 sovereign Cloudflare POPs (weur, enam, wnam, apac, eeur, apac-ne,
-                apac-se) to record failure before incident dispatch.
+                Requires minimum 4 sovereign Cloudflare POPs (weur, enam, wnam,
+                apac, eeur, apac-ne, apac-se) to record failure before incident
+                dispatch.
               </p>
             </div>
           </div>

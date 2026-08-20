@@ -17,7 +17,10 @@ interface ServiceDiagnosticsProps {
   probeResult?: ServiceLiveStatusResult | null;
 }
 
-export function ServiceDiagnostics({ service, probeResult }: ServiceDiagnosticsProps) {
+export function ServiceDiagnostics({
+  service,
+  probeResult,
+}: ServiceDiagnosticsProps) {
   const probes = probeResult?.probes || [
     {
       region: "us-east",
@@ -26,7 +29,13 @@ export function ServiceDiagnostics({ service, probeResult }: ServiceDiagnosticsP
       latencyMs: 18,
       status: "UP",
     },
-    { region: "us-west", location: "US-West (Oregon)", flag: "🇺🇸", latencyMs: 38, status: "UP" },
+    {
+      region: "us-west",
+      location: "US-West (Oregon)",
+      flag: "🇺🇸",
+      latencyMs: 38,
+      status: "UP",
+    },
     {
       region: "eu-central",
       location: "EU-Central (Frankfurt)",
@@ -71,11 +80,15 @@ export function ServiceDiagnostics({ service, probeResult }: ServiceDiagnosticsP
                 Global Edge Reachability & Regional Latency
               </h3>
               <p className="text-sm text-muted-foreground">
-                Synthetic probe response times tested from SteadyStack worldwide vantage points.
+                Synthetic probe response times tested from SteadyStack worldwide
+                vantage points.
               </p>
             </div>
           </div>
-          <Badge variant="outline" className="hidden sm:inline-flex font-mono text-xs">
+          <Badge
+            variant="outline"
+            className="hidden sm:inline-flex font-mono text-xs"
+          >
             Live HTTP / TCP Ping
           </Badge>
         </div>
@@ -91,8 +104,12 @@ export function ServiceDiagnostics({ service, probeResult }: ServiceDiagnosticsP
                   {p.flag}
                 </span>
                 <div>
-                  <div className="text-sm font-semibold text-foreground">{p.location}</div>
-                  <div className="text-xs text-muted-foreground font-mono">{p.region}</div>
+                  <div className="text-sm font-semibold text-foreground">
+                    {p.location}
+                  </div>
+                  <div className="text-xs text-muted-foreground font-mono">
+                    {p.region}
+                  </div>
                 </div>
               </div>
 
@@ -134,14 +151,18 @@ export function ServiceDiagnostics({ service, probeResult }: ServiceDiagnosticsP
               <ServerCrash className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-foreground">Downtime Impact Analysis</h3>
+              <h3 className="text-lg font-bold text-foreground">
+                Downtime Impact Analysis
+              </h3>
               <p className="text-xs text-muted-foreground">
                 What happens when {service.name} degrades
               </p>
             </div>
           </div>
 
-          <p className="text-sm text-muted-foreground leading-relaxed">{service.impactSummary}</p>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            {service.impactSummary}
+          </p>
 
           <div className="pt-3 border-t border-border/60">
             <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
@@ -167,7 +188,9 @@ export function ServiceDiagnostics({ service, probeResult }: ServiceDiagnosticsP
               <Layers className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-foreground">Critical Monitored Subsystems</h3>
+              <h3 className="text-lg font-bold text-foreground">
+                Critical Monitored Subsystems
+              </h3>
               <p className="text-xs text-muted-foreground">
                 Components tracked on {service.domain}
               </p>
@@ -204,17 +227,23 @@ export function ServiceDiagnostics({ service, probeResult }: ServiceDiagnosticsP
               Engineering Resilience Guide: Surviving {service.name} Outages
             </h3>
             <p className="text-sm text-muted-foreground">
-              Defensive software architecture patterns to prevent third-party cascade failures.
+              Defensive software architecture patterns to prevent third-party
+              cascade failures.
             </p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-3">
-            <h4 className="text-sm font-bold text-foreground">Immediate Tactical Steps</h4>
+            <h4 className="text-sm font-bold text-foreground">
+              Immediate Tactical Steps
+            </h4>
             <ul className="space-y-2.5">
               {service.troubleshootingSteps.map((step, idx) => (
-                <li key={idx} className="flex items-start gap-2.5 text-xs text-muted-foreground">
+                <li
+                  key={idx}
+                  className="flex items-start gap-2.5 text-xs text-muted-foreground"
+                >
                   <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 font-mono text-[11px] font-bold text-primary">
                     {idx + 1}
                   </span>
@@ -225,22 +254,28 @@ export function ServiceDiagnostics({ service, probeResult }: ServiceDiagnosticsP
           </div>
 
           <div className="space-y-3 p-4 rounded-xl border border-border/80 bg-background/60">
-            <h4 className="text-sm font-bold text-foreground">Recommended Resiliency Patterns</h4>
+            <h4 className="text-sm font-bold text-foreground">
+              Recommended Resiliency Patterns
+            </h4>
             <div className="space-y-2 text-xs text-muted-foreground">
               <div className="flex items-start gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
                 <p>
-                  <strong className="text-foreground">Circuit Breaker Pattern:</strong>{" "}
-                  Automatically trip and fallback to cache when {service.name} error rates exceed
-                  15% in a 30s rolling window.
+                  <strong className="text-foreground">
+                    Circuit Breaker Pattern:
+                  </strong>{" "}
+                  Automatically trip and fallback to cache when {service.name}{" "}
+                  error rates exceed 15% in a 30s rolling window.
                 </p>
               </div>
               <div className="flex items-start gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-cyan-500 mt-1.5 shrink-0" />
                 <p>
-                  <strong className="text-foreground">Idempotent Background Retries:</strong> Push
-                  failed API events into an asynchronous dead-letter queue with exponential backoff
-                  and jitter.
+                  <strong className="text-foreground">
+                    Idempotent Background Retries:
+                  </strong>{" "}
+                  Push failed API events into an asynchronous dead-letter queue
+                  with exponential backoff and jitter.
                 </p>
               </div>
               <div className="flex items-start gap-2">
@@ -249,7 +284,8 @@ export function ServiceDiagnostics({ service, probeResult }: ServiceDiagnosticsP
                   <strong className="text-foreground">
                     Multi-Region Edge Synthetic Consensus:
                   </strong>{" "}
-                  Rely on SteadyStack to alert your team before end-users notice degradation.
+                  Rely on SteadyStack to alert your team before end-users notice
+                  degradation.
                 </p>
               </div>
             </div>

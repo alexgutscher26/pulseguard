@@ -25,7 +25,10 @@ export interface BadgeTextConfig {
  * @param days - Number of days to look back (30, 60, or 90)
  * @returns Uptime percentage (0-100) with 2 decimal precision
  */
-export async function calculateUptime(monitorId: string, days: number = 90): Promise<number> {
+export async function calculateUptime(
+  monitorId: string,
+  days: number = 90,
+): Promise<number> {
   const startDate = new Date();
   startDate.setDate(startDate.getDate() - days);
   startDate.setHours(0, 0, 0, 0);
@@ -90,7 +93,9 @@ export async function calculateAverageUptime(
     return 100;
   }
 
-  const uptimes = await Promise.all(monitorIds.map((id) => calculateUptime(id, days)));
+  const uptimes = await Promise.all(
+    monitorIds.map((id) => calculateUptime(id, days)),
+  );
 
   const average = uptimes.reduce((sum, val) => sum + val, 0) / uptimes.length;
   return Math.round(average * 100) / 100;
@@ -158,7 +163,10 @@ export async function getUptimeTrend(
     }
 
     const uptimeMs = periodMs - downtimeMs;
-    previous = Math.round(Math.max(0, Math.min(100, (uptimeMs / periodMs) * 100)) * 100) / 100;
+    previous =
+      Math.round(
+        Math.max(0, Math.min(100, (uptimeMs / periodMs) * 100)) * 100,
+      ) / 100;
   }
 
   const difference = Math.round((current - previous) * 100) / 100;

@@ -32,7 +32,9 @@ export default function LocationsClient({ probes }: LocationsClientProps) {
   const healthyCount = probes.filter((p) => p.status === "ONLINE").length;
   const flappingProbes = probes.filter((p) => p.status === "FLAPPING");
   const excludedRegionText =
-    flappingProbes.length > 0 ? flappingProbes.map((p) => p.code).join(", ") : null;
+    flappingProbes.length > 0
+      ? flappingProbes.map((p) => p.code).join(", ")
+      : null;
 
   const handleCopy = (text: string, section: string) => {
     navigator.clipboard.writeText(text);
@@ -67,9 +69,10 @@ User-Agent: ${STEADYSTACK_CANONICAL_USER_AGENT}`;
           </h1>
 
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-            Live status of our seven Cloudflare edge regions plus out-of-band sentinel nodes on
-            independent ASNs (Hetzner AS24940). Updated continuously. Multi-ASN quorum verification
-            guarantees that a single-cloud provider outage never triggers false customer alerts.
+            Live status of our seven Cloudflare edge regions plus out-of-band
+            sentinel nodes on independent ASNs (Hetzner AS24940). Updated
+            continuously. Multi-ASN quorum verification guarantees that a
+            single-cloud provider outage never triggers false customer alerts.
           </p>
         </div>
 
@@ -93,14 +96,19 @@ User-Agent: ${STEADYSTACK_CANONICAL_USER_AGENT}`;
                     const isFlapping = probe.status === "FLAPPING";
 
                     return (
-                      <tr key={probe.code} className="hover:bg-muted/30 transition-colors">
+                      <tr
+                        key={probe.code}
+                        className="hover:bg-muted/30 transition-colors"
+                      >
                         <td className="p-4 sm:p-5 font-mono font-bold text-foreground">
                           <div className="flex items-center gap-2">
                             <span>{probe.flag}</span>
                             <span>{probe.code}</span>
                           </div>
                         </td>
-                        <td className="p-4 sm:p-5 text-foreground font-medium">{probe.covers}</td>
+                        <td className="p-4 sm:p-5 text-foreground font-medium">
+                          {probe.covers}
+                        </td>
                         <td className="p-4 sm:p-5 font-mono text-muted-foreground text-[11px]">
                           {probe.asn} ({probe.provider})
                         </td>
@@ -140,19 +148,22 @@ User-Agent: ${STEADYSTACK_CANONICAL_USER_AGENT}`;
             <div className="p-4 sm:p-5 bg-muted/20 border-t border-border font-mono text-xs text-muted-foreground flex items-start gap-2.5">
               <ShieldCheck className="size-4 text-emerald-500 shrink-0 mt-0.5" />
               <div className="leading-relaxed">
-                <strong className="text-foreground">Multi-ASN Quorum:</strong> 4 of {healthyCount}{" "}
-                healthy regions plus independent ASN verification must confirm a failure before an
-                incident opens.{" "}
+                <strong className="text-foreground">Multi-ASN Quorum:</strong> 4
+                of {healthyCount} healthy regions plus independent ASN
+                verification must confirm a failure before an incident opens.{" "}
                 {excludedRegionText ? (
                   <span>
-                    <strong className="text-amber-500">{excludedRegionText}</strong> is excluded
-                    automatically until it stabilises — a probe that can&apos;t agree with itself
-                    doesn&apos;t get a vote.
+                    <strong className="text-amber-500">
+                      {excludedRegionText}
+                    </strong>{" "}
+                    is excluded automatically until it stabilises — a probe that
+                    can&apos;t agree with itself doesn&apos;t get a vote.
                   </span>
                 ) : (
                   <span>
-                    All probe nodes across Cloudflare and independent ASN sentinels are currently
-                    healthy and participating in active quorum.
+                    All probe nodes across Cloudflare and independent ASN
+                    sentinels are currently healthy and participating in active
+                    quorum.
                   </span>
                 )}
               </div>
@@ -167,15 +178,19 @@ User-Agent: ${STEADYSTACK_CANONICAL_USER_AGENT}`;
               Allowlist our probes
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-              Our synthetic probes originate from Cloudflare Durable Objects. Because serverless
-              edge runtimes egress via Cloudflare&apos;s shared global edge IP pool, IP allowlisting
-              is neither deterministic nor secure. Instead, configure your WAF or reverse proxy to
-              match on our cryptographic{" "}
+              Our synthetic probes originate from Cloudflare Durable Objects.
+              Because serverless edge runtimes egress via Cloudflare&apos;s
+              shared global edge IP pool, IP allowlisting is neither
+              deterministic nor secure. Instead, configure your WAF or reverse
+              proxy to match on our cryptographic{" "}
               <code className="text-primary font-mono font-semibold">
                 CF-Worker: steadystack.dev
               </code>{" "}
               header and verified{" "}
-              <code className="text-primary font-mono font-semibold">User-Agent</code>.
+              <code className="text-primary font-mono font-semibold">
+                User-Agent
+              </code>
+              .
             </p>
           </div>
 
@@ -202,7 +217,9 @@ User-Agent: ${STEADYSTACK_CANONICAL_USER_AGENT}`;
           {/* Quick Copy Action Buttons */}
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <button
-              onClick={() => handleCopy("CF-Worker: steadystack.dev", "cf-worker")}
+              onClick={() =>
+                handleCopy("CF-Worker: steadystack.dev", "cf-worker")
+              }
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-muted/60 border border-border text-xs font-mono font-medium hover:bg-muted transition-colors cursor-pointer"
             >
               {copiedSection === "cf-worker" ? (
@@ -211,13 +228,18 @@ User-Agent: ${STEADYSTACK_CANONICAL_USER_AGENT}`;
                 <Copy className="size-3.5" />
               )}
               <span>
-                {copiedSection === "cf-worker" ? "Copied Header" : "Copy CF-Worker Header"}
+                {copiedSection === "cf-worker"
+                  ? "Copied Header"
+                  : "Copy CF-Worker Header"}
               </span>
             </button>
 
             <button
               onClick={() =>
-                handleCopy("SteadyStack-Monitor/1.0 (+https://steadystack.dev/bot)", "user-agent")
+                handleCopy(
+                  "SteadyStack-Monitor/1.0 (+https://steadystack.dev/bot)",
+                  "user-agent",
+                )
               }
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-muted/60 border border-border text-xs font-mono font-medium hover:bg-muted transition-colors cursor-pointer"
             >
@@ -227,13 +249,18 @@ User-Agent: ${STEADYSTACK_CANONICAL_USER_AGENT}`;
                 <Copy className="size-3.5" />
               )}
               <span>
-                {copiedSection === "user-agent" ? "Copied User-Agent" : "Copy User-Agent"}
+                {copiedSection === "user-agent"
+                  ? "Copied User-Agent"
+                  : "Copy User-Agent"}
               </span>
             </button>
 
             <button
               onClick={() =>
-                handleCopy('http.request.headers["cf-worker"][0] eq "steadystack.dev"', "waf-rule")
+                handleCopy(
+                  'http.request.headers["cf-worker"][0] eq "steadystack.dev"',
+                  "waf-rule",
+                )
               }
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-muted/60 border border-border text-xs font-mono font-medium hover:bg-muted transition-colors cursor-pointer"
             >
@@ -243,7 +270,9 @@ User-Agent: ${STEADYSTACK_CANONICAL_USER_AGENT}`;
                 <Copy className="size-3.5" />
               )}
               <span>
-                {copiedSection === "waf-rule" ? "Copied WAF Rule" : "Copy Cloudflare WAF Rule"}
+                {copiedSection === "waf-rule"
+                  ? "Copied WAF Rule"
+                  : "Copy Cloudflare WAF Rule"}
               </span>
             </button>
 
@@ -268,19 +297,24 @@ User-Agent: ${STEADYSTACK_CANONICAL_USER_AGENT}`;
               <div className="size-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500">
                 <AlertTriangle className="size-5" />
               </div>
-              <h3 className="text-xl font-bold text-foreground">Coverage we don&apos;t have</h3>
+              <h3 className="text-xl font-bold text-foreground">
+                Coverage we don&apos;t have
+              </h3>
               <div className="space-y-3 text-xs sm:text-sm text-muted-foreground leading-relaxed">
                 <p>
-                  South America, Africa, the Middle East, Oceania. Our probe regions run on
-                  Cloudflare&apos;s network, which does not currently place workloads in those
-                  regions — so we don&apos;t claim them.
+                  South America, Africa, the Middle East, Oceania. Our probe
+                  regions run on Cloudflare&apos;s network, which does not
+                  currently place workloads in those regions — so we don&apos;t
+                  claim them.
                 </p>
                 <p>
-                  What this means practically: a genuine outage still pages you, because your
-                  endpoint will fail from all seven regions regardless of where it&apos;s hosted.
-                  What we&apos;d miss is a problem affecting only users in those regions — a São
-                  Paulo CDN edge, an African transit route. If that&apos;s a real risk for your
-                  traffic, tell us; it moves our roadmap, and we&apos;ll say so here when it ships.
+                  What this means practically: a genuine outage still pages you,
+                  because your endpoint will fail from all seven regions
+                  regardless of where it&apos;s hosted. What we&apos;d miss is a
+                  problem affecting only users in those regions — a São Paulo
+                  CDN edge, an African transit route. If that&apos;s a real risk
+                  for your traffic, tell us; it moves our roadmap, and
+                  we&apos;ll say so here when it ships.
                 </p>
               </div>
             </div>
@@ -297,15 +331,17 @@ User-Agent: ${STEADYSTACK_CANONICAL_USER_AGENT}`;
               </h3>
               <div className="space-y-3 text-xs sm:text-sm text-muted-foreground leading-relaxed">
                 <p>
-                  A monitoring probe with a bad network path reports failures that aren&apos;t real
-                  — the industry&apos;s most common source of false alarms. Any probe with three or
-                  more state transitions in two hours is marked Flapping and automatically removed
-                  from quorum until it stabilises.
+                  A monitoring probe with a bad network path reports failures
+                  that aren&apos;t real — the industry&apos;s most common source
+                  of false alarms. Any probe with three or more state
+                  transitions in two hours is marked Flapping and automatically
+                  removed from quorum until it stabilises.
                 </p>
                 <p>
-                  Every probe also reports on a heartbeat channel separate from its measurement
-                  path, so a probe that&apos;s blocked is distinguishable from one that&apos;s
-                  crashed. All of it is visible above, in real time, including when it&apos;s our
+                  Every probe also reports on a heartbeat channel separate from
+                  its measurement path, so a probe that&apos;s blocked is
+                  distinguishable from one that&apos;s crashed. All of it is
+                  visible above, in real time, including when it&apos;s our
                   fault.
                 </p>
               </div>

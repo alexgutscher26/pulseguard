@@ -52,13 +52,15 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: BASE_URL,
     siteName: "SteadyStack",
-    title: "SteadyStack — Uptime monitoring that confirms failures from 7 regions before alerting",
+    title:
+      "SteadyStack — Uptime monitoring that confirms failures from 7 regions before alerting",
     description:
       "Four of seven global regions must agree before SteadyStack pages you. 60-second checks, 50 monitors, multi-region verification — free, and free for commercial use.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "SteadyStack — Uptime monitoring that confirms failures from 7 regions before alerting",
+    title:
+      "SteadyStack — Uptime monitoring that confirms failures from 7 regions before alerting",
     description:
       "Four of seven global regions must agree before SteadyStack pages you. 60-second checks, 50 monitors, multi-region verification — free, and free for commercial use.",
     creator: "@steadystack",
@@ -85,7 +87,10 @@ const jsonLd = {
       name: "SteadyStack",
       url: BASE_URL,
       logo: `${BASE_URL}/logo.png`,
-      sameAs: ["https://github.com/getsteadystack/SteadyStack", "https://twitter.com/steadystack"],
+      sameAs: [
+        "https://github.com/getsteadystack/SteadyStack",
+        "https://twitter.com/steadystack",
+      ],
     },
     {
       "@type": "WebSite",

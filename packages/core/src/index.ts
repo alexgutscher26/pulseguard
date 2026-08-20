@@ -267,7 +267,11 @@ export function diagnoseError(err: any, target: string): string {
   const code = err.code || "";
 
   // 1. Timeout
-  if (name === "TimeoutError" || msg.includes("Timeout") || msg.includes("timeout")) {
+  if (
+    name === "TimeoutError" ||
+    msg.includes("Timeout") ||
+    msg.includes("timeout")
+  ) {
     return `TIMEOUT: Request timed out.
 • Target: ${target}
 • Stage: Response Transmission
@@ -291,7 +295,11 @@ export function diagnoseError(err: any, target: string): string {
   }
 
   // 3. Connection Refused
-  if (code === "ECONNREFUSED" || msg.includes("ECONNREFUSED") || msg.includes("refused")) {
+  if (
+    code === "ECONNREFUSED" ||
+    msg.includes("ECONNREFUSED") ||
+    msg.includes("refused")
+  ) {
     return `CONNECTION_REFUSED: TCP Handshake failed.
 • Target: ${target}
 • Stage: TCP Handshake
@@ -319,7 +327,11 @@ export function diagnoseError(err: any, target: string): string {
   }
 
   // 5. Connection Reset/Aborted
-  if (code === "ECONNRESET" || msg.includes("ECONNRESET") || msg.includes("reset")) {
+  if (
+    code === "ECONNRESET" ||
+    msg.includes("ECONNRESET") ||
+    msg.includes("reset")
+  ) {
     return `CONNECTION_RESET: Connection terminated abruptly.
 • Target: ${target}
 • Stage: TCP Connection
@@ -593,7 +605,8 @@ export async function checkHttpUniversal(
           Accept:
             "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
           "Accept-Language": "en-US,en;q=0.9",
-          "Sec-CH-UA": '"Chromium";v="133", "Not(A:Brand";v="99", "Google Chrome";v="133"',
+          "Sec-CH-UA":
+            '"Chromium";v="133", "Not(A:Brand";v="99", "Google Chrome";v="133"',
           "Sec-CH-UA-Mobile": "?0",
           "Sec-CH-UA-Platform": '"Windows"',
           "Sec-Fetch-Dest": "document",
@@ -604,7 +617,9 @@ export async function checkHttpUniversal(
           ...userHeaders,
         },
         body:
-          hops === 0 && ["POST", "PUT", "PATCH"].includes(method) ? (config.body ?? null) : null,
+          hops === 0 && ["POST", "PUT", "PATCH"].includes(method)
+            ? (config.body ?? null)
+            : null,
         signal: AbortSignal.timeout(timeoutMs),
       });
 
@@ -633,7 +648,8 @@ export async function checkHttpUniversal(
     return {
       status: "DOWN",
       latency: Date.now() - start,
-      errorReason: "TOO_MANY_REDIRECTS: Exceeded maximum redirect hop count of 5",
+      errorReason:
+        "TOO_MANY_REDIRECTS: Exceeded maximum redirect hop count of 5",
       bodyText: "",
     };
   }
@@ -654,7 +670,8 @@ export async function checkHttpUniversal(
           return {
             status: "DOWN",
             latency: Date.now() - start,
-            errorReason: "RESPONSE_TOO_LARGE: Exceeded maximum body size limit of 5MB",
+            errorReason:
+              "RESPONSE_TOO_LARGE: Exceeded maximum body size limit of 5MB",
             bodyText: bodyText.substring(0, 1024) + "... [truncated]",
             statusCode: response.status,
           };
@@ -669,12 +686,17 @@ export async function checkHttpUniversal(
   const isRateLimited = statusNum === 429;
   const isIPBlocked = statusNum === 403;
   const isHealthyStatus =
-    response.ok || (statusNum >= 300 && statusNum < 400) || isRateLimited || isIPBlocked;
+    response.ok ||
+    (statusNum >= 300 && statusNum < 400) ||
+    isRateLimited ||
+    isIPBlocked;
 
   return {
     status: isHealthyStatus ? "UP" : "DOWN",
     latency,
-    errorReason: isHealthyStatus ? undefined : diagnoseStatus(response.status, currentUrl),
+    errorReason: isHealthyStatus
+      ? undefined
+      : diagnoseStatus(response.status, currentUrl),
     bodyText,
     statusCode: statusNum,
   };
@@ -714,7 +736,10 @@ async function deriveKey(secret: string): Promise<CryptoKey> {
   );
 }
 
-export async function encryptSecret(plainText: string, secretKey?: string): Promise<string> {
+export async function encryptSecret(
+  plainText: string,
+  secretKey?: string,
+): Promise<string> {
   if (!plainText) return "";
   const secret =
     secretKey ||
@@ -729,7 +754,11 @@ export async function encryptSecret(plainText: string, secretKey?: string): Prom
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const encoded = new TextEncoder().encode(plainText);
 
-  const cipherBuffer = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, encoded);
+  const cipherBuffer = await crypto.subtle.encrypt(
+    { name: "AES-GCM", iv },
+    key,
+    encoded,
+  );
 
   const combined = new Uint8Array(iv.length + cipherBuffer.byteLength);
   combined.set(iv, 0);
@@ -770,11 +799,18 @@ export async function decryptSecret(
     const data = bytes.slice(12);
 
     const key = await deriveKey(secret);
-    const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, data);
+    const decrypted = await crypto.subtle.decrypt(
+      { name: "AES-GCM", iv },
+      key,
+      data,
+    );
 
     return new TextDecoder().decode(decrypted);
   } catch (err) {
-    console.error("[Crypto] Failed to decrypt payload, returning raw input:", err);
+    console.error(
+      "[Crypto] Failed to decrypt payload, returning raw input:",
+      err,
+    );
     return cipherText;
   }
 }
@@ -901,7 +937,11 @@ export async function signAuthToken(
     ["sign"],
   );
 
-  const sigBuffer = await crypto.subtle.sign("HMAC", key, enc.encode(dataToSign));
+  const sigBuffer = await crypto.subtle.sign(
+    "HMAC",
+    key,
+    enc.encode(dataToSign),
+  );
   const sigArray = new Uint8Array(sigBuffer);
 
   let binary = "";
@@ -950,7 +990,11 @@ export async function verifyAuthToken(
       ["sign"],
     );
 
-    const sigBuffer = await crypto.subtle.sign("HMAC", key, enc.encode(dataToSign));
+    const sigBuffer = await crypto.subtle.sign(
+      "HMAC",
+      key,
+      enc.encode(dataToSign),
+    );
     const sigArray = new Uint8Array(sigBuffer);
 
     let binary = "";

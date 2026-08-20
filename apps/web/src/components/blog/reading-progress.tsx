@@ -8,9 +8,12 @@ export function ReadingProgress() {
   useEffect(() => {
     const updateScrollCompletion = () => {
       const currentProgress = window.scrollY;
-      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
       if (scrollHeight > 0) {
-        setCompletion(Number((currentProgress / scrollHeight).toFixed(2)) * 100);
+        setCompletion(
+          Number((currentProgress / scrollHeight).toFixed(2)) * 100,
+        );
       }
     };
 

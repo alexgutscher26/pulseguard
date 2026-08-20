@@ -9,7 +9,8 @@ export const metadata: Metadata = {
     "SteadyStack Security — how we protect your monitoring infrastructure, credentials, and data.",
   openGraph: {
     title: "Security | SteadyStack",
-    description: "How we protect your monitoring infrastructure, credentials, and data.",
+    description:
+      "How we protect your monitoring infrastructure, credentials, and data.",
   },
 };
 
@@ -62,7 +63,8 @@ export default function SecurityPage() {
       otherPage={{
         href: "/privacy",
         label: "Privacy Policy",
-        description: "Read about how we collect, handle, and protect your privacy.",
+        description:
+          "Read about how we collect, handle, and protect your privacy.",
       }}
     />
   );

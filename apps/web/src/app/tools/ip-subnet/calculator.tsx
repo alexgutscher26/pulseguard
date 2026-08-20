@@ -1,7 +1,13 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -174,8 +180,12 @@ export function SubnetCalculator() {
                   </div>
                 </div>
                 <div className="flex justify-between items-center text-[10px] font-mono p-3 bg-muted rounded-lg border border-border">
-                  <div className="text-muted-foreground uppercase">Wildcard Mask</div>
-                  <div className="text-primary italic font-bold">{result.wildcard}</div>
+                  <div className="text-muted-foreground uppercase">
+                    Wildcard Mask
+                  </div>
+                  <div className="text-primary italic font-bold">
+                    {result.wildcard}
+                  </div>
                 </div>
               </Card>
 
@@ -224,8 +234,8 @@ export function SubnetCalculator() {
                     <div className="flex items-start gap-3">
                       <Info className="w-4 h-4 text-primary mt-1 shrink-0" />
                       <p className="text-[10px] text-muted-foreground leading-relaxed uppercase tracking-tighter italic">
-                        The leading bits represent your network prefix. Host addresses are allocated
-                        within the zero-bit space.
+                        The leading bits represent your network prefix. Host
+                        addresses are allocated within the zero-bit space.
                       </p>
                     </div>
                   </div>

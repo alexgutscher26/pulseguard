@@ -37,12 +37,17 @@ export default function AdminDesignPartnersClient({
 }) {
   const [isAdminState, setIsAdminState] = useState(initialIsAdmin);
   const [grantingAdmin, setGrantingAdmin] = useState(false);
-  const [applications, setApplications] = useState<DesignPartnerRecord[]>(initialApplications);
-  const [filter, setFilter] = useState<"ALL" | "PENDING" | "APPROVED" | "REJECTED">("PENDING");
+  const [applications, setApplications] =
+    useState<DesignPartnerRecord[]>(initialApplications);
+  const [filter, setFilter] = useState<
+    "ALL" | "PENDING" | "APPROVED" | "REJECTED"
+  >("PENDING");
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [syncingStripeId, setSyncingStripeId] = useState<string | null>(null);
   const [batchSyncing, setBatchSyncing] = useState(false);
-  const [generatingRenewalId, setGeneratingRenewalId] = useState<string | null>(null);
+  const [generatingRenewalId, setGeneratingRenewalId] = useState<string | null>(
+    null,
+  );
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   const handleSyncStripe = async (id: string) => {
@@ -56,7 +61,9 @@ export default function AdminDesignPartnersClient({
             : "Successfully synced Coupon & Promotion Code to Stripe!",
         );
         setApplications((prev) =>
-          prev.map((app) => (app.id === id ? { ...app, stripeSynced: !res.isMock } : app)),
+          prev.map((app) =>
+            app.id === id ? { ...app, stripeSynced: !res.isMock } : app,
+          ),
         );
       } else {
         toast.error(res.error || "Failed to sync to Stripe");
@@ -77,7 +84,9 @@ export default function AdminDesignPartnersClient({
           `Batch sync complete! ${res.syncedCount} partner coupons synced to Stripe (${res.failedCount} failed).`,
         );
         setApplications((prev) =>
-          prev.map((app) => (app.status === "APPROVED" ? { ...app, stripeSynced: true } : app)),
+          prev.map((app) =>
+            app.status === "APPROVED" ? { ...app, stripeSynced: true } : app,
+          ),
         );
       } else {
         toast.error(res.error || "Failed to batch sync to Stripe");
@@ -104,9 +113,15 @@ export default function AdminDesignPartnersClient({
     }
   };
 
-  const pendingCount = applications.filter((a) => a.status === "PENDING").length;
-  const approvedCount = applications.filter((a) => a.status === "APPROVED").length;
-  const rejectedCount = applications.filter((a) => a.status === "REJECTED").length;
+  const pendingCount = applications.filter(
+    (a) => a.status === "PENDING",
+  ).length;
+  const approvedCount = applications.filter(
+    (a) => a.status === "APPROVED",
+  ).length;
+  const rejectedCount = applications.filter(
+    (a) => a.status === "REJECTED",
+  ).length;
   const remainingSpots = Math.max(1, 15 - approvedCount);
 
   const filteredApplications = applications.filter((a) => {
@@ -120,7 +135,9 @@ export default function AdminDesignPartnersClient({
     setProcessingId(null);
 
     if (res.success) {
-      toast.success(`Partnership APPROVED! Generated & Synced VIP Code: ${res.vipCode}`);
+      toast.success(
+        `Partnership APPROVED! Generated & Synced VIP Code: ${res.vipCode}`,
+      );
       setApplications((prev) =>
         prev.map((app) =>
           app.id === id
@@ -146,7 +163,9 @@ export default function AdminDesignPartnersClient({
     if (res.success) {
       toast.info("Application set to REJECTED");
       setApplications((prev) =>
-        prev.map((app) => (app.id === id ? { ...app, status: "REJECTED" } : app)),
+        prev.map((app) =>
+          app.id === id ? { ...app, status: "REJECTED" } : app,
+        ),
       );
     } else {
       toast.error(res.error || "Failed to reject application");
@@ -159,7 +178,9 @@ export default function AdminDesignPartnersClient({
     setGeneratingRenewalId(null);
 
     if (res.success && res.discountCode) {
-      toast.success(`Created Stripe ${percentOff}% Renewal Discount Code: ${res.discountCode}`);
+      toast.success(
+        `Created Stripe ${percentOff}% Renewal Discount Code: ${res.discountCode}`,
+      );
       setApplications((prev) =>
         prev.map((app) =>
           app.id === id
@@ -196,8 +217,8 @@ export default function AdminDesignPartnersClient({
             Design Partner Applications
           </h1>
           <p className="text-xs text-muted-foreground mt-1">
-            Review, approve, or reject applicants for the 1-Year Free Netrunner Pro partnership,
-            with automated Stripe SDK promotion codes.
+            Review, approve, or reject applicants for the 1-Year Free Netrunner
+            Pro partnership, with automated Stripe SDK promotion codes.
           </p>
         </div>
 
@@ -206,7 +227,9 @@ export default function AdminDesignPartnersClient({
             <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75 animate-ping" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
           </span>
-          <span className="text-foreground font-bold">{remainingSpots} of 15 spots remaining</span>
+          <span className="text-foreground font-bold">
+            {remainingSpots} of 15 spots remaining
+          </span>
         </div>
       </div>
 
@@ -216,23 +239,33 @@ export default function AdminDesignPartnersClient({
           <span className="text-[10px] font-mono font-bold uppercase text-muted-foreground">
             Total Received
           </span>
-          <span className="text-2xl font-bold text-foreground">{applications.length}</span>
+          <span className="text-2xl font-bold text-foreground">
+            {applications.length}
+          </span>
         </div>
         <div className="bg-card border border-amber-500/30 bg-amber-500/5 p-4 rounded-xl flex flex-col gap-1">
           <span className="text-[10px] font-mono font-bold uppercase text-amber-400">
             Needs Review
           </span>
-          <span className="text-2xl font-bold text-amber-400">{pendingCount}</span>
+          <span className="text-2xl font-bold text-amber-400">
+            {pendingCount}
+          </span>
         </div>
         <div className="bg-card border border-emerald-500/30 bg-emerald-500/5 p-4 rounded-xl flex flex-col gap-1">
           <span className="text-[10px] font-mono font-bold uppercase text-emerald-400">
             Approved Partners
           </span>
-          <span className="text-2xl font-bold text-emerald-400">{approvedCount}</span>
+          <span className="text-2xl font-bold text-emerald-400">
+            {approvedCount}
+          </span>
         </div>
         <div className="bg-card border border-red-500/30 bg-red-500/5 p-4 rounded-xl flex flex-col gap-1">
-          <span className="text-[10px] font-mono font-bold uppercase text-red-400">Rejected</span>
-          <span className="text-2xl font-bold text-red-400">{rejectedCount}</span>
+          <span className="text-[10px] font-mono font-bold uppercase text-red-400">
+            Rejected
+          </span>
+          <span className="text-2xl font-bold text-red-400">
+            {rejectedCount}
+          </span>
         </div>
       </div>
 
@@ -242,10 +275,13 @@ export default function AdminDesignPartnersClient({
           <div className="flex items-start gap-3">
             <ShieldCheck className="size-6 text-amber-400 shrink-0 mt-0.5" />
             <div>
-              <h3 className="text-sm font-bold text-foreground">Admin Mode Required</h3>
+              <h3 className="text-sm font-bold text-foreground">
+                Admin Mode Required
+              </h3>
               <p className="text-xs text-muted-foreground mt-0.5">
-                You are currently viewing as a standard operator. Grant your current session ADMIN
-                privileges to approve/reject applications and generate Stripe promo codes.
+                You are currently viewing as a standard operator. Grant your
+                current session ADMIN privileges to approve/reject applications
+                and generate Stripe promo codes.
               </p>
             </div>
           </div>
@@ -304,7 +340,9 @@ export default function AdminDesignPartnersClient({
       {filteredApplications.length === 0 ? (
         <div className="text-center py-16 bg-card/50 border border-dashed border-border rounded-2xl">
           <Users className="size-8 text-muted-foreground mx-auto mb-2 opacity-50" />
-          <p className="text-sm font-medium text-foreground">No applications found</p>
+          <p className="text-sm font-medium text-foreground">
+            No applications found
+          </p>
           <p className="text-xs text-muted-foreground mt-1">
             No design partner submissions match the "{filter}" filter.
           </p>
@@ -318,8 +356,12 @@ export default function AdminDesignPartnersClient({
             >
               <div className="flex flex-col gap-2.5 flex-1 min-w-0">
                 <div className="flex items-center gap-3 flex-wrap">
-                  <span className="font-bold text-sm text-foreground">{app.name}</span>
-                  <span className="text-xs font-mono text-muted-foreground">{app.email}</span>
+                  <span className="font-bold text-sm text-foreground">
+                    {app.name}
+                  </span>
+                  <span className="text-xs font-mono text-muted-foreground">
+                    {app.email}
+                  </span>
 
                   {app.status === "PENDING" && (
                     <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-400">
@@ -340,24 +382,35 @@ export default function AdminDesignPartnersClient({
 
                 <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
                   <span>
-                    Company: <strong className="text-foreground">{app.company}</strong>
+                    Company:{" "}
+                    <strong className="text-foreground">{app.company}</strong>
                   </span>
                   <span>
                     Endpoints:{" "}
-                    <strong className="text-foreground font-mono">{app.monitorsCount}</strong>
+                    <strong className="text-foreground font-mono">
+                      {app.monitorsCount}
+                    </strong>
                   </span>
                   <span>
-                    Current Tool: <strong className="text-foreground">{app.currentTool}</strong>
+                    Current Tool:{" "}
+                    <strong className="text-foreground">
+                      {app.currentTool}
+                    </strong>
                   </span>
                   {app.techStack && (
                     <span>
-                      Stack: <strong className="text-foreground">{app.techStack}</strong>
+                      Stack:{" "}
+                      <strong className="text-foreground">
+                        {app.techStack}
+                      </strong>
                     </span>
                   )}
                   {app.socialHandle && (
                     <span>
                       Spotlight Handle:{" "}
-                      <strong className="text-foreground font-mono">{app.socialHandle}</strong>
+                      <strong className="text-foreground font-mono">
+                        {app.socialHandle}
+                      </strong>
                     </span>
                   )}
                 </div>
@@ -400,7 +453,9 @@ export default function AdminDesignPartnersClient({
                           {app.stripeSynced ? "Stripe Synced" : "Unsynced"}
                         </span>
                         <button
-                          onClick={() => handleCopyCode(app.vipCode!, "VIP Code")}
+                          onClick={() =>
+                            handleCopyCode(app.vipCode!, "VIP Code")
+                          }
                           className="p-1 text-emerald-400 hover:text-emerald-300 transition-all cursor-pointer"
                           title="Copy VIP Code"
                         >
@@ -429,14 +484,18 @@ export default function AdminDesignPartnersClient({
                     {app.renewalDiscountCode ? (
                       <div className="px-3 py-1.5 bg-cyan-500/10 border border-cyan-500/30 rounded-lg inline-flex items-center gap-2.5">
                         <span className="text-[10px] font-mono text-muted-foreground uppercase">
-                          Year-2 Renewal ({app.renewalDiscountPercent || 50}% Off):
+                          Year-2 Renewal ({app.renewalDiscountPercent || 50}%
+                          Off):
                         </span>
                         <span className="text-xs font-mono font-bold text-cyan-400">
                           {app.renewalDiscountCode}
                         </span>
                         <button
                           onClick={() =>
-                            handleCopyCode(app.renewalDiscountCode!, "Renewal Discount Code")
+                            handleCopyCode(
+                              app.renewalDiscountCode!,
+                              "Renewal Discount Code",
+                            )
                           }
                           className="p-1 text-cyan-400 hover:text-cyan-300 transition-all cursor-pointer"
                           title="Copy Renewal Code"

@@ -1,7 +1,16 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { History, Search, Shield, RefreshCw, Loader2, User, Key, Building2 } from "lucide-react";
+import {
+  History,
+  Search,
+  Shield,
+  RefreshCw,
+  Loader2,
+  User,
+  Key,
+  Building2,
+} from "lucide-react";
 import { getWorkspaceAuditLogs } from "@/actions/team";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
@@ -31,10 +40,18 @@ function timeAgo(iso: string) {
 }
 
 function getActionBadge(action: string) {
-  if (action.includes("invited") || action.includes("joined") || action.includes("created")) {
+  if (
+    action.includes("invited") ||
+    action.includes("joined") ||
+    action.includes("created")
+  ) {
     return "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
   }
-  if (action.includes("removed") || action.includes("deleted") || action.includes("canceled")) {
+  if (
+    action.includes("removed") ||
+    action.includes("deleted") ||
+    action.includes("canceled")
+  ) {
     return "bg-red-500/10 text-red-400 border-red-500/30";
   }
   if (action.includes("updated") || action.includes("role")) {
@@ -85,8 +102,8 @@ export function AuditLogForm() {
             </h2>
           </div>
           <p className="text-xs text-muted-foreground">
-            Immutable log of all team actions, member modifications, role changes, and security
-            events.
+            Immutable log of all team actions, member modifications, role
+            changes, and security events.
           </p>
         </div>
 
@@ -123,9 +140,12 @@ export function AuditLogForm() {
         ) : filteredLogs.length === 0 ? (
           <div className="p-12 flex flex-col items-center justify-center text-center space-y-2 text-xs font-mono text-muted-foreground">
             <Shield className="size-8 text-muted-foreground/40" />
-            <span className="font-bold text-foreground">No audit logs recorded yet</span>
+            <span className="font-bold text-foreground">
+              No audit logs recorded yet
+            </span>
             <span>
-              Team actions, invitations, and role adjustments will appear here in real-time.
+              Team actions, invitations, and role adjustments will appear here
+              in real-time.
             </span>
           </div>
         ) : (

@@ -39,7 +39,9 @@ export function CodeBlock({ code, language, filename }: CodeBlockProps) {
       <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-900/60 border-b border-border/60 text-xs text-muted-foreground font-mono">
         <div className="flex items-center gap-2">
           <Terminal className="size-3.5 text-primary/70" />
-          <span className="font-semibold text-[11px] text-zinc-300">{filename || displayLang}</span>
+          <span className="font-semibold text-[11px] text-zinc-300">
+            {filename || displayLang}
+          </span>
           {filename && language && (
             <span className="text-[10px] text-zinc-500 uppercase px-1.5 py-0.5 rounded bg-zinc-800/80 border border-zinc-700/50">
               {language}
@@ -55,7 +57,9 @@ export function CodeBlock({ code, language, filename }: CodeBlockProps) {
           {copied ? (
             <>
               <Check className="size-3.5 text-emerald-400" />
-              <span className="text-emerald-400 font-mono text-[10px]">Copied!</span>
+              <span className="text-emerald-400 font-mono text-[10px]">
+                Copied!
+              </span>
             </>
           ) : (
             <>

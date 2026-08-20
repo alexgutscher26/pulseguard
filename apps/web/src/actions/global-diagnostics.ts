@@ -81,7 +81,9 @@ export async function runGlobalpingDiagnostics(targetUrl: string): Promise<{
     let query: string | undefined;
 
     try {
-      const parsed = new URL(targetUrl.includes("://") ? targetUrl : `https://${targetUrl}`);
+      const parsed = new URL(
+        targetUrl.includes("://") ? targetUrl : `https://${targetUrl}`,
+      );
       hostname = parsed.hostname;
       protocol = parsed.protocol === "http:" ? "HTTP" : "HTTPS";
       if (parsed.port) {
@@ -131,7 +133,8 @@ export async function runGlobalpingDiagnostics(targetUrl: string): Promise<{
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "User-Agent": "SteadyStack-AdHoc-Diagnostics/2.0 (+https://steadystack.dev)",
+        "User-Agent":
+          "SteadyStack-AdHoc-Diagnostics/2.0 (+https://steadystack.dev)",
       },
       body: JSON.stringify(reqBody),
       signal: AbortSignal.timeout(10_000),
@@ -160,12 +163,16 @@ export async function runGlobalpingDiagnostics(targetUrl: string): Promise<{
     for (let i = 0; i < 8; i++) {
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      const pollRes = await fetch(`https://api.globalping.io/v1/measurements/${id}`, {
-        headers: {
-          "User-Agent": "SteadyStack-AdHoc-Diagnostics/2.0 (+https://steadystack.dev)",
+      const pollRes = await fetch(
+        `https://api.globalping.io/v1/measurements/${id}`,
+        {
+          headers: {
+            "User-Agent":
+              "SteadyStack-AdHoc-Diagnostics/2.0 (+https://steadystack.dev)",
+          },
+          signal: AbortSignal.timeout(6000),
         },
-        signal: AbortSignal.timeout(6000),
-      });
+      );
 
       if (pollRes.ok) {
         const data = (await pollRes.json()) as any;
@@ -189,12 +196,16 @@ export async function runGlobalpingDiagnostics(targetUrl: string): Promise<{
       const result = r.result || {};
       const timings = result.timings || {};
 
-      const totalLatency = Math.round(timings.total || result.rawOutput?.length || 0);
+      const totalLatency = Math.round(
+        timings.total || result.rawOutput?.length || 0,
+      );
       const dnsTime = timings.dns ? Math.round(timings.dns) : undefined;
       const tlsTime = timings.tls ? Math.round(timings.tls) : undefined;
-      const statusCode = result.statusCode || (result.status === "finished" ? 200 : undefined);
+      const statusCode =
+        result.statusCode || (result.status === "finished" ? 200 : undefined);
       const isOk =
-        result.status === "finished" && (!statusCode || (statusCode >= 200 && statusCode < 400));
+        result.status === "finished" &&
+        (!statusCode || (statusCode >= 200 && statusCode < 400));
       const isSlow = totalLatency > 800;
 
       const countryCode = probe.country || "US";
@@ -213,12 +224,16 @@ export async function runGlobalpingDiagnostics(targetUrl: string): Promise<{
         statusCode,
         status: isOk ? (isSlow ? "SLOW" : "OK") : "FAILED",
         resolvedIp: result.resolvedAddress || probe.resolvers?.[0],
-        error: isOk ? undefined : result.rawOutput?.slice(0, 100) || "Probe Connection Failed",
+        error: isOk
+          ? undefined
+          : result.rawOutput?.slice(0, 100) || "Probe Connection Failed",
       };
     });
 
     const successfulProbes = probeResults.filter((p) => p.status !== "FAILED");
-    const latencies = successfulProbes.map((p) => p.latencyMs).filter((l) => l > 0);
+    const latencies = successfulProbes
+      .map((p) => p.latencyMs)
+      .filter((l) => l > 0);
 
     const averageLatencyMs =
       latencies.length > 0
@@ -243,7 +258,9 @@ export async function runGlobalpingDiagnostics(targetUrl: string): Promise<{
   } catch (err: any) {
     return {
       success: false,
-      error: err.message || "An unexpected error occurred executing Globalping diagnostics",
+      error:
+        err.message ||
+        "An unexpected error occurred executing Globalping diagnostics",
     };
   }
 }

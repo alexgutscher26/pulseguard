@@ -42,8 +42,12 @@ export default function AuthLayout({
             >
               <Zap className="size-6" fill="currentColor" strokeWidth={1} />
             </Link>
-            <h1 className="text-3xl font-bold tracking-tight text-foreground">{displayTitle}</h1>
-            <p className="text-muted-foreground mt-2 text-sm font-medium">{subtitle}</p>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">
+              {displayTitle}
+            </h1>
+            <p className="text-muted-foreground mt-2 text-sm font-medium">
+              {subtitle}
+            </p>
           </div>
 
           <div className="relative rounded-3xl border border-white/10 bg-[#0a0a0a]/80 p-6 md:p-8 shadow-xl backdrop-blur-xl overflow-hidden">

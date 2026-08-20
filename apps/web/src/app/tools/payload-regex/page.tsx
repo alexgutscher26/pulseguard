@@ -11,7 +11,8 @@ export const metadata: Metadata = {
     "Free regex tester for website monitoring. Verify HTML expectations, check for specific phrases, and validate payload integrity with our regex sentinel.",
   openGraph: {
     title: "Regex Payload Monitor & Tester",
-    description: "Verify your website's content with SteadyStack's payload analysis sentinel.",
+    description:
+      "Verify your website's content with SteadyStack's payload analysis sentinel.",
     type: "website",
   },
 };
@@ -32,8 +33,8 @@ export default function PayloadTesterPage() {
               Payload Pulse Regex Sentinel
             </h1>
             <p className="text-muted-foreground text-lg md:text-xl max-w-3xl mx-auto font-mono">
-              [ANALYZING CONTENT STREAM... ] Define and test "Expectation" sequences for HTML
-              payload monitoring.
+              [ANALYZING CONTENT STREAM... ] Define and test "Expectation"
+              sequences for HTML payload monitoring.
             </p>
           </div>
 
@@ -45,7 +46,8 @@ export default function PayloadTesterPage() {
                 Payload Extraction
               </h3>
               <p className="text-sm text-muted-foreground font-mono leading-relaxed">
-                Seamlessly pulls raw HTML from any endpoint, bypassing common bot detection filters.
+                Seamlessly pulls raw HTML from any endpoint, bypassing common
+                bot detection filters.
               </p>
             </div>
             <div className="space-y-4 p-6 bg-primary/5 rounded-xl border border-primary/20">
@@ -53,8 +55,8 @@ export default function PayloadTesterPage() {
                 Regex Sequencing
               </h3>
               <p className="text-sm text-muted-foreground font-mono leading-relaxed">
-                Test complex regular expressions to find titles, price tags, or error messages in
-                code.
+                Test complex regular expressions to find titles, price tags, or
+                error messages in code.
               </p>
             </div>
             <div className="space-y-4 p-6 bg-primary/5 rounded-xl border border-primary/20">
@@ -62,8 +64,8 @@ export default function PayloadTesterPage() {
                 Incident Prevention
               </h3>
               <p className="text-sm text-muted-foreground font-mono leading-relaxed">
-                Configure monitors to alert only when specific content is missing or found on the
-                page.
+                Configure monitors to alert only when specific content is
+                missing or found on the page.
               </p>
             </div>
           </div>

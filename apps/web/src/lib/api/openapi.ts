@@ -19,7 +19,9 @@ export const openApiSpec = {
     version: "1.0.0",
     contact: { url: "https://github.com/getsteadystack/SteadyStack" },
   },
-  servers: [{ url: "/", description: "Same origin (self-hosted or steadystack.dev)" }],
+  servers: [
+    { url: "/", description: "Same origin (self-hosted or steadystack.dev)" },
+  ],
   tags: [
     {
       name: "Monitors",
@@ -567,7 +569,8 @@ export const openApiSpec = {
       get: {
         tags: ["Status Pages"],
         summary: "Uptime badge (SVG)",
-        description: "Public shields.io-style badge. The `.svg` suffix is optional.",
+        description:
+          "Public shields.io-style badge. The `.svg` suffix is optional.",
         operationId: "getBadge",
         responses: {
           "200": {
@@ -635,7 +638,13 @@ export const openApiSpec = {
                     slug: { type: "string" },
                     status: {
                       type: "string",
-                      enum: ["UP", "DOWN", "DEGRADED", "MAINTENANCE", "UNKNOWN"],
+                      enum: [
+                        "UP",
+                        "DOWN",
+                        "DEGRADED",
+                        "MAINTENANCE",
+                        "UNKNOWN",
+                      ],
                     },
                     message: { type: "string" },
                   },
@@ -890,7 +899,8 @@ export const openApiSpec = {
       },
       MonitorUpdate: {
         type: "object",
-        description: "All properties optional — only provided fields are updated",
+        description:
+          "All properties optional — only provided fields are updated",
         properties: {
           name: { type: "string" },
           url: { type: "string", format: "uri" },
@@ -938,7 +948,13 @@ export const openApiSpec = {
           since: { type: "string", format: "date-time" },
           stats: {
             type: "object",
-            required: ["uptimePct", "avgLatency", "checksTotal", "checksUp", "checksDown"],
+            required: [
+              "uptimePct",
+              "avgLatency",
+              "checksTotal",
+              "checksUp",
+              "checksDown",
+            ],
             properties: {
               uptimePct: { type: "number" },
               avgLatency: { type: "integer" },
@@ -965,7 +981,13 @@ export const openApiSpec = {
           errorReason: {
             type: "string",
             nullable: true,
-            enum: ["HTTP_*", "TIMEOUT", "DNS_ERROR", "CONNECTION_REFUSED", "UNKNOWN_ERROR"],
+            enum: [
+              "HTTP_*",
+              "TIMEOUT",
+              "DNS_ERROR",
+              "CONNECTION_REFUSED",
+              "UNKNOWN_ERROR",
+            ],
           },
           checkedAt: { type: "string", format: "date-time" },
         },

@@ -24,9 +24,10 @@ export function WhereWeLost() {
             Where SteadyStack Lost
           </h2>
           <p className="text-muted-foreground text-sm max-w-2xl mt-3 leading-relaxed">
-            Engineers don&apos;t trust benchmark studies that claim 100% wins across every
-            dimension. Every distributed systems architecture involves trade-offs. Here is exactly
-            where our competitors outperformed us.
+            Engineers don&apos;t trust benchmark studies that claim 100% wins
+            across every dimension. Every distributed systems architecture
+            involves trade-offs. Here is exactly where our competitors
+            outperformed us.
           </p>
         </div>
 
@@ -43,7 +44,9 @@ export function WhereWeLost() {
                   <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
                     Trade-Off #{idx + 1}: {loss.category}
                   </span>
-                  <span className="text-xs font-mono font-bold text-amber-400">{loss.delta}</span>
+                  <span className="text-xs font-mono font-bold text-amber-400">
+                    {loss.delta}
+                  </span>
                 </div>
 
                 <h3 className="text-lg font-bold text-foreground mb-3 leading-snug">
@@ -55,7 +58,9 @@ export function WhereWeLost() {
                   <span className="text-[10px] font-mono uppercase text-muted-foreground tracking-wider block mb-1">
                     Observed Scenario:
                   </span>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{loss.scenario}</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {loss.scenario}
+                  </p>
                 </div>
 
                 {/* Why SteadyStack Lost */}
@@ -83,7 +88,9 @@ export function WhereWeLost() {
 
               {/* Takeaway */}
               <div className="pt-4 border-t border-border/50 text-[11px] font-mono text-muted-foreground">
-                <span className="text-foreground font-semibold">Core Principle: </span>
+                <span className="text-foreground font-semibold">
+                  Core Principle:{" "}
+                </span>
                 {loss.engineeringTakeaway}
               </div>
             </div>

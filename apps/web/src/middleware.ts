@@ -20,7 +20,8 @@ export async function middleware(request: NextRequest) {
   if (pathname.startsWith("/dashboard") || pathname.startsWith("/login")) {
     const cookieHeader = request.headers.get("cookie") || "";
     const hasSessionCookie =
-      cookieHeader.includes("better-auth.session_token") || cookieHeader.includes("session_token");
+      cookieHeader.includes("better-auth.session_token") ||
+      cookieHeader.includes("session_token");
 
     if (pathname.startsWith("/dashboard") && !hasSessionCookie) {
       return NextResponse.redirect(new URL("/login", request.url));
@@ -30,7 +31,9 @@ export async function middleware(request: NextRequest) {
   }
 
   // 🌍 Status Page & Custom Domain Logic with i18n
-  const appUrl = new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000");
+  const appUrl = new URL(
+    process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+  );
   const appHost = appUrl.host;
   const isStatusPageDomain = hostname.startsWith("status.");
   const isLocalhost =
@@ -57,11 +60,14 @@ export async function middleware(request: NextRequest) {
 
     // 2. Parse Locale manually to construct rewrite target
     const pathParts = pathname.split("/").filter(Boolean);
-    const hasLocale = pathParts.length > 0 && routing.locales.includes(pathParts[0] as any);
+    const hasLocale =
+      pathParts.length > 0 && routing.locales.includes(pathParts[0] as any);
     const locale = hasLocale ? pathParts[0] : routing.defaultLocale;
 
     // Path without locale (ensure we treat root / correctly)
-    const pathWithoutLocale = hasLocale ? "/" + pathParts.slice(1).join("/") : pathname;
+    const pathWithoutLocale = hasLocale
+      ? "/" + pathParts.slice(1).join("/")
+      : pathname;
 
     // 3. Construct Rewrite Target
     let rewriteTarget = "";
@@ -78,7 +84,9 @@ export async function middleware(request: NextRequest) {
     } else if (isCustomDomain) {
       rewriteTarget = `/${locale}/status-page/domain/${hostname}${pathWithoutLocale === "/" ? "" : pathWithoutLocale}`;
 
-      console.log(`[Middleware] rewrite custom domain ${hostname} to ${rewriteTarget}`);
+      console.log(
+        `[Middleware] rewrite custom domain ${hostname} to ${rewriteTarget}`,
+      );
       url.pathname = rewriteTarget;
       return NextResponse.rewrite(url);
     }

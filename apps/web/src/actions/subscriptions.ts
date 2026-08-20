@@ -58,7 +58,9 @@ export async function initiateSubscription(
 
     // Validate monitor IDs belong to this status page
     const validMonitorIds = statusPage.monitors.map((m) => m.monitorId);
-    const selectedMonitorIds = monitorIds.filter((id) => validMonitorIds.includes(id));
+    const selectedMonitorIds = monitorIds.filter((id) =>
+      validMonitorIds.includes(id),
+    );
 
     if (selectedMonitorIds.length === 0 && monitorIds.length > 0) {
       return {
@@ -78,7 +80,8 @@ export async function initiateSubscription(
     if (existingSubscriber?.verified) {
       return {
         success: false,
-        message: "This email is already subscribed. Check your inbox for the management link.",
+        message:
+          "This email is already subscribed. Check your inbox for the management link.",
         error: "ALREADY_SUBSCRIBED",
       };
     }
@@ -149,7 +152,9 @@ export async function initiateSubscription(
 /**
  * Verify a subscription using the verification token
  */
-export async function verifySubscription(token: string): Promise<SubscriptionResult> {
+export async function verifySubscription(
+  token: string,
+): Promise<SubscriptionResult> {
   try {
     // Find the token
     const subscriptionToken = await prisma.subscriptionToken.findUnique({
@@ -264,15 +269,21 @@ export async function updateSubscriptionPreferences(
     }
 
     // Validate monitor IDs if provided
-    const validMonitorIds = subscriber.statusPage.monitors.map((m) => m.monitorId);
-    const selectedMonitorIds = preferences.monitorIds?.filter((id) => validMonitorIds.includes(id));
+    const validMonitorIds = subscriber.statusPage.monitors.map(
+      (m) => m.monitorId,
+    );
+    const selectedMonitorIds = preferences.monitorIds?.filter((id) =>
+      validMonitorIds.includes(id),
+    );
 
     // Update preferences
     await prisma.statusPageSubscriber.update({
       where: { manageToken },
       data: {
-        notifyIncidents: preferences.notifyIncidents ?? subscriber.notifyIncidents,
-        notifyMaintenance: preferences.notifyMaintenance ?? subscriber.notifyMaintenance,
+        notifyIncidents:
+          preferences.notifyIncidents ?? subscriber.notifyIncidents,
+        notifyMaintenance:
+          preferences.notifyMaintenance ?? subscriber.notifyMaintenance,
         ...(selectedMonitorIds && {
           monitorSubscriptions: {
             deleteMany: {},
@@ -301,7 +312,9 @@ export async function updateSubscriptionPreferences(
 /**
  * Unsubscribe completely
  */
-export async function unsubscribe(manageToken: string): Promise<SubscriptionResult> {
+export async function unsubscribe(
+  manageToken: string,
+): Promise<SubscriptionResult> {
   try {
     const subscriber = await prisma.statusPageSubscriber.findUnique({
       where: { manageToken },
@@ -338,7 +351,10 @@ export async function unsubscribe(manageToken: string): Promise<SubscriptionResu
 /**
  * Get all verified subscribers for a status page (for sending notifications)
  */
-export async function getVerifiedSubscribers(statusPageId: string, monitorId?: string) {
+export async function getVerifiedSubscribers(
+  statusPageId: string,
+  monitorId?: string,
+) {
   try {
     const { auth } = await import("@steadystack/auth");
     const { headers } = await import("next/headers");

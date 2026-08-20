@@ -3,7 +3,13 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import {
   Zap,
   Search,
@@ -28,7 +34,8 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { PRODUCT_CONFIG } from "@steadystack/shared";
 
-const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";
+const WORKER_URL =
+  process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";
 
 const MOCK_SITES: Record<string, string> = {
   "google.com": `<!DOCTYPE html>
@@ -133,7 +140,10 @@ interface AuditResult {
 
 function getHighlightedHtml(text: string, patternString: string) {
   if (!patternString) {
-    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    return text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
   }
   try {
     const regex = new RegExp(patternString, "gi");
@@ -149,7 +159,10 @@ function getHighlightedHtml(text: string, patternString: string) {
     }
 
     if (matches.length === 0) {
-      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
     }
 
     let result = "";
@@ -159,7 +172,10 @@ function getHighlightedHtml(text: string, patternString: string) {
       if (start < lastIndex) continue;
 
       const before = text.substring(lastIndex, start);
-      result += before.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      result += before
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
 
       const matchedText = text.substring(start, end);
       const escapedMatch = matchedText
@@ -172,11 +188,17 @@ function getHighlightedHtml(text: string, patternString: string) {
     }
 
     const after = text.substring(lastIndex);
-    result += after.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    result += after
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
 
     return result;
   } catch (e) {
-    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    return text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
   }
 }
 
@@ -241,7 +263,9 @@ export function PayloadTester() {
         });
 
         if (matches.length > 0) {
-          toast.success(`Positive Match Detected: ${matches.length} occurrences`);
+          toast.success(
+            `Positive Match Detected: ${matches.length} occurrences`,
+          );
         } else {
           toast.warning("Pattern match failure. No occurrences detected.");
         }
@@ -276,7 +300,9 @@ export function PayloadTester() {
       if (data.errorMessage) {
         toast.error(`Invalid Pattern Structure: ${data.errorMessage}`);
       } else if (data.success) {
-        toast.success(`Positive Match Detected: ${data.matchCount} occurrences`);
+        toast.success(
+          `Positive Match Detected: ${data.matchCount} occurrences`,
+        );
       } else {
         toast.warning("Pattern match failure. No occurrences detected.");
       }
@@ -321,7 +347,8 @@ export function PayloadTester() {
           payload: mockHtml,
           matchCount: 0,
           success: false,
-          errorMessage: regexErr.message || "Invalid regular expression pattern",
+          errorMessage:
+            regexErr.message || "Invalid regular expression pattern",
           byteSize: new Blob([mockHtml]).size,
           status: 400,
         });
@@ -593,7 +620,9 @@ export function PayloadTester() {
                           {stat.icon}
                           {stat.label}
                         </div>
-                        <div className="font-mono text-sm text-primary font-bold">{stat.value}</div>
+                        <div className="font-mono text-sm text-primary font-bold">
+                          {stat.value}
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -733,7 +762,9 @@ export function PayloadTester() {
                       ) : (
                         <Eye className="mr-2 w-3 h-3" />
                       )}
-                      {isVerifying ? "Compiling WASM..." : "High Integrity Mode (WASM)"}
+                      {isVerifying
+                        ? "Compiling WASM..."
+                        : "High Integrity Mode (WASM)"}
                     </Button>
                   </div>
                 </div>

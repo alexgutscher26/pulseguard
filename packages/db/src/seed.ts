@@ -22,7 +22,12 @@ export interface SeedOptions {
 }
 
 export async function seedDatabase(options: SeedOptions = {}) {
-  const { userEmail, cleanExisting = false, resetDb = false, verbose = true } = options;
+  const {
+    userEmail,
+    cleanExisting = false,
+    resetDb = false,
+    verbose = true,
+  } = options;
 
   const log = (...args: any[]) => {
     if (verbose) console.log(...args);
@@ -41,7 +46,9 @@ export async function seedDatabase(options: SeedOptions = {}) {
   const userId = targetUser?.id || "seed-user-admin-01";
 
   if (!targetUser) {
-    log(`👤 No user found. Creating default administrative user: ${defaultEmail}`);
+    log(
+      `👤 No user found. Creating default administrative user: ${defaultEmail}`,
+    );
     targetUser = await prisma.user.create({
       data: {
         id: userId,
@@ -197,7 +204,9 @@ export async function seedDatabase(options: SeedOptions = {}) {
 
   // 3. Clean or Reset previous seed records if requested
   if (cleanExisting || resetDb) {
-    log("🧹 [DB Reset] Cleaning previous monitors, telemetry, notifications, and status pages...");
+    log(
+      "🧹 [DB Reset] Cleaning previous monitors, telemetry, notifications, and status pages...",
+    );
 
     // Status pages & links
     await prisma.statusPageView.deleteMany({});
@@ -356,7 +365,9 @@ export async function seedDatabase(options: SeedOptions = {}) {
     seededProbes.push(probe);
   }
   const privateProbe = seededProbes[0];
-  log(`✅ Configured ${seededProbes.length} active private probes for ${targetUser.email}.`);
+  log(
+    `✅ Configured ${seededProbes.length} active private probes for ${targetUser.email}.`,
+  );
 
   // 6. Define Real SteadyStack Monitor Types & Endpoints (All 13 Types)
   interface SeedMonitorDef {
@@ -394,7 +405,13 @@ export async function seedDatabase(options: SeedOptions = {}) {
       interval: 30,
       timeout: 5,
       status: "UP",
-      checkRegions: ["us-east-1", "eu-central-1", "ap-northeast-1", "sa-east-1", "af-south-1"],
+      checkRegions: [
+        "us-east-1",
+        "eu-central-1",
+        "ap-northeast-1",
+        "sa-east-1",
+        "af-south-1",
+      ],
       alertThreshold: 2,
       dynamicThresholding: true,
       runbookUrl: "https://docs.steadystack.dev/runbooks/api-health",
@@ -427,7 +444,9 @@ export async function seedDatabase(options: SeedOptions = {}) {
       runbookUrl: "https://docs.steadystack.dev/runbooks/db-connectivity",
       headers: [{ key: "Accept", value: "application/json" }],
       expectation: {
-        json_assertions: [{ path: "$.status", operator: "==", value: "connected" }],
+        json_assertions: [
+          { path: "$.status", operator: "==", value: "connected" },
+        ],
       },
       tags: ["database", "postgres", "health", "tier-1"],
       baseLatencyMs: 12,
@@ -972,7 +991,8 @@ export async function seedDatabase(options: SeedOptions = {}) {
       timeout: def.timeout,
       status: def.status,
       userId,
-      checkRegions: def.checkRegions.length > 0 ? JSON.stringify(def.checkRegions) : null,
+      checkRegions:
+        def.checkRegions.length > 0 ? JSON.stringify(def.checkRegions) : null,
       alertThreshold: def.alertThreshold,
       dynamicThresholding: def.dynamicThresholding,
       runbookUrl: def.runbookUrl || null,
@@ -1044,7 +1064,8 @@ export async function seedDatabase(options: SeedOptions = {}) {
     const now = Date.now();
     const eventCount = 30;
     const eventsToCreate: any[] = [];
-    const regions = def.checkRegions.length > 0 ? def.checkRegions : ["us-east-1"];
+    const regions =
+      def.checkRegions.length > 0 ? def.checkRegions : ["us-east-1"];
 
     for (let i = 0; i < eventCount; i++) {
       const timestamp = new Date(now - i * (def.interval * 1000 || 60000));
@@ -1054,12 +1075,15 @@ export async function seedDatabase(options: SeedOptions = {}) {
       if (region.startsWith("eu")) regionMultiplier = 3.2;
       else if (region.startsWith("ap")) regionMultiplier = 5.8;
       else if (region.startsWith("sa")) regionMultiplier = 7.5;
-      else if (region.startsWith("af") || region.startsWith("me")) regionMultiplier = 8.8;
+      else if (region.startsWith("af") || region.startsWith("me"))
+        regionMultiplier = 8.8;
 
       let eventStatus: MonitorStatus = def.status;
       let latency = Math.max(
         1,
-        Math.round(def.baseLatencyMs * regionMultiplier + (Math.random() * 6 - 3)),
+        Math.round(
+          def.baseLatencyMs * regionMultiplier + (Math.random() * 6 - 3),
+        ),
       );
       let errorReason: string | null = null;
 
@@ -1230,7 +1254,8 @@ export async function seedDatabase(options: SeedOptions = {}) {
         monitorId: dbProbeMonitor.id,
         status: "RESOLVED" as IncidentStatus,
         severity: "HIGH" as Severity,
-        title: "Transient Connection Pool Exhaustion on Primary PostgreSQL Instance",
+        title:
+          "Transient Connection Pool Exhaustion on Primary PostgreSQL Instance",
         description:
           "Automated health check detected elevated connection latency and intermittent connection pool timeout errors.",
         startedAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
@@ -1239,24 +1264,33 @@ export async function seedDatabase(options: SeedOptions = {}) {
           create: [
             {
               type: "STATE_CHANGE" as IncidentEventType,
-              message: "Watchdog detected connection pool queue timeout on port 5432.",
+              message:
+                "Watchdog detected connection pool queue timeout on port 5432.",
               createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
             },
             {
               type: "ALERT_SENT" as IncidentEventType,
-              message: "Automated alert dispatched to #ops-alerts and PagerDuty.",
-              createdAt: new Date(Date.now() - 47 * 60 * 60 * 1000 - 55 * 60 * 1000),
+              message:
+                "Automated alert dispatched to #ops-alerts and PagerDuty.",
+              createdAt: new Date(
+                Date.now() - 47 * 60 * 60 * 1000 - 55 * 60 * 1000,
+              ),
             },
             {
               type: "COMMENT" as IncidentEventType,
               message:
                 "SRE team adjusted PgBouncer pool ceiling and cleared idle backend connections.",
-              createdAt: new Date(Date.now() - 47 * 60 * 60 * 1000 - 40 * 60 * 1000),
+              createdAt: new Date(
+                Date.now() - 47 * 60 * 60 * 1000 - 40 * 60 * 1000,
+              ),
             },
             {
               type: "AUTO_RESOLVE" as IncidentEventType,
-              message: "All 3 consecutive regional probes confirmed 100% healthy response times.",
-              createdAt: new Date(Date.now() - 47 * 60 * 60 * 1000 - 30 * 60 * 1000),
+              message:
+                "All 3 consecutive regional probes confirmed 100% healthy response times.",
+              createdAt: new Date(
+                Date.now() - 47 * 60 * 60 * 1000 - 30 * 60 * 1000,
+              ),
             },
           ],
         },
@@ -1269,10 +1303,12 @@ export async function seedDatabase(options: SeedOptions = {}) {
       update: {},
       create: {
         incidentId: resolvedIncident.id,
-        summary: "Primary PostgreSQL connection pool reached maximum allocated client limit.",
+        summary:
+          "Primary PostgreSQL connection pool reached maximum allocated client limit.",
         rootCause:
           "Unindexed aggregation query ran in parallel across 4 background workers simultaneously.",
-        impactScope: "API response latency elevated by 240ms for 30 minutes. Zero data loss.",
+        impactScope:
+          "API response latency elevated by 240ms for 30 minutes. Zero data loss.",
         detectionMethod: "SteadyStack Synthetic Database Health Probe",
         timeline:
           "T-48h: Saturation detected -> T-47.5h: Pool limit expanded -> T-47.5h: Health verified and resolved",
@@ -1294,7 +1330,8 @@ export async function seedDatabase(options: SeedOptions = {}) {
     await prisma.maintenanceWindow.create({
       data: {
         monitorId: edgeWorkerMonitor.id,
-        description: "Scheduled edge worker runtime upgrade and Durable Object state compaction",
+        description:
+          "Scheduled edge worker runtime upgrade and Durable Object state compaction",
         startAt: new Date(Date.now() + 2 * 60 * 60 * 1000),
         endAt: new Date(Date.now() + 3 * 60 * 60 * 1000),
       },
@@ -1307,14 +1344,17 @@ export async function seedDatabase(options: SeedOptions = {}) {
     where: { monitor: { userId } },
   });
 
-  const apiMonitor = seededMonitors.find((m) => m.def.name === "SteadyStack Core API Health Check");
+  const apiMonitor = seededMonitors.find(
+    (m) => m.def.name === "SteadyStack Core API Health Check",
+  );
   if (apiMonitor) {
     await prisma.monitorInsight.create({
       data: {
         monitorId: apiMonitor.id,
         type: "ANOMALY" as InsightType,
         severity: "INFO" as InsightSeverity,
-        message: "P95 latency decreased by 14% following edge route optimization in eu-central-1.",
+        message:
+          "P95 latency decreased by 14% following edge route optimization in eu-central-1.",
         metadata: JSON.stringify({
           improvementPct: 14,
           region: "eu-central-1",
@@ -1324,7 +1364,8 @@ export async function seedDatabase(options: SeedOptions = {}) {
   }
 
   const sslMonitor = seededMonitors.find(
-    (m) => m.def.name === "SteadyStack Production Edge TLS 1.3 Certificate Watchdog",
+    (m) =>
+      m.def.name === "SteadyStack Production Edge TLS 1.3 Certificate Watchdog",
   );
   if (sslMonitor) {
     await prisma.monitorInsight.create({
@@ -1332,7 +1373,8 @@ export async function seedDatabase(options: SeedOptions = {}) {
         monitorId: sslMonitor.id,
         type: "PREDICTION" as InsightType,
         severity: "WARNING" as InsightSeverity,
-        message: "TLS certificate expires in 68 days. Automated ACME renewal scheduled in 38 days.",
+        message:
+          "TLS certificate expires in 68 days. Automated ACME renewal scheduled in 38 days.",
         metadata: JSON.stringify({ daysRemaining: 68, autoRenew: true }),
       },
     });
@@ -1491,7 +1533,9 @@ export async function seedDatabase(options: SeedOptions = {}) {
   log(`🔑 CLI API Key: ${rawApiKey}`);
   log(`📡 Total Real Monitors Seeded: ${seededMonitors.length}`);
   log("📋 Monitor Types Covered:");
-  const distinctTypes = Array.from(new Set(monitorDefinitions.map((m) => m.type)));
+  const distinctTypes = Array.from(
+    new Set(monitorDefinitions.map((m) => m.type)),
+  );
   for (const t of distinctTypes) {
     const count = monitorDefinitions.filter((m) => m.type === t).length;
     log(`   - ${t.padEnd(12)}: ${count} configuration(s)`);

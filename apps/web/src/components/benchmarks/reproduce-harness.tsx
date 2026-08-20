@@ -46,9 +46,9 @@ curl -s https://steadystack.dev/api/benchmarks/false-positives | jq .summary`;
             Reproduce the Results Locally
           </h2>
           <p className="text-muted-foreground text-sm max-w-2xl mt-3 leading-relaxed">
-            Engineers don&apos;t believe marketing claims — they verify math. Clone the repository,
-            inspect the raw ClickHouse ingress logs, and run the calculation script on your own
-            machine.
+            Engineers don&apos;t believe marketing claims — they verify math.
+            Clone the repository, inspect the raw ClickHouse ingress logs, and
+            run the calculation script on your own machine.
           </p>
         </div>
 
@@ -100,7 +100,12 @@ curl -s https://steadystack.dev/api/benchmarks/false-positives | jq .summary`;
               <div className="p-3 rounded-xl bg-background border border-border/80 font-mono text-[11px] text-muted-foreground break-all mb-3 flex items-center justify-between gap-2">
                 <span>{BENCHMARK_METADATA.groundTruthAuditHashSha256}</span>
                 <button
-                  onClick={() => copyText("sha", BENCHMARK_METADATA.groundTruthAuditHashSha256)}
+                  onClick={() =>
+                    copyText(
+                      "sha",
+                      BENCHMARK_METADATA.groundTruthAuditHashSha256,
+                    )
+                  }
                   className="p-1 text-muted-foreground hover:text-foreground shrink-0"
                   title="Copy SHA-256 hash"
                 >
@@ -133,7 +138,9 @@ curl -s https://steadystack.dev/api/benchmarks/false-positives | jq .summary`;
                   className="p-3 rounded-xl border border-border bg-background hover:bg-accent flex flex-col items-center justify-center text-center gap-1.5 transition-colors group"
                 >
                   <FileCode className="size-4 text-primary group-hover:scale-110 transition-transform" />
-                  <span className="font-mono text-xs font-bold text-foreground">dataset.json</span>
+                  <span className="font-mono text-xs font-bold text-foreground">
+                    dataset.json
+                  </span>
                   <span className="text-[10px] text-muted-foreground">
                     Full JSON (69 Incidents)
                   </span>
@@ -145,8 +152,12 @@ curl -s https://steadystack.dev/api/benchmarks/false-positives | jq .summary`;
                   className="p-3 rounded-xl border border-border bg-background hover:bg-accent flex flex-col items-center justify-center text-center gap-1.5 transition-colors group"
                 >
                   <Database className="size-4 text-emerald-400 group-hover:scale-110 transition-transform" />
-                  <span className="font-mono text-xs font-bold text-foreground">dataset.csv</span>
-                  <span className="text-[10px] text-muted-foreground">Spreadsheet Export</span>
+                  <span className="font-mono text-xs font-bold text-foreground">
+                    dataset.csv
+                  </span>
+                  <span className="text-[10px] text-muted-foreground">
+                    Spreadsheet Export
+                  </span>
                 </a>
               </div>
 

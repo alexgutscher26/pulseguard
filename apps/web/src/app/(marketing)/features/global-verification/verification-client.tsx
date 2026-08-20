@@ -32,7 +32,9 @@ const INITIAL_NODES: NodeState[] = [
 export function VerificationClient() {
   const [nodes, setNodes] = useState<NodeState[]>(INITIAL_NODES);
   const [isVerifying, setIsVerifying] = useState(false);
-  const [outcome, setOutcome] = useState<"STANDBY" | "FILTERED" | "CONFIRMED">("STANDBY");
+  const [outcome, setOutcome] = useState<"STANDBY" | "FILTERED" | "CONFIRMED">(
+    "STANDBY",
+  );
 
   const runConsensusSimulation = (mode: "local" | "global") => {
     if (isVerifying) return;
@@ -114,8 +116,9 @@ export function VerificationClient() {
           Global Verification
         </h1>
         <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
-          Multi-region quorum consensus checking. Avoid alert fatigue by cross-referencing outages
-          using multiple global vantage nodes before triggering high-priority pages.
+          Multi-region quorum consensus checking. Avoid alert fatigue by
+          cross-referencing outages using multiple global vantage nodes before
+          triggering high-priority pages.
         </p>
       </div>
 
@@ -243,7 +246,8 @@ export function VerificationClient() {
                 <div className="text-muted-foreground/60">
                   [CONSOLE STANDBY]
                   <br />
-                  Select an event simulation to verify node consensus logic output...
+                  Select an event simulation to verify node consensus logic
+                  output...
                 </div>
               )}
               {isVerifying && (
@@ -267,14 +271,17 @@ export function VerificationClient() {
                     &gt; [LOCALIZED ANOMALY DETECTED - ROUTING IGNORED]
                   </div>
                   <div className="text-muted-foreground text-[10px]">
-                    Analysis: Connection failure isolated strictly to Singapore routing. Rest of
-                    global check nodes reported normal server status. Alert execution blocked.
+                    Analysis: Connection failure isolated strictly to Singapore
+                    routing. Rest of global check nodes reported normal server
+                    status. Alert execution blocked.
                   </div>
                 </div>
               )}
               {outcome === "CONFIRMED" && (
                 <div className="space-y-2 text-xs">
-                  <div className="text-red-400 font-bold">&gt; CONSENSUS EVALUATION COMPLETE</div>
+                  <div className="text-red-400 font-bold">
+                    &gt; CONSENSUS EVALUATION COMPLETE
+                  </div>
                   <div className="text-muted-foreground">
                     - All checked regions reported: DOWN (100.0%)
                   </div>
@@ -282,8 +289,9 @@ export function VerificationClient() {
                     &gt; [TRUE GLOBAL OUTAGE CONFIRMED]
                   </div>
                   <div className="text-muted-foreground text-[10px]">
-                    Analysis: Verified server failure across 5 global regions. consensus reached.
-                    Dispatching alert triggers to on-call targets.
+                    Analysis: Verified server failure across 5 global regions.
+                    consensus reached. Dispatching alert triggers to on-call
+                    targets.
                   </div>
                 </div>
               )}
@@ -292,7 +300,8 @@ export function VerificationClient() {
 
           <div className="pt-4 text-xs text-muted-foreground font-mono flex items-center gap-2 mt-4">
             <ShieldCheck className="size-4 text-emerald-500" />
-            Consensus logic filters local server drops to save you from false alerts.
+            Consensus logic filters local server drops to save you from false
+            alerts.
           </div>
         </div>
       </div>
@@ -305,8 +314,8 @@ export function VerificationClient() {
             Vantage Vantage Points
           </h3>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Checks are executed from distinct networks and physical centers, preventing false
-            failures caused by localized cloud provider drops.
+            Checks are executed from distinct networks and physical centers,
+            preventing false failures caused by localized cloud provider drops.
           </p>
         </div>
         <div className="space-y-2">
@@ -315,8 +324,8 @@ export function VerificationClient() {
             Dynamic Voting Threshold
           </h3>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Configure how many regions must report failure before confirming an incident. Set strict
-            100% agreement or a simple majority vote.
+            Configure how many regions must report failure before confirming an
+            incident. Set strict 100% agreement or a simple majority vote.
           </p>
         </div>
         <div className="space-y-2">
@@ -325,8 +334,9 @@ export function VerificationClient() {
             Trace Routing
           </h3>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            During failures, nodes capture traceroutes to identify exactly where the connection
-            broke, helping your team diagnose external ISP problems.
+            During failures, nodes capture traceroutes to identify exactly where
+            the connection broke, helping your team diagnose external ISP
+            problems.
           </p>
         </div>
       </div>

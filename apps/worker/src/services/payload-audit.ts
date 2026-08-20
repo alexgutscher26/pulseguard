@@ -15,7 +15,8 @@ export async function auditPayload(targetUrl: string, pattern: string) {
     const body = await response.text();
     const truncatedBody =
       body.length > 200000
-        ? body.substring(0, 200000) + "\n\n...[TRUNCATED BY STEADYSTACK SENTINEL]..."
+        ? body.substring(0, 200000) +
+          "\n\n...[TRUNCATED BY STEADYSTACK SENTINEL]..."
         : body;
 
     let matches: { index: number; length: number }[] = [];

@@ -20,7 +20,9 @@ const DATASET_PATH = path.join(
 );
 
 console.log("\n" + "=".repeat(78));
-console.log(" STEADYSTACK 30-DAY FALSE-POSITIVE BENCHMARK VERIFICATION HARNESS");
+console.log(
+  " STEADYSTACK 30-DAY FALSE-POSITIVE BENCHMARK VERIFICATION HARNESS",
+);
 console.log("=".repeat(78) + "\n");
 
 if (!fs.existsSync(DATASET_PATH)) {
@@ -34,10 +36,15 @@ const { benchmark_metadata, endpoints, incidents, summary } = data;
 
 // Hash canonical payload content without the self-referential metadata checksum field
 const canonicalPayload = JSON.stringify({ summary, endpoints, incidents });
-const payloadHash = crypto.createHash("sha256").update(canonicalPayload).digest("hex");
+const payloadHash = crypto
+  .createHash("sha256")
+  .update(canonicalPayload)
+  .digest("hex");
 
 console.log(`[*] Dataset Title:      ${benchmark_metadata.title}`);
-console.log(`[*] Duration:           ${benchmark_metadata.test_duration_days} days (720 hours)`);
+console.log(
+  `[*] Duration:           ${benchmark_metadata.test_duration_days} days (720 hours)`,
+);
 console.log(
   `[*] Total Checks Fleet: ${benchmark_metadata.total_checks_evaluated.toLocaleString()}`,
 );
@@ -88,7 +95,10 @@ for (const inc of incidents) {
 function calculateMetrics(s) {
   const precision = s.tp + s.fp > 0 ? s.tp / (s.tp + s.fp) : 1.0;
   const recall = s.tp + s.fn > 0 ? s.tp / (s.tp + s.fn) : 1.0;
-  const f1 = precision + recall > 0 ? (2 * (precision * recall)) / (precision + recall) : 0;
+  const f1 =
+    precision + recall > 0
+      ? (2 * (precision * recall)) / (precision + recall)
+      : 0;
   const fdr = s.tp + s.fp > 0 ? s.fp / (s.tp + s.fp) : 0;
 
   return {
@@ -140,4 +150,6 @@ console.log(
 );
 
 console.log("-".repeat(78));
-console.log("\n[✓] Statistical verification complete. Zero unhandled anomalies detected.\n");
+console.log(
+  "\n[✓] Statistical verification complete. Zero unhandled anomalies detected.\n",
+);

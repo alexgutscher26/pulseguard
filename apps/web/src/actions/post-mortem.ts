@@ -32,7 +32,10 @@ async function getMonitorAccessScope(userId: string) {
  */
 function cleanPostMortemText(text: string): string {
   return text
-    .replace(/^(\s*Dear\s+Team\s*,?\s*|\s*To\s+whom\s+it\s+may\s+concern\s*,?\s*)/i, "")
+    .replace(
+      /^(\s*Dear\s+Team\s*,?\s*|\s*To\s+whom\s+it\s+may\s+concern\s*,?\s*)/i,
+      "",
+    )
     .replace(
       /(\n\s*(Best regards|Regards|Sincerely|Thanks|Cheers|Warm regards),?\s*\n(\[?Your Name\]?|SRE Team|SteadyStack SRE|DevOps Team)[\s\S]*)$/i,
       "",
@@ -125,7 +128,9 @@ export async function upsertPostMortem(
     if (!incident) return { success: false, error: "Incident not found" };
 
     const statusValue: "DRAFT" | "PUBLISHED" | "ARCHIVED" =
-      data.status === "PUBLISHED" || data.status === "ARCHIVED" ? data.status : "DRAFT";
+      data.status === "PUBLISHED" || data.status === "ARCHIVED"
+        ? data.status
+        : "DRAFT";
 
     const cleanPayload = {
       summary: data.summary || "",
@@ -150,7 +155,8 @@ export async function upsertPostMortem(
       },
     });
 
-    const workspaceId = incident.monitor.organizationId || incident.monitor.userId;
+    const workspaceId =
+      incident.monitor.organizationId || incident.monitor.userId;
 
     // Synchronize vector in Pinecone index safely
     try {
@@ -185,7 +191,10 @@ export async function upsertPostMortem(
     return { success: true, postMortem };
   } catch (error: any) {
     console.error("Failed to upsert post-mortem:", error);
-    return { success: false, error: error?.message || "Failed to save post-mortem" };
+    return {
+      success: false,
+      error: error?.message || "Failed to save post-mortem",
+    };
   }
 }
 
@@ -220,7 +229,8 @@ export async function generatePostMortemSummary(incidentId: string) {
 
     if (!incident) return { success: false, error: "Incident not found" };
 
-    const workspaceId = incident.monitor.organizationId || incident.monitor.userId;
+    const workspaceId =
+      incident.monitor.organizationId || incident.monitor.userId;
     const aiClient = getAIProviderClient({
       feature: "post-mortem-summary",
       userId: session.user.id,
@@ -342,7 +352,8 @@ export async function generateFullPostMortemAI(incidentId: string) {
 
     if (!incident) return { success: false, error: "Incident not found" };
 
-    const workspaceId = incident.monitor.organizationId || incident.monitor.userId;
+    const workspaceId =
+      incident.monitor.organizationId || incident.monitor.userId;
     const aiClient = getAIProviderClient({
       feature: "post-mortem-full-synthesis",
       userId: session.user.id,
@@ -421,7 +432,10 @@ Return a STRICT raw JSON object (without markdown blocks or backticks) with exac
           similarIncidents,
         };
       } catch (parseError) {
-        console.warn("[AI] JSON parsing failed, using fallback summary", parseError);
+        console.warn(
+          "[AI] JSON parsing failed, using fallback summary",
+          parseError,
+        );
       }
     }
 
@@ -439,7 +453,10 @@ Return a STRICT raw JSON object (without markdown blocks or backticks) with exac
     };
   } catch (error) {
     console.error("Failed to generate full post-mortem", error);
-    return { success: false, error: "Failed to generate post-mortem synthesis" };
+    return {
+      success: false,
+      error: "Failed to generate post-mortem synthesis",
+    };
   }
 }
 
@@ -447,7 +464,9 @@ Return a STRICT raw JSON object (without markdown blocks or backticks) with exac
  * Vectorizes and indexes all existing incidents from the database into Pinecone.
  * Automatically seeds rich historical SRE outage playbooks if the workspace is new.
  */
-export async function syncAllIncidentsToPinecone(options?: { seedSamplePlaybooks?: boolean }) {
+export async function syncAllIncidentsToPinecone(options?: {
+  seedSamplePlaybooks?: boolean;
+}) {
   const session = await getSafeSession();
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
@@ -483,7 +502,8 @@ export async function syncAllIncidentsToPinecone(options?: { seedSamplePlaybooks
     let indexedCount = 0;
 
     for (const incident of incidents) {
-      const workspaceId = incident.monitor.organizationId || incident.monitor.userId;
+      const workspaceId =
+        incident.monitor.organizationId || incident.monitor.userId;
       const rootCause =
         incident.postMortem?.rootCause ||
         incident.description ||
@@ -498,11 +518,15 @@ export async function syncAllIncidentsToPinecone(options?: { seedSamplePlaybooks
           incident.postMortem?.summary ||
           incident.description ||
           `Incident on ${incident.monitor.name}`,
-        impactScope: incident.postMortem?.impactScope || "Regional edge probe latency breach",
+        impactScope:
+          incident.postMortem?.impactScope ||
+          "Regional edge probe latency breach",
         actionItems:
           incident.postMortem?.actionItems ||
           "- [ ] Inspect server logs\n- [ ] Verify connection pool",
-        detectionMethod: incident.postMortem?.detectionMethod || "SteadyStack Multi-Region Probes",
+        detectionMethod:
+          incident.postMortem?.detectionMethod ||
+          "SteadyStack Multi-Region Probes",
         status: incident.status,
         monitorName: incident.monitor.name,
         monitorUrl: incident.monitor.url,
@@ -555,15 +579,18 @@ export async function syncAllIncidentsToPinecone(options?: { seedSamplePlaybooks
         },
         {
           id: `playbook_pg_pool_${Date.now()}`,
-          title: "PostgreSQL Database Connection Pool Exhaustion & Query Latency Spike",
+          title:
+            "PostgreSQL Database Connection Pool Exhaustion & Query Latency Spike",
           rootCause:
             "Unindexed analytical query on activity_logs blocked primary write transactions, saturating PgBouncer connection pool.",
           summary:
             "Database query latency jumped from 15ms to >4500ms, causing cascading request timeouts across API handlers.",
-          impactScope: "Read and write latency degraded for 25 minutes. 4,200 users impacted.",
+          impactScope:
+            "Read and write latency degraded for 25 minutes. 4,200 users impacted.",
           actionItems:
             "- [ ] Created composite index on activity_logs(organization_id, created_at)\n- [ ] Moved heavy reporting queries to read-replica pooler on port 6543\n- [ ] Set statement_timeout = 3000ms on web pooler",
-          detectionMethod: "Database latency threshold breached 500ms across 4 probe regions.",
+          detectionMethod:
+            "Database latency threshold breached 500ms across 4 probe regions.",
           monitorName: "Database Service",
           monitorUrl: "https://db.kudoswall.com",
         },
@@ -574,10 +601,12 @@ export async function syncAllIncidentsToPinecone(options?: { seedSamplePlaybooks
             "Secondary DNS nameserver experienced BGP route leak, causing NXDOMAIN responses for resolving clients.",
           summary:
             "Intermittent DNS lookup failures observed from European edge nodes. Endpoint appeared DOWN in Frankfurt and London.",
-          impactScope: "European clients experienced DNS resolution failures for 14 minutes.",
+          impactScope:
+            "European clients experienced DNS resolution failures for 14 minutes.",
           actionItems:
             "- [ ] Switched to Anycast DNS with Cloudflare 1.1.1.1 authoritative routing\n- [ ] Lowered TTL from 86400 to 300 during migration window",
-          detectionMethod: "Regional DNS Probe detected NXDOMAIN error signature.",
+          detectionMethod:
+            "Regional DNS Probe detected NXDOMAIN error signature.",
           monitorName: "API DNS Endpoint",
           monitorUrl: "https://api.kudoswall.com",
         },
@@ -646,7 +675,8 @@ export async function getSimilarIncidentsForIncident(incidentId: string) {
 
     if (!incident) return { isConfigured: true, matches: [] };
 
-    const workspaceId = incident.monitor.organizationId || incident.monitor.userId;
+    const workspaceId =
+      incident.monitor.organizationId || incident.monitor.userId;
     const matches = await querySimilarIncidents({
       workspaceId,
       queryText: `${incident.title} ${incident.description || ""}`,

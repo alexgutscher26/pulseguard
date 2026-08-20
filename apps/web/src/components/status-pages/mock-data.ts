@@ -81,14 +81,19 @@ function generateMockEvents(
     events.push({
       id: `mock-event-${monitorId}-${i}`,
       status,
-      latency: status === "UP" ? Math.floor(avgLatency + (Math.random() - 0.5) * 8) : 0,
+      latency:
+        status === "UP"
+          ? Math.floor(avgLatency + (Math.random() - 0.5) * 8)
+          : 0,
       timestamp: now - (59 - i) * 60 * 1000,
     });
   }
   return events;
 }
 
-export function getMockStatusPage(slug: string): { page: MockStatusPage; incidents: any[] } | null {
+export function getMockStatusPage(
+  slug: string,
+): { page: MockStatusPage; incidents: any[] } | null {
   const now = Date.now();
 
   if (slug === "cyberpulse-api") {
@@ -215,7 +220,8 @@ export function getMockStatusPage(slug: string): { page: MockStatusPage; inciden
           { label: "Documentation", url: "#" },
         ],
         metaTitle: "NeonStack Cloud Status | SteadyStack Demo",
-        metaDescription: "Interactive Midnight-themed status page for edge computing platforms.",
+        metaDescription:
+          "Interactive Midnight-themed status page for edge computing platforms.",
       },
       incidents: [],
     };
@@ -270,7 +276,12 @@ export function getMockStatusPage(slug: string): { page: MockStatusPage; inciden
         id: `demo-monitor-void-${idx}`,
         name: m.name,
         status: m.targetStatus === "UP" ? "UP" : "DOWN",
-        events: generateMockEvents(`void-${idx}`, m.targetStatus, m.uptime, m.latency),
+        events: generateMockEvents(
+          `void-${idx}`,
+          m.targetStatus,
+          m.uptime,
+          m.latency,
+        ),
       },
     }));
 
@@ -319,7 +330,8 @@ export function getMockStatusPage(slug: string): { page: MockStatusPage; inciden
               id: "demo-ie-void-1-1",
               type: "investigating",
               createdAt: new Date(now - 30 * 60 * 1000),
-              message: "Maintenance initiated. Matchmaking queues are temporarily suspended.",
+              message:
+                "Maintenance initiated. Matchmaking queues are temporarily suspended.",
             },
           ],
         },
@@ -377,20 +389,22 @@ export function getMockStatusPage(slug: string): { page: MockStatusPage; inciden
         cardType: "duration",
         homepageUrl: "https://steadystack.dev",
         metaTitle: "Monochrome SaaS Status | SteadyStack Demo",
-        metaDescription: "Stark minimalist, typographic brutalist monochrome status page demo.",
+        metaDescription:
+          "Stark minimalist, typographic brutalist monochrome status page demo.",
       },
       incidents: [],
     };
   }
 
   if (slug === "quantum-mesh") {
-    const monitorsData: { name: string; latency: number; uptime: number }[] = Array.from({
-      length: 20,
-    }).map((_, idx) => ({
-      name: `Compute Node QM-${100 + idx}`,
-      latency: Math.floor(25 + Math.random() * 40),
-      uptime: 0.999 + Math.random() * 0.001,
-    }));
+    const monitorsData: { name: string; latency: number; uptime: number }[] =
+      Array.from({
+        length: 20,
+      }).map((_, idx) => ({
+        name: `Compute Node QM-${100 + idx}`,
+        latency: Math.floor(25 + Math.random() * 40),
+        uptime: 0.999 + Math.random() * 0.001,
+      }));
 
     const monitors: MockStatusPageMonitor[] = monitorsData.map((m, idx) => ({
       id: `demo-spm-quantum-${idx}`,
@@ -432,7 +446,8 @@ export function getMockStatusPage(slug: string): { page: MockStatusPage; inciden
         cardType: "duration",
         homepageUrl: "https://steadystack.dev",
         metaTitle: "Quantum Mesh Status | SteadyStack Demo",
-        metaDescription: "Interactive custom theme status page for distributed compute grid.",
+        metaDescription:
+          "Interactive custom theme status page for distributed compute grid.",
       },
       incidents: [],
     };
@@ -467,7 +482,12 @@ export function getMockStatusPage(slug: string): { page: MockStatusPage; inciden
         id: `demo-monitor-datastream-${idx}`,
         name: m.name,
         status: m.targetStatus === "UP" ? "UP" : "DOWN",
-        events: generateMockEvents(`datastream-${idx}`, m.targetStatus, m.uptime, m.latency),
+        events: generateMockEvents(
+          `datastream-${idx}`,
+          m.targetStatus,
+          m.uptime,
+          m.latency,
+        ),
       },
     }));
 

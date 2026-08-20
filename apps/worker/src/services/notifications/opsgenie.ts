@@ -7,14 +7,18 @@ export interface OpsgenieConfig {
 }
 
 function getBaseUrl(region?: "us" | "eu"): string {
-  return region === "eu" ? "https://api.eu.opsgenie.com/v2" : "https://api.opsgenie.com/v2";
+  return region === "eu"
+    ? "https://api.eu.opsgenie.com/v2"
+    : "https://api.opsgenie.com/v2";
 }
 
 function dedupAlias(monitorId: string): string {
   return `steadystack-${monitorId}`;
 }
 
-function mapPriority(type?: NotificationTypeValue | string): "P1" | "P2" | "P3" | "P4" | "P5" {
+function mapPriority(
+  type?: NotificationTypeValue | string,
+): "P1" | "P2" | "P3" | "P4" | "P5" {
   if (type === NotificationType.INCIDENT_CREATED) {
     return "P1";
   }
@@ -46,7 +50,8 @@ export async function sendOpsgenieAlert(
 
   const baseUrl = getBaseUrl(parsedConfig.region);
   const alias = dedupAlias(data.monitorId);
-  const isResolved = data.status === "UP" || type === NotificationType.INCIDENT_RESOLVED;
+  const isResolved =
+    data.status === "UP" || type === NotificationType.INCIDENT_RESOLVED;
 
   if (isResolved) {
     // Close existing alert using alias
@@ -67,7 +72,9 @@ export async function sendOpsgenieAlert(
     // 404 means the alert was already closed or does not exist — treat as success
     if (!res.ok && res.status !== 404) {
       const errText = await res.text();
-      throw new Error(`[Opsgenie] Close alert failed (${res.status}): ${errText}`);
+      throw new Error(
+        `[Opsgenie] Close alert failed (${res.status}): ${errText}`,
+      );
     }
     return;
   }
@@ -108,6 +115,8 @@ export async function sendOpsgenieAlert(
   // 202 Accepted is standard Opsgenie response
   if (!res.ok && res.status !== 202) {
     const errText = await res.text();
-    throw new Error(`[Opsgenie] Create alert failed (${res.status}): ${errText}`);
+    throw new Error(
+      `[Opsgenie] Create alert failed (${res.status}): ${errText}`,
+    );
   }
 }

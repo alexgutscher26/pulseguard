@@ -19,7 +19,10 @@ export async function GET() {
 
     // 3. Redis Health Ping (if configured)
     let redisStatus = "not_configured";
-    if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+    if (
+      process.env.UPSTASH_REDIS_REST_URL &&
+      process.env.UPSTASH_REDIS_REST_TOKEN
+    ) {
       try {
         const pingUrl = `${process.env.UPSTASH_REDIS_REST_URL}/ping`;
         const res = await fetch(pingUrl, {

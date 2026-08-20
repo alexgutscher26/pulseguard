@@ -31,16 +31,24 @@ const CRITICAL_STATUSES = new Set([
 ]);
 
 function extractHostname(domain: string): string {
-  return (domain.replace(/^https?:\/\//, "").split("/")[0] || "").split(":")[0] || domain;
+  return (
+    (domain.replace(/^https?:\/\//, "").split("/")[0] || "").split(":")[0] ||
+    domain
+  );
 }
 
 function daysUntil(dateStr: string): number {
   const target = new Date(dateStr);
   const now = new Date();
-  return Math.max(0, Math.floor((target.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
+  return Math.max(
+    0,
+    Math.floor((target.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)),
+  );
 }
 
-export async function checkDomainExpiration(domain: string): Promise<DomainExpirationResult> {
+export async function checkDomainExpiration(
+  domain: string,
+): Promise<DomainExpirationResult> {
   const hostname = extractHostname(domain);
 
   let rdapData: any = null;
@@ -108,19 +116,28 @@ export async function checkDomainExpiration(domain: string): Promise<DomainExpir
     registrar = rdapData.registrar || null;
     registrantName = rdapData.registrant_name || null;
     if (rdapData.status) {
-      statuses.push(...(Array.isArray(rdapData.status) ? rdapData.status : [rdapData.status]));
+      statuses.push(
+        ...(Array.isArray(rdapData.status)
+          ? rdapData.status
+          : [rdapData.status]),
+      );
     }
   } else {
     // Standard RDAP format
     if (rdapData.events) {
       const expEvent = rdapData.events.find(
-        (e: any) => e.eventAction === "expiration" || e.eventAction === "last changed",
+        (e: any) =>
+          e.eventAction === "expiration" || e.eventAction === "last changed",
       );
       if (expEvent) expiryDate = expEvent.eventDate;
     }
 
     if (rdapData.status) {
-      statuses.push(...(Array.isArray(rdapData.status) ? rdapData.status : [rdapData.status]));
+      statuses.push(
+        ...(Array.isArray(rdapData.status)
+          ? rdapData.status
+          : [rdapData.status]),
+      );
     }
 
     if (rdapData.entities) {
@@ -129,7 +146,8 @@ export async function checkDomainExpiration(domain: string): Promise<DomainExpir
           registrar = entity.handle || entity.vcardArray?.[1]?.[1]?.[3] || null;
         }
         if (!registrantName && entity.roles?.includes("registrant")) {
-          registrantName = entity.vcardArray?.[1]?.[1]?.[3] || entity.handle || null;
+          registrantName =
+            entity.vcardArray?.[1]?.[1]?.[3] || entity.handle || null;
         }
       }
     }

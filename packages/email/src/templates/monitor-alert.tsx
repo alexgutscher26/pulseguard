@@ -18,11 +18,14 @@ import React = require("react");
 export function MonitorAlert({ data }: { data: MonitorAlertData }) {
   const isDown = data.status === "DOWN";
   const isSslWarning =
-    data.reason?.includes("expires in") || data.reason?.includes("SSL certificate expires");
+    data.reason?.includes("expires in") ||
+    data.reason?.includes("SSL certificate expires");
 
   let statusColor = isDown ? "#ef4444" : "#10b981";
   let statusBadgeText = isDown ? "CRITICAL ALERT" : "INCIDENT RESOLVED";
-  let statusTitle = isDown ? "Service Outage Detected" : "Service Recovered & Operational";
+  let statusTitle = isDown
+    ? "Service Outage Detected"
+    : "Service Recovered & Operational";
 
   if (isSslWarning) {
     statusColor = "#f59e0b";
@@ -92,7 +95,11 @@ export function MonitorAlert({ data }: { data: MonitorAlertData }) {
                 }}
               >
                 <span style={{ marginRight: "8px", fontSize: "10px" }}>●</span>
-                {isDown ? "SERVICE DOWN" : isSslWarning ? "EXPIRY NOTICE" : "SERVICE RESTORED"}
+                {isDown
+                  ? "SERVICE DOWN"
+                  : isSslWarning
+                    ? "EXPIRY NOTICE"
+                    : "SERVICE RESTORED"}
               </div>
             </div>
 
@@ -130,7 +137,13 @@ export function MonitorAlert({ data }: { data: MonitorAlertData }) {
                 marginBottom: "20px",
               }}
             >
-              <table width="100%" border={0} cellPadding="0" cellSpacing="0" role="presentation">
+              <table
+                width="100%"
+                border={0}
+                cellPadding="0"
+                cellSpacing="0"
+                role="presentation"
+              >
                 <tbody>
                   <tr>
                     <td
@@ -279,7 +292,10 @@ export function MonitorAlert({ data }: { data: MonitorAlertData }) {
             )}
 
             {/* Action CTA */}
-            <PrimaryButton href={actionUrl} variant={isDown ? "danger" : "primary"}>
+            <PrimaryButton
+              href={actionUrl}
+              variant={isDown ? "danger" : "primary"}
+            >
               {data.runbookUrl
                 ? "View Incident Runbook"
                 : isDown
@@ -297,7 +313,10 @@ export function MonitorAlert({ data }: { data: MonitorAlertData }) {
                 }}
               >
                 Or open{" "}
-                <Link href={dashboardUrl} style={{ color: "#a1a1aa", textDecoration: "underline" }}>
+                <Link
+                  href={dashboardUrl}
+                  style={{ color: "#a1a1aa", textDecoration: "underline" }}
+                >
                   monitor dashboard
                 </Link>
               </Text>
@@ -315,6 +334,8 @@ export function MonitorAlert({ data }: { data: MonitorAlertData }) {
   );
 }
 
-export async function renderMonitorAlert(data: MonitorAlertData): Promise<string> {
+export async function renderMonitorAlert(
+  data: MonitorAlertData,
+): Promise<string> {
   return await render(<MonitorAlert data={data} />);
 }

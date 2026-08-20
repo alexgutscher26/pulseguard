@@ -40,7 +40,9 @@ export function SettingsSidebar() {
 
   // Restore saved collapse preference from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem("steadystack_settings_sidebar_collapsed");
+    const saved = localStorage.getItem(
+      "steadystack_settings_sidebar_collapsed",
+    );
     if (saved !== null) {
       setIsCollapsed(saved === "true");
     }
@@ -49,7 +51,10 @@ export function SettingsSidebar() {
   const toggleCollapse = () => {
     setIsCollapsed((prev) => {
       const next = !prev;
-      localStorage.setItem("steadystack_settings_sidebar_collapsed", String(next));
+      localStorage.setItem(
+        "steadystack_settings_sidebar_collapsed",
+        String(next),
+      );
       return next;
     });
   };
@@ -105,7 +110,9 @@ export function SettingsSidebar() {
                 )}
               >
                 <item.icon className="size-4 shrink-0" />
-                {!isCollapsed && <span className="font-bold truncate">{item.name}</span>}
+                {!isCollapsed && (
+                  <span className="font-bold truncate">{item.name}</span>
+                )}
               </Link>
             );
           })}

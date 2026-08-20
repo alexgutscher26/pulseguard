@@ -26,7 +26,9 @@ export interface UsageLimitWarningEmailProps {
   upgradeUrl: string;
 }
 
-export const UsageLimitWarningEmail: React.FC<Readonly<UsageLimitWarningEmailProps>> = ({
+export const UsageLimitWarningEmail: React.FC<
+  Readonly<UsageLimitWarningEmailProps>
+> = ({
   userName = "SteadyStack Operator",
   planName = "Starter",
   warnings = [
@@ -46,7 +48,8 @@ export const UsageLimitWarningEmail: React.FC<Readonly<UsageLimitWarningEmailPro
     "https://steadystack.dev"
   ).replace(/\/+$/, "");
 
-  const finalUpgradeUrl = upgradeUrl || `${baseUrl}/dashboard/settings?tab=billing`;
+  const finalUpgradeUrl =
+    upgradeUrl || `${baseUrl}/dashboard/settings?tab=billing`;
   const hasCriticalWarning = warnings.some((w) => w.percentage >= 90);
   const themeColor = hasCriticalWarning ? "#ef4444" : "#f59e0b";
 
@@ -120,9 +123,9 @@ export const UsageLimitWarningEmail: React.FC<Readonly<UsageLimitWarningEmailPro
               }}
             >
               Hello {userName}, your workspace on the{" "}
-              <strong style={{ color: "#f4f4f5" }}>{planName}</strong> plan is nearing its resource
-              allowance. Upgrade before hitting 100% capacity to prevent new check or integration
-              creation blocks.
+              <strong style={{ color: "#f4f4f5" }}>{planName}</strong> plan is
+              nearing its resource allowance. Upgrade before hitting 100%
+              capacity to prevent new check or integration creation blocks.
             </Text>
 
             {/* Warning Meters */}
@@ -203,7 +206,9 @@ export const UsageLimitWarningEmail: React.FC<Readonly<UsageLimitWarningEmailPro
             </div>
 
             {/* CTA Button */}
-            <PrimaryButton href={finalUpgradeUrl}>Upgrade Workspace Plan</PrimaryButton>
+            <PrimaryButton href={finalUpgradeUrl}>
+              Upgrade Workspace Plan
+            </PrimaryButton>
           </Section>
 
           {/* Footer */}
@@ -217,6 +222,8 @@ export const UsageLimitWarningEmail: React.FC<Readonly<UsageLimitWarningEmailPro
   );
 };
 
-export async function renderUsageLimitWarning(props: UsageLimitWarningEmailProps): Promise<string> {
+export async function renderUsageLimitWarning(
+  props: UsageLimitWarningEmailProps,
+): Promise<string> {
   return await render(<UsageLimitWarningEmail {...props} />);
 }

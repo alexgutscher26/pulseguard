@@ -7,7 +7,10 @@ import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
 import { sendMonitorAlert } from "@steadystack/email";
 import { env } from "@steadystack/env/server";
-import { assertNotificationChannelLimits, checkAndNotifyUsageLimits } from "@/lib/billing-server";
+import {
+  assertNotificationChannelLimits,
+  checkAndNotifyUsageLimits,
+} from "@/lib/billing-server";
 
 const channelSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -34,7 +37,10 @@ const channelSchema = z.object({
   }),
 });
 
-export async function createNotificationChannel(prevState: any, formData: FormData) {
+export async function createNotificationChannel(
+  prevState: any,
+  formData: FormData,
+) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -153,7 +159,8 @@ export async function sendTestNotification(id: string) {
     };
 
     if (channel.type === "EMAIL") {
-      if (!config?.email) return { success: false, error: "Invalid email configuration" };
+      if (!config?.email)
+        return { success: false, error: "Invalid email configuration" };
       const result = await sendMonitorAlert(config.email, testData as any);
       if ("error" in result) return { success: false, error: result.error };
       return { success: true };
@@ -333,7 +340,9 @@ export async function sendTestNotification(id: string) {
         };
 
       const baseUrl =
-        config.region === "eu" ? "https://api.eu.opsgenie.com/v2" : "https://api.opsgenie.com/v2";
+        config.region === "eu"
+          ? "https://api.eu.opsgenie.com/v2"
+          : "https://api.opsgenie.com/v2";
       const alias = `steadystack-test-${Date.now()}`;
 
       // Fire a test alert
@@ -366,18 +375,21 @@ export async function sendTestNotification(id: string) {
       }
 
       // Immediately close test alert so no phantom alert lingers
-      await fetch(`${baseUrl}/alerts/${encodeURIComponent(alias)}/close?identifierType=alias`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `GenieKey ${config.apiKey}`,
+      await fetch(
+        `${baseUrl}/alerts/${encodeURIComponent(alias)}/close?identifierType=alias`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `GenieKey ${config.apiKey}`,
+          },
+          body: JSON.stringify({
+            user: "SteadyStack System",
+            source: "SteadyStack Test Event",
+            note: "Test notification completed successfully.",
+          }),
         },
-        body: JSON.stringify({
-          user: "SteadyStack System",
-          source: "SteadyStack Test Event",
-          note: "Test notification completed successfully.",
-        }),
-      });
+      );
 
       return { success: true };
     }
@@ -474,7 +486,9 @@ const alertRuleSchema = z.object({
   threshold: z.coerce.number().optional(),
   comparison: z.enum(["GT", "LT"]).optional(),
   targetStatus: z.enum(["UP", "DOWN", "PAUSED", "MAINTENANCE"]).optional(),
-  channelIds: z.array(z.string()).min(1, "At least one notification channel is required"),
+  channelIds: z
+    .array(z.string())
+    .min(1, "At least one notification channel is required"),
 });
 
 export async function createAlertRule(prevState: any, formData: FormData) {
@@ -499,9 +513,14 @@ export async function createAlertRule(prevState: any, formData: FormData) {
       monitorId: formData.get("monitorId") as string,
       trigger: formData.get("trigger") as any,
       threshold: thresholdRaw ? Number(thresholdRaw) : undefined,
-      comparison: comparisonRaw && comparisonRaw !== "" ? (comparisonRaw as any) : undefined,
+      comparison:
+        comparisonRaw && comparisonRaw !== ""
+          ? (comparisonRaw as any)
+          : undefined,
       targetStatus:
-        targetStatusRaw && targetStatusRaw !== "" ? (targetStatusRaw as any) : undefined,
+        targetStatusRaw && targetStatusRaw !== ""
+          ? (targetStatusRaw as any)
+          : undefined,
       channelIds,
     };
 
@@ -561,7 +580,11 @@ export async function createAlertRule(prevState: any, formData: FormData) {
   }
 }
 
-export async function updateAlertRule(id: string, prevState: any, formData: FormData) {
+export async function updateAlertRule(
+  id: string,
+  prevState: any,
+  formData: FormData,
+) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -583,9 +606,14 @@ export async function updateAlertRule(id: string, prevState: any, formData: Form
       monitorId: formData.get("monitorId") as string,
       trigger: formData.get("trigger") as any,
       threshold: thresholdRaw ? Number(thresholdRaw) : undefined,
-      comparison: comparisonRaw && comparisonRaw !== "" ? (comparisonRaw as any) : undefined,
+      comparison:
+        comparisonRaw && comparisonRaw !== ""
+          ? (comparisonRaw as any)
+          : undefined,
       targetStatus:
-        targetStatusRaw && targetStatusRaw !== "" ? (targetStatusRaw as any) : undefined,
+        targetStatusRaw && targetStatusRaw !== ""
+          ? (targetStatusRaw as any)
+          : undefined,
       channelIds,
     };
 

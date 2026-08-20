@@ -123,7 +123,8 @@ export function WeeklyDigest({ data }: { data: WeeklyDigestData }) {
                         fontSize: "22px",
                         fontWeight: "800",
                         fontFamily: emailTheme.fonts.mono,
-                        color: data.uptimePercentage >= 99.9 ? "#10b981" : "#f59e0b",
+                        color:
+                          data.uptimePercentage >= 99.9 ? "#10b981" : "#f59e0b",
                         marginBottom: "4px",
                       }}
                     >
@@ -272,7 +273,10 @@ export function WeeklyDigest({ data }: { data: WeeklyDigestData }) {
                                 fontFamily: emailTheme.fonts.mono,
                                 fontSize: "13px",
                                 fontWeight: "700",
-                                color: monitor.uptime >= 99.9 ? "#10b981" : "#38bdf8",
+                                color:
+                                  monitor.uptime >= 99.9
+                                    ? "#10b981"
+                                    : "#38bdf8",
                               }}
                             >
                               {monitor.uptime}%
@@ -287,7 +291,9 @@ export function WeeklyDigest({ data }: { data: WeeklyDigestData }) {
             )}
 
             {/* CTA Button */}
-            <PrimaryButton href={`${baseUrl}/dashboard`}>View Analytics Dashboard</PrimaryButton>
+            <PrimaryButton href={`${baseUrl}/dashboard`}>
+              View Analytics Dashboard
+            </PrimaryButton>
           </Section>
 
           {/* Footer */}
@@ -301,6 +307,8 @@ export function WeeklyDigest({ data }: { data: WeeklyDigestData }) {
   );
 }
 
-export async function renderWeeklyDigest(data: WeeklyDigestData): Promise<string> {
+export async function renderWeeklyDigest(
+  data: WeeklyDigestData,
+): Promise<string> {
   return await render(<WeeklyDigest data={data} />);
 }

@@ -5,9 +5,16 @@ import { AIInsights } from "@/components/dashboard/ai-insights";
 
 export const dynamic = "force-dynamic";
 
-export default async function MonitorDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function MonitorDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
-  const [monitor, insights] = await Promise.all([getMonitor(id), getMonitorInsights(id)]);
+  const [monitor, insights] = await Promise.all([
+    getMonitor(id),
+    getMonitorInsights(id),
+  ]);
 
   if (!monitor) {
     notFound();

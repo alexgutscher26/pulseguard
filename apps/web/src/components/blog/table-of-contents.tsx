@@ -58,7 +58,9 @@ export function TableOfContents({ items }: TableOfContentsProps) {
           return (
             <li
               key={item.id}
-              className={item.level === 3 ? "pl-3.5" : item.level === 4 ? "pl-6" : ""}
+              className={
+                item.level === 3 ? "pl-3.5" : item.level === 4 ? "pl-6" : ""
+              }
             >
               <a
                 href={`#${item.id}`}

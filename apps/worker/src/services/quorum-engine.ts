@@ -124,7 +124,10 @@ export function evaluateQuorum(
   const latestByColoOrRegion = new Map<string, ProbeCheckResult>();
   for (const r of latestByRegion.values()) {
     const dedupeKey =
-      r.colo && r.colo !== "UNKNOWN" && r.colo !== "DIRECT" && r.colo !== "GLOBAL"
+      r.colo &&
+      r.colo !== "UNKNOWN" &&
+      r.colo !== "DIRECT" &&
+      r.colo !== "GLOBAL"
         ? `colo:${r.colo}`
         : `region:${r.region}`;
     const existing = latestByColoOrRegion.get(dedupeKey);
@@ -141,7 +144,8 @@ export function evaluateQuorum(
 
   // 2. Exclude Flapping Probes & Slow Probes
   for (const r of distinctResults) {
-    const health = probeHealthMap.get(r.probeId) || probeHealthMap.get(r.region) || "ONLINE";
+    const health =
+      probeHealthMap.get(r.probeId) || probeHealthMap.get(r.region) || "ONLINE";
 
     if (health === "FLAPPING") {
       excludedFlappingProbes.push(r.region);
@@ -189,7 +193,8 @@ export function evaluateQuorum(
 
   // 4. Calculate Average Latency from UP probes
   const totalLatency = upResults.reduce((acc, r) => acc + r.latency, 0);
-  const averageLatency = upResults.length > 0 ? Math.round(totalLatency / upResults.length) : 0;
+  const averageLatency =
+    upResults.length > 0 ? Math.round(totalLatency / upResults.length) : 0;
 
   // Dynamic consensus threshold based on eligible probes:
   // For the standard global pool (config.totalProbesInPool >= 4), a global DOWN outage
@@ -205,13 +210,16 @@ export function evaluateQuorum(
   );
 
   const confirmedDownCount = downResults.length;
-  let isDownConsensus = confirmedDownCount >= requiredDownCount && hasSufficientQuorumPool;
+  let isDownConsensus =
+    confirmedDownCount >= requiredDownCount && hasSufficientQuorumPool;
 
   // Multi-ASN Quorum / Provider Partition Circuit Breaker:
   // If down consensus is reached but 100% of failures are confined to a single provider ASN (e.g. AS13335)
   // while an independent external ASN (e.g. out-of-band sentinel AS24940) verifies that the origin is UP,
   // we identify this as a provider-layer egress partition rather than an origin outage.
-  const hasDistinctUpAsn = Array.from(upAsns).some((asn) => !distinctDownAsns.includes(asn));
+  const hasDistinctUpAsn = Array.from(upAsns).some(
+    (asn) => !distinctDownAsns.includes(asn),
+  );
   const isSingleProviderPartition =
     isDownConsensus && distinctDownAsns.length === 1 && hasDistinctUpAsn;
 
@@ -367,7 +375,8 @@ export async function processProbeResultsBatch(
           );
 
           // Dispatch notification to user channels
-          const { queueNotification } = await import("../lib/send-notification");
+          const { queueNotification } =
+            await import("../lib/send-notification");
           const { recordAlertSent } = await import("../check-runner");
           const { NotificationType } = await import("../constants");
 
@@ -380,27 +389,37 @@ export async function processProbeResultsBatch(
               url: monitor.url,
               status: "DOWN",
               incidentId: incident.id,
-              reason: evaluation.reason || "Global outage confirmed across edge quorum",
+              reason:
+                evaluation.reason ||
+                "Global outage confirmed across edge quorum",
               runbookUrl: monitor.runbookUrl,
               timestamp: new Date().toISOString(),
-              failedRegions: evaluation.downRegions.length > 0 ? evaluation.downRegions : undefined,
+              failedRegions:
+                evaluation.downRegions.length > 0
+                  ? evaluation.downRegions
+                  : undefined,
             },
             undefined as any,
           );
 
           await recordAlertSent(monitor.id, env);
         } catch (alertErr) {
-          console.error(`[QuorumEngine] Failed to create incident or dispatch alerts:`, alertErr);
+          console.error(
+            `[QuorumEngine] Failed to create incident or dispatch alerts:`,
+            alertErr,
+          );
         }
       } else if (newStatus === "UP" && prevStatus === "DOWN") {
         try {
           const { IncidentService } = await import("../lib/incident-service");
           const incidentService = new IncidentService(prisma);
-          const activeIncident = await incidentService.findActiveIncident(monitorId);
+          const activeIncident =
+            await incidentService.findActiveIncident(monitorId);
           if (activeIncident) {
             await incidentService.resolveIncident(activeIncident.id);
 
-            const { queueNotification } = await import("../lib/send-notification");
+            const { queueNotification } =
+              await import("../lib/send-notification");
             const { recordAlertSent } = await import("../check-runner");
             const { NotificationType } = await import("../constants");
 
@@ -440,7 +459,9 @@ export async function processProbeResultsBatch(
           where: { id: monitorId },
           data: {
             lastCheck: now,
-            nextCheck: new Date(now.getTime() + (monitor.interval || 60) * 1000),
+            nextCheck: new Date(
+              now.getTime() + (monitor.interval || 60) * 1000,
+            ),
           },
         }),
       ]);
@@ -449,7 +470,9 @@ export async function processProbeResultsBatch(
     // 5. Record 1-minute aggregates to LatencyAggregator DO
     if (env.LATENCY_AGGREGATOR) {
       try {
-        const aggregatorId = env.LATENCY_AGGREGATOR.idFromName("global-latency-aggregator");
+        const aggregatorId = env.LATENCY_AGGREGATOR.idFromName(
+          "global-latency-aggregator",
+        );
         const aggregator = env.LATENCY_AGGREGATOR.get(aggregatorId);
 
         for (const r of results.filter((res) => res.monitorId === monitorId)) {

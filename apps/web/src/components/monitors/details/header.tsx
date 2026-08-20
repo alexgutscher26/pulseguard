@@ -64,7 +64,11 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
               {isDown && (
                 <span className="px-2.5 py-0.5 rounded-sm bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 animate-pulse">
                   <span className="size-1.5 rounded-full bg-red-500 shadow-[0_0_5px_currentColor]"></span>
-                  {(monitor.events?.[0]?.errorReason || "Critical Down").split("\n")[0]}
+                  {
+                    (monitor.events?.[0]?.errorReason || "Critical Down").split(
+                      "\n",
+                    )[0]
+                  }
                 </span>
               )}
               {isPaused && (
@@ -91,13 +95,14 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
                   </code>
                 </p>
                 <p className="text-[10px] text-muted-foreground leading-normal max-w-md">
-                  💡 Send a GET or POST request to this URL from your server cron job to report
-                  healthy heartbeat checks.
+                  💡 Send a GET or POST request to this URL from your server
+                  cron job to report healthy heartbeat checks.
                 </p>
               </div>
             ) : (
               <p className="text-primary/60 text-xs font-mono">
-                TARGET_ENDPOINT: <code className="text-foreground">{monitor.url}</code>
+                TARGET_ENDPOINT:{" "}
+                <code className="text-foreground">{monitor.url}</code>
               </p>
             )}
             {monitor.runbookUrl && (
@@ -154,11 +159,14 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
             {hasEvents
               ? (() => {
                   const diff = Math.floor(
-                    (Date.now() - new Date(monitor.events[0].timestamp).getTime()) / 1000,
+                    (Date.now() -
+                      new Date(monitor.events[0].timestamp).getTime()) /
+                      1000,
                   );
                   if (diff < 2) return "Just now";
                   if (diff < 60) return `${diff} seconds ago`;
-                  if (diff < 3600) return `${Math.floor(diff / 60)} minutes ago`;
+                  if (diff < 3600)
+                    return `${Math.floor(diff / 60)} minutes ago`;
                   return `${Math.floor(diff / 3600)} hours ago`;
                 })()
               : "Pending..."}
@@ -178,7 +186,11 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
               } catch {}
             }
             const quorumRule =
-              regionCount >= 7 ? "4-of-7" : regionCount >= 3 ? "2-of-3" : "Multi-Node";
+              regionCount >= 7
+                ? "4-of-7"
+                : regionCount >= 3
+                  ? "2-of-3"
+                  : "Multi-Node";
             return `${quorumRule} Quorum Verified (${regionCount} Regions)`;
           })()}
         </div>

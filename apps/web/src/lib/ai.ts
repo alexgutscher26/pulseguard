@@ -46,23 +46,38 @@ export interface InsightAnalysisResult {
  * 5. Fallback -> Heuristic SRE synthesis engine
  */
 export function getAIProviderClient(metadata?: HeliconeMetadata) {
-  const providerPreference = (process.env.AI_PROVIDER || env.AI_PROVIDER || "auto").toLowerCase();
-  const openRouterKey = process.env.OPENROUTER_API_KEY || env.OPENROUTER_API_KEY;
+  const providerPreference = (
+    process.env.AI_PROVIDER ||
+    env.AI_PROVIDER ||
+    "auto"
+  ).toLowerCase();
+  const openRouterKey =
+    process.env.OPENROUTER_API_KEY || env.OPENROUTER_API_KEY;
   const openRouterModel =
-    process.env.OPENROUTER_MODEL || env.OPENROUTER_MODEL || "meta-llama/llama-3.3-70b-instruct";
+    process.env.OPENROUTER_MODEL ||
+    env.OPENROUTER_MODEL ||
+    "meta-llama/llama-3.3-70b-instruct";
   const openRouterBaseUrl =
-    process.env.OPENROUTER_BASE_URL || env.OPENROUTER_BASE_URL || "https://openrouter.ai/api/v1";
+    process.env.OPENROUTER_BASE_URL ||
+    env.OPENROUTER_BASE_URL ||
+    "https://openrouter.ai/api/v1";
 
   const ollamaBaseUrl =
-    process.env.OLLAMA_BASE_URL || env.OLLAMA_BASE_URL || "http://localhost:11434/v1";
-  const ollamaModel = process.env.OLLAMA_MODEL || env.OLLAMA_MODEL || "llama3.2";
+    process.env.OLLAMA_BASE_URL ||
+    env.OLLAMA_BASE_URL ||
+    "http://localhost:11434/v1";
+  const ollamaModel =
+    process.env.OLLAMA_MODEL || env.OLLAMA_MODEL || "llama3.2";
 
   const openAiKey = process.env.OPENAI_API_KEY || env.OPENAI_API_KEY;
   const heliconeActive = isHeliconeConfigured();
   const heliconeHeaders = buildHeliconeHeaders(metadata);
 
   // 1. Explicit or Auto OpenRouter
-  if ((providerPreference === "openrouter" || providerPreference === "auto") && openRouterKey) {
+  if (
+    (providerPreference === "openrouter" || providerPreference === "auto") &&
+    openRouterKey
+  ) {
     const endpoint = resolveHeliconeBaseUrl("openrouter", openRouterBaseUrl);
     const client = createOpenAI({
       baseURL: endpoint,
@@ -219,19 +234,27 @@ Do NOT wrap with markdown quotes or backticks. Return ONLY the raw JSON object.`
       const parsed = JSON.parse(cleanJson);
 
       return {
-        analysis: parsed.analysis || "Analysis synthesized from telemetry patterns.",
-        guidance: parsed.guidance || "Verify server logs and connection pool saturation.",
+        analysis:
+          parsed.analysis || "Analysis synthesized from telemetry patterns.",
+        guidance:
+          parsed.guidance ||
+          "Verify server logs and connection pool saturation.",
         preventativeAction:
           parsed.preventativeAction ||
           "Tune keep-alive timeouts and configure multi-region edge replicas.",
         technicalMetrics: {
-          zScore: metadata?.zScore || metadata?.score || (severity === "CRITICAL" ? 4.2 : 2.8),
+          zScore:
+            metadata?.zScore ||
+            metadata?.score ||
+            (severity === "CRITICAL" ? 4.2 : 2.8),
           latency: metadata?.latency || (recentEvents[0]?.latency ?? 120),
           baselineMean: metadata?.baselineMean || 65,
           deltaPercent: metadata?.diff
             ? Math.round((metadata.diff / (metadata.avg || 1)) * 100)
             : 35,
-          impactedRegions: metadata?.region ? [metadata.region] : ["us-east-1", "eu-central-1"],
+          impactedRegions: metadata?.region
+            ? [metadata.region]
+            : ["us-east-1", "eu-central-1"],
         },
         provider: aiClient.provider,
         modelName: aiClient.modelName,
@@ -285,10 +308,15 @@ function generateHeuristicAnalysis(params: {
     guidance,
     preventativeAction: preventative,
     technicalMetrics: {
-      zScore: metadata?.zScore || metadata?.score || (severity === "CRITICAL" ? 3.8 : 2.4),
+      zScore:
+        metadata?.zScore ||
+        metadata?.score ||
+        (severity === "CRITICAL" ? 3.8 : 2.4),
       latency: metadata?.latency || 115,
       baselineMean: metadata?.baselineMean || 62,
-      deltaPercent: metadata?.diff ? Math.round((metadata.diff / (metadata.avg || 1)) * 100) : 28,
+      deltaPercent: metadata?.diff
+        ? Math.round((metadata.diff / (metadata.avg || 1)) * 100)
+        : 28,
       impactedRegions: metadata?.region
         ? [metadata.region]
         : ["us-east-1", "eu-central-1", "ap-northeast-1"],

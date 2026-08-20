@@ -77,12 +77,15 @@ export function PasswordReset({ data }: { data: PasswordResetEmailData }) {
                 lineHeight: 1.6,
               }}
             >
-              Hello {displayName}, we received a request to reset your SteadyStack account password.
-              Click the button below to establish new credentials.
+              Hello {displayName}, we received a request to reset your
+              SteadyStack account password. Click the button below to establish
+              new credentials.
             </Text>
 
             {/* CTA Button */}
-            <PrimaryButton href={data.resetUrl}>Reset Account Password</PrimaryButton>
+            <PrimaryButton href={data.resetUrl}>
+              Reset Account Password
+            </PrimaryButton>
 
             {/* Security Warning Box */}
             <div
@@ -113,8 +116,9 @@ export function PasswordReset({ data }: { data: PasswordResetEmailData }) {
                   lineHeight: 1.5,
                 }}
               >
-                If you did not initiate this password reset, no action is needed and your existing
-                password remains active. For security, this link expires automatically.
+                If you did not initiate this password reset, no action is needed
+                and your existing password remains active. For security, this
+                link expires automatically.
               </Text>
             </div>
 
@@ -153,6 +157,8 @@ export function PasswordReset({ data }: { data: PasswordResetEmailData }) {
   );
 }
 
-export async function renderPasswordReset(data: PasswordResetEmailData): Promise<string> {
+export async function renderPasswordReset(
+  data: PasswordResetEmailData,
+): Promise<string> {
   return await render(<PasswordReset data={data} />);
 }

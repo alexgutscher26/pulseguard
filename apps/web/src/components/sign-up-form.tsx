@@ -13,7 +13,11 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
-export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () => void }) {
+export default function SignUpForm({
+  onSwitchToSignIn,
+}: {
+  onSwitchToSignIn: () => void;
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isPending, setIsPending] = useState(false);
@@ -29,7 +33,9 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
 
     // 2. Fallback to steadystack_ref cookie
     if (typeof document !== "undefined") {
-      const match = document.cookie.split("; ").find((row) => row.startsWith("steadystack_ref="));
+      const match = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("steadystack_ref="));
       if (match) {
         try {
           const cookieVal = decodeURIComponent(match.split("=")[1]);
@@ -70,7 +76,8 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
               }
               // Clear cookie upon successful registration
               if (typeof document !== "undefined") {
-                document.cookie = "steadystack_ref=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                document.cookie =
+                  "steadystack_ref=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
               }
             }
             router.push("/dashboard");
@@ -104,7 +111,9 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
             <Gift className="size-4 shrink-0 text-primary animate-pulse" />
             <span>
               Referred by partner code{" "}
-              <strong className="font-bold underline decoration-dotted">{refCode}</strong>
+              <strong className="font-bold underline decoration-dotted">
+                {refCode}
+              </strong>
             </span>
           </div>
           <button
@@ -112,7 +121,8 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
             onClick={() => {
               setRefCode(null);
               if (typeof document !== "undefined") {
-                document.cookie = "steadystack_ref=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                document.cookie =
+                  "steadystack_ref=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
               }
             }}
             className="text-primary/60 hover:text-primary transition-colors p-1 rounded hover:bg-primary/20"
@@ -150,7 +160,10 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
                 {field.state.meta.errors.map((error) => (
-                  <p key={error?.message} className="text-red-500 font-medium text-xs mt-1">
+                  <p
+                    key={error?.message}
+                    className="text-red-500 font-medium text-xs mt-1"
+                  >
                     {error?.message}
                   </p>
                 ))}
@@ -180,7 +193,10 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
                 {field.state.meta.errors.map((error) => (
-                  <p key={error?.message} className="text-red-500 font-medium text-xs mt-1">
+                  <p
+                    key={error?.message}
+                    className="text-red-500 font-medium text-xs mt-1"
+                  >
                     {error?.message}
                   </p>
                 ))}
@@ -210,7 +226,10 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
                 {field.state.meta.errors.map((error) => (
-                  <p key={error?.message} className="text-red-500 font-medium text-xs mt-1">
+                  <p
+                    key={error?.message}
+                    className="text-red-500 font-medium text-xs mt-1"
+                  >
                     {error?.message}
                   </p>
                 ))}
@@ -233,7 +252,9 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
       </form>
 
       <div className="text-center pt-2">
-        <span className="text-sm text-muted-foreground font-medium">Already have an account? </span>
+        <span className="text-sm text-muted-foreground font-medium">
+          Already have an account?{" "}
+        </span>
         <Button
           variant="link"
           onClick={onSwitchToSignIn}

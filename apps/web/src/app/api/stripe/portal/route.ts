@@ -26,6 +26,9 @@ export async function POST() {
     return NextResponse.json({ url: portal.url });
   } catch (error) {
     console.error("Error creating Stripe portal session:", error);
-    return NextResponse.json({ error: "Failed to create portal session" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to create portal session" },
+      { status: 500 },
+    );
   }
 }

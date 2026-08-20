@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Download, FileJson, FileSpreadsheet, FileText, Loader2 } from "lucide-react";
+import {
+  Download,
+  FileJson,
+  FileSpreadsheet,
+  FileText,
+  Loader2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -27,7 +33,10 @@ interface MonitorExportModalProps {
   trigger?: React.ReactNode;
 }
 
-export function MonitorExportModal({ monitorId, trigger }: MonitorExportModalProps) {
+export function MonitorExportModal({
+  monitorId,
+  trigger,
+}: MonitorExportModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [range, setRange] = useState("7d");
   const [format, setFormat] = useState("csv");
@@ -127,7 +136,9 @@ export function MonitorExportModal({ monitorId, trigger }: MonitorExportModalPro
             <div className="grid grid-cols-3 gap-3">
               <div
                 className={`cursor-pointer rounded-md border-2 p-3 hover:bg-muted/50 transition-all flex flex-col items-center gap-1.5 ${
-                  format === "csv" ? "border-primary bg-primary/5" : "border-muted"
+                  format === "csv"
+                    ? "border-primary bg-primary/5"
+                    : "border-muted"
                 }`}
                 onClick={() => setFormat("csv")}
               >
@@ -143,7 +154,9 @@ export function MonitorExportModal({ monitorId, trigger }: MonitorExportModalPro
 
               <div
                 className={`cursor-pointer rounded-md border-2 p-3 hover:bg-muted/50 transition-all flex flex-col items-center gap-1.5 ${
-                  format === "json" ? "border-primary bg-primary/5" : "border-muted"
+                  format === "json"
+                    ? "border-primary bg-primary/5"
+                    : "border-muted"
                 }`}
                 onClick={() => setFormat("json")}
               >
@@ -159,7 +172,9 @@ export function MonitorExportModal({ monitorId, trigger }: MonitorExportModalPro
 
               <div
                 className={`cursor-pointer rounded-md border-2 p-3 hover:bg-muted/50 transition-all flex flex-col items-center gap-1.5 ${
-                  format === "pdf" ? "border-primary bg-primary/5" : "border-muted"
+                  format === "pdf"
+                    ? "border-primary bg-primary/5"
+                    : "border-muted"
                 }`}
                 onClick={() => setFormat("pdf")}
               >

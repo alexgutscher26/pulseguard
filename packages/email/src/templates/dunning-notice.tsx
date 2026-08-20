@@ -21,7 +21,9 @@ export interface DunningNoticeEmailProps {
   billingPortalUrl: string;
 }
 
-export const DunningNoticeEmail: React.FC<Readonly<DunningNoticeEmailProps>> = ({
+export const DunningNoticeEmail: React.FC<
+  Readonly<DunningNoticeEmailProps>
+> = ({
   userName = "SteadyStack Operator",
   planName = "Enterprise",
   amountDue = "$49.00",
@@ -34,7 +36,8 @@ export const DunningNoticeEmail: React.FC<Readonly<DunningNoticeEmailProps>> = (
     "https://steadystack.dev"
   ).replace(/\/+$/, "");
 
-  const finalBillingUrl = billingPortalUrl || `${baseUrl}/dashboard/settings?tab=billing`;
+  const finalBillingUrl =
+    billingPortalUrl || `${baseUrl}/dashboard/settings?tab=billing`;
 
   return (
     <Html>
@@ -105,8 +108,9 @@ export const DunningNoticeEmail: React.FC<Readonly<DunningNoticeEmailProps>> = (
                 lineHeight: 1.6,
               }}
             >
-              Hello {userName}, we were unable to process the scheduled renewal for your{" "}
-              <strong style={{ color: "#f4f4f5" }}>{planName}</strong> plan subscription.
+              Hello {userName}, we were unable to process the scheduled renewal
+              for your <strong style={{ color: "#f4f4f5" }}>{planName}</strong>{" "}
+              plan subscription.
             </Text>
 
             {/* Invoice Failure Card */}
@@ -119,7 +123,13 @@ export const DunningNoticeEmail: React.FC<Readonly<DunningNoticeEmailProps>> = (
                 marginBottom: "24px",
               }}
             >
-              <table width="100%" border={0} cellPadding="0" cellSpacing="0" role="presentation">
+              <table
+                width="100%"
+                border={0}
+                cellPadding="0"
+                cellSpacing="0"
+                role="presentation"
+              >
                 <tbody>
                   <tr>
                     <td
@@ -175,9 +185,9 @@ export const DunningNoticeEmail: React.FC<Readonly<DunningNoticeEmailProps>> = (
                 lineHeight: 1.6,
               }}
             >
-              Your monitoring checks and alert escalations remain active during our grace period.
-              Please update your payment method to ensure continuous 24/7 service without
-              interruption.
+              Your monitoring checks and alert escalations remain active during
+              our grace period. Please update your payment method to ensure
+              continuous 24/7 service without interruption.
             </Text>
 
             {/* CTA Button */}
@@ -197,6 +207,8 @@ export const DunningNoticeEmail: React.FC<Readonly<DunningNoticeEmailProps>> = (
   );
 };
 
-export async function renderDunningNotice(props: DunningNoticeEmailProps): Promise<string> {
+export async function renderDunningNotice(
+  props: DunningNoticeEmailProps,
+): Promise<string> {
   return await render(<DunningNoticeEmail {...props} />);
 }

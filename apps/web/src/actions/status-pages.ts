@@ -6,7 +6,10 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@steadystack/auth";
 import { headers, cookies } from "next/headers";
 import { env } from "@steadystack/env/server";
-import { assertStatusPageLimits, checkAndNotifyUsageLimits } from "@/lib/billing-server";
+import {
+  assertStatusPageLimits,
+  checkAndNotifyUsageLimits,
+} from "@/lib/billing-server";
 import { hashPassword, verifyPassword, signAuthToken } from "@steadystack/core";
 
 /**
@@ -78,13 +81,19 @@ const statusPageSchema = z.object({
     .string()
     .min(3)
     .max(50)
-    .regex(/^[a-z0-9-]+$/, "Slug must be lowercase, alphanumeric, and hyphens only"),
+    .regex(
+      /^[a-z0-9-]+$/,
+      "Slug must be lowercase, alphanumeric, and hyphens only",
+    ),
   title: z.string().min(1, "Title is required"),
   description: z.string().optional(),
   customDomain: z
     .string()
     .optional()
-    .refine((val) => !val || !val.includes("http"), "Enter domain only (e.g. status.example.com)"),
+    .refine(
+      (val) => !val || !val.includes("http"),
+      "Enter domain only (e.g. status.example.com)",
+    ),
   password: z.string().optional(),
   theme: z.string().optional(),
 
@@ -170,7 +179,9 @@ export async function createStatusPage(prevState: any, formData: FormData) {
   if (existing) return { success: false, error: "Slug already exists" };
 
   try {
-    const hashedPassword = data.password ? await hashPassword(data.password) : undefined;
+    const hashedPassword = data.password
+      ? await hashPassword(data.password)
+      : undefined;
     const page = await prisma.statusPage.create({
       data: {
         slug: data.slug,
@@ -196,7 +207,9 @@ export async function createStatusPage(prevState: any, formData: FormData) {
         customJs: data.customJs,
         homepageUrl: data.homepageUrl,
         contactUrl: data.contactUrl,
-        footerLinks: data.footerLinks ? JSON.parse(data.footerLinks) : undefined,
+        footerLinks: data.footerLinks
+          ? JSON.parse(data.footerLinks)
+          : undefined,
         metaTitle: data.metaTitle,
         metaDescription: data.metaDescription,
         ogImageUrl: data.ogImageUrl,
@@ -248,7 +261,10 @@ export async function getStatusPageAccessScope(userId: string) {
  * Checks if a user has permission to manage (edit, configure, delete) a specific status page.
  * Returns true if the user is the status page creator OR an owner/admin of any organization the creator belongs to.
  */
-export async function canManageStatusPage(statusPageId: string, userId: string): Promise<boolean> {
+export async function canManageStatusPage(
+  statusPageId: string,
+  userId: string,
+): Promise<boolean> {
   try {
     const page = await prisma.statusPage.findUnique({
       where: { id: statusPageId },
@@ -338,7 +354,11 @@ export async function getStatusPage(id: string) {
 /**
  * Update the status page with the provided data.
  */
-export async function updateStatusPage(id: string, prevState: any, formData: FormData) {
+export async function updateStatusPage(
+  id: string,
+  prevState: any,
+  formData: FormData,
+) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
@@ -430,7 +450,9 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
         customJs: rawData.customJs,
         homepageUrl: rawData.homepageUrl,
         contactUrl: rawData.contactUrl,
-        footerLinks: rawData.footerLinks ? JSON.parse(rawData.footerLinks) : Prisma.JsonNull,
+        footerLinks: rawData.footerLinks
+          ? JSON.parse(rawData.footerLinks)
+          : Prisma.JsonNull,
         metaTitle: rawData.metaTitle,
         metaDescription: rawData.metaDescription,
         ogImageUrl: rawData.ogImageUrl,
@@ -453,7 +475,10 @@ export async function updateStatusPage(id: string, prevState: any, formData: For
 /**
  * Checks if a user has permission to access a monitor.
  */
-export async function canAccessMonitor(monitorId: string, userId: string): Promise<boolean> {
+export async function canAccessMonitor(
+  monitorId: string,
+  userId: string,
+): Promise<boolean> {
   try {
     const monitor = await prisma.monitor.findUnique({
       where: { id: monitorId },
@@ -470,7 +495,8 @@ export async function canAccessMonitor(monitorId: string, userId: string): Promi
       select: { organizationId: true },
     });
     const orgIds = userMemberships.map((m) => m.organizationId);
-    if (monitor.organizationId && orgIds.includes(monitor.organizationId)) return true;
+    if (monitor.organizationId && orgIds.includes(monitor.organizationId))
+      return true;
 
     const match = await prisma.member.findFirst({
       where: {
@@ -493,14 +519,22 @@ export async function canAccessMonitor(monitorId: string, userId: string): Promi
  * @param {string} pageId - The ID of the status page.
  * @param {string} password - The password to validate against the status page.
  */
-export async function verifyStatusPagePassword(pageId: string, password: string) {
+export async function verifyStatusPagePassword(
+  pageId: string,
+  password: string,
+) {
   const page = await prisma.statusPage.findUnique({ where: { id: pageId } });
-  if (!page || !page.password) return { success: false, error: "Page not found or no password" };
+  if (!page || !page.password)
+    return { success: false, error: "Page not found or no password" };
 
   const isValid = await verifyPassword(password, page.password);
   if (isValid) {
     const cookieStore = await cookies();
-    const token = await signAuthToken(page.id, env.BETTER_AUTH_SECRET, 60 * 60 * 24);
+    const token = await signAuthToken(
+      page.id,
+      env.BETTER_AUTH_SECRET,
+      60 * 60 * 24,
+    );
     cookieStore.set(`status-page-token-${page.id}`, token, {
       httpOnly: true,
       secure: env.NODE_ENV === "production",
@@ -529,10 +563,12 @@ export async function addMonitorToPage(pageId: string, monitorId: string) {
 
   try {
     const isAllowedPage = await canManageStatusPage(pageId, session.user.id);
-    if (!isAllowedPage) return { success: false, error: "Page not found or unauthorized" };
+    if (!isAllowedPage)
+      return { success: false, error: "Page not found or unauthorized" };
 
     const isAllowedMonitor = await canAccessMonitor(monitorId, session.user.id);
-    if (!isAllowedMonitor) return { success: false, error: "Monitor not found or unauthorized" };
+    if (!isAllowedMonitor)
+      return { success: false, error: "Monitor not found or unauthorized" };
 
     const page = await prisma.statusPage.findUnique({ where: { id: pageId } });
     if (!page) return { success: false, error: "Page not found" };
@@ -562,7 +598,8 @@ export async function removeMonitorFromPage(pageId: string, monitorId: string) {
 
   try {
     const isAllowed = await canManageStatusPage(pageId, session.user.id);
-    if (!isAllowed) return { success: false, error: "Page not found or unauthorized" };
+    if (!isAllowed)
+      return { success: false, error: "Page not found or unauthorized" };
 
     const page = await prisma.statusPage.findUnique({ where: { id: pageId } });
     if (!page) return { success: false, error: "Page not found" };
@@ -613,7 +650,8 @@ function validateDomainFormat(domains: string | null | undefined): boolean {
   if (domains === "*") return true;
 
   const domainList = domains.split(",").map((d) => d.trim());
-  const domainRegex = /^(\*\.)?[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z]{2,})+$/;
+  const domainRegex =
+    /^(\*\.)?[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z]{2,})+$/;
 
   return domainList.every((domain) => domainRegex.test(domain));
 }
@@ -639,7 +677,8 @@ export async function updateWidgetConfig(
   if (!validateDomainFormat(data.widgetAllowedDomains)) {
     return {
       success: false,
-      error: "Invalid domain format. Use comma-separated domains like: example.com, *.example.org",
+      error:
+        "Invalid domain format. Use comma-separated domains like: example.com, *.example.org",
     };
   }
 
@@ -707,7 +746,10 @@ export async function updateHistoryDays(pageId: string, historyDays: number) {
 /**
  * Get incidents for status page monitors within a time range
  */
-export async function getStatusPageIncidents(pageId: string, days: number = 90) {
+export async function getStatusPageIncidents(
+  pageId: string,
+  days: number = 90,
+) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) return [];
 
@@ -799,7 +841,10 @@ export async function getStatusPageMaintenance(pageId: string) {
 /**
  * Get uptime data for status page monitors
  */
-export async function getStatusPageUptimeData(pageId: string, days: number = 90) {
+export async function getStatusPageUptimeData(
+  pageId: string,
+  days: number = 90,
+) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) {
     return {
@@ -879,7 +924,9 @@ export async function getStatusPageUptimeData(pageId: string, days: number = 90)
 
     const uptimeMs = totalDurationMs - downtimeMs;
     current =
-      Math.round(Math.max(0, Math.min(100, (uptimeMs / totalDurationMs) * 100)) * 100) / 100;
+      Math.round(
+        Math.max(0, Math.min(100, (uptimeMs / totalDurationMs) * 100)) * 100,
+      ) / 100;
   }
 
   // Calculate previous period
@@ -924,7 +971,10 @@ export async function getStatusPageUptimeData(pageId: string, days: number = 90)
     }
 
     const uptimeMs = periodMs - downtimeMs;
-    previous = Math.round(Math.max(0, Math.min(100, (uptimeMs / periodMs) * 100)) * 100) / 100;
+    previous =
+      Math.round(
+        Math.max(0, Math.min(100, (uptimeMs / periodMs) * 100)) * 100,
+      ) / 100;
   }
 
   const difference = Math.round((current - previous) * 100) / 100;
@@ -960,13 +1010,20 @@ export async function createStatusPageOverride(
   const session = await auth.api.getSession({ headers: reqHeaders });
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
-  const isAllowedPage = await canManageStatusPage(statusPageId, session.user.id);
-  if (!isAllowedPage) return { success: false, error: "Status page not found or unauthorized" };
+  const isAllowedPage = await canManageStatusPage(
+    statusPageId,
+    session.user.id,
+  );
+  if (!isAllowedPage)
+    return { success: false, error: "Status page not found or unauthorized" };
 
   const isAllowedMonitor = await canAccessMonitor(monitorId, session.user.id);
-  if (!isAllowedMonitor) return { success: false, error: "Monitor not found or unauthorized" };
+  if (!isAllowedMonitor)
+    return { success: false, error: "Monitor not found or unauthorized" };
 
-  const page = await prisma.statusPage.findUnique({ where: { id: statusPageId } });
+  const page = await prisma.statusPage.findUnique({
+    where: { id: statusPageId },
+  });
   if (!page) return { success: false, error: "Status page not found" };
 
   const date = new Date(dateStr);
@@ -1006,7 +1063,10 @@ export async function createStatusPageOverride(
 /**
  * Deletes a manual override.
  */
-export async function deleteStatusPageOverride(statusPageId: string, overrideId: string) {
+export async function deleteStatusPageOverride(
+  statusPageId: string,
+  overrideId: string,
+) {
   let reqHeaders: any;
   try {
     reqHeaders = await headers();
@@ -1017,9 +1077,12 @@ export async function deleteStatusPageOverride(statusPageId: string, overrideId:
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
   const isAllowed = await canManageStatusPage(statusPageId, session.user.id);
-  if (!isAllowed) return { success: false, error: "Status page not found or unauthorized" };
+  if (!isAllowed)
+    return { success: false, error: "Status page not found or unauthorized" };
 
-  const page = await prisma.statusPage.findUnique({ where: { id: statusPageId } });
+  const page = await prisma.statusPage.findUnique({
+    where: { id: statusPageId },
+  });
   if (!page) return { success: false, error: "Status page not found" };
 
   const override = await prisma.statusPageOverride.findFirst({
@@ -1082,9 +1145,12 @@ export async function updateStatusPageMonitorSettings(
   if (!session?.user) return { success: false, error: "Unauthorized" };
 
   const isAllowed = await canManageStatusPage(statusPageId, session.user.id);
-  if (!isAllowed) return { success: false, error: "Status page not found or unauthorized" };
+  if (!isAllowed)
+    return { success: false, error: "Status page not found or unauthorized" };
 
-  const page = await prisma.statusPage.findUnique({ where: { id: statusPageId } });
+  const page = await prisma.statusPage.findUnique({
+    where: { id: statusPageId },
+  });
   if (!page) return { success: false, error: "Status page not found" };
 
   try {

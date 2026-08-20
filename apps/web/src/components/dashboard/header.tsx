@@ -35,7 +35,10 @@ interface DashboardHeaderProps {
   userTier?: string;
 }
 
-export function DashboardHeader({ onMenuClick, userTier }: DashboardHeaderProps = {}) {
+export function DashboardHeader({
+  onMenuClick,
+  userTier,
+}: DashboardHeaderProps = {}) {
   const { data: session } = authClient.useSession();
   const pathname = usePathname();
   const router = useRouter();
@@ -60,7 +63,9 @@ export function DashboardHeader({ onMenuClick, userTier }: DashboardHeaderProps 
       if (segment === "edit") return "Edit";
 
       if (segment.length > 15) return `${segment.slice(0, 8)}...`;
-      return segment.charAt(0).toUpperCase() + segment.slice(1).replaceAll("-", " ");
+      return (
+        segment.charAt(0).toUpperCase() + segment.slice(1).replaceAll("-", " ")
+      );
     };
 
     return paths.map((segment, index) => {
@@ -87,7 +92,9 @@ export function DashboardHeader({ onMenuClick, userTier }: DashboardHeaderProps 
     (session?.user as any)?.plan ||
     (session?.user as any)?.subscription?.plan ||
     (session?.user as any)?.role ||
-    (session?.user?.name?.toLowerCase().includes("admin") ? "ADMIN" : "INITIATE");
+    (session?.user?.name?.toLowerCase().includes("admin")
+      ? "ADMIN"
+      : "INITIATE");
 
   const displayTier = String(resolvedTier).toUpperCase();
 
@@ -117,8 +124,13 @@ export function DashboardHeader({ onMenuClick, userTier }: DashboardHeaderProps 
         <div className="hidden sm:flex items-center gap-3 min-w-0">
           <nav className="flex items-center gap-1.5 text-xs font-mono select-none min-w-0">
             {getBreadcrumbs().map((crumb, index) => (
-              <div key={crumb.url} className="flex items-center gap-1.5 min-w-0">
-                {index > 0 && <ChevronRight className="size-3 text-muted-foreground/40 shrink-0" />}
+              <div
+                key={crumb.url}
+                className="flex items-center gap-1.5 min-w-0"
+              >
+                {index > 0 && (
+                  <ChevronRight className="size-3 text-muted-foreground/40 shrink-0" />
+                )}
                 {crumb.isLast ? (
                   <span className="text-foreground font-bold tracking-tight text-xs md:text-sm truncate max-w-[120px] sm:max-w-[180px] md:max-w-[240px]">
                     {crumb.label}

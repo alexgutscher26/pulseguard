@@ -46,7 +46,9 @@ export default function LegalPage({
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-foreground max-w-3xl leading-[1.1]">
             {title}
           </h1>
-          <p className="text-muted-foreground text-sm leading-relaxed max-w-xl">{description}</p>
+          <p className="text-muted-foreground text-sm leading-relaxed max-w-xl">
+            {description}
+          </p>
           <p className="text-muted-foreground/50 text-[11px] font-mono">
             Last updated: {lastUpdated}
           </p>
@@ -55,7 +57,10 @@ export default function LegalPage({
 
       <div className="max-w-5xl mx-auto w-full px-6 md:px-12 py-16 md:py-20">
         <div className="flex gap-16 lg:gap-20">
-          <nav className="hidden lg:block w-56 shrink-0" aria-label="Table of contents">
+          <nav
+            className="hidden lg:block w-56 shrink-0"
+            aria-label="Table of contents"
+          >
             <div className="sticky top-32 space-y-1">
               <p className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest mb-4">
                 On this page

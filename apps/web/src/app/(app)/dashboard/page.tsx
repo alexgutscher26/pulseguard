@@ -2,7 +2,11 @@ import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { getDashboardStats, getMonitors, getMonitorInsights } from "@/actions/monitors";
+import {
+  getDashboardStats,
+  getMonitors,
+  getMonitorInsights,
+} from "@/actions/monitors";
 import { getOnboardingStatus } from "@/actions/onboarding";
 import { getUserUsageSummary } from "@/lib/billing-server";
 import DashboardClient from "./dashboard-client";
@@ -21,13 +25,14 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const [monitors, stats, insights, onboardingStatus, usageSummary] = await Promise.all([
-    getMonitors(),
-    getDashboardStats(),
-    getMonitorInsights(),
-    getOnboardingStatus(),
-    getUserUsageSummary(session.user.id),
-  ]);
+  const [monitors, stats, insights, onboardingStatus, usageSummary] =
+    await Promise.all([
+      getMonitors(),
+      getDashboardStats(),
+      getMonitorInsights(),
+      getOnboardingStatus(),
+      getUserUsageSummary(session.user.id),
+    ]);
 
   return (
     <DashboardClient

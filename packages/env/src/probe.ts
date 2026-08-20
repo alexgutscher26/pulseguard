@@ -3,7 +3,10 @@ import { z } from "zod";
 
 export const env = createEnv({
   server: {
-    STEADYSTACK_API_URL: z.string().url().default("https://steadystack-worker.example.com"),
+    STEADYSTACK_API_URL: z
+      .string()
+      .url()
+      .default("https://steadystack-worker.example.com"),
     STEADYSTACK_PROBE_TOKEN: z.string().min(1),
     PROBE_POLL_INTERVAL: z.coerce.number().int().positive().default(15),
     PROBE_HEARTBEAT_INTERVAL: z.coerce.number().int().positive().default(30),
@@ -14,7 +17,10 @@ export const env = createEnv({
   emptyStringAsUndefined: true,
   onValidationError: (issues) => {
     const formatted = (issues || [])
-      .map((issue) => `  - ${issue.path ? issue.path.join(".") : "variable"}: ${issue.message}`)
+      .map(
+        (issue) =>
+          `  - ${issue.path ? issue.path.join(".") : "variable"}: ${issue.message}`,
+      )
       .join("\n");
     console.error("❌ Invalid probe environment variables:\n" + formatted);
     throw new Error("Invalid probe environment variables:\n" + formatted);

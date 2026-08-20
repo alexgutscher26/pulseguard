@@ -13,11 +13,22 @@ export interface MonthlyStats {
   endDate: Date;
 }
 
-export async function getMonthlyStats(prisma: any, monthOffset = 1): Promise<MonthlyStats> {
+export async function getMonthlyStats(
+  prisma: any,
+  monthOffset = 1,
+): Promise<MonthlyStats> {
   // 1. Calculate Date Range (Previous Month)
   const now = new Date();
-  const startDate = new Date(now.getFullYear(), now.getMonth() - monthOffset, 1);
-  const endDate = new Date(now.getFullYear(), now.getMonth() - monthOffset + 1, 0); // Last day of prev month
+  const startDate = new Date(
+    now.getFullYear(),
+    now.getMonth() - monthOffset,
+    1,
+  );
+  const endDate = new Date(
+    now.getFullYear(),
+    now.getMonth() - monthOffset + 1,
+    0,
+  ); // Last day of prev month
 
   // 2. Fetch Incidents
   const incidents = await prisma.incident.findMany({
@@ -74,7 +85,8 @@ export async function getMonthlyStats(prisma: any, monthOffset = 1): Promise<Mon
     },
   });
 
-  const globalUptime = totalChecks > 0 ? ((totalChecks - totalFailures) / totalChecks) * 100 : 100;
+  const globalUptime =
+    totalChecks > 0 ? ((totalChecks - totalFailures) / totalChecks) * 100 : 100;
 
   // 5. Average Response Time
   const avgLatencyResult = await prisma.monitorEvent.aggregate({
@@ -96,7 +108,8 @@ export async function getMonthlyStats(prisma: any, monthOffset = 1): Promise<Mon
   const criticalEvents = incidents.slice(0, 5).map((inc: any) => {
     let duration = "Ongoing";
     if (inc.resolvedAt) {
-      const diffMs = new Date(inc.resolvedAt).getTime() - new Date(inc.createdAt).getTime();
+      const diffMs =
+        new Date(inc.resolvedAt).getTime() - new Date(inc.createdAt).getTime();
       const diffMins = Math.round(diffMs / 60000);
       duration = `${diffMins}m`;
     }

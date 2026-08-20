@@ -148,7 +148,10 @@ export const teamRouter = router({
         where: { id: input.memberId },
       });
 
-      if (!targetMember || targetMember.organizationId !== input.organizationId) {
+      if (
+        !targetMember ||
+        targetMember.organizationId !== input.organizationId
+      ) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Member not found in this workspace",

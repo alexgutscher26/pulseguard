@@ -28,7 +28,11 @@ export async function generateMetadata({
   };
 }
 
-export default async function InvitationPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function InvitationPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const resolved = await params;
   const invitation = await getInvitationDetails(resolved.id);
 

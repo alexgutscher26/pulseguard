@@ -14,7 +14,11 @@ export const dynamic = "force-dynamic";
  * @param {Object} params - An object containing the parameters for the function.
  * @param {Promise<{ id: string }>} params.params - A promise that resolves to an object containing the monitor id.
  */
-export default async function MonitorSettingsPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function MonitorSettingsPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });

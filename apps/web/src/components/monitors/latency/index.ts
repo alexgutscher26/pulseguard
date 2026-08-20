@@ -8,4 +8,8 @@ export { useLatencyData } from "./hooks/use-latency-data";
 export { useHeatmapScale, COLOR_SCALES } from "./hooks/use-heatmap-scale";
 export type { TimeRange } from "./heatmap-controls";
 export type { MetricType } from "./hooks/use-heatmap-scale";
-export type { LatencyHeatmapData, LatencyDataPoint, RegionData } from "./hooks/use-latency-data";
+export type {
+  LatencyHeatmapData,
+  LatencyDataPoint,
+  RegionData,
+} from "./hooks/use-latency-data";

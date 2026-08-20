@@ -34,7 +34,8 @@ export async function queueNotification(
   while (attempts < maxAttempts) {
     try {
       attempts++;
-      const { default: notificationHandler } = await import("../notification-handler");
+      const { default: notificationHandler } =
+        await import("../notification-handler");
       let hasFailed = false;
       let failureReason = "";
 
@@ -48,7 +49,8 @@ export async function queueNotification(
             ack: () => {},
             retry: () => {
               hasFailed = true;
-              failureReason = "One or more notification channels failed to deliver";
+              failureReason =
+                "One or more notification channels failed to deliver";
             },
           },
         ],
@@ -62,7 +64,9 @@ export async function queueNotification(
       await notificationHandler.queue(batch, env, ctx);
 
       if (hasFailed) {
-        throw new Error(failureReason || "Notification channel delivery returned failure");
+        throw new Error(
+          failureReason || "Notification channel delivery returned failure",
+        );
       }
 
       return; // Success
@@ -72,7 +76,9 @@ export async function queueNotification(
         notifError,
       );
       if (attempts < maxAttempts) {
-        await new Promise((resolve) => setTimeout(resolve, Math.pow(2, attempts) * 500));
+        await new Promise((resolve) =>
+          setTimeout(resolve, Math.pow(2, attempts) * 500),
+        );
       }
     }
   }
@@ -101,7 +107,10 @@ export async function queueNotification(
         `[Notification] Persisted dropped alert to Redis DLQ: steadystack:dlq:notifications`,
       );
     } catch (redisErr) {
-      console.error("[Notification] Failed to record dropped alert to Redis DLQ:", redisErr);
+      console.error(
+        "[Notification] Failed to record dropped alert to Redis DLQ:",
+        redisErr,
+      );
     }
   }
 }

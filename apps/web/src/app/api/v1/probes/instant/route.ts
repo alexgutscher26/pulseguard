@@ -4,7 +4,11 @@ import { lookup } from "node:dns/promises";
 
 function isPrivateIpv4(ip: string): boolean {
   const parts = ip.split(".").map((p) => Number(p));
-  if (parts.length !== 4 || parts.some((n) => Number.isNaN(n) || n < 0 || n > 255)) return false;
+  if (
+    parts.length !== 4 ||
+    parts.some((n) => Number.isNaN(n) || n < 0 || n > 255)
+  )
+    return false;
 
   const [a, b] = parts;
   if (a === 10) return true;
@@ -24,7 +28,9 @@ const ALLOWED_PROBE_HOSTS = ["example.com"];
 
 function isAllowedProbeHostname(hostname: string): boolean {
   const h = hostname.toLowerCase();
-  return ALLOWED_PROBE_HOSTS.some((allowed) => h === allowed || h.endsWith(`.${allowed}`));
+  return ALLOWED_PROBE_HOSTS.some(
+    (allowed) => h === allowed || h.endsWith(`.${allowed}`),
+  );
 }
 
 async function validateProbeUrl(
@@ -75,7 +81,10 @@ async function validateProbeUrl(
     for (const addr of resolved) {
       const ip = addr.address;
       if (isPrivateIpv4(ip)) {
-        return { ok: false, error: "private/internal addresses are not allowed" };
+        return {
+          ok: false,
+          error: "private/internal addresses are not allowed",
+        };
       }
       const lowerIp = ip.toLowerCase();
       if (
@@ -84,7 +93,10 @@ async function validateProbeUrl(
         lowerIp.startsWith("fd") ||
         lowerIp.startsWith("fe80:")
       ) {
-        return { ok: false, error: "private/internal addresses are not allowed" };
+        return {
+          ok: false,
+          error: "private/internal addresses are not allowed",
+        };
       }
     }
   } catch {
@@ -114,7 +126,10 @@ export async function POST(req: NextRequest) {
   } = body;
 
   if (!url || typeof url !== "string") {
-    return NextResponse.json({ error: "url is required and must be a string" }, { status: 400 });
+    return NextResponse.json(
+      { error: "url is required and must be a string" },
+      { status: 400 },
+    );
   }
 
   const validation = await validateProbeUrl(url);
@@ -123,7 +138,9 @@ export async function POST(req: NextRequest) {
   }
   const safeUrl = validation.normalizedUrl;
 
-  const regionList: string[] = Array.isArray(regions) ? regions : ["wnam", "weur", "apac"];
+  const regionList: string[] = Array.isArray(regions)
+    ? regions
+    : ["wnam", "weur", "apac"];
 
   // Perform multi-region parallel synthetic fetch
   const regionNames: Record<string, { name: string; flag: string }> = {
@@ -175,7 +192,9 @@ export async function POST(req: NextRequest) {
           httpCode: 0,
           latencyMs,
           error:
-            err.name === "AbortError" ? "Connection timed out" : err.message || "Network Error",
+            err.name === "AbortError"
+              ? "Connection timed out"
+              : err.message || "Network Error",
         };
       }
     }),
@@ -184,7 +203,8 @@ export async function POST(req: NextRequest) {
   const passedCount = results.filter((r) => r.status === "UP").length;
   const quorumPass = passedCount > results.length / 2;
   const avgLatency = Math.round(
-    results.reduce((acc, curr) => acc + curr.latencyMs, 0) / (results.length || 1),
+    results.reduce((acc, curr) => acc + curr.latencyMs, 0) /
+      (results.length || 1),
   );
 
   return NextResponse.json({
