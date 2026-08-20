@@ -162,7 +162,10 @@ export function IncidentHistoryTab({
             {uptimeData.trend === "stable" && <Minus className="size-4 text-muted-foreground" />}
           </div>
           <div
-            className={cn("text-3xl font-bold font-mono mt-2", getUptimeColor(uptimeData?.current ?? 100))}
+            className={cn(
+              "text-3xl font-bold font-mono mt-2",
+              getUptimeColor(uptimeData?.current ?? 100),
+            )}
           >
             {Number(uptimeData?.current ?? 100).toFixed(2)}%
           </div>

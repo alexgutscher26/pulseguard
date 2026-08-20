@@ -111,33 +111,6 @@ export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
     });
   };
 
-  // Auto-trigger check if data is stale (simulates cron in dev)
-  useEffect(() => {
-    if (!monitor) return;
-
-    const checkStale = async () => {
-      const lastEvent = monitor.events?.[0];
-      const lastCheckTime = lastEvent ? new Date(lastEvent.timestamp).getTime() : 0;
-      const now = Date.now();
-      const diffSeconds = (now - lastCheckTime) / 1000;
-
-      // If stale (> 70s) and not already checking (optimistic), trigger check
-      if (diffSeconds > 70) {
-        console.log("Data stale (>70s), triggering auto-check...");
-        await checkMonitor(monitor.id, {
-          checkRegions: ["Dashboard Auto-Check"],
-          reason: "Detail View Stale Check",
-        });
-        // Query will re-fetch automatically via refetchInterval
-      }
-    };
-
-    const timer = setInterval(checkStale, 10000); // Check staleness every 10s
-    checkStale(); // Also check on mount/update
-
-    return () => clearInterval(timer);
-  }, [monitor]);
-
   if (!monitor) return null;
 
   return (

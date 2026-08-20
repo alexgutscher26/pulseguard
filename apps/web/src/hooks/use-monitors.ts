@@ -1,8 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getMonitors, getDashboardStats, checkMonitor } from "@/actions/monitors";
-import { useEffect, useRef } from "react";
+import { getMonitors, getDashboardStats } from "@/actions/monitors";
 
 /**
  * Manages monitor checks and updates using a query.
@@ -23,35 +22,6 @@ export function useMonitors(initialMonitors: any[], isDemo = false) {
     refetchInterval: isDemo ? false : 5000,
     refetchOnWindowFocus: !isDemo,
   });
-
-  const checkedRef = useRef<Set<string>>(new Set());
-
-  // Auto-check stale monitors (helper for when cron is not running/slow)
-  useEffect(() => {
-    if (isDemo || !query.data) return;
-
-    query.data.forEach((monitor: any) => {
-      const lastCheck = monitor.lastCheck ? new Date(monitor.lastCheck).getTime() : 0;
-      const intervalMs = (monitor.interval || 60) * 1000;
-      // Allow 15s grace period over interval
-      const isStale = Date.now() - lastCheck > intervalMs + 15000;
-
-      if (isStale && !checkedRef.current.has(monitor.id)) {
-        console.log(`Monitor ${monitor.name} is stale. Triggering check...`);
-        checkedRef.current.add(monitor.id);
-
-        checkMonitor(monitor.id, {
-          checkRegions: ["Dashboard Auto-Check"],
-          reason: "Dashboard Stale Monitor Check",
-        }).then(() => {
-          // Remove from checked set after a delay to allow re-check if it fails again later
-          setTimeout(() => {
-            if (checkedRef.current) checkedRef.current.delete(monitor.id);
-          }, 30000);
-        });
-      }
-    });
-  }, [query.data, isDemo]);
 
   return query;
 }

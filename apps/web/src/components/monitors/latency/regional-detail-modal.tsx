@@ -134,7 +134,7 @@ export function RegionalDetailModal({
                   </div>
                   {currentData?.relative?.vsBaseline != null && (
                     <div className="text-xs text-muted-foreground mt-1 font-mono">
-                      Current: {currentData.relative.vsBaseline.toFixed(2)}x baseline
+                      Current: {Number(currentData.relative.vsBaseline).toFixed(2)}x baseline
                     </div>
                   )}
                 </div>

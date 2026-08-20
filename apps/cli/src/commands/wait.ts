@@ -2,7 +2,6 @@ import { Command } from "commander";
 import chalk from "chalk";
 import ora from "ora";
 import { getApiKey, getBaseUrl } from "../config.js";
-import { ApiError } from "../client.js";
 
 /**
  * pulse wait <id>

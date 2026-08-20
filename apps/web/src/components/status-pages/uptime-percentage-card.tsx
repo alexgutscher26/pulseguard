@@ -93,7 +93,10 @@ export function UptimePercentageCard({
         {/* Main percentage */}
         <div className="mb-4">
           <div
-            className={cn("text-5xl font-bold font-mono tracking-tight", getUptimeColor(safeCurrent))}
+            className={cn(
+              "text-5xl font-bold font-mono tracking-tight",
+              getUptimeColor(safeCurrent),
+            )}
           >
             {safeCurrent.toFixed(2)}
             <span className="text-2xl">%</span>
@@ -105,7 +108,11 @@ export function UptimePercentageCard({
           <div
             className={cn(
               "h-full rounded-full transition-all duration-500",
-              safeCurrent >= 99.9 ? "bg-green-500" : safeCurrent >= 99 ? "bg-yellow-500" : "bg-red-500",
+              safeCurrent >= 99.9
+                ? "bg-green-500"
+                : safeCurrent >= 99
+                  ? "bg-yellow-500"
+                  : "bg-red-500",
             )}
             style={{ width: `${visualPercentage}%` }}
           />
@@ -125,7 +132,9 @@ export function UptimePercentageCard({
             <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground/60 mb-1">
               Previous
             </div>
-            <div className="text-sm font-mono text-muted-foreground">{safePrevious.toFixed(2)}%</div>
+            <div className="text-sm font-mono text-muted-foreground">
+              {safePrevious.toFixed(2)}%
+            </div>
           </div>
         </div>
 
