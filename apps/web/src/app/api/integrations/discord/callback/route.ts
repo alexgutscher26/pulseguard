@@ -40,9 +40,7 @@ export async function GET(req: NextRequest) {
     if (data.error) {
       console.error("Discord OAuth Error:", data);
       const reason = encodeURIComponent(data.error_description || data.error || "exchange_failed");
-      return NextResponse.redirect(
-        new URL(`/dashboard/alerts?error=discord_${reason}`, req.url),
-      );
+      return NextResponse.redirect(new URL(`/dashboard/alerts?error=discord_${reason}`, req.url));
     }
 
     // data contains: access_token, webhook: { token, id, url, channel_id, guild_id }

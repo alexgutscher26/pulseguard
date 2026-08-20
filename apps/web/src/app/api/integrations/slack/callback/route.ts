@@ -39,9 +39,7 @@ export async function GET(req: NextRequest) {
     if (!data.ok) {
       console.error("Slack OAuth Error:", data);
       const reason = encodeURIComponent(data.error || "exchange_failed");
-      return NextResponse.redirect(
-        new URL(`/dashboard/alerts?error=slack_${reason}`, req.url),
-      );
+      return NextResponse.redirect(new URL(`/dashboard/alerts?error=slack_${reason}`, req.url));
     }
 
     // 2. Identify User

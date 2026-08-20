@@ -136,23 +136,29 @@ export function NotificationChannels({
         if (detail === "redirect_uri_mismatch") {
           toast.error(
             `Slack Error: Redirect URI mismatch. In Slack App → OAuth & Permissions, add: ${window.location.origin}/api/integrations/slack/callback`,
-            { duration: 8000 }
+            { duration: 8000 },
           );
         } else if (detail === "invalid_client_id") {
           toast.error("Slack Error: Invalid Client ID in .env / environment variables.");
         } else if (detail === "bad_client_secret") {
           toast.error("Slack Error: Invalid Client Secret in .env / environment variables.");
         } else if (detail === "missing_scope" || detail === "invalid_scope") {
-          toast.error("Slack Error: Missing scopes. In Slack App → Features → Incoming Webhooks, toggle Activate Incoming Webhooks to ON.");
+          toast.error(
+            "Slack Error: Missing scopes. In Slack App → Features → Incoming Webhooks, toggle Activate Incoming Webhooks to ON.",
+          );
         } else {
-          toast.error(`Slack authorization failed (${detail}). Check your Slack App configuration.`);
+          toast.error(
+            `Slack authorization failed (${detail}). Check your Slack App configuration.`,
+          );
         }
       } else if (error.startsWith("discord_")) {
         const detail = decodeURIComponent(error.replace("discord_", ""));
         if (detail === "no_webhook_permission") {
           toast.error("Discord Error: Missing webhook permissions during server authorization.");
         } else {
-          toast.error(`Discord authorization failed (${detail}). Check your Discord App configuration.`);
+          toast.error(
+            `Discord authorization failed (${detail}). Check your Discord App configuration.`,
+          );
         }
       } else {
         toast.error(`Channel connection error: ${error}`);
