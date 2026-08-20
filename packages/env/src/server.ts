@@ -46,6 +46,8 @@ export const env = createEnv({
     DISCORD_CLIENT_SECRET: z.string().min(1).optional(),
     DISCORD_REDIRECT_URI: z.string().min(1).optional(),
     // Slack OAuth integration
+    SLACK_CLIENT_ID: z.string().min(1).optional(),
+    SLACK_CLIENT_SECRET: z.string().min(1).optional(),
     SLACK_REDIRECT_URI: z.string().min(1).optional(),
     // Admin access control
     ADMIN_EMAILS: z.string().optional(),

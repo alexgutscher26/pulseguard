@@ -20,7 +20,9 @@ export async function GET(req: NextRequest) {
   // 1. Exchange code for access token
   const clientId = process.env.DISCORD_CLIENT_ID;
   const clientSecret = process.env.DISCORD_CLIENT_SECRET;
-  const redirectUri = process.env.DISCORD_REDIRECT_URI;
+  const redirectUri =
+    process.env.DISCORD_REDIRECT_URI ||
+    `${process.env.NEXT_PUBLIC_APP_URL || new URL(req.url).origin}/api/integrations/discord/callback`;
 
   try {
     const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {

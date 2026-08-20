@@ -20,7 +20,9 @@ export async function GET(req: NextRequest) {
   // 1. Exchange code for access token
   const clientId = process.env.SLACK_CLIENT_ID;
   const clientSecret = process.env.SLACK_CLIENT_SECRET;
-  const redirectUri = process.env.SLACK_REDIRECT_URI;
+  const redirectUri =
+    process.env.SLACK_REDIRECT_URI ||
+    `${process.env.NEXT_PUBLIC_APP_URL || new URL(req.url).origin}/api/integrations/slack/callback`;
 
   try {
     const tokenResponse = await fetch("https://slack.com/api/oauth.v2.access", {
