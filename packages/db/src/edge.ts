@@ -2,6 +2,8 @@ import { PrismaClient } from "./generated/client/edge.js";
 
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
+import { PrismaNeon } from "@prisma/adapter-neon";
+import { Pool as NeonPool } from "@neondatabase/serverless";
 
 export function createPrisma(databaseUrl?: string) {
   const url =
@@ -43,18 +45,29 @@ export function createPrisma(databaseUrl?: string) {
     ...(isWorkerd ? {} : { keepAlive: true, keepAliveInitialDelayMillis: 5_000 }),
   };
 
-  // Only enable SSL if explicitly specified in the connection string (sslmode=require/verify) or provider requires it
-  if (isSsl || poolUrl.includes("neon.tech")) {
-    poolConfig.ssl = { rejectUnauthorized: false };
-  }
+  const isNeon = poolUrl.includes("neon.tech");
 
-  const pool = new Pool(poolConfig);
-  pool.on("error", (err) => {
-    // pg.Pool handles dead idle connections automatically by removing them from the pool.
-    // NEVER call resetPrisma or pool.end() here as it closes the entire pool and destroys active queries.
-    console.warn("[PG Pool] Idle client connection event (handled by pool):", err.message);
-  });
-  const adapter = new PrismaPg(pool);
+  let pool: any;
+  let adapter: any;
+
+  if (isNeon) {
+    // Neon database connection string requires SSL, which @neondatabase/serverless handles natively via WebSockets
+    pool = new NeonPool({ connectionString: cleanUrl });
+    adapter = new PrismaNeon(pool);
+  } else {
+    // Only enable SSL if explicitly specified in the connection string (sslmode=require/verify) or provider requires it
+    if (isSsl) {
+      poolConfig.ssl = { rejectUnauthorized: false };
+    }
+
+    pool = new Pool(poolConfig);
+    pool.on("error", (err: any) => {
+      // pg.Pool handles dead idle connections automatically by removing them from the pool.
+      // NEVER call resetPrisma or pool.end() here as it closes the entire pool and destroys active queries.
+      console.warn("[PG Pool] Idle client connection event (handled by pool):", err.message);
+    });
+    adapter = new PrismaPg(pool);
+  }
 
   const isDev = typeof process !== "undefined" && process.env.NODE_ENV === "development";
 
