@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { MessageSquare, Mail, Terminal, Plus, Loader2, Trash2, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -109,11 +110,39 @@ export function NotificationChannels({
   slackClientId,
   discordClientId,
 }: NotificationChannelsProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [activeTab, setActiveTab] = useState<
     "discord" | "slack" | "email" | "pagerduty" | "opsgenie"
   >("discord");
+
+  useEffect(() => {
+    const success = searchParams.get("success");
+    const error = searchParams.get("error");
+
+    if (success === "discord_connected") {
+      toast.success("Discord channel connected successfully!");
+      router.replace("/dashboard/alerts");
+    } else if (success === "slack_connected") {
+      toast.success("Slack channel connected successfully!");
+      router.replace("/dashboard/alerts");
+    }
+
+    if (error) {
+      if (error === "discord_no_webhook_permission") {
+        toast.error("Discord connection failed: Missing webhook creation permission.");
+      } else if (error === "discord_exchange_failed" || error === "discord_auth_failed") {
+        toast.error("Discord authorization failed. Check your Discord client ID and secret.");
+      } else if (error === "slack_exchange_failed" || error === "slack_auth_failed") {
+        toast.error("Slack authorization failed. Check your Slack client ID and secret.");
+      } else {
+        toast.error(`Channel connection error: ${error}`);
+      }
+      router.replace("/dashboard/alerts");
+    }
+  }, [searchParams, router]);
 
   const handleSubmit = async (formData: FormData) => {
     startTransition(async () => {
