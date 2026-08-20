@@ -132,7 +132,7 @@ export function RegionalDetailModal({
                   <div className="text-2xl font-bold font-mono tracking-tight">
                     {Math.round(detailedData.baseline)}ms
                   </div>
-                  {currentData?.relative && (
+                  {currentData?.relative?.vsBaseline != null && (
                     <div className="text-xs text-muted-foreground mt-1 font-mono">
                       Current: {currentData.relative.vsBaseline.toFixed(2)}x baseline
                     </div>

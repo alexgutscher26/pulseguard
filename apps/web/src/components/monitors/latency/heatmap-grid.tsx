@@ -89,14 +89,15 @@ export function HeatmapGrid({ data, metricType, onRegionClick }: HeatmapGridProp
 
                   let displayValue: string;
                   if (metricType === "absolute") {
-                    displayValue = `${Math.round(point.absolute.avg)}ms`;
+                    displayValue = `${Math.round(point.absolute?.avg ?? 0)}ms`;
                   } else if (metricType === "relative") {
-                    displayValue = point.relative
-                      ? `${point.relative.vsBaseline.toFixed(2)}x`
-                      : `${Math.round(point.absolute.avg)}ms`;
+                    displayValue =
+                      point.relative?.vsBaseline != null
+                        ? `${point.relative.vsBaseline.toFixed(2)}x`
+                        : `${Math.round(point.absolute?.avg ?? 0)}ms`;
                   } else {
                     // Both
-                    displayValue = `${Math.round(point.absolute.avg)}ms`;
+                    displayValue = `${Math.round(point.absolute?.avg ?? 0)}ms`;
                   }
 
                   return (
@@ -144,21 +145,27 @@ function getRegionName(code: string): string {
  */
 function getTooltipText(
   point: {
-    absolute: { avg: number; p50: number; p95: number; p99: number };
-    relative: { vsBaseline: number } | null;
-    successRate: number;
+    absolute?: { avg?: number; p50?: number; p95?: number; p99?: number };
+    relative?: { vsBaseline?: number } | null;
+    successRate?: number;
   },
   metricType: MetricType,
 ): string {
+  const avg = Math.round(point.absolute?.avg ?? 0);
+  const p50 = Math.round(point.absolute?.p50 ?? 0);
+  const p95 = Math.round(point.absolute?.p95 ?? 0);
+  const p99 = Math.round(point.absolute?.p99 ?? 0);
+  const successRate = ((point.successRate ?? 1) * 100).toFixed(1);
+
   const lines = [
-    `Avg: ${Math.round(point.absolute.avg)}ms`,
-    `P50: ${Math.round(point.absolute.p50)}ms`,
-    `P95: ${Math.round(point.absolute.p95)}ms`,
-    `P99: ${Math.round(point.absolute.p99)}ms`,
-    `Success: ${(point.successRate * 100).toFixed(1)}%`,
+    `Avg: ${avg}ms`,
+    `P50: ${p50}ms`,
+    `P95: ${p95}ms`,
+    `P99: ${p99}ms`,
+    `Success: ${successRate}%`,
   ];
 
-  if (metricType !== "absolute" && point.relative) {
+  if (metricType !== "absolute" && point.relative?.vsBaseline != null) {
     lines.push(`vs Baseline: ${point.relative.vsBaseline.toFixed(2)}x`);
   }
 
