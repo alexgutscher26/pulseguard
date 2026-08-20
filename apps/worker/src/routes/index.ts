@@ -77,7 +77,7 @@ export async function handleFetch(
 
   // CORS Preflight — respond with env-scoped origin, never a wildcard in production
   if (request.method === "OPTIONS") {
-    return new Response(null, { headers: getCorsHeaders(env) });
+    return new Response(null, { headers: getCorsHeaders(env, request) });
   }
 
   return new Response("SteadyStack Worker is Running", { status: 200 });

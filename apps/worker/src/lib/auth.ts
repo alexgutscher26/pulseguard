@@ -37,7 +37,7 @@ export async function verifySession(
   }
 
   try {
-    const prisma = getPrisma(env.DATABASE_URL);
+    const prisma = getPrisma(env.DATABASE_URL, env.DATABASE_POOL_URL);
     const token = decodeURIComponent(rawToken);
 
     const session = await prisma.session.findUnique({
@@ -64,7 +64,8 @@ export async function verifySession(
       await new Promise((r) => setTimeout(r, 150));
       return verifySession(request, env, false);
     }
-    throw err;
+    console.error("[Auth] Failed to verify session due to database error:", err.message);
+    return null;
   }
 }
 
@@ -80,7 +81,7 @@ export async function verifyMonitorAccess(
   }
 
   try {
-    const prisma = getPrisma(env.DATABASE_URL);
+    const prisma = getPrisma(env.DATABASE_URL, env.DATABASE_POOL_URL);
 
     if (userId) {
       const monitor = await prisma.monitor.findUnique({
@@ -117,6 +118,10 @@ export async function verifyMonitorAccess(
       await new Promise((r) => setTimeout(r, 150));
       return verifyMonitorAccess(userId, monitorId, env, false);
     }
-    throw err;
+    console.error(
+      "[Auth Access] Failed to verify monitor access due to database error:",
+      err.message,
+    );
+    return false;
   }
 }

@@ -2,6 +2,7 @@ export interface Env {
   CHECK_QUEUE: Queue<any>;
   NOTIFICATION_QUEUE: Queue<any>;
   DATABASE_URL: string;
+  DATABASE_POOL_URL?: string;
   RESEND_API_KEY: string;
   LATENCY_AGGREGATOR: DurableObjectNamespace;
   MONITOR_CHANNEL: DurableObjectNamespace;

@@ -3,7 +3,7 @@ import { PrismaClient } from "./generated/client/index.js";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 
-export function createPrisma(databaseUrl?: string) {
+export function createPrisma(databaseUrl?: string, poolUrlOverride?: string) {
   const url =
     databaseUrl ||
     (typeof process !== "undefined" ? process.env.DATABASE_URL : (globalThis as any).DATABASE_URL);
@@ -17,6 +17,7 @@ export function createPrisma(databaseUrl?: string) {
   // DATABASE_URL should still point to the direct connection for Prisma CLI migrations.
   // Set DATABASE_POOL_URL in production to prevent connection exhaustion under load.
   const poolUrl =
+    poolUrlOverride ||
     (typeof process !== "undefined" ? process.env?.DATABASE_POOL_URL : undefined) ||
     (typeof globalThis !== "undefined" ? (globalThis as any).DATABASE_POOL_URL : undefined) ||
     url;
@@ -119,19 +120,21 @@ export async function resetPrisma(databaseUrl?: string) {
   }
 }
 
-export function getPrisma(databaseUrl?: string) {
-  if (databaseUrl) {
-    const existing = g.instances?.get(databaseUrl);
+export function getPrisma(databaseUrl?: string, poolUrlOverride?: string) {
+  const cacheKey =
+    poolUrlOverride && databaseUrl ? `${databaseUrl}:${poolUrlOverride}` : databaseUrl;
+  if (cacheKey) {
+    const existing = g.instances?.get(cacheKey);
     if (existing) {
       const pool = (existing as any).$pool;
       if (pool && (pool.ended || pool.ending)) {
-        g.instances?.delete(databaseUrl);
+        g.instances?.delete(cacheKey);
       } else {
         return existing;
       }
     }
-    const created = createPrisma(databaseUrl);
-    g.instances?.set(databaseUrl, created);
+    const created = createPrisma(databaseUrl, poolUrlOverride);
+    g.instances?.set(cacheKey, created);
     return created;
   }
 

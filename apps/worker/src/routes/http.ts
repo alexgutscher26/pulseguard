@@ -4,15 +4,37 @@ import type { Env } from "../env";
 /**
  * Build CORS headers for a response.
  *
- * In production the `Access-Control-Allow-Origin` is locked to the value of
- * `env.CORS_ORIGIN`. A wildcard ("*") is only used in non-production
- * environments where no CORS_ORIGIN is configured, preventing an accidental
- * open-CORS posture in production.
+ * Checks against env.CORS_ORIGIN, request Origin header (matching .steadystack.dev domains
+ * and local dev), or configured comma-separated origins.
  */
-export function getCorsHeaders(env?: Env): Record<string, string> {
-  const origin =
-    env?.CORS_ORIGIN ||
-    (typeof process !== "undefined" && process.env.NODE_ENV !== "production" ? "*" : "null");
+export function getCorsHeaders(env?: Env, request?: Request): Record<string, string> {
+  const reqOrigin = request?.headers.get("Origin");
+  let origin = "null";
+
+  if (env?.CORS_ORIGIN) {
+    const allowed = env.CORS_ORIGIN.split(",").map((o) => o.trim());
+    if (reqOrigin && allowed.includes(reqOrigin)) {
+      origin = reqOrigin;
+    } else if (allowed.includes("*")) {
+      origin = "*";
+    } else {
+      origin = allowed[0] || "null";
+    }
+  } else if (reqOrigin) {
+    try {
+      const parsed = new URL(reqOrigin);
+      if (
+        parsed.hostname === "steadystack.dev" ||
+        parsed.hostname.endsWith(".steadystack.dev") ||
+        parsed.hostname === "localhost" ||
+        parsed.hostname === "127.0.0.1"
+      ) {
+        origin = reqOrigin;
+      }
+    } catch {}
+  } else if (typeof process !== "undefined" && process.env.NODE_ENV !== "production") {
+    origin = "*";
+  }
 
   return {
     "Access-Control-Allow-Origin": origin,

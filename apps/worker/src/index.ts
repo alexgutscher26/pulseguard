@@ -25,272 +25,290 @@ export default {
 
   // 1. Cron: Find pending checks and run them (Free Tier Batch Mode)
   async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
-    console.log(`Cron triggered: ${event.cron}`);
+    try {
+      console.log(`Cron triggered: ${event.cron}`);
 
-    const now = new Date();
-    const isFiveMinuteMark = now.getUTCMinutes() % 5 === 0;
-    const isMidnight = now.getUTCHours() === 0 && now.getUTCMinutes() === 0;
+      const now = new Date();
+      const isFiveMinuteMark = now.getUTCMinutes() % 5 === 0;
+      const isMidnight = now.getUTCHours() === 0 && now.getUTCMinutes() === 0;
 
-    // --- DOWNSAMPLING & DATA RETENTION: Run daily at midnight ---
-    if (event.cron === "0 0 * * *" || isMidnight) {
-      ctx.waitUntil(
-        (async () => {
-          try {
-            const { runDownsamplingCron } = await import("./downsampling-cron");
-            await runDownsamplingCron(env);
-          } catch (err) {
-            console.error("[Downsampling] Daily run failed:", err);
-          }
-        })(),
-      );
-    }
+      // --- DOWNSAMPLING & DATA RETENTION: Run daily at midnight ---
+      if (event.cron === "0 0 * * *" || isMidnight) {
+        ctx.waitUntil(
+          (async () => {
+            try {
+              const { runDownsamplingCron } = await import("./downsampling-cron");
+              await runDownsamplingCron(env);
+            } catch (err) {
+              console.error("[Downsampling] Daily run failed:", err);
+            }
+          })(),
+        );
+      }
 
-    // --- ANOMALY SCANNER: Run every 5 minutes ---
-    if (event.cron === "*/5 * * * *" || event.cron === "0 * * * *" || isFiveMinuteMark) {
-      ctx.waitUntil(
-        (async () => {
-          try {
-            const scanPrisma = getPrisma(env.DATABASE_URL);
-            const { runAnomalyScan } = await import("./services/anomaly-scanner");
-            await runAnomalyScan(scanPrisma);
-          } catch (err) {
-            console.error("[AnomalyScan] Scheduled run failed:", err);
-          }
-        })(),
-      );
-    }
+      // --- ANOMALY SCANNER: Run every 5 minutes ---
+      if (event.cron === "*/5 * * * *" || event.cron === "0 * * * *" || isFiveMinuteMark) {
+        ctx.waitUntil(
+          (async () => {
+            try {
+              if (!env.DATABASE_URL) return;
+              const scanPrisma = getPrisma(env.DATABASE_URL, env.DATABASE_POOL_URL);
+              const { runAnomalyScan } = await import("./services/anomaly-scanner");
+              await runAnomalyScan(scanPrisma);
+            } catch (err) {
+              console.error("[AnomalyScan] Scheduled run failed:", err);
+            }
+          })(),
+        );
+      }
 
-    // If an auxiliary cron fired separately, skip monitor batch to avoid duplicate execution
-    if (event.cron && event.cron !== "* * * * *") {
-      return;
-    }
+      // If an auxiliary cron fired separately, skip monitor batch to avoid duplicate execution
+      if (event.cron && event.cron !== "* * * * *") {
+        return;
+      }
 
-    let prisma = getPrisma(env.DATABASE_URL);
+      if (!env.DATABASE_URL) {
+        console.warn(
+          "[Worker Cron] DATABASE_URL is not configured in worker environment. Skipping scheduled monitor checks.",
+        );
+        return;
+      }
 
-    // --- DATABASE SYNC: Restore data from Redis fallback if DB is healthy ---
-    const { DatabaseCircuitBreaker } = await import("./lib/circuit-breaker");
-    const circuitBreaker = new DatabaseCircuitBreaker(
-      env.UPSTASH_REDIS_REST_URL,
-      env.UPSTASH_REDIS_REST_TOKEN,
-    );
-    const circuitState = await circuitBreaker.getState();
+      const prisma = getPrisma(env.DATABASE_URL, env.DATABASE_POOL_URL);
 
-    if (circuitState !== "OPEN") {
-      ctx.waitUntil(
-        import("./services/db-sync")
-          .then((m) => m.syncFallbackToDatabase(prisma, env))
-          .catch((err) => console.error("[Sync] Background task failed:", err)),
-      );
+      // --- DATABASE SYNC: Restore data from Redis fallback if DB is healthy ---
+      try {
+        if (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN) {
+          const { DatabaseCircuitBreaker } = await import("./lib/circuit-breaker");
+          const circuitBreaker = new DatabaseCircuitBreaker(
+            env.UPSTASH_REDIS_REST_URL,
+            env.UPSTASH_REDIS_REST_TOKEN,
+          );
+          const circuitState = await circuitBreaker.getState().catch(() => "CLOSED");
 
-      // Inspect Queue Backlog & Alarm if Depth Exceeds Threshold
-      ctx.waitUntil(
-        (async () => {
-          try {
-            const { FallbackQueue } = await import("./lib/fallback-queue");
-            const queue = new FallbackQueue(
-              env.UPSTASH_REDIS_REST_URL,
-              env.UPSTASH_REDIS_REST_TOKEN,
+          if (circuitState !== "OPEN") {
+            ctx.waitUntil(
+              import("./services/db-sync")
+                .then((m) => m.syncFallbackToDatabase(prisma, env))
+                .catch((err) => console.error("[Sync] Background task failed:", err)),
             );
-            await queue.inspectBacklogAndAlarm(100);
-          } catch (qErr) {
-            console.warn("[QueueMetrics] Failed to inspect queue backlog:", qErr);
-          }
-        })(),
-      );
 
-      // Check probe heartbeats in background
-      ctx.waitUntil(
-        import("./services/probe-registry")
-          .then(async (m) => {
-            const results = await m.checkProbeHeartbeats(prisma);
-            const lostProbes = results.filter((r) => r.status === "DOWN");
-            for (const probeResult of lostProbes) {
+            // Inspect Queue Backlog & Alarm if Depth Exceeds Threshold
+            ctx.waitUntil(
+              (async () => {
+                try {
+                  const { FallbackQueue } = await import("./lib/fallback-queue");
+                  const queue = new FallbackQueue(
+                    env.UPSTASH_REDIS_REST_URL,
+                    env.UPSTASH_REDIS_REST_TOKEN,
+                  );
+                  await queue.inspectBacklogAndAlarm(100);
+                } catch (qErr) {
+                  console.warn("[QueueMetrics] Failed to inspect queue backlog:", qErr);
+                }
+              })(),
+            );
+
+            // Check probe heartbeats in background
+            ctx.waitUntil(
+              import("./services/probe-registry")
+                .then(async (m) => {
+                  const results = await m.checkProbeHeartbeats(prisma);
+                  const lostProbes = results.filter((r) => r.status === "DOWN");
+                  for (const probeResult of lostProbes) {
+                    console.warn(
+                      `[ProbeHeartbeat] Probe ${probeResult.probeId} lost! ${probeResult.secondsSinceLastHeartbeat}s since last heartbeat.`,
+                    );
+                  }
+                })
+                .catch((err) => console.error("[ProbeHeartbeat] Check failed:", err)),
+            );
+          }
+        }
+      } catch (cbErr) {
+        console.warn("[CircuitBreaker] Sync initialization skipped:", cbErr);
+      }
+
+      // --- REGIONAL PROBE DO BOOTSTRAP ---
+      if (env.REGIONAL_PROBE) {
+        ctx.waitUntil(
+          (async () => {
+            for (const reg of CLOUDFLARE_PROBE_REGIONS) {
+              try {
+                const probeId = env.REGIONAL_PROBE.idFromName(`probe-${reg.code}`);
+                const probe = env.REGIONAL_PROBE.get(probeId, {
+                  locationHint: reg.code as any,
+                });
+                await probe.fetch("http://internal/init", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ region: reg.code }),
+                });
+              } catch {}
+            }
+          })(),
+        );
+      }
+
+      // Process all due monitors for this shard in chunks to prevent dropping checks under load
+      const CHUNK_SIZE = 100;
+      const MAX_CHUNKS_PER_TICK = 10;
+      let totalProcessedCount = 0;
+
+      const totalShards = Number(env.TOTAL_SHARDS || 1);
+      const shardId = Number(env.SHARD_ID || 0);
+
+      const runWithRetry = async (retryCount: number = 0, maxRetries: number = 2): Promise<any> => {
+        try {
+          // Find active monitors that are due for a check, skipping abandoned free-tier accounts (>60d inactive)
+          const targetIds: { id: string }[] = await prisma.$queryRaw`
+            SELECT m.id FROM "Monitor" m
+            INNER JOIN "user" u ON m."userId" = u.id
+            WHERE (m."status" IN ('UP', 'DOWN', 'MAINTENANCE'))
+            AND NOT (m."type" = 'HEARTBEAT' AND m."status" = 'DOWN')
+            AND (m."nextCheck" IS NULL OR m."nextCheck" <= NOW())
+            AND (u."tier" != 'INITIATE' OR u."updatedAt" >= NOW() - INTERVAL '60 days')
+            AND (abs(hashtext(m.id)) % ${totalShards}) = ${shardId}
+            AND NOT EXISTS (
+              SELECT 1 FROM "ProbeAssignment" WHERE "monitorId" = m."id"
+            )
+            ORDER BY m."nextCheck" ASC
+            LIMIT ${CHUNK_SIZE}
+          `;
+          return targetIds;
+        } catch (err: any) {
+          if (
+            retryCount < maxRetries &&
+            (err.message?.includes("Connection terminated") ||
+              err.message?.includes("is closed") ||
+              err.message?.includes("not found") ||
+              err.message?.includes("timeout") ||
+              err.message?.includes("performIO"))
+          ) {
+            const delayMs = 200 * Math.pow(2, retryCount) + Math.random() * 50;
+            console.warn(
+              `[Sync] Transient DB connection error or timeout in schedule (attempt ${retryCount + 1}/${maxRetries}). Retrying in ${Math.round(delayMs)}ms...`,
+            );
+            await new Promise((r) => setTimeout(r, delayMs));
+            return await runWithRetry(retryCount + 1, maxRetries);
+          }
+          throw err;
+        }
+      };
+
+      try {
+        for (let chunkIdx = 0; chunkIdx < MAX_CHUNKS_PER_TICK; chunkIdx++) {
+          const targetIds = await runWithRetry();
+          if (targetIds.length === 0) break;
+
+          const ids = targetIds.map((t: { id: any }) => t.id);
+
+          const monitors = await prisma.monitor.findMany({
+            where: { id: { in: ids } },
+            select: {
+              id: true,
+              url: true,
+              interval: true,
+              timeout: true,
+              status: true,
+              name: true,
+              type: true,
+              checkRegions: true,
+              alertThreshold: true,
+              dynamicThresholding: true,
+              runbookUrl: true,
+              method: true,
+              headers: true,
+              body: true,
+              expectation: true,
+              script: true,
+              // @ts-ignore
+              maintenanceWindows: {
+                where: {
+                  startAt: { lte: new Date() },
+                  endAt: { gte: new Date() },
+                },
+                take: 1,
+              },
+              alertRules: {
+                where: { enabled: true },
+              },
+            },
+          });
+
+          if (monitors.length === 0) break;
+
+          console.log(`[Cron Chunk ${chunkIdx + 1}] Processing ${monitors.length} monitors...`);
+          const { remaining } = await processBatch(monitors, prisma, env, ctx);
+          totalProcessedCount += monitors.length - remaining.length;
+
+          if (remaining.length > 0) {
+            if (env.CHECK_QUEUE) {
               console.warn(
-                `[ProbeHeartbeat] Probe ${probeResult.probeId} lost! ${probeResult.secondsSinceLastHeartbeat}s since last heartbeat.`,
+                `[SmartBatch] Offloading ${remaining.length} monitors to Queue due to execution limits.`,
+              );
+              const messages = remaining.map((m) => ({ body: m }));
+              await env.CHECK_QUEUE.sendBatch(messages);
+            } else {
+              console.error(
+                "[SmartBatch] CPU/time limit reached and NO CHECK_QUEUE configured. Remaining monitors deferred.",
               );
             }
-          })
-          .catch((err) => console.error("[ProbeHeartbeat] Check failed:", err)),
-      );
-    }
-
-    // --- REGIONAL PROBE DO BOOTSTRAP ---
-    if (env.REGIONAL_PROBE) {
-      ctx.waitUntil(
-        (async () => {
-          for (const reg of CLOUDFLARE_PROBE_REGIONS) {
-            try {
-              const probeId = env.REGIONAL_PROBE.idFromName(`probe-${reg.code}`);
-              const probe = env.REGIONAL_PROBE.get(probeId, {
-                locationHint: reg.code as any,
-              });
-              await probe.fetch("http://internal/init", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ region: reg.code }),
-              });
-            } catch {}
+            break;
           }
-        })(),
-      );
-    }
 
-    // Process all due monitors for this shard in chunks to prevent dropping checks under load
-    const CHUNK_SIZE = 100;
-    const MAX_CHUNKS_PER_TICK = 10;
-    let totalProcessedCount = 0;
-
-    const totalShards = Number(env.TOTAL_SHARDS || 1);
-    const shardId = Number(env.SHARD_ID || 0);
-
-    const runWithRetry = async (retryCount: number = 0, maxRetries: number = 2): Promise<any> => {
-      try {
-        // Find active monitors that are due for a check, skipping abandoned free-tier accounts (>60d inactive)
-        const targetIds: { id: string }[] = await prisma.$queryRaw`
-          SELECT m.id FROM "Monitor" m
-          INNER JOIN "user" u ON m."userId" = u.id
-          WHERE (m."status" IN ('UP', 'DOWN', 'MAINTENANCE'))
-          AND NOT (m."type" = 'HEARTBEAT' AND m."status" = 'DOWN')
-          AND (m."nextCheck" IS NULL OR m."nextCheck" <= NOW())
-          AND (u."tier" != 'INITIATE' OR u."updatedAt" >= NOW() - INTERVAL '60 days')
-          AND (abs(hashtext(m.id)) % ${totalShards}) = ${shardId}
-          AND NOT EXISTS (
-            SELECT 1 FROM "ProbeAssignment" WHERE "monitorId" = m."id"
-          )
-          ORDER BY m."nextCheck" ASC
-          LIMIT ${CHUNK_SIZE}
-        `;
-        return targetIds;
-      } catch (err: any) {
-        if (
-          retryCount < maxRetries &&
-          (err.message?.includes("Connection terminated") ||
-            err.message?.includes("is closed") ||
-            err.message?.includes("not found") ||
-            err.message?.includes("timeout") ||
-            err.message?.includes("performIO"))
-        ) {
-          const delayMs = 200 * Math.pow(2, retryCount) + Math.random() * 50;
-          console.warn(
-            `[Sync] Transient DB connection error or timeout in schedule (attempt ${retryCount + 1}/${maxRetries}). Retrying in ${Math.round(delayMs)}ms...`,
-          );
-          await new Promise((r) => setTimeout(r, delayMs));
-          return await runWithRetry(retryCount + 1, maxRetries);
+          // If chunk returned fewer than CHUNK_SIZE, no more due monitors
+          if (targetIds.length < CHUNK_SIZE) break;
         }
-        throw err;
-      }
-    };
 
-    try {
-      for (let chunkIdx = 0; chunkIdx < MAX_CHUNKS_PER_TICK; chunkIdx++) {
-        const targetIds = await runWithRetry();
-        if (targetIds.length === 0) break;
+        console.log(`Cron execution completed. Total monitors checked: ${totalProcessedCount}.`);
 
-        const ids = targetIds.map((t: { id: any }) => t.id);
-
-        const monitors = await prisma.monitor.findMany({
-          where: { id: { in: ids } },
-          select: {
-            id: true,
-            url: true,
-            interval: true,
-            timeout: true,
-            status: true,
-            name: true,
-            type: true,
-            checkRegions: true,
-            alertThreshold: true,
-            dynamicThresholding: true,
-            runbookUrl: true,
-            method: true,
-            headers: true,
-            body: true,
-            expectation: true,
-            script: true,
-            // @ts-ignore
-            maintenanceWindows: {
-              where: {
-                startAt: { lte: new Date() },
-                endAt: { gte: new Date() },
+        // Outbound dead-man's switch / external heartbeat ping to verify worker check-loop liveness
+        const pingUrl = env.DEADMAN_SNITCH_URL || env.HEALTHCHECK_PING_URL;
+        if (pingUrl) {
+          ctx.waitUntil(
+            fetch(pingUrl, {
+              method: "POST",
+              headers: {
+                "User-Agent": "SteadyStack-Cron-Sentinel/1.0",
+                "Content-Type": "application/json",
               },
-              take: 1,
-            },
-            alertRules: {
-              where: { enabled: true },
-            },
-          },
-        });
-
-        if (monitors.length === 0) break;
-
-        console.log(`[Cron Chunk ${chunkIdx + 1}] Processing ${monitors.length} monitors...`);
-        const { remaining } = await processBatch(monitors, prisma, env, ctx);
-        totalProcessedCount += monitors.length - remaining.length;
-
-        if (remaining.length > 0) {
-          if (env.CHECK_QUEUE) {
-            console.warn(
-              `[SmartBatch] Offloading ${remaining.length} monitors to Queue due to execution limits.`,
-            );
-            const messages = remaining.map((m) => ({ body: m }));
-            await env.CHECK_QUEUE.sendBatch(messages);
-          } else {
-            console.error(
-              "[SmartBatch] CPU/time limit reached and NO CHECK_QUEUE configured. Remaining monitors deferred.",
-            );
-          }
-          break;
+              body: JSON.stringify({
+                status: "ok",
+                checkedMonitors: totalProcessedCount,
+                timestamp: new Date().toISOString(),
+              }),
+            }).catch((pingErr) => {
+              console.warn("[Sentinel] Failed to ping outbound heartbeat URL:", pingErr);
+            }),
+          );
         }
+      } catch (error: any) {
+        console.error("Error in scheduled handler monitor check batch:", error);
 
-        // If chunk returned fewer than CHUNK_SIZE, no more due monitors
-        if (targetIds.length < CHUNK_SIZE) break;
-      }
-
-      console.log(`Cron execution completed. Total monitors checked: ${totalProcessedCount}.`);
-
-      // Outbound dead-man's switch / external heartbeat ping to verify worker check-loop liveness
-      const pingUrl = env.DEADMAN_SNITCH_URL || env.HEALTHCHECK_PING_URL;
-      if (pingUrl) {
-        ctx.waitUntil(
-          fetch(pingUrl, {
-            method: "POST",
-            headers: {
-              "User-Agent": "SteadyStack-Cron-Sentinel/1.0",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              status: "ok",
-              checkedMonitors: totalProcessedCount,
-              timestamp: new Date().toISOString(),
+        // Notify external dead-man's switch of check-loop failure
+        const pingUrl = env.DEADMAN_SNITCH_URL || env.HEALTHCHECK_PING_URL;
+        if (pingUrl) {
+          ctx.waitUntil(
+            fetch(pingUrl, {
+              method: "POST",
+              headers: {
+                "User-Agent": "SteadyStack-Cron-Sentinel/1.0",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                status: "error",
+                error: error?.message || String(error),
+                timestamp: new Date().toISOString(),
+              }),
+            }).catch((pingErr) => {
+              console.warn("[Sentinel] Failed to ping error heartbeat URL:", pingErr);
             }),
-          }).catch((pingErr) => {
-            console.warn("[Sentinel] Failed to ping outbound heartbeat URL:", pingErr);
-          }),
-        );
+          );
+        }
       }
-    } catch (error: any) {
-      console.error("Error in scheduled handler:", error);
-
-      // Notify external dead-man's switch of fatal check-loop failure
-      const pingUrl = env.DEADMAN_SNITCH_URL || env.HEALTHCHECK_PING_URL;
-      if (pingUrl) {
-        ctx.waitUntil(
-          fetch(pingUrl, {
-            method: "POST",
-            headers: {
-              "User-Agent": "SteadyStack-Cron-Sentinel/1.0",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              status: "error",
-              error: error?.message || String(error),
-              timestamp: new Date().toISOString(),
-            }),
-          }).catch((pingErr) => {
-            console.warn("[Sentinel] Failed to ping error heartbeat URL:", pingErr);
-          }),
-        );
-      }
+    } catch (topLevelError: any) {
+      console.error("[Scheduled Worker Fatal Handler]", topLevelError);
     }
   },
 
@@ -346,7 +364,7 @@ export default {
     }
 
     // Default: 'monitor-checks' queue
-    const prisma = getPrisma(env.DATABASE_URL);
+    const prisma = getPrisma(env.DATABASE_URL, env.DATABASE_POOL_URL);
     const monitors = activeBatch.messages.map((msg) => msg.body);
 
     const { remaining } = await processBatch(monitors, prisma, env, ctx);
