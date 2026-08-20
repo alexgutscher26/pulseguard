@@ -131,12 +131,29 @@ export function NotificationChannels({
     }
 
     if (error) {
-      if (error === "discord_no_webhook_permission") {
-        toast.error("Discord connection failed: Missing webhook creation permission.");
-      } else if (error === "discord_exchange_failed" || error === "discord_auth_failed") {
-        toast.error("Discord authorization failed. Check your Discord client ID and secret.");
-      } else if (error === "slack_exchange_failed" || error === "slack_auth_failed") {
-        toast.error("Slack authorization failed. Check your Slack client ID and secret.");
+      if (error.startsWith("slack_")) {
+        const detail = decodeURIComponent(error.replace("slack_", ""));
+        if (detail === "redirect_uri_mismatch") {
+          toast.error(
+            `Slack Error: Redirect URI mismatch. In Slack App → OAuth & Permissions, add: ${window.location.origin}/api/integrations/slack/callback`,
+            { duration: 8000 }
+          );
+        } else if (detail === "invalid_client_id") {
+          toast.error("Slack Error: Invalid Client ID in .env / environment variables.");
+        } else if (detail === "bad_client_secret") {
+          toast.error("Slack Error: Invalid Client Secret in .env / environment variables.");
+        } else if (detail === "missing_scope" || detail === "invalid_scope") {
+          toast.error("Slack Error: Missing scopes. In Slack App → Features → Incoming Webhooks, toggle Activate Incoming Webhooks to ON.");
+        } else {
+          toast.error(`Slack authorization failed (${detail}). Check your Slack App configuration.`);
+        }
+      } else if (error.startsWith("discord_")) {
+        const detail = decodeURIComponent(error.replace("discord_", ""));
+        if (detail === "no_webhook_permission") {
+          toast.error("Discord Error: Missing webhook permissions during server authorization.");
+        } else {
+          toast.error(`Discord authorization failed (${detail}). Check your Discord App configuration.`);
+        }
       } else {
         toast.error(`Channel connection error: ${error}`);
       }
@@ -277,9 +294,8 @@ export function NotificationChannels({
                     variant="outline"
                     className="w-full border-[#5865F2]/50 text-[#5865F2] hover:bg-[#5865F2]/10 font-mono text-xs"
                     onClick={() => {
-                      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
                       const redirect = encodeURIComponent(
-                        `${baseUrl}/api/integrations/discord/callback`,
+                        `${window.location.origin}/api/integrations/discord/callback`,
                       );
                       window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=${redirect}&response_type=code&scope=bot+webhook.incoming`;
                     }}
@@ -363,9 +379,8 @@ export function NotificationChannels({
                     variant="outline"
                     className="w-full border-[#E01E5A]/50 text-[#E01E5A] hover:bg-[#E01E5A]/10 font-mono text-xs"
                     onClick={() => {
-                      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
                       const redirect = encodeURIComponent(
-                        `${baseUrl}/api/integrations/slack/callback`,
+                        `${window.location.origin}/api/integrations/slack/callback`,
                       );
                       window.location.href = `https://slack.com/oauth/v2/authorize?client_id=${slackClientId}&scope=incoming-webhook,chat:write,commands&redirect_uri=${redirect}`;
                     }}
