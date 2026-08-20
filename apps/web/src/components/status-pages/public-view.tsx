@@ -54,6 +54,15 @@ export function PublicView({
   // Subscribe modal state
   const [isSubscribeModalOpen, setIsSubscribeModalOpen] = useState(false);
   const [isEditSidebarOpen, setIsEditSidebarOpen] = useState(false);
+  const [activeNav, setActiveNav] = useState<"status" | "events" | "monitors">("status");
+
+  const scrollToSection = (id: "status" | "events" | "monitors") => {
+    setActiveNav(id);
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
   // Dynamic Theme Colors
   const theme = (page.theme as any) || {
@@ -205,24 +214,39 @@ export function PublicView({
 
           {/* Nav Links */}
           <div className="flex items-center gap-1 md:gap-2">
-            <a
-              href="#"
-              className="px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium transition-colors border border-primary/20"
+            <button
+              type="button"
+              onClick={() => scrollToSection("status")}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                activeNav === "status"
+                  ? "bg-primary/10 text-primary border border-primary/20 shadow-sm"
+                  : "text-primary/60 hover:text-primary hover:bg-primary/5"
+              }`}
             >
               {tHeadings("status")}
-            </a>
-            <a
-              href="#events"
-              className="px-4 py-1.5 rounded-full text-primary/60 hover:text-primary hover:bg-primary/5 text-sm font-medium transition-all"
-            >
-              {tHeadings("events")}
-            </a>
-            <a
-              href="#monitors"
-              className="px-4 py-1.5 rounded-full text-primary/60 hover:text-primary hover:bg-primary/5 text-sm font-medium transition-all"
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection("monitors")}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                activeNav === "monitors"
+                  ? "bg-primary/10 text-primary border border-primary/20 shadow-sm"
+                  : "text-primary/60 hover:text-primary hover:bg-primary/5"
+              }`}
             >
               {tHeadings("monitors")}
-            </a>
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection("events")}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                activeNav === "events"
+                  ? "bg-primary/10 text-primary border border-primary/20 shadow-sm"
+                  : "text-primary/60 hover:text-primary hover:bg-primary/5"
+              }`}
+            >
+              {tHeadings("events")}
+            </button>
           </div>
 
           {/* Actions */}
@@ -260,7 +284,8 @@ export function PublicView({
 
         {/* Global Status Banner */}
         <div
-          className={`relative overflow-hidden rounded-sm border p-8 md:p-10 mb-16 transition-all duration-500 group ${
+          id="status"
+          className={`scroll-mt-8 relative overflow-hidden rounded-sm border p-8 md:p-10 mb-16 transition-all duration-500 group ${
             allUp
               ? "bg-[rgba(34,197,94,0.03)] border-primary/20 hover:border-primary/40 hover:bg-[rgba(34,197,94,0.06)]"
               : "bg-[rgba(239,68,68,0.03)] border-red-500/20 hover:border-red-500/40 hover:bg-[rgba(239,68,68,0.06)]"
@@ -416,7 +441,7 @@ export function PublicView({
         </div>
 
         {/* Monitor List */}
-        <div className="space-y-4">
+        <div id="monitors" className="scroll-mt-8 space-y-4">
           <div className="flex items-center justify-between pb-4 border-b border-primary/20 mb-6">
             <span className="text-xs font-bold text-primary/60 uppercase tracking-widest">
               {tHeadings("system_modules")}
@@ -448,7 +473,7 @@ export function PublicView({
         </div>
 
         {/* Incident History Timeline */}
-        <div className="mt-20 space-y-6">
+        <div id="events" className="scroll-mt-8 mt-20 space-y-6">
           <div className="flex items-center gap-2 pb-2 border-b border-primary/20">
             <Clock className="size-4 text-primary/60" />
             <h3 className="text-xs font-bold text-primary/60 uppercase tracking-[0.2em] font-mono">
