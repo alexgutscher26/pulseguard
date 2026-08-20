@@ -35,6 +35,7 @@
     "dev:native": "turbo -F native dev",
     "dev:web": "turbo -F web dev",
     "dev:worker": "turbo -F @steadystack/worker dev",
+    "cron:local": "bun --cwd apps/worker cron:local",
     "db:push": "turbo -F @steadystack/db db:push",
     "db:studio": "turbo -F @steadystack/db db:studio",
     "db:generate": "turbo -F @steadystack/db db:generate",
