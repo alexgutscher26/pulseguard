@@ -64,6 +64,7 @@
     "dotenv": "catalog:",
     "next-intl": "4.13.6",
     "port-nuker": "^1.0.8",
+    "ws": "8.21.0",
     "zod": "catalog:"
   },
   "devDependencies": {
