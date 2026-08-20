@@ -523,6 +523,112 @@ export function IntegrationsManager() {
         </Card>
       </div>
 
+      {/* Notification & Alerting Integrations */}
+      <div className="flex flex-col gap-2 pt-6">
+        <h3 className="text-base font-bold text-foreground">Alert & Notification Integrations</h3>
+        <p className="text-xs text-muted-foreground">
+          Connect Discord, Slack, PagerDuty, and Opsgenie to receive instant downtime alerts.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Discord Card */}
+        <Card className="relative overflow-hidden border-border bg-card/30 backdrop-blur-md group hover:border-primary/40 transition-all hover:shadow-[0_0_30px_rgba(var(--primary-rgb),0.02)]">
+          <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-[#5865F2]/40 to-transparent"></div>
+          <CardHeader className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="size-10 rounded-xl bg-[#5865F2]/10 border border-[#5865F2]/20 flex items-center justify-center">
+                <div className="size-4 rounded-full bg-[#5865F2]" />
+              </div>
+              <Badge
+                variant="outline"
+                className="text-[#5865F2] border-[#5865F2]/20 bg-[#5865F2]/5 text-[10px]"
+              >
+                Alert Channel
+              </Badge>
+            </div>
+            <CardTitle className="text-sm font-bold">Discord Webhooks & Bot</CardTitle>
+            <CardDescription className="text-[11px] leading-relaxed">
+              Route incident alerts, latency degradation warnings, and recovery pings straight to
+              your Discord channels.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pt-2">
+            <Button
+              onClick={() => router.push("/dashboard/alerts")}
+              className="w-full text-xs font-semibold rounded-xl border flex items-center justify-center gap-2 bg-accent hover:bg-accent/80 text-foreground border-border"
+            >
+              Configure in Alerts
+              <ArrowRight className="size-3.5" />
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Slack Card */}
+        <Card className="relative overflow-hidden border-border bg-card/30 backdrop-blur-md group hover:border-primary/40 transition-all hover:shadow-[0_0_30px_rgba(var(--primary-rgb),0.02)]">
+          <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-[#E01E5A]/40 to-transparent"></div>
+          <CardHeader className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="size-10 rounded-xl bg-[#E01E5A]/10 border border-[#E01E5A]/20 flex items-center justify-center">
+                <div className="size-4 rounded-full bg-[#E01E5A]" />
+              </div>
+              <Badge
+                variant="outline"
+                className="text-[#E01E5A] border-[#E01E5A]/20 bg-[#E01E5A]/5 text-[10px]"
+              >
+                Alert Channel
+              </Badge>
+            </div>
+            <CardTitle className="text-sm font-bold">Slack Incoming Webhooks</CardTitle>
+            <CardDescription className="text-[11px] leading-relaxed">
+              Broadcast outages and performance SLA violations directly into team Slack channels
+              with rich embed blocks.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pt-2">
+            <Button
+              onClick={() => router.push("/dashboard/alerts")}
+              className="w-full text-xs font-semibold rounded-xl border flex items-center justify-center gap-2 bg-accent hover:bg-accent/80 text-foreground border-border"
+            >
+              Configure in Alerts
+              <ArrowRight className="size-3.5" />
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* PagerDuty & Opsgenie */}
+        <Card className="relative overflow-hidden border-border bg-card/30 backdrop-blur-md group hover:border-primary/40 transition-all hover:shadow-[0_0_30px_rgba(var(--primary-rgb),0.02)]">
+          <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-[#06AC38]/40 to-transparent"></div>
+          <CardHeader className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="size-10 rounded-xl bg-[#06AC38]/10 border border-[#06AC38]/20 flex items-center justify-center">
+                <div className="size-4 rounded-full bg-[#06AC38]" />
+              </div>
+              <Badge
+                variant="outline"
+                className="text-[#06AC38] border-[#06AC38]/20 bg-[#06AC38]/5 text-[10px]"
+              >
+                On-Call Paging
+              </Badge>
+            </div>
+            <CardTitle className="text-sm font-bold">PagerDuty & Opsgenie</CardTitle>
+            <CardDescription className="text-[11px] leading-relaxed">
+              Trigger high-priority on-call phone paging and escalation policies when multi-region
+              quorum consensus fails.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pt-2">
+            <Button
+              onClick={() => router.push("/dashboard/alerts")}
+              className="w-full text-xs font-semibold rounded-xl border flex items-center justify-center gap-2 bg-accent hover:bg-accent/80 text-foreground border-border"
+            >
+              Configure in Alerts
+              <ArrowRight className="size-3.5" />
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+
       {/* Integration Setup Dialog */}
       <Dialog open={activeProvider !== null} onOpenChange={() => setActiveProvider(null)}>
         <DialogContent className="sm:max-w-[500px] border-border bg-card/90 backdrop-blur-md text-foreground rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)]">

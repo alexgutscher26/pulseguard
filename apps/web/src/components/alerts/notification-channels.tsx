@@ -62,10 +62,23 @@ function getDetail(channel: NotificationChannel) {
     return config?.email || config?.value || "Email";
   }
   if (channel.type === "SLACK") {
-    return config?.channel || config?.webhook_url || channel.name || "Slack Webhook";
+    return (
+      config?.channelName ||
+      config?.channel ||
+      (config?.webhookUrl ? `Webhook: ...${config.webhookUrl.slice(-16)}` : null) ||
+      (config?.webhook_url ? `Webhook: ...${config.webhook_url.slice(-16)}` : null) ||
+      channel.name ||
+      "Slack Channel"
+    );
   }
   if (channel.type === "DISCORD") {
-    return config?.webhook_url || channel.name || "Discord Webhook";
+    return (
+      (config?.channelId ? `Channel ID: ${config.channelId}` : null) ||
+      (config?.webhookUrl ? `Webhook: ...${config.webhookUrl.slice(-16)}` : null) ||
+      (config?.webhook_url ? `Webhook: ...${config.webhook_url.slice(-16)}` : null) ||
+      channel.name ||
+      "Discord Channel"
+    );
   }
   if (channel.type === "WEBHOOK") {
     return config?.url || "Custom Webhook";
@@ -98,6 +111,9 @@ export function NotificationChannels({
 }: NotificationChannelsProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [activeTab, setActiveTab] = useState<
+    "discord" | "slack" | "email" | "pagerduty" | "opsgenie"
+  >("discord");
 
   const handleSubmit = async (formData: FormData) => {
     startTransition(async () => {
@@ -154,66 +170,296 @@ export function NotificationChannels({
               <Plus className="size-4" /> Add Channel
             </Button>
           </DialogTrigger>
-          <DialogContent className="dark sm:max-w-[425px] border-primary/20 bg-zinc-950 backdrop-blur-xl text-foreground">
+          <DialogContent className="dark sm:max-w-[480px] max-h-[85vh] overflow-y-auto border-primary/20 bg-zinc-950 backdrop-blur-xl text-foreground">
             <DialogHeader>
               <DialogTitle className="font-mono uppercase tracking-wider text-primary">
                 New Channel
               </DialogTitle>
-              <DialogDescription>Configure a new destination for your alerts.</DialogDescription>
+              <DialogDescription>
+                Configure an alert destination for system downtime.
+              </DialogDescription>
             </DialogHeader>
 
-            <div className="flex gap-2 mb-4">
-              <Button
-                variant="outline"
-                className="flex-1 border-[#5865F2]/50 text-[#5865F2] hover:bg-[#5865F2]/10"
-                onClick={() => {
-                  if (!discordClientId) {
-                    toast.error("Discord Client ID is not configured");
-                    return;
-                  }
-                  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
-                  const redirect = encodeURIComponent(
-                    `${baseUrl}/api/integrations/discord/callback`,
-                  );
-                  window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=${redirect}&response_type=code&scope=bot+webhook.incoming`;
-                }}
+            {/* Channel Type Selector Tabs */}
+            <div className="grid grid-cols-5 gap-1 p-1 bg-zinc-900 border border-primary/10 rounded-lg mb-4 text-[11px] font-mono">
+              <button
+                type="button"
+                onClick={() => setActiveTab("discord")}
+                className={`py-1.5 px-2 rounded font-bold transition-all text-center ${
+                  activeTab === "discord"
+                    ? "bg-[#5865F2] text-white shadow-sm"
+                    : "text-zinc-400 hover:text-white"
+                }`}
               >
-                <div className="size-4 mr-2 bg-[#5865F2] rounded-full" />
                 Discord
-              </Button>
-              <Button
-                variant="outline"
-                className="flex-1 border-[#E01E5A]/50 text-[#E01E5A] hover:bg-[#E01E5A]/10"
-                onClick={() => {
-                  if (!slackClientId) {
-                    toast.error("Slack Client ID is not configured");
-                    return;
-                  }
-                  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
-                  const redirect = encodeURIComponent(`${baseUrl}/api/integrations/slack/callback`);
-                  // Scopes: incoming-webhook (legacy), chat:write (bot messages), commands (slash commands)
-                  window.location.href = `https://slack.com/oauth/v2/authorize?client_id=${slackClientId}&scope=incoming-webhook,chat:write,commands&redirect_uri=${redirect}`;
-                }}
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("slack")}
+                className={`py-1.5 px-2 rounded font-bold transition-all text-center ${
+                  activeTab === "slack"
+                    ? "bg-[#E01E5A] text-white shadow-sm"
+                    : "text-zinc-400 hover:text-white"
+                }`}
               >
-                <div className="size-4 mr-2 bg-[#E01E5A] rounded-full" />
                 Slack
-              </Button>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("email")}
+                className={`py-1.5 px-2 rounded font-bold transition-all text-center ${
+                  activeTab === "email"
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "text-zinc-400 hover:text-white"
+                }`}
+              >
+                Email
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("pagerduty")}
+                className={`py-1.5 px-2 rounded font-bold transition-all text-center ${
+                  activeTab === "pagerduty"
+                    ? "bg-[#06AC38] text-white shadow-sm"
+                    : "text-zinc-400 hover:text-white"
+                }`}
+              >
+                PagerDuty
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("opsgenie")}
+                className={`py-1.5 px-2 rounded font-bold transition-all text-center ${
+                  activeTab === "opsgenie"
+                    ? "bg-[#0052CC] text-white shadow-sm"
+                    : "text-zinc-400 hover:text-white"
+                }`}
+              >
+                Opsgenie
+              </button>
             </div>
 
-            <div className="relative mb-4">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-primary/20" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-black/90 px-2 text-primary/50 font-mono">Or Manual Config</span>
-              </div>
-            </div>
+            {/* DISCORD FORM */}
+            {activeTab === "discord" && (
+              <div className="flex flex-col gap-4">
+                {discordClientId && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full border-[#5865F2]/50 text-[#5865F2] hover:bg-[#5865F2]/10 font-mono text-xs"
+                    onClick={() => {
+                      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+                      const redirect = encodeURIComponent(
+                        `${baseUrl}/api/integrations/discord/callback`,
+                      );
+                      window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=${redirect}&response_type=code&scope=bot+webhook.incoming`;
+                    }}
+                  >
+                    <div className="size-3 mr-2 bg-[#5865F2] rounded-full" />
+                    Connect via Discord 1-Click OAuth
+                  </Button>
+                )}
 
-            {/* PagerDuty */}
-            <div className="mb-4">
-              <p className="text-xs text-[#06AC38]/70 font-mono uppercase tracking-wider mb-2 flex items-center gap-1">
-                <Bell className="size-3" /> PagerDuty
-              </p>
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t border-primary/20" />
+                  </div>
+                  <div className="relative flex justify-center text-[10px] uppercase">
+                    <span className="bg-black/90 px-2 text-primary/50 font-mono">
+                      {discordClientId ? "Or Paste Webhook Directly" : "Discord Incoming Webhook"}
+                    </span>
+                  </div>
+                </div>
+
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.currentTarget);
+                    const name = formData.get("name") as string;
+                    const webhookUrl = formData.get("webhookUrl") as string;
+                    const submitData = new FormData();
+                    submitData.append("name", name);
+                    submitData.append("type", "DISCORD");
+                    submitData.append("config", JSON.stringify({ webhookUrl }));
+                    handleSubmit(submitData);
+                  }}
+                  className="flex flex-col gap-3"
+                >
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="discordName">Channel Name</Label>
+                    <Input
+                      id="discordName"
+                      name="name"
+                      required
+                      placeholder="Discord #alerts"
+                      className="bg-primary/5 border-primary/20 font-mono text-xs"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="discordWebhookUrl">
+                      Discord Webhook URL
+                      <span className="text-[10px] text-zinc-400 ml-2 font-normal">
+                        (Discord Server Settings → Integrations → Webhooks)
+                      </span>
+                    </Label>
+                    <Input
+                      id="discordWebhookUrl"
+                      name="webhookUrl"
+                      required
+                      type="url"
+                      placeholder="https://discord.com/api/webhooks/..."
+                      className="bg-primary/5 border-primary/20 font-mono text-xs"
+                    />
+                  </div>
+                  <DialogFooter className="mt-2">
+                    <Button
+                      type="submit"
+                      disabled={isPending}
+                      className="w-full font-mono uppercase bg-[#5865F2] hover:bg-[#5865F2]/90 text-white"
+                    >
+                      {isPending ? <Loader2 className="animate-spin size-4 mr-2" /> : null}
+                      Save Discord Channel
+                    </Button>
+                  </DialogFooter>
+                </form>
+              </div>
+            )}
+
+            {/* SLACK FORM */}
+            {activeTab === "slack" && (
+              <div className="flex flex-col gap-4">
+                {slackClientId && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full border-[#E01E5A]/50 text-[#E01E5A] hover:bg-[#E01E5A]/10 font-mono text-xs"
+                    onClick={() => {
+                      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+                      const redirect = encodeURIComponent(
+                        `${baseUrl}/api/integrations/slack/callback`,
+                      );
+                      window.location.href = `https://slack.com/oauth/v2/authorize?client_id=${slackClientId}&scope=incoming-webhook,chat:write,commands&redirect_uri=${redirect}`;
+                    }}
+                  >
+                    <div className="size-3 mr-2 bg-[#E01E5A] rounded-full" />
+                    Connect via Slack 1-Click OAuth
+                  </Button>
+                )}
+
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t border-primary/20" />
+                  </div>
+                  <div className="relative flex justify-center text-[10px] uppercase">
+                    <span className="bg-black/90 px-2 text-primary/50 font-mono">
+                      {slackClientId ? "Or Paste Webhook Directly" : "Slack Incoming Webhook"}
+                    </span>
+                  </div>
+                </div>
+
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.currentTarget);
+                    const name = formData.get("name") as string;
+                    const webhookUrl = formData.get("webhookUrl") as string;
+                    const submitData = new FormData();
+                    submitData.append("name", name);
+                    submitData.append("type", "SLACK");
+                    submitData.append("config", JSON.stringify({ webhookUrl }));
+                    handleSubmit(submitData);
+                  }}
+                  className="flex flex-col gap-3"
+                >
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="slackName">Channel Name</Label>
+                    <Input
+                      id="slackName"
+                      name="name"
+                      required
+                      placeholder="Slack #incidents"
+                      className="bg-primary/5 border-primary/20 font-mono text-xs"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="slackWebhookUrl">
+                      Slack Webhook URL
+                      <span className="text-[10px] text-zinc-400 ml-2 font-normal">
+                        (api.slack.com → Incoming Webhooks)
+                      </span>
+                    </Label>
+                    <Input
+                      id="slackWebhookUrl"
+                      name="webhookUrl"
+                      required
+                      type="url"
+                      placeholder="https://hooks.slack.com/services/..."
+                      className="bg-primary/5 border-primary/20 font-mono text-xs"
+                    />
+                  </div>
+                  <DialogFooter className="mt-2">
+                    <Button
+                      type="submit"
+                      disabled={isPending}
+                      className="w-full font-mono uppercase bg-[#E01E5A] hover:bg-[#E01E5A]/90 text-white"
+                    >
+                      {isPending ? <Loader2 className="animate-spin size-4 mr-2" /> : null}
+                      Save Slack Channel
+                    </Button>
+                  </DialogFooter>
+                </form>
+              </div>
+            )}
+
+            {/* EMAIL FORM */}
+            {activeTab === "email" && (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const formData = new FormData(e.currentTarget);
+                  const email = formData.get("email") as string;
+                  const submitData = new FormData();
+                  submitData.append("name", formData.get("name") as string);
+                  submitData.append("type", "EMAIL");
+                  submitData.append("config", JSON.stringify({ email }));
+                  handleSubmit(submitData);
+                }}
+                className="flex flex-col gap-4"
+              >
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="name">Channel Name</Label>
+                  <Input
+                    id="name"
+                    name="name"
+                    required
+                    placeholder="Primary Email"
+                    className="bg-primary/5 border-primary/20 font-mono text-xs"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="email">Email Address</Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    required
+                    type="email"
+                    placeholder="devops@example.com"
+                    className="bg-primary/5 border-primary/20 font-mono text-xs"
+                  />
+                </div>
+
+                <DialogFooter className="mt-2">
+                  <Button type="submit" disabled={isPending} className="w-full font-mono uppercase">
+                    {isPending ? <Loader2 className="animate-spin size-4 mr-2" /> : null}
+                    Save Email Channel
+                  </Button>
+                </DialogFooter>
+              </form>
+            )}
+
+            {/* PAGERDUTY FORM */}
+            {activeTab === "pagerduty" && (
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -228,25 +474,25 @@ export function NotificationChannels({
                 className="flex flex-col gap-3"
               >
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor="pagerdutyName">Channel name</Label>
+                  <Label htmlFor="pagerdutyName">Channel Name</Label>
                   <Input
                     id="pagerdutyName"
                     name="pagerdutyName"
                     required
                     placeholder="PagerDuty Production"
-                    className="bg-primary/5 border-primary/20"
+                    className="bg-primary/5 border-primary/20 font-mono text-xs"
                   />
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label htmlFor="pagerdutyRoutingKey">
-                    Integration routing key
+                    Integration Routing Key
                     <a
                       href="https://support.pagerduty.com/docs/services-and-integrations"
                       target="_blank"
                       rel="noreferrer"
-                      className="ml-2 text-[#06AC38]/70 hover:text-[#06AC38] text-[10px] font-mono underline"
+                      className="ml-2 text-[#06AC38] hover:underline text-[10px] font-mono"
                     >
-                      Where to find this?
+                      (Find in PagerDuty Services)
                     </a>
                   </Label>
                   <Input
@@ -257,24 +503,21 @@ export function NotificationChannels({
                     className="bg-primary/5 border-primary/20 font-mono text-xs"
                   />
                 </div>
-                <Button
-                  type="submit"
-                  disabled={isPending}
-                  className="w-full border border-[#06AC38]/50 bg-[#06AC38]/10 text-[#06AC38] hover:bg-[#06AC38]/20 font-mono uppercase tracking-wider"
-                  variant="ghost"
-                >
-                  {isPending ? <Loader2 className="animate-spin size-4 mr-2" /> : null}
-                  <Bell className="size-4 mr-2" />
-                  Add PagerDuty Channel
-                </Button>
+                <DialogFooter className="mt-2">
+                  <Button
+                    type="submit"
+                    disabled={isPending}
+                    className="w-full bg-[#06AC38] hover:bg-[#06AC38]/90 text-white font-mono uppercase"
+                  >
+                    {isPending ? <Loader2 className="animate-spin size-4 mr-2" /> : null}
+                    Save PagerDuty Channel
+                  </Button>
+                </DialogFooter>
               </form>
-            </div>
+            )}
 
-            {/* Opsgenie */}
-            <div className="mb-4">
-              <p className="text-xs text-[#0052CC]/80 font-mono uppercase tracking-wider mb-2 flex items-center gap-1">
-                <Bell className="size-3" /> Opsgenie (Atlassian)
-              </p>
+            {/* OPSGENIE FORM */}
+            {activeTab === "opsgenie" && (
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -290,13 +533,13 @@ export function NotificationChannels({
                 className="flex flex-col gap-3"
               >
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor="opsgenieName">Channel name</Label>
+                  <Label htmlFor="opsgenieName">Channel Name</Label>
                   <Input
                     id="opsgenieName"
                     name="opsgenieName"
                     required
                     placeholder="Opsgenie Escalation"
-                    className="bg-primary/5 border-primary/20"
+                    className="bg-primary/5 border-primary/20 font-mono text-xs"
                   />
                 </div>
                 <div className="flex flex-col gap-2">
@@ -321,74 +564,18 @@ export function NotificationChannels({
                     <option value="eu">European Union (api.eu.opsgenie.com)</option>
                   </select>
                 </div>
-                <Button
-                  type="submit"
-                  disabled={isPending}
-                  className="w-full border border-[#0052CC]/50 bg-[#0052CC]/10 text-[#0052CC] hover:bg-[#0052CC]/20 font-mono uppercase tracking-wider"
-                  variant="ghost"
-                >
-                  {isPending ? <Loader2 className="animate-spin size-4 mr-2" /> : null}
-                  <Bell className="size-4 mr-2" />
-                  Add Opsgenie Channel
-                </Button>
+                <DialogFooter className="mt-2">
+                  <Button
+                    type="submit"
+                    disabled={isPending}
+                    className="w-full bg-[#0052CC] hover:bg-[#0052CC]/90 text-white font-mono uppercase"
+                  >
+                    {isPending ? <Loader2 className="animate-spin size-4 mr-2" /> : null}
+                    Save Opsgenie Channel
+                  </Button>
+                </DialogFooter>
               </form>
-            </div>
-
-            <div className="relative mb-4">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-primary/20" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-black/90 px-2 text-primary/50 font-mono">Email</span>
-              </div>
-            </div>
-
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                const formData = new FormData(e.currentTarget);
-                const email = formData.get("email") as string;
-
-                // Create a new FormData with the config as JSON
-                const submitData = new FormData();
-                submitData.append("name", formData.get("name") as string);
-                submitData.append("type", "EMAIL");
-                submitData.append("config", JSON.stringify({ email }));
-
-                handleSubmit(submitData);
-              }}
-              className="flex flex-col gap-4"
-            >
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  id="name"
-                  name="name"
-                  required
-                  placeholder="My Alert Channel"
-                  className="bg-primary/5 border-primary/20"
-                />
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="email">Email Address</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  required
-                  type="email"
-                  placeholder="user@example.com"
-                  className="bg-primary/5 border-primary/20"
-                />
-              </div>
-
-              <DialogFooter>
-                <Button type="submit" disabled={isPending} className="font-mono uppercase">
-                  {isPending ? <Loader2 className="animate-spin size-4 mr-2" /> : null}
-                  Save Channel
-                </Button>
-              </DialogFooter>
-            </form>
+            )}
           </DialogContent>
         </Dialog>
       </div>
