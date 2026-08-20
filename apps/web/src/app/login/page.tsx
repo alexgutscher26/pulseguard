@@ -1,9 +1,18 @@
+import type { Metadata } from "next";
 import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import LoginClient from "./login-client";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Log In",
+  description: "Sign in to your SteadyStack edge monitoring dashboard.",
+  alternates: {
+    canonical: "https://steadystack.dev/login",
+  },
+};
 
 export default async function LoginPage() {
   const session = await auth.api.getSession({

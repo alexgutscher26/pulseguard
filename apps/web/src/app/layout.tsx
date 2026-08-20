@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     "Know the second your stack breaks. Edge-native synthetic uptime monitoring that confirms failures across global regions before alerting. 60-second checks, live latency tracking, and zero false positives — free for commercial use.",
   applicationName: "SteadyStack",
   alternates: {
-    canonical: "./",
+    canonical: "/",
   },
   keywords: [
     "website monitoring",

@@ -1,9 +1,19 @@
+import type { Metadata } from "next";
 import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import SignupClient from "./signup-client";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Get Started Free",
+  description:
+    "Create your SteadyStack account. Start monitoring up to 50 endpoints with 60-second checks and 7-region quorum consensus for free.",
+  alternates: {
+    canonical: "https://steadystack.dev/signup",
+  },
+};
 
 export default async function SignupPage() {
   const session = await auth.api.getSession({
