@@ -101,7 +101,7 @@ export async function queueNotification(
         `[Notification] Persisted dropped alert to Redis DLQ: steadystack:dlq:notifications`,
       );
     } catch (redisErr) {
-      console.error("[Notification] Failed to record dropped alert to Redis DLQ:", redisErr);
+      console.warn("[Notification] Redis DLQ storage skipped (unreachable)");
     }
   }
 }

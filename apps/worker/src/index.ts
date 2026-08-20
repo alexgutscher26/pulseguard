@@ -9,9 +9,20 @@ export type { Env };
 import { handleFetch } from "./routes";
 import { processBatch } from "./process-batch";
 
+function syncEnv(env: Env) {
+  if (typeof process !== "undefined" && process.env) {
+    for (const [key, value] of Object.entries(env)) {
+      if (typeof value === "string") {
+        process.env[key] = value;
+      }
+    }
+  }
+}
+
 export default {
   // Required: Basic fetch handler
   async fetch(request: Request, env: Env, ctx: ExecutionContext) {
+    syncEnv(env);
     try {
       const url = new URL(request.url);
       return await handleFetch(request, env, ctx, url);
@@ -25,6 +36,7 @@ export default {
 
   // 1. Cron: Find pending checks and run them (Free Tier Batch Mode)
   async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
+    syncEnv(env);
     try {
       console.log(`Cron triggered: ${event.cron}`);
 
