@@ -31,8 +31,6 @@ if (!fs.existsSync(DATASET_PATH)) {
 const rawContent = fs.readFileSync(DATASET_PATH, "utf-8");
 const data = JSON.parse(rawContent);
 const { benchmark_metadata, endpoints, incidents, summary } = data;
-
-// Hash canonical payload content without the self-referential metadata checksum field
 const canonicalPayload = JSON.stringify({ summary, endpoints, incidents });
 const payloadHash = crypto.createHash("sha256").update(canonicalPayload).digest("hex");
 
