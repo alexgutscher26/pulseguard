@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { ArrowRight, Activity, ShieldCheck, Zap, Server, RefreshCw } from "lucide-react";
-import { AVAILABLE_REGIONS } from "@steadystack/shared";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
