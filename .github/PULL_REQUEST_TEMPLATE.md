@@ -23,7 +23,7 @@ Closes # <!-- issue number -->
 
 ## Checklist
 
-- [ ] My branch is based on the latest `main`
+- [ ] My branch is based on the latest `master`
 - [ ] `bun run check` passes (lint + format)
 - [ ] `bun run check-types` passes
 - [ ] I have added tests for new behavior (if applicable)
