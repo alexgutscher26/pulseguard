@@ -38,8 +38,15 @@ export function createPrisma(databaseUrl?: string) {
     keepAliveInitialDelayMillis: 5_000,
   };
 
-  // Only enable SSL if explicitly specified in the connection string (sslmode=require/verify) or provider requires it
-  if (isSsl || poolUrl.includes("neon.tech")) {
+  // Always enable SSL in production or for cloud PostgreSQL providers (Supabase, Neon, AWS)
+  const isCloudProvider =
+    poolUrl.includes("supabase.com") ||
+    poolUrl.includes("supabase.co") ||
+    poolUrl.includes("neon.tech") ||
+    poolUrl.includes("pooler") ||
+    poolUrl.includes("amazonaws.com");
+
+  if (isSsl || isCloudProvider || process.env.NODE_ENV === "production") {
     poolConfig.ssl = { rejectUnauthorized: false };
   }
 
