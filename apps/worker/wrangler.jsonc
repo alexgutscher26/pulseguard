@@ -1,5 +1,5 @@
 {
-  "name": "steadystack-worker",
+  "name": "pulseguard-worker",
   "main": "src/index.ts",
   "compatibility_date": "2026-01-24",
   "compatibility_flags": ["nodejs_compat"],
