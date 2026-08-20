@@ -25,7 +25,15 @@ export function createPrisma(databaseUrl?: string) {
 
   // Determine if SSL is needed but remove sslmode from URL to avoid conflict with explicit ssl config
   const isSsl = poolUrl.includes("sslmode=require") || poolUrl.includes("sslmode=verify");
-  const cleanUrl = poolUrl.replace(/[?&]sslmode=[^&]+/, "");
+  // Strip both sslmode= and channel_binding= — @neondatabase/serverless does not understand
+  // channel_binding, so if it's left in the URL the driver parses "neondb&channel_binding=require"
+  // as the database name, causing P1003 "Database does not exist".
+  const cleanUrl = poolUrl
+    .replace(/[?&]sslmode=[^&]+/g, "")
+    .replace(/[?&]channel_binding=[^&]+/g, "")
+    // Tidy up any dangling ? or & left after stripping params
+    .replace(/\?&/, "?")
+    .replace(/[?&]$/, "");
 
   // Detect Cloudflare Workers runtime
   const isWorkerd =
