@@ -4,9 +4,7 @@ interface ManagePageProps {
   params: Promise<{ token: string }>;
 }
 
-export default async function ManageSubscriptionPage({
-  params,
-}: ManagePageProps) {
+export default async function ManageSubscriptionPage({ params }: ManagePageProps) {
   const { token } = await params;
 
   return <ManagePageClient manageToken={token} />;

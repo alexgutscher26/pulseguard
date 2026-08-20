@@ -39,18 +39,12 @@ async function performLocalSyntheticCheck(
       signal: controller.signal,
       headers: {
         "User-Agent": "SteadyStack-Synthetic-Local-Agent/1.0",
-        Accept:
-          "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
       },
     });
     clearTimeout(timeoutId);
 
-    if (
-      !res.ok &&
-      res.status >= 400 &&
-      res.status !== 401 &&
-      res.status !== 403
-    ) {
+    if (!res.ok && res.status >= 400 && res.status !== 401 && res.status !== 403) {
       return {
         status: "DOWN",
         latency: Math.round(performance.now() - start),
@@ -99,8 +93,7 @@ export async function performBrowserCheck(
   env: any,
 ): Promise<{ status: "UP" | "DOWN"; latency: number; errorReason?: string }> {
   const steps: BrowserStep[] = JSON.parse(monitor.script || "[]");
-  const firstGoto =
-    steps.find((s) => s.action === "goto" && s.value)?.value || monitor.url;
+  const firstGoto = steps.find((s) => s.action === "goto" && s.value)?.value || monitor.url;
   const timeoutLimit = Math.min((monitor.timeout || 15) * 1000, 25000);
 
   // If targeting a local machine address (localhost / 127.0.0.1), Cloudflare's remote browser in the cloud
@@ -110,9 +103,7 @@ export async function performBrowserCheck(
   }
 
   if (!env.BROWSER) {
-    console.warn(
-      "[BrowserRunner] BROWSER binding is missing. Attempting HTTP synthetic fallback.",
-    );
+    console.warn("[BrowserRunner] BROWSER binding is missing. Attempting HTTP synthetic fallback.");
     if (firstGoto) {
       return performLocalSyntheticCheck(firstGoto, steps, timeoutLimit);
     }
@@ -138,9 +129,7 @@ export async function performBrowserCheck(
     let i = 0;
     for (const step of steps) {
       if (!step) continue;
-      console.log(
-        `[BrowserRunner] Step ${i + 1}/${steps.length}: ${step.action}`,
-      );
+      console.log(`[BrowserRunner] Step ${i + 1}/${steps.length}: ${step.action}`);
 
       switch (step.action) {
         case "goto":
@@ -149,8 +138,7 @@ export async function performBrowserCheck(
           break;
 
         case "click":
-          if (!step.selector)
-            throw new Error("CLICK action requires a CSS selector");
+          if (!step.selector) throw new Error("CLICK action requires a CSS selector");
           await page.waitForSelector(step.selector);
           await page.click(step.selector);
           break;
@@ -177,8 +165,7 @@ export async function performBrowserCheck(
           break;
 
         case "assert_text":
-          if (!step.value)
-            throw new Error("ASSERT_TEXT action requires a value to check");
+          if (!step.value) throw new Error("ASSERT_TEXT action requires a value to check");
           await page.waitForFunction(
             `document.body.innerText.includes(${JSON.stringify(step.value)})`,
             {},
@@ -207,9 +194,7 @@ export async function performBrowserCheck(
     return {
       status: "DOWN",
       latency,
-      errorReason: err.message
-        ? err.message.substring(0, 100)
-        : "BROWSER_RUN_FAILED",
+      errorReason: err.message ? err.message.substring(0, 100) : "BROWSER_RUN_FAILED",
     };
   } finally {
     if (browser) {

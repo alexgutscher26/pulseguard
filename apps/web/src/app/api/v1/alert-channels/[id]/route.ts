@@ -3,10 +3,7 @@ import prisma from "@steadystack/db";
 import { authenticateApiKey } from "../../_lib/auth";
 
 // GET /api/v1/alert-channels/:id
-export async function GET(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await authenticateApiKey(req, "read");
   if (auth.errorResponse || !auth.user) return auth.errorResponse!;
 
@@ -19,20 +16,14 @@ export async function GET(
   });
 
   if (!channel) {
-    return NextResponse.json(
-      { error: "Alert channel not found" },
-      { status: 404 },
-    );
+    return NextResponse.json({ error: "Alert channel not found" }, { status: 404 });
   }
 
   return NextResponse.json({ data: channel });
 }
 
 // PATCH /api/v1/alert-channels/:id
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await authenticateApiKey(req, "write");
   if (auth.errorResponse || !auth.user) return auth.errorResponse!;
 
@@ -45,20 +36,14 @@ export async function PATCH(
   });
 
   if (!existing) {
-    return NextResponse.json(
-      { error: "Alert channel not found" },
-      { status: 404 },
-    );
+    return NextResponse.json({ error: "Alert channel not found" }, { status: 404 });
   }
 
   let body: any;
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json(
-      { error: "Invalid JSON payload" },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
   }
 
   const updateData: any = {};
@@ -76,10 +61,7 @@ export async function PATCH(
 }
 
 // DELETE /api/v1/alert-channels/:id
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await authenticateApiKey(req, "write");
   if (auth.errorResponse || !auth.user) return auth.errorResponse!;
 
@@ -92,10 +74,7 @@ export async function DELETE(
   });
 
   if (!existing) {
-    return NextResponse.json(
-      { error: "Alert channel not found" },
-      { status: 404 },
-    );
+    return NextResponse.json({ error: "Alert channel not found" }, { status: 404 });
   }
 
   await prisma.notificationChannel.delete({

@@ -8,10 +8,7 @@ const __dirname = path.dirname(__filename);
 console.log("Loading env from ../../apps/web/.env");
 dotenv.config({ path: path.resolve(__dirname, "../../apps/web/.env") });
 
-console.log(
-  "DATABASE_URL:",
-  process.env.DATABASE_URL ? "DEFINED" : "UNDEFINED",
-);
+console.log("DATABASE_URL:", process.env.DATABASE_URL ? "DEFINED" : "UNDEFINED");
 
 const { db } = await import("./lib/db.js");
 

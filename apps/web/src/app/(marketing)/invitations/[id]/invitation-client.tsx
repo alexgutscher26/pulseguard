@@ -53,8 +53,7 @@ export function InvitationClient({
   const [isPending, startTransition] = useTransition();
 
   const isEmailMatching =
-    !currentUserEmail ||
-    currentUserEmail.toLowerCase() === invitation.email.toLowerCase();
+    !currentUserEmail || currentUserEmail.toLowerCase() === invitation.email.toLowerCase();
 
   const handleAccept = async () => {
     if (!isLoggedIn) {
@@ -99,13 +98,10 @@ export function InvitationClient({
         <div className="size-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mx-auto">
           <CheckCircle2 className="size-6" />
         </div>
-        <h2 className="text-xl font-bold text-foreground">
-          Welcome to the Team!
-        </h2>
+        <h2 className="text-xl font-bold text-foreground">Welcome to the Team!</h2>
         <p className="text-xs text-muted-foreground leading-relaxed">
-          You have successfully joined{" "}
-          <strong>{invitation.organization.name}</strong>. Redirecting to your
-          dashboard...
+          You have successfully joined <strong>{invitation.organization.name}</strong>. Redirecting
+          to your dashboard...
         </p>
         <div className="pt-2">
           <Link
@@ -126,12 +122,9 @@ export function InvitationClient({
         <div className="size-12 rounded-full bg-muted flex items-center justify-center text-muted-foreground mx-auto">
           <XCircle className="size-6" />
         </div>
-        <h2 className="text-lg font-bold text-foreground">
-          Invitation Declined
-        </h2>
+        <h2 className="text-lg font-bold text-foreground">Invitation Declined</h2>
         <p className="text-xs text-muted-foreground">
-          You have declined the invitation to join{" "}
-          {invitation.organization.name}.
+          You have declined the invitation to join {invitation.organization.name}.
         </p>
         <div className="pt-2">
           <Link href="/" className="text-xs text-primary hover:underline">
@@ -148,12 +141,9 @@ export function InvitationClient({
         <div className="size-12 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto">
           <Clock className="size-6" />
         </div>
-        <h2 className="text-lg font-bold text-foreground">
-          Invitation Expired
-        </h2>
+        <h2 className="text-lg font-bold text-foreground">Invitation Expired</h2>
         <p className="text-xs text-muted-foreground">
-          This invitation has expired. Ask the workspace admin to send you a new
-          invitation link.
+          This invitation has expired. Ask the workspace admin to send you a new invitation link.
         </p>
         <div className="pt-2">
           <Link href="/" className="text-xs text-primary hover:underline">
@@ -182,9 +172,8 @@ export function InvitationClient({
           </h1>
         </div>
         <p className="text-xs text-muted-foreground leading-relaxed">
-          <strong>{invitation.inviter.name || invitation.inviter.email}</strong>{" "}
-          has invited you to collaborate on uptime monitors, status pages, and
-          alert escalations.
+          <strong>{invitation.inviter.name || invitation.inviter.email}</strong> has invited you to
+          collaborate on uptime monitors, status pages, and alert escalations.
         </p>
       </div>
 
@@ -199,9 +188,7 @@ export function InvitationClient({
           </div>
           <div className="flex items-center justify-between text-xs">
             <span className="text-muted-foreground">Target Email:</span>
-            <span className="font-bold text-foreground">
-              {invitation.email}
-            </span>
+            <span className="font-bold text-foreground">{invitation.email}</span>
           </div>
         </div>
 
@@ -209,8 +196,7 @@ export function InvitationClient({
           <div className="p-3 rounded-lg border border-primary/20 bg-primary/5 text-[11px] text-primary flex items-center gap-2">
             <Users className="size-4 shrink-0" />
             <span>
-              You will need to sign in or create an account to complete joining
-              this team.
+              You will need to sign in or create an account to complete joining this team.
             </span>
           </div>
         )}
@@ -219,9 +205,9 @@ export function InvitationClient({
           <div className="p-3 rounded-lg border border-amber-500/30 bg-amber-500/5 text-[11px] text-amber-400 flex items-start gap-2">
             <AlertCircle className="size-4 shrink-0 mt-0.5" />
             <span>
-              You are logged in as <strong>{currentUserEmail}</strong>, but this
-              invite was sent to <strong>{invitation.email}</strong>. Accepting
-              will link this workspace to your active account.
+              You are logged in as <strong>{currentUserEmail}</strong>, but this invite was sent to{" "}
+              <strong>{invitation.email}</strong>. Accepting will link this workspace to your active
+              account.
             </span>
           </div>
         )}

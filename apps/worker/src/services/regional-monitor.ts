@@ -112,10 +112,7 @@ export async function checkSingleRegion(
     const userHeaders: Record<string, string> = {};
     if (monitor.headers) {
       try {
-        const rawHeaders = await decryptSecret(
-          monitor.headers,
-          env?.ENCRYPTION_SECRET,
-        );
+        const rawHeaders = await decryptSecret(monitor.headers, env?.ENCRYPTION_SECRET);
         const parsed = JSON.parse(rawHeaders);
         if (Array.isArray(parsed)) {
           for (const h of parsed as { key?: string; value?: string }[]) {
@@ -128,8 +125,7 @@ export async function checkSingleRegion(
     }
 
     const hasBody =
-      ["POST", "PUT", "PATCH"].includes(monitor.method || "GET") &&
-      Boolean(monitor.body);
+      ["POST", "PUT", "PATCH"].includes(monitor.method || "GET") && Boolean(monitor.body);
 
     const response = await fetch(monitor.url, {
       method: monitor.method || "GET",
@@ -138,8 +134,7 @@ export async function checkSingleRegion(
         Accept:
           "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.9",
-        "Sec-CH-UA":
-          '"Chromium";v="133", "Not(A:Brand";v="99", "Google Chrome";v="133"',
+        "Sec-CH-UA": '"Chromium";v="133", "Not(A:Brand";v="99", "Google Chrome";v="133"',
         "Sec-CH-UA-Mobile": "?0",
         "Sec-CH-UA-Platform": '"Windows"',
         "Sec-Fetch-Dest": "document",
@@ -159,9 +154,7 @@ export async function checkSingleRegion(
     const latency = Math.round(performance.now() - start);
     const statusNum = Number(response.status);
     const isUp =
-      response.ok ||
-      (statusNum >= 300 && statusNum < 400) ||
-      [403, 429].includes(statusNum);
+      response.ok || (statusNum >= 300 && statusNum < 400) || [403, 429].includes(statusNum);
 
     return {
       region: resolvedRegion,
@@ -169,11 +162,7 @@ export async function checkSingleRegion(
       latency,
       timestamp: new Date(),
       errorReason: isUp ? undefined : `HTTP ${response.status}`,
-      errorClass: isUp
-        ? undefined
-        : statusNum >= 500
-          ? "SERVER_ERROR"
-          : "CLIENT_ERROR",
+      errorClass: isUp ? undefined : statusNum >= 500 ? "SERVER_ERROR" : "CLIENT_ERROR",
     };
   } catch (error: any) {
     return {

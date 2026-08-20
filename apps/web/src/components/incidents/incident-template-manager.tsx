@@ -34,13 +34,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 import {
@@ -90,9 +84,7 @@ export function IncidentTemplateManager({ templates }: TemplateManagerProps) {
       }
 
       if (result.success) {
-        toast.success(
-          editingTemplate ? "Template updated" : "Template created",
-        );
+        toast.success(editingTemplate ? "Template updated" : "Template created");
         setIsOpen(false);
         setEditingTemplate(null);
         form.reset();
@@ -151,18 +143,13 @@ export function IncidentTemplateManager({ templates }: TemplateManagerProps) {
           </DialogTrigger>
           <DialogContent className="sm:max-w-[500px]">
             <DialogHeader>
-              <DialogTitle>
-                {editingTemplate ? "Edit Template" : "Create Template"}
-              </DialogTitle>
+              <DialogTitle>{editingTemplate ? "Edit Template" : "Create Template"}</DialogTitle>
               <DialogDescription>
                 Set up default values for incidents to save time during outages.
               </DialogDescription>
             </DialogHeader>
             <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
-              >
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
                   control={form.control}
                   name="name"
@@ -196,10 +183,7 @@ export function IncidentTemplateManager({ templates }: TemplateManagerProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Severity</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select severity" />
@@ -221,25 +205,16 @@ export function IncidentTemplateManager({ templates }: TemplateManagerProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Initial Status</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select status" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="INVESTIGATING">
-                              Investigating
-                            </SelectItem>
-                            <SelectItem value="IDENTIFIED">
-                              Identified
-                            </SelectItem>
-                            <SelectItem value="MONITORING">
-                              Monitoring
-                            </SelectItem>
+                            <SelectItem value="INVESTIGATING">Investigating</SelectItem>
+                            <SelectItem value="IDENTIFIED">Identified</SelectItem>
+                            <SelectItem value="MONITORING">Monitoring</SelectItem>
                             <SelectItem value="RESOLVED">Resolved</SelectItem>
                           </SelectContent>
                         </Select>
@@ -267,9 +242,7 @@ export function IncidentTemplateManager({ templates }: TemplateManagerProps) {
                 />
                 <DialogFooter>
                   <Button type="submit" disabled={isPending}>
-                    {isPending && (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    )}
+                    {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     {editingTemplate ? "Update" : "Create"}
                   </Button>
                 </DialogFooter>
@@ -290,10 +263,7 @@ export function IncidentTemplateManager({ templates }: TemplateManagerProps) {
             <Card key={template.id} className="group relative">
               <CardHeader className="pb-2">
                 <div className="flex justify-between items-start">
-                  <CardTitle
-                    className="text-base truncate pr-6"
-                    title={template.name}
-                  >
+                  <CardTitle className="text-base truncate pr-6" title={template.name}>
                     {template.name}
                   </CardTitle>
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity absolute top-4 right-4 bg-background/80 backdrop-blur-sm rounded-sm">
@@ -315,16 +285,12 @@ export function IncidentTemplateManager({ templates }: TemplateManagerProps) {
                     </Button>
                   </div>
                 </div>
-                <CardDescription className="truncate">
-                  {template.title}
-                </CardDescription>
+                <CardDescription className="truncate">{template.title}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex gap-2 mb-2">
                   <Badge
-                    variant={
-                      template.severity === "HIGH" ? "destructive" : "secondary"
-                    }
+                    variant={template.severity === "HIGH" ? "destructive" : "secondary"}
                     className="text-[10px]"
                   >
                     {template.severity}
@@ -333,9 +299,7 @@ export function IncidentTemplateManager({ templates }: TemplateManagerProps) {
                     {template.status}
                   </Badge>
                 </div>
-                <p className="text-xs text-muted-foreground line-clamp-3">
-                  {template.description}
-                </p>
+                <p className="text-xs text-muted-foreground line-clamp-3">{template.description}</p>
               </CardContent>
             </Card>
           ))

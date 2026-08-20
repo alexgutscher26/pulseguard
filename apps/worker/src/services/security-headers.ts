@@ -27,8 +27,7 @@ export async function checkSecurityHeaders(targetUrl: string) {
         header: "Strict-Transport-Security",
         status: "SECURE",
         value: hsts,
-        description:
-          "Enforces secure (HTTP over SSL/TLS) connections to the server.",
+        description: "Enforces secure (HTTP over SSL/TLS) connections to the server.",
       });
     } else {
       score -= 20;
@@ -36,8 +35,7 @@ export async function checkSecurityHeaders(targetUrl: string) {
         header: "Strict-Transport-Security",
         status: "CRITICAL",
         value: null,
-        description:
-          "HSTS header is missing. Attacks like SSL stripping can succeed.",
+        description: "HSTS header is missing. Attacks like SSL stripping can succeed.",
         recommendation:
           "Add 'Strict-Transport-Security: max-age=31536000; includeSubDomains; preload'",
       });
@@ -50,8 +48,7 @@ export async function checkSecurityHeaders(targetUrl: string) {
         header: "Content-Security-Policy",
         status: "SECURE",
         value: csp.length > 50 ? csp.substring(0, 50) + "..." : csp,
-        description:
-          "Controls which resources the user agent is allowed to load.",
+        description: "Controls which resources the user agent is allowed to load.",
       });
     } else {
       score -= 25;
@@ -59,10 +56,8 @@ export async function checkSecurityHeaders(targetUrl: string) {
         header: "Content-Security-Policy",
         status: "CRITICAL",
         value: null,
-        description:
-          "CSP is missing. This site is vulnerable to XSS and injection attacks.",
-        recommendation:
-          "Implement a robust CSP policy to whitelist trusted sources.",
+        description: "CSP is missing. This site is vulnerable to XSS and injection attacks.",
+        recommendation: "Implement a robust CSP policy to whitelist trusted sources.",
       });
     }
 
@@ -82,8 +77,7 @@ export async function checkSecurityHeaders(targetUrl: string) {
         header: "X-Frame-Options",
         status: "WARNING",
         value: null,
-        description:
-          "Header is missing. Site may be vulnerable to Clickjacking.",
+        description: "Header is missing. Site may be vulnerable to Clickjacking.",
         recommendation: "Use 'X-Frame-Options: DENY' or 'SAMEORIGIN'.",
       });
     }
@@ -117,8 +111,7 @@ export async function checkSecurityHeaders(targetUrl: string) {
         header: "Referrer-Policy",
         status: "SECURE",
         value: rp,
-        description:
-          "Governs which referrer information should be included with requests.",
+        description: "Governs which referrer information should be included with requests.",
       });
     } else {
       score -= 5;
@@ -127,8 +120,7 @@ export async function checkSecurityHeaders(targetUrl: string) {
         status: "INFO",
         value: null,
         description: "Referrer policy is not explicitly defined.",
-        recommendation:
-          "Set 'Referrer-Policy: strict-origin-when-cross-origin'.",
+        recommendation: "Set 'Referrer-Policy: strict-origin-when-cross-origin'.",
       });
     }
 
@@ -143,8 +135,7 @@ export async function checkSecurityHeaders(targetUrl: string) {
         status: "WARNING",
         value: server,
         description: "Server header discloses software version information.",
-        recommendation:
-          "Hide original server header to prevent targeted reconnaissance.",
+        recommendation: "Hide original server header to prevent targeted reconnaissance.",
       });
     }
 
@@ -154,10 +145,8 @@ export async function checkSecurityHeaders(targetUrl: string) {
         header: "X-Powered-By",
         status: "WARNING",
         value: xpb,
-        description:
-          "Discloses the underlying technology (e.g., Express, PHP).",
-        recommendation:
-          "Remove this header for better security through obscurity.",
+        description: "Discloses the underlying technology (e.g., Express, PHP).",
+        recommendation: "Remove this header for better security through obscurity.",
       });
     }
 

@@ -3,10 +3,7 @@ import { auth } from "@steadystack/auth";
 import { headers } from "next/headers";
 import { getComprehensiveSlaReport } from "@/actions/sla-reports";
 import { assertFeatureFlag } from "@/lib/billing-server";
-import {
-  renderSlaReportToBuffer,
-  type SlaReportData,
-} from "@steadystack/email";
+import { renderSlaReportToBuffer, type SlaReportData } from "@steadystack/email";
 
 export async function GET(req: NextRequest) {
   try {
@@ -26,8 +23,7 @@ export async function GET(req: NextRequest) {
     const searchParams = req.nextUrl.searchParams;
     const fromParam = searchParams.get("from") || undefined;
     const toParam = searchParams.get("to") || undefined;
-    const rangeParam =
-      searchParams.get("range") || (fromParam && toParam ? "custom" : "30d");
+    const rangeParam = searchParams.get("range") || (fromParam && toParam ? "custom" : "30d");
     const monitorId = searchParams.get("monitorId") || undefined;
     const statusPageId = searchParams.get("statusPageId") || undefined;
     const targetSlaParam = searchParams.get("targetSla") || "99.9";
@@ -51,9 +47,7 @@ export async function GET(req: NextRequest) {
       notes,
     });
 
-    const fileScope = (clientName || slaReport.scopeName)
-      .toLowerCase()
-      .replace(/[^a-z0-9]/gi, "-");
+    const fileScope = (clientName || slaReport.scopeName).toLowerCase().replace(/[^a-z0-9]/gi, "-");
 
     // 4. Handle JSON Format
     if (format === "json") {
@@ -90,16 +84,14 @@ export async function GET(req: NextRequest) {
       csv += "\n";
 
       csv += "--- DAILY COMPLIANCE BREAKDOWN ---\n";
-      csv +=
-        "Date,Checks Total,Checks Up,Checks Down,Uptime %,Downtime (Min)\n";
+      csv += "Date,Checks Total,Checks Up,Checks Down,Uptime %,Downtime (Min)\n";
       for (const d of slaReport.dailyBreakdown) {
         csv += `"${d.date.split("T")[0]}",${d.checksTotal},${d.checksUp},${d.checksDown},${d.uptimePct.toFixed(3)}%,${d.downDuration}\n`;
       }
       csv += "\n";
 
       csv += "--- OUTAGE & INCIDENT AUDIT LOG ---\n";
-      csv +=
-        "Incident ID,Timestamp (UTC),Service,Duration (Min),Root Cause,Status,Severity\n";
+      csv += "Incident ID,Timestamp (UTC),Service,Duration (Min),Root Cause,Status,Severity\n";
       for (const inc of slaReport.incidents) {
         const cleanReason = (inc.reason || "").replace(/"/g, '""');
         csv += `"${inc.id}","${inc.startedAt}","${inc.serviceName}",${inc.durationMinutes},"${cleanReason}","${inc.status}","${inc.severity}"\n`;
@@ -115,16 +107,11 @@ export async function GET(req: NextRequest) {
 
     // 6. Handle PDF Format (Gated by Plan)
     if (format === "pdf") {
-      const { allowed, error } = await assertFeatureFlag(
-        session.user.id,
-        "sla_pdf_export",
-      );
+      const { allowed, error } = await assertFeatureFlag(session.user.id, "sla_pdf_export");
       if (!allowed) {
         return new NextResponse(
           JSON.stringify({
-            error:
-              error ||
-              "Branded SLA PDF exports require a Netrunner or Construct plan.",
+            error: error || "Branded SLA PDF exports require a Netrunner or Construct plan.",
             code: "PLAN_UPGRADE_REQUIRED",
           }),
           { status: 403, headers: { "Content-Type": "application/json" } },
@@ -134,8 +121,7 @@ export async function GET(req: NextRequest) {
       const reportId = `SLA-${new Date().toISOString().split("T")[0]!.replace(/-/g, "")}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
       const reportData: SlaReportData = {
         reportId,
-        generatedAt:
-          new Date().toISOString().replace("T", " ").substring(0, 19) + " UTC",
+        generatedAt: new Date().toISOString().replace("T", " ").substring(0, 19) + " UTC",
         agencyName,
         clientName,
         scopeName: slaReport.scopeName,

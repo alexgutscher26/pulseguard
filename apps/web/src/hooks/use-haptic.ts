@@ -2,8 +2,7 @@
 
 import { useCallback } from "react";
 
-type HapticType =
-  "light" | "medium" | "heavy" | "success" | "warning" | "error";
+type HapticType = "light" | "medium" | "heavy" | "success" | "warning" | "error";
 
 /**
  * Hook to trigger haptic feedback on mobile devices using navigator.vibrate

@@ -1,15 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import {
-  MessageSquare,
-  Mail,
-  Terminal,
-  Plus,
-  Loader2,
-  Trash2,
-  Bell,
-} from "lucide-react";
+import { MessageSquare, Mail, Terminal, Plus, Loader2, Trash2, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -70,9 +62,7 @@ function getDetail(channel: NotificationChannel) {
     return config?.email || config?.value || "Email";
   }
   if (channel.type === "SLACK") {
-    return (
-      config?.channel || config?.webhook_url || channel.name || "Slack Webhook"
-    );
+    return config?.channel || config?.webhook_url || channel.name || "Slack Webhook";
   }
   if (channel.type === "DISCORD") {
     return config?.webhook_url || channel.name || "Discord Webhook";
@@ -152,9 +142,7 @@ export function NotificationChannels({
           <h3 className="text-lg font-bold text-foreground font-mono uppercase tracking-tight">
             Notification Channels
           </h3>
-          <p className="text-xs text-primary/60 font-mono">
-            Configure dispatch protocols
-          </p>
+          <p className="text-xs text-primary/60 font-mono">Configure dispatch protocols</p>
         </div>
 
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -171,9 +159,7 @@ export function NotificationChannels({
               <DialogTitle className="font-mono uppercase tracking-wider text-primary">
                 New Channel
               </DialogTitle>
-              <DialogDescription>
-                Configure a new destination for your alerts.
-              </DialogDescription>
+              <DialogDescription>Configure a new destination for your alerts.</DialogDescription>
             </DialogHeader>
 
             <div className="flex gap-2 mb-4">
@@ -185,8 +171,7 @@ export function NotificationChannels({
                     toast.error("Discord Client ID is not configured");
                     return;
                   }
-                  const baseUrl =
-                    process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+                  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
                   const redirect = encodeURIComponent(
                     `${baseUrl}/api/integrations/discord/callback`,
                   );
@@ -204,11 +189,8 @@ export function NotificationChannels({
                     toast.error("Slack Client ID is not configured");
                     return;
                   }
-                  const baseUrl =
-                    process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
-                  const redirect = encodeURIComponent(
-                    `${baseUrl}/api/integrations/slack/callback`,
-                  );
+                  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+                  const redirect = encodeURIComponent(`${baseUrl}/api/integrations/slack/callback`);
                   // Scopes: incoming-webhook (legacy), chat:write (bot messages), commands (slash commands)
                   window.location.href = `https://slack.com/oauth/v2/authorize?client_id=${slackClientId}&scope=incoming-webhook,chat:write,commands&redirect_uri=${redirect}`;
                 }}
@@ -223,9 +205,7 @@ export function NotificationChannels({
                 <span className="w-full border-t border-primary/20" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-black/90 px-2 text-primary/50 font-mono">
-                  Or Manual Config
-                </span>
+                <span className="bg-black/90 px-2 text-primary/50 font-mono">Or Manual Config</span>
               </div>
             </div>
 
@@ -238,14 +218,9 @@ export function NotificationChannels({
                 onSubmit={(e) => {
                   e.preventDefault();
                   const formData = new FormData(e.currentTarget);
-                  const routingKey = formData.get(
-                    "pagerdutyRoutingKey",
-                  ) as string;
+                  const routingKey = formData.get("pagerdutyRoutingKey") as string;
                   const submitData = new FormData();
-                  submitData.append(
-                    "name",
-                    formData.get("pagerdutyName") as string,
-                  );
+                  submitData.append("name", formData.get("pagerdutyName") as string);
                   submitData.append("type", "PAGERDUTY");
                   submitData.append("config", JSON.stringify({ routingKey }));
                   handleSubmit(submitData);
@@ -288,9 +263,7 @@ export function NotificationChannels({
                   className="w-full border border-[#06AC38]/50 bg-[#06AC38]/10 text-[#06AC38] hover:bg-[#06AC38]/20 font-mono uppercase tracking-wider"
                   variant="ghost"
                 >
-                  {isPending ? (
-                    <Loader2 className="animate-spin size-4 mr-2" />
-                  ) : null}
+                  {isPending ? <Loader2 className="animate-spin size-4 mr-2" /> : null}
                   <Bell className="size-4 mr-2" />
                   Add PagerDuty Channel
                 </Button>
@@ -309,15 +282,9 @@ export function NotificationChannels({
                   const apiKey = formData.get("opsgenieApiKey") as string;
                   const region = formData.get("opsgenieRegion") as string;
                   const submitData = new FormData();
-                  submitData.append(
-                    "name",
-                    formData.get("opsgenieName") as string,
-                  );
+                  submitData.append("name", formData.get("opsgenieName") as string);
                   submitData.append("type", "OPSGENIE");
-                  submitData.append(
-                    "config",
-                    JSON.stringify({ apiKey, region }),
-                  );
+                  submitData.append("config", JSON.stringify({ apiKey, region }));
                   handleSubmit(submitData);
                 }}
                 className="flex flex-col gap-3"
@@ -351,9 +318,7 @@ export function NotificationChannels({
                     className="h-9 w-full rounded-md border border-primary/20 bg-zinc-900 px-3 py-1 text-xs text-foreground shadow-sm focus:outline-none focus:ring-1 focus:ring-primary font-mono"
                   >
                     <option value="us">United States (api.opsgenie.com)</option>
-                    <option value="eu">
-                      European Union (api.eu.opsgenie.com)
-                    </option>
+                    <option value="eu">European Union (api.eu.opsgenie.com)</option>
                   </select>
                 </div>
                 <Button
@@ -362,9 +327,7 @@ export function NotificationChannels({
                   className="w-full border border-[#0052CC]/50 bg-[#0052CC]/10 text-[#0052CC] hover:bg-[#0052CC]/20 font-mono uppercase tracking-wider"
                   variant="ghost"
                 >
-                  {isPending ? (
-                    <Loader2 className="animate-spin size-4 mr-2" />
-                  ) : null}
+                  {isPending ? <Loader2 className="animate-spin size-4 mr-2" /> : null}
                   <Bell className="size-4 mr-2" />
                   Add Opsgenie Channel
                 </Button>
@@ -376,9 +339,7 @@ export function NotificationChannels({
                 <span className="w-full border-t border-primary/20" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-black/90 px-2 text-primary/50 font-mono">
-                  Email
-                </span>
+                <span className="bg-black/90 px-2 text-primary/50 font-mono">Email</span>
               </div>
             </div>
 
@@ -422,14 +383,8 @@ export function NotificationChannels({
               </div>
 
               <DialogFooter>
-                <Button
-                  type="submit"
-                  disabled={isPending}
-                  className="font-mono uppercase"
-                >
-                  {isPending ? (
-                    <Loader2 className="animate-spin size-4 mr-2" />
-                  ) : null}
+                <Button type="submit" disabled={isPending} className="font-mono uppercase">
+                  {isPending ? <Loader2 className="animate-spin size-4 mr-2" /> : null}
                   Save Channel
                 </Button>
               </DialogFooter>
@@ -496,9 +451,7 @@ export function NotificationChannels({
         {channels.length === 0 && (
           <div className="col-span-full border border-dashed border-primary/20 p-8 flex flex-col items-center justify-center text-center gap-2 text-primary/50">
             <Terminal className="size-8 mb-2 opacity-50" />
-            <p className="font-mono text-sm">
-              No notification channels initialized
-            </p>
+            <p className="font-mono text-sm">No notification channels initialized</p>
             <p className="text-xs">Add a channel to receive system alerts</p>
           </div>
         )}

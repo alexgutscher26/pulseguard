@@ -1,8 +1,5 @@
 import { NextResponse } from "next/server";
-import {
-  CLOUDFLARE_PROBE_REGIONS,
-  STEADYSTACK_CANONICAL_USER_AGENT,
-} from "@steadystack/shared";
+import { CLOUDFLARE_PROBE_REGIONS, STEADYSTACK_CANONICAL_USER_AGENT } from "@steadystack/shared";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60;

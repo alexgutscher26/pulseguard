@@ -7,12 +7,9 @@ export async function auditDNS(domain: string) {
 
   const fetchDns = async (type: string, name: string) => {
     try {
-      const res = await fetch(
-        `https://cloudflare-dns.com/dns-query?name=${name}&type=${type}`,
-        {
-          headers: { accept: "application/dns-json" },
-        },
-      );
+      const res = await fetch(`https://cloudflare-dns.com/dns-query?name=${name}&type=${type}`, {
+        headers: { accept: "application/dns-json" },
+      });
       return await res.json();
     } catch {
       return null;
@@ -35,9 +32,7 @@ export async function auditDNS(domain: string) {
   // 3. DMARC (TXT on _dmarc.domain)
   const dmarcRes: any = await fetchDns("TXT", `_dmarc.${domain}`);
   if (dmarcRes?.Answer) {
-    const dmarcRecord = dmarcRes.Answer.find((a: any) =>
-      a.data.includes("v=DMARC1"),
-    );
+    const dmarcRecord = dmarcRes.Answer.find((a: any) => a.data.includes("v=DMARC1"));
     if (dmarcRecord) records.DMARC = dmarcRecord.data.replace(/"/g, "");
   }
 
@@ -87,9 +82,7 @@ export async function auditDNS(domain: string) {
   // DMARC Audit
   if (records.DMARC) {
     score += 35;
-    const isEnforced =
-      records.DMARC.includes("p=reject") ||
-      records.DMARC.includes("p=quarantine");
+    const isEnforced = records.DMARC.includes("p=reject") || records.DMARC.includes("p=quarantine");
     results.push({
       key: "DMARC",
       status: isEnforced ? "SECURE" : "WARNING",

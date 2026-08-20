@@ -49,13 +49,7 @@ type TabType =
   | "overrides"
   | "showcase";
 
-export function StatusPageEditor({
-  page,
-  allMonitors,
-}: {
-  page: any;
-  allMonitors: any[];
-}) {
+export function StatusPageEditor({ page, allMonitors }: { page: any; allMonitors: any[] }) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabType>("monitors");
   const [isPending, setIsPending] = useState(false);
@@ -134,12 +128,8 @@ export function StatusPageEditor({
     }
   };
 
-  const assignedMonitorIds = new Set(
-    page.monitors.map((m: any) => m.monitorId),
-  );
-  const availableMonitors = allMonitors.filter(
-    (m) => !assignedMonitorIds.has(m.id),
-  );
+  const assignedMonitorIds = new Set(page.monitors.map((m: any) => m.monitorId));
+  const availableMonitors = allMonitors.filter((m) => !assignedMonitorIds.has(m.id));
 
   const handleAdd = async (monitorId: string) => {
     setIsPending(true);
@@ -204,10 +194,7 @@ export function StatusPageEditor({
               target="_blank"
               className="flex items-center gap-2 text-sm text-primary hover:underline font-mono"
             >
-              {env.NEXT_PUBLIC_APP_URL.replace("https://", "").replace(
-                "http://",
-                "",
-              )}
+              {env.NEXT_PUBLIC_APP_URL.replace("https://", "").replace("http://", "")}
               /status-page/
               {page.slug} <ExternalLink className="size-3" />
             </a>
@@ -264,9 +251,7 @@ export function StatusPageEditor({
                               setEditDisplayName(item.displayName || "");
                               setEditShowLatency(item.showLatency !== false);
                               setEditShowUptime(item.showUptime !== false);
-                              setEditShowCheckCounts(
-                                item.showCheckCounts !== false,
-                              );
+                              setEditShowCheckCounts(item.showCheckCounts !== false);
                             }}
                             disabled={isPending}
                             className="p-2 text-muted-foreground hover:text-foreground hover:bg-white/5 rounded-sm transition-colors"
@@ -292,9 +277,7 @@ export function StatusPageEditor({
                             </label>
                             <input
                               value={editDisplayName}
-                              onChange={(e) =>
-                                setEditDisplayName(e.target.value)
-                              }
+                              onChange={(e) => setEditDisplayName(e.target.value)}
                               placeholder={item.monitor.name}
                               className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
                             />
@@ -305,9 +288,7 @@ export function StatusPageEditor({
                               <input
                                 type="checkbox"
                                 checked={editShowLatency}
-                                onChange={(e) =>
-                                  setEditShowLatency(e.target.checked)
-                                }
+                                onChange={(e) => setEditShowLatency(e.target.checked)}
                                 className="accent-primary size-4"
                               />
                               <span className="text-[10px] font-mono font-bold text-foreground">
@@ -319,9 +300,7 @@ export function StatusPageEditor({
                               <input
                                 type="checkbox"
                                 checked={editShowUptime}
-                                onChange={(e) =>
-                                  setEditShowUptime(e.target.checked)
-                                }
+                                onChange={(e) => setEditShowUptime(e.target.checked)}
                                 className="accent-primary size-4"
                               />
                               <span className="text-[10px] font-mono font-bold text-foreground">
@@ -333,9 +312,7 @@ export function StatusPageEditor({
                               <input
                                 type="checkbox"
                                 checked={editShowCheckCounts}
-                                onChange={(e) =>
-                                  setEditShowCheckCounts(e.target.checked)
-                                }
+                                onChange={(e) => setEditShowCheckCounts(e.target.checked)}
                                 className="accent-primary size-4"
                               />
                               <span className="text-[10px] font-mono font-bold text-foreground">
@@ -352,15 +329,11 @@ export function StatusPageEditor({
                               Cancel
                             </button>
                             <button
-                              onClick={() =>
-                                handleUpdateMonitorSettings(item.monitorId)
-                              }
+                              onClick={() => handleUpdateMonitorSettings(item.monitorId)}
                               disabled={isPending}
                               className="px-3 py-1 text-xs font-mono bg-primary text-black hover:bg-primary/80 rounded-sm font-bold flex items-center gap-1"
                             >
-                              {isPending && (
-                                <Loader2 className="size-3 animate-spin" />
-                              )}
+                              {isPending && <Loader2 className="size-3 animate-spin" />}
                               Save
                             </button>
                           </div>
@@ -371,8 +344,7 @@ export function StatusPageEditor({
                 })}
                 {page.monitors.length === 0 && (
                   <p className="text-sm text-muted-foreground italic text-center py-4">
-                    No monitors added yet. Select monitors from the right to add
-                    them.
+                    No monitors added yet. Select monitors from the right to add them.
                   </p>
                 )}
               </div>
@@ -395,9 +367,7 @@ export function StatusPageEditor({
                       <div
                         className={`size-1.5 rounded-full shrink-0 ${m.status === "UP" ? "bg-green-500" : "bg-red-500"}`}
                       />
-                      <span className="text-xs font-mono truncate">
-                        {m.name}
-                      </span>
+                      <span className="text-xs font-mono truncate">{m.name}</span>
                     </div>
                     <button
                       onClick={() => handleAdd(m.id)}
@@ -409,9 +379,7 @@ export function StatusPageEditor({
                   </div>
                 ))}
                 {availableMonitors.length === 0 && (
-                  <p className="text-xs text-muted-foreground">
-                    All monitors added.
-                  </p>
+                  <p className="text-xs text-muted-foreground">All monitors added.</p>
                 )}
               </div>
             </div>

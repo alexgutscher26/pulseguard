@@ -37,15 +37,12 @@ async function runWithBoundedConcurrency<T, R>(
   const results: R[] = [];
   let currentIndex = 0;
 
-  const workers = Array.from(
-    { length: Math.min(limit, items.length) },
-    async () => {
-      while (currentIndex < items.length) {
-        const index = currentIndex++;
-        results[index] = await fn(items[index]!);
-      }
-    },
-  );
+  const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
+    while (currentIndex < items.length) {
+      const index = currentIndex++;
+      results[index] = await fn(items[index]!);
+    }
+  });
 
   await Promise.all(workers);
   return results;
@@ -154,10 +151,7 @@ export class RegionalProbe extends DurableObject<Env> {
         const userHeaders: Record<string, string> = {};
         if (monitor.headers) {
           try {
-            const rawHeaders = await decryptSecret(
-              monitor.headers,
-              this.env.ENCRYPTION_SECRET,
-            );
+            const rawHeaders = await decryptSecret(monitor.headers, this.env.ENCRYPTION_SECRET);
             const parsed = JSON.parse(rawHeaders);
             if (Array.isArray(parsed)) {
               for (const h of parsed as { key?: string; value?: string }[]) {
@@ -170,8 +164,7 @@ export class RegionalProbe extends DurableObject<Env> {
         }
 
         const hasBody =
-          ["POST", "PUT", "PATCH"].includes(monitor.method || "GET") &&
-          Boolean(monitor.body);
+          ["POST", "PUT", "PATCH"].includes(monitor.method || "GET") && Boolean(monitor.body);
 
         let currentUrl = monitor.url;
         let hops = 0;
@@ -198,8 +191,7 @@ export class RegionalProbe extends DurableObject<Env> {
               Accept:
                 "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
               "Accept-Language": "en-US,en;q=0.9",
-              "Sec-CH-UA":
-                '"Chromium";v="133", "Not(A:Brand";v="99", "Google Chrome";v="133"',
+              "Sec-CH-UA": '"Chromium";v="133", "Not(A:Brand";v="99", "Google Chrome";v="133"',
               "Sec-CH-UA-Mobile": "?0",
               "Sec-CH-UA-Platform": '"Windows"',
               "Sec-Fetch-Dest": "document",
@@ -209,9 +201,7 @@ export class RegionalProbe extends DurableObject<Env> {
               "Upgrade-Insecure-Requests": "1",
               ...userHeaders,
             },
-            ...(hops === 0 && hasBody && monitor.body
-              ? { body: monitor.body }
-              : {}),
+            ...(hops === 0 && hasBody && monitor.body ? { body: monitor.body } : {}),
             signal: AbortSignal.timeout(timeoutSeconds * 1000),
             redirect: "manual",
           });
@@ -234,19 +224,14 @@ export class RegionalProbe extends DurableObject<Env> {
 
         const latency = Math.round(performance.now() - reqStart);
         // Treat 2xx, 3xx as UP. 429 and 403 are server responses (endpoint is up/alive)
-        const isUp =
-          res.ok || (code >= 300 && code < 400) || code === 429 || code === 403;
+        const isUp = res.ok || (code >= 300 && code < 400) || code === 429 || code === 403;
 
         return {
           status: isUp ? "UP" : "DOWN",
           statusCode: code,
           latency,
           errorReason: isUp ? undefined : `HTTP ${code}`,
-          errorClass: isUp
-            ? undefined
-            : code >= 500
-              ? "SERVER_ERROR"
-              : "CLIENT_ERROR",
+          errorClass: isUp ? undefined : code >= 500 ? "SERVER_ERROR" : "CLIENT_ERROR",
         };
       } catch (err: any) {
         const latency = Math.round(performance.now() - reqStart);
@@ -320,8 +305,7 @@ export class RegionalProbe extends DurableObject<Env> {
 
     // DEFENSIVE RESCHEDULING: Schedule next alarm BEFORE executing batch
     // This prevents orphan probes if an uncaught exception occurs mid-execution.
-    const nextAlarmTime =
-      Date.now() + (state.alarmIntervalMs || DEFAULT_ALARM_INTERVAL_MS);
+    const nextAlarmTime = Date.now() + (state.alarmIntervalMs || DEFAULT_ALARM_INTERVAL_MS);
     await this.ctx.storage.setAlarm(nextAlarmTime);
 
     try {
@@ -366,8 +350,7 @@ export class RegionalProbe extends DurableObject<Env> {
             if (queryAttempts >= maxQueryAttempts) {
               throw queryErr;
             }
-            const delayMs =
-              200 * Math.pow(2, queryAttempts - 1) + Math.random() * 75;
+            const delayMs = 200 * Math.pow(2, queryAttempts - 1) + Math.random() * 75;
             console.warn(
               `[RegionalProbe:${state.region}] DB query retry ${queryAttempts}/${maxQueryAttempts} after ${Math.round(delayMs)}ms:`,
               queryErr?.message,
@@ -380,8 +363,7 @@ export class RegionalProbe extends DurableObject<Env> {
           const results = await this.executeBatch(monitors);
 
           // Submit results to central Quorum Engine with retry
-          const { processProbeResultsBatch } =
-            await import("../services/quorum-engine");
+          const { processProbeResultsBatch } = await import("../services/quorum-engine");
           let quorumAttempts = 0;
           const maxQuorumAttempts = 3;
           while (quorumAttempts < maxQuorumAttempts) {
@@ -393,8 +375,7 @@ export class RegionalProbe extends DurableObject<Env> {
               if (quorumAttempts >= maxQuorumAttempts) {
                 throw quorumErr;
               }
-              const delayMs =
-                200 * Math.pow(2, quorumAttempts - 1) + Math.random() * 75;
+              const delayMs = 200 * Math.pow(2, quorumAttempts - 1) + Math.random() * 75;
               console.warn(
                 `[RegionalProbe:${state.region}] Quorum batch retry ${quorumAttempts}/${maxQuorumAttempts} after ${Math.round(delayMs)}ms:`,
                 quorumErr?.message,
@@ -410,10 +391,7 @@ export class RegionalProbe extends DurableObject<Env> {
       state.consecutiveFailures = 0;
       await this.ctx.storage.put("probe_state", state);
     } catch (err) {
-      console.error(
-        `[RegionalProbe:${state.region}] Alarm execution error:`,
-        err,
-      );
+      console.error(`[RegionalProbe:${state.region}] Alarm execution error:`, err);
       state.consecutiveFailures = (state.consecutiveFailures || 0) + 1;
       if (state.consecutiveFailures >= 3 && state.healthState !== "FLAPPING") {
         state.healthState = "DEGRADED";
@@ -504,9 +482,7 @@ export class RegionalProbe extends DurableObject<Env> {
       const twoHoursAgo = now - 2 * 60 * 60 * 1000;
 
       // Filter old transitions
-      state.stateTransitions = state.stateTransitions.filter(
-        (t) => t > twoHoursAgo,
-      );
+      state.stateTransitions = state.stateTransitions.filter((t) => t > twoHoursAgo);
 
       // Flapping exclusion: 3+ transitions in 2 hours = FLAPPING
       if (state.stateTransitions.length >= 3) {
@@ -516,12 +492,9 @@ export class RegionalProbe extends DurableObject<Env> {
       }
 
       await this.ctx.storage.put("probe_state", state);
-      return new Response(
-        JSON.stringify({ ok: true, healthState: state.healthState }),
-        {
-          headers: { "Content-Type": "application/json" },
-        },
-      );
+      return new Response(JSON.stringify({ ok: true, healthState: state.healthState }), {
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     return new Response("Not Found", { status: 404 });

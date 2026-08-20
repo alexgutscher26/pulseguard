@@ -49,9 +49,7 @@ export function MonitorStats({ monitors = [] }: { monitors: any[] }) {
           <p className="text-[10px] text-primary/60 uppercase tracking-widest mb-1 font-mono">
             {stat.label}
           </p>
-          <p className={`text-2xl font-bold font-mono ${stat.color}`}>
-            {stat.value}
-          </p>
+          <p className={`text-2xl font-bold font-mono ${stat.color}`}>{stat.value}</p>
           <div className="absolute top-0 right-0 p-2 opacity-50">
             <stat.icon className={`size-4 ${stat.iconColor}`} />
           </div>

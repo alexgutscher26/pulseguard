@@ -69,12 +69,7 @@ const REGIONS: Array<{
 // Block private/internal hostnames to prevent SSRF.
 // The granular check is performed below by isPrivateOrInternalUrl(); we keep a
 // small deny-list here for obvious internal names that bypass IP resolution.
-const BLOCKED_PROBE_HOSTNAMES = new Set<string>([
-  "localhost",
-  "127.0.0.1",
-  "0.0.0.0",
-  "::1",
-]);
+const BLOCKED_PROBE_HOSTNAMES = new Set<string>(["localhost", "127.0.0.1", "0.0.0.0", "::1"]);
 
 /**
  * Executes a fast, lightweight real-time reachability and latency probe
@@ -89,9 +84,7 @@ export async function checkServiceLiveStatus(
   try {
     let parsedUrl: URL;
     try {
-      parsedUrl = apiEndpoint
-        ? new URL(apiEndpoint)
-        : new URL(`https://${domain}`);
+      parsedUrl = apiEndpoint ? new URL(apiEndpoint) : new URL(`https://${domain}`);
     } catch {
       return {
         success: false,
@@ -184,8 +177,7 @@ export async function checkServiceLiveStatus(
         method: "HEAD",
         redirect: "error",
         headers: {
-          "User-Agent":
-            "SteadyStack-Edge-Status-Probe/2.0 (+https://steadystack.dev)",
+          "User-Agent": "SteadyStack-Edge-Status-Probe/2.0 (+https://steadystack.dev)",
           Accept: "*/*",
         },
         signal: AbortSignal.timeout(6000),
@@ -203,8 +195,7 @@ export async function checkServiceLiveStatus(
         const getRes = await fetch(targetUrl, {
           method: "GET",
           headers: {
-            "User-Agent":
-              "SteadyStack-Edge-Status-Probe/2.0 (+https://steadystack.dev)",
+            "User-Agent": "SteadyStack-Edge-Status-Probe/2.0 (+https://steadystack.dev)",
             Accept: "*/*",
           },
           signal: AbortSignal.timeout(6000),
@@ -244,10 +235,7 @@ export async function checkServiceLiveStatus(
 
       // Add regional jitter and realistic network propagation
       const jitter = Math.floor(Math.random() * 12) - 6;
-      const regLatency = Math.max(
-        10,
-        Math.round(measuredLatency * 0.4 + r.baseLatency + jitter),
-      );
+      const regLatency = Math.max(10, Math.round(measuredLatency * 0.4 + r.baseLatency + jitter));
       const isSlow = regLatency > 800;
 
       return {

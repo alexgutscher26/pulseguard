@@ -1,9 +1,10 @@
 {
   "extends": "@steadystack/config/tsconfig.base.json",
   "compilerOptions": {
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
     "outDir": "./dist",
-    "rootDir": "./src",
-    "jsx": "react"
+    "rootDir": "./src"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

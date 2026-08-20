@@ -3,10 +3,7 @@ import { auth } from "@steadystack/auth";
 import prisma from "@steadystack/db";
 import { headers } from "next/headers";
 
-export async function GET(
-  req: NextRequest,
-  context: { params: Promise<{ id: string }> },
-) {
+export async function GET(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await context.params;
 
@@ -87,9 +84,7 @@ export async function GET(
         const status = e.status;
         const latency = e.latency;
         const region = e.region || "Global";
-        const error = e.errorReason
-          ? `"${e.errorReason.replace(/"/g, '""')}"`
-          : "";
+        const error = e.errorReason ? `"${e.errorReason.replace(/"/g, '""')}"` : "";
         return `${ts},${status},${latency},${region},${error}`;
       })
       .join("\n");

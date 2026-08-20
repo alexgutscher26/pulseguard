@@ -9,8 +9,7 @@ import { cn } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title:
-    "Is It Down? Live Outage Tracker & Global Service Status Directory | SteadyStack",
+  title: "Is It Down? Live Outage Tracker & Global Service Status Directory | SteadyStack",
   description:
     "Real-time outage checker and uptime status directory for 300+ cloud, AI, developer, payment, and database services including Stripe, GitHub, OpenAI, AWS, Vercel, and Twilio. Stop checking manually.",
   keywords: [
@@ -31,8 +30,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "https://steadystack.dev/is-down",
-    title:
-      "Is It Down? Live Outage Tracker & Global Service Status Directory | SteadyStack",
+    title: "Is It Down? Live Outage Tracker & Global Service Status Directory | SteadyStack",
     description:
       "Check live status, multi-region edge latency, and outage reports for 300+ developer and cloud services.",
     siteName: "SteadyStack",
@@ -94,9 +92,8 @@ export default function IsDownHubPage() {
           </h1>
 
           <p className="text-base sm:text-xl text-muted-foreground leading-relaxed">
-            Live multi-region status checks, latency telemetry, and incident
-            diagnostics for 300+ APIs, cloud providers, and SaaS platforms. Stop
-            checking manually.
+            Live multi-region status checks, latency telemetry, and incident diagnostics for 300+
+            APIs, cloud providers, and SaaS platforms. Stop checking manually.
           </p>
         </div>
 
@@ -110,9 +107,8 @@ export default function IsDownHubPage() {
               Don't see your internal service or custom API?
             </h3>
             <p className="text-sm text-muted-foreground">
-              SteadyStack gives you 50 free synthetic monitors with 10-second
-              checks from 15 global edge locations, multi-region consensus, and
-              instant Slack / Discord alerts.
+              SteadyStack gives you 50 free synthetic monitors with 10-second checks from 15 global
+              edge locations, multi-region consensus, and instant Slack / Discord alerts.
             </p>
           </div>
 

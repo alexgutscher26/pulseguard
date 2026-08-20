@@ -12,10 +12,7 @@ import {
   Globe2,
   Clock,
 } from "lucide-react";
-import {
-  checkServiceLiveStatus,
-  type ServiceLiveStatusResult,
-} from "@/actions/service-probe";
+import { checkServiceLiveStatus, type ServiceLiveStatusResult } from "@/actions/service-probe";
 import type { ServiceDownInfo } from "@/content/is-down-services";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,13 +22,11 @@ interface ServiceStatusCardProps {
   initialProbe?: ServiceLiveStatusResult;
 }
 
-export function ServiceStatusCard({
-  service,
-  initialProbe,
-}: ServiceStatusCardProps) {
+export function ServiceStatusCard({ service, initialProbe }: ServiceStatusCardProps) {
   const [isPending, startTransition] = useTransition();
-  const [probeResult, setProbeResult] =
-    useState<ServiceLiveStatusResult | null>(initialProbe || null);
+  const [probeResult, setProbeResult] = useState<ServiceLiveStatusResult | null>(
+    initialProbe || null,
+  );
 
   const currentStatus = probeResult?.status || "OPERATIONAL";
   const latency = probeResult?.latencyMs || 24;
@@ -41,10 +36,7 @@ export function ServiceStatusCard({
 
   const handleRefresh = () => {
     startTransition(async () => {
-      const res = await checkServiceLiveStatus(
-        service.domain,
-        service.apiEndpoint,
-      );
+      const res = await checkServiceLiveStatus(service.domain, service.apiEndpoint);
       setProbeResult(res);
     });
   };
@@ -74,10 +66,7 @@ export function ServiceStatusCard({
                 <h2 className="text-2xl font-extrabold tracking-tight text-foreground">
                   {service.name}
                 </h2>
-                <Badge
-                  variant="outline"
-                  className="font-mono text-xs text-muted-foreground"
-                >
+                <Badge variant="outline" className="font-mono text-xs text-muted-foreground">
                   {service.domain}
                 </Badge>
               </div>
@@ -139,9 +128,7 @@ export function ServiceStatusCard({
             <div className="text-2xl font-bold font-mono text-foreground">
               {latency > 0 ? `${latency} ms` : "Timeout"}
             </div>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Primary edge roundtrip
-            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">Primary edge roundtrip</p>
           </div>
 
           <div className="rounded-xl border border-border/80 bg-background/50 p-4">
@@ -152,9 +139,7 @@ export function ServiceStatusCard({
             <div className="text-2xl font-bold font-mono text-emerald-500">
               {currentStatus === "OPERATIONAL" ? "99.98%" : "98.40%"}
             </div>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Edge consensus
-            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">Edge consensus</p>
           </div>
 
           <div className="rounded-xl border border-border/80 bg-background/50 p-4">
@@ -162,12 +147,8 @@ export function ServiceStatusCard({
               <Globe2 className="h-3.5 w-3.5 text-cyan-500" />
               <span>Vantage Points</span>
             </div>
-            <div className="text-2xl font-bold font-mono text-foreground">
-              6 Regions
-            </div>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              NA, EU, APAC, SA, AF
-            </p>
+            <div className="text-2xl font-bold font-mono text-foreground">6 Regions</div>
+            <p className="text-xs text-muted-foreground mt-0.5">NA, EU, APAC, SA, AF</p>
           </div>
 
           <div className="rounded-xl border border-border/80 bg-background/50 p-4">
@@ -178,9 +159,7 @@ export function ServiceStatusCard({
             <div className="text-xl font-bold font-mono text-foreground truncate">
               {lastChecked}
             </div>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Automated 10s mesh
-            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">Automated 10s mesh</p>
           </div>
         </div>
 
@@ -188,9 +167,7 @@ export function ServiceStatusCard({
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-border/60">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
-            <span>
-              Telemetry verified by SteadyStack Autonomous Edge Network
-            </span>
+            <span>Telemetry verified by SteadyStack Autonomous Edge Network</span>
           </div>
 
           <div className="flex items-center gap-2.5 w-full sm:w-auto">
@@ -201,9 +178,7 @@ export function ServiceStatusCard({
               disabled={isPending}
               className="w-full sm:w-auto font-medium"
             >
-              <RefreshCw
-                className={`mr-2 h-3.5 w-3.5 ${isPending ? "animate-spin" : ""}`}
-              />
+              <RefreshCw className={`mr-2 h-3.5 w-3.5 ${isPending ? "animate-spin" : ""}`} />
               {isPending ? "Probing Edge..." : "Run Live Global Probe"}
             </Button>
 

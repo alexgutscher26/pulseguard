@@ -46,18 +46,12 @@ export function validatePayload(
     }
 
     // 2. Body Contains
-    if (
-      expectations.body_contains &&
-      !body.includes(expectations.body_contains)
-    ) {
+    if (expectations.body_contains && !body.includes(expectations.body_contains)) {
       return { success: false, errorMessage: "BODY_MISMATCH" };
     }
 
     // 2b. Body Excludes (Forbidden String)
-    if (
-      expectations.body_excludes &&
-      body.includes(expectations.body_excludes)
-    ) {
+    if (expectations.body_excludes && body.includes(expectations.body_excludes)) {
       return { success: false, errorMessage: "FORBIDDEN_STRING_FOUND" };
     }
 
@@ -82,9 +76,7 @@ export function validatePayload(
         const json = JSON.parse(body);
 
         if (expectations.json_path) {
-          for (const [path, expectedValue] of Object.entries(
-            expectations.json_path,
-          )) {
+          for (const [path, expectedValue] of Object.entries(expectations.json_path)) {
             const actualValue = getValueByPath(json, path);
             if (String(actualValue) !== String(expectedValue)) {
               return {
@@ -95,10 +87,7 @@ export function validatePayload(
           }
         }
 
-        if (
-          expectations.json_assertions &&
-          Array.isArray(expectations.json_assertions)
-        ) {
+        if (expectations.json_assertions && Array.isArray(expectations.json_assertions)) {
           for (const assertion of expectations.json_assertions) {
             if (!assertion.path) continue;
 
@@ -112,9 +101,7 @@ export function validatePayload(
               cleanPath = cleanPath.substring(1);
             }
 
-            const actualValue = cleanPath
-              ? getValueByPath(json, cleanPath)
-              : json;
+            const actualValue = cleanPath ? getValueByPath(json, cleanPath) : json;
             const expectedStr = String(assertion.value);
             const actualStr = String(actualValue);
 

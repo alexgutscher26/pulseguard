@@ -97,9 +97,7 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                   <item.icon
                     className={cn(
                       "size-4",
-                      isActive
-                        ? "text-primary"
-                        : "text-muted-foreground group-hover:text-primary",
+                      isActive ? "text-primary" : "text-muted-foreground group-hover:text-primary",
                     )}
                   />
                   <p>{item.name}</p>

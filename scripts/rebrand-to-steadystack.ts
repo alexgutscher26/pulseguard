@@ -62,10 +62,7 @@ const REPLACEMENTS: Array<[RegExp, string]> = [
     /https:\/\/github\.com\/alexgutscher26\/pulseguard/g,
     "https://github.com/getsteadystack/SteadyStack",
   ],
-  [
-    /github\.com\/alexgutscher26\/pulseguard/g,
-    "github.com/getsteadystack/SteadyStack",
-  ],
+  [/github\.com\/alexgutscher26\/pulseguard/g, "github.com/getsteadystack/SteadyStack"],
   [/alexgutscher26\/pulseguard/g, "getsteadystack/SteadyStack"],
   [/https:\/\/pulseguard\.io/g, "https://steadystack.dev"],
   [/https:\/\/pulseguard\.com/g, "https://steadystack.dev"],
@@ -130,6 +127,4 @@ function walkDir(dir: string) {
 
 console.log(`Starting rebranding across: ${ROOT_DIR}`);
 walkDir(ROOT_DIR);
-console.log(
-  `Finished! Checked ${fileCount} files, updated ${modifiedCount} files.`,
-);
+console.log(`Finished! Checked ${fileCount} files, updated ${modifiedCount} files.`);

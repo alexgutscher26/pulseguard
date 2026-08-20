@@ -6,14 +6,10 @@ import { Pool } from "pg";
 export function createPrisma(databaseUrl?: string) {
   const url =
     databaseUrl ||
-    (typeof process !== "undefined"
-      ? process.env.DATABASE_URL
-      : (globalThis as any).DATABASE_URL);
+    (typeof process !== "undefined" ? process.env.DATABASE_URL : (globalThis as any).DATABASE_URL);
 
   if (!url) {
-    throw new Error(
-      "DATABASE_URL is not set. Ensure it's provided in your environment variables.",
-    );
+    throw new Error("DATABASE_URL is not set. Ensure it's provided in your environment variables.");
   }
 
   // Prefer DATABASE_POOL_URL when available so the pool targets a connection pooler
@@ -21,17 +17,12 @@ export function createPrisma(databaseUrl?: string) {
   // DATABASE_URL should still point to the direct connection for Prisma CLI migrations.
   // Set DATABASE_POOL_URL in production to prevent connection exhaustion under load.
   const poolUrl =
-    (typeof process !== "undefined"
-      ? process.env?.DATABASE_POOL_URL
-      : undefined) ||
-    (typeof globalThis !== "undefined"
-      ? (globalThis as any).DATABASE_POOL_URL
-      : undefined) ||
+    (typeof process !== "undefined" ? process.env?.DATABASE_POOL_URL : undefined) ||
+    (typeof globalThis !== "undefined" ? (globalThis as any).DATABASE_POOL_URL : undefined) ||
     url;
 
   // Determine if SSL is needed but remove sslmode from URL to avoid conflict with explicit ssl config
-  const isSsl =
-    poolUrl.includes("sslmode=require") || poolUrl.includes("sslmode=verify");
+  const isSsl = poolUrl.includes("sslmode=require") || poolUrl.includes("sslmode=verify");
   const cleanUrl = poolUrl.replace(/[?&]sslmode=[^&]+/, "");
 
   const poolConfig: any = {
@@ -56,15 +47,11 @@ export function createPrisma(databaseUrl?: string) {
   pool.on("error", (err) => {
     // pg.Pool handles dead idle connections automatically by removing them from the pool.
     // NEVER call resetPrisma or pool.end() here as it closes the entire pool and destroys active queries.
-    console.warn(
-      "[PG Pool] Idle client connection event (handled by pool):",
-      err.message,
-    );
+    console.warn("[PG Pool] Idle client connection event (handled by pool):", err.message);
   });
   const adapter = new PrismaPg(pool);
 
-  const isDev =
-    typeof process !== "undefined" && process.env?.NODE_ENV === "development";
+  const isDev = typeof process !== "undefined" && process.env?.NODE_ENV === "development";
 
   const client = new PrismaClient({
     adapter,

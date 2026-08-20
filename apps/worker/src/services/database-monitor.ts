@@ -29,8 +29,7 @@ function parseDbUrl(url: string): {
     const dbType = u.protocol.replace(":", "");
     const host = u.hostname;
     const port =
-      parseInt(u.port, 10) ||
-      (dbType === "postgresql" ? 5432 : dbType === "mysql" ? 3306 : 27017);
+      parseInt(u.port, 10) || (dbType === "postgresql" ? 5432 : dbType === "mysql" ? 3306 : 27017);
     return { dbType, host, port };
   } catch {
     // Fallback: treat as host:port string
@@ -90,15 +89,9 @@ export async function checkDatabase(
 
       let errorReason: string | undefined;
       if (expectation) {
-        if (
-          expectation.rowCountMin !== undefined &&
-          rowCount < expectation.rowCountMin
-        ) {
+        if (expectation.rowCountMin !== undefined && rowCount < expectation.rowCountMin) {
           errorReason = `Row count ${rowCount} below minimum ${expectation.rowCountMin}`;
-        } else if (
-          expectation.rowCountMax !== undefined &&
-          rowCount > expectation.rowCountMax
-        ) {
+        } else if (expectation.rowCountMax !== undefined && rowCount > expectation.rowCountMax) {
           errorReason = `Row count ${rowCount} exceeds maximum ${expectation.rowCountMax}`;
         }
       }
@@ -137,9 +130,7 @@ export async function checkDatabase(
     url: connectionUrl,
     status: tcpResult.ok ? "UP" : "DOWN",
     latency: totalLatency,
-    errorReason: tcpResult.ok
-      ? undefined
-      : `CONNECTION_FAILED: ${tcpResult.error}`,
+    errorReason: tcpResult.ok ? undefined : `CONNECTION_FAILED: ${tcpResult.error}`,
     dbType,
     queryExecuted: false,
     executionTimeMs: tcpResult.latency,

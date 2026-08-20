@@ -20,8 +20,7 @@ console.log("🔧 Initializing BetterAuth with config:", {
   appUrl: env.NEXT_PUBLIC_APP_URL,
 });
 
-const safeDbUrl =
-  env.DATABASE_URL || "postgresql://dummy:dummy@localhost:5432/dummy";
+const safeDbUrl = env.DATABASE_URL || "postgresql://dummy:dummy@localhost:5432/dummy";
 const safeAuthUrl = env.BETTER_AUTH_URL || "http://localhost:3000";
 
 const prisma = getPrisma(safeDbUrl);
@@ -122,15 +121,10 @@ export const auth = betterAuth({
                   },
                 },
               });
-              console.log(
-                `[Auth] Created single personal workspace for ${user.email}`,
-              );
+              console.log(`[Auth] Created single personal workspace for ${user.email}`);
             }
           } catch (orgErr) {
-            console.error(
-              "[Auth] Failed to create initial personal workspace:",
-              orgErr,
-            );
+            console.error("[Auth] Failed to create initial personal workspace:", orgErr);
           }
 
           // 2. Automatically attribute referral from cookie or request context
@@ -199,15 +193,10 @@ export const auth = betterAuth({
                   code,
                 },
               });
-              console.log(
-                `[Auth] Generated referral code ${code} for ${user.email}`,
-              );
+              console.log(`[Auth] Generated referral code ${code} for ${user.email}`);
             }
           } catch (codeErr) {
-            console.error(
-              "[Auth] Failed to create initial referral code:",
-              codeErr,
-            );
+            console.error("[Auth] Failed to create initial referral code:", codeErr);
           }
 
           // Fire-and-forget: failures here must never break signup
@@ -238,10 +227,7 @@ export const auth = betterAuth({
                   unsubscribed: false,
                 });
               } catch (err) {
-                console.error(
-                  "[Auth] Failed to add contact to Resend audience:",
-                  err,
-                );
+                console.error("[Auth] Failed to add contact to Resend audience:", err);
               }
             }
           })();
@@ -258,9 +244,7 @@ export const auth = betterAuth({
         await sendTeamInvitationEmail(data.email, {
           organizationName: data.organization.name,
           inviterName:
-            data.inviter?.user?.name ||
-            data.inviter?.user?.email ||
-            "A team administrator",
+            data.inviter?.user?.name || data.inviter?.user?.email || "A team administrator",
           role: data.role || "member",
           inviteUrl: `${appUrl}/invitations/${data.id}`,
         });

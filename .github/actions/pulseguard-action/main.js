@@ -36,9 +36,7 @@ async function request(path, method = "GET", body = null) {
 
   if (!response.ok) {
     const text = await response.text();
-    throw new Error(
-      `API Request to ${path} failed (${response.status}): ${text}`,
-    );
+    throw new Error(`API Request to ${path} failed (${response.status}): ${text}`);
   }
 
   return response.json();
@@ -77,9 +75,7 @@ async function run() {
         : `Preview - ${urlOverride.replace(/^https?:\/\//, "")}`;
     }
 
-    console.log(
-      `Creating transient monitor "${name}" for URL: ${urlOverride}...`,
-    );
+    console.log(`Creating transient monitor "${name}" for URL: ${urlOverride}...`);
     try {
       const response = await request("/api/cli/monitors", "POST", {
         name,
@@ -90,9 +86,7 @@ async function run() {
       createdTransientId = response.monitor.id;
       idsToCheck.push(createdTransientId);
       saveState("transient-monitor-id", createdTransientId);
-      console.log(
-        `Successfully created transient monitor: ${createdTransientId}`,
-      );
+      console.log(`Successfully created transient monitor: ${createdTransientId}`);
     } catch (err) {
       console.error(`Failed to create transient monitor: ${err.message}`);
       process.exit(1);
@@ -104,9 +98,7 @@ async function run() {
     process.exit(0);
   }
 
-  console.log(
-    `Starting deployment gate for monitors: ${idsToCheck.join(", ")}`,
-  );
+  console.log(`Starting deployment gate for monitors: ${idsToCheck.join(", ")}`);
   console.log(`Timeout: ${waitTimeout}s, Interval: ${waitInterval}s`);
   if (urlOverride) {
     console.log(`URL override applied: ${urlOverride}`);
@@ -208,9 +200,7 @@ async function run() {
           console.log("PR comment posted successfully.");
         } else {
           const ghText = await ghRes.text();
-          console.warn(
-            `Failed to post PR comment (${ghRes.status}): ${ghText}`,
-          );
+          console.warn(`Failed to post PR comment (${ghRes.status}): ${ghText}`);
         }
       } catch (err) {
         console.warn(`Error posting PR comment: ${err.message}`);
@@ -219,9 +209,7 @@ async function run() {
   }
 
   if (!allHealthy) {
-    console.error(
-      "Deployment gate failed: one or more monitors failed checks.",
-    );
+    console.error("Deployment gate failed: one or more monitors failed checks.");
     process.exit(1);
   }
 

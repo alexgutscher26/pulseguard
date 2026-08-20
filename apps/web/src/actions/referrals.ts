@@ -34,8 +34,7 @@ function generateRandomCode(): string {
 function maskEmail(email: string): string {
   const [name, domain] = email.split("@");
   if (!name || !domain) return "user***@domain.com";
-  const maskedName =
-    name.length > 2 ? `${name[0]}***${name[name.length - 1]}` : `${name[0]}***`;
+  const maskedName = name.length > 2 ? `${name[0]}***${name[name.length - 1]}` : `${name[0]}***`;
   return `${maskedName}@${domain}`;
 }
 
@@ -121,18 +120,12 @@ export async function getReferralSummary(): Promise<ReferralSummary> {
   const protocol = host.includes("localhost") ? "http" : "https";
   const referralLink = `${protocol}://${host}/signup?ref=${referralCodeRecord.code}`;
 
-  const referralsList: ReferredUserItem[] = (
-    referralCodeRecord.referrals || []
-  ).map((r: any) => ({
+  const referralsList: ReferredUserItem[] = (referralCodeRecord.referrals || []).map((r: any) => ({
     id: r.id,
-    maskedEmail: r.referredUser?.email
-      ? maskEmail(r.referredUser.email)
-      : "referred_user",
+    maskedEmail: r.referredUser?.email ? maskEmail(r.referredUser.email) : "referred_user",
     status: r.status,
     rewardAmount: r.rewardAmount || 10.0,
-    createdAt: r.createdAt
-      ? new Date(r.createdAt).toISOString()
-      : new Date().toISOString(),
+    createdAt: r.createdAt ? new Date(r.createdAt).toISOString() : new Date().toISOString(),
   }));
 
   const totalConverted = referralsList.filter(
@@ -373,15 +366,9 @@ export async function getStatusPageLoopMetrics(
   const referralUrl = `${protocol}://${host}/r/${code}?utm_source=status_page&utm_medium=badge&utm_campaign=status_page_loop&utm_content=${slug}`;
 
   const baseVisitors =
-    statusPageViews > 0
-      ? statusPageViews
-      : referralClicks > 0
-        ? referralClicks
-        : 1;
+    statusPageViews > 0 ? statusPageViews : referralClicks > 0 ? referralClicks : 1;
   const conversionRate =
-    baseVisitors > 0
-      ? Number(((totalSignups / baseVisitors) * 100).toFixed(2))
-      : 0;
+    baseVisitors > 0 ? Number(((totalSignups / baseVisitors) * 100).toFixed(2)) : 0;
 
   return {
     statusPageViews,

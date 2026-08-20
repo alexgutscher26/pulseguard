@@ -23,21 +23,13 @@ export function CreationCommands() {
         shortcut="⌘N"
         onSelect={() => createMonitor("http")}
       />
-      <CommandItem
-        icon={Wifi}
-        label="Create Ping Monitor"
-        onSelect={() => createMonitor("ping")}
-      />
+      <CommandItem icon={Wifi} label="Create Ping Monitor" onSelect={() => createMonitor("ping")} />
       <CommandItem
         icon={Network}
         label="Create TCP Monitor"
         onSelect={() => createMonitor("tcp")}
       />
-      <CommandItem
-        icon={Server}
-        label="Create DNS Monitor"
-        onSelect={() => createMonitor("dns")}
-      />
+      <CommandItem icon={Server} label="Create DNS Monitor" onSelect={() => createMonitor("dns")} />
     </Command.Group>
   );
 }

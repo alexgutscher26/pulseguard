@@ -37,9 +37,9 @@ export default function BlogPage() {
             Engineering insights &amp; monitoring architecture
           </h1>
           <p className="text-muted-foreground text-sm sm:text-base leading-relaxed max-w-2xl">
-            In-depth technical guides on global edge consensus, zero-noise
-            alerting pipelines, SLA verification, and building distributed
-            infrastructure that doesn&apos;t wake you up at 3 AM.
+            In-depth technical guides on global edge consensus, zero-noise alerting pipelines, SLA
+            verification, and building distributed infrastructure that doesn&apos;t wake you up at 3
+            AM.
           </p>
         </div>
       </section>

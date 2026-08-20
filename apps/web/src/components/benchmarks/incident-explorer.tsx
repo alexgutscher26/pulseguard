@@ -17,10 +17,7 @@ import {
   Copy,
   Check,
 } from "lucide-react";
-import {
-  SAMPLE_INCIDENTS,
-  type IncidentRecord,
-} from "@/content/benchmarks-data";
+import { SAMPLE_INCIDENTS, type IncidentRecord } from "@/content/benchmarks-data";
 
 export function IncidentExplorer() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -28,12 +25,8 @@ export function IncidentExplorer() {
     "all" | "steadystack" | "uptimerobot" | "pingdom"
   >("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
-  const [statusFilter, setStatusFilter] = useState<
-    "all" | "true_outage" | "spurious"
-  >("all");
-  const [expandedIncidentId, setExpandedIncidentId] = useState<string | null>(
-    "INC-2026-0604-02",
-  );
+  const [statusFilter, setStatusFilter] = useState<"all" | "true_outage" | "spurious">("all");
+  const [expandedIncidentId, setExpandedIncidentId] = useState<string | null>("INC-2026-0604-02");
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const filteredIncidents = useMemo(() => {
@@ -42,14 +35,12 @@ export function IncidentExplorer() {
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
         const matchesEndpoint =
-          item.endpointName.toLowerCase().includes(q) ||
-          item.endpointId.toLowerCase().includes(q);
+          item.endpointName.toLowerCase().includes(q) || item.endpointId.toLowerCase().includes(q);
         const matchesType = item.failureTypeLabel.toLowerCase().includes(q);
         const matchesPostMortem =
           item.postMortem.toLowerCase().includes(q) ||
           item.serverIngressSummary.toLowerCase().includes(q);
-        if (!matchesEndpoint && !matchesType && !matchesPostMortem)
-          return false;
+        if (!matchesEndpoint && !matchesType && !matchesPostMortem) return false;
       }
 
       // Type filter
@@ -62,12 +53,9 @@ export function IncidentExplorer() {
       if (statusFilter === "spurious" && item.groundTruthDown) return false;
 
       // Provider filter
-      if (providerFilter === "steadystack" && !item.steadystack.alertTriggered)
-        return false;
-      if (providerFilter === "uptimerobot" && !item.uptimerobot.alertTriggered)
-        return false;
-      if (providerFilter === "pingdom" && !item.pingdom.alertTriggered)
-        return false;
+      if (providerFilter === "steadystack" && !item.steadystack.alertTriggered) return false;
+      if (providerFilter === "uptimerobot" && !item.uptimerobot.alertTriggered) return false;
+      if (providerFilter === "pingdom" && !item.pingdom.alertTriggered) return false;
 
       return true;
     });
@@ -96,17 +84,14 @@ export function IncidentExplorer() {
               Incident &amp; False Alarm Explorer
             </h2>
             <p className="text-muted-foreground text-sm max-w-xl mt-2">
-              Inspect ground-truth server logs, failure triggers, and
-              multi-region consensus votes across every benchmark incident.
+              Inspect ground-truth server logs, failure triggers, and multi-region consensus votes
+              across every benchmark incident.
             </p>
           </div>
 
           <div className="text-xs font-mono text-muted-foreground">
-            Showing{" "}
-            <strong className="text-foreground">
-              {filteredIncidents.length}
-            </strong>{" "}
-            of {SAMPLE_INCIDENTS.length} key audit cases
+            Showing <strong className="text-foreground">{filteredIncidents.length}</strong> of{" "}
+            {SAMPLE_INCIDENTS.length} key audit cases
           </div>
         </div>
 
@@ -168,8 +153,7 @@ export function IncidentExplorer() {
         <div className="rounded-2xl border border-border bg-card/60 overflow-hidden shadow-sm divide-y divide-border/60">
           {filteredIncidents.length === 0 ? (
             <div className="p-12 text-center text-muted-foreground text-xs font-mono">
-              No incidents match the active filter criteria. Reset filters to
-              view all entries.
+              No incidents match the active filter criteria. Reset filters to view all entries.
             </div>
           ) : (
             filteredIncidents.map((incident) => {
@@ -177,15 +161,10 @@ export function IncidentExplorer() {
               const isRealOutage = incident.groundTruthDown;
 
               return (
-                <div
-                  key={incident.id}
-                  className="transition-colors hover:bg-muted/10"
-                >
+                <div key={incident.id} className="transition-colors hover:bg-muted/10">
                   {/* Summary Row */}
                   <div
-                    onClick={() =>
-                      setExpandedIncidentId(isExpanded ? null : incident.id)
-                    }
+                    onClick={() => setExpandedIncidentId(isExpanded ? null : incident.id)}
                     className="p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer select-none"
                   >
                     <div className="flex items-start sm:items-center gap-3">
@@ -232,10 +211,7 @@ export function IncidentExplorer() {
                           }`}
                           title="SteadyStack Alert State"
                         >
-                          PG:{" "}
-                          {incident.steadystack.alertTriggered
-                            ? "PAGED"
-                            : "REJECTED"}
+                          PG: {incident.steadystack.alertTriggered ? "PAGED" : "REJECTED"}
                         </div>
 
                         {/* UptimeRobot Status */}
@@ -247,8 +223,7 @@ export function IncidentExplorer() {
                           }`}
                           title="UptimeRobot Alert State"
                         >
-                          UR:{" "}
-                          {incident.uptimerobot.alertTriggered ? "ALERT" : "OK"}
+                          UR: {incident.uptimerobot.alertTriggered ? "ALERT" : "OK"}
                         </div>
 
                         {/* Pingdom Status */}
@@ -283,17 +258,14 @@ export function IncidentExplorer() {
                         <div className="p-3.5 rounded-xl border border-emerald-500/20 bg-emerald-950/10">
                           <div className="flex items-center justify-between text-emerald-400 font-bold mb-2">
                             <span>SteadyStack Verdict</span>
-                            <span>
-                              {incident.steadystack.timeToVerdictMs}ms
-                            </span>
+                            <span>{incident.steadystack.timeToVerdictMs}ms</span>
                           </div>
                           <p className="text-[11px] text-muted-foreground font-sans leading-relaxed mb-2">
                             {incident.steadystack.verdictDescription}
                           </p>
                           <div className="text-[10px] text-emerald-400/80">
                             Failed Nodes: {incident.steadystack.regionsFailed} /{" "}
-                            {incident.steadystack.regionsTested} (Quorum target:
-                            4)
+                            {incident.steadystack.regionsTested} (Quorum target: 4)
                           </div>
                         </div>
 
@@ -301,12 +273,7 @@ export function IncidentExplorer() {
                         <div className="p-3.5 rounded-xl border border-border bg-card/60">
                           <div className="flex items-center justify-between text-sky-400 font-bold mb-2">
                             <span>UptimeRobot Verdict</span>
-                            <span>
-                              {(
-                                incident.uptimerobot.timeToVerdictMs / 1000
-                              ).toFixed(1)}
-                              s
-                            </span>
+                            <span>{(incident.uptimerobot.timeToVerdictMs / 1000).toFixed(1)}s</span>
                           </div>
                           <p className="text-[11px] text-muted-foreground font-sans leading-relaxed">
                             {incident.uptimerobot.verdictDescription}
@@ -317,12 +284,7 @@ export function IncidentExplorer() {
                         <div className="p-3.5 rounded-xl border border-border bg-card/60">
                           <div className="flex items-center justify-between text-amber-400 font-bold mb-2">
                             <span>Pingdom Verdict</span>
-                            <span>
-                              {(
-                                incident.pingdom.timeToVerdictMs / 1000
-                              ).toFixed(1)}
-                              s
-                            </span>
+                            <span>{(incident.pingdom.timeToVerdictMs / 1000).toFixed(1)}s</span>
                           </div>
                           <p className="text-[11px] text-muted-foreground font-sans leading-relaxed">
                             {incident.pingdom.verdictDescription}
@@ -334,8 +296,7 @@ export function IncidentExplorer() {
                       <div className="p-3.5 rounded-xl border border-border/80 bg-background/80 mb-3">
                         <div className="flex items-center justify-between mb-1.5">
                           <span className="font-bold text-foreground text-[11px] uppercase tracking-wider">
-                            Ground-Truth Server Ingress Audit (ClickHouse
-                            Ingress Log)
+                            Ground-Truth Server Ingress Audit (ClickHouse Ingress Log)
                           </span>
                           <span
                             className={`text-[10px] font-bold px-2 py-0.5 rounded ${
@@ -344,9 +305,7 @@ export function IncidentExplorer() {
                                 : "bg-emerald-500/20 text-emerald-400"
                             }`}
                           >
-                            {isRealOutage
-                              ? "GROUND TRUTH: DOWN"
-                              : "GROUND TRUTH: 100% HEALTHY"}
+                            {isRealOutage ? "GROUND TRUTH: DOWN" : "GROUND TRUTH: 100% HEALTHY"}
                           </span>
                         </div>
                         <p className="text-[11px] text-muted-foreground font-sans leading-relaxed">
@@ -356,19 +315,14 @@ export function IncidentExplorer() {
 
                       <div className="flex flex-wrap items-center justify-between gap-3 text-[11px] text-muted-foreground font-sans pt-1">
                         <div>
-                          <strong className="text-foreground font-mono">
-                            Post-Mortem:{" "}
-                          </strong>
+                          <strong className="text-foreground font-mono">Post-Mortem: </strong>
                           {incident.postMortem}
                         </div>
 
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleCopy(
-                              incident.id,
-                              JSON.stringify(incident, null, 2),
-                            );
+                            handleCopy(incident.id, JSON.stringify(incident, null, 2));
                           }}
                           className="inline-flex items-center gap-1 text-[10px] font-mono text-muted-foreground hover:text-foreground px-2 py-1 rounded border border-border bg-background"
                         >

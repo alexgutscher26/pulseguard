@@ -44,10 +44,7 @@ export async function authenticateApiKey(
 
   if (!apiKey) {
     return {
-      errorResponse: NextResponse.json(
-        { error: "Unauthorized: Invalid API key" },
-        { status: 401 },
-      ),
+      errorResponse: NextResponse.json({ error: "Unauthorized: Invalid API key" }, { status: 401 }),
     };
   }
 

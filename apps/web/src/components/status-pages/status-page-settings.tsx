@@ -71,15 +71,9 @@ const themes = [
   },
 ];
 
-export function StatusPageSettings({
-  page,
-  onLiveChange,
-}: StatusPageSettingsProps) {
+export function StatusPageSettings({ page, onLiveChange }: StatusPageSettingsProps) {
   const updateWithId = updateStatusPage.bind(null, page.id);
-  const [state, formAction, isPending] = useActionState(
-    updateWithId,
-    initialState,
-  );
+  const [state, formAction, isPending] = useActionState(updateWithId, initialState);
 
   // Parse existing theme
   const currentTheme = (page.theme as any)?.value || "cyberpunk";
@@ -95,9 +89,7 @@ export function StatusPageSettings({
   });
 
   // Parse custom footer links
-  const [footerLinks, setFooterLinks] = useState<
-    { label: string; url: string }[]
-  >(() => {
+  const [footerLinks, setFooterLinks] = useState<{ label: string; url: string }[]>(() => {
     try {
       return Array.isArray(page.footerLinks) ? page.footerLinks : [];
     } catch {
@@ -151,9 +143,7 @@ export function StatusPageSettings({
                 <textarea
                   name="description"
                   defaultValue={page.description || ""}
-                  onChange={(e) =>
-                    onLiveChange?.({ description: e.target.value })
-                  }
+                  onChange={(e) => onLiveChange?.({ description: e.target.value })}
                   rows={2}
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
                 />
@@ -165,9 +155,7 @@ export function StatusPageSettings({
                 <input
                   name="customDomain"
                   defaultValue={page.customDomain || ""}
-                  onChange={(e) =>
-                    onLiveChange?.({ customDomain: e.target.value })
-                  }
+                  onChange={(e) => onLiveChange?.({ customDomain: e.target.value })}
                   placeholder="status.example.com"
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
                 />
@@ -190,16 +178,11 @@ export function StatusPageSettings({
                   type="checkbox"
                   name="seoIndex"
                   defaultChecked={page.seoIndex !== false}
-                  onChange={(e) =>
-                    onLiveChange?.({ seoIndex: e.target.checked })
-                  }
+                  onChange={(e) => onLiveChange?.({ seoIndex: e.target.checked })}
                   id="seoIndex"
                   className="accent-primary size-4"
                 />
-                <label
-                  htmlFor="seoIndex"
-                  className="text-sm font-bold text-foreground"
-                >
+                <label htmlFor="seoIndex" className="text-sm font-bold text-foreground">
                   Allow Indexing by Search Engines
                 </label>
               </div>
@@ -209,9 +192,7 @@ export function StatusPageSettings({
                   type="checkbox"
                   name="showInShowcase"
                   defaultChecked={page.showInShowcase === true}
-                  onChange={(e) =>
-                    onLiveChange?.({ showInShowcase: e.target.checked })
-                  }
+                  onChange={(e) => onLiveChange?.({ showInShowcase: e.target.checked })}
                   id="showInShowcase"
                   className="accent-primary size-4"
                 />
@@ -224,10 +205,7 @@ export function StatusPageSettings({
                   </label>
                   <p className="text-[10px] text-muted-foreground font-mono mt-0.5">
                     Display this page in the public{" "}
-                    <a
-                      href="/showcase"
-                      className="text-primary hover:underline"
-                    >
+                    <a href="/showcase" className="text-primary hover:underline">
                       showcase gallery
                     </a>
                     . Only available for public (non-password-protected) pages.
@@ -242,9 +220,7 @@ export function StatusPageSettings({
                 <input
                   name="metaTitle"
                   defaultValue={page.metaTitle || ""}
-                  onChange={(e) =>
-                    onLiveChange?.({ metaTitle: e.target.value })
-                  }
+                  onChange={(e) => onLiveChange?.({ metaTitle: e.target.value })}
                   placeholder="Custom title tag for search engines"
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
                 />
@@ -257,9 +233,7 @@ export function StatusPageSettings({
                 <textarea
                   name="metaDescription"
                   defaultValue={page.metaDescription || ""}
-                  onChange={(e) =>
-                    onLiveChange?.({ metaDescription: e.target.value })
-                  }
+                  onChange={(e) => onLiveChange?.({ metaDescription: e.target.value })}
                   rows={2}
                   placeholder="Custom meta description summary"
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
@@ -273,9 +247,7 @@ export function StatusPageSettings({
                 <input
                   name="ogImageUrl"
                   defaultValue={page.ogImageUrl || ""}
-                  onChange={(e) =>
-                    onLiveChange?.({ ogImageUrl: e.target.value })
-                  }
+                  onChange={(e) => onLiveChange?.({ ogImageUrl: e.target.value })}
                   placeholder="https://example.com/social-card.png"
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
                 />
@@ -294,16 +266,11 @@ export function StatusPageSettings({
                 type="checkbox"
                 name="isPrivate"
                 defaultChecked={page.isPrivate}
-                onChange={(e) =>
-                  onLiveChange?.({ isPrivate: e.target.checked })
-                }
+                onChange={(e) => onLiveChange?.({ isPrivate: e.target.checked })}
                 id="isPrivate"
                 className="accent-primary size-4"
               />
-              <label
-                htmlFor="isPrivate"
-                className="text-sm font-bold text-foreground"
-              >
+              <label htmlFor="isPrivate" className="text-sm font-bold text-foreground">
                 Make Page Private
               </label>
             </div>
@@ -327,9 +294,7 @@ export function StatusPageSettings({
               <input
                 name="ipWhitelist"
                 defaultValue={page.ipWhitelist || ""}
-                onChange={(e) =>
-                  onLiveChange?.({ ipWhitelist: e.target.value })
-                }
+                onChange={(e) => onLiveChange?.({ ipWhitelist: e.target.value })}
                 placeholder="192.168.1.1, 10.0.0.1"
                 className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
               />
@@ -352,8 +317,7 @@ export function StatusPageSettings({
                 name:
                   selectedTheme === "custom"
                     ? "Custom"
-                    : themes.find((t) => t.value === selectedTheme)?.name ||
-                      "Custom",
+                    : themes.find((t) => t.value === selectedTheme)?.name || "Custom",
                 value: selectedTheme,
                 colors: customColors,
               })}
@@ -403,9 +367,7 @@ export function StatusPageSettings({
                         style={{ backgroundColor: theme.colors.primary }}
                       />
                     </div>
-                    <span className="font-mono text-[10px] font-bold uppercase">
-                      {theme.name}
-                    </span>
+                    <span className="font-mono text-[10px] font-bold uppercase">{theme.name}</span>
                   </div>
                 </button>
               ))}
@@ -442,16 +404,12 @@ export function StatusPageSettings({
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />
-                    <span className="text-xs font-mono uppercase">
-                      {customColors.bg}
-                    </span>
+                    <span className="text-xs font-mono uppercase">{customColors.bg}</span>
                   </div>
                 </div>
 
                 <div className="space-y-1">
-                  <div className="text-[9px] font-mono text-muted-foreground uppercase">
-                    Text
-                  </div>
+                  <div className="text-[9px] font-mono text-muted-foreground uppercase">Text</div>
                   <div className="flex items-center gap-2">
                     <input
                       type="color"
@@ -473,9 +431,7 @@ export function StatusPageSettings({
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />
-                    <span className="text-xs font-mono uppercase">
-                      {customColors.text}
-                    </span>
+                    <span className="text-xs font-mono uppercase">{customColors.text}</span>
                   </div>
                 </div>
 
@@ -504,9 +460,7 @@ export function StatusPageSettings({
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />
-                    <span className="text-xs font-mono uppercase">
-                      {customColors.primary}
-                    </span>
+                    <span className="text-xs font-mono uppercase">{customColors.primary}</span>
                   </div>
                 </div>
 
@@ -535,16 +489,12 @@ export function StatusPageSettings({
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />
-                    <span className="text-xs font-mono uppercase">
-                      {customColors.degraded}
-                    </span>
+                    <span className="text-xs font-mono uppercase">{customColors.degraded}</span>
                   </div>
                 </div>
 
                 <div className="space-y-1">
-                  <div className="text-[9px] font-mono text-muted-foreground uppercase">
-                    Outage
-                  </div>
+                  <div className="text-[9px] font-mono text-muted-foreground uppercase">Outage</div>
                   <div className="flex items-center gap-2">
                     <input
                       type="color"
@@ -566,9 +516,7 @@ export function StatusPageSettings({
                       }}
                       className="bg-transparent border border-white/10 rounded-sm size-8 cursor-pointer outline-none"
                     />
-                    <span className="text-xs font-mono uppercase">
-                      {customColors.error}
-                    </span>
+                    <span className="text-xs font-mono uppercase">{customColors.error}</span>
                   </div>
                 </div>
               </div>
@@ -576,11 +524,7 @@ export function StatusPageSettings({
 
             {/* Branding */}
             <div className="space-y-4 pt-4 border-t border-white/5">
-              <input
-                type="hidden"
-                name="footerLinks"
-                value={JSON.stringify(footerLinks)}
-              />
+              <input type="hidden" name="footerLinks" value={JSON.stringify(footerLinks)} />
 
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest font-mono">
@@ -615,9 +559,7 @@ export function StatusPageSettings({
                 <input
                   name="homepageUrl"
                   defaultValue={page.homepageUrl || ""}
-                  onChange={(e) =>
-                    onLiveChange?.({ homepageUrl: e.target.value })
-                  }
+                  onChange={(e) => onLiveChange?.({ homepageUrl: e.target.value })}
                   placeholder="https://yourcompany.com"
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
                 />
@@ -631,9 +573,7 @@ export function StatusPageSettings({
                 <input
                   name="contactUrl"
                   defaultValue={page.contactUrl || ""}
-                  onChange={(e) =>
-                    onLiveChange?.({ contactUrl: e.target.value })
-                  }
+                  onChange={(e) => onLiveChange?.({ contactUrl: e.target.value })}
                   placeholder="https://support.yourcompany.com or mailto:support@company.com"
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
                 />
@@ -672,9 +612,7 @@ export function StatusPageSettings({
                       <button
                         type="button"
                         onClick={() => {
-                          const updated = footerLinks.filter(
-                            (_, i) => i !== idx,
-                          );
+                          const updated = footerLinks.filter((_, i) => i !== idx);
                           setFooterLinks(updated);
                           onLiveChange?.({ footerLinks: updated });
                         }}
@@ -707,9 +645,7 @@ export function StatusPageSettings({
                 <textarea
                   name="customCss"
                   defaultValue={page.customCss || ""}
-                  onChange={(e) =>
-                    onLiveChange?.({ customCss: e.target.value })
-                  }
+                  onChange={(e) => onLiveChange?.({ customCss: e.target.value })}
                   rows={3}
                   placeholder=".body { ... }"
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
@@ -729,8 +665,7 @@ export function StatusPageSettings({
                   className="w-full bg-black/50 border border-white/10 p-2 rounded-sm text-sm font-mono focus:border-primary/50 outline-none transition-colors"
                 />
                 <p className="text-[9px] text-muted-foreground font-mono">
-                  Injected before the closing body tag. Do not include
-                  &lt;script&gt; tags.
+                  Injected before the closing body tag. Do not include &lt;script&gt; tags.
                 </p>
               </div>
             </div>
@@ -786,10 +721,7 @@ export function StatusPageSettings({
 
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <label
-                  htmlFor="showUptime"
-                  className="text-sm font-mono text-muted-foreground"
-                >
+                <label htmlFor="showUptime" className="text-sm font-mono text-muted-foreground">
                   Show Uptime Percentage
                 </label>
                 <input
@@ -797,9 +729,7 @@ export function StatusPageSettings({
                   name="showUptime"
                   id="showUptime"
                   defaultChecked={page.showUptime ?? true}
-                  onChange={(e) =>
-                    onLiveChange?.({ showUptime: e.target.checked })
-                  }
+                  onChange={(e) => onLiveChange?.({ showUptime: e.target.checked })}
                   className="accent-primary size-4"
                 />
               </div>
@@ -815,17 +745,12 @@ export function StatusPageSettings({
                   name="showResponseTime"
                   id="showResponseTime"
                   defaultChecked={page.showResponseTime ?? true}
-                  onChange={(e) =>
-                    onLiveChange?.({ showResponseTime: e.target.checked })
-                  }
+                  onChange={(e) => onLiveChange?.({ showResponseTime: e.target.checked })}
                   className="accent-primary size-4"
                 />
               </div>
               <div className="flex items-center justify-between">
-                <label
-                  htmlFor="showPaused"
-                  className="text-sm font-mono text-muted-foreground"
-                >
+                <label htmlFor="showPaused" className="text-sm font-mono text-muted-foreground">
                   Show Paused Monitors
                 </label>
                 <input
@@ -833,9 +758,7 @@ export function StatusPageSettings({
                   name="showPaused"
                   id="showPaused"
                   defaultChecked={page.showPaused ?? false}
-                  onChange={(e) =>
-                    onLiveChange?.({ showPaused: e.target.checked })
-                  }
+                  onChange={(e) => onLiveChange?.({ showPaused: e.target.checked })}
                   className="accent-primary size-4"
                 />
               </div>

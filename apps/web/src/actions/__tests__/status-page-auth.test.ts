@@ -1,10 +1,5 @@
 import { describe, test, expect } from "bun:test";
-import {
-  hashPassword,
-  verifyPassword,
-  signAuthToken,
-  verifyAuthToken,
-} from "@steadystack/core";
+import { hashPassword, verifyPassword, signAuthToken, verifyAuthToken } from "@steadystack/core";
 
 describe("Status Page Security & Cryptographic Gate Tests (P0-SEC-01)", () => {
   const secretKey = "steadystack-test-secret-key-32chars-minimum-safe-entropy";
@@ -33,11 +28,7 @@ describe("Status Page Security & Cryptographic Gate Tests (P0-SEC-01)", () => {
   });
 
   test("static string 'authenticated' is rejected as invalid token", async () => {
-    const isBypassed = await verifyAuthToken(
-      "authenticated",
-      pageId,
-      secretKey,
-    );
+    const isBypassed = await verifyAuthToken("authenticated", pageId, secretKey);
     expect(isBypassed).toBe(false);
   });
 

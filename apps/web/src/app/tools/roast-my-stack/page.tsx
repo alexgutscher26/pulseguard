@@ -35,9 +35,8 @@ export default function RoastMyStackPage() {
               Roast My Stack
             </h1>
             <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto">
-              Enter a URL and SteadyStack will ruthlessly analyze your tech
-              stack. TTFB, SSL, DNS, headers &mdash; we check everything so you
-              can fix what's broken.
+              Enter a URL and SteadyStack will ruthlessly analyze your tech stack. TTFB, SSL, DNS,
+              headers &mdash; we check everything so you can fix what's broken.
             </p>
           </div>
 

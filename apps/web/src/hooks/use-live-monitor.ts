@@ -3,8 +3,7 @@ import { getSessionToken } from "@/actions/monitors";
 
 // Default to localhost:8787 if not set.
 // Ensure your worker is running on this port or update .env
-const WORKER_URL =
-  process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";
+const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";
 
 export type LiveCheckResult = {
   type: "check_result";
@@ -54,19 +53,14 @@ export function useLiveMonitor(monitorId: string) {
             }
           }
 
-          const latency =
-            status === "UP"
-              ? Math.floor(baseLatency + (Math.random() - 0.5) * 8)
-              : 0;
+          const latency = status === "UP" ? Math.floor(baseLatency + (Math.random() - 0.5) * 8) : 0;
 
           setLastEvent({
             type: "check_result",
             monitorId,
             status,
             latency,
-            region: ["US-East", "US-West", "EU-West", "Asia"][
-              Math.floor(Math.random() * 4)
-            ],
+            region: ["US-East", "US-West", "EU-West", "Asia"][Math.floor(Math.random() * 4)],
             timestamp: Date.now(),
           });
         },
@@ -95,8 +89,7 @@ export function useLiveMonitor(monitorId: string) {
         wsBaseUrl = wsBaseUrl.replace("https://", "wss://");
       } else if (!wsBaseUrl.includes("://")) {
         // Fallback if just domain given
-        const protocol =
-          window.location.protocol === "https:" ? "wss://" : "ws://";
+        const protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
         wsBaseUrl = `${protocol}${wsBaseUrl}`;
       }
 
@@ -106,10 +99,7 @@ export function useLiveMonitor(monitorId: string) {
       }
 
       const connect = () => {
-        console.log(
-          "[SteadyStack] Connecting to Live Feed:",
-          urlObj.toString(),
-        );
+        console.log("[SteadyStack] Connecting to Live Feed:", urlObj.toString());
         ws = new WebSocket(urlObj.toString());
 
         ws.onopen = () => {

@@ -84,16 +84,12 @@ export async function getLicenseTelemetry() {
 
     const { getUserPlan } = await import("@/lib/billing-server");
     const userPlan = await getUserPlan(session.user.id);
-    const userTier = (
-      dbUser?.tier === "ADMIN" ? "ADMIN" : userPlan
-    ).toUpperCase();
+    const userTier = (dbUser?.tier === "ADMIN" ? "ADMIN" : userPlan).toUpperCase();
     const adminEmails = (process.env.ADMIN_EMAILS || "")
       .split(",")
       .map((e) => e.trim().toLowerCase())
       .filter(Boolean);
-    const userEmail = (dbUser?.email || session.user.email || "")
-      .trim()
-      .toLowerCase();
+    const userEmail = (dbUser?.email || session.user.email || "").trim().toLowerCase();
     const isEmailAdmin = Boolean(userEmail && adminEmails.includes(userEmail));
     const isAdmin = userTier === "ADMIN" || isEmailAdmin;
 
@@ -136,25 +132,16 @@ export async function getLicenseTelemetry() {
     return {
       tier: fallbackTier,
       isAdmin: false,
-      edgeNodes:
-        fallbackTier === "INITIATE" ? "3 Nodes (2-of-3)" : "7 Nodes (4-of-7)",
+      edgeNodes: fallbackTier === "INITIATE" ? "3 Nodes (2-of-3)" : "7 Nodes (4-of-7)",
       vpcProbeCount: 0,
-      maxVpcProbes:
-        fallbackTier === "NETRUNNER"
-          ? 3
-          : fallbackTier === "CONSTRUCT"
-            ? 10
-            : 0,
+      maxVpcProbes: fallbackTier === "NETRUNNER" ? 3 : fallbackTier === "CONSTRUCT" ? 10 : 0,
       pingInterval:
         fallbackTier === "NETRUNNER"
           ? "30s Rapid"
           : fallbackTier === "CONSTRUCT"
             ? "10s Ultra-Fast"
             : "3m / 1m Fast",
-      regions:
-        fallbackTier === "INITIATE"
-          ? "3 Primary Regions"
-          : "7 Sovereign Regions",
+      regions: fallbackTier === "INITIATE" ? "3 Primary Regions" : "7 Sovereign Regions",
     };
   }
 }

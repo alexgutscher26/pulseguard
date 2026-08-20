@@ -4,22 +4,8 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Terminal,
-  Loader2,
-  Lock,
-  CheckCircle2,
-  XCircle,
-  AlertTriangle,
-  Play,
-} from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Terminal, Loader2, Lock, CheckCircle2, XCircle, AlertTriangle, Play } from "lucide-react";
 import { toast } from "@/components/ui/sonner";
 import {
   Dialog,
@@ -33,8 +19,7 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
-const WORKER_URL =
-  process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";
+const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";
 
 interface PortResult {
   host: string;
@@ -129,9 +114,7 @@ export function PortChecker() {
     addLog("=== INITIATING BATCH DIAGNOSTIC ===");
     addLog(`TARGET: ${host}`);
 
-    const BATCH_PORTS = [
-      80, 443, 22, 21, 25, 53, 3306, 5432, 8080, 25565, 32400,
-    ];
+    const BATCH_PORTS = [80, 443, 22, 21, 25, 53, 3306, 5432, 8080, 25565, 32400];
 
     let openCount = 0;
 
@@ -187,9 +170,7 @@ export function PortChecker() {
               <Terminal className="h-5 w-5 text-primary" />
               TCP_CONNECTION_PROBE
             </CardTitle>
-            <CardDescription>
-              Test outbound connectivity to your services.
-            </CardDescription>
+            <CardDescription>Test outbound connectivity to your services.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <form onSubmit={handleCheck} className="space-y-4">
@@ -294,9 +275,7 @@ export function PortChecker() {
               <AlertTriangle className="h-5 w-5 text-yellow-500" />
               BATCH_OPERATION
             </CardTitle>
-            <CardDescription>
-              Scan common vulnerability points simultaneously.
-            </CardDescription>
+            <CardDescription>Scan common vulnerability points simultaneously.</CardDescription>
           </CardHeader>
 
           <CardContent className="flex-1 flex flex-col relative">
@@ -307,10 +286,7 @@ export function PortChecker() {
               )}
             >
               {logs.map((log, i) => (
-                <div
-                  key={i}
-                  className="mb-1 animate-in slide-in-from-left-2 fade-in duration-300"
-                >
+                <div key={i} className="mb-1 animate-in slide-in-from-left-2 fade-in duration-300">
                   {log}
                 </div>
               ))}
@@ -342,10 +318,7 @@ export function PortChecker() {
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label
-                htmlFor="email"
-                className="uppercase text-xs text-muted-foreground"
-              >
+              <Label htmlFor="email" className="uppercase text-xs text-muted-foreground">
                 Operator Email
               </Label>
               <Input
@@ -364,9 +337,7 @@ export function PortChecker() {
               disabled={isEmailSubmitting}
               className="w-full font-mono font-bold tracking-wider"
             >
-              {isEmailSubmitting && (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              )}
+              {isEmailSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               AUTHORIZE_ACCESS
             </Button>
           </DialogFooter>

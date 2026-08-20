@@ -58,9 +58,7 @@ export function StatusPageMessageEditor({
   // My logic in `page.tsx` used `set(messages, key, value)` which works with flat dot-notation keys.
   // So we will assume flat keys state.
 
-  const [formData, setFormData] = useState<Record<string, string>>(
-    initialOverrides || {},
-  );
+  const [formData, setFormData] = useState<Record<string, string>>(initialOverrides || {});
 
   const handleSave = async () => {
     setLoading(true);

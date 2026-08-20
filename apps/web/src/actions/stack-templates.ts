@@ -33,13 +33,9 @@ export async function applyTemplate(
 
   const userId = session.user.id;
   const user = session.user;
-  const tier = (user.tier ?? "INITIATE") as
-    "INITIATE" | "NETRUNNER" | "CONSTRUCT";
+  const tier = (user.tier ?? "INITIATE") as "INITIATE" | "NETRUNNER" | "CONSTRUCT";
 
-  const tierLimits: Record<
-    string,
-    { maxMonitors: number; minInterval: number }
-  > = {
+  const tierLimits: Record<string, { maxMonitors: number; minInterval: number }> = {
     INITIATE: { maxMonitors: 50, minInterval: 60 },
     NETRUNNER: { maxMonitors: 200, minInterval: 30 },
     CONSTRUCT: { maxMonitors: 9999, minInterval: 10 },
@@ -68,17 +64,7 @@ export async function applyTemplate(
 
   const allowedTypes: Record<string, string[]> = {
     INITIATE: ["HTTP", "SSL", "DNS", "HEARTBEAT"],
-    NETRUNNER: [
-      "HTTP",
-      "PING",
-      "PORT",
-      "SEQUENCE",
-      "SSL",
-      "DNS",
-      "HEARTBEAT",
-      "MCP",
-      "DATABASE",
-    ],
+    NETRUNNER: ["HTTP", "PING", "PORT", "SEQUENCE", "SSL", "DNS", "HEARTBEAT", "MCP", "DATABASE"],
     CONSTRUCT: [
       "HTTP",
       "PING",
@@ -166,10 +152,7 @@ export async function applyTemplate(
     } catch (error) {
       errors.push({
         name: preset.name,
-        reason:
-          error instanceof Error
-            ? error.message
-            : "Unknown error creating monitor",
+        reason: error instanceof Error ? error.message : "Unknown error creating monitor",
       });
     }
   }

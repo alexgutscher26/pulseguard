@@ -44,10 +44,7 @@ export function PrivacyForm() {
     setSavingLeaderboard(true);
     try {
       const { updateLeaderboardPrivacy } = await import("@/actions/privacy");
-      const result = await updateLeaderboardPrivacy(
-        showLeaderboard,
-        leaderboardBio,
-      );
+      const result = await updateLeaderboardPrivacy(showLeaderboard, leaderboardBio);
       if (result.success) {
         toast.success("Leaderboard privacy settings saved");
       }
@@ -66,11 +63,8 @@ export function PrivacyForm() {
     if (!report) return;
     setAnonymizing(true);
     try {
-      const { updateAnalyticsAnonymization } =
-        await import("@/actions/privacy");
-      const result = await updateAnalyticsAnonymization(
-        !report.anonymizeAnalytics,
-      );
+      const { updateAnalyticsAnonymization } = await import("@/actions/privacy");
+      const result = await updateAnalyticsAnonymization(!report.anonymizeAnalytics);
       if (result.success) {
         setReport({
           ...report,
@@ -123,9 +117,7 @@ export function PrivacyForm() {
       <section className="bg-black/40 border border-primary/20 relative overflow-hidden backdrop-blur-sm">
         <div className="p-6 flex items-center justify-center gap-3">
           <Loader2 className="size-5 animate-spin text-primary" />
-          <span className="text-xs font-mono text-primary/60">
-            Loading intelligence report...
-          </span>
+          <span className="text-xs font-mono text-primary/60">Loading intelligence report...</span>
         </div>
       </section>
     );
@@ -136,9 +128,7 @@ export function PrivacyForm() {
       <section className="bg-black/40 border border-red-500/30 relative overflow-hidden backdrop-blur-sm">
         <div className="p-6 flex items-center gap-3">
           <AlertTriangle className="size-5 text-red-500" />
-          <span className="text-xs font-mono text-red-500/80">
-            Failed to load privacy report
-          </span>
+          <span className="text-xs font-mono text-red-500/80">Failed to load privacy report</span>
         </div>
       </section>
     );
@@ -151,8 +141,8 @@ export function PrivacyForm() {
           Privacy Intelligence
         </h2>
         <p className="text-xs text-muted-foreground leading-relaxed">
-          Full transparency on what data SteadyStack collects, how it is used,
-          and how long it is retained. Your uptime metrics belong to you.
+          Full transparency on what data SteadyStack collects, how it is used, and how long it is
+          retained. Your uptime metrics belong to you.
         </p>
       </div>
 
@@ -173,25 +163,19 @@ export function PrivacyForm() {
               <span className="text-[10px] font-mono text-primary/50 uppercase tracking-wider">
                 Account
               </span>
-              <p className="text-sm font-mono text-foreground mt-1 truncate">
-                {report.userName}
-              </p>
+              <p className="text-sm font-mono text-foreground mt-1 truncate">{report.userName}</p>
             </div>
             <div className="border border-primary/10 bg-black/30 p-3">
               <span className="text-[10px] font-mono text-primary/50 uppercase tracking-wider">
                 Email
               </span>
-              <p className="text-sm font-mono text-foreground mt-1 truncate">
-                {report.userEmail}
-              </p>
+              <p className="text-sm font-mono text-foreground mt-1 truncate">{report.userEmail}</p>
             </div>
             <div className="border border-primary/10 bg-black/30 p-3">
               <span className="text-[10px] font-mono text-primary/50 uppercase tracking-wider">
                 Tier
               </span>
-              <p className="text-sm font-mono text-foreground mt-1">
-                {report.tier}
-              </p>
+              <p className="text-sm font-mono text-foreground mt-1">{report.tier}</p>
             </div>
             <div className="border border-primary/10 bg-black/30 p-3">
               <span className="text-[10px] font-mono text-primary/50 uppercase tracking-wider">
@@ -216,10 +200,8 @@ export function PrivacyForm() {
             </h3>
           </div>
           <p className="text-xs text-primary/60 font-mono mt-1">
-            {report.totalMonitors} monitors &bull;{" "}
-            {report.totalEvents.toLocaleString()} events &bull;{" "}
-            {report.totalIncidents} incidents &bull; {report.totalStatusPages}{" "}
-            status pages
+            {report.totalMonitors} monitors &bull; {report.totalEvents.toLocaleString()} events
+            &bull; {report.totalIncidents} incidents &bull; {report.totalStatusPages} status pages
           </p>
         </div>
         <div className="p-6">
@@ -256,9 +238,7 @@ export function PrivacyForm() {
                     <td className="py-2.5 px-2 text-primary/70 text-[10px] max-w-[200px] leading-relaxed">
                       {item.description}
                     </td>
-                    <td className="py-2.5 px-2 text-primary/70 text-[10px]">
-                      {item.retention}
-                    </td>
+                    <td className="py-2.5 px-2 text-primary/70 text-[10px]">{item.retention}</td>
                     <td className="py-2.5 px-2 text-primary/70 text-[10px] max-w-[160px] leading-relaxed">
                       {item.purpose}
                     </td>
@@ -272,9 +252,7 @@ export function PrivacyForm() {
                             item.anonymized
                               ? "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 hover:border-primary/40"
                               : "bg-transparent text-primary/40 border-primary/10 hover:bg-primary/10 hover:text-primary hover:border-primary/25",
-                            anonymizing
-                              ? "opacity-50 cursor-not-allowed"
-                              : "cursor-pointer",
+                            anonymizing ? "opacity-50 cursor-not-allowed" : "cursor-pointer",
                           )}
                         >
                           {anonymizing ? (
@@ -312,9 +290,8 @@ export function PrivacyForm() {
                 Status Page Analytics Anonymization
               </span>
               <span className="text-[10px] text-primary/60 font-mono leading-relaxed max-w-lg">
-                When enabled, visitor IP addresses are hashed with a salt before
-                storage. No raw IPs are retained in analytics. Recommended for
-                GDPR compliance.
+                When enabled, visitor IP addresses are hashed with a salt before storage. No raw IPs
+                are retained in analytics. Recommended for GDPR compliance.
               </span>
             </div>
             <button
@@ -322,17 +299,13 @@ export function PrivacyForm() {
               disabled={anonymizing}
               className={cn(
                 "relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 outline-none focus:ring-1 focus:ring-primary/40 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer",
-                report.anonymizeAnalytics
-                  ? "bg-primary"
-                  : "bg-zinc-700 dark:bg-zinc-800",
+                report.anonymizeAnalytics ? "bg-primary" : "bg-zinc-700 dark:bg-zinc-800",
               )}
             >
               <span
                 className={cn(
                   "inline-block size-4 rounded-full bg-white shadow-sm transition-transform duration-200",
-                  report.anonymizeAnalytics
-                    ? "translate-x-[24px]"
-                    : "translate-x-[4px]",
+                  report.anonymizeAnalytics ? "translate-x-[24px]" : "translate-x-[4px]",
                 )}
               />
             </button>
@@ -344,9 +317,9 @@ export function PrivacyForm() {
                 Export Personal Data
               </span>
               <span className="text-[10px] text-primary/60 font-mono leading-relaxed max-w-lg">
-                Download a complete archive of all personal data associated with
-                your account, formatted as JSON. Includes account details,
-                monitors, events, incidents, and notification configurations.
+                Download a complete archive of all personal data associated with your account,
+                formatted as JSON. Includes account details, monitors, events, incidents, and
+                notification configurations.
               </span>
             </div>
             <button
@@ -385,9 +358,8 @@ export function PrivacyForm() {
                   Data Minimization
                 </span>
                 <span className="text-[10px] text-primary/60 font-mono leading-relaxed">
-                  SteadyStack collects only the data necessary to perform
-                  monitoring and alerting. No superfluous tracking, telemetry,
-                  or behavioral analytics.
+                  SteadyStack collects only the data necessary to perform monitoring and alerting.
+                  No superfluous tracking, telemetry, or behavioral analytics.
                 </span>
               </div>
             </div>
@@ -398,9 +370,8 @@ export function PrivacyForm() {
                   Purpose Limitation
                 </span>
                 <span className="text-[10px] text-primary/60 font-mono leading-relaxed">
-                  Data is used exclusively for the purpose it was collected:
-                  monitoring your services. Your uptime metrics are never sold,
-                  shared, or used for advertising.
+                  Data is used exclusively for the purpose it was collected: monitoring your
+                  services. Your uptime metrics are never sold, shared, or used for advertising.
                 </span>
               </div>
             </div>
@@ -411,9 +382,8 @@ export function PrivacyForm() {
                   Data Portability
                 </span>
                 <span className="text-[10px] text-primary/60 font-mono leading-relaxed">
-                  Export your data at any time in open JSON format. We provide
-                  zero-vendor-lock-in guarantees with multi-format migration
-                  tools.
+                  Export your data at any time in open JSON format. We provide zero-vendor-lock-in
+                  guarantees with multi-format migration tools.
                 </span>
               </div>
             </div>
@@ -424,9 +394,8 @@ export function PrivacyForm() {
                   Right to Deletion
                 </span>
                 <span className="text-[10px] text-primary/60 font-mono leading-relaxed">
-                  Delete your account and all associated data at any time from
-                  the General settings tab. Data is permanently purged with no
-                  residual copies.
+                  Delete your account and all associated data at any time from the General settings
+                  tab. Data is permanently purged with no residual copies.
                 </span>
               </div>
             </div>
@@ -480,9 +449,8 @@ function LeaderboardSection({
               Show on Leaderboard (Opt-In)
             </span>
             <span className="text-[10px] text-primary/60 font-mono leading-relaxed max-w-lg">
-              Toggle this setting to feature your name, avatar, and monitor
-              uptime percentage on the public Hall of Fame. Enabling this is
-              required to participate.
+              Toggle this setting to feature your name, avatar, and monitor uptime percentage on the
+              public Hall of Fame. Enabling this is required to participate.
             </span>
           </div>
           <button
@@ -510,8 +478,8 @@ function LeaderboardSection({
                 Leaderboard Biography
               </label>
               <span className="text-[9px] text-primary/40 font-mono">
-                A brief description about you or your stack. Shown next to your
-                ranking on the Hall of Fame.
+                A brief description about you or your stack. Shown next to your ranking on the Hall
+                of Fame.
               </span>
             </div>
             <textarea

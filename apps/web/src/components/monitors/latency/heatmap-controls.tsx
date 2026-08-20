@@ -50,10 +50,7 @@ export function HeatmapControls({
         <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
           Time Range
         </label>
-        <Tabs
-          value={timeRange}
-          onValueChange={(value) => onTimeRangeChange(value as TimeRange)}
-        >
+        <Tabs value={timeRange} onValueChange={(value) => onTimeRangeChange(value as TimeRange)}>
           <TabsList>
             {(Object.keys(TIME_RANGE_LABELS) as TimeRange[]).map((range) => (
               <TabsTrigger key={range} value={range}>

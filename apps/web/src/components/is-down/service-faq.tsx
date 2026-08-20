@@ -49,8 +49,7 @@ export function ServiceFaq({ service }: ServiceFaqProps) {
             Frequently Asked Questions: {service.name} Availability & Monitoring
           </h3>
           <p className="text-sm text-muted-foreground">
-            Everything you need to know about tracking {service.name} outages
-            and SLA reliability.
+            Everything you need to know about tracking {service.name} outages and SLA reliability.
           </p>
         </div>
       </div>

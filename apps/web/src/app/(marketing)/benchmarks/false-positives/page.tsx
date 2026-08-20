@@ -82,14 +82,12 @@ export default function FalsePositivesBenchmarkPage() {
           {
             "@type": "DataDownload",
             encodingFormat: "application/json",
-            contentUrl:
-              "https://steadystack.dev/data/false-positive-benchmark-30d.json",
+            contentUrl: "https://steadystack.dev/data/false-positive-benchmark-30d.json",
           },
           {
             "@type": "DataDownload",
             encodingFormat: "text/csv",
-            contentUrl:
-              "https://steadystack.dev/data/false-positive-benchmark-30d.csv",
+            contentUrl: "https://steadystack.dev/data/false-positive-benchmark-30d.csv",
           },
         ],
       },
@@ -141,9 +139,8 @@ export default function FalsePositivesBenchmarkPage() {
             </h2>
 
             <p className="text-muted-foreground text-sm sm:text-base leading-relaxed max-w-xl mb-8">
-              Start monitoring your services with 4-of-7 edge quorum consensus.
-              60-second checks, 7 sovereign global regions, zero credit card
-              required.
+              Start monitoring your services with 4-of-7 edge quorum consensus. 60-second checks, 7
+              sovereign global regions, zero credit card required.
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-4">

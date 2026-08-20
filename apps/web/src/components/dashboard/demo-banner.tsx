@@ -25,10 +25,7 @@ export function DemoBanner() {
     try {
       let hostname = formatted.replace(/^https?:\/\//, "").replace(/\/$/, "");
       const name = hostname.split("/")[0] + " Service";
-      localStorage.setItem(
-        "steadystack_prefill_monitor",
-        JSON.stringify({ url: formatted, name }),
-      );
+      localStorage.setItem("steadystack_prefill_monitor", JSON.stringify({ url: formatted, name }));
     } catch {
       // ignore
     }
@@ -58,8 +55,8 @@ export function DemoBanner() {
                 </span>
               </div>
               <p className="text-xs text-muted-foreground font-sans leading-relaxed">
-                Explore SteadyStack&apos;s real-time edge monitoring platform
-                with zero setup or credit card required.
+                Explore SteadyStack&apos;s real-time edge monitoring platform with zero setup or
+                credit card required.
               </p>
             </div>
           </div>

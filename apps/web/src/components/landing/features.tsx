@@ -19,8 +19,8 @@ export default function Features() {
             See SteadyStack in action
           </h2>
           <p className="text-muted-foreground text-sm leading-relaxed">
-            Watch how global surveillance and high-frequency checks prevent
-            latency degradation and downtime incidents across your system.
+            Watch how global surveillance and high-frequency checks prevent latency degradation and
+            downtime incidents across your system.
           </p>
         </div>
 
@@ -45,8 +45,8 @@ export default function Features() {
                 <ArrowUpRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Probe endpoints dynamically. Run instant checks from global
-                centers and view JSON payload structures.
+                Probe endpoints dynamically. Run instant checks from global centers and view JSON
+                payload structures.
               </p>
             </div>
           </Link>
@@ -108,8 +108,8 @@ export default function Features() {
                 <ArrowUpRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Connect channels effortlessly. Resolve complex outages by
-                triggering webhook integrations and alerts.
+                Connect channels effortlessly. Resolve complex outages by triggering webhook
+                integrations and alerts.
               </p>
             </div>
           </Link>
@@ -121,10 +121,7 @@ export default function Features() {
           >
             {/* Visual Area */}
             <div className="h-[200px] w-full mb-6 relative flex items-center justify-center">
-              <svg
-                className="absolute inset-0 w-full h-full"
-                viewBox="0 0 300 200"
-              >
+              <svg className="absolute inset-0 w-full h-full" viewBox="0 0 300 200">
                 <circle
                   cx="150"
                   cy="100"
@@ -212,8 +209,8 @@ export default function Features() {
                 <ArrowUpRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Eliminate localized errors. Nodes cross-reference downtime
-                signatures dynamically before triggering pages.
+                Eliminate localized errors. Nodes cross-reference downtime signatures dynamically
+                before triggering pages.
               </p>
             </div>
           </Link>
@@ -280,9 +277,8 @@ export default function Features() {
                 <ArrowUpRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                If we call you at 3 AM, it&apos;s real. 5-vector verification
-                filters 2-second blips and ISP hiccups so solo devs sleep
-                through the noise.
+                If we call you at 3 AM, it&apos;s real. 5-vector verification filters 2-second blips
+                and ISP hiccups so solo devs sleep through the noise.
               </p>
             </div>
           </Link>

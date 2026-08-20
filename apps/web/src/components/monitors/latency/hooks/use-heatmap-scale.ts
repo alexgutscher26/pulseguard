@@ -54,10 +54,7 @@ export const COLOR_SCALES = {
  */
 export function useHeatmapScale(metricType: MetricType) {
   const getColor = useMemo(() => {
-    return (
-      value: number,
-      type: "absolute" | "relative" = "absolute",
-    ): string => {
+    return (value: number, type: "absolute" | "relative" = "absolute"): string => {
       const scale = COLOR_SCALES[type];
       const range = scale.ranges.find((r) => value <= r.max);
       return range?.color || COLOR_SCALES[type].ranges[0].color;
@@ -85,11 +82,7 @@ export function useHeatmapScale(metricType: MetricType) {
 /**
  * Get interpolated color between green and red based on normalized value (0-1)
  */
-export function getInterpolatedColor(
-  value: number,
-  min: number,
-  max: number,
-): string {
+export function getInterpolatedColor(value: number, min: number, max: number): string {
   // Normalize value to 0-1
   const normalized = Math.max(0, Math.min(1, (value - min) / (max - min)));
 

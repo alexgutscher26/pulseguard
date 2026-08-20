@@ -76,10 +76,7 @@ interface TeamData {
   };
 }
 
-const ROLE_DESCRIPTIONS: Record<
-  Role,
-  { label: string; desc: string; badgeClass: string }
-> = {
+const ROLE_DESCRIPTIONS: Record<Role, { label: string; desc: string; badgeClass: string }> = {
   owner: {
     label: "Owner",
     desc: "Full root control over billing, security, workspace destruction, and all members.",
@@ -217,9 +214,7 @@ export function TeamForm() {
 
   const copyInviteLink = async (invitationId: string) => {
     const origin =
-      typeof window !== "undefined"
-        ? window.location.origin
-        : "https://steadystack.dev";
+      typeof window !== "undefined" ? window.location.origin : "https://steadystack.dev";
     const link = `${origin}/invitations/${invitationId}`;
     await navigator.clipboard.writeText(link);
     setCopiedId(invitationId);
@@ -243,8 +238,7 @@ export function TeamForm() {
     );
   }
 
-  const isOwnerOrAdmin =
-    data.currentUserRole === "owner" || data.currentUserRole === "admin";
+  const isOwnerOrAdmin = data.currentUserRole === "owner" || data.currentUserRole === "admin";
   const seatPercentage = Math.round((data.seats.used / data.seats.max) * 100);
 
   return (
@@ -253,20 +247,14 @@ export function TeamForm() {
       <div className="p-6 rounded-xl border border-border bg-card shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex flex-col gap-1.5 font-mono">
           <div className="flex items-center gap-2">
-            <span className="text-lg font-bold text-foreground">
-              {data.organization.name}
-            </span>
+            <span className="text-lg font-bold text-foreground">{data.organization.name}</span>
             <span className="text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider bg-primary/10 text-primary border-primary/20">
               {data.organization.plan}
             </span>
           </div>
           <span className="text-xs text-muted-foreground">
-            Slug:{" "}
-            <code className="text-foreground">{data.organization.slug}</code> •
-            Your Role:{" "}
-            <span className="text-primary font-bold uppercase">
-              {data.currentUserRole}
-            </span>
+            Slug: <code className="text-foreground">{data.organization.slug}</code> • Your Role:{" "}
+            <span className="text-primary font-bold uppercase">{data.currentUserRole}</span>
           </span>
         </div>
 
@@ -316,8 +304,8 @@ export function TeamForm() {
                 Multi-Seat Team Workspaces & RBAC
               </span>
               <span className="text-[11px] text-muted-foreground leading-relaxed mt-0.5">
-                Invite teammates, assign granular permissions, and manage
-                on-call alerts collaboratively on The Construct plan ($79/mo).
+                Invite teammates, assign granular permissions, and manage on-call alerts
+                collaboratively on The Construct plan ($79/mo).
               </span>
             </div>
           </div>
@@ -380,44 +368,33 @@ export function TeamForm() {
                       </span>
                     )}
                   </div>
-                  <span className="text-[11px] text-muted-foreground truncate">
-                    {member.email}
-                  </span>
+                  <span className="text-[11px] text-muted-foreground truncate">{member.email}</span>
                 </div>
               </div>
 
               <div className="flex items-center gap-3 justify-between sm:justify-end">
                 {/* Role Changer or Static Badge */}
-                {isOwnerOrAdmin &&
-                !member.isCurrentUser &&
-                data.seats.isMultiSeatAllowed ? (
+                {isOwnerOrAdmin && !member.isCurrentUser && data.seats.isMultiSeatAllowed ? (
                   <select
                     value={member.role}
                     disabled={isPending}
-                    onChange={(e) =>
-                      handleRoleChange(member.id, e.target.value as Role)
-                    }
+                    onChange={(e) => handleRoleChange(member.id, e.target.value as Role)}
                     className="h-7 px-2 text-xs font-mono rounded bg-accent border border-border text-foreground outline-none focus:ring-1 focus:ring-primary cursor-pointer"
                   >
                     <option value="admin">Admin</option>
                     <option value="member">Member</option>
                     <option value="viewer">Viewer</option>
                     <option value="billing">Billing</option>
-                    {data.currentUserRole === "owner" && (
-                      <option value="owner">Owner</option>
-                    )}
+                    {data.currentUserRole === "owner" && <option value="owner">Owner</option>}
                   </select>
                 ) : (
                   <span
                     className={cn(
                       "text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider",
-                      ROLE_DESCRIPTIONS[member.role]?.badgeClass ||
-                        "bg-accent text-foreground",
+                      ROLE_DESCRIPTIONS[member.role]?.badgeClass || "bg-accent text-foreground",
                     )}
                   >
-                    {member.role === "owner" && (
-                      <Crown className="size-2.5 inline mr-1" />
-                    )}
+                    {member.role === "owner" && <Crown className="size-2.5 inline mr-1" />}
                     {ROLE_DESCRIPTIONS[member.role]?.label || member.role}
                   </span>
                 )}
@@ -425,16 +402,9 @@ export function TeamForm() {
                 {/* Remove / Leave Button */}
                 {(isOwnerOrAdmin || member.isCurrentUser) && (
                   <button
-                    onClick={() =>
-                      handleRemoveMember(member.id, member.isCurrentUser)
-                    }
-                    disabled={
-                      isPending ||
-                      (member.role === "owner" && data.members.length === 1)
-                    }
-                    title={
-                      member.isCurrentUser ? "Leave Workspace" : "Remove Member"
-                    }
+                    onClick={() => handleRemoveMember(member.id, member.isCurrentUser)}
+                    disabled={isPending || (member.role === "owner" && data.members.length === 1)}
+                    title={member.isCurrentUser ? "Leave Workspace" : "Remove Member"}
                     className="p-1.5 rounded text-muted-foreground hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
                   >
                     <Trash2 className="size-3.5" />
@@ -465,14 +435,10 @@ export function TeamForm() {
                 className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-accent/20 transition-colors font-mono"
               >
                 <div className="flex flex-col min-w-0">
-                  <span className="text-xs font-bold text-foreground truncate">
-                    {inv.email}
-                  </span>
+                  <span className="text-xs font-bold text-foreground truncate">{inv.email}</span>
                   <span className="text-[10px] text-muted-foreground">
                     Invited by {inv.inviterName} • Role:{" "}
-                    <span className="text-primary font-bold uppercase">
-                      {inv.role}
-                    </span>
+                    <span className="text-primary font-bold uppercase">{inv.role}</span>
                   </span>
                 </div>
 
@@ -484,9 +450,7 @@ export function TeamForm() {
                     {copiedId === inv.id ? (
                       <>
                         <Check className="size-3 text-emerald-400" />
-                        <span className="text-emerald-400 font-bold">
-                          Copied!
-                        </span>
+                        <span className="text-emerald-400 font-bold">Copied!</span>
                       </>
                     ) : (
                       <>
@@ -526,9 +490,7 @@ export function TeamForm() {
               className="p-3 rounded-lg border border-border/80 bg-accent/20 space-y-1"
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase text-foreground">
-                  {meta.label}
-                </span>
+                <span className="text-xs font-bold uppercase text-foreground">{meta.label}</span>
                 <span
                   className={cn(
                     "text-[9px] font-bold px-1.5 py-0.2 rounded border",
@@ -538,9 +500,7 @@ export function TeamForm() {
                   {roleKey.toUpperCase()}
                 </span>
               </div>
-              <p className="text-[11px] text-muted-foreground leading-relaxed">
-                {meta.desc}
-              </p>
+              <p className="text-[11px] text-muted-foreground leading-relaxed">{meta.desc}</p>
             </div>
           ))}
         </div>
@@ -556,8 +516,8 @@ export function TeamForm() {
                 Invite Team Member
               </DialogTitle>
               <DialogDescription className="text-xs text-muted-foreground">
-                Send an email invite to join {data.organization.name}. An accept
-                link will also be generated.
+                Send an email invite to join {data.organization.name}. An accept link will also be
+                generated.
               </DialogDescription>
             </DialogHeader>
 
@@ -588,18 +548,12 @@ export function TeamForm() {
                   onChange={(e) => setInviteRole(e.target.value as Role)}
                   className="w-full h-9 px-3 text-xs font-mono rounded-lg bg-background border border-border text-foreground outline-none focus:ring-1 focus:ring-primary cursor-pointer"
                 >
-                  <option value="admin">
-                    Admin — Full monitoring & member management
-                  </option>
+                  <option value="admin">Admin — Full monitoring & member management</option>
                   <option value="member">
                     Member — Standard monitor creation & incident response
                   </option>
-                  <option value="viewer">
-                    Viewer — Read-only telemetry & status access
-                  </option>
-                  <option value="billing">
-                    Billing — Billing & subscription management only
-                  </option>
+                  <option value="viewer">Viewer — Read-only telemetry & status access</option>
+                  <option value="billing">Billing — Billing & subscription management only</option>
                 </select>
               </div>
             </div>

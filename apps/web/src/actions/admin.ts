@@ -37,9 +37,7 @@ export async function getAdminStatus(): Promise<AdminStatusResponse> {
     const adminEmails = (process.env.ADMIN_EMAILS || "")
       .split(",")
       .map((e) => e.trim().toLowerCase());
-    const isEmailAdmin = Boolean(
-      email && adminEmails.includes(email.toLowerCase()),
-    );
+    const isEmailAdmin = Boolean(email && adminEmails.includes(email.toLowerCase()));
     const isAdmin = tier === "ADMIN" || isEmailAdmin;
 
     return {
@@ -93,9 +91,7 @@ export async function grantSelfAdminAccess(): Promise<{
       },
     });
 
-    console.log(
-      `[Admin] Granted ADMIN role to user ${session.user.email} (${session.user.id})`,
-    );
+    console.log(`[Admin] Granted ADMIN role to user ${session.user.email} (${session.user.id})`);
     revalidatePath("/dashboard/design-partners");
     revalidatePath("/dashboard");
 

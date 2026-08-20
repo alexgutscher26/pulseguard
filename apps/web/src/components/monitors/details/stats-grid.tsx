@@ -1,11 +1,5 @@
 "use client";
-import {
-  Activity,
-  Clock,
-  AlertTriangle,
-  ArrowUpRight,
-  ArrowDownRight,
-} from "lucide-react";
+import { Activity, Clock, AlertTriangle, ArrowUpRight, ArrowDownRight } from "lucide-react";
 
 export function MonitorStatsGrid({ monitor }: { monitor: any }) {
   // Calculate stats
@@ -22,9 +16,7 @@ export function MonitorStatsGrid({ monitor }: { monitor: any }) {
     .filter((l: any) => typeof l === "number" && l >= 0);
   const avgLatency =
     latencies.length > 0
-      ? (
-          latencies.reduce((a: any, b: any) => a + b, 0) / latencies.length
-        ).toFixed(0)
+      ? (latencies.reduce((a: any, b: any) => a + b, 0) / latencies.length).toFixed(0)
       : "0";
 
   // Downtime: assuming 1 minute interval for simplicity if we don't know duration.

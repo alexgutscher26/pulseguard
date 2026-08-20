@@ -21,10 +21,7 @@ const Toaster = ({ ...props }: GooeyToasterProps) => {
 
   const theme = themeContext?.theme || "system";
   const isDark =
-    theme === "dark" ||
-    theme === "matrix" ||
-    theme === "cyberpunk" ||
-    theme === "blade";
+    theme === "dark" || theme === "matrix" || theme === "cyberpunk" || theme === "blade";
 
   return (
     <GooeyToaster

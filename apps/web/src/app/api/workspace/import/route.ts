@@ -141,10 +141,7 @@ function parseUptimeKumaFormat(data: any): ParsedMonitor[] {
       method,
       headers: customHeaders,
       body: m.body || null,
-      expectation:
-        Object.keys(expectationObj).length > 0
-          ? JSON.stringify(expectationObj)
-          : null,
+      expectation: Object.keys(expectationObj).length > 0 ? JSON.stringify(expectationObj) : null,
       alertThreshold,
       tags: Array.from(new Set(tags)),
     };
@@ -156,18 +153,13 @@ function parseSteadyStackFormat(data: any): ParsedMonitor[] {
   return list.map((m: any): ParsedMonitor => {
     return {
       name: m.name || "Imported Monitor",
-      url:
-        m.url || (m.host ? `${m.host}:${m.port || 80}` : "https://example.com"),
+      url: m.url || (m.host ? `${m.host}:${m.port || 80}` : "https://example.com"),
       type: (m.type as MonitorType) || "HTTP",
       interval: Math.max(30, Number(m.interval) || 60),
       timeout: Math.min(60, Math.max(2, Number(m.timeout) || 10)),
       method: (m.method || "GET").toUpperCase(),
       headers:
-        typeof m.headers === "string"
-          ? m.headers
-          : m.headers
-            ? JSON.stringify(m.headers)
-            : null,
+        typeof m.headers === "string" ? m.headers : m.headers ? JSON.stringify(m.headers) : null,
       body: m.body || null,
       expectation:
         typeof m.expectation === "string"
@@ -200,19 +192,13 @@ export async function POST(req: NextRequest) {
       const formData = await req.formData();
       const file = formData.get("file") as File | null;
       if (!file) {
-        return NextResponse.json(
-          { error: "No file provided" },
-          { status: 400 },
-        );
+        return NextResponse.json({ error: "No file provided" }, { status: 400 });
       }
       const text = await file.text();
       try {
         payload = JSON.parse(text);
       } catch {
-        return NextResponse.json(
-          { error: "Invalid JSON file uploaded" },
-          { status: 400 },
-        );
+        return NextResponse.json({ error: "Invalid JSON file uploaded" }, { status: 400 });
       }
     } else {
       payload = await req.json();
@@ -220,11 +206,7 @@ export async function POST(req: NextRequest) {
 
     // Auto-detect format
     if (format === "auto") {
-      if (
-        payload?.vcrdVersion ||
-        payload?.monitorList ||
-        payload?.notificationList
-      ) {
+      if (payload?.vcrdVersion || payload?.monitorList || payload?.notificationList) {
         format = "uptime-kuma";
       } else if (
         payload?.version === "1.0" &&
@@ -232,11 +214,7 @@ export async function POST(req: NextRequest) {
         Array.isArray(payload?.monitors)
       ) {
         format = "steadystack";
-      } else if (
-        Array.isArray(payload) &&
-        payload.length > 0 &&
-        "type" in payload[0]
-      ) {
+      } else if (Array.isArray(payload) && payload.length > 0 && "type" in payload[0]) {
         format = "uptime-kuma";
       } else if (Array.isArray(payload?.monitors)) {
         format = "uptime-kuma";
@@ -303,9 +281,7 @@ export async function POST(req: NextRequest) {
           type: m.type,
           interval: m.interval,
           tags: m.tags,
-          action: existingByName.has(m.name.toLowerCase().trim())
-            ? "update"
-            : "create",
+          action: existingByName.has(m.name.toLowerCase().trim()) ? "update" : "create",
         })),
       });
     }
@@ -318,9 +294,7 @@ export async function POST(req: NextRequest) {
       const existingId = existingByName.get(m.name.toLowerCase().trim());
 
       if (existingId) {
-        const encryptedHeaders = m.headers
-          ? await encryptSecret(m.headers)
-          : null;
+        const encryptedHeaders = m.headers ? await encryptSecret(m.headers) : null;
         const updated = await prisma.monitor.update({
           where: { id: existingId },
           data: {
@@ -344,9 +318,7 @@ export async function POST(req: NextRequest) {
           action: "updated",
         });
       } else {
-        const encryptedHeaders = m.headers
-          ? await encryptSecret(m.headers)
-          : null;
+        const encryptedHeaders = m.headers ? await encryptSecret(m.headers) : null;
         const created = await prisma.monitor.create({
           data: {
             userId,

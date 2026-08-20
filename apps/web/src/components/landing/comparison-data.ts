@@ -47,8 +47,7 @@ export const competitors: CompetitorInfo[] = [
     name: "UptimeRobot",
     url: "https://uptimerobot.com",
     pricingUrl: "https://uptimerobot.com/pricing",
-    description:
-      "Popular legacy provider with 50 free monitors at 5-min check intervals.",
+    description: "Popular legacy provider with 50 free monitors at 5-min check intervals.",
   },
   {
     id: "betteruptime",
@@ -124,8 +123,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
   {
     category: "Transparency & Allowlisting",
     name: "Probe locations & health published",
-    description:
-      "Every city, network ASN, and DO location hint with live health",
+    description: "Every city, network ASN, and DO location hint with live health",
     steadystack: "✓ Full list + live status",
     uptimerobot: "Regions only",
     betteruptime: "Not published",
@@ -190,8 +188,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
   {
     category: "Monitor Types & Protocols",
     name: "SSL Certificate & Expiry Monitoring",
-    description:
-      "Full certificate chain verification with 30-day expiry warning",
+    description: "Full certificate chain verification with 30-day expiry warning",
     steadystack: true,
     uptimerobot: true,
     betteruptime: true,
@@ -211,8 +208,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
   {
     category: "Monitor Types & Protocols",
     name: "TCP Port & Service Reachability",
-    description:
-      "Raw TCP socket handshakes for databases, mail, and custom ports",
+    description: "Raw TCP socket handshakes for databases, mail, and custom ports",
     steadystack: true,
     uptimerobot: true,
     betteruptime: true,
@@ -244,8 +240,7 @@ export const featureComparisons: FeatureComparisonItem[] = [
   {
     category: "Advanced Platform Capabilities",
     name: "Browser / Synthetic Journey Testing",
-    description:
-      "Multi-step headless browser user journeys with assertion checks",
+    description: "Multi-step headless browser user journeys with assertion checks",
     steadystack: true,
     uptimerobot: false,
     betteruptime: false,
@@ -341,8 +336,7 @@ export const downtimeScenarios: DowntimeScenario[] = [
   },
   {
     name: "Database Failover",
-    description:
-      "Primary database goes down. Replica promotion takes 15 minutes.",
+    description: "Primary database goes down. Replica promotion takes 15 minutes.",
     downtimeStart: 0,
     recoveryStart: 15,
     competitorLabel: "Competitor (5min check)",

@@ -10,8 +10,7 @@ import {
 } from "../index";
 
 describe("Field-Level AES-256-GCM Encryption & Decryption (P0-SEC-02)", () => {
-  const testSecretKey =
-    "steadystack-test-secret-key-32chars-minimum-safe-entropy";
+  const testSecretKey = "steadystack-test-secret-key-32chars-minimum-safe-entropy";
 
   test("correctly detects whether a string is encrypted with enc:v1: prefix", async () => {
     expect(isEncrypted("enc:v1:YWJjZGVmZ2hpams=")).toBe(true);
@@ -120,20 +119,14 @@ describe("Status Page Cryptographic HMAC Token Authentication (P0-SEC-01)", () =
 
     // Tampered payload
     const wrongPageToken = validToken.replace(pageId, "different_page_id");
-    expect(await verifyAuthToken(wrongPageToken, pageId, secretKey)).toBe(
-      false,
-    );
+    expect(await verifyAuthToken(wrongPageToken, pageId, secretKey)).toBe(false);
 
     // Tampered signature
     const tamperedSigToken = validToken.slice(0, -4) + "AAAA";
-    expect(await verifyAuthToken(tamperedSigToken, pageId, secretKey)).toBe(
-      false,
-    );
+    expect(await verifyAuthToken(tamperedSigToken, pageId, secretKey)).toBe(false);
 
     // Static unauthenticated bypass string
-    expect(await verifyAuthToken("authenticated", pageId, secretKey)).toBe(
-      false,
-    );
+    expect(await verifyAuthToken("authenticated", pageId, secretKey)).toBe(false);
     expect(await verifyAuthToken(null, pageId, secretKey)).toBe(false);
     expect(await verifyAuthToken(undefined, pageId, secretKey)).toBe(false);
   });
@@ -149,11 +142,7 @@ describe("Status Page Cryptographic HMAC Token Authentication (P0-SEC-01)", () =
     expect(signAuthToken(pageId, "")).rejects.toThrow(
       "BETTER_AUTH_SECRET or ENCRYPTION_SECRET is required",
     );
-    const isValid = await verifyAuthToken(
-      "pg_sig:v1:test:9999999999:dummy",
-      "test",
-      "",
-    );
+    const isValid = await verifyAuthToken("pg_sig:v1:test:9999999999:dummy", "test", "");
     expect(isValid).toBe(false);
   });
 });

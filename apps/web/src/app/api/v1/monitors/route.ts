@@ -73,10 +73,7 @@ export async function POST(req: NextRequest) {
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json(
-      { error: "Invalid JSON payload" },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
   }
 
   const {
@@ -129,9 +126,7 @@ export async function POST(req: NextRequest) {
       interval: Number(interval),
       timeout: Number(timeout),
       method: method.toUpperCase(),
-      headers: customHeaders
-        ? await encryptSecret(JSON.stringify(customHeaders))
-        : null,
+      headers: customHeaders ? await encryptSecret(JSON.stringify(customHeaders)) : null,
       body: requestBody || null,
       expectation: expectation ? JSON.stringify(expectation) : null,
       tags: Array.isArray(tags) ? tags : [],
@@ -154,12 +149,8 @@ export async function POST(req: NextRequest) {
       data: {
         ...newMonitor,
         headers: newMonitor.headers ? JSON.parse(newMonitor.headers) : null,
-        expectation: newMonitor.expectation
-          ? JSON.parse(newMonitor.expectation)
-          : null,
-        checkRegions: newMonitor.checkRegions
-          ? JSON.parse(newMonitor.checkRegions)
-          : null,
+        expectation: newMonitor.expectation ? JSON.parse(newMonitor.expectation) : null,
+        checkRegions: newMonitor.checkRegions ? JSON.parse(newMonitor.checkRegions) : null,
       },
     },
     { status: 201 },

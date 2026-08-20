@@ -51,10 +51,7 @@ const rateLimitMiddleware = t.middleware(({ ctx, path, next }) => {
   // Periodic bounded prune to avoid memory growth in long-running instances
   if (g.__rlStore!.size > 5_000) {
     for (const [k, timestamps] of g.__rlStore!.entries()) {
-      if (
-        timestamps.length === 0 ||
-        (timestamps[timestamps.length - 1] ?? 0) < windowStart
-      ) {
+      if (timestamps.length === 0 || (timestamps[timestamps.length - 1] ?? 0) < windowStart) {
         g.__rlStore!.delete(k);
       }
     }

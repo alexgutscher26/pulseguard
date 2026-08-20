@@ -25,12 +25,8 @@ export async function verifySession(
   let rawToken: string | null | undefined = url.searchParams.get("token");
 
   if (!rawToken && cookieHeader) {
-    const secureMatch = cookieHeader.match(
-      /__Secure-better-auth\.session_token=([^;]+)/,
-    );
-    const regularMatch = cookieHeader.match(
-      /better-auth\.session_token=([^;]+)/,
-    );
+    const secureMatch = cookieHeader.match(/__Secure-better-auth\.session_token=([^;]+)/);
+    const regularMatch = cookieHeader.match(/better-auth\.session_token=([^;]+)/);
     rawToken = secureMatch?.[1] || regularMatch?.[1] || null;
   }
 
@@ -60,9 +56,7 @@ export async function verifySession(
         err.message?.includes("timeout") ||
         err.message?.includes("performIO"))
     ) {
-      console.warn(
-        `[Auth] DB connection error or timeout detected. Retrying query...`,
-      );
+      console.warn(`[Auth] DB connection error or timeout detected. Retrying query...`);
       await new Promise((r) => setTimeout(r, 150));
       return verifySession(request, env, false);
     }

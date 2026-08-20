@@ -33,11 +33,7 @@ async function apiPost<T>(path: string, body?: unknown): Promise<T> {
     });
   } catch (err: unknown) {
     const message =
-      err instanceof Error
-        ? err.cause != null
-          ? String(err.cause)
-          : err.message
-        : "unknown";
+      err instanceof Error ? (err.cause != null ? String(err.cause) : err.message) : "unknown";
     throw new Error(`fetch failed for ${url}: ${message}`);
   }
   if (!response.ok) {
@@ -77,11 +73,7 @@ async function runCheck(job: ProbeJob): Promise<CheckResult> {
   const region = `probe:${env.PROBE_REGION}`;
 
   try {
-    if (
-      job.type === "HTTP" ||
-      job.type === "HTTPS" ||
-      job.url.startsWith("http")
-    ) {
+    if (job.type === "HTTP" || job.type === "HTTPS" || job.url.startsWith("http")) {
       const checkResult = await checkHttpUniversal(job.url, {
         method: job.method,
         headers: job.headers,
@@ -101,11 +93,7 @@ async function runCheck(job: ProbeJob): Promise<CheckResult> {
 
     if (job.type === "PING" || job.url.startsWith("ping://")) {
       const hostname = job.url.replace("ping://", "");
-      const checkResult = await checkPortUniversal(
-        hostname,
-        80,
-        (job.timeout || 10) * 1000,
-      );
+      const checkResult = await checkPortUniversal(hostname, 80, (job.timeout || 10) * 1000);
 
       return {
         monitorId: job.monitorId,
@@ -161,14 +149,10 @@ async function reportResultsBatch(results: CheckResult[]): Promise<void> {
   if (results.length === 0) return;
   try {
     await apiPost("/api/probes/result", results);
-    console.log(
-      `[Result] Successfully reported batch of ${results.length} result(s).`,
-    );
+    console.log(`[Result] Successfully reported batch of ${results.length} result(s).`);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
-    console.error(
-      `[Result] Failed to report batch of ${results.length} results: ${message}`,
-    );
+    console.error(`[Result] Failed to report batch of ${results.length} results: ${message}`);
   }
 }
 
@@ -190,18 +174,12 @@ async function processJobs(jobs: ProbeJob[]): Promise<void> {
         const result = await runCheck(job);
         results.push(result);
       } catch (err: unknown) {
-        console.error(
-          `[Jobs] Error running check for monitor ${job.monitorId}:`,
-          err,
-        );
+        console.error(`[Jobs] Error running check for monitor ${job.monitorId}:`, err);
       }
     }
   }
 
-  const workers = Array.from(
-    { length: Math.min(concurrencyLimit, jobs.length) },
-    () => worker(),
-  );
+  const workers = Array.from({ length: Math.min(concurrencyLimit, jobs.length) }, () => worker());
   await Promise.all(workers);
 
   await reportResultsBatch(results);

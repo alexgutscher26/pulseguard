@@ -76,15 +76,9 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
   const [deleteMonitorId, setDeleteMonitorId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const monitorToDelete = deleteMonitorId
-    ? monitors.find((m) => m.id === deleteMonitorId)
-    : null;
+  const monitorToDelete = deleteMonitorId ? monitors.find((m) => m.id === deleteMonitorId) : null;
 
-  const handleCheckNow = async (
-    e: React.MouseEvent,
-    monitorId: string,
-    name: string,
-  ) => {
+  const handleCheckNow = async (e: React.MouseEvent, monitorId: string, name: string) => {
     e.stopPropagation();
     setIsChecking((prev) => ({ ...prev, [monitorId]: true }));
     const toastId = toast.loading(`Triggering check for ${name}...`);
@@ -116,18 +110,13 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
     e.stopPropagation();
     setIsToggling((prev) => ({ ...prev, [monitorId]: true }));
     const nextEnabled = currentStatus === "PAUSED";
-    const toastId = toast.loading(
-      `${nextEnabled ? "Resuming" : "Pausing"} ${name}...`,
-    );
+    const toastId = toast.loading(`${nextEnabled ? "Resuming" : "Pausing"} ${name}...`);
     try {
       const res = await toggleMonitor(monitorId, nextEnabled);
       if (res.success) {
-        toast.success(
-          `${name} ${nextEnabled ? "resumed" : "paused"} successfully`,
-          {
-            id: toastId,
-          },
-        );
+        toast.success(`${name} ${nextEnabled ? "resumed" : "paused"} successfully`, {
+          id: toastId,
+        });
       } else {
         toast.error(res.error || `Failed to toggle ${name}`, { id: toastId });
       }
@@ -233,17 +222,13 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                 currentMonitors.map((monitor) => {
                   // Calculate history for bars (last 20 events reversed for display left-to-right?)
                   // Assuming events are desc, so [0] is latest. We take the first 20.
-                  const recentEvents = monitor.events
-                    ? monitor.events.slice(0, 20)
-                    : [];
+                  const recentEvents = monitor.events ? monitor.events.slice(0, 20) : [];
 
                   // Map events to status codes
-                  const rawHistory = [...recentEvents]
-                    .reverse()
-                    .map((e: any) => {
-                      if (e.status === "MAINTENANCE") return 2;
-                      return e.status === "UP" ? 1 : 0;
-                    });
+                  const rawHistory = [...recentEvents].reverse().map((e: any) => {
+                    if (e.status === "MAINTENANCE") return 2;
+                    return e.status === "UP" ? 1 : 0;
+                  });
 
                   // Pad with "empty" slots (3) to ensure 20 bars
                   const history = Array(20).fill(3);
@@ -262,9 +247,7 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                   return (
                     <tr
                       key={monitor.id}
-                      onClick={() =>
-                        router.push(`/dashboard/monitors/${monitor.id}`)
-                      }
+                      onClick={() => router.push(`/dashboard/monitors/${monitor.id}`)}
                       className="group hover:bg-primary/5 transition-colors cursor-pointer font-mono border-l-2 border-transparent hover:border-primary/50"
                     >
                       <td className="p-4 w-32">
@@ -301,9 +284,7 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                           </div>
                         )}
                       </td>
-                      <td
-                        className={`p-4 ${monitor.status === "PAUSED" ? "opacity-75" : ""}`}
-                      >
+                      <td className={`p-4 ${monitor.status === "PAUSED" ? "opacity-75" : ""}`}>
                         <div className="flex flex-col">
                           <span
                             className={`font-bold text-foreground group-hover:text-primary transition-colors ${monitor.status === "DOWN" ? "group-hover:text-red-500" : monitor.status === "PAUSED" ? "group-hover:text-yellow-500" : ""}`}
@@ -311,9 +292,7 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                             {monitor.name}
                           </span>
                           <span className="text-[10px] text-primary/50 mt-0.5 font-sans break-all">
-                            {monitor.type === "HEARTBEAT"
-                              ? "Heartbeat Monitor"
-                              : monitor.url}
+                            {monitor.type === "HEARTBEAT" ? "Heartbeat Monitor" : monitor.url}
                           </span>
                           {monitor.tags && monitor.tags.length > 0 && (
                             <div className="flex flex-wrap gap-1 mt-1.5">
@@ -329,9 +308,7 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                           )}
                         </div>
                       </td>
-                      <td
-                        className={`p-4 ${monitor.status === "PAUSED" ? "opacity-50" : ""}`}
-                      >
+                      <td className={`p-4 ${monitor.status === "PAUSED" ? "opacity-50" : ""}`}>
                         <div className="flex items-center gap-3">
                           <div className="flex gap-px h-4 items-end">
                             {history.map((h: number, i: number) => (
@@ -345,9 +322,7 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                           </span>
                         </div>
                       </td>
-                      <td
-                        className={`p-4 ${monitor.status === "PAUSED" ? "opacity-50" : ""}`}
-                      >
+                      <td className={`p-4 ${monitor.status === "PAUSED" ? "opacity-50" : ""}`}>
                         {monitor.status !== "PAUSED" ? (
                           <div className="flex items-center gap-2 text-xs">
                             {monitor.status === "DOWN" ? (
@@ -357,18 +332,14 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                             )}
                             <span
                               className={
-                                monitor.status === "DOWN"
-                                  ? "text-red-500"
-                                  : "text-foreground"
+                                monitor.status === "DOWN" ? "text-red-500" : "text-foreground"
                               }
                             >
                               {latestLatency ? latestLatency + "ms" : "--"}
                             </span>
                           </div>
                         ) : (
-                          <span className="text-xs text-muted-foreground">
-                            --
-                          </span>
+                          <span className="text-xs text-muted-foreground">--</span>
                         )}
                       </td>
                       <td className="p-4 text-right">
@@ -386,9 +357,7 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                             <DropdownMenuItem
                               onClick={(e) => {
                                 e.stopPropagation();
-                                router.push(
-                                  `/dashboard/monitors/${monitor.id}`,
-                                );
+                                router.push(`/dashboard/monitors/${monitor.id}`);
                               }}
                               className="cursor-pointer"
                             >
@@ -398,9 +367,7 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                             <DropdownMenuItem
                               onClick={(e) => {
                                 e.stopPropagation();
-                                router.push(
-                                  `/dashboard/monitors/${monitor.id}/settings`,
-                                );
+                                router.push(`/dashboard/monitors/${monitor.id}/settings`);
                               }}
                               className="cursor-pointer"
                             >
@@ -409,13 +376,8 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                             </DropdownMenuItem>
                             <DropdownMenuSeparator className="bg-primary/10" />
                             <DropdownMenuItem
-                              onClick={(e) =>
-                                handleCheckNow(e, monitor.id, monitor.name)
-                              }
-                              disabled={
-                                monitor.status === "PAUSED" ||
-                                isChecking[monitor.id]
-                              }
+                              onClick={(e) => handleCheckNow(e, monitor.id, monitor.name)}
+                              disabled={monitor.status === "PAUSED" || isChecking[monitor.id]}
                               className="cursor-pointer"
                             >
                               {isChecking[monitor.id] ? (
@@ -427,12 +389,7 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={(e) =>
-                                handleToggle(
-                                  e,
-                                  monitor.id,
-                                  monitor.name,
-                                  monitor.status,
-                                )
+                                handleToggle(e, monitor.id, monitor.name, monitor.status)
                               }
                               disabled={isToggling[monitor.id]}
                               className="cursor-pointer"
@@ -468,8 +425,7 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
 
         <div className="p-4 border-t border-primary/20 flex items-center justify-between bg-primary/5">
           <span className="text-[10px] text-primary/60 uppercase tracking-widest font-mono">
-            Showing {startIndex + 1}-
-            {Math.min(startIndex + itemsPerPage, monitors.length)} of{" "}
+            Showing {startIndex + 1}-{Math.min(startIndex + itemsPerPage, monitors.length)} of{" "}
             {monitors.length} targets
           </span>
           <div className="flex gap-2">
@@ -502,11 +458,8 @@ export function MonitorList({ monitors }: { monitors: any[] }) {
             </DialogTitle>
             <DialogDescription className="text-xs text-primary/60 mt-2 font-mono">
               Are you sure you want to permanently delete monitor{" "}
-              <span className="text-foreground font-bold">
-                {monitorToDelete?.name}
-              </span>
-              ? This action is irreversible and will erase all telemetry
-              history.
+              <span className="text-foreground font-bold">{monitorToDelete?.name}</span>? This
+              action is irreversible and will erase all telemetry history.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4 gap-2 sm:gap-0">

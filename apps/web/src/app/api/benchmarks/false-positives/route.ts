@@ -18,23 +18,15 @@ export async function GET(request: Request) {
   let filteredIncidents = [...SAMPLE_INCIDENTS];
 
   if (provider === "steadystack") {
-    filteredIncidents = filteredIncidents.filter(
-      (i) => i.steadystack.alertTriggered,
-    );
+    filteredIncidents = filteredIncidents.filter((i) => i.steadystack.alertTriggered);
   } else if (provider === "uptimerobot") {
-    filteredIncidents = filteredIncidents.filter(
-      (i) => i.uptimerobot.alertTriggered,
-    );
+    filteredIncidents = filteredIncidents.filter((i) => i.uptimerobot.alertTriggered);
   } else if (provider === "pingdom") {
-    filteredIncidents = filteredIncidents.filter(
-      (i) => i.pingdom.alertTriggered,
-    );
+    filteredIncidents = filteredIncidents.filter((i) => i.pingdom.alertTriggered);
   }
 
   if (failureType) {
-    filteredIncidents = filteredIncidents.filter(
-      (i) => i.failureType === failureType,
-    );
+    filteredIncidents = filteredIncidents.filter((i) => i.failureType === failureType);
   }
 
   if (groundTruth === "down" || groundTruth === "true") {

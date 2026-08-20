@@ -36,11 +36,7 @@ export function clearConfig() {
 }
 
 export function getApiKey(): string | undefined {
-  return (
-    process.env.STEADYSTACK_API_KEY ||
-    process.env.PULSE_API_KEY ||
-    conf.get("apiKey")
-  );
+  return process.env.STEADYSTACK_API_KEY || process.env.PULSE_API_KEY || conf.get("apiKey");
 }
 
 export function getBaseUrl(): string {

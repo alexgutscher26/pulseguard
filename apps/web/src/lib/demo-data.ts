@@ -2,10 +2,7 @@ import type { DashboardStatsData } from "@/components/dashboard/stats";
 import type { MonitorInsight } from "@/components/dashboard/ai-insights";
 import type { OnboardingStatus } from "@/actions/onboarding";
 
-function generateEvents(
-  status: "UP" | "DOWN" | "DEGRADED",
-  baseLatency: number,
-) {
+function generateEvents(status: "UP" | "DOWN" | "DEGRADED", baseLatency: number) {
   const events = [];
   const now = Date.now();
   for (let i = 0; i < 20; i++) {

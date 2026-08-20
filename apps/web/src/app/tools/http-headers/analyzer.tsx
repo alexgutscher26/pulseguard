@@ -3,13 +3,7 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   ShieldCheck,
@@ -49,8 +43,7 @@ interface AuditData {
 }
 
 // Configuration
-const WORKER_URL =
-  process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";
+const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || "http://localhost:8787";
 
 export function HeaderAnalyzer() {
   const router = useRouter();
@@ -119,10 +112,7 @@ export function HeaderAnalyzer() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form
-            onSubmit={handleAudit}
-            className="flex flex-col md:flex-row gap-4"
-          >
+          <form onSubmit={handleAudit} className="flex flex-col md:flex-row gap-4">
             <div className="relative flex-1 group">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40 group-focus-within:text-primary transition-colors" />
               <Input
@@ -161,10 +151,7 @@ export function HeaderAnalyzer() {
               <ShieldIcon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 text-primary animate-pulse" />
             </div>
             <div className="text-center">
-              <GlitchText
-                text={scanSteps[scanStep]}
-                className="text-primary font-mono text-lg"
-              />
+              <GlitchText text={scanSteps[scanStep]} className="text-primary font-mono text-lg" />
               <div className="mt-4 w-64 h-1 bg-primary/10 rounded-full overflow-hidden">
                 <motion.div
                   className="h-full bg-primary"
@@ -225,23 +212,17 @@ export function HeaderAnalyzer() {
                   {[
                     {
                       label: "Critical Gaps",
-                      value: auditData.results.filter(
-                        (r) => r.status === "CRITICAL",
-                      ).length,
+                      value: auditData.results.filter((r) => r.status === "CRITICAL").length,
                       color: "text-red-500",
                     },
                     {
                       label: "Foundational Checks",
-                      value: auditData.results.filter(
-                        (r) => r.status === "SECURE",
-                      ).length,
+                      value: auditData.results.filter((r) => r.status === "SECURE").length,
                       color: "text-primary",
                     },
                     {
                       label: "Minor Risks",
-                      value: auditData.results.filter(
-                        (r) => r.status === "WARNING",
-                      ).length,
+                      value: auditData.results.filter((r) => r.status === "WARNING").length,
                       color: "text-yellow-500",
                     },
                     {
@@ -254,12 +235,7 @@ export function HeaderAnalyzer() {
                       key={stat.label}
                       className="p-4 bg-primary/5 border border-primary/10 rounded-sm"
                     >
-                      <div
-                        className={cn(
-                          "text-2xl font-mono font-bold",
-                          stat.color,
-                        )}
-                      >
+                      <div className={cn("text-2xl font-mono font-bold", stat.color)}>
                         {stat.value}
                       </div>
                       <div className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest">
@@ -370,9 +346,7 @@ export function HeaderAnalyzer() {
                 </div>
                 {Object.entries(auditData.rawHeaders).map(([k, v]) => (
                   <div key={k} className="flex gap-4 mb-1">
-                    <span className="text-primary font-bold min-w-[150px]">
-                      {k}:
-                    </span>
+                    <span className="text-primary font-bold min-w-[150px]">{k}:</span>
                     <span className="text-muted-foreground break-all">{v}</span>
                   </div>
                 ))}
@@ -386,18 +360,15 @@ export function HeaderAnalyzer() {
                   Automate Design Integrity
                 </h3>
                 <p className="text-sm text-muted-foreground font-mono">
-                  Continuous security auditing for your production stack. Get
-                  alerted the microsecond a header is misconfigured or a CSP is
-                  breached.
+                  Continuous security auditing for your production stack. Get alerted the
+                  microsecond a header is misconfigured or a CSP is breached.
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button
                   className="px-10 h-12 uppercase font-mono font-bold tracking-tighter group"
                   onClick={() => {
-                    router.push(
-                      `/dashboard/monitors/new?url=${encodeURIComponent(url)}&type=HTTP`,
-                    );
+                    router.push(`/dashboard/monitors/new?url=${encodeURIComponent(url)}&type=HTTP`);
                   }}
                 >
                   Full Infrastructure Scan

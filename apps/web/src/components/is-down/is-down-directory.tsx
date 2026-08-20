@@ -19,9 +19,7 @@ interface IsDownDirectoryProps {
 
 export function IsDownDirectory({ services }: IsDownDirectoryProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<
-    ServiceCategory | "all"
-  >("all");
+  const [selectedCategory, setSelectedCategory] = useState<ServiceCategory | "all">("all");
 
   const categories: Array<{ id: ServiceCategory | "all"; label: string }> = [
     { id: "all", label: `All Services (${services.length})` },
@@ -44,8 +42,7 @@ export function IsDownDirectory({ services }: IsDownDirectoryProps) {
   const filteredServices = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
     return services.filter((service) => {
-      const matchesCategory =
-        selectedCategory === "all" || service.category === selectedCategory;
+      const matchesCategory = selectedCategory === "all" || service.category === selectedCategory;
       if (!matchesCategory) return false;
 
       if (!q) return true;
@@ -83,9 +80,7 @@ export function IsDownDirectory({ services }: IsDownDirectoryProps) {
               </span>
               <div className="flex items-center gap-1 mt-1">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-[10px] text-muted-foreground font-mono">
-                  Live Check
-                </span>
+                <span className="text-[10px] text-muted-foreground font-mono">Live Check</span>
               </div>
             </Link>
           ))}
@@ -128,11 +123,7 @@ export function IsDownDirectory({ services }: IsDownDirectoryProps) {
       <div className="space-y-4">
         <div className="flex items-center justify-between text-xs text-muted-foreground border-b border-border/60 pb-3">
           <span>
-            Showing{" "}
-            <strong className="text-foreground">
-              {filteredServices.length}
-            </strong>{" "}
-            services
+            Showing <strong className="text-foreground">{filteredServices.length}</strong> services
           </span>
           <span>Automated 10s Edge Verification</span>
         </div>
@@ -141,9 +132,7 @@ export function IsDownDirectory({ services }: IsDownDirectoryProps) {
           <div className="text-center py-16 rounded-2xl border border-dashed border-border p-8">
             <p className="text-base text-muted-foreground">
               No services found matching "
-              <span className="text-foreground font-semibold">
-                {searchQuery}
-              </span>
+              <span className="text-foreground font-semibold">{searchQuery}</span>
               ".
             </p>
             <p className="text-xs text-muted-foreground mt-1">
@@ -192,10 +181,7 @@ export function IsDownDirectory({ services }: IsDownDirectoryProps) {
                 </div>
 
                 <div className="flex items-center justify-between pt-3 border-t border-border/40 text-[11px]">
-                  <Badge
-                    variant="secondary"
-                    className="text-[10px] font-normal"
-                  >
+                  <Badge variant="secondary" className="text-[10px] font-normal">
                     {CATEGORY_LABELS[service.category]}
                   </Badge>
 

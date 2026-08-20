@@ -141,10 +141,7 @@ function parseUptimeKumaJSON(rawContent: string): ParsedMonitor[] {
       method,
       headers: customHeaders,
       body: m.body || null,
-      expectation:
-        Object.keys(expectationObj).length > 0
-          ? JSON.stringify(expectationObj)
-          : null,
+      expectation: Object.keys(expectationObj).length > 0 ? JSON.stringify(expectationObj) : null,
       alertThreshold,
       tags: Array.from(new Set(tags)),
     };
@@ -239,9 +236,7 @@ Options:
     where: { userId: targetUser.id },
     select: { id: true, name: true },
   });
-  const existingMap = new Map(
-    existingMonitors.map((m) => [m.name.toLowerCase().trim(), m.id]),
-  );
+  const existingMap = new Map(existingMonitors.map((m) => [m.name.toLowerCase().trim(), m.id]));
 
   let created = 0;
   let updated = 0;
@@ -307,9 +302,7 @@ Options:
   console.log(`  Created: ${created}`);
   console.log(`  Updated: ${updated}`);
   console.log(`  Skipped: ${skipped}`);
-  console.log(
-    `All checks are now live on SteadyStack's edge consensus network.\n`,
-  );
+  console.log(`All checks are now live on SteadyStack's edge consensus network.\n`);
   process.exit(0);
 }
 

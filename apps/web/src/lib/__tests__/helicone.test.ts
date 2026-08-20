@@ -1,9 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import {
-  isHeliconeConfigured,
-  resolveHeliconeBaseUrl,
-  buildHeliconeHeaders,
-} from "../helicone";
+import { isHeliconeConfigured, resolveHeliconeBaseUrl, buildHeliconeHeaders } from "../helicone";
 import { getAIProviderClient } from "../ai";
 
 describe("Helicone Integration", () => {
@@ -36,36 +32,22 @@ describe("Helicone Integration", () => {
 
   describe("resolveHeliconeBaseUrl", () => {
     it("returns standard endpoints when Helicone is disabled", () => {
-      expect(resolveHeliconeBaseUrl("openai")).toBe(
-        "https://api.openai.com/v1",
-      );
-      expect(resolveHeliconeBaseUrl("openrouter")).toBe(
-        "https://openrouter.ai/api/v1",
-      );
-      expect(resolveHeliconeBaseUrl("anthropic")).toBe(
-        "https://api.anthropic.com/v1",
-      );
+      expect(resolveHeliconeBaseUrl("openai")).toBe("https://api.openai.com/v1");
+      expect(resolveHeliconeBaseUrl("openrouter")).toBe("https://openrouter.ai/api/v1");
+      expect(resolveHeliconeBaseUrl("anthropic")).toBe("https://api.anthropic.com/v1");
     });
 
     it("returns Helicone proxy gateways when Helicone is enabled", () => {
       process.env.HELICONE_API_KEY = "sk-helicone-test-key";
-      expect(resolveHeliconeBaseUrl("openai")).toBe(
-        "https://oai.helicone.ai/v1",
-      );
-      expect(resolveHeliconeBaseUrl("openrouter")).toBe(
-        "https://openrouter.helicone.ai/api/v1",
-      );
-      expect(resolveHeliconeBaseUrl("anthropic")).toBe(
-        "https://anthropic.helicone.ai/v1",
-      );
+      expect(resolveHeliconeBaseUrl("openai")).toBe("https://oai.helicone.ai/v1");
+      expect(resolveHeliconeBaseUrl("openrouter")).toBe("https://openrouter.helicone.ai/api/v1");
+      expect(resolveHeliconeBaseUrl("anthropic")).toBe("https://anthropic.helicone.ai/v1");
     });
 
     it("respects custom HELICONE_BASE_PATH when set", () => {
       process.env.HELICONE_API_KEY = "sk-helicone-test-key";
       process.env.HELICONE_BASE_PATH = "https://custom-gateway.helicone.ai/v1";
-      expect(resolveHeliconeBaseUrl("openai")).toBe(
-        "https://custom-gateway.helicone.ai/v1",
-      );
+      expect(resolveHeliconeBaseUrl("openai")).toBe("https://custom-gateway.helicone.ai/v1");
     });
   });
 
@@ -97,15 +79,11 @@ describe("Helicone Integration", () => {
       });
 
       expect(headers["Helicone-Auth"]).toBe("Bearer sk-helicone-test-key");
-      expect(headers["Helicone-Property-WorkspaceId"]).toBe(
-        "ws_steadystack_01",
-      );
+      expect(headers["Helicone-Property-WorkspaceId"]).toBe("ws_steadystack_01");
       expect(headers["Helicone-User-Id"]).toBe("usr_alex_01");
       expect(headers["Helicone-Property-Feature"]).toBe("post-mortem-summary");
       expect(headers["Helicone-Property-PlanTier"]).toBe("Enterprise");
-      expect(headers["Helicone-Property-Environment"]).toBe(
-        process.env.NODE_ENV || "development",
-      );
+      expect(headers["Helicone-Property-Environment"]).toBe(process.env.NODE_ENV || "development");
       expect(headers["Helicone-Cache-Enabled"]).toBe("true");
       expect(headers["Helicone-Retry-Enabled"]).toBe("true");
       expect(headers["Helicone-Prompt-Id"]).toBe("pm-prompt-v2");

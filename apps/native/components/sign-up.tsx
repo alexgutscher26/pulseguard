@@ -82,11 +82,7 @@ export function SignUp() {
       <View className="gap-3">
         <TextField>
           <TextField.Label>Name</TextField.Label>
-          <TextField.Input
-            value={name}
-            onChangeText={setName}
-            placeholder="John Doe"
-          />
+          <TextField.Input value={name} onChangeText={setName} placeholder="John Doe" />
         </TextField>
 
         <TextField>

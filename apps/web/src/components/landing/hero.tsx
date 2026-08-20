@@ -1,14 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  ArrowRight,
-  Activity,
-  ShieldCheck,
-  Zap,
-  Server,
-  RefreshCw,
-} from "lucide-react";
+import { ArrowRight, Activity, ShieldCheck, Zap, Server, RefreshCw } from "lucide-react";
 import { AVAILABLE_REGIONS } from "@steadystack/shared";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
@@ -24,9 +17,7 @@ export default function Hero() {
   });
   const [isScanning, setIsScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState(100);
-  const [activeNodes, setActiveNodes] = useState<number[]>(
-    Array.from({ length: 30 }, (_, i) => i),
-  );
+  const [activeNodes, setActiveNodes] = useState<number[]>(Array.from({ length: 30 }, (_, i) => i));
 
   // Simulate continuous background telemetry fluctuations
   useEffect(() => {
@@ -109,10 +100,9 @@ export default function Hero() {
 
         {/* Subhead */}
         <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mb-8 text-balance font-sans">
-          SteadyStack checks your endpoints every 60 seconds from seven global
-          regions. One region seeing a failure is a network blip, and we ignore
-          it. When four regions independently agree, you get paged. Every alert
-          you receive has already been confirmed four times over.
+          SteadyStack checks your endpoints every 60 seconds from seven global regions. One region
+          seeing a failure is a network blip, and we ignore it. When four regions independently
+          agree, you get paged. Every alert you receive has already been confirmed four times over.
         </p>
 
         {/* Probe Input Form */}
@@ -167,16 +157,13 @@ export default function Hero() {
         {/* Trust Row */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl mb-16 text-xs font-mono text-muted-foreground/90 border-y border-border/60 py-4 bg-muted/20 rounded-xl px-4">
           <div className="flex items-center justify-center gap-2">
-            <span className="text-primary font-bold">✓</span> 60-second checks
-            on the free tier
+            <span className="text-primary font-bold">✓</span> 60-second checks on the free tier
           </div>
           <div className="flex items-center justify-center gap-2">
-            <span className="text-primary font-bold">✓</span> 7-region
-            verification, included free
+            <span className="text-primary font-bold">✓</span> 7-region verification, included free
           </div>
           <div className="flex items-center justify-center gap-2">
-            <span className="text-primary font-bold">✓</span> Commercial use
-            permitted, in writing
+            <span className="text-primary font-bold">✓</span> Commercial use permitted, in writing
           </div>
         </div>
 
@@ -236,23 +223,9 @@ export default function Hero() {
                   preserveAspectRatio="none"
                 >
                   <defs>
-                    <linearGradient
-                      id="waveGradient"
-                      x1="0"
-                      y1="0"
-                      x2="0"
-                      y2="1"
-                    >
-                      <stop
-                        offset="0%"
-                        stopColor="currentColor"
-                        stopOpacity="0.3"
-                      />
-                      <stop
-                        offset="100%"
-                        stopColor="currentColor"
-                        stopOpacity="0.0"
-                      />
+                    <linearGradient id="waveGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="currentColor" stopOpacity="0.3" />
+                      <stop offset="100%" stopColor="currentColor" stopOpacity="0.0" />
                     </linearGradient>
                   </defs>
                   <path
@@ -289,9 +262,7 @@ export default function Hero() {
                     <div
                       key={idx}
                       className={`flex-1 h-6 rounded-sm transition-all duration-300 ${
-                        activeNodes.includes(idx)
-                          ? "bg-primary shadow-xs"
-                          : "bg-muted/40"
+                        activeNodes.includes(idx) ? "bg-primary shadow-xs" : "bg-muted/40"
                       }`}
                       style={{
                         opacity: activeNodes.includes(idx) ? 1 : 0.2,
@@ -319,9 +290,7 @@ export default function Hero() {
                         wnam (San Jose)
                       </span>
                     </div>
-                    <span className="text-xs font-bold text-primary">
-                      {latencies.wnam}ms
-                    </span>
+                    <span className="text-xs font-bold text-primary">{latencies.wnam}ms</span>
                   </div>
 
                   {/* Region 2: US East */}
@@ -332,9 +301,7 @@ export default function Hero() {
                         enam (Ashburn)
                       </span>
                     </div>
-                    <span className="text-xs font-bold text-primary">
-                      {latencies.enam}ms
-                    </span>
+                    <span className="text-xs font-bold text-primary">{latencies.enam}ms</span>
                   </div>
 
                   {/* Region 3: Western Europe */}
@@ -345,9 +312,7 @@ export default function Hero() {
                         weur (London)
                       </span>
                     </div>
-                    <span className="text-xs font-bold text-primary">
-                      {latencies.weur}ms
-                    </span>
+                    <span className="text-xs font-bold text-primary">{latencies.weur}ms</span>
                   </div>
 
                   {/* Region 4: Asia Pacific */}
@@ -358,9 +323,7 @@ export default function Hero() {
                         apac-ne (Tokyo)
                       </span>
                     </div>
-                    <span className="text-xs font-bold text-primary">
-                      {latencies.apac}ms
-                    </span>
+                    <span className="text-xs font-bold text-primary">{latencies.apac}ms</span>
                   </div>
                 </div>
               </div>
@@ -370,9 +333,7 @@ export default function Hero() {
                   <ShieldCheck className="size-3 text-primary" />
                   Cloudflare Edge DOs
                 </span>
-                <span className="text-primary font-mono font-bold">
-                  4-of-7 Quorum
-                </span>
+                <span className="text-primary font-mono font-bold">4-of-7 Quorum</span>
               </div>
             </div>
           </div>

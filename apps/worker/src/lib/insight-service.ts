@@ -28,8 +28,7 @@ export class InsightService {
   }) {
     // Limit spam: Only create if no active insight of same type in last 5 minutes
     // unless severity is CRITICAL.
-    const windowMs =
-      data.severity === InsightSeverity.CRITICAL ? 60 * 1000 : 5 * 60 * 1000;
+    const windowMs = data.severity === InsightSeverity.CRITICAL ? 60 * 1000 : 5 * 60 * 1000;
 
     const recent = await this.prisma.monitorInsight.findFirst({
       where: {
@@ -62,9 +61,7 @@ export class InsightService {
       },
     });
 
-    console.log(
-      `[Insight] Created ${data.type} for monitor ${data.monitorId}: ${data.message}`,
-    );
+    console.log(`[Insight] Created ${data.type} for monitor ${data.monitorId}: ${data.message}`);
     return insight;
   }
 
@@ -72,11 +69,7 @@ export class InsightService {
    * Phase 2: Heuristic Analysis
    * Analyze recent events to provide contextual advice.
    */
-  async analyzeAndProvideAdvice(
-    monitorId: string,
-    monitorName: string,
-    recentEvents: any[],
-  ) {
+  async analyzeAndProvideAdvice(monitorId: string, monitorName: string, recentEvents: any[]) {
     if (recentEvents.length < 5) return;
 
     const latencies = recentEvents.map((e) => e.latency);

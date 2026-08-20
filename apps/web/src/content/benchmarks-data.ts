@@ -15,11 +15,7 @@ export interface BenchmarkEndpoint {
     | "Fly.io Singapore"
     | "GCP us-central1"
     | "AWS us-west-2";
-  protocol:
-    | "HTTPS / HTTP/2"
-    | "HTTPS / TLS 1.3"
-    | "HTTPS / Chunked Stream"
-    | "Geo-DNS / HTTPS";
+  protocol: "HTTPS / HTTP/2" | "HTTPS / TLS 1.3" | "HTTPS / Chunked Stream" | "Geo-DNS / HTTPS";
   purpose: string;
   baselineLatencyMs: number;
 }
@@ -43,8 +39,7 @@ export interface IncidentRecord {
   groundTruthDown: boolean;
   steadystack: {
     alertTriggered: boolean;
-    consensusState:
-      "VERIFIED_DOWN" | "QUORUM_REJECTED" | "DEGRADED_REGIONAL_NOISE";
+    consensusState: "VERIFIED_DOWN" | "QUORUM_REJECTED" | "DEGRADED_REGIONAL_NOISE";
     regionsFailed: number;
     regionsTested: number;
     timeToVerdictMs: number;
@@ -106,8 +101,7 @@ export const BENCHMARK_METADATA = {
   totalChecksFleet: 1296000,
   checksPerService: 432000,
   endpointsCount: 10,
-  groundTruthAuditHashSha256:
-    "5d3bb3fa22e8a7672a023bf022ac46db4cf96d9c2ea5689f2de2d26cd88f1652",
+  groundTruthAuditHashSha256: "5d3bb3fa22e8a7672a023bf022ac46db4cf96d9c2ea5689f2de2d26cd88f1652",
   citationMarkdown:
     "SteadyStack Research Team. (2026). *The False-Positive Benchmark Study: Measuring Spurious On-Call Alerts Across Edge Consensus vs Single-Probe Monitoring (30 Days, 1.29M Probes)*. https://steadystack.dev/benchmarks/false-positives",
 };
@@ -119,8 +113,7 @@ export const BENCHMARK_ENDPOINTS: BenchmarkEndpoint[] = [
     url: "https://edge-api.steadystack-bench.net/v1/health",
     provider: "Cloudflare Edge",
     protocol: "HTTPS / HTTP/2",
-    purpose:
-      "Tests Anycast routing, edge micro-bursts, and sub-100ms global response times.",
+    purpose: "Tests Anycast routing, edge micro-bursts, and sub-100ms global response times.",
     baselineLatencyMs: 42,
   },
   {
@@ -129,8 +122,7 @@ export const BENCHMARK_ENDPOINTS: BenchmarkEndpoint[] = [
     url: "https://us-east.steadystack-bench.net/status",
     provider: "AWS us-east-1",
     protocol: "HTTPS / TLS 1.3",
-    purpose:
-      "Tests centralized VM ingress under standard North American tier-1 ISP transit.",
+    purpose: "Tests centralized VM ingress under standard North American tier-1 ISP transit.",
     baselineLatencyMs: 98,
   },
   {
@@ -139,8 +131,7 @@ export const BENCHMARK_ENDPOINTS: BenchmarkEndpoint[] = [
     url: "https://eu-central.steadystack-bench.net/ping",
     provider: "Hetzner Frankfurt",
     protocol: "HTTPS / TLS 1.3",
-    purpose:
-      "Tests dedicated European bare metal compute with strict TCP windowing.",
+    purpose: "Tests dedicated European bare metal compute with strict TCP windowing.",
     baselineLatencyMs: 38,
   },
   {
@@ -149,8 +140,7 @@ export const BENCHMARK_ENDPOINTS: BenchmarkEndpoint[] = [
     url: "https://asia-south.steadystack-bench.net/alive",
     provider: "Fly.io Singapore",
     protocol: "HTTPS / HTTP/2",
-    purpose:
-      "Tests trans-Pacific and intra-Asia submarine cable latency variance.",
+    purpose: "Tests trans-Pacific and intra-Asia submarine cable latency variance.",
     baselineLatencyMs: 175,
   },
   {
@@ -159,8 +149,7 @@ export const BENCHMARK_ENDPOINTS: BenchmarkEndpoint[] = [
     url: "https://flapping-route.steadystack-bench.net/check",
     provider: "AWS us-west-2",
     protocol: "HTTPS / TLS 1.3",
-    purpose:
-      "Simulates controlled 8-15 second single-AS route withdrawal every 48 hours.",
+    purpose: "Simulates controlled 8-15 second single-AS route withdrawal every 48 hours.",
     baselineLatencyMs: 115,
   },
   {
@@ -179,8 +168,7 @@ export const BENCHMARK_ENDPOINTS: BenchmarkEndpoint[] = [
     url: "https://micro-drop.steadystack-bench.net/transient",
     provider: "GCP us-central1",
     protocol: "HTTPS / HTTP/2",
-    purpose:
-      "Injects controlled 200ms HTTP 503 transient drop bursts once daily.",
+    purpose: "Injects controlled 200ms HTTP 503 transient drop bursts once daily.",
     baselineLatencyMs: 65,
   },
   {
@@ -189,8 +177,7 @@ export const BENCHMARK_ENDPOINTS: BenchmarkEndpoint[] = [
     url: "https://tls-sni-strict.steadystack-bench.net/verify",
     provider: "Hetzner Frankfurt",
     protocol: "HTTPS / TLS 1.3",
-    purpose:
-      "Tests TLS 1.3 0-RTT session resumption failures and cipher negotiation quirks.",
+    purpose: "Tests TLS 1.3 0-RTT session resumption failures and cipher negotiation quirks.",
     baselineLatencyMs: 52,
   },
   {
@@ -199,8 +186,7 @@ export const BENCHMARK_ENDPOINTS: BenchmarkEndpoint[] = [
     url: "https://chunked-stream.steadystack-bench.net/stream",
     provider: "Cloudflare Edge",
     protocol: "HTTPS / Chunked Stream",
-    purpose:
-      "Tests 5MB chunked transfer encoding with occasional trailing byte delays.",
+    purpose: "Tests 5MB chunked transfer encoding with occasional trailing byte delays.",
     baselineLatencyMs: 120,
   },
   {
@@ -300,8 +286,7 @@ export const WHERE_WE_LOST_ANALYSIS: LossAnalysis[] = [
       "Pingdom had a probe routed through that specific transit path and fired a global 'SERVICE DOWN' alert. SteadyStack recorded 1 of 7 probe failures (`apac-se`), while the other 6 regions (`enam`, `wnam`, `weur`, `eeur`, `apac-ne`, `apac-s`) reported `200 OK`. SteadyStack flagged the incident as 'Localized Degradation' on telemetry graphs but did NOT trigger an on-call page.",
     whyWeAcceptThisTradeoff:
       "If your server is operating normally for 98% of world traffic, waking up your entire platform on-call team at 3:15 AM with a 'CRITICAL OUTAGE' notification is an antipattern. For regional visibility, we provide regional degradation feeds without high-urgency pager escalation.",
-    engineeringTakeaway:
-      "True outages must be distinguished from localized transit partitions.",
+    engineeringTakeaway: "True outages must be distinguished from localized transit partitions.",
   },
   {
     id: "loss-3",
@@ -708,8 +693,7 @@ export const SAMPLE_INCIDENTS: IncidentRecord[] = [
       alertTriggered: true,
       retryTriggered: true,
       timeToVerdictMs: 30800,
-      verdictDescription:
-        "DNS lookup timed out on poller node. False positive alert dispatched.",
+      verdictDescription: "DNS lookup timed out on poller node. False positive alert dispatched.",
     },
     pingdom: {
       alertTriggered: true,
@@ -746,15 +730,13 @@ export const SAMPLE_INCIDENTS: IncidentRecord[] = [
       alertTriggered: true,
       retryTriggered: true,
       timeToVerdictMs: 33100,
-      verdictDescription:
-        "Primary check 503; secondary retry 503. Down alert dispatched.",
+      verdictDescription: "Primary check 503; secondary retry 503. Down alert dispatched.",
     },
     pingdom: {
       alertTriggered: true,
       secondProbeTriggered: true,
       timeToVerdictMs: 29000,
-      verdictDescription:
-        "Double-check failed with 503. Down alert dispatched.",
+      verdictDescription: "Double-check failed with 503. Down alert dispatched.",
     },
     serverIngressSummary:
       "Database lock contention resulted in all incoming HTTP worker threads returning 503 for 12 minutes.",
@@ -820,8 +802,7 @@ export const SAMPLE_INCIDENTS: IncidentRecord[] = [
       alertTriggered: true,
       retryTriggered: true,
       timeToVerdictMs: 31500,
-      verdictDescription:
-        "Primary and secondary probes timed out. Alert dispatched.",
+      verdictDescription: "Primary and secondary probes timed out. Alert dispatched.",
     },
     pingdom: {
       alertTriggered: true,
@@ -856,8 +837,7 @@ export const SAMPLE_INCIDENTS: IncidentRecord[] = [
       alertTriggered: true,
       retryTriggered: true,
       timeToVerdictMs: 34800,
-      verdictDescription:
-        "Failed primary + secondary retry. Alert dispatched at +34.8s.",
+      verdictDescription: "Failed primary + secondary retry. Alert dispatched at +34.8s.",
     },
     pingdom: {
       alertTriggered: true,
@@ -866,8 +846,7 @@ export const SAMPLE_INCIDENTS: IncidentRecord[] = [
       verdictDescription:
         "Failed single probe. First webhook fired at +3.21s (Pingdom won first-webhook latency by 910ms).",
     },
-    serverIngressSummary:
-      "Datacenter power loss resulted in total unavailability for 45 minutes.",
+    serverIngressSummary: "Datacenter power loss resulted in total unavailability for 45 minutes.",
     postMortem:
       "True Positive for all services. Pingdom fired its initial webhook 910ms faster than SteadyStack due to zero quorum wait.",
   },

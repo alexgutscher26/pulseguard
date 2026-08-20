@@ -73,22 +73,17 @@ export default function FAQ() {
             Frequently asked questions
           </h2>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-md">
-            Find immediate answers regarding SteadyStack's global network,
-            subscription models, and telemetry configurations.
+            Find immediate answers regarding SteadyStack's global network, subscription models, and
+            telemetry configurations.
           </p>
         </div>
 
         {/* Minimalist Separator Layout */}
         <div className="divide-y divide-border border-t border-b border-border">
           {faqs.map((item, i) => (
-            <details
-              key={i}
-              className="group overflow-hidden transition-all duration-300"
-            >
+            <details key={i} className="group overflow-hidden transition-all duration-300">
               <summary className="flex items-center justify-between py-5 cursor-pointer font-semibold text-foreground hover:text-primary transition-colors list-none outline-none focus-visible:ring-1 focus-visible:ring-primary/50 [&::-webkit-details-marker]:hidden">
-                <span className="text-sm sm:text-base tracking-tight">
-                  {item.q}
-                </span>
+                <span className="text-sm sm:text-base tracking-tight">{item.q}</span>
                 <ChevronDown className="size-4 text-muted-foreground/60 group-open:rotate-180 group-open:text-primary transition-all duration-300 shrink-0 ml-4" />
               </summary>
               <div className="pb-5 text-muted-foreground text-xs leading-relaxed transition-all duration-300">

@@ -83,8 +83,6 @@ describe("Alert Notification Resilience & Failure Modes", () => {
     };
 
     // Should complete cleanly and not throw unhandled exception
-    await expect(
-      queueNotification(mockEnv, payload, mockCtx),
-    ).resolves.toBeUndefined();
+    await expect(queueNotification(mockEnv, payload, mockCtx)).resolves.toBeUndefined();
   });
 });

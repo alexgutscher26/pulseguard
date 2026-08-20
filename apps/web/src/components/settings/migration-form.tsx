@@ -13,13 +13,7 @@ import {
   Terminal,
   FileUp,
 } from "lucide-react";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 interface ImportPreview {
@@ -38,9 +32,7 @@ export function MigrationForm() {
   const [downloading, setDownloading] = useState<string | null>(null);
   const [importing, setImporting] = useState(false);
   const [importFile, setImportFile] = useState<File | null>(null);
-  const [importPreview, setImportPreview] = useState<ImportPreview | null>(
-    null,
-  );
+  const [importPreview, setImportPreview] = useState<ImportPreview | null>(null);
   const [importResult, setImportResult] = useState<{
     success: boolean;
     created?: number;
@@ -196,9 +188,9 @@ export function MigrationForm() {
           Migration, Import & Export
         </h2>
         <p className="text-xs text-muted-foreground leading-relaxed">
-          SteadyStack runs on a zero-vendor-lock-in philosophy. Seamlessly
-          import from Uptime Kuma, dump your full workspace configuration, or
-          export blackbox exporter YAML for self-hosted daemons.
+          SteadyStack runs on a zero-vendor-lock-in philosophy. Seamlessly import from Uptime Kuma,
+          dump your full workspace configuration, or export blackbox exporter YAML for self-hosted
+          daemons.
         </p>
       </div>
 
@@ -217,9 +209,8 @@ export function MigrationForm() {
             </CardTitle>
           </div>
           <CardDescription className="text-xs leading-relaxed">
-            Drag and drop your Uptime Kuma JSON export file or SteadyStack
-            backup to instantly migrate all monitors, check intervals, custom
-            headers, and alert triggers.
+            Drag and drop your Uptime Kuma JSON export file or SteadyStack backup to instantly
+            migrate all monitors, check intervals, custom headers, and alert triggers.
           </CardDescription>
         </CardHeader>
 
@@ -242,13 +233,10 @@ export function MigrationForm() {
               </div>
               <div className="text-center space-y-1">
                 <p className="text-xs font-bold font-mono text-foreground uppercase tracking-wider">
-                  {importing
-                    ? "Reading backup..."
-                    : "Click or drag Uptime Kuma JSON export here"}
+                  {importing ? "Reading backup..." : "Click or drag Uptime Kuma JSON export here"}
                 </p>
                 <p className="text-[11px] text-muted-foreground">
-                  Supports Uptime Kuma{" "}
-                  <code className="text-primary font-mono">backup.json</code>,
+                  Supports Uptime Kuma <code className="text-primary font-mono">backup.json</code>,
                   OpenStatus JSON, or SteadyStack dumps.
                 </p>
               </div>
@@ -261,8 +249,7 @@ export function MigrationForm() {
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="text-xs font-bold font-mono uppercase text-foreground">
-                    Detected {importPreview.total} Monitor(s) (
-                    {importPreview.format})
+                    Detected {importPreview.total} Monitor(s) ({importPreview.format})
                   </h4>
                   <p className="text-[11px] text-muted-foreground">
                     Review parsed endpoints before syncing to your edge cluster.
@@ -306,9 +293,7 @@ export function MigrationForm() {
                   <tbody className="divide-y divide-border/20">
                     {importPreview.monitors.slice(0, 15).map((m, idx) => (
                       <tr key={idx} className="hover:bg-primary/[0.02]">
-                        <td className="p-2 font-semibold text-foreground">
-                          {m.name}
-                        </td>
+                        <td className="p-2 font-semibold text-foreground">{m.name}</td>
                         <td className="p-2 text-primary font-bold">{m.type}</td>
                         <td className="p-2 text-muted-foreground truncate max-w-[200px]">
                           {m.url}
@@ -332,8 +317,7 @@ export function MigrationForm() {
               </div>
               {importPreview.monitors.length > 15 && (
                 <p className="text-[10px] text-muted-foreground text-center">
-                  + {importPreview.monitors.length - 15} more monitors ready for
-                  import
+                  + {importPreview.monitors.length - 15} more monitors ready for import
                 </p>
               )}
             </div>
@@ -348,10 +332,9 @@ export function MigrationForm() {
                   Migration Complete!
                 </h4>
                 <p className="text-xs leading-relaxed text-foreground/80">
-                  Successfully imported {importResult.total} monitors (
-                  {importResult.created} created, {importResult.updated}{" "}
-                  updated). All checks are now active on SteadyStack&apos;s
-                  multi-region edge consensus engine.
+                  Successfully imported {importResult.total} monitors ({importResult.created}{" "}
+                  created, {importResult.updated} updated). All checks are now active on
+                  SteadyStack&apos;s multi-region edge consensus engine.
                 </p>
               </div>
             </div>
@@ -365,9 +348,7 @@ export function MigrationForm() {
                 <h4 className="text-xs font-bold font-mono uppercase tracking-wider">
                   Import Failed
                 </h4>
-                <p className="text-xs leading-relaxed text-foreground/80">
-                  {importResult.error}
-                </p>
+                <p className="text-xs leading-relaxed text-foreground/80">{importResult.error}</p>
               </div>
             </div>
           )}
@@ -378,9 +359,7 @@ export function MigrationForm() {
               <Terminal className="size-3.5 text-primary" />
               <span>
                 CLI migration:{" "}
-                <code className="text-foreground font-bold">
-                  pulse import kuma backup.json
-                </code>
+                <code className="text-foreground font-bold">pulse import kuma backup.json</code>
               </span>
             </div>
             <span className="text-[10px] font-mono text-primary uppercase font-bold">
@@ -458,11 +437,10 @@ export function MigrationForm() {
                 Migration Guarantee & Zero Lock-In
               </h4>
               <p className="text-[11px] text-muted-foreground leading-relaxed">
-                All exporter formats generate structural JSON or YAML
-                configurations. SteadyStack checks comply with industry
-                monitoring schemas, letting you easily self-host a Blackbox
-                exporter daemon, Uptime Kuma instance, or standard container
-                cluster should you choose to change platforms.
+                All exporter formats generate structural JSON or YAML configurations. SteadyStack
+                checks comply with industry monitoring schemas, letting you easily self-host a
+                Blackbox exporter daemon, Uptime Kuma instance, or standard container cluster should
+                you choose to change platforms.
               </p>
             </div>
           </div>

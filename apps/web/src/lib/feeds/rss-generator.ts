@@ -35,14 +35,7 @@ function formatRfc822Date(date: Date): string {
 }
 
 export function generateRssFeed(config: FeedConfig): string {
-  const {
-    title,
-    description,
-    link,
-    language = "en-us",
-    lastBuildDate,
-    items,
-  } = config;
+  const { title, description, link, language = "en-us", lastBuildDate, items } = config;
 
   const itemsXml = items
     .map(

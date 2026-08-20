@@ -68,10 +68,7 @@ export function MonitorGridCard({
   const latencies = events.map((e: any) => e.latency || 0).slice(0, 30);
   const avgLatency =
     latencies.length > 0
-      ? Math.round(
-          latencies.reduce((a: number, b: number) => a + b, 0) /
-            latencies.length,
-        )
+      ? Math.round(latencies.reduce((a: number, b: number) => a + b, 0) / latencies.length)
       : 0;
 
   // Mini Sparkline SVG path generator
@@ -162,12 +159,7 @@ export function MonitorGridCard({
             className="p-1 text-zinc-500 hover:text-zinc-300 cursor-grab active:cursor-grabbing"
             title="Drag to reorder"
           >
-            <svg
-              className="size-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
+            <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -217,9 +209,7 @@ export function MonitorGridCard({
             {monitor.name}
             <ExternalLink className="size-3 opacity-0 group-hover:opacity-60 transition-opacity" />
           </Link>
-          <span className="text-[10px] text-zinc-500 font-mono truncate">
-            {monitor.url}
-          </span>
+          <span className="text-[10px] text-zinc-500 font-mono truncate">{monitor.url}</span>
         </div>
 
         {!isEditMode && (
@@ -239,17 +229,13 @@ export function MonitorGridCard({
             <span className="text-zinc-500 text-[10px] font-mono uppercase tracking-wider">
               Uptime
             </span>
-            <span className="text-xl font-mono font-extrabold text-zinc-200">
-              {uptime}%
-            </span>
+            <span className="text-xl font-mono font-extrabold text-zinc-200">{uptime}%</span>
           </div>
           <div className="flex flex-col items-end">
             <span className="text-zinc-500 text-[10px] font-mono uppercase tracking-wider">
               Latency
             </span>
-            <span className="text-xl font-mono font-extrabold text-zinc-200">
-              {avgLatency}ms
-            </span>
+            <span className="text-xl font-mono font-extrabold text-zinc-200">{avgLatency}ms</span>
           </div>
         </div>
       )}
@@ -260,28 +246,11 @@ export function MonitorGridCard({
           {/* Sparkline chart */}
           <div className="flex-1 max-w-[50%] h-[60px] relative">
             {sparklinePath ? (
-              <svg
-                className="w-full h-full overflow-visible"
-                viewBox="0 0 220 60"
-              >
+              <svg className="w-full h-full overflow-visible" viewBox="0 0 220 60">
                 <defs>
-                  <linearGradient
-                    id={`grad-2x1-${monitor.id}`}
-                    x1="0"
-                    y1="0"
-                    x2="0"
-                    y2="1"
-                  >
-                    <stop
-                      offset="0%"
-                      stopColor="currentColor"
-                      stopOpacity="0.2"
-                    />
-                    <stop
-                      offset="100%"
-                      stopColor="currentColor"
-                      stopOpacity="0.0"
-                    />
+                  <linearGradient id={`grad-2x1-${monitor.id}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="currentColor" stopOpacity="0.2" />
+                    <stop offset="100%" stopColor="currentColor" stopOpacity="0.0" />
                   </linearGradient>
                 </defs>
                 <path
@@ -321,17 +290,13 @@ export function MonitorGridCard({
               <span className="text-zinc-500 text-[9px] font-mono uppercase tracking-wider">
                 Uptime
               </span>
-              <span className="text-lg font-mono font-extrabold text-zinc-200">
-                {uptime}%
-              </span>
+              <span className="text-lg font-mono font-extrabold text-zinc-200">{uptime}%</span>
             </div>
             <div className="flex flex-col">
               <span className="text-zinc-500 text-[9px] font-mono uppercase tracking-wider">
                 Avg Response
               </span>
-              <span className="text-lg font-mono font-extrabold text-zinc-200">
-                {avgLatency}ms
-              </span>
+              <span className="text-lg font-mono font-extrabold text-zinc-200">{avgLatency}ms</span>
             </div>
           </div>
         </div>
@@ -343,28 +308,11 @@ export function MonitorGridCard({
           {/* Sparkline chart */}
           <div className="flex-1 min-h-[100px] h-full relative">
             {sparklinePath ? (
-              <svg
-                className="w-full h-full overflow-visible"
-                viewBox="0 0 380 60"
-              >
+              <svg className="w-full h-full overflow-visible" viewBox="0 0 380 60">
                 <defs>
-                  <linearGradient
-                    id={`grad-2x2-${monitor.id}`}
-                    x1="0"
-                    y1="0"
-                    x2="0"
-                    y2="1"
-                  >
-                    <stop
-                      offset="0%"
-                      stopColor="currentColor"
-                      stopOpacity="0.2"
-                    />
-                    <stop
-                      offset="100%"
-                      stopColor="currentColor"
-                      stopOpacity="0.0"
-                    />
+                  <linearGradient id={`grad-2x2-${monitor.id}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="currentColor" stopOpacity="0.2" />
+                    <stop offset="100%" stopColor="currentColor" stopOpacity="0.0" />
                   </linearGradient>
                 </defs>
                 <path
@@ -405,9 +353,7 @@ export function MonitorGridCard({
               <span className="text-zinc-500 text-[9px] font-mono uppercase tracking-wider">
                 Uptime
               </span>
-              <span className="text-base font-mono font-extrabold text-zinc-200">
-                {uptime}%
-              </span>
+              <span className="text-base font-mono font-extrabold text-zinc-200">{uptime}%</span>
             </div>
             <div className="flex flex-col">
               <span className="text-zinc-500 text-[9px] font-mono uppercase tracking-wider">

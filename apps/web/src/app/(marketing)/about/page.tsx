@@ -1,13 +1,5 @@
 import type { Metadata } from "next";
-import {
-  Activity,
-  Globe,
-  Shield,
-  Bell,
-  Brain,
-  Cpu,
-  ArrowRight,
-} from "lucide-react";
+import { Activity, Globe, Shield, Bell, Brain, Cpu, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { PRODUCT_CONFIG, AVAILABLE_REGIONS } from "@steadystack/shared";
 
@@ -19,8 +11,7 @@ export const metadata: Metadata = {
     "SteadyStack was built to make infrastructure monitoring fast, accurate, and beautiful. Learn our story and meet the team.",
   openGraph: {
     title: "About SteadyStack",
-    description:
-      "Built to make infrastructure monitoring fast, accurate, and beautiful.",
+    description: "Built to make infrastructure monitoring fast, accurate, and beautiful.",
   },
 };
 
@@ -56,8 +47,7 @@ const values = [
   {
     icon: Activity,
     title: "Beautiful Status Pages",
-    description:
-      "Cyberpunk-themed status pages that your users will actually enjoy checking.",
+    description: "Cyberpunk-themed status pages that your users will actually enjoy checking.",
   },
 ];
 
@@ -89,9 +79,8 @@ export default function AboutPage() {
             Monitoring infrastructure shouldn&apos;t feel like infrastructure
           </h1>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-xl">
-            SteadyStack was created to solve a simple problem: most monitoring
-            tools are either too slow, too noisy, or too ugly. We fixed all
-            three.
+            SteadyStack was created to solve a simple problem: most monitoring tools are either too
+            slow, too noisy, or too ugly. We fixed all three.
           </p>
         </div>
       </section>
@@ -126,22 +115,19 @@ export default function AboutPage() {
             </h2>
             <div className="space-y-4 text-muted-foreground text-sm leading-relaxed">
               <p>
-                Every monitoring tool on the market had the same problem: a
-                5-minute check interval on the free tier. That means 10 minutes
-                of undetected downtime before you even get an alert. In 2026,
-                that&apos;s unacceptable.
+                Every monitoring tool on the market had the same problem: a 5-minute check interval
+                on the free tier. That means 10 minutes of undetected downtime before you even get
+                an alert. In 2026, that&apos;s unacceptable.
               </p>
               <p>
                 We built SteadyStack to do better. Our free tier checks every{" "}
                 {PRODUCT_CONFIG.DEFAULT_CHECK_INTERVAL_SECONDS} seconds from{" "}
-                {AVAILABLE_REGIONS.length} global regions. We verify failures
-                across multiple nodes before alerting — so you never chase a
-                ghost.
+                {AVAILABLE_REGIONS.length} global regions. We verify failures across multiple nodes
+                before alerting — so you never chase a ghost.
               </p>
               <p>
-                And we made it look good. Because if you&apos;re going to stare
-                at a dashboard all day, it should be a dashboard you actually
-                enjoy looking at.
+                And we made it look good. Because if you&apos;re going to stare at a dashboard all
+                day, it should be a dashboard you actually enjoy looking at.
               </p>
             </div>
           </div>
@@ -167,10 +153,7 @@ export default function AboutPage() {
             {values.map((value) => {
               const Icon = value.icon;
               return (
-                <div
-                  key={value.title}
-                  className="bg-card p-8 flex flex-col gap-4"
-                >
+                <div key={value.title} className="bg-card p-8 flex flex-col gap-4">
                   <div className="size-10 rounded-lg border border-border bg-background flex items-center justify-center">
                     <Icon className="size-4 text-primary" />
                   </div>
@@ -198,8 +181,8 @@ export default function AboutPage() {
             Ready to monitor the right way?
           </h2>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-lg mx-auto mb-8">
-            {PRODUCT_CONFIG.FREE_CHECKS_LIMIT.toLocaleString()} free checks per
-            month. No credit card required. No time limit.
+            {PRODUCT_CONFIG.FREE_CHECKS_LIMIT.toLocaleString()} free checks per month. No credit
+            card required. No time limit.
           </p>
           <Link
             href="/signup"

@@ -41,12 +41,8 @@ describe("Pinecone Integration", () => {
 
   describe("getWorkspaceNamespace", () => {
     it("formats and sanitizes workspace namespace correctly", () => {
-      expect(getWorkspaceNamespace("workspace_123")).toBe(
-        "workspace_workspace_123",
-      );
-      expect(getWorkspaceNamespace("team-alpha.dev")).toBe(
-        "workspace_team-alpha_dev",
-      );
+      expect(getWorkspaceNamespace("workspace_123")).toBe("workspace_workspace_123");
+      expect(getWorkspaceNamespace("team-alpha.dev")).toBe("workspace_team-alpha_dev");
       expect(getWorkspaceNamespace("org_456!@#")).toBe("workspace_org_456___");
     });
   });

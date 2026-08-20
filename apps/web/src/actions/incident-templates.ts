@@ -64,10 +64,7 @@ export async function createIncidentTemplate(data: IncidentTemplateData) {
   }
 }
 
-export async function updateIncidentTemplate(
-  id: string,
-  data: IncidentTemplateData,
-) {
+export async function updateIncidentTemplate(id: string, data: IncidentTemplateData) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });

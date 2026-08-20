@@ -8,15 +8,11 @@ describe("Early Cohort Grandfathering Guarantee & Plan Limits (P0-BIL-01)", () =
     expect(initiateLimits.minIntervalSeconds).toBe(60);
 
     const netrunnerLimits = getPlanLimits("NETRUNNER");
-    expect(netrunnerLimits.maxMonitors).toBe(
-      PLANS.NETRUNNER.limits.maxMonitors,
-    );
+    expect(netrunnerLimits.maxMonitors).toBe(PLANS.NETRUNNER.limits.maxMonitors);
     expect(netrunnerLimits.minIntervalSeconds).toBe(30);
 
     const constructLimits = getPlanLimits("CONSTRUCT");
-    expect(constructLimits.maxMonitors).toBe(
-      PLANS.CONSTRUCT.limits.maxMonitors,
-    );
+    expect(constructLimits.maxMonitors).toBe(PLANS.CONSTRUCT.limits.maxMonitors);
     expect(constructLimits.minIntervalSeconds).toBe(10);
   });
 
@@ -37,13 +33,8 @@ describe("Early Cohort Grandfathering Guarantee & Plan Limits (P0-BIL-01)", () =
   });
 
   test("gracefully falls back to current base limits for unknown tierVersion", () => {
-    const unknownVersionLimits = getPlanLimits(
-      "INITIATE",
-      "unknown_future_version_xyz",
-    );
-    expect(unknownVersionLimits.maxMonitors).toBe(
-      PLANS.INITIATE.limits.maxMonitors,
-    );
+    const unknownVersionLimits = getPlanLimits("INITIATE", "unknown_future_version_xyz");
+    expect(unknownVersionLimits.maxMonitors).toBe(PLANS.INITIATE.limits.maxMonitors);
   });
 
   test("applies grandfathered limits for design_partner_vip and stripe_live subscribers", () => {

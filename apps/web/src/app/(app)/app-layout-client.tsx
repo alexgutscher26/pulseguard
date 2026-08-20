@@ -18,10 +18,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
       <Sidebar />
 
       {/* Mobile Sidebar Drawer */}
-      <MobileSidebar
-        isOpen={isMobileMenuOpen}
-        onClose={() => setIsMobileMenuOpen(false)}
-      />
+      <MobileSidebar isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
 
       <main className="flex-1 flex flex-col overflow-y-auto">
         <DashboardHeader onMenuClick={() => setIsMobileMenuOpen(true)} />

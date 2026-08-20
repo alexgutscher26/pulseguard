@@ -52,8 +52,7 @@ authCmd
     const config = getConfig();
     if (!config.apiKey) {
       console.log(
-        chalk.yellow("Not logged in. Run: ") +
-          chalk.bold("pulse auth login --key <API_KEY>"),
+        chalk.yellow("Not logged in. Run: ") + chalk.bold("pulse auth login --key <API_KEY>"),
       );
       return;
     }

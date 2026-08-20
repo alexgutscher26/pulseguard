@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import {
   render,
   Html,
@@ -73,9 +73,9 @@ export function Welcome({ data }: { data: WelcomeEmailData }) {
                 lineHeight: 1.6,
               }}
             >
-              Your enterprise monitoring station is now active. SteadyStack
-              tracks your critical APIs, websites, and infrastructure across
-              global edge locations with sub-minute precision.
+              Your enterprise monitoring station is now active. SteadyStack tracks your critical
+              APIs, websites, and infrastructure across global edge locations with sub-minute
+              precision.
             </Text>
 
             {/* Step 1 */}
@@ -132,8 +132,8 @@ export function Welcome({ data }: { data: WelcomeEmailData }) {
                       lineHeight: 1.5,
                     }}
                   >
-                    Configure HTTP/S endpoints, WebSocket streams, SSL
-                    expirations, or custom TCP ports.
+                    Configure HTTP/S endpoints, WebSocket streams, SSL expirations, or custom TCP
+                    ports.
                   </Text>
                 </div>
               </div>
@@ -193,8 +193,8 @@ export function Welcome({ data }: { data: WelcomeEmailData }) {
                       lineHeight: 1.5,
                     }}
                   >
-                    Route real-time alerts to Slack, Discord, PagerDuty,
-                    OpsGenie, or custom Webhooks.
+                    Route real-time alerts to Slack, Discord, PagerDuty, OpsGenie, or custom
+                    Webhooks.
                   </Text>
                 </div>
               </div>
@@ -254,17 +254,15 @@ export function Welcome({ data }: { data: WelcomeEmailData }) {
                       lineHeight: 1.5,
                     }}
                   >
-                    Give your users transparent uptime visibility on custom
-                    domains with automated incident logs.
+                    Give your users transparent uptime visibility on custom domains with automated
+                    incident logs.
                   </Text>
                 </div>
               </div>
             </div>
 
             {/* CTA Button */}
-            <PrimaryButton href={data.dashboardUrl}>
-              Open Control Center
-            </PrimaryButton>
+            <PrimaryButton href={data.dashboardUrl}>Open Control Center</PrimaryButton>
           </Section>
 
           {/* Footer */}

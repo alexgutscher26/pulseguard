@@ -28,9 +28,7 @@ test.describe("E2E Critical Flow", () => {
     }
   });
 
-  test("Complete Lifecycle: SignUp -> Create -> Verify -> Delete", async ({
-    page,
-  }) => {
+  test("Complete Lifecycle: SignUp -> Create -> Verify -> Delete", async ({ page }) => {
     await test.step("Sign Up", async () => {
       await page.goto("/signup");
       await expect(page).toHaveTitle(/Registration|Sign Up/i);

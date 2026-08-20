@@ -13,11 +13,7 @@ interface HeatmapGridProps {
   onRegionClick?: (region: string) => void;
 }
 
-export function HeatmapGrid({
-  data,
-  metricType,
-  onRegionClick,
-}: HeatmapGridProps) {
+export function HeatmapGrid({ data, metricType, onRegionClick }: HeatmapGridProps) {
   const { getColorForPoint } = useHeatmapScale(metricType);
 
   // Get unique timestamps across all regions
@@ -37,8 +33,7 @@ export function HeatmapGrid({
   if (data.regions.length === 0 || displayTimestamps.length === 0) {
     return (
       <div className="text-center py-12 text-muted-foreground text-sm">
-        No latency data available for this time range. Data will appear after
-        the next check cycle.
+        No latency data available for this time range. Data will appear after the next check cycle.
       </div>
     );
   }
@@ -65,9 +60,7 @@ export function HeatmapGrid({
 
         {/* Rows */}
         {data.regions.map((region) => {
-          const dataMap = new Map(
-            region.data.map((point) => [point.timestamp, point]),
-          );
+          const dataMap = new Map(region.data.map((point) => [point.timestamp, point]));
 
           return (
             <div
@@ -89,12 +82,7 @@ export function HeatmapGrid({
                   const point = dataMap.get(timestamp);
 
                   if (!point) {
-                    return (
-                      <div
-                        key={timestamp}
-                        className="flex-1 min-w-[60px] p-2 bg-muted/20"
-                      />
-                    );
+                    return <div key={timestamp} className="flex-1 min-w-[60px] p-2 bg-muted/20" />;
                   }
 
                   const color = getColorForPoint(point);
@@ -116,8 +104,7 @@ export function HeatmapGrid({
                       key={timestamp}
                       className={cn(
                         "flex-1 min-w-[60px] p-2 text-xs text-center font-medium cursor-pointer transition-all hover:scale-105 hover:z-20 hover:shadow-lg",
-                        point.hasIncident &&
-                          "ring-2 ring-destructive animate-pulse",
+                        point.hasIncident && "ring-2 ring-destructive animate-pulse",
                       )}
                       style={{
                         backgroundColor: color,
@@ -141,9 +128,7 @@ export function HeatmapGrid({
 
 // Pre-compute region names for O(1) lookup
 const REGION_NAME_MAP = new Map([
-  ...AVAILABLE_REGIONS.map(
-    (r) => [r.code, `${r.flag} ${r.name}`] as [string, string],
-  ),
+  ...AVAILABLE_REGIONS.map((r) => [r.code, `${r.flag} ${r.name}`] as [string, string]),
   ["global", "🌐 Global Edge"],
 ]);
 

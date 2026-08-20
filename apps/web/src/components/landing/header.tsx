@@ -34,9 +34,7 @@ function ThemeToggleButton() {
   }, []);
 
   if (!mounted) {
-    return (
-      <div className="size-8 rounded-lg border border-border bg-background/50" />
-    );
+    return <div className="size-8 rounded-lg border border-border bg-background/50" />;
   }
 
   const theme = themeContext?.theme || "dark";
@@ -152,9 +150,7 @@ export default function LandingHeader() {
           <div className="p-1.5 bg-primary/10 border border-primary/20 rounded-lg group-hover:border-primary/40 group-hover:bg-primary/15 transition-all duration-300">
             <Activity className="size-4 text-primary" />
           </div>
-          <span className="font-bold text-foreground text-sm tracking-tight">
-            SteadyStack
-          </span>
+          <span className="font-bold text-foreground text-sm tracking-tight">SteadyStack</span>
         </Link>
 
         {/* Desktop Navigation Links */}
@@ -327,11 +323,7 @@ export default function LandingHeader() {
             className="flex md:hidden items-center justify-center size-8 rounded-lg border border-border bg-background/50 hover:bg-accent text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
             aria-label="Toggle mobile menu"
           >
-            {isMobileMenuOpen ? (
-              <X className="size-4" />
-            ) : (
-              <Menu className="size-4" />
-            )}
+            {isMobileMenuOpen ? <X className="size-4" /> : <Menu className="size-4" />}
           </button>
         </div>
       </div>

@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Wifi,
-  CheckCircle,
-  Zap,
-  AlertTriangle,
-  TrendingUp,
-  TrendingDown,
-} from "lucide-react";
+import { Wifi, CheckCircle, Zap, AlertTriangle, TrendingUp, TrendingDown } from "lucide-react";
 
 export interface DashboardStatsData {
   activeMonitors: number;
@@ -48,13 +41,11 @@ export function DashboardStats({ stats: data }: { stats: DashboardStatsData }) {
     {
       name: "Active Alerts",
       value: data.activeAlerts.toString(),
-      change:
-        data.activeAlerts > 0 ? "Action Required" : "All Systems Operational",
+      change: data.activeAlerts > 0 ? "Action Required" : "All Systems Operational",
       trend: data.activeAlerts > 0 ? "down" : "neutral",
       icon: AlertTriangle,
       iconColor: data.activeAlerts > 0 ? "text-red-500" : "text-emerald-500",
-      changeColor:
-        data.activeAlerts > 0 ? "text-red-500" : "text-muted-foreground",
+      changeColor: data.activeAlerts > 0 ? "text-red-500" : "text-muted-foreground",
     },
   ];
 
@@ -73,9 +64,7 @@ export function DashboardStats({ stats: data }: { stats: DashboardStatsData }) {
               <stat.icon className={`size-4 ${stat.iconColor}`} />
             </div>
           </div>
-          <p className="text-2xl font-extrabold text-foreground tracking-tight">
-            {stat.value}
-          </p>
+          <p className="text-2xl font-extrabold text-foreground tracking-tight">{stat.value}</p>
           <p
             className={`text-[10px] font-bold uppercase tracking-wider mt-2 flex items-center gap-1.5 ${stat.changeColor}`}
           >

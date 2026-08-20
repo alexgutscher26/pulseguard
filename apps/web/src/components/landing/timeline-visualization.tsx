@@ -1,19 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Clock,
-  AlertTriangle,
-  CheckCircle2,
-  Zap,
-  ArrowRight,
-  ExternalLink,
-} from "lucide-react";
-import {
-  intervalComparison,
-  downtimeScenarios,
-  featureComparisons,
-} from "./comparison-data";
+import { Clock, AlertTriangle, CheckCircle2, Zap, ArrowRight, ExternalLink } from "lucide-react";
+import { intervalComparison, downtimeScenarios, featureComparisons } from "./comparison-data";
 
 function IntervalBar({
   label,
@@ -61,26 +50,16 @@ function IntervalBar({
   );
 }
 
-function DowntimeTimeline({
-  scenario,
-}: {
-  scenario: (typeof downtimeScenarios)[0];
-}) {
+function DowntimeTimeline({ scenario }: { scenario: (typeof downtimeScenarios)[0] }) {
   const totalMinutes = Math.max(scenario.recoveryStart + 3, 20);
   const scale = 100 / totalMinutes;
 
   const competitorGapStart = Math.max(0, scenario.downtimeStart);
-  const competitorGapEnd = Math.min(
-    scenario.competitorDetect,
-    scenario.recoveryStart,
-  );
+  const competitorGapEnd = Math.min(scenario.competitorDetect, scenario.recoveryStart);
   const competitorUndetectedMinutes = competitorGapEnd - competitorGapStart;
 
   const steadystackGapStart = Math.max(0, scenario.downtimeStart);
-  const steadystackGapEnd = Math.min(
-    scenario.steadystackDetect,
-    scenario.recoveryStart,
-  );
+  const steadystackGapEnd = Math.min(scenario.steadystackDetect, scenario.recoveryStart);
   const steadystackUndetectedMinutes = steadystackGapEnd - steadystackGapStart;
 
   return (
@@ -88,12 +67,8 @@ function DowntimeTimeline({
       <div className="flex flex-col gap-4">
         <div className="flex items-start justify-between">
           <div>
-            <h4 className="text-sm font-bold text-foreground">
-              {scenario.name}
-            </h4>
-            <p className="text-xs text-muted-foreground mt-1 max-w-lg">
-              {scenario.description}
-            </p>
+            <h4 className="text-sm font-bold text-foreground">{scenario.name}</h4>
+            <p className="text-xs text-muted-foreground mt-1 max-w-lg">{scenario.description}</p>
           </div>
         </div>
 
@@ -104,10 +79,7 @@ function DowntimeTimeline({
             {/* Background minutes */}
             <div className="absolute inset-0 flex">
               {Array.from({ length: Math.ceil(totalMinutes) }, (_, i) => (
-                <div
-                  key={i}
-                  className="flex-1 border-l border-border/20 first:border-l-0 relative"
-                >
+                <div key={i} className="flex-1 border-l border-border/20 first:border-l-0 relative">
                   {i % 2 === 0 && (
                     <span className="absolute -top-4 left-0 text-[8px] font-mono text-muted-foreground/50">
                       {i}m
@@ -150,9 +122,7 @@ function DowntimeTimeline({
                 >
                   <div className="flex items-center gap-1 -translate-x-1/2 mt-5">
                     <CheckCircle2 className="size-3 text-green-500" />
-                    <span className="text-[8px] font-mono text-green-500">
-                      Recovery
-                    </span>
+                    <span className="text-[8px] font-mono text-green-500">Recovery</span>
                   </div>
                 </div>
               </div>
@@ -198,9 +168,7 @@ function DowntimeTimeline({
           <div className="flex gap-4 mt-4 pt-3 border-t border-border/20">
             <div className="flex items-center gap-1.5">
               <div className="size-2.5 bg-red-500/40 border border-red-500/50" />
-              <span className="text-[9px] font-mono text-muted-foreground">
-                Downtime window
-              </span>
+              <span className="text-[9px] font-mono text-muted-foreground">Downtime window</span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="size-2.5 bg-primary/30 border border-primary/40" />
@@ -210,9 +178,7 @@ function DowntimeTimeline({
             </div>
             <div className="flex items-center gap-1.5">
               <div className="size-2.5 rounded-full bg-red-500" />
-              <span className="text-[9px] font-mono text-muted-foreground">
-                Competitor detects
-              </span>
+              <span className="text-[9px] font-mono text-muted-foreground">Competitor detects</span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="size-2.5 rounded-full bg-primary" />
@@ -232,9 +198,7 @@ function DowntimeTimeline({
             <p className="text-lg font-bold font-mono text-red-500 mt-1">
               ~{competitorUndetectedMinutes}m
             </p>
-            <span className="text-[9px] font-mono text-red-500/50">
-              undetected downtime
-            </span>
+            <span className="text-[9px] font-mono text-red-500/50">undetected downtime</span>
           </div>
           <div className="border border-primary/10 bg-primary/5 p-3">
             <span className="text-[9px] font-mono text-primary/70 uppercase tracking-wider">
@@ -243,9 +207,7 @@ function DowntimeTimeline({
             <p className="text-lg font-bold font-mono text-primary mt-1">
               ~{steadystackUndetectedMinutes}m
             </p>
-            <span className="text-[9px] font-mono text-primary/50">
-              undetected downtime
-            </span>
+            <span className="text-[9px] font-mono text-primary/50">undetected downtime</span>
           </div>
         </div>
       </div>
@@ -281,25 +243,21 @@ export function IntervalComparison() {
       </div>
       <p className="text-[10px] text-muted-foreground font-mono mt-1 leading-relaxed">
         SteadyStack gives you{" "}
-        <span className="text-primary font-bold">1-minute checks for free</span>{" "}
-        — that&apos;s{" "}
-        <span className="text-primary font-bold">400% faster</span> than the
-        industry standard 5-minute tier. Over 24 hours, you get{" "}
-        <span className="text-primary font-bold">1440 checks</span> vs the
-        standard <span className="text-red-500/80 font-bold">288</span>.
+        <span className="text-primary font-bold">1-minute checks for free</span> — that&apos;s{" "}
+        <span className="text-primary font-bold">400% faster</span> than the industry standard
+        5-minute tier. Over 24 hours, you get{" "}
+        <span className="text-primary font-bold">1440 checks</span> vs the standard{" "}
+        <span className="text-red-500/80 font-bold">288</span>.
       </p>
     </div>
   );
 }
 
 export function DowntimeComparison() {
-  const [activeScenario, setActiveScenario] = useState(
-    downtimeScenarios[0].name,
-  );
+  const [activeScenario, setActiveScenario] = useState(downtimeScenarios[0].name);
 
   const scenario =
-    downtimeScenarios.find((s: any) => s.name === activeScenario) ??
-    downtimeScenarios[0];
+    downtimeScenarios.find((s: any) => s.name === activeScenario) ?? downtimeScenarios[0];
 
   return (
     <div className="flex flex-col gap-4">
@@ -336,9 +294,7 @@ export function FeatureComparisonTable() {
   const [view, setView] = useState<"all" | "battle">("battle");
 
   const filtered =
-    view === "battle"
-      ? featureComparisons.filter((f) => f.isBattle)
-      : featureComparisons;
+    view === "battle" ? featureComparisons.filter((f) => f.isBattle) : featureComparisons;
 
   return (
     <div className="flex flex-col gap-4">
@@ -485,10 +441,8 @@ export function FeatureComparisonTable() {
       </div>
 
       <div className="pt-2 text-[10px] font-mono text-muted-foreground">
-        <span className="font-bold text-foreground">
-          Last verified August 2026.
-        </span>{" "}
-        Specs verified against official provider documentation:{" "}
+        <span className="font-bold text-foreground">Last verified August 2026.</span> Specs verified
+        against official provider documentation:{" "}
         <a
           href="https://uptimerobot.com/pricing"
           target="_blank"
@@ -555,31 +509,21 @@ export function TimeSavingCalculator() {
           <span className="text-[9px] font-mono text-primary/70 uppercase tracking-wider">
             SteadyStack Free (1min)
           </span>
-          <p className="text-3xl font-bold font-mono text-primary mt-1">
-            {dailyChecks}
-          </p>
-          <span className="text-[10px] font-mono text-muted-foreground">
-            checks per day
-          </span>
+          <p className="text-3xl font-bold font-mono text-primary mt-1">{dailyChecks}</p>
+          <span className="text-[10px] font-mono text-muted-foreground">checks per day</span>
         </div>
         <div className="border border-border/50 bg-black/20 p-4">
           <span className="text-[9px] font-mono text-red-500/70 uppercase tracking-wider">
             Industry Standard (5min)
           </span>
-          <p className="text-3xl font-bold font-mono text-red-500/80 mt-1">
-            {competitorChecks}
-          </p>
-          <span className="text-[10px] font-mono text-muted-foreground">
-            checks per day
-          </span>
+          <p className="text-3xl font-bold font-mono text-red-500/80 mt-1">{competitorChecks}</p>
+          <span className="text-[10px] font-mono text-muted-foreground">checks per day</span>
         </div>
         <div className="border border-primary/10 bg-primary/5 p-4">
           <span className="text-[9px] font-mono text-primary/70 uppercase tracking-wider">
             You Gain
           </span>
-          <p className="text-3xl font-bold font-mono text-primary mt-1">
-            +{extraPercent}%
-          </p>
+          <p className="text-3xl font-bold font-mono text-primary mt-1">+{extraPercent}%</p>
           <span className="text-[10px] font-mono text-primary/60">
             more visibility ({extraChecks} extra checks/day)
           </span>
@@ -610,19 +554,15 @@ export function TimeSavingCalculator() {
 
       <p className="text-[10px] text-muted-foreground font-mono leading-relaxed">
         With SteadyStack&apos;s{" "}
-        <span className="text-primary font-bold">1-minute free interval</span>,
-        you get{" "}
-        <span className="text-primary font-bold">
-          {extraPercent}% more data points
-        </span>{" "}
-        compared to the industry 5-minute standard. That&apos;s{" "}
-        <span className="text-primary font-bold">{extraChecks}</span> extra
-        opportunities to detect failure per day — translating to{" "}
-        <span className="text-primary font-bold">~2 minutes faster</span> mean
-        time to detection on every incident. Over a year on a single monitor,
-        that&apos;s over{" "}
-        <span className="text-primary font-bold">24 hours</span> of downtime you
-        won&apos;t have to explain to your customers.
+        <span className="text-primary font-bold">1-minute free interval</span>, you get{" "}
+        <span className="text-primary font-bold">{extraPercent}% more data points</span> compared to
+        the industry 5-minute standard. That&apos;s{" "}
+        <span className="text-primary font-bold">{extraChecks}</span> extra opportunities to detect
+        failure per day — translating to{" "}
+        <span className="text-primary font-bold">~2 minutes faster</span> mean time to detection on
+        every incident. Over a year on a single monitor, that&apos;s over{" "}
+        <span className="text-primary font-bold">24 hours</span> of downtime you won&apos;t have to
+        explain to your customers.
       </p>
     </div>
   );

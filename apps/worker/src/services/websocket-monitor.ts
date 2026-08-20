@@ -83,36 +83,22 @@ export async function checkWebSocket(
         const errors: string[] = [];
 
         if (assertion) {
-          if (
-            assertion.minMessages !== undefined &&
-            messagesReceived < assertion.minMessages
-          ) {
-            errors.push(
-              `Expected min ${assertion.minMessages} messages, got ${messagesReceived}`,
-            );
+          if (assertion.minMessages !== undefined && messagesReceived < assertion.minMessages) {
+            errors.push(`Expected min ${assertion.minMessages} messages, got ${messagesReceived}`);
           }
-          if (
-            assertion.maxMessages !== undefined &&
-            messagesReceived > assertion.maxMessages
-          ) {
-            errors.push(
-              `Expected max ${assertion.maxMessages} messages, got ${messagesReceived}`,
-            );
+          if (assertion.maxMessages !== undefined && messagesReceived > assertion.maxMessages) {
+            errors.push(`Expected max ${assertion.maxMessages} messages, got ${messagesReceived}`);
           }
           if (assertion.messageContains && lastMessageContent) {
             if (!lastMessageContent.includes(assertion.messageContains)) {
-              errors.push(
-                `Last message does not contain "${assertion.messageContains}"`,
-              );
+              errors.push(`Last message does not contain "${assertion.messageContains}"`);
             }
           }
           if (assertion.messagePattern && lastMessageContent) {
             try {
               const re = new RegExp(assertion.messagePattern);
               if (!re.test(lastMessageContent)) {
-                errors.push(
-                  `Last message does not match pattern "${assertion.messagePattern}"`,
-                );
+                errors.push(`Last message does not match pattern "${assertion.messagePattern}"`);
               }
             } catch {
               errors.push("Invalid message pattern regex");
@@ -128,9 +114,7 @@ export async function checkWebSocket(
           messagesReceived,
           listenDuration: listenSeconds,
           firstMessageLatency:
-            firstMessageLatency !== null
-              ? Math.round(firstMessageLatency - connectedAt)
-              : null,
+            firstMessageLatency !== null ? Math.round(firstMessageLatency - connectedAt) : null,
           lastMessageContent,
         });
       }, listenSeconds * 1000);
@@ -141,8 +125,7 @@ export async function checkWebSocket(
       if (firstMessageLatency === null) {
         firstMessageLatency = performance.now();
       }
-      const content =
-        typeof event.data === "string" ? event.data : String(event.data);
+      const content = typeof event.data === "string" ? event.data : String(event.data);
       lastMessageContent = content;
     });
 
@@ -178,9 +161,7 @@ export async function checkWebSocket(
           messagesReceived,
           listenDuration: (performance.now() - start) / 1000,
           firstMessageLatency:
-            firstMessageLatency !== null
-              ? Math.round(firstMessageLatency - start)
-              : null,
+            firstMessageLatency !== null ? Math.round(firstMessageLatency - start) : null,
           lastMessageContent,
         });
       }

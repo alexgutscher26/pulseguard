@@ -70,14 +70,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Implement exponential backoff on HTTP 429 and 503 response codes.",
       "Review client-side request timeout budgets and queue background tasks.",
     ],
-    relatedServices: [
-      "anthropic",
-      "groq",
-      "perplexity",
-      "mistral-ai",
-      "hugging-face",
-      "pinecone",
-    ],
+    relatedServices: ["anthropic", "groq", "perplexity", "mistral-ai", "hugging-face", "pinecone"],
     featured: true,
   },
   {
@@ -91,12 +84,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Anthropic develops Claude 3.5 Sonnet, Claude 3.5 Haiku, and Claude Opus AI models.",
     impactSummary:
       "Claude API calls fail, generative reasoning breaks, and Claude.ai workspace becomes unreachable.",
-    keyComponents: [
-      "Messages API",
-      "Claude.ai Web App",
-      "Token Counting",
-      "Prompt Caching API",
-    ],
+    keyComponents: ["Messages API", "Claude.ai Web App", "Token Counting", "Prompt Caching API"],
     commonErrorCodes: [
       "529 Overloaded",
       "500 Internal Server Error",
@@ -121,17 +109,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Perplexity AI provides conversational search, citations, and Sonar LLM API services.",
     impactSummary:
       "Live search-grounded answers stop generating and sonar online queries return 500 errors.",
-    keyComponents: [
-      "Sonar API",
-      "Perplexity Pro Web",
-      "Search Indexer",
-      "Collections",
-    ],
-    commonErrorCodes: [
-      "500 Internal Error",
-      "502 Bad Gateway",
-      "429 Too Many Requests",
-    ],
+    keyComponents: ["Sonar API", "Perplexity Pro Web", "Search Indexer", "Collections"],
+    commonErrorCodes: ["500 Internal Error", "502 Bad Gateway", "429 Too Many Requests"],
     troubleshootingSteps: [
       "Check official status.",
       "Verify API balance.",
@@ -148,13 +127,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.groq.com",
     description:
       "Ultra-fast LPU inference engine for Llama 3, Mixtral, and Gemma open-weights models.",
-    impactSummary:
-      "Low-latency inference pipelines hang or fail back to slower cloud providers.",
-    keyComponents: [
-      "LPU Inference Engine",
-      "OpenAI Compatible API",
-      "GroqCloud Console",
-    ],
+    impactSummary: "Low-latency inference pipelines hang or fail back to slower cloud providers.",
+    keyComponents: ["LPU Inference Engine", "OpenAI Compatible API", "GroqCloud Console"],
     commonErrorCodes: [
       "503 Service Unavailable",
       "429 Rate Limit Exceeded",
@@ -172,8 +146,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "midjourney.com",
     officialStatusUrl: "https://status.midjourney.com",
-    description:
-      "Generative text-to-image AI platform operating on Discord and web.",
+    description: "Generative text-to-image AI platform operating on Discord and web.",
     impactSummary:
       "Image generation queues stop progressing, prompt jobs error out on Discord bot.",
     keyComponents: [
@@ -182,11 +155,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Image Upscaler",
       "Billing Portal",
     ],
-    commonErrorCodes: [
-      "Job Execution Failed",
-      "Discord Gateway Timeout",
-      "500 Server Error",
-    ],
+    commonErrorCodes: ["Job Execution Failed", "Discord Gateway Timeout", "500 Server Error"],
     troubleshootingSteps: [
       "Check #status in Midjourney Discord.",
       "Test web alpha interface.",
@@ -200,25 +169,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "huggingface.co",
     officialStatusUrl: "https://status.huggingface.co",
-    description:
-      "Open source AI model hub, dataset repository, and Inference Endpoints cloud.",
-    impactSummary:
-      "Model weight downloads fail in CI/CD, Spaces crash, Inference API returns 503.",
-    keyComponents: [
-      "Model Hub Git LFS",
-      "Spaces Hosting",
-      "Inference Endpoints",
-      "Datasets Hub",
-    ],
-    commonErrorCodes: [
-      "502 Bad Gateway",
-      "503 Model Loading",
-      "504 Gateway Timeout",
-    ],
-    troubleshootingSteps: [
-      "Check local HF cache.",
-      "Verify token permissions on huggingface.co.",
-    ],
+    description: "Open source AI model hub, dataset repository, and Inference Endpoints cloud.",
+    impactSummary: "Model weight downloads fail in CI/CD, Spaces crash, Inference API returns 503.",
+    keyComponents: ["Model Hub Git LFS", "Spaces Hosting", "Inference Endpoints", "Datasets Hub"],
+    commonErrorCodes: ["502 Bad Gateway", "503 Model Loading", "504 Gateway Timeout"],
+    troubleshootingSteps: ["Check local HF cache.", "Verify token permissions on huggingface.co."],
     relatedServices: ["replicate", "together-ai", "github"],
   },
   {
@@ -227,21 +182,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "api.mistral.ai",
     officialStatusUrl: "https://status.mistral.ai",
-    description:
-      "European AI lab providing Mistral Large, Codestral, and Pixtral developer APIs.",
+    description: "European AI lab providing Mistral Large, Codestral, and Pixtral developer APIs.",
     impactSummary:
       "Codestral completion in IDE extensions fails, Mistral Large API calls return 500s.",
-    keyComponents: [
-      "La Plateforme API",
-      "Le Chat Web",
-      "Codestral IDE Endpoint",
-      "Embeddings",
-    ],
-    commonErrorCodes: [
-      "500 Internal Server Error",
-      "429 Rate Limit",
-      "502 Bad Gateway",
-    ],
+    keyComponents: ["La Plateforme API", "Le Chat Web", "Codestral IDE Endpoint", "Embeddings"],
+    commonErrorCodes: ["500 Internal Server Error", "429 Rate Limit", "502 Bad Gateway"],
     troubleshootingSteps: [
       "Check status.mistral.ai.",
       "Switch to self-hosted Ollama / vLLM fallback.",
@@ -263,11 +208,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Hardware Autoscaler",
       "Webhook Dispatch",
     ],
-    commonErrorCodes: [
-      "504 Prediction Timeout",
-      "500 Worker Error",
-      "429 Quota Exceeded",
-    ],
+    commonErrorCodes: ["504 Prediction Timeout", "500 Worker Error", "429 Quota Exceeded"],
     troubleshootingSteps: [
       "Check model hardware availability.",
       "Switch to Fal.ai or self-hosted GPU node.",
@@ -280,8 +221,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "api.elevenlabs.io",
     officialStatusUrl: "https://status.elevenlabs.io",
-    description:
-      "AI voice generation, text-to-speech, and conversational voice agents.",
+    description: "AI voice generation, text-to-speech, and conversational voice agents.",
     impactSummary:
       "Real-time voice synthesis stutters, audio streaming drops, conversational bots go silent.",
     keyComponents: [
@@ -290,11 +230,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Conversational AI WebSocket",
       "Voice Library",
     ],
-    commonErrorCodes: [
-      "500 Internal Error",
-      "503 Service Unavailable",
-      "WebSocket Disconnected",
-    ],
+    commonErrorCodes: ["500 Internal Error", "503 Service Unavailable", "WebSocket Disconnected"],
     troubleshootingSteps: [
       "Check status.elevenlabs.io.",
       "Test pre-buffered audio assets as fallback.",
@@ -307,8 +243,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "pinecone.io",
     officialStatusUrl: "https://status.pinecone.io",
-    description:
-      "Managed vector database for high-scale semantic search and RAG pipelines.",
+    description: "Managed vector database for high-scale semantic search and RAG pipelines.",
     impactSummary:
       "Vector index queries time out, document chunk ingestion queues block, RAG retrieval fails.",
     keyComponents: [
@@ -317,11 +252,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Control Plane API",
       "Upsert Pipeline",
     ],
-    commonErrorCodes: [
-      "504 Gateway Timeout",
-      "503 Unavailable",
-      "429 Namespace Quota",
-    ],
+    commonErrorCodes: ["504 Gateway Timeout", "503 Unavailable", "429 Namespace Quota"],
     troubleshootingSteps: [
       "Check status.pinecone.io index regions.",
       "Inspect query top_k parameter.",
@@ -335,19 +266,14 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     domain: "qdrant.tech",
     officialStatusUrl: "https://status.qdrant.io",
     description: "Vector search engine and managed vector database cloud.",
-    impactSummary:
-      "Vector similarity search fails, neural search clusters drop connections.",
+    impactSummary: "Vector similarity search fails, neural search clusters drop connections.",
     keyComponents: [
       "Managed Clusters",
       "gRPC / REST Endpoints",
       "Snapshot Backup",
       "Payload Index",
     ],
-    commonErrorCodes: [
-      "503 Service Unavailable",
-      "gRPC UNAVAILABLE",
-      "504 Timeout",
-    ],
+    commonErrorCodes: ["503 Service Unavailable", "gRPC UNAVAILABLE", "504 Timeout"],
     troubleshootingSteps: [
       "Check cluster health metrics.",
       "Test local memory limits on collection.",
@@ -360,10 +286,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "weaviate.io",
     officialStatusUrl: "https://status.weaviate.io",
-    description:
-      "Open-source and cloud vector database with hybrid search and generative modules.",
-    impactSummary:
-      "Hybrid keyword/vector search requests fail, GraphQL query endpoint errors.",
+    description: "Open-source and cloud vector database with hybrid search and generative modules.",
+    impactSummary: "Hybrid keyword/vector search requests fail, GraphQL query endpoint errors.",
     keyComponents: [
       "Weaviate Cloud Services",
       "Hybrid Search Engine",
@@ -371,10 +295,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Backup Service",
     ],
     commonErrorCodes: ["500 Internal Error", "504 Gateway Timeout"],
-    troubleshootingSteps: [
-      "Check cluster memory usage.",
-      "Verify GraphQL query syntax.",
-    ],
+    troubleshootingSteps: ["Check cluster memory usage.", "Verify GraphQL query syntax."],
     relatedServices: ["pinecone", "qdrant"],
   },
   {
@@ -383,10 +304,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "api.cohere.com",
     officialStatusUrl: "https://status.cohere.com",
-    description:
-      "Enterprise AI platform for Command R+, reranking, and multilingual embeddings.",
-    impactSummary:
-      "Search reranking fails, Command R+ completions return 500s.",
+    description: "Enterprise AI platform for Command R+, reranking, and multilingual embeddings.",
+    impactSummary: "Search reranking fails, Command R+ completions return 500s.",
     keyComponents: [
       "Rerank API",
       "Embeddings Multilingual API",
@@ -394,10 +313,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Fine-Tuning",
     ],
     commonErrorCodes: ["500 Server Error", "429 Rate Limit", "503 Overloaded"],
-    troubleshootingSteps: [
-      "Check status page.",
-      "Fallback to local cross-encoder model.",
-    ],
+    troubleshootingSteps: ["Check status page.", "Fallback to local cross-encoder model."],
     relatedServices: ["openai", "anthropic", "pinecone"],
   },
   {
@@ -406,19 +322,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "api.together.xyz",
     officialStatusUrl: "https://status.together.ai",
-    description:
-      "Cloud platform for fast open-source model inference and fine-tuning.",
+    description: "Cloud platform for fast open-source model inference and fine-tuning.",
     impactSummary: "Llama 3 and Flux.1 generation requests fail or return 503.",
-    keyComponents: [
-      "Inference API",
-      "Dedicated GPU Endpoints",
-      "Fine-Tuning Clusters",
-    ],
+    keyComponents: ["Inference API", "Dedicated GPU Endpoints", "Fine-Tuning Clusters"],
     commonErrorCodes: ["503 Unavailable", "504 Timeout", "429 Rate Limit"],
-    troubleshootingSteps: [
-      "Check GPU cluster availability.",
-      "Switch to Groq or Fireworks.",
-    ],
+    troubleshootingSteps: ["Check GPU cluster availability.", "Switch to Groq or Fireworks."],
     relatedServices: ["groq", "fireworks-ai", "replicate"],
   },
   {
@@ -427,19 +335,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "api.fireworks.ai",
     officialStatusUrl: "https://status.fireworks.ai",
-    description:
-      "Fast production inference platform for multimodal and open-source models.",
+    description: "Fast production inference platform for multimodal and open-source models.",
     impactSummary: "Function calling and streaming completions time out.",
-    keyComponents: [
-      "Fast Inference Engine",
-      "Speculative Decoding",
-      "LoRA Serving",
-    ],
+    keyComponents: ["Fast Inference Engine", "Speculative Decoding", "LoRA Serving"],
     commonErrorCodes: ["503 Service Unavailable", "504 Gateway Timeout"],
-    troubleshootingSteps: [
-      "Check status.fireworks.ai.",
-      "Switch to fallback inference provider.",
-    ],
+    troubleshootingSteps: ["Check status.fireworks.ai.", "Switch to fallback inference provider."],
     relatedServices: ["together-ai", "groq", "openai"],
   },
   {
@@ -448,20 +348,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "api.deepinfra.com",
     officialStatusUrl: "https://status.deepinfra.com",
-    description:
-      "Scalable serverless AI inference infrastructure for LLMs and speech models.",
-    impactSummary:
-      "Whisper audio transcription and LLM responses return 500 errors.",
-    keyComponents: [
-      "Serverless Inference",
-      "Whisper Speech-to-Text",
-      "Text-to-Image",
-    ],
+    description: "Scalable serverless AI inference infrastructure for LLMs and speech models.",
+    impactSummary: "Whisper audio transcription and LLM responses return 500 errors.",
+    keyComponents: ["Serverless Inference", "Whisper Speech-to-Text", "Text-to-Image"],
     commonErrorCodes: ["500 Internal Error", "502 Bad Gateway"],
-    troubleshootingSteps: [
-      "Check endpoint latency.",
-      "Verify account credit balance.",
-    ],
+    troubleshootingSteps: ["Check endpoint latency.", "Verify account credit balance."],
     relatedServices: ["groq", "together-ai"],
   },
   {
@@ -472,18 +363,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.fal.ai",
     description:
       "Lightning-fast generative media inference platform for image, video, and audio models.",
-    impactSummary:
-      "Real-time Flux image generations fail and WebSocket pipelines disconnect.",
-    keyComponents: [
-      "Real-Time Inference",
-      "WebSocket Streaming",
-      "Queue System",
-    ],
+    impactSummary: "Real-time Flux image generations fail and WebSocket pipelines disconnect.",
+    keyComponents: ["Real-Time Inference", "WebSocket Streaming", "Queue System"],
     commonErrorCodes: ["500 Internal Error", "504 Gateway Timeout"],
-    troubleshootingSteps: [
-      "Check queue latency on fal.ai/status.",
-      "Switch to Replicate.",
-    ],
+    troubleshootingSteps: ["Check queue latency on fal.ai/status.", "Switch to Replicate."],
     relatedServices: ["replicate", "stability-ai"],
   },
   {
@@ -492,24 +375,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "api.stability.ai",
     officialStatusUrl: "https://status.stability.ai",
-    description:
-      "Stable Diffusion 3.5, Stable Video, and SDXL API generation platform.",
-    impactSummary:
-      "Image synthesis requests fail and credit deductions desynchronize.",
-    keyComponents: [
-      "REST Generation API",
-      "Stable Diffusion 3 API",
-      "Inpainting Engine",
-    ],
-    commonErrorCodes: [
-      "500 Server Error",
-      "400 Invalid Prompt Filter",
-      "503 Capacity",
-    ],
-    troubleshootingSteps: [
-      "Check status.stability.ai.",
-      "Switch to Fal.ai Flux endpoint.",
-    ],
+    description: "Stable Diffusion 3.5, Stable Video, and SDXL API generation platform.",
+    impactSummary: "Image synthesis requests fail and credit deductions desynchronize.",
+    keyComponents: ["REST Generation API", "Stable Diffusion 3 API", "Inpainting Engine"],
+    commonErrorCodes: ["500 Server Error", "400 Invalid Prompt Filter", "503 Capacity"],
+    troubleshootingSteps: ["Check status.stability.ai.", "Switch to Fal.ai Flux endpoint."],
     relatedServices: ["midjourney", "fal-ai", "replicate"],
   },
   {
@@ -520,19 +390,14 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.deepgram.com",
     description:
       "Real-time voice AI, automated speech recognition (Nova-2), and text-to-speech APIs.",
-    impactSummary:
-      "Live call transcription drops audio packets and WebSocket closes abruptly.",
+    impactSummary: "Live call transcription drops audio packets and WebSocket closes abruptly.",
     keyComponents: [
       "Live Audio WebSocket API",
       "Prerecorded Audio REST API",
       "Nova-2 Speech Engine",
       "Aura TTS",
     ],
-    commonErrorCodes: [
-      "1006 WebSocket Closed",
-      "500 Internal Server Error",
-      "504 Gateway Timeout",
-    ],
+    commonErrorCodes: ["1006 WebSocket Closed", "500 Internal Server Error", "504 Gateway Timeout"],
     troubleshootingSteps: [
       "Check WebSocket keepalive ping/pong frames.",
       "Verify Deepgram status.",
@@ -547,18 +412,14 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.assemblyai.com",
     description:
       "Speech-to-text and audio intelligence APIs for transcription and speaker diarization.",
-    impactSummary:
-      "Transcription queue backlogs, webhook notifications fail to dispatch.",
+    impactSummary: "Transcription queue backlogs, webhook notifications fail to dispatch.",
     keyComponents: [
       "Async Transcription Queue",
       "Streaming Real-Time API",
       "Audio Intelligence (PII Redaction)",
     ],
     commonErrorCodes: ["500 Server Error", "504 Gateway Timeout"],
-    troubleshootingSteps: [
-      "Check status.assemblyai.com.",
-      "Check webhook receiver URL health.",
-    ],
+    troubleshootingSteps: ["Check status.assemblyai.com.", "Check webhook receiver URL health."],
     relatedServices: ["deepgram", "elevenlabs"],
   },
   {
@@ -569,8 +430,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.langfuse.com",
     description:
       "Open source LLM engineering platform for observability, tracing, and prompt evaluation.",
-    impactSummary:
-      "LLM trace ingestion fails or increases latency in user-facing applications.",
+    impactSummary: "LLM trace ingestion fails or increases latency in user-facing applications.",
     keyComponents: [
       "Trace Ingestion API",
       "Web Dashboard",
@@ -590,20 +450,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "smith.langchain.com",
     officialStatusUrl: "https://status.langchain.com",
-    description:
-      "LangChain observability and evaluation platform for AI agents and chains.",
-    impactSummary:
-      "Agent execution traces drop, feedback collection endpoints return 500.",
-    keyComponents: [
-      "Trace Collector API",
-      "Playground",
-      "Evaluation Dataset Store",
-    ],
+    description: "LangChain observability and evaluation platform for AI agents and chains.",
+    impactSummary: "Agent execution traces drop, feedback collection endpoints return 500.",
+    keyComponents: ["Trace Collector API", "Playground", "Evaluation Dataset Store"],
     commonErrorCodes: ["503 Unavailable", "500 Server Error"],
-    troubleshootingSteps: [
-      "Check LangChain status.",
-      "Disable LANGCHAIN_TRACING_V2 temporarily.",
-    ],
+    troubleshootingSteps: ["Check LangChain status.", "Disable LANGCHAIN_TRACING_V2 temporarily."],
     relatedServices: ["langfuse", "openai"],
   },
   {
@@ -612,16 +463,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "helicone.ai",
     officialStatusUrl: "https://status.helicone.ai",
-    description:
-      "LLM proxy gateway providing logging, rate limiting, and cost tracking.",
+    description: "LLM proxy gateway providing logging, rate limiting, and cost tracking.",
     impactSummary:
       "AI requests proxied through oai.helicone.ai fail if the gateway encounters downtime.",
-    keyComponents: [
-      "Proxy Gateway",
-      "Dashboard UI",
-      "Prompt Cache Layer",
-      "Cost Tracker",
-    ],
+    keyComponents: ["Proxy Gateway", "Dashboard UI", "Prompt Cache Layer", "Cost Tracker"],
     commonErrorCodes: ["502 Bad Gateway", "504 Gateway Timeout"],
     troubleshootingSteps: [
       "Bypass proxy by switching baseURL to api.openai.com directly.",
@@ -635,8 +480,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "runpod.io",
     officialStatusUrl: "https://status.runpod.io",
-    description:
-      "Cloud GPU rental and serverless endpoint platform for AI workloads.",
+    description: "Cloud GPU rental and serverless endpoint platform for AI workloads.",
     impactSummary: "Serverless workers fail to scale up, GPU pods disconnect.",
     keyComponents: [
       "Serverless GPU Endpoints",
@@ -644,11 +488,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Network Storage",
       "Serverless Queue",
     ],
-    commonErrorCodes: [
-      "500 Internal Server Error",
-      "503 No Capacity",
-      "504 Execution Timeout",
-    ],
+    commonErrorCodes: ["500 Internal Server Error", "503 No Capacity", "504 Execution Timeout"],
     troubleshootingSteps: [
       "Check GPU capacity availability in target region.",
       "Check status.runpod.io.",
@@ -663,13 +503,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.lambdalabs.com",
     description:
       "GPU cloud platform for deep learning training and inference on NVIDIA H100s and A100s.",
-    impactSummary:
-      "Instance provisioning fails, SSH tunnels drop, training cluster nodes stall.",
-    keyComponents: [
-      "On-Demand GPU Instances",
-      "Reserved Clusters",
-      "Persistent Storage",
-    ],
+    impactSummary: "Instance provisioning fails, SSH tunnels drop, training cluster nodes stall.",
+    keyComponents: ["On-Demand GPU Instances", "Reserved Clusters", "Persistent Storage"],
     commonErrorCodes: ["Instance Unavailable", "SSH Connection Timeout"],
     troubleshootingSteps: [
       "Check GPU inventory status.",
@@ -692,11 +527,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Shared Volumes",
       "Cron Triggers",
     ],
-    commonErrorCodes: [
-      "500 Internal Server Error",
-      "504 Timeout",
-      "Function Execution Failed",
-    ],
+    commonErrorCodes: ["500 Internal Server Error", "504 Timeout", "Function Execution Failed"],
     troubleshootingSteps: [
       "Check modal status.",
       "Run modal app history to inspect container crashes.",
@@ -710,14 +541,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     domain: "cerebras.ai",
     officialStatusUrl: "https://status.cerebras.ai",
     description: "Ultra-fast wafer-scale inference engine for Llama models.",
-    impactSummary:
-      "High-speed token streams terminate prematurely or fail on API call.",
+    impactSummary: "High-speed token streams terminate prematurely or fail on API call.",
     keyComponents: ["Wafer Scale Engine Inference", "OpenAI Compatible API"],
     commonErrorCodes: ["503 Unavailable", "500 Server Error"],
-    troubleshootingSteps: [
-      "Check status.cerebras.ai.",
-      "Switch to Groq or SambaNova.",
-    ],
+    troubleshootingSteps: ["Check status.cerebras.ai.", "Switch to Groq or SambaNova."],
     relatedServices: ["groq", "together-ai"],
   },
   {
@@ -728,14 +555,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.voyageai.com",
     description:
       "State-of-the-art embedding and reranker models optimized for finance, code, and legal RAG.",
-    impactSummary:
-      "Embedding vector generation errors, breaking document search.",
+    impactSummary: "Embedding vector generation errors, breaking document search.",
     keyComponents: ["Embedding API", "Reranker API", "Batch Processing"],
     commonErrorCodes: ["500 Internal Error", "429 Rate Limit"],
-    troubleshootingSteps: [
-      "Check Voyage AI status.",
-      "Fallback to OpenAI text-embedding-3.",
-    ],
+    troubleshootingSteps: ["Check Voyage AI status.", "Fallback to OpenAI text-embedding-3."],
     relatedServices: ["openai", "cohere", "pinecone"],
   },
   {
@@ -744,8 +567,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "cursor.com",
     officialStatusUrl: "https://status.cursor.com",
-    description:
-      "AI-first code editor with codebase indexing, Composer, and inline generation.",
+    description: "AI-first code editor with codebase indexing, Composer, and inline generation.",
     impactSummary:
       "Composer AI generation hangs, tab completions stall, codebase indexing disconnects.",
     keyComponents: [
@@ -754,11 +576,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Copilot Auto-Complete",
       "Authentication",
     ],
-    commonErrorCodes: [
-      "503 Service Overloaded",
-      "Connection Refused",
-      "500 Server Error",
-    ],
+    commonErrorCodes: ["503 Service Overloaded", "Connection Refused", "500 Server Error"],
     troubleshootingSteps: [
       "Check status.cursor.com.",
       "Toggle between Claude 3.5 Sonnet and GPT-4o models in Cursor settings.",
@@ -778,10 +596,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Prompt component generation fails, chat sessions disconnect, code export errors.",
     keyComponents: ["Generative UI Engine", "Live Sandboxes", "Figma Importer"],
     commonErrorCodes: ["500 Server Error", "504 Gateway Timeout"],
-    troubleshootingSteps: [
-      "Check Vercel status page.",
-      "Refresh browser session.",
-    ],
+    troubleshootingSteps: ["Check Vercel status page.", "Refresh browser session."],
     relatedServices: ["vercel", "openai"],
   },
   {
@@ -791,14 +606,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     domain: "poe.com",
     officialStatusUrl: "https://status.poe.com",
     description: "Multi-bot AI platform and developer bot creation ecosystem.",
-    impactSummary:
-      "Server bot webhooks fail, message generation loops endlessly.",
+    impactSummary: "Server bot webhooks fail, message generation loops endlessly.",
     keyComponents: ["Bot Server Protocol", "Web Chat", "API Subscriptions"],
     commonErrorCodes: ["500 Server Error", "502 Bad Gateway"],
-    troubleshootingSteps: [
-      "Check bot webhook server health.",
-      "Check Poe status.",
-    ],
+    troubleshootingSteps: ["Check bot webhook server health.", "Check Poe status."],
     relatedServices: ["openai", "anthropic"],
   },
   {
@@ -807,20 +618,12 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "character.ai",
     officialStatusUrl: "https://status.character.ai",
-    description:
-      "Neural language model chatbot platform for interactive personas.",
+    description: "Neural language model chatbot platform for interactive personas.",
     impactSummary:
       "Chat waiting rooms trigger, character replies stall, mobile app shows connection error.",
-    keyComponents: [
-      "Waiting Room Queue",
-      "Persona Inference Engine",
-      "Voice Call Feature",
-    ],
+    keyComponents: ["Waiting Room Queue", "Persona Inference Engine", "Voice Call Feature"],
     commonErrorCodes: ["503 Waiting Room", "500 Internal Server Error"],
-    troubleshootingSteps: [
-      "Check status.character.ai.",
-      "Clear browser cache.",
-    ],
+    troubleshootingSteps: ["Check status.character.ai.", "Clear browser cache."],
     relatedServices: ["openai", "elevenlabs"],
   },
   {
@@ -829,21 +632,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "wandb.ai",
     officialStatusUrl: "https://status.wandb.ai",
-    description:
-      "MLOps platform for experiment tracking, model registry, and dataset versioning.",
+    description: "MLOps platform for experiment tracking, model registry, and dataset versioning.",
     impactSummary:
       "Training run metric logging fails or crashes active training scripts if synchronous.",
-    keyComponents: [
-      "Run Metrics Ingestion",
-      "Model Registry",
-      "Artifacts Storage",
-      "W&B Weave",
-    ],
-    commonErrorCodes: [
-      "500 Internal Server Error",
-      "502 Bad Gateway",
-      "Network Timeout",
-    ],
+    keyComponents: ["Run Metrics Ingestion", "Model Registry", "Artifacts Storage", "W&B Weave"],
+    commonErrorCodes: ["500 Internal Server Error", "502 Bad Gateway", "Network Timeout"],
     troubleshootingSteps: [
       "Set WANDB_MODE=offline in training scripts.",
       "Sync runs later with wandb sync.",
@@ -856,20 +649,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "scale.com",
     officialStatusUrl: "https://status.scale.com",
-    description:
-      "Data annotation, RLHF evaluation, and Enterprise GenAI platform.",
-    impactSummary:
-      "Task ingestion APIs error, dataset validation workflows freeze.",
-    keyComponents: [
-      "Data Annotation Pipeline",
-      "Scale GenAI Platform",
-      "Evaluation Studio",
-    ],
+    description: "Data annotation, RLHF evaluation, and Enterprise GenAI platform.",
+    impactSummary: "Task ingestion APIs error, dataset validation workflows freeze.",
+    keyComponents: ["Data Annotation Pipeline", "Scale GenAI Platform", "Evaluation Studio"],
     commonErrorCodes: ["500 Server Error", "504 Timeout"],
-    troubleshootingSteps: [
-      "Check status.scale.com.",
-      "Queue data export batches.",
-    ],
+    troubleshootingSteps: ["Check status.scale.com.", "Queue data export batches."],
     relatedServices: ["openai", "hugging-face"],
   },
   {
@@ -878,16 +662,12 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "tavily.com",
     officialStatusUrl: "https://status.tavily.com",
-    description:
-      "Search engine API purpose-built for AI agents, RAG, and LLM web retrieval.",
+    description: "Search engine API purpose-built for AI agents, RAG, and LLM web retrieval.",
     impactSummary:
       "Agent internet browsing tools fail, live factual search queries return empty results.",
     keyComponents: ["Search API", "Extract API", "Reranking Engine"],
     commonErrorCodes: ["500 Server Error", "429 Rate Limit Exceeded"],
-    troubleshootingSteps: [
-      "Check Tavily API status.",
-      "Switch to Serper or Exa fallback.",
-    ],
+    troubleshootingSteps: ["Check Tavily API status.", "Switch to Serper or Exa fallback."],
     relatedServices: ["perplexity", "openai"],
   },
   {
@@ -920,13 +700,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Trigger multi-region failover via Route 53 DNS routing policies.",
       "Check CloudWatch alarms and S3 read/write error metrics.",
     ],
-    relatedServices: [
-      "cloudflare",
-      "vercel",
-      "google-cloud",
-      "azure",
-      "datadog",
-    ],
+    relatedServices: ["cloudflare", "vercel", "google-cloud", "azure", "datadog"],
     featured: true,
   },
   {
@@ -946,11 +720,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "BigQuery",
       "Cloud SQL",
     ],
-    commonErrorCodes: [
-      "503 Service Unavailable",
-      "500 Server Error",
-      "DEADLINE_EXCEEDED",
-    ],
+    commonErrorCodes: ["503 Service Unavailable", "500 Server Error", "DEADLINE_EXCEEDED"],
     troubleshootingSteps: [
       "Check status.cloud.google.com.",
       "Inspect Cloud Logging in Google Cloud Console.",
@@ -975,11 +745,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Entra ID (Azure AD)",
       "Azure DevOps",
     ],
-    commonErrorCodes: [
-      "503 Service Unavailable",
-      "500 Internal Error",
-      "RequestTimeout",
-    ],
+    commonErrorCodes: ["503 Service Unavailable", "500 Internal Error", "RequestTimeout"],
     troubleshootingSteps: [
       "Check status.azure.com and Azure Service Health in the portal.",
       "Verify subscription quotas.",
@@ -1059,21 +825,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Web development platform offering Jamstack hosting, serverless functions, and edge computing.",
     impactSummary:
       "Static web deployments return 502/504, build queue backlogs, form submission webhooks fail.",
-    keyComponents: [
-      "Edge CDN",
-      "Netlify Functions",
-      "Build Pipeline",
-      "Netlify Forms",
-    ],
-    commonErrorCodes: [
-      "502 Bad Gateway",
-      "504 Gateway Timeout",
-      "Build Failed",
-    ],
-    troubleshootingSteps: [
-      "Check status.netlify.com.",
-      "Trigger clear cache and redeploy.",
-    ],
+    keyComponents: ["Edge CDN", "Netlify Functions", "Build Pipeline", "Netlify Forms"],
+    commonErrorCodes: ["502 Bad Gateway", "504 Gateway Timeout", "Build Failed"],
+    troubleshootingSteps: ["Check status.netlify.com.", "Trigger clear cache and redeploy."],
     relatedServices: ["vercel", "cloudflare", "github"],
   },
   {
@@ -1093,11 +847,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "App Platform",
       "Managed Databases",
     ],
-    commonErrorCodes: [
-      "502 Bad Gateway",
-      "Connection Refused",
-      "504 Gateway Timeout",
-    ],
+    commonErrorCodes: ["502 Bad Gateway", "Connection Refused", "504 Gateway Timeout"],
     troubleshootingSteps: [
       "Check status.digitalocean.com for regional hypervisor maintenance.",
       "Reboot Droplet via DO Console.",
@@ -1110,21 +860,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "cloud-infra",
     domain: "hetzner.com",
     officialStatusUrl: "https://status.hetzner.com",
-    description:
-      "High-performance European cloud servers, dedicated hardware, and storage boxes.",
+    description: "High-performance European cloud servers, dedicated hardware, and storage boxes.",
     impactSummary:
       "Falkenstein/Nuremberg/Helsinki DC network loss, cloud server API unreachability.",
-    keyComponents: [
-      "Cloud Servers",
-      "Dedicated Root Servers",
-      "Storage Boxes",
-      "Load Balancers",
-    ],
-    commonErrorCodes: [
-      "Connection Timed Out",
-      "502 Bad Gateway",
-      "Network Unreachable",
-    ],
+    keyComponents: ["Cloud Servers", "Dedicated Root Servers", "Storage Boxes", "Load Balancers"],
+    commonErrorCodes: ["Connection Timed Out", "502 Bad Gateway", "Network Unreachable"],
     troubleshootingSteps: [
       "Check status.hetzner.com.",
       "Inspect Robot / Cloud Console vSwitch status.",
@@ -1141,12 +881,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Global application delivery platform running Docker containers on Firecracker microVMs at the edge.",
     impactSummary:
       "Fly machine instances crash, WireGuard private mesh drops routing, edge proxy returns 502.",
-    keyComponents: [
-      "Fly Machines",
-      "Global Edge Proxy",
-      "Fly Volumes",
-      "WireGuard 6PN Mesh",
-    ],
+    keyComponents: ["Fly Machines", "Global Edge Proxy", "Fly Volumes", "WireGuard 6PN Mesh"],
     commonErrorCodes: [
       "502 Bad Gateway (fly-proxy)",
       "503 Service Unavailable",
@@ -1167,23 +902,15 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.railway.app",
     description:
       "Modern infrastructure platform to provision databases, web apps, and cron workers without DevOps friction.",
-    impactSummary:
-      "Container builds fail, Postgres plugins crash, custom domain routing fails.",
+    impactSummary: "Container builds fail, Postgres plugins crash, custom domain routing fails.",
     keyComponents: [
       "Build Orchestrator",
       "Volume Storage",
       "Internal Private Networking",
       "Managed Postgres/Redis",
     ],
-    commonErrorCodes: [
-      "502 Bad Gateway",
-      "Application Crashed",
-      "504 Gateway Timeout",
-    ],
-    troubleshootingSteps: [
-      "Check status.railway.app.",
-      "Check deploy logs in Railway Dashboard.",
-    ],
+    commonErrorCodes: ["502 Bad Gateway", "Application Crashed", "504 Gateway Timeout"],
+    troubleshootingSteps: ["Check status.railway.app.", "Check deploy logs in Railway Dashboard."],
     relatedServices: ["render", "fly-io", "vercel", "supabase"],
   },
   {
@@ -1196,21 +923,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Unified cloud platform to build and run apps and sites with free SSL, global CDN, and private networks.",
     impactSummary:
       "Web services spin down and fail to wake on incoming traffic, background workers disconnect.",
-    keyComponents: [
-      "Web Services",
-      "Background Workers",
-      "Managed PostgreSQL",
-      "Static Sites",
-    ],
-    commonErrorCodes: [
-      "502 Bad Gateway",
-      "503 Service Unavailable",
-      "Build Timed Out",
-    ],
-    troubleshootingSteps: [
-      "Check status.render.com.",
-      "Inspect service logs and memory usage.",
-    ],
+    keyComponents: ["Web Services", "Background Workers", "Managed PostgreSQL", "Static Sites"],
+    commonErrorCodes: ["502 Bad Gateway", "503 Service Unavailable", "Build Timed Out"],
+    troubleshootingSteps: ["Check status.render.com.", "Inspect service logs and memory usage."],
     relatedServices: ["railway", "fly-io", "heroku"],
   },
   {
@@ -1219,16 +934,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "cloud-infra",
     domain: "heroku.com",
     officialStatusUrl: "https://status.heroku.com",
-    description:
-      "Cloud application platform for deploying Ruby, Node, Python, Java, and Go dynos.",
+    description: "Cloud application platform for deploying Ruby, Node, Python, Java, and Go dynos.",
     impactSummary:
       "Dyno crashes throw H10/H12/H14 errors, Postgres connection limits exhaust, deploys fail.",
-    keyComponents: [
-      "Common Runtime Dynos",
-      "Heroku Postgres",
-      "Heroku Redis",
-      "Buildpacks",
-    ],
+    keyComponents: ["Common Runtime Dynos", "Heroku Postgres", "Heroku Redis", "Buildpacks"],
     commonErrorCodes: [
       "H10 - App crashed",
       "H12 - Request timeout",
@@ -1249,19 +958,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.linode.com",
     description:
       "Cloud hosting and computing provider offering virtual servers, Block Storage, and Object Storage.",
-    impactSummary:
-      "Compute instances lose connectivity, NodeBalancers fail health checks.",
-    keyComponents: [
-      "Linode Compute Instances",
-      "NodeBalancers",
-      "Object Storage",
-      "DNS Manager",
-    ],
+    impactSummary: "Compute instances lose connectivity, NodeBalancers fail health checks.",
+    keyComponents: ["Linode Compute Instances", "NodeBalancers", "Object Storage", "DNS Manager"],
     commonErrorCodes: ["502 Bad Gateway", "Connection Refused"],
-    troubleshootingSteps: [
-      "Check status.linode.com.",
-      "Reboot Linode via Cloud Manager.",
-    ],
+    troubleshootingSteps: ["Check status.linode.com.", "Reboot Linode via Cloud Manager."],
     relatedServices: ["digitalocean", "vultr", "hetzner"],
   },
   {
@@ -1272,19 +972,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.vultr.com",
     description:
       "High-performance SSD cloud compute, cloud GPU, bare metal, and block storage provider across 32 locations.",
-    impactSummary:
-      "BGP routing issues cause packet drop, Cloud GPU instances stall.",
-    keyComponents: [
-      "Cloud Compute",
-      "Cloud GPU",
-      "Bare Metal",
-      "Vultr Kubernetes Engine",
-    ],
+    impactSummary: "BGP routing issues cause packet drop, Cloud GPU instances stall.",
+    keyComponents: ["Cloud Compute", "Cloud GPU", "Bare Metal", "Vultr Kubernetes Engine"],
     commonErrorCodes: ["504 Gateway Timeout", "Network Timeout"],
-    troubleshootingSteps: [
-      "Check status.vultr.com.",
-      "Inspect console via Vultr panel.",
-    ],
+    troubleshootingSteps: ["Check status.vultr.com.", "Inspect console via Vultr panel."],
     relatedServices: ["digitalocean", "linode"],
   },
   {
@@ -1297,20 +988,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Edge cloud and CDN platform providing VCL caching, Compute@Edge, and DDoS security.",
     impactSummary:
       "Global CDN returns 503 errors, cache purging queues stall, origin shielding drops requests.",
-    keyComponents: [
-      "Edge CDN",
-      "Compute@Edge (Wasm)",
-      "Next-Gen WAF",
-      "Image Optimizer",
-    ],
-    commonErrorCodes: [
-      "503 Service Unavailable (Fastly error)",
-      "504 Gateway Timeout",
-    ],
-    troubleshootingSteps: [
-      "Check fastlystatus.com.",
-      "Verify origin server responsiveness.",
-    ],
+    keyComponents: ["Edge CDN", "Compute@Edge (Wasm)", "Next-Gen WAF", "Image Optimizer"],
+    commonErrorCodes: ["503 Service Unavailable (Fastly error)", "504 Gateway Timeout"],
+    troubleshootingSteps: ["Check fastlystatus.com.", "Verify origin server responsiveness."],
     relatedServices: ["cloudflare", "aws"],
   },
   {
@@ -1319,21 +999,12 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "cloud-infra",
     domain: "akamai.com",
     officialStatusUrl: "https://www.akamaistatus.com",
-    description:
-      "Global content delivery network, cybersecurity, and cloud computing platform.",
+    description: "Global content delivery network, cybersecurity, and cloud computing platform.",
     impactSummary:
       "Enterprise edge routing breaks, DDoS scrubbing centers block legitimate requests.",
-    keyComponents: [
-      "Edge CDN",
-      "App & API Protector",
-      "Enterprise DNS",
-      "Cloud Computing",
-    ],
+    keyComponents: ["Edge CDN", "App & API Protector", "Enterprise DNS", "Cloud Computing"],
     commonErrorCodes: ["Reference Error #18", "503 Service Unavailable"],
-    troubleshootingSteps: [
-      "Look up Akamai Error Reference string.",
-      "Check akamaistatus.com.",
-    ],
+    troubleshootingSteps: ["Look up Akamai Error Reference string.", "Check akamaistatus.com."],
     relatedServices: ["cloudflare", "fastly"],
   },
   {
@@ -1346,17 +1017,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Globally distributed serverless JavaScript/TypeScript runtime with zero configuration.",
     impactSummary:
       "Deno KV requests fail, edge sub-hosting functions throw unhandled worker errors.",
-    keyComponents: [
-      "Deno Subhosting",
-      "Deno KV",
-      "BroadcastChannel",
-      "Edge Runtime",
-    ],
+    keyComponents: ["Deno Subhosting", "Deno KV", "BroadcastChannel", "Edge Runtime"],
     commonErrorCodes: ["500 Worker Error", "504 Gateway Timeout"],
-    troubleshootingSteps: [
-      "Check denostatus.com.",
-      "Inspect deployment logs in Deno dashboard.",
-    ],
+    troubleshootingSteps: ["Check denostatus.com.", "Inspect deployment logs in Deno dashboard."],
     relatedServices: ["cloudflare", "vercel"],
   },
   {
@@ -1367,19 +1030,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.scaleway.com",
     description:
       "European cloud provider offering instances, serverless, managed Kubernetes, and object storage.",
-    impactSummary:
-      "Paris/Amsterdam data center issues, S3 bucket latency spikes.",
-    keyComponents: [
-      "Elastic Metal",
-      "Instances",
-      "Object Storage",
-      "Serverless DB",
-    ],
+    impactSummary: "Paris/Amsterdam data center issues, S3 bucket latency spikes.",
+    keyComponents: ["Elastic Metal", "Instances", "Object Storage", "Serverless DB"],
     commonErrorCodes: ["503 Unavailable", "500 Server Error"],
-    troubleshootingSteps: [
-      "Check status.scaleway.com.",
-      "Verify API token permissions.",
-    ],
+    troubleshootingSteps: ["Check status.scaleway.com.", "Verify API token permissions."],
     relatedServices: ["hetzner", "ovh"],
   },
   {
@@ -1390,19 +1044,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://www.github.com/ovh/travaux",
     description:
       "Global hyperscale cloud provider offering dedicated servers, private cloud, and public cloud.",
-    impactSummary:
-      "Dedicated servers lose network routes, anti-DDoS filters trigger false drops.",
-    keyComponents: [
-      "Dedicated Servers",
-      "Hosted Private Cloud",
-      "Public Cloud",
-      "VPS",
-    ],
+    impactSummary: "Dedicated servers lose network routes, anti-DDoS filters trigger false drops.",
+    keyComponents: ["Dedicated Servers", "Hosted Private Cloud", "Public Cloud", "VPS"],
     commonErrorCodes: ["504 Gateway Timeout", "Connection Refused"],
-    troubleshootingSteps: [
-      "Check travaux.ovh.net.",
-      "Reboot server via OVH API.",
-    ],
+    troubleshootingSteps: ["Check travaux.ovh.net.", "Reboot server via OVH API."],
     relatedServices: ["hetzner", "scaleway"],
   },
   {
@@ -1412,22 +1057,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     domain: "backblaze.com",
     officialStatusUrl: "https://status.backblaze.com",
     description: "Low-cost S3-compatible cloud object storage provider.",
-    impactSummary:
-      "File downloads fail, S3 API file uploads return 503 service unavailable.",
-    keyComponents: [
-      "B2 Cloud Storage API",
-      "S3 Compatible API",
-      "Cloud Replication",
-    ],
-    commonErrorCodes: [
-      "503 Service Unavailable",
-      "500 Internal Error",
-      "401 Unauthorized",
-    ],
-    troubleshootingSteps: [
-      "Check status.backblaze.com.",
-      "Verify application upload retry logic.",
-    ],
+    impactSummary: "File downloads fail, S3 API file uploads return 503 service unavailable.",
+    keyComponents: ["B2 Cloud Storage API", "S3 Compatible API", "Cloud Replication"],
+    commonErrorCodes: ["503 Service Unavailable", "500 Internal Error", "401 Unauthorized"],
+    troubleshootingSteps: ["Check status.backblaze.com.", "Verify application upload retry logic."],
     relatedServices: ["wasabi", "aws", "cloudflare"],
   },
   {
@@ -1437,14 +1070,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     domain: "wasabi.com",
     officialStatusUrl: "https://status.wasabisys.com",
     description: "High-speed S3-compatible cloud storage with no egress fees.",
-    impactSummary:
-      "Object bucket reads time out, backup replication runs fail.",
+    impactSummary: "Object bucket reads time out, backup replication runs fail.",
     keyComponents: ["S3 REST API", "Wasabi Account Console", "Direct Connect"],
     commonErrorCodes: ["503 SlowDown", "504 Gateway Timeout"],
-    troubleshootingSteps: [
-      "Check status.wasabisys.com.",
-      "Verify endpoint URL region.",
-    ],
+    troubleshootingSteps: ["Check status.wasabisys.com.", "Verify endpoint URL region."],
     relatedServices: ["backblaze-b2", "aws"],
   },
   {
@@ -1463,14 +1092,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Object Storage",
       "Virtual Cloud Networks",
     ],
-    commonErrorCodes: [
-      "503 Service Unavailable",
-      "ORA-12170 TNS Connect Timeout",
-    ],
-    troubleshootingSteps: [
-      "Check ocistatus.oraclecloud.com.",
-      "Inspect VCN security list rules.",
-    ],
+    commonErrorCodes: ["503 Service Unavailable", "ORA-12170 TNS Connect Timeout"],
+    troubleshootingSteps: ["Check ocistatus.oraclecloud.com.", "Inspect VCN security list rules."],
     relatedServices: ["aws", "azure", "google-cloud"],
   },
   {
@@ -1481,8 +1104,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.alibabacloud.com",
     description:
       "Cloud computing company providing ECS, OSS, PolarDB, and CDN across Asia and worldwide.",
-    impactSummary:
-      "Asia-Pacific traffic routing degraded, OSS object upload fails.",
+    impactSummary: "Asia-Pacific traffic routing degraded, OSS object upload fails.",
     keyComponents: [
       "Elastic Compute Service (ECS)",
       "Object Storage Service (OSS)",
@@ -1504,18 +1126,14 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://cloud.ibm.com/status",
     description:
       "Enterprise hybrid cloud platform offering Red Hat OpenShift, VPC compute, and IBM Cloud Satellite.",
-    impactSummary:
-      "OpenShift cluster nodes enter NotReady state, IAM authentication times out.",
+    impactSummary: "OpenShift cluster nodes enter NotReady state, IAM authentication times out.",
     keyComponents: [
       "Red Hat OpenShift on IBM Cloud",
       "Cloud Object Storage",
       "VPC Virtual Servers",
     ],
     commonErrorCodes: ["503 Service Unavailable", "504 Gateway Timeout"],
-    troubleshootingSteps: [
-      "Check cloud.ibm.com/status.",
-      "Check IBM Cloud CLI session token.",
-    ],
+    troubleshootingSteps: ["Check cloud.ibm.com/status.", "Check IBM Cloud CLI session token."],
     relatedServices: ["azure", "aws"],
   },
   {
@@ -1527,16 +1145,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     description:
       "European cloud hosting provider offering high-performance MaxIOPS storage and cloud servers.",
     impactSummary: "Storage IOPS degrades, server provisioning stalls.",
-    keyComponents: [
-      "Cloud Servers",
-      "MaxIOPS Block Storage",
-      "Managed Databases",
-    ],
+    keyComponents: ["Cloud Servers", "MaxIOPS Block Storage", "Managed Databases"],
     commonErrorCodes: ["502 Bad Gateway", "Connection Timeout"],
-    troubleshootingSteps: [
-      "Check status.upcloud.com.",
-      "Verify API connection credentials.",
-    ],
+    troubleshootingSteps: ["Check status.upcloud.com.", "Verify API connection credentials."],
     relatedServices: ["hetzner", "digitalocean"],
   },
   {
@@ -1545,25 +1156,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "cloud-infra",
     domain: "bunny.net",
     officialStatusUrl: "https://status.bunny.net",
-    description:
-      "Next-gen CDN, edge storage, DNS, and video streaming platform.",
-    impactSummary:
-      "Edge caching misses cause origin flood, Bunny Stream video playback fails.",
-    keyComponents: [
-      "Bunny CDN",
-      "Bunny Storage",
-      "Bunny DNS",
-      "Bunny Stream Video",
-    ],
-    commonErrorCodes: [
-      "502 Bad Gateway",
-      "504 Gateway Timeout",
-      "403 Forbidden",
-    ],
-    troubleshootingSteps: [
-      "Check status.bunny.net.",
-      "Purge edge pull zone cache.",
-    ],
+    description: "Next-gen CDN, edge storage, DNS, and video streaming platform.",
+    impactSummary: "Edge caching misses cause origin flood, Bunny Stream video playback fails.",
+    keyComponents: ["Bunny CDN", "Bunny Storage", "Bunny DNS", "Bunny Stream Video"],
+    commonErrorCodes: ["502 Bad Gateway", "504 Gateway Timeout", "403 Forbidden"],
+    troubleshootingSteps: ["Check status.bunny.net.", "Purge edge pull zone cache."],
     relatedServices: ["cloudflare", "fastly"],
   },
   {
@@ -1576,17 +1173,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Unified ingress platform providing secure tunnels, reverse proxy, API gateway, and edge load balancing.",
     impactSummary:
       "Developer tunnels disconnect (ERR_NGROK_3200), webhook testing workflows break.",
-    keyComponents: [
-      "Agent Tunnels",
-      "Cloud Edge Ingress",
-      "Custom Domains",
-      "Traffic Inspector",
-    ],
+    keyComponents: ["Agent Tunnels", "Cloud Edge Ingress", "Custom Domains", "Traffic Inspector"],
     commonErrorCodes: ["ERR_NGROK_3200", "ERR_NGROK_108", "502 Bad Gateway"],
-    troubleshootingSteps: [
-      "Check status.ngrok.com.",
-      "Restart local ngrok agent with ngrok http.",
-    ],
+    troubleshootingSteps: ["Check status.ngrok.com.", "Restart local ngrok agent with ngrok http."],
     relatedServices: ["cloudflare", "github"],
   },
   {
@@ -1595,16 +1184,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "cloud-infra",
     domain: "localtunnel.me",
     officialStatusUrl: "https://status.localtunnel.me",
-    description:
-      "Exposes your localhost to the world for easy testing and sharing.",
-    impactSummary:
-      "Tunnels drop connections, public URLs return 504 gateway timeout.",
+    description: "Exposes your localhost to the world for easy testing and sharing.",
+    impactSummary: "Tunnels drop connections, public URLs return 504 gateway timeout.",
     keyComponents: ["Tunnel Gateway", "CLI Proxy"],
     commonErrorCodes: ["504 Gateway Timeout", "Connection Refused"],
-    troubleshootingSteps: [
-      "Restart tunnel client.",
-      "Switch to ngrok or Cloudflare Tunnels.",
-    ],
+    troubleshootingSteps: ["Restart tunnel client.", "Switch to ngrok or Cloudflare Tunnels."],
     relatedServices: ["ngrok", "cloudflare"],
   },
   {
@@ -1613,19 +1197,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "cloud-infra",
     domain: "koyeb.com",
     officialStatusUrl: "https://status.koyeb.com",
-    description:
-      "Serverless platform to deploy full stack apps, APIs, and workers globally.",
+    description: "Serverless platform to deploy full stack apps, APIs, and workers globally.",
     impactSummary: "Global edge routing errors, container scale-out fails.",
-    keyComponents: [
-      "MicroVM Engine",
-      "Global Edge Mesh",
-      "Service Deployments",
-    ],
+    keyComponents: ["MicroVM Engine", "Global Edge Mesh", "Service Deployments"],
     commonErrorCodes: ["502 Bad Gateway", "500 Internal Server Error"],
-    troubleshootingSteps: [
-      "Check status.koyeb.com.",
-      "Review instance runtime health.",
-    ],
+    troubleshootingSteps: ["Check status.koyeb.com.", "Review instance runtime health."],
     relatedServices: ["fly-io", "railway"],
   },
   {
@@ -1636,18 +1212,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.northflank.com",
     description:
       "Developer platform to deploy Docker containers, cron jobs, and managed databases.",
-    impactSummary:
-      "Deployment pipelines stall, persistent volume mounts error.",
-    keyComponents: [
-      "Workload Orchestrator",
-      "Managed Databases",
-      "Pipeline Builds",
-    ],
+    impactSummary: "Deployment pipelines stall, persistent volume mounts error.",
+    keyComponents: ["Workload Orchestrator", "Managed Databases", "Pipeline Builds"],
     commonErrorCodes: ["502 Bad Gateway", "503 Unavailable"],
-    troubleshootingSteps: [
-      "Check status.northflank.com.",
-      "Inspect build logs in Northflank UI.",
-    ],
+    troubleshootingSteps: ["Check status.northflank.com.", "Inspect build logs in Northflank UI."],
     relatedServices: ["railway", "render"],
   },
   {
@@ -1656,16 +1224,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "cloud-infra",
     domain: "sst.dev",
     officialStatusUrl: "https://status.sst.dev",
-    description:
-      "Full-stack cloud framework to deploy modern apps on AWS and Cloudflare.",
-    impactSummary:
-      "Live Lambda development tunnels drop, deployment manifests fail.",
+    description: "Full-stack cloud framework to deploy modern apps on AWS and Cloudflare.",
+    impactSummary: "Live Lambda development tunnels drop, deployment manifests fail.",
     keyComponents: ["SST Console", "Ion Deployer", "Live Lambda Engine"],
     commonErrorCodes: ["Deployment Failed", "Connection Timeout"],
-    troubleshootingSteps: [
-      "Check AWS CloudFormation stack state.",
-      "Restart sst dev.",
-    ],
+    troubleshootingSteps: ["Check AWS CloudFormation stack state.", "Restart sst dev."],
     relatedServices: ["aws", "cloudflare"],
   },
   {
@@ -1674,19 +1237,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "cloud-infra",
     domain: "ion.sst.dev",
     officialStatusUrl: "https://status.sst.dev",
-    description:
-      "Next generation SST engine powered by Terraform and Pulumi providers.",
+    description: "Next generation SST engine powered by Terraform and Pulumi providers.",
     impactSummary: "Infrastructure state sync fails during CI/CD deploy.",
-    keyComponents: [
-      "Ion Engine",
-      "State Provider",
-      "AWS / Cloudflare Bindings",
-    ],
+    keyComponents: ["Ion Engine", "State Provider", "AWS / Cloudflare Bindings"],
     commonErrorCodes: ["Provider Error", "State Lock Error"],
-    troubleshootingSteps: [
-      "Check provider permissions.",
-      "Clear local .sst cache.",
-    ],
+    troubleshootingSteps: ["Check provider permissions.", "Clear local .sst cache."],
     relatedServices: ["aws", "cloudflare"],
   },
   {
@@ -1695,19 +1250,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "cloud-infra",
     domain: "zeabur.com",
     officialStatusUrl: "https://status.zeabur.com",
-    description:
-      "One-click deployment platform for full-stack web applications and services.",
+    description: "One-click deployment platform for full-stack web applications and services.",
     impactSummary: "Web apps fail to start, domain SSL generation times out.",
-    keyComponents: [
-      "Application Containers",
-      "Managed Addons",
-      "Domain Routing",
-    ],
+    keyComponents: ["Application Containers", "Managed Addons", "Domain Routing"],
     commonErrorCodes: ["502 Bad Gateway", "500 Server Error"],
-    troubleshootingSteps: [
-      "Check status.zeabur.com.",
-      "Redeploy project from git.",
-    ],
+    troubleshootingSteps: ["Check status.zeabur.com.", "Redeploy project from git."],
     relatedServices: ["railway", "render"],
   },
   {
@@ -1717,22 +1264,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     domain: "hostinger.com",
     officialStatusUrl: "https://statuspage.hostinger.com",
     description: "Web hosting, VPS, and cloud hosting provider.",
-    impactSummary:
-      "hPanel unreachable, WordPress sites show database connection errors.",
-    keyComponents: [
-      "hPanel Control",
-      "Cloud VPS",
-      "Shared Hosting",
-      "Nameservers",
-    ],
-    commonErrorCodes: [
-      "Error Establishing a Database Connection",
-      "503 Service Unavailable",
-    ],
-    troubleshootingSteps: [
-      "Check statuspage.hostinger.com.",
-      "Restart MySQL server in hPanel.",
-    ],
+    impactSummary: "hPanel unreachable, WordPress sites show database connection errors.",
+    keyComponents: ["hPanel Control", "Cloud VPS", "Shared Hosting", "Nameservers"],
+    commonErrorCodes: ["Error Establishing a Database Connection", "503 Service Unavailable"],
+    troubleshootingSteps: ["Check statuspage.hostinger.com.", "Restart MySQL server in hPanel."],
     relatedServices: ["digitalocean", "cloudflare"],
   },
   {
@@ -1741,21 +1276,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "cloud-infra",
     domain: "namecheap.com",
     officialStatusUrl: "https://www.namecheap.com/status-updates",
-    description:
-      "Domain name registrar, SSL certificate authority, and shared web host.",
-    impactSummary:
-      "DNS records stop propagating, SSL certificate renewals stall.",
-    keyComponents: [
-      "BasicDNS",
-      "PremiumDNS",
-      "SSL Reseller API",
-      "cPanel Hosting",
-    ],
+    description: "Domain name registrar, SSL certificate authority, and shared web host.",
+    impactSummary: "DNS records stop propagating, SSL certificate renewals stall.",
+    keyComponents: ["BasicDNS", "PremiumDNS", "SSL Reseller API", "cPanel Hosting"],
     commonErrorCodes: ["DNS_PROBE_FINISHED_NXDOMAIN", "SSL Handshake Failed"],
-    troubleshootingSteps: [
-      "Check Namecheap status updates.",
-      "Switch to Cloudflare DNS.",
-    ],
+    troubleshootingSteps: ["Check Namecheap status updates.", "Switch to Cloudflare DNS."],
     relatedServices: ["cloudflare", "godaddy"],
   },
   {
@@ -1764,10 +1289,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "cloud-infra",
     domain: "godaddy.com",
     officialStatusUrl: "https://status.godaddy.com",
-    description:
-      "Domain registrar and hosting company managing tens of millions of domains.",
-    impactSummary:
-      "DNS nameservers timeout, domain management dashboard unreachable.",
+    description: "Domain registrar and hosting company managing tens of millions of domains.",
+    impactSummary: "DNS nameservers timeout, domain management dashboard unreachable.",
     keyComponents: ["Standard DNS", "Domain Portfolio API", "Hosting Manager"],
     commonErrorCodes: ["SERVFAIL", "DNS Timeout", "500 Internal Server Error"],
     troubleshootingSteps: [
@@ -1791,14 +1314,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Functions Runtime",
       "Preview Deployments",
     ],
-    commonErrorCodes: [
-      "Error 1000: DNS points to prohibited IP",
-      "520 Unknown Error",
-    ],
-    troubleshootingSteps: [
-      "Check Cloudflare status.",
-      "Retry deployment in dashboard.",
-    ],
+    commonErrorCodes: ["Error 1000: DNS points to prohibited IP", "520 Unknown Error"],
+    troubleshootingSteps: ["Check Cloudflare status.", "Retry deployment in dashboard."],
     relatedServices: ["cloudflare", "vercel", "netlify"],
   },
   {
@@ -1835,8 +1352,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "cloud-infra",
     domain: "aws.amazon.com/lambda",
     officialStatusUrl: "https://health.aws.amazon.com",
-    description:
-      "Serverless event-driven compute service that runs code in response to events.",
+    description: "Serverless event-driven compute service that runs code in response to events.",
     impactSummary:
       "Concurrent executions throttle with 429, cold start latencies spike to 10+ seconds.",
     keyComponents: [
@@ -1862,15 +1378,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "cloud-infra",
     domain: "aws.amazon.com/s3",
     officialStatusUrl: "https://health.aws.amazon.com",
-    description:
-      "Object storage built to retrieve any amount of data from anywhere.",
-    impactSummary:
-      "503 SlowDown errors on heavy prefix writes, public bucket assets fail to load.",
-    keyComponents: [
-      "REST Object API",
-      "S3 Transfer Acceleration",
-      "Cross-Region Replication",
-    ],
+    description: "Object storage built to retrieve any amount of data from anywhere.",
+    impactSummary: "503 SlowDown errors on heavy prefix writes, public bucket assets fail to load.",
+    keyComponents: ["REST Object API", "S3 Transfer Acceleration", "Cross-Region Replication"],
     commonErrorCodes: ["503 SlowDown", "500 InternalError", "AccessDenied"],
     troubleshootingSteps: [
       "Hash object key prefixes to distribute partitions.",
@@ -1928,15 +1438,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "PayPal Checkout JS SDK",
       "Braintree Gateway",
     ],
-    commonErrorCodes: [
-      "500 INTERNAL_SERVER_ERROR",
-      "UNPROCESSABLE_ENTITY",
-      "504 GATEWAY_TIMEOUT",
-    ],
-    troubleshootingSteps: [
-      "Check paypal-status.com.",
-      "Verify API access token expiration.",
-    ],
+    commonErrorCodes: ["500 INTERNAL_SERVER_ERROR", "UNPROCESSABLE_ENTITY", "504 GATEWAY_TIMEOUT"],
+    troubleshootingSteps: ["Check paypal-status.com.", "Verify API access token expiration."],
     relatedServices: ["stripe", "braintree", "adyen"],
     featured: true,
   },
@@ -1985,11 +1488,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Auth / Balance API",
       "Institutions Service",
     ],
-    commonErrorCodes: [
-      "ITEM_LOGIN_REQUIRED",
-      "INSTITUTION_DOWN",
-      "500 INTERNAL_SERVER_ERROR",
-    ],
+    commonErrorCodes: ["ITEM_LOGIN_REQUIRED", "INSTITUTION_DOWN", "500 INTERNAL_SERVER_ERROR"],
     troubleshootingSteps: [
       "Check status.plaid.com for individual bank connection health (Chase, BoA, Wells Fargo).",
       "Inspect Link error codes.",
@@ -2014,10 +1513,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Webhook Gateway",
     ],
     commonErrorCodes: ["500 Internal Error", "502 Bad Gateway"],
-    troubleshootingSteps: [
-      "Check paddle.statuspage.io.",
-      "Verify simulation test webhooks.",
-    ],
+    troubleshootingSteps: ["Check paddle.statuspage.io.", "Verify simulation test webhooks."],
     relatedServices: ["stripe", "lemon-squeezy"],
   },
   {
@@ -2026,10 +1522,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "payments-fintech",
     domain: "lemonsqueezy.com",
     officialStatusUrl: "https://status.lemonsqueezy.com",
-    description:
-      "Merchant of Record for digital products and SaaS software billing.",
-    impactSummary:
-      "Checkout overlays fail to open, license key validation APIs return 500.",
+    description: "Merchant of Record for digital products and SaaS software billing.",
+    impactSummary: "Checkout overlays fail to open, license key validation APIs return 500.",
     keyComponents: [
       "Lemon.js Checkout",
       "License Key Engine",
@@ -2051,19 +1545,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://www.issquareup.com",
     description:
       "Financial services and mobile payment company providing point-of-sale and developer payment APIs.",
-    impactSummary:
-      "In-person terminal payments drop offline, Web Payments SDK tokenization fails.",
-    keyComponents: [
-      "Payments API",
-      "Terminal API",
-      "Web Payments SDK",
-      "Inventory Management",
-    ],
-    commonErrorCodes: [
-      "GENERIC_DECLINE",
-      "500 INTERNAL_SERVER_ERROR",
-      "GATEWAY_TIMEOUT",
-    ],
+    impactSummary: "In-person terminal payments drop offline, Web Payments SDK tokenization fails.",
+    keyComponents: ["Payments API", "Terminal API", "Web Payments SDK", "Inventory Management"],
+    commonErrorCodes: ["GENERIC_DECLINE", "500 INTERNAL_SERVER_ERROR", "GATEWAY_TIMEOUT"],
     troubleshootingSteps: [
       "Check issquareup.com.",
       "Enable offline payment mode on Square Terminal hardware.",
@@ -2080,12 +1564,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Omnichannel global payment company offering gateway, risk management, and card issuing.",
     impactSummary:
       "High-volume enterprise transactions reject, 3D Secure verification flows time out.",
-    keyComponents: [
-      "Checkout API",
-      "3D Secure 2 Engine",
-      "Customer Area Portal",
-      "POS Terminals",
-    ],
+    keyComponents: ["Checkout API", "3D Secure 2 Engine", "Customer Area Portal", "POS Terminals"],
     commonErrorCodes: ["HTTP 500", "Refused - 3D Secure error"],
     troubleshootingSteps: [
       "Check status.adyen.com.",
@@ -2099,16 +1578,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "payments-fintech",
     domain: "braintreepayments.com",
     officialStatusUrl: "https://status.braintreepayments.com",
-    description:
-      "PayPal service specializing in web and mobile payment systems for e-commerce.",
-    impactSummary:
-      "Credit card tokenization fails, Apple Pay / Google Pay sheets error out.",
-    keyComponents: [
-      "GraphQL API",
-      "Drop-in UI SDK",
-      "Dispute Management",
-      "Fraud Protection",
-    ],
+    description: "PayPal service specializing in web and mobile payment systems for e-commerce.",
+    impactSummary: "Credit card tokenization fails, Apple Pay / Google Pay sheets error out.",
+    keyComponents: ["GraphQL API", "Drop-in UI SDK", "Dispute Management", "Fraud Protection"],
     commonErrorCodes: ["500 Internal Server Error", "Gateway Rejected"],
     troubleshootingSteps: [
       "Check status.braintreepayments.com.",
@@ -2124,19 +1596,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.wise.com",
     description:
       "Cross-border international money transfer service and multi-currency account API.",
-    impactSummary:
-      "International payouts freeze, FX exchange rate quote API returns 500.",
-    keyComponents: [
-      "Payouts API",
-      "Profiles API",
-      "FX Rates Engine",
-      "Webhooks",
-    ],
+    impactSummary: "International payouts freeze, FX exchange rate quote API returns 500.",
+    keyComponents: ["Payouts API", "Profiles API", "FX Rates Engine", "Webhooks"],
     commonErrorCodes: ["500 Server Error", "429 Rate Limit"],
-    troubleshootingSteps: [
-      "Check status.wise.com.",
-      "Verify API key certificate.",
-    ],
+    troubleshootingSteps: ["Check status.wise.com.", "Verify API key certificate."],
     relatedServices: ["stripe", "revolut"],
   },
   {
@@ -2154,15 +1617,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Sign-in with Coinbase",
       "WebSocket Market Feed",
     ],
-    commonErrorCodes: [
-      "503 Service Unavailable",
-      "500 Internal Error",
-      "Rate limit exceeded",
-    ],
-    troubleshootingSteps: [
-      "Check status.coinbase.com.",
-      "Inspect WebSocket heartbeat messages.",
-    ],
+    commonErrorCodes: ["503 Service Unavailable", "500 Internal Error", "Rate limit exceeded"],
+    troubleshootingSteps: ["Check status.coinbase.com.", "Inspect WebSocket heartbeat messages."],
     relatedServices: ["binance", "stripe", "alchemy"],
   },
   {
@@ -2173,8 +1629,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.circle.com",
     description:
       "Issuer of USDC and euro-backed stablecoins with programmable wallet and payout APIs.",
-    impactSummary:
-      "Programmable wallet transactions stall, stablecoin mint/burn APIs fail.",
+    impactSummary: "Programmable wallet transactions stall, stablecoin mint/burn APIs fail.",
     keyComponents: [
       "Programmable Wallets API",
       "Core Payouts API",
@@ -2226,10 +1681,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "AP Automation",
     ],
     commonErrorCodes: ["500 Internal Error", "502 Bad Gateway"],
-    troubleshootingSteps: [
-      "Check status.ramp.com.",
-      "Review accounting mapping logs.",
-    ],
+    troubleshootingSteps: ["Check status.ramp.com.", "Review accounting mapping logs."],
     relatedServices: ["brex", "mercury"],
   },
   {
@@ -2238,8 +1690,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "payments-fintech",
     domain: "mercury.com",
     officialStatusUrl: "https://status.mercury.com",
-    description:
-      "Fintech banking platform built for startups and technology companies.",
+    description: "Fintech banking platform built for startups and technology companies.",
     impactSummary:
       "Wire transfer dispatches delay, automated API payment scripts fail authentication.",
     keyComponents: [
@@ -2261,10 +1712,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "payments-fintech",
     domain: "gusto.com",
     officialStatusUrl: "https://status.gusto.com",
-    description:
-      "Cloud-based payroll, benefits, and human resource management software.",
-    impactSummary:
-      "Direct deposit payroll runs fail, Embedded Payroll API calls error.",
+    description: "Cloud-based payroll, benefits, and human resource management software.",
+    impactSummary: "Direct deposit payroll runs fail, Embedded Payroll API calls error.",
     keyComponents: [
       "Embedded Payroll API",
       "Employee Onboarding",
@@ -2272,10 +1721,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Time Tracking",
     ],
     commonErrorCodes: ["500 Internal Server Error", "422 Unprocessable Entity"],
-    troubleshootingSteps: [
-      "Check status.gusto.com.",
-      "Review payroll run deadlines.",
-    ],
+    troubleshootingSteps: ["Check status.gusto.com.", "Review payroll run deadlines."],
     relatedServices: ["rippling", "plaid"],
   },
   {
@@ -2284,21 +1730,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "payments-fintech",
     domain: "rippling.com",
     officialStatusUrl: "https://status.rippling.com",
-    description:
-      "Workforce management system unifying HR, IT, and Finance across businesses.",
-    impactSummary:
-      "Automated app provisioning halts, single sign-on (SSO) logins fail.",
-    keyComponents: [
-      "Unified HRIS",
-      "IT App Provisioning",
-      "Custom App API",
-      "Payroll Engine",
-    ],
+    description: "Workforce management system unifying HR, IT, and Finance across businesses.",
+    impactSummary: "Automated app provisioning halts, single sign-on (SSO) logins fail.",
+    keyComponents: ["Unified HRIS", "IT App Provisioning", "Custom App API", "Payroll Engine"],
     commonErrorCodes: ["500 Server Error", "504 Timeout"],
-    troubleshootingSteps: [
-      "Check status.rippling.com.",
-      "Check IDP metadata config.",
-    ],
+    troubleshootingSteps: ["Check status.rippling.com.", "Check IDP metadata config."],
     relatedServices: ["gusto", "okta"],
   },
   {
@@ -2309,8 +1745,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.authorize.net",
     description:
       "Visa payment gateway service enabling merchants to accept credit card and electronic check payments.",
-    impactSummary:
-      "Legacy merchant checkout portals throw E00001 general error.",
+    impactSummary: "Legacy merchant checkout portals throw E00001 general error.",
     keyComponents: [
       "AIM / CIM API",
       "Webhooks Service",
@@ -2330,20 +1765,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "payments-fintech",
     domain: "klarna.com",
     officialStatusUrl: "https://status.klarna.com",
-    description:
-      "Buy now, pay later (BNPL) financial services provider for online shopping.",
-    impactSummary:
-      "Klarna payment widgets fail to render in e-commerce checkouts.",
-    keyComponents: [
-      "Payments API",
-      "Klarna Checkout (KCO)",
-      "Order Management API",
-    ],
+    description: "Buy now, pay later (BNPL) financial services provider for online shopping.",
+    impactSummary: "Klarna payment widgets fail to render in e-commerce checkouts.",
+    keyComponents: ["Payments API", "Klarna Checkout (KCO)", "Order Management API"],
     commonErrorCodes: ["500 Internal Server Error", "BAD_REQUEST"],
-    troubleshootingSteps: [
-      "Check status.klarna.com.",
-      "Verify client-side SDK version.",
-    ],
+    troubleshootingSteps: ["Check status.klarna.com.", "Verify client-side SDK version."],
     relatedServices: ["afterpay", "stripe", "shopify"],
   },
   {
@@ -2352,16 +1778,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "payments-fintech",
     domain: "afterpay.com",
     officialStatusUrl: "https://status.afterpay.com",
-    description:
-      "Buy now, pay later platform operating across Australia, US, UK, and Canada.",
-    impactSummary:
-      "Installment plan calculation errors, checkout confirmation loops.",
+    description: "Buy now, pay later platform operating across Australia, US, UK, and Canada.",
+    impactSummary: "Installment plan calculation errors, checkout confirmation loops.",
     keyComponents: ["Online Checkout API", "In-Store SDK", "Merchant Portal"],
     commonErrorCodes: ["500 Server Error", "504 Gateway Timeout"],
-    troubleshootingSteps: [
-      "Check status.afterpay.com.",
-      "Inspect checkout payload parameters.",
-    ],
+    troubleshootingSteps: ["Check status.afterpay.com.", "Inspect checkout payload parameters."],
     relatedServices: ["klarna", "square", "stripe"],
   },
   {
@@ -2372,18 +1793,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://www.revolut.com/system-status",
     description:
       "Global neo-bank providing business accounts, corporate cards, and merchant payments.",
-    impactSummary:
-      "Merchant API card payments fail, Open Banking API connections disconnect.",
-    keyComponents: [
-      "Merchant API",
-      "Business Open Banking API",
-      "Card Processing",
-    ],
+    impactSummary: "Merchant API card payments fail, Open Banking API connections disconnect.",
+    keyComponents: ["Merchant API", "Business Open Banking API", "Card Processing"],
     commonErrorCodes: ["500 Internal Server Error", "401 Unauthorized"],
-    troubleshootingSteps: [
-      "Check Revolut system status.",
-      "Refresh business API tokens.",
-    ],
+    troubleshootingSteps: ["Check Revolut system status.", "Refresh business API tokens."],
     relatedServices: ["wise", "stripe"],
   },
   {
@@ -2392,16 +1805,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "payments-fintech",
     domain: "chargebee.com",
     officialStatusUrl: "https://status.chargebee.com",
-    description:
-      "Subscription billing and revenue management platform for SaaS enterprises.",
-    impactSummary:
-      "Subscription renewal cron cycles fail to charge, customer portal errors.",
-    keyComponents: [
-      "Billing Engine",
-      "Hosted Checkout",
-      "Revenue Recognition",
-      "Webhook Pipeline",
-    ],
+    description: "Subscription billing and revenue management platform for SaaS enterprises.",
+    impactSummary: "Subscription renewal cron cycles fail to charge, customer portal errors.",
+    keyComponents: ["Billing Engine", "Hosted Checkout", "Revenue Recognition", "Webhook Pipeline"],
     commonErrorCodes: ["500 Internal Server Error", "429 Rate Limit"],
     troubleshootingSteps: [
       "Check status.chargebee.com.",
@@ -2415,20 +1821,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "payments-fintech",
     domain: "recurly.com",
     officialStatusUrl: "https://status.recurly.com",
-    description:
-      "Enterprise subscription management and recurring billing platform.",
-    impactSummary:
-      "Dunning retries stop running, invoice PDFs fail to generate.",
-    keyComponents: [
-      "Core Billing API",
-      "Recurly.js",
-      "Payment Gateway Routing",
-    ],
+    description: "Enterprise subscription management and recurring billing platform.",
+    impactSummary: "Dunning retries stop running, invoice PDFs fail to generate.",
+    keyComponents: ["Core Billing API", "Recurly.js", "Payment Gateway Routing"],
     commonErrorCodes: ["500 Server Error", "503 Unavailable"],
-    troubleshootingSteps: [
-      "Check status.recurly.com.",
-      "Verify API version in request header.",
-    ],
+    troubleshootingSteps: ["Check status.recurly.com.", "Verify API version in request header."],
     relatedServices: ["chargebee", "stripe"],
   },
   {
@@ -2498,8 +1895,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "devtools-git",
     domain: "hub.docker.com",
     officialStatusUrl: "https://www.dockerstatus.com",
-    description:
-      "Container image repository and registry for Docker and Kubernetes workloads.",
+    description: "Container image repository and registry for Docker and Kubernetes workloads.",
     impactSummary:
       "docker pull and docker build commands fail with rate limit (toomanyrequests) or 503 errors in production pipelines.",
     keyComponents: [
@@ -2528,8 +1924,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     domain: "npmjs.com",
     officialStatusUrl: "https://status.npmjs.org",
     apiEndpoint: "https://registry.npmjs.org",
-    description:
-      "Default package manager for Node.js and world's largest software registry.",
+    description: "Default package manager for Node.js and world's largest software registry.",
     impactSummary:
       "npm install, bun install, and pnpm install fail in local development and CI/CD pipelines.",
     keyComponents: [
@@ -2561,16 +1956,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     description: "Official third-party software repository for Python.",
     impactSummary:
       "pip install and uv pip sync commands fail across Python deployments and Docker builds.",
-    keyComponents: [
-      "PyPI Simple Index",
-      "Upload API (Twine)",
-      "PyPI Search Engine",
-    ],
-    commonErrorCodes: [
-      "503 Service Unavailable",
-      "502 Bad Gateway",
-      "HTTP 500",
-    ],
+    keyComponents: ["PyPI Simple Index", "Upload API (Twine)", "PyPI Search Engine"],
+    commonErrorCodes: ["503 Service Unavailable", "502 Bad Gateway", "HTTP 500"],
     troubleshootingSteps: [
       "Check status.python.org.",
       "Use pip cache or mirror like pip install --index-url https://mirrors.aliyun.com/pypi/simple/.",
@@ -2585,14 +1972,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     domain: "crates.io",
     officialStatusUrl: "https://status.crates.io",
     description: "Rust community's package registry for cargo dependencies.",
-    impactSummary:
-      "cargo build and cargo fetch fail to download crate dependencies.",
+    impactSummary: "cargo build and cargo fetch fail to download crate dependencies.",
     keyComponents: ["Cargo Sparse Index", "Crate Download CDN", "Publish API"],
     commonErrorCodes: ["503 Service Unavailable", "failed to fetch crate"],
-    troubleshootingSteps: [
-      "Check status.crates.io.",
-      "Verify cargo vendor cache.",
-    ],
+    troubleshootingSteps: ["Check status.crates.io.", "Verify cargo vendor cache."],
     relatedServices: ["npm", "pypi", "github"],
   },
   {
@@ -2611,11 +1994,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Log Management",
       "Alerting & Monitor Evaluation",
     ],
-    commonErrorCodes: [
-      "500 Internal Error",
-      "504 Gateway Timeout",
-      "Agent Forwarder Error",
-    ],
+    commonErrorCodes: ["500 Internal Error", "504 Gateway Timeout", "Agent Forwarder Error"],
     troubleshootingSteps: [
       "Check status.datadoghq.com (check us1, us3, us5, eu1 datacenter).",
       "Verify Datadog Agent buffering.",
@@ -2629,8 +2008,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "devtools-git",
     domain: "sentry.io",
     officialStatusUrl: "https://status.sentry.io",
-    description:
-      "Application performance monitoring and error tracking software for developers.",
+    description: "Application performance monitoring and error tracking software for developers.",
     impactSummary:
       "Error reports drop, release health telemetry stops updating, alert notifications pause.",
     keyComponents: [
@@ -2639,11 +2017,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Performance Monitoring",
       "Session Replay",
     ],
-    commonErrorCodes: [
-      "429 Too Many Requests",
-      "503 Service Unavailable",
-      "500 Server Error",
-    ],
+    commonErrorCodes: ["429 Too Many Requests", "503 Service Unavailable", "500 Server Error"],
     troubleshootingSteps: [
       "Check status.sentry.io.",
       "Configure client-side sampleRate to reduce event volume.",
@@ -2667,11 +2041,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Session Recording",
       "Web Analytics",
     ],
-    commonErrorCodes: [
-      "500 Server Error",
-      "504 Gateway Timeout",
-      "429 Rate Limit",
-    ],
+    commonErrorCodes: ["500 Server Error", "504 Gateway Timeout", "429 Rate Limit"],
     troubleshootingSteps: [
       "Check status.posthog.com.",
       "Ensure local feature flag defaults are configured in code.",
@@ -2686,14 +2056,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.betterstack.com",
     description:
       "Uptime monitoring, incident management, on-call scheduling, and structured log management.",
-    impactSummary:
-      "Public status pages fail to load, on-call escalation alerts fail to trigger.",
-    keyComponents: [
-      "Uptime Probes",
-      "Logtail Logging",
-      "Status Pages",
-      "Incident Escalation",
-    ],
+    impactSummary: "Public status pages fail to load, on-call escalation alerts fail to trigger.",
+    keyComponents: ["Uptime Probes", "Logtail Logging", "Status Pages", "Incident Escalation"],
     commonErrorCodes: ["502 Bad Gateway", "500 Internal Error"],
     troubleshootingSteps: [
       "Check status.betterstack.com.",
@@ -2707,10 +2071,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "devtools-git",
     domain: "checklyhq.com",
     officialStatusUrl: "https://status.checklyhq.com",
-    description:
-      "Code-first synthetic monitoring and Playwright E2E testing platform.",
-    impactSummary:
-      "Synthetic checks fail to trigger, automated alert notifications drop.",
+    description: "Code-first synthetic monitoring and Playwright E2E testing platform.",
+    impactSummary: "Synthetic checks fail to trigger, automated alert notifications drop.",
     keyComponents: [
       "Playwright Runner Nodes",
       "API Check Runtime",
@@ -2731,8 +2093,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     domain: "circleci.com",
     officialStatusUrl: "https://status.circleci.com",
     description: "Continuous integration and continuous delivery platform.",
-    impactSummary:
-      "Build pipelines queue indefinitely, Docker executor spin-up hangs.",
+    impactSummary: "Build pipelines queue indefinitely, Docker executor spin-up hangs.",
     keyComponents: [
       "Docker / Machine Runners",
       "Pipeline API",
@@ -2740,10 +2101,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Artifacts Storage",
     ],
     commonErrorCodes: ["500 Internal Server Error", "Runner Connection Failed"],
-    troubleshootingSteps: [
-      "Check status.circleci.com.",
-      "Rerun job with SSH to diagnose.",
-    ],
+    troubleshootingSteps: ["Check status.circleci.com.", "Rerun job with SSH to diagnose."],
     relatedServices: ["github", "gitlab"],
   },
   {
@@ -2753,19 +2111,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     domain: "bitbucket.org",
     officialStatusUrl: "https://bitbucket.status.atlassian.com",
     description: "Git code management and CI/CD solution by Atlassian.",
-    impactSummary:
-      "Git SSH access disconnects, Bitbucket Pipelines fail to start.",
-    keyComponents: [
-      "Git Hosting",
-      "Bitbucket Pipelines",
-      "Pull Requests",
-      "Jira Integration",
-    ],
+    impactSummary: "Git SSH access disconnects, Bitbucket Pipelines fail to start.",
+    keyComponents: ["Git Hosting", "Bitbucket Pipelines", "Pull Requests", "Jira Integration"],
     commonErrorCodes: ["500 Internal Error", "502 Bad Gateway"],
-    troubleshootingSteps: [
-      "Check status.atlassian.com.",
-      "Verify Atlassian account token.",
-    ],
+    troubleshootingSteps: ["Check status.atlassian.com.", "Verify Atlassian account token."],
     relatedServices: ["github", "gitlab", "jira"],
   },
   {
@@ -2776,14 +2125,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.snyk.io",
     description:
       "Developer security platform for scanning vulnerabilities in code, dependencies, containers, and IaC.",
-    impactSummary:
-      "CI security gate jobs fail or block release merges with 500 error.",
-    keyComponents: [
-      "Snyk Open Source Scanner",
-      "Snyk Container",
-      "Snyk Code SAST",
-      "PR Fix Bot",
-    ],
+    impactSummary: "CI security gate jobs fail or block release merges with 500 error.",
+    keyComponents: ["Snyk Open Source Scanner", "Snyk Container", "Snyk Code SAST", "PR Fix Bot"],
     commonErrorCodes: ["500 Internal Server Error", "504 Gateway Timeout"],
     troubleshootingSteps: [
       "Check status.snyk.io.",
@@ -2797,16 +2140,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "devtools-git",
     domain: "sonarcloud.io",
     officialStatusUrl: "https://status.sonarcloud.io",
-    description:
-      "Cloud-based code quality and security analysis tool for clean code.",
-    impactSummary:
-      "Quality Gate checks fail on pull requests, blocking merges.",
+    description: "Cloud-based code quality and security analysis tool for clean code.",
+    impactSummary: "Quality Gate checks fail on pull requests, blocking merges.",
     keyComponents: ["Analysis Engine", "Quality Gate API", "Web UI"],
     commonErrorCodes: ["500 Server Error", "Quality Gate Timed Out"],
-    troubleshootingSteps: [
-      "Check status.sonarcloud.io.",
-      "Verify sonar-project.properties.",
-    ],
+    troubleshootingSteps: ["Check status.sonarcloud.io.", "Verify sonar-project.properties."],
     relatedServices: ["github", "gitlab"],
   },
   {
@@ -2825,11 +2163,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Loki Logs Ingest",
       "Tempo Traces",
     ],
-    commonErrorCodes: [
-      "503 Service Unavailable",
-      "500 Server Error",
-      "429 Rate Limit",
-    ],
+    commonErrorCodes: ["503 Service Unavailable", "500 Server Error", "429 Rate Limit"],
     troubleshootingSteps: [
       "Check status.grafana.com.",
       "Verify Prometheus remote_write buffer size.",
@@ -2844,19 +2178,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.newrelic.com",
     description:
       "Full-stack observability platform for engineers to monitor and debug their software stack.",
-    impactSummary:
-      "NRQL queries fail, agent data ingestion errors, alert channels do not fire.",
-    keyComponents: [
-      "Telemetry Data Platform",
-      "APM Probes",
-      "Synthetics Runner",
-      "Alerts & AI",
-    ],
+    impactSummary: "NRQL queries fail, agent data ingestion errors, alert channels do not fire.",
+    keyComponents: ["Telemetry Data Platform", "APM Probes", "Synthetics Runner", "Alerts & AI"],
     commonErrorCodes: ["500 Internal Server Error", "503 Service Unavailable"],
-    troubleshootingSteps: [
-      "Check status.newrelic.com.",
-      "Inspect newrelic-agent logs on host.",
-    ],
+    troubleshootingSteps: ["Check status.newrelic.com.", "Inspect newrelic-agent logs on host."],
     relatedServices: ["datadog", "grafana-cloud"],
   },
   {
@@ -2867,19 +2192,14 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.segment.com",
     description:
       "Customer data platform (CDP) to collect, clean, and activate customer event data.",
-    impactSummary:
-      "analytics.track calls drop, downstream data warehouse integrations stall.",
+    impactSummary: "analytics.track calls drop, downstream data warehouse integrations stall.",
     keyComponents: [
       "Tracking API",
       "Destination Sync Pipelines",
       "Protocols Schema Engine",
       "Personas Identity",
     ],
-    commonErrorCodes: [
-      "500 Server Error",
-      "504 Gateway Timeout",
-      "400 Bad Request",
-    ],
+    commonErrorCodes: ["500 Server Error", "504 Gateway Timeout", "400 Bad Request"],
     troubleshootingSteps: [
       "Check status.segment.com.",
       "Verify client-side analytics.js queue buffer.",
@@ -2894,19 +2214,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.mixpanel.com",
     description:
       "Product analytics tool to understand user behavior, funnels, retention, and conversion.",
-    impactSummary:
-      "Live funnel reports fail to compute, ingestion API returns 503.",
-    keyComponents: [
-      "Ingestion API",
-      "Reports Engine",
-      "JQL / Query API",
-      "Group Analytics",
-    ],
+    impactSummary: "Live funnel reports fail to compute, ingestion API returns 503.",
+    keyComponents: ["Ingestion API", "Reports Engine", "JQL / Query API", "Group Analytics"],
     commonErrorCodes: ["503 Service Unavailable", "500 Internal Error"],
-    troubleshootingSteps: [
-      "Check status.mixpanel.com.",
-      "Verify token and project ID.",
-    ],
+    troubleshootingSteps: ["Check status.mixpanel.com.", "Verify token and project ID."],
     relatedServices: ["posthog", "segment", "amplitude"],
   },
   {
@@ -2917,19 +2228,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.amplitude.com",
     description:
       "Digital analytics platform helping companies build better products through deep behavioral data.",
-    impactSummary:
-      "Behavioral cohort syncs fail, dashboard charts throw network error.",
-    keyComponents: [
-      "HTTP API v2",
-      "Charts & Dashboards",
-      "Experiment Engine",
-      "Data Governance",
-    ],
+    impactSummary: "Behavioral cohort syncs fail, dashboard charts throw network error.",
+    keyComponents: ["HTTP API v2", "Charts & Dashboards", "Experiment Engine", "Data Governance"],
     commonErrorCodes: ["500 Server Error", "429 Too Many Requests"],
-    troubleshootingSteps: [
-      "Check status.amplitude.com.",
-      "Inspect SDK batch buffer settings.",
-    ],
+    troubleshootingSteps: ["Check status.amplitude.com.", "Inspect SDK batch buffer settings."],
     relatedServices: ["mixpanel", "posthog"],
   },
   {
@@ -2961,10 +2263,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "devtools-git",
     domain: "statsig.com",
     officialStatusUrl: "https://status.statsig.com",
-    description:
-      "Modern product experimentation, feature gating, and analytics platform.",
-    impactSummary:
-      "Dynamic config evaluation delays, exposure events fail to log.",
+    description: "Modern product experimentation, feature gating, and analytics platform.",
+    impactSummary: "Dynamic config evaluation delays, exposure events fail to log.",
     keyComponents: [
       "Feature Gates",
       "Dynamic Configs",
@@ -2984,16 +2284,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "devtools-git",
     domain: "buildkite.com",
     officialStatusUrl: "https://www.buildkitestatus.com",
-    description:
-      "Fast, secure, and scalable CI/CD platform with hybrid self-hosted runners.",
-    impactSummary:
-      "Build steps fail to dispatch to agent clusters, webhooks drop.",
-    keyComponents: [
-      "Agent Dispatcher",
-      "Build Pipelines",
-      "Test Analytics",
-      "Package Registry",
-    ],
+    description: "Fast, secure, and scalable CI/CD platform with hybrid self-hosted runners.",
+    impactSummary: "Build steps fail to dispatch to agent clusters, webhooks drop.",
+    keyComponents: ["Agent Dispatcher", "Build Pipelines", "Test Analytics", "Package Registry"],
     commonErrorCodes: ["500 Server Error", "502 Bad Gateway"],
     troubleshootingSteps: [
       "Check buildkitestatus.com.",
@@ -3007,15 +2300,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "devtools-git",
     domain: "travis-ci.com",
     officialStatusUrl: "https://www.traviscistatus.com",
-    description:
-      "Hosted continuous integration service used to build and test software projects.",
+    description: "Hosted continuous integration service used to build and test software projects.",
     impactSummary: "Build queues hang, VM spin-ups timeout.",
     keyComponents: ["Build Engine", "Container Runners", "macOS VM Runners"],
     commonErrorCodes: ["500 Internal Error", "Job Cancelled"],
-    troubleshootingSteps: [
-      "Check traviscistatus.com.",
-      "Switch to GitHub Actions.",
-    ],
+    troubleshootingSteps: ["Check traviscistatus.com.", "Switch to GitHub Actions."],
     relatedServices: ["github", "circleci"],
   },
   {
@@ -3025,17 +2314,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     domain: "brew.sh",
     officialStatusUrl: "https://status.brew.sh",
     description: "The Missing Package Manager for macOS (and Linux).",
-    impactSummary:
-      "brew install and brew update fail with bottle download 403/500 errors.",
-    keyComponents: [
-      "Bottle CDN (GHCR)",
-      "Core Tap Git Repository",
-      "Analytics API",
-    ],
-    commonErrorCodes: [
-      "Error: Failed to download resource",
-      "503 Service Unavailable",
-    ],
+    impactSummary: "brew install and brew update fail with bottle download 403/500 errors.",
+    keyComponents: ["Bottle CDN (GHCR)", "Core Tap Git Repository", "Analytics API"],
+    commonErrorCodes: ["Error: Failed to download resource", "503 Service Unavailable"],
     troubleshootingSteps: ["Check status.brew.sh.", "Run brew update-reset."],
     relatedServices: ["github", "docker-hub"],
   },
@@ -3045,16 +2326,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "devtools-git",
     domain: "jsdelivr.com",
     officialStatusUrl: "https://status.jsdelivr.com",
-    description:
-      "Free public CDN for open-source files, npm packages, and GitHub releases.",
-    impactSummary:
-      "Frontend scripts loaded via cdn.jsdelivr.net fail to execute in browser.",
+    description: "Free public CDN for open-source files, npm packages, and GitHub releases.",
+    impactSummary: "Frontend scripts loaded via cdn.jsdelivr.net fail to execute in browser.",
     keyComponents: ["NPM Multi-CDN", "GitHub Release Mirror", "Purge API"],
-    commonErrorCodes: [
-      "503 Service Unavailable",
-      "502 Bad Gateway",
-      "404 Not Found",
-    ],
+    commonErrorCodes: ["503 Service Unavailable", "502 Bad Gateway", "404 Not Found"],
     troubleshootingSteps: [
       "Check status.jsdelivr.com.",
       "Switch script src to unpkg.com or bundle locally.",
@@ -3068,14 +2343,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     domain: "unpkg.com",
     officialStatusUrl: "https://status.unpkg.com",
     description: "Fast, global content delivery network for everything on npm.",
-    impactSummary:
-      "Embedded JS libraries loaded from unpkg.com fail to resolve.",
+    impactSummary: "Embedded JS libraries loaded from unpkg.com fail to resolve.",
     keyComponents: ["NPM Fetch Proxy", "Cloudflare Cache Edge"],
     commonErrorCodes: ["502 Bad Gateway", "504 Gateway Timeout"],
-    troubleshootingSteps: [
-      "Check status.unpkg.com.",
-      "Switch to cdn.jsdelivr.net.",
-    ],
+    troubleshootingSteps: ["Check status.unpkg.com.", "Switch to cdn.jsdelivr.net."],
     relatedServices: ["jsdelivr", "npm"],
   },
   {
@@ -3084,15 +2355,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "devtools-git",
     domain: "cdnjs.com",
     officialStatusUrl: "https://status.cdnjs.com",
-    description:
-      "Free and open-source CDN service trusted by over 12% of all websites.",
+    description: "Free and open-source CDN service trusted by over 12% of all websites.",
     impactSummary: "External stylesheets and JS libraries fail to load.",
     keyComponents: ["CDN Edge", "SRI Hash Registry", "API Catalog"],
     commonErrorCodes: ["503 Unavailable", "502 Bad Gateway"],
-    troubleshootingSteps: [
-      "Check status.cdnjs.com.",
-      "Host dependencies locally.",
-    ],
+    troubleshootingSteps: ["Check status.cdnjs.com.", "Host dependencies locally."],
     relatedServices: ["jsdelivr", "cloudflare"],
   },
   {
@@ -3101,16 +2368,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "devtools-git",
     domain: "nuget.org",
     officialStatusUrl: "https://status.nuget.org",
-    description:
-      "The package manager for .NET and Microsoft software platforms.",
-    impactSummary:
-      "dotnet restore and NuGet package downloads fail in C# / .NET builds.",
+    description: "The package manager for .NET and Microsoft software platforms.",
+    impactSummary: "dotnet restore and NuGet package downloads fail in C# / .NET builds.",
     keyComponents: ["V3 Package Feed", "Gallery Web UI", "Search Service"],
     commonErrorCodes: ["503 Service Unavailable", "500 Internal Server Error"],
-    troubleshootingSteps: [
-      "Check status.nuget.org.",
-      "Verify NuGet local package cache.",
-    ],
+    troubleshootingSteps: ["Check status.nuget.org.", "Verify NuGet local package cache."],
     relatedServices: ["azure", "github"],
   },
   {
@@ -3120,18 +2382,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     domain: "packagist.org",
     officialStatusUrl: "https://status.packagist.org",
     description: "Main Composer repository for PHP packages and libraries.",
-    impactSummary:
-      "composer install and composer update fail across PHP / Laravel deployments.",
-    keyComponents: [
-      "Composer Metadata API",
-      "Package Web UI",
-      "GitHub Webhook Sync",
-    ],
+    impactSummary: "composer install and composer update fail across PHP / Laravel deployments.",
+    keyComponents: ["Composer Metadata API", "Package Web UI", "GitHub Webhook Sync"],
     commonErrorCodes: ["500 Server Error", "504 Timeout"],
-    troubleshootingSteps: [
-      "Check status.packagist.org.",
-      "Use Composer mirror.",
-    ],
+    troubleshootingSteps: ["Check status.packagist.org.", "Use Composer mirror."],
     relatedServices: ["github", "npm"],
   },
   {
@@ -3141,14 +2395,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     domain: "rubygems.org",
     officialStatusUrl: "https://status.rubygems.org",
     description: "Ruby community's gem hosting service.",
-    impactSummary:
-      "bundle install fails across Ruby on Rails application builds.",
+    impactSummary: "bundle install fails across Ruby on Rails application builds.",
     keyComponents: ["Gem Download Endpoint", "Gemfile Index", "API Push"],
     commonErrorCodes: ["503 Service Unavailable", "500 Server Error"],
-    troubleshootingSteps: [
-      "Check status.rubygems.org.",
-      "Check bundler mirror settings.",
-    ],
+    troubleshootingSteps: ["Check status.rubygems.org.", "Check bundler mirror settings."],
     relatedServices: ["github", "npm"],
   },
   {
@@ -3158,8 +2408,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     domain: "central.sonatype.com",
     officialStatusUrl: "https://status.maven.org",
     description: "Repository of Java, Kotlin, and Scala open source artifacts.",
-    impactSummary:
-      "mvn clean install and gradle build fail to download dependencies.",
+    impactSummary: "mvn clean install and gradle build fail to download dependencies.",
     keyComponents: ["Repository CDN", "OSSRH Staging", "Search API"],
     commonErrorCodes: ["503 Service Unavailable", "500 Internal Error"],
     troubleshootingSteps: [
@@ -3214,11 +2463,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "FAPI (Frontend API)",
       "Webhook Delivery",
     ],
-    commonErrorCodes: [
-      "500 Internal Server Error",
-      "504 Gateway Timeout",
-      "401 Unauthorized",
-    ],
+    commonErrorCodes: ["500 Internal Server Error", "504 Gateway Timeout", "401 Unauthorized"],
     troubleshootingSteps: [
       "Check status.clerk.com for API availability.",
       "Verify publishableKey and secretKey matching in environment variables.",
@@ -3243,11 +2488,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "SAML/OIDC Federation",
       "Lifecycle Management",
     ],
-    commonErrorCodes: [
-      "500 Internal Error",
-      "HTTP 503",
-      "SAML Error: Response Signature Invalid",
-    ],
+    commonErrorCodes: ["500 Internal Error", "HTTP 503", "SAML Error: Response Signature Invalid"],
     troubleshootingSteps: [
       "Check status.okta.com for your specific cell (e.g. US Cell 1, EMEA Cell 1).",
       "Verify SAML certificate expiration.",
@@ -3294,11 +2535,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Browser Extension Sync",
       "Watchtower",
     ],
-    commonErrorCodes: [
-      "500 Server Error",
-      "503 Unavailable",
-      "Connect server unreachable",
-    ],
+    commonErrorCodes: ["500 Server Error", "503 Unavailable", "Connect server unreachable"],
     troubleshootingSteps: [
       "Check status.1password.com.",
       "Restart 1Password Connect Docker container.",
@@ -3313,19 +2550,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.bitwarden.com",
     description:
       "Open source password manager and secrets management platform for individuals and businesses.",
-    impactSummary:
-      "Vault sync fails, Bitwarden Secrets Manager CLI calls return 500.",
-    keyComponents: [
-      "Vault Sync API",
-      "Bitwarden Secrets Manager",
-      "Web Vault",
-      "SSO Connector",
-    ],
+    impactSummary: "Vault sync fails, Bitwarden Secrets Manager CLI calls return 500.",
+    keyComponents: ["Vault Sync API", "Bitwarden Secrets Manager", "Web Vault", "SSO Connector"],
     commonErrorCodes: ["500 Internal Server Error", "502 Bad Gateway"],
-    troubleshootingSteps: [
-      "Check status.bitwarden.com.",
-      "Use offline cached vault locally.",
-    ],
+    troubleshootingSteps: ["Check status.bitwarden.com.", "Use offline cached vault locally."],
     relatedServices: ["1password", "doppler"],
   },
   {
@@ -3336,23 +2564,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.hashicorp.com",
     description:
       "Managed cloud secrets management, encryption as a service, and privileged access control.",
-    impactSummary:
-      "Microservices fail to fetch database credentials and crash on startup.",
-    keyComponents: [
-      "HCP Vault Clusters",
-      "KV Secrets Engine",
-      "Transit Encryption",
-      "PKI Secrets",
-    ],
-    commonErrorCodes: [
-      "500 Internal Error",
-      "503 Vault is sealed",
-      "403 Permission Denied",
-    ],
-    troubleshootingSteps: [
-      "Check status.hashicorp.com.",
-      "Verify Vault unseal state.",
-    ],
+    impactSummary: "Microservices fail to fetch database credentials and crash on startup.",
+    keyComponents: ["HCP Vault Clusters", "KV Secrets Engine", "Transit Encryption", "PKI Secrets"],
+    commonErrorCodes: ["500 Internal Error", "503 Vault is sealed", "403 Permission Denied"],
+    troubleshootingSteps: ["Check status.hashicorp.com.", "Verify Vault unseal state."],
     relatedServices: ["doppler", "infisical", "1password"],
   },
   {
@@ -3363,14 +2578,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.doppler.com",
     description:
       "Universal secrets management platform to sync secrets across environments and CI/CD.",
-    impactSummary:
-      "doppler run commands fail to inject environment variables, deployments fail.",
-    keyComponents: [
-      "Secrets API",
-      "Kubernetes Operator",
-      "Integrations Sync",
-      "CLI Download",
-    ],
+    impactSummary: "doppler run commands fail to inject environment variables, deployments fail.",
+    keyComponents: ["Secrets API", "Kubernetes Operator", "Integrations Sync", "CLI Download"],
     commonErrorCodes: ["500 Internal Server Error", "504 Gateway Timeout"],
     troubleshootingSteps: [
       "Check status.doppler.com.",
@@ -3386,18 +2595,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.infisical.com",
     description:
       "Open source secret management platform to sync secrets across teams and infrastructure.",
-    impactSummary:
-      "Secrets injection fails in Docker containers and Kubernetes clusters.",
-    keyComponents: [
-      "Infisical Cloud API",
-      "Infisical Agent",
-      "Secret Rotation Engine",
-    ],
+    impactSummary: "Secrets injection fails in Docker containers and Kubernetes clusters.",
+    keyComponents: ["Infisical Cloud API", "Infisical Agent", "Secret Rotation Engine"],
     commonErrorCodes: ["500 Server Error", "502 Bad Gateway"],
-    troubleshootingSteps: [
-      "Check status.infisical.com.",
-      "Verify Infisical Agent credentials.",
-    ],
+    troubleshootingSteps: ["Check status.infisical.com.", "Verify Infisical Agent credentials."],
     relatedServices: ["doppler", "hashicorp-vault"],
   },
   {
@@ -3406,20 +2607,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "auth-security",
     domain: "hcaptcha.com",
     officialStatusUrl: "https://status.hcaptcha.com",
-    description:
-      "Privacy-focused bot protection, fraud prevention, and CAPTCHA service.",
+    description: "Privacy-focused bot protection, fraud prevention, and CAPTCHA service.",
     impactSummary:
       "Login and signup forms fail to submit because captcha challenges cannot load or verify.",
-    keyComponents: [
-      "Challenge API",
-      "Siteverify Verification API",
-      "Enterprise Anti-Fraud",
-    ],
-    commonErrorCodes: [
-      "500 Server Error",
-      "invalid-input-secret",
-      "rate-limited",
-    ],
+    keyComponents: ["Challenge API", "Siteverify Verification API", "Enterprise Anti-Fraud"],
+    commonErrorCodes: ["500 Server Error", "invalid-input-secret", "rate-limited"],
     troubleshootingSteps: [
       "Check status.hcaptcha.com.",
       "Verify siteverify endpoint timeout tolerance.",
@@ -3434,13 +2626,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.cloud.google.com",
     description:
       "Bot defense and fraud prevention technology protecting web forms and mobile apps.",
-    impactSummary:
-      "reCAPTCHA v3 scores fail to return, blocking user form submissions.",
-    keyComponents: [
-      "reCAPTCHA Enterprise API",
-      "Client JS Library",
-      "Score Assessment",
-    ],
+    impactSummary: "reCAPTCHA v3 scores fail to return, blocking user form submissions.",
+    keyComponents: ["reCAPTCHA Enterprise API", "Client JS Library", "Score Assessment"],
     commonErrorCodes: ["500 Internal Error", "Timeout connecting to Google"],
     troubleshootingSteps: [
       "Check Google Cloud status.",
@@ -3486,8 +2673,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "databases-storage",
     domain: "neon.tech",
     officialStatusUrl: "https://neonstatus.com",
-    description:
-      "Serverless Postgres with autoscaling, branching, and bottomless storage.",
+    description: "Serverless Postgres with autoscaling, branching, and bottomless storage.",
     impactSummary:
       "Database cold starts hang, read replica branching operations fail, connection pools timeout.",
     keyComponents: [
@@ -3496,11 +2682,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Neon Connection Pooler",
       "Control Plane API",
     ],
-    commonErrorCodes: [
-      "500 Internal Server Error",
-      "Connection Timeout",
-      "Too Many Connections",
-    ],
+    commonErrorCodes: ["500 Internal Server Error", "Connection Timeout", "Too Many Connections"],
     troubleshootingSteps: [
       "Check neonstatus.com for region health.",
       "Use pooled connection string (with -pooler suffix) to avoid connection saturation.",
@@ -3515,21 +2697,15 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "databases-storage",
     domain: "planetscale.com",
     officialStatusUrl: "https://www.planetscalestatus.com",
-    description:
-      "Serverless MySQL platform powered by Vitess with non-blocking schema migrations.",
-    impactSummary:
-      "MySQL queries return 500, deploy requests stall, schema migrations fail.",
+    description: "Serverless MySQL platform powered by Vitess with non-blocking schema migrations.",
+    impactSummary: "MySQL queries return 500, deploy requests stall, schema migrations fail.",
     keyComponents: [
       "Vitess Clusters",
       "Database Branching Engine",
       "PlanetScale Connect",
       "Query Insights",
     ],
-    commonErrorCodes: [
-      "500 Internal Error",
-      "ResourceExhausted",
-      "Connection Refused",
-    ],
+    commonErrorCodes: ["500 Internal Error", "ResourceExhausted", "Connection Refused"],
     troubleshootingSteps: [
       "Check planetscalestatus.com.",
       "Inspect Vitess tablet health and row limit queries.",
@@ -3554,10 +2730,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Turso Cloud CLI",
     ],
     commonErrorCodes: ["500 Internal Server Error", "504 Gateway Timeout"],
-    troubleshootingSteps: [
-      "Check status.turso.tech.",
-      "Verify database sync URL and auth token.",
-    ],
+    troubleshootingSteps: ["Check status.turso.tech.", "Verify database sync URL and auth token."],
     relatedServices: ["supabase", "neon", "upstash"],
   },
   {
@@ -3568,19 +2741,14 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.cloud.mongodb.com",
     description:
       "Fully managed multi-cloud database service for modern applications using document models.",
-    impactSummary:
-      "Document find/insert operations time out, Atlas search indexes freeze.",
+    impactSummary: "Document find/insert operations time out, Atlas search indexes freeze.",
     keyComponents: [
       "Atlas Clusters (M10+)",
       "Atlas Vector Search",
       "Atlas App Services",
       "Serverless Instances",
     ],
-    commonErrorCodes: [
-      "MongoServerSelectionError",
-      "MongoNetworkTimeoutError",
-      "500 Server Error",
-    ],
+    commonErrorCodes: ["MongoServerSelectionError", "MongoNetworkTimeoutError", "500 Server Error"],
     troubleshootingSteps: [
       "Check status.cloud.mongodb.com.",
       "Verify Atlas IP access list allowlist.",
@@ -3604,11 +2772,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Upstash Vector",
       "Upstash Kafka",
     ],
-    commonErrorCodes: [
-      "500 Internal Server Error",
-      "429 Too Many Requests",
-      "504 Gateway Timeout",
-    ],
+    commonErrorCodes: ["500 Internal Server Error", "429 Too Many Requests", "504 Gateway Timeout"],
     troubleshootingSteps: [
       "Check status.upstash.com for Redis or QStash region outages.",
       "Verify UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN in environment variables.",
@@ -3638,10 +2802,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "READONLY You can't write against a read only replica",
       "Connection Refused",
     ],
-    troubleshootingSteps: [
-      "Check status.redis.com.",
-      "Review memory usage and eviction policy.",
-    ],
+    troubleshootingSteps: ["Check status.redis.com.", "Review memory usage and eviction policy."],
     relatedServices: ["upstash", "mongodb-atlas"],
   },
   {
@@ -3681,23 +2842,15 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.convex.dev",
     description:
       "Reactive backend platform for app developers with automatic real-time subscriptions and ACID transactions.",
-    impactSummary:
-      "Real-time reactive query subscriptions freeze, mutation transactions error.",
+    impactSummary: "Real-time reactive query subscriptions freeze, mutation transactions error.",
     keyComponents: [
       "Reactive Query Engine",
       "ACID Mutation Runtime",
       "File Storage",
       "Cron Scheduler",
     ],
-    commonErrorCodes: [
-      "500 Internal Error",
-      "WebSocket Disconnected",
-      "Transaction Conflict",
-    ],
-    troubleshootingSteps: [
-      "Check status.convex.dev.",
-      "Inspect Convex dashboard function logs.",
-    ],
+    commonErrorCodes: ["500 Internal Error", "WebSocket Disconnected", "Transaction Conflict"],
+    troubleshootingSteps: ["Check status.convex.dev.", "Inspect Convex dashboard function logs."],
     relatedServices: ["supabase", "firebase"],
   },
   {
@@ -3726,13 +2879,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.pingcap.com",
     description:
       "Fully managed Hybrid Transactional and Analytical Processing (HTAP) MySQL-compatible database.",
-    impactSummary:
-      "Analytical queries stall, distributed storage engine errors.",
-    keyComponents: [
-      "TiDB Serverless",
-      "TiKV Storage Engine",
-      "TiFlash Analytics",
-    ],
+    impactSummary: "Analytical queries stall, distributed storage engine errors.",
+    keyComponents: ["TiDB Serverless", "TiKV Storage Engine", "TiFlash Analytics"],
     commonErrorCodes: ["500 Internal Error", "Connection Timeout"],
     troubleshootingSteps: [
       "Check status.pingcap.com.",
@@ -3748,13 +2896,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.timescale.com",
     description:
       "Postgres cloud platform engineered for time-series, events, and vector workloads.",
-    impactSummary:
-      "Metric ingestion hypertypes fail to insert, continuous aggregates stall.",
-    keyComponents: [
-      "TimescaleDB Engine",
-      "Continuous Aggregates",
-      "Dynamic Compression",
-    ],
+    impactSummary: "Metric ingestion hypertypes fail to insert, continuous aggregates stall.",
+    keyComponents: ["TimescaleDB Engine", "Continuous Aggregates", "Dynamic Compression"],
     commonErrorCodes: ["500 Server Error", "504 Gateway Timeout"],
     troubleshootingSteps: [
       "Check status.timescale.com.",
@@ -3770,8 +2913,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.aiven.io",
     description:
       "Managed open-source data infrastructure for PostgreSQL, Apache Kafka, OpenSearch, and Redis.",
-    impactSummary:
-      "Kafka broker connections drop, OpenSearch indices become unqueryable.",
+    impactSummary: "Kafka broker connections drop, OpenSearch indices become unqueryable.",
     keyComponents: [
       "Aiven for PostgreSQL",
       "Aiven for Apache Kafka",
@@ -3791,16 +2933,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "databases-storage",
     domain: "uploadthing.com",
     officialStatusUrl: "https://status.uploadthing.com",
-    description:
-      "File uploads platform designed for Next.js and full-stack TypeScript developers.",
-    impactSummary:
-      "File upload components throw 500, asset URLs fail to resolve.",
-    keyComponents: [
-      "File Ingest Engine",
-      "CDN Delivery",
-      "Core API",
-      "UTSSR SDK",
-    ],
+    description: "File uploads platform designed for Next.js and full-stack TypeScript developers.",
+    impactSummary: "File upload components throw 500, asset URLs fail to resolve.",
+    keyComponents: ["File Ingest Engine", "CDN Delivery", "Core API", "UTSSR SDK"],
     commonErrorCodes: ["500 Internal Error", "UPLOAD_FAILED", "504 Timeout"],
     troubleshootingSteps: [
       "Check status.uploadthing.com.",
@@ -3816,23 +2951,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.cloudinary.com",
     description:
       "Media management platform providing automated image and video optimization, transformation, and delivery.",
-    impactSummary:
-      "Dynamic image transformations fail, media asset URLs return 500.",
-    keyComponents: [
-      "Transformation Engine",
-      "Asset Upload API",
-      "Global Media CDN",
-      "DAM Portal",
-    ],
-    commonErrorCodes: [
-      "500 Internal Error",
-      "420 Rate Limited",
-      "Resource Not Found",
-    ],
-    troubleshootingSteps: [
-      "Check status.cloudinary.com.",
-      "Verify transformation URL syntax.",
-    ],
+    impactSummary: "Dynamic image transformations fail, media asset URLs return 500.",
+    keyComponents: ["Transformation Engine", "Asset Upload API", "Global Media CDN", "DAM Portal"],
+    commonErrorCodes: ["500 Internal Error", "420 Rate Limited", "Resource Not Found"],
+    troubleshootingSteps: ["Check status.cloudinary.com.", "Verify transformation URL syntax."],
     relatedServices: ["uploadthing", "mux"],
   },
   {
@@ -3883,11 +3005,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Event Webhooks",
       "Marketing Campaigns Engine",
     ],
-    commonErrorCodes: [
-      "500 Internal Server Error",
-      "429 Too Many Requests",
-      "401 Unauthorized",
-    ],
+    commonErrorCodes: ["500 Internal Server Error", "429 Too Many Requests", "401 Unauthorized"],
     troubleshootingSteps: [
       "Check status.sendgrid.com for queue delivery delays.",
       "Inspect SendGrid Activity Feed for bounced or dropped emails.",
@@ -3912,11 +3030,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "React Email Pipeline",
       "Domain Verification Engine",
     ],
-    commonErrorCodes: [
-      "500 Internal Server Error",
-      "429 Rate Limit",
-      "504 Gateway Timeout",
-    ],
+    commonErrorCodes: ["500 Internal Server Error", "429 Rate Limit", "504 Gateway Timeout"],
     troubleshootingSteps: [
       "Check status.resend.com.",
       "Verify domain DNS records (DKIM, SPF, MX) are marked verified in Resend Dashboard.",
@@ -3931,8 +3045,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "comms-email",
     domain: "postmarkapp.com",
     officialStatusUrl: "https://status.postmarkapp.com",
-    description:
-      "High-deliverability transactional and broadcast email delivery platform.",
+    description: "High-deliverability transactional and broadcast email delivery platform.",
     impactSummary:
       "Transactional emails back up in sending queue, inbound webhook processing pauses.",
     keyComponents: [
@@ -3941,15 +3054,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "SMTP Ingress",
       "Message Streams",
     ],
-    commonErrorCodes: [
-      "500 Internal Error",
-      "422 Unprocessable Entity",
-      "504 Gateway Timeout",
-    ],
-    troubleshootingSteps: [
-      "Check status.postmarkapp.com.",
-      "Verify message stream server token.",
-    ],
+    commonErrorCodes: ["500 Internal Error", "422 Unprocessable Entity", "504 Gateway Timeout"],
+    troubleshootingSteps: ["Check status.postmarkapp.com.", "Verify message stream server token."],
     relatedServices: ["resend", "sendgrid", "mailgun"],
     featured: true,
   },
@@ -3961,19 +3067,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.mailgun.com",
     description:
       "Email delivery service for developers offering REST API, email validation, and routing.",
-    impactSummary:
-      "Email validation checks fail, outbound messages bounce with 500 errors.",
-    keyComponents: [
-      "v3 Sending API",
-      "Email Verification API",
-      "Routes Pipeline",
-      "Webhooks",
-    ],
-    commonErrorCodes: [
-      "500 Internal Server Error",
-      "429 Rate Limit",
-      "401 Forbidden",
-    ],
+    impactSummary: "Email validation checks fail, outbound messages bounce with 500 errors.",
+    keyComponents: ["v3 Sending API", "Email Verification API", "Routes Pipeline", "Webhooks"],
+    commonErrorCodes: ["500 Internal Server Error", "429 Rate Limit", "401 Forbidden"],
     troubleshootingSteps: [
       "Check status.mailgun.com.",
       "Verify domain region (US vs EU endpoint).",
@@ -3988,19 +3084,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.loops.so",
     description:
       "Email platform built specifically for modern SaaS companies with clean API and automated loops.",
-    impactSummary:
-      "User onboarding drip sequences freeze, event trigger APIs return 500.",
-    keyComponents: [
-      "Events API",
-      "Transactional API",
-      "Campaigns Engine",
-      "Audience Sync",
-    ],
+    impactSummary: "User onboarding drip sequences freeze, event trigger APIs return 500.",
+    keyComponents: ["Events API", "Transactional API", "Campaigns Engine", "Audience Sync"],
     commonErrorCodes: ["500 Internal Error", "504 Timeout"],
-    troubleshootingSteps: [
-      "Check status.loops.so.",
-      "Inspect API event payload in Loops.",
-    ],
+    troubleshootingSteps: ["Check status.loops.so.", "Inspect API event payload in Loops."],
     relatedServices: ["resend", "postmark", "customer-io"],
   },
   {
@@ -4013,16 +3100,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Real-time communication layer providing bi-directional WebSockets (Channels) and push notifications (Beams).",
     impactSummary:
       "Live chat feeds freeze, dashboard real-time updates stop, push notifications fail.",
-    keyComponents: [
-      "Pusher Channels (WebSockets)",
-      "Pusher Beams (Push API)",
-      "Presence Channels",
-    ],
-    commonErrorCodes: [
-      "4004 Over quota",
-      "500 Internal Error",
-      "WebSocket Connection Error",
-    ],
+    keyComponents: ["Pusher Channels (WebSockets)", "Pusher Beams (Push API)", "Presence Channels"],
+    commonErrorCodes: ["4004 Over quota", "500 Internal Error", "WebSocket Connection Error"],
     troubleshootingSteps: [
       "Check status.pusher.com.",
       "Verify cluster region code (e.g. us2, eu).",
@@ -4037,14 +3116,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.ably.com",
     description:
       "Enterprise real-time infrastructure platform for pub/sub messaging and live synchronization.",
-    impactSummary:
-      "Realtime messaging channels disconnect, presence tracking drops users.",
+    impactSummary: "Realtime messaging channels disconnect, presence tracking drops users.",
     keyComponents: ["Pub/Sub Channels", "Live Sync", "Chat SDK", "Spaces SDK"],
     commonErrorCodes: ["50000 Internal error", "42900 Rate limited"],
-    troubleshootingSteps: [
-      "Check status.ably.com.",
-      "Verify API key capabilities.",
-    ],
+    troubleshootingSteps: ["Check status.ably.com.", "Verify API key capabilities."],
     relatedServices: ["pusher", "pubnub"],
   },
   {
@@ -4055,18 +3130,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.onesignal.com",
     description:
       "Customer messaging and engagement platform for mobile push notifications, web push, and in-app messages.",
-    impactSummary:
-      "Mobile notifications fail to broadcast, user segment syncs halt.",
-    keyComponents: [
-      "Push Notification REST API",
-      "Web Push SDK",
-      "In-App Messaging Engine",
-    ],
+    impactSummary: "Mobile notifications fail to broadcast, user segment syncs halt.",
+    keyComponents: ["Push Notification REST API", "Web Push SDK", "In-App Messaging Engine"],
     commonErrorCodes: ["500 Internal Server Error", "429 Rate Limit"],
-    troubleshootingSteps: [
-      "Check status.onesignal.com.",
-      "Verify APNs / FCM credentials.",
-    ],
+    troubleshootingSteps: ["Check status.onesignal.com.", "Verify APNs / FCM credentials."],
     relatedServices: ["firebase", "pusher"],
   },
   {
@@ -4075,16 +3142,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "comms-email",
     domain: "vonage.com",
     officialStatusUrl: "https://status.vonage.com",
-    description:
-      "Global communications platform providing SMS, Voice, Video, and Verify APIs.",
-    impactSummary:
-      "SMS messaging routes fail, Video API WebRTC sessions disconnect.",
-    keyComponents: [
-      "Messages API",
-      "Voice API",
-      "Video API (TokBox)",
-      "Verify API",
-    ],
+    description: "Global communications platform providing SMS, Voice, Video, and Verify APIs.",
+    impactSummary: "SMS messaging routes fail, Video API WebRTC sessions disconnect.",
+    keyComponents: ["Messages API", "Voice API", "Video API (TokBox)", "Verify API"],
     commonErrorCodes: ["500 Internal Error", "1002 Throttle limit"],
     troubleshootingSteps: [
       "Check status.vonage.com.",
@@ -4101,17 +3161,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     description:
       "Next-gen communications platform with private IP network for SMS, Voice, and Wireless IoT.",
     impactSummary: "SIP trunks disconnect, SMS messages fail carrier delivery.",
-    keyComponents: [
-      "Programmable SMS v2",
-      "Call Control API",
-      "SIP Trunking",
-      "Storage API",
-    ],
+    keyComponents: ["Programmable SMS v2", "Call Control API", "SIP Trunking", "Storage API"],
     commonErrorCodes: ["500 Server Error", "504 Gateway Timeout"],
-    troubleshootingSteps: [
-      "Check status.telnyx.com.",
-      "Verify Telnyx connection profile.",
-    ],
+    troubleshootingSteps: ["Check status.telnyx.com.", "Verify Telnyx connection profile."],
     relatedServices: ["twilio", "vonage", "plivo"],
   },
   {
@@ -4120,20 +3172,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "comms-email",
     domain: "plivo.com",
     officialStatusUrl: "https://status.plivo.com",
-    description:
-      "Enterprise communications platform for SMS messaging and voice calling.",
+    description: "Enterprise communications platform for SMS messaging and voice calling.",
     impactSummary: "Outbound SMS fails to queue, voice XML callbacks error.",
-    keyComponents: [
-      "SMS API",
-      "Voice API",
-      "PHLO Workflow Builder",
-      "Zentrunk",
-    ],
+    keyComponents: ["SMS API", "Voice API", "PHLO Workflow Builder", "Zentrunk"],
     commonErrorCodes: ["500 Internal Server Error", "400 Bad Request"],
-    troubleshootingSteps: [
-      "Check status.plivo.com.",
-      "Inspect message UUID in Plivo logs.",
-    ],
+    troubleshootingSteps: ["Check status.plivo.com.", "Inspect message UUID in Plivo logs."],
     relatedServices: ["twilio", "telnyx"],
   },
   {
@@ -4146,17 +3189,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "AI customer service solution featuring Fin AI Copilot, Help Desk, and proactive messaging.",
     impactSummary:
       "Customer messenger widget fails to load on websites, Fin AI bot stops answering queries.",
-    keyComponents: [
-      "Messenger Widget",
-      "Fin AI Bot",
-      "Help Desk Inbox",
-      "REST API & Webhooks",
-    ],
-    commonErrorCodes: [
-      "500 Internal Error",
-      "504 Gateway Timeout",
-      "429 Too Many Requests",
-    ],
+    keyComponents: ["Messenger Widget", "Fin AI Bot", "Help Desk Inbox", "REST API & Webhooks"],
+    commonErrorCodes: ["500 Internal Error", "504 Gateway Timeout", "429 Too Many Requests"],
     troubleshootingSteps: [
       "Check www.intercomstatus.com.",
       "Verify workspace appId and identity verification.",
@@ -4180,11 +3214,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Guide Knowledge Base",
       "Explore Analytics",
     ],
-    commonErrorCodes: [
-      "500 Internal Server Error",
-      "502 Bad Gateway",
-      "429 Too Many Requests",
-    ],
+    commonErrorCodes: ["500 Internal Server Error", "502 Bad Gateway", "429 Too Many Requests"],
     troubleshootingSteps: [
       "Check status.zendesk.com (lookup your subdomain).",
       "Verify OAuth token validity.",
@@ -4199,19 +3229,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.customer.io",
     description:
       "Automated messaging platform for tech companies to trigger data-driven emails, push, and SMS.",
-    impactSummary:
-      "Workflow campaigns stop triggering on customer events, track API returns 500.",
-    keyComponents: [
-      "Track API",
-      "App API",
-      "Journeys Workflow Engine",
-      "Data Pipelines",
-    ],
+    impactSummary: "Workflow campaigns stop triggering on customer events, track API returns 500.",
+    keyComponents: ["Track API", "App API", "Journeys Workflow Engine", "Data Pipelines"],
     commonErrorCodes: ["500 Internal Error", "504 Gateway Timeout"],
-    troubleshootingSteps: [
-      "Check status.customer.io.",
-      "Verify siteId and apiKey.",
-    ],
+    troubleshootingSteps: ["Check status.customer.io.", "Verify siteId and apiKey."],
     relatedServices: ["loops", "resend", "segment"],
   },
   {
@@ -4220,10 +3241,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "comms-email",
     domain: "klaviyo.com",
     officialStatusUrl: "https://status.klaviyo.com",
-    description:
-      "Marketing automation platform engineered for e-commerce and retail brands.",
-    impactSummary:
-      "Abandoned cart flows fail to trigger, e-commerce catalog syncs stall.",
+    description: "Marketing automation platform engineered for e-commerce and retail brands.",
+    impactSummary: "Abandoned cart flows fail to trigger, e-commerce catalog syncs stall.",
     keyComponents: [
       "Client Events API",
       "Server Events API",
@@ -4231,10 +3250,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "SMS Marketing",
     ],
     commonErrorCodes: ["500 Internal Server Error", "429 Rate Limit"],
-    troubleshootingSteps: [
-      "Check status.klaviyo.com.",
-      "Inspect Shopify integration sync status.",
-    ],
+    troubleshootingSteps: ["Check status.klaviyo.com.", "Inspect Shopify integration sync status."],
     relatedServices: ["shopify", "sendgrid"],
   },
   {
@@ -4279,12 +3295,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Voice, video, and text communication service used by communities and developers worldwide.",
     impactSummary:
       "Gateway bot connections drop, voice channels lag, webhook dispatches fail with 500.",
-    keyComponents: [
-      "Gateway WebSocket",
-      "REST API",
-      "Voice Servers (RTC)",
-      "Webhooks System",
-    ],
+    keyComponents: ["Gateway WebSocket", "REST API", "Voice Servers (RTC)", "Webhooks System"],
     commonErrorCodes: [
       "500 Internal Server Error",
       "502 Bad Gateway",
@@ -4314,11 +3325,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Webhooks Dispatcher",
       "GitHub/GitLab Integrations",
     ],
-    commonErrorCodes: [
-      "500 Internal Server Error",
-      "502 Bad Gateway",
-      "504 Gateway Timeout",
-    ],
+    commonErrorCodes: ["500 Internal Server Error", "502 Bad Gateway", "504 Gateway Timeout"],
     troubleshootingSteps: [
       "Check linearstatus.com for cloud sync engine state.",
       "Check Linear OAuth token permissions in workspace integrations.",
@@ -4336,17 +3343,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Connected workspace for notes, docs, databases, project management, and Notion AI.",
     impactSummary:
       "Workspace pages fail to load, database query APIs return 500, integrations stall.",
-    keyComponents: [
-      "Databases Engine",
-      "Notion API",
-      "Notion AI",
-      "Sync Block Service",
-    ],
-    commonErrorCodes: [
-      "500 Internal Server Error",
-      "504 Gateway Timeout",
-      "429 Rate Limited",
-    ],
+    keyComponents: ["Databases Engine", "Notion API", "Notion AI", "Sync Block Service"],
+    commonErrorCodes: ["500 Internal Server Error", "504 Gateway Timeout", "429 Rate Limited"],
     troubleshootingSteps: [
       "Check status.notion.so.",
       "Inspect Notion API integration capabilities and database sharing permissions.",
@@ -4360,21 +3358,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "productivity-collab",
     domain: "figma.com",
     officialStatusUrl: "https://status.figma.com",
-    description:
-      "Collaborative interface design and prototyping tool with Dev Mode and FigJam.",
+    description: "Collaborative interface design and prototyping tool with Dev Mode and FigJam.",
     impactSummary:
       "Multiplayer canvas sync disconnects, Dev Mode inspection errors, REST API times out.",
-    keyComponents: [
-      "Multiplayer Sync Engine",
-      "Dev Mode",
-      "REST API",
-      "FigJam Whiteboard",
-    ],
-    commonErrorCodes: [
-      "500 Internal Server Error",
-      "502 Bad Gateway",
-      "Connection to server lost",
-    ],
+    keyComponents: ["Multiplayer Sync Engine", "Dev Mode", "REST API", "FigJam Whiteboard"],
+    commonErrorCodes: ["500 Internal Server Error", "502 Bad Gateway", "Connection to server lost"],
     troubleshootingSteps: [
       "Check status.figma.com.",
       "Save local .fig file backup before closing tab.",
@@ -4388,8 +3376,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "productivity-collab",
     domain: "atlassian.com/software/jira",
     officialStatusUrl: "https://jira-software.status.atlassian.com",
-    description:
-      "Issue and project tracking software for agile software development teams.",
+    description: "Issue and project tracking software for agile software development teams.",
     impactSummary:
       "Kanban boards fail to render, automation rules fail to execute, REST API times out.",
     keyComponents: [
@@ -4398,15 +3385,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Agile Boards",
       "Atlassian Access SSO",
     ],
-    commonErrorCodes: [
-      "500 Internal Server Error",
-      "504 Gateway Timeout",
-      "429 Rate Limit",
-    ],
-    troubleshootingSteps: [
-      "Check status.atlassian.com.",
-      "Verify API token at id.atlassian.com.",
-    ],
+    commonErrorCodes: ["500 Internal Server Error", "504 Gateway Timeout", "429 Rate Limit"],
+    troubleshootingSteps: ["Check status.atlassian.com.", "Verify API token at id.atlassian.com."],
     relatedServices: ["linear", "confluence", "bitbucket"],
     featured: true,
   },
@@ -4416,16 +3396,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "productivity-collab",
     domain: "atlassian.com/software/confluence",
     officialStatusUrl: "https://confluence.status.atlassian.com",
-    description:
-      "Team workspace and documentation knowledge management platform.",
-    impactSummary:
-      "Document editor crashes, search indexing stops finding team pages.",
+    description: "Team workspace and documentation knowledge management platform.",
+    impactSummary: "Document editor crashes, search indexing stops finding team pages.",
     keyComponents: ["Collaborative Editor", "REST Content API", "Search Index"],
     commonErrorCodes: ["500 Server Error", "502 Bad Gateway"],
-    troubleshootingSteps: [
-      "Check status.atlassian.com.",
-      "Clear browser local storage.",
-    ],
+    troubleshootingSteps: ["Check status.atlassian.com.", "Clear browser local storage."],
     relatedServices: ["jira", "notion"],
   },
   {
@@ -4434,19 +3409,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "productivity-collab",
     domain: "asana.com",
     officialStatusUrl: "https://status.asana.com",
-    description:
-      "Work management platform to organize, track, and manage team workflows.",
+    description: "Work management platform to organize, track, and manage team workflows.",
     impactSummary: "Task updates drop, automated rules fail to move cards.",
-    keyComponents: [
-      "Tasks & Projects API",
-      "Rules Automation Engine",
-      "Portfolios",
-    ],
+    keyComponents: ["Tasks & Projects API", "Rules Automation Engine", "Portfolios"],
     commonErrorCodes: ["500 Internal Server Error", "504 Gateway Timeout"],
-    troubleshootingSteps: [
-      "Check status.asana.com.",
-      "Verify Asana personal access token.",
-    ],
+    troubleshootingSteps: ["Check status.asana.com.", "Verify Asana personal access token."],
     relatedServices: ["monday", "trello", "jira"],
   },
   {
@@ -4455,19 +3422,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "productivity-collab",
     domain: "monday.com",
     officialStatusUrl: "https://status.monday.com",
-    description:
-      "Cloud-based work operating system providing custom workflow automations.",
+    description: "Cloud-based work operating system providing custom workflow automations.",
     impactSummary: "Workspaces fail to load, webhook integrations stop firing.",
-    keyComponents: [
-      "Work OS Board Engine",
-      "GraphQL API",
-      "Automations Runtime",
-    ],
+    keyComponents: ["Work OS Board Engine", "GraphQL API", "Automations Runtime"],
     commonErrorCodes: ["500 Server Error", "502 Bad Gateway"],
-    troubleshootingSteps: [
-      "Check status.monday.com.",
-      "Inspect GraphQL query complexity.",
-    ],
+    troubleshootingSteps: ["Check status.monday.com.", "Inspect GraphQL query complexity."],
     relatedServices: ["asana", "clickup"],
   },
   {
@@ -4476,10 +3435,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "productivity-collab",
     domain: "clickup.com",
     officialStatusUrl: "https://status.clickup.com",
-    description:
-      "All-in-one productivity platform for tasks, docs, chat, and goals.",
-    impactSummary:
-      "Task views freeze, API integrations return 500 internal server error.",
+    description: "All-in-one productivity platform for tasks, docs, chat, and goals.",
+    impactSummary: "Task views freeze, API integrations return 500 internal server error.",
     keyComponents: ["Tasks Engine", "ClickUp 3.0 API", "Automations"],
     commonErrorCodes: ["500 Internal Server Error", "504 Gateway Timeout"],
     troubleshootingSteps: [
@@ -4496,8 +3453,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.airtable.com",
     description:
       "Low-code platform for building collaborative database applications and workflows.",
-    impactSummary:
-      "Airtable API requests fail with 429/500, webhook triggers stop firing.",
+    impactSummary: "Airtable API requests fail with 429/500, webhook triggers stop firing.",
     keyComponents: ["Base Engine", "REST API", "Automations", "Interfaces"],
     commonErrorCodes: [
       "429 Too Many Requests (5 req/sec limit)",
@@ -4517,19 +3473,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     domain: "loom.com",
     officialStatusUrl: "https://status.loom.com",
     description: "Asynchronous video messaging platform for work.",
-    impactSummary:
-      "Video recording uploads fail, video processing transcoders freeze.",
-    keyComponents: [
-      "Recording Uploader",
-      "Transcoding Engine",
-      "Video Player",
-      "AI Summaries",
-    ],
+    impactSummary: "Video recording uploads fail, video processing transcoders freeze.",
+    keyComponents: ["Recording Uploader", "Transcoding Engine", "Video Player", "AI Summaries"],
     commonErrorCodes: ["500 Server Error", "Video Upload Failed"],
-    troubleshootingSteps: [
-      "Check status.loom.com.",
-      "Export local raw recording file.",
-    ],
+    troubleshootingSteps: ["Check status.loom.com.", "Export local raw recording file."],
     relatedServices: ["slack", "notion"],
   },
   {
@@ -4538,8 +3485,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "productivity-collab",
     domain: "zoom.us",
     officialStatusUrl: "https://status.zoom.us",
-    description:
-      "Video communications platform for meetings, webinars, phone, and team chat.",
+    description: "Video communications platform for meetings, webinars, phone, and team chat.",
     impactSummary:
       "Meetings fail to connect, cloud recordings fail to process, webhook events delay.",
     keyComponents: [
@@ -4549,10 +3495,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "REST API & Webhooks",
     ],
     commonErrorCodes: ["500 Server Error", "Error 5003", "Unable to connect"],
-    troubleshootingSteps: [
-      "Check status.zoom.us.",
-      "Switch to web browser client.",
-    ],
+    troubleshootingSteps: ["Check status.zoom.us.", "Switch to web browser client."],
     relatedServices: ["slack", "google-workspace", "microsoft-teams"],
   },
   {
@@ -4561,8 +3504,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "productivity-collab",
     domain: "workspace.google.com",
     officialStatusUrl: "https://www.google.com/appsstatus",
-    description:
-      "Suite of cloud computing, productivity, and collaboration tools by Google.",
+    description: "Suite of cloud computing, productivity, and collaboration tools by Google.",
     impactSummary:
       "Gmail message sending stops, Google Drive file sync errors, Google Docs editing drops offline.",
     keyComponents: [
@@ -4572,11 +3514,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Google Meet",
       "Google Calendar",
     ],
-    commonErrorCodes: [
-      "500 Server Error",
-      "Temporary Error (502)",
-      "Service Unavailable",
-    ],
+    commonErrorCodes: ["500 Server Error", "Temporary Error (502)", "Service Unavailable"],
     troubleshootingSteps: [
       "Check www.google.com/appsstatus for service health across apps.",
       "Use offline editing mode.",
@@ -4590,8 +3528,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "productivity-collab",
     domain: "teams.microsoft.com",
     officialStatusUrl: "https://status.office365.com",
-    description:
-      "Business communication platform developed by Microsoft as part of Microsoft 365.",
+    description: "Business communication platform developed by Microsoft as part of Microsoft 365.",
     impactSummary:
       "Calls disconnect, chat messages fail to deliver, channels show connecting status.",
     keyComponents: [
@@ -4630,11 +3567,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     description:
       "Online graphic design platform used to create social media graphics and presentations.",
     impactSummary: "Design exports fail, image rendering pipeline freezes.",
-    keyComponents: [
-      "Design Editor",
-      "Export Rendering Engine",
-      "Asset Library",
-    ],
+    keyComponents: ["Design Editor", "Export Rendering Engine", "Asset Library"],
     commonErrorCodes: ["500 Internal Error", "Export Failed"],
     troubleshootingSteps: ["Check canvastatus.com.", "Save design copy."],
     relatedServices: ["figma"],
@@ -4675,19 +3608,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.livepeer.studio",
     description:
       "Open video infrastructure platform delivering decentralized video transcoding and streaming.",
-    impactSummary:
-      "Transcoding pipelines halt, playback streams fail to negotiate HLS playlists.",
-    keyComponents: [
-      "Live Video Ingest",
-      "VOD Transcoding",
-      "AI Video Processing",
-      "Playback CDN",
-    ],
+    impactSummary: "Transcoding pipelines halt, playback streams fail to negotiate HLS playlists.",
+    keyComponents: ["Live Video Ingest", "VOD Transcoding", "AI Video Processing", "Playback CDN"],
     commonErrorCodes: ["500 Server Error", "502 Bad Gateway"],
-    troubleshootingSteps: [
-      "Check status.livepeer.studio.",
-      "Check RTMP connection settings.",
-    ],
+    troubleshootingSteps: ["Check status.livepeer.studio.", "Check RTMP connection settings."],
     relatedServices: ["mux", "agora-io"],
   },
   {
@@ -4698,19 +3622,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.daily.co",
     description:
       "Real-time video and audio WebRTC APIs for developers building interactive calling.",
-    impactSummary:
-      "WebRTC rooms fail to initialize, audio synthesis bots drop out.",
-    keyComponents: [
-      "WebRTC Mesh",
-      "Daily Prebuilt UI",
-      "Recording & Streaming",
-      "Daily Bots",
-    ],
+    impactSummary: "WebRTC rooms fail to initialize, audio synthesis bots drop out.",
+    keyComponents: ["WebRTC Mesh", "Daily Prebuilt UI", "Recording & Streaming", "Daily Bots"],
     commonErrorCodes: ["500 Server Error", "Room Join Failed"],
-    troubleshootingSteps: [
-      "Check status.daily.co.",
-      "Inspect room token permissions.",
-    ],
+    troubleshootingSteps: ["Check status.daily.co.", "Inspect room token permissions."],
     relatedServices: ["agora-io", "mux", "elevenlabs"],
   },
   {
@@ -4719,10 +3634,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "media-streaming",
     domain: "agora.io",
     officialStatusUrl: "https://status.agora.io",
-    description:
-      "Real-time voice, video, interactive live streaming, and chat platform.",
-    impactSummary:
-      "Live video streams drop packets, voice channels fail authentication.",
+    description: "Real-time voice, video, interactive live streaming, and chat platform.",
+    impactSummary: "Live video streams drop packets, voice channels fail authentication.",
     keyComponents: [
       "Software Defined Real-time Network (SD-RTN)",
       "Voice SDK",
@@ -4743,19 +3656,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     domain: "vimeo.com",
     officialStatusUrl: "https://www.vimeostatus.com",
     description: "Video hosting, sharing, and services platform.",
-    impactSummary:
-      "Embedded video players fail to play, OTT live streams drop.",
-    keyComponents: [
-      "Vimeo Player API",
-      "Transcoding Pipeline",
-      "Vimeo OTT",
-      "Upload API",
-    ],
+    impactSummary: "Embedded video players fail to play, OTT live streams drop.",
+    keyComponents: ["Vimeo Player API", "Transcoding Pipeline", "Vimeo OTT", "Upload API"],
     commonErrorCodes: ["500 Internal Error", "503 Service Unavailable"],
-    troubleshootingSteps: [
-      "Check vimeostatus.com.",
-      "Verify video privacy settings.",
-    ],
+    troubleshootingSteps: ["Check vimeostatus.com.", "Verify video privacy settings."],
     relatedServices: ["mux", "youtube"],
   },
   {
@@ -4764,15 +3668,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "media-streaming",
     domain: "youtube.com",
     officialStatusUrl: "https://status.cloud.google.com",
-    description:
-      "Google API to search for videos, manage playlists, and upload video content.",
-    impactSummary:
-      "Video metadata fetching fails with quotaExceeded, video embedding fails.",
-    keyComponents: [
-      "YouTube Data API v3",
-      "YouTube Analytics API",
-      "Live Streaming API",
-    ],
+    description: "Google API to search for videos, manage playlists, and upload video content.",
+    impactSummary: "Video metadata fetching fails with quotaExceeded, video embedding fails.",
+    keyComponents: ["YouTube Data API v3", "YouTube Analytics API", "Live Streaming API"],
     commonErrorCodes: ["403 quotaExceeded", "500 Internal Server Error"],
     troubleshootingSteps: [
       "Check Google Cloud Console for YouTube API quota.",
@@ -4825,15 +3723,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Account Abstraction Bundler",
       "Custom Webhooks",
     ],
-    commonErrorCodes: [
-      "500 Server Error",
-      "429 Too Many Requests",
-      "-32603 Internal error",
-    ],
-    troubleshootingSteps: [
-      "Check status.alchemy.com.",
-      "Fallback to secondary RPC provider.",
-    ],
+    commonErrorCodes: ["500 Server Error", "429 Too Many Requests", "-32603 Internal error"],
+    troubleshootingSteps: ["Check status.alchemy.com.", "Fallback to secondary RPC provider."],
     relatedServices: ["infura", "quicknode", "etherscan"],
     featured: true,
   },
@@ -4853,10 +3744,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Functions",
     ],
     commonErrorCodes: ["503 Unavailable", "504 Gateway Timeout"],
-    troubleshootingSteps: [
-      "Check status.quicknode.com.",
-      "Switch endpoint region in dashboard.",
-    ],
+    troubleshootingSteps: ["Check status.quicknode.com.", "Switch endpoint region in dashboard."],
     relatedServices: ["alchemy", "infura"],
   },
   {
@@ -4865,10 +3753,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "web3-crypto",
     domain: "etherscan.io",
     officialStatusUrl: "https://status.etherscan.io",
-    description:
-      "Block explorer and analytics platform for Ethereum and EVM networks.",
-    impactSummary:
-      "Transaction verification fails, Etherscan API gas tracker returns 500.",
+    description: "Block explorer and analytics platform for Ethereum and EVM networks.",
+    impactSummary: "Transaction verification fails, Etherscan API gas tracker returns 500.",
     keyComponents: [
       "Block Explorer Web UI",
       "Developer REST API",
@@ -4890,8 +3776,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.coingecko.com",
     description:
       "Independent crypto data aggregator tracking token prices, volumes, and market caps.",
-    impactSummary:
-      "Real-time token price charts show stale data or return 429 rate limits.",
+    impactSummary: "Real-time token price charts show stale data or return 429 rate limits.",
     keyComponents: ["Simple Price API", "Market Data API", "Exchange Tickers"],
     commonErrorCodes: ["429 Too Many Requests", "500 Server Error"],
     troubleshootingSteps: [
@@ -4911,10 +3796,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     impactSummary: "Subgraph queries error, dApp UI displays empty tables.",
     keyComponents: ["Network Indexers", "Graph Studio", "Query Gateway API"],
     commonErrorCodes: ["500 Internal Error", "Subgraph sync lag"],
-    troubleshootingSteps: [
-      "Check status.thegraph.com.",
-      "Check subgraph indexing status.",
-    ],
+    troubleshootingSteps: ["Check status.thegraph.com.", "Check subgraph indexing status."],
     relatedServices: ["alchemy", "infura"],
   },
   {
@@ -4923,20 +3805,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "web3-crypto",
     domain: "opensea.io",
     officialStatusUrl: "https://status.opensea.io",
-    description:
-      "NFT marketplace and developer API for querying collection metadata and listings.",
-    impactSummary:
-      "NFT listing requests fail, asset metadata queries return 500.",
-    keyComponents: [
-      "Stream API (WebSockets)",
-      "REST Orders API",
-      "Marketplace Contract",
-    ],
+    description: "NFT marketplace and developer API for querying collection metadata and listings.",
+    impactSummary: "NFT listing requests fail, asset metadata queries return 500.",
+    keyComponents: ["Stream API (WebSockets)", "REST Orders API", "Marketplace Contract"],
     commonErrorCodes: ["500 Server Error", "429 Rate Limit", "401 Invalid Key"],
-    troubleshootingSteps: [
-      "Check status.opensea.io.",
-      "Verify OpenSea API key header.",
-    ],
+    troubleshootingSteps: ["Check status.opensea.io.", "Verify OpenSea API key header."],
     relatedServices: ["alchemy", "infura"],
   },
   {
@@ -4947,19 +3820,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.chain.link",
     description:
       "Decentralized oracle network connecting smart contracts to off-chain data and computation.",
-    impactSummary:
-      "Oracle price feed updates lag, VRF randomness fulfillment delays.",
-    keyComponents: [
-      "Price Feeds",
-      "Chainlink Functions",
-      "CCIP Cross-Chain",
-      "VRF Randomness",
-    ],
+    impactSummary: "Oracle price feed updates lag, VRF randomness fulfillment delays.",
+    keyComponents: ["Price Feeds", "Chainlink Functions", "CCIP Cross-Chain", "VRF Randomness"],
     commonErrorCodes: ["Oracle Response Timeout", "Transaction Stalled"],
-    troubleshootingSteps: [
-      "Check status.chain.link.",
-      "Verify gas allowance on upkeep contracts.",
-    ],
+    troubleshootingSteps: ["Check status.chain.link.", "Verify gas allowance on upkeep contracts."],
     relatedServices: ["infura", "alchemy"],
   },
   {
@@ -4973,11 +3837,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     impactSummary:
       "API reasoning responses stall, chat.deepseek.com throws server busy 503 errors.",
     keyComponents: ["DeepSeek Chat API", "DeepSeek Coder API", "Web Interface"],
-    commonErrorCodes: [
-      "503 Server Busy",
-      "500 Internal Error",
-      "429 Rate Limit",
-    ],
+    commonErrorCodes: ["503 Server Busy", "500 Internal Error", "429 Rate Limit"],
     troubleshootingSteps: [
       "Check DeepSeek API status.",
       "Switch to Groq or Fireworks hosted DeepSeek-R1 models.",
@@ -4993,18 +3853,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.baseten.co",
     description:
       "Model deployment platform providing dedicated GPU infrastructure for LLMs and custom ML models.",
-    impactSummary:
-      "Model cold starts fail, model invocations return 504 gateway timeout.",
-    keyComponents: [
-      "Model Deployment Engine",
-      "Truss Server",
-      "Async Inference API",
-    ],
+    impactSummary: "Model cold starts fail, model invocations return 504 gateway timeout.",
+    keyComponents: ["Model Deployment Engine", "Truss Server", "Async Inference API"],
     commonErrorCodes: ["504 Gateway Timeout", "500 Server Error"],
-    troubleshootingSteps: [
-      "Check status.baseten.co.",
-      "Inspect model container logs.",
-    ],
+    troubleshootingSteps: ["Check status.baseten.co.", "Inspect model container logs."],
     relatedServices: ["replicate", "runpod", "together-ai"],
   },
   {
@@ -5015,14 +3867,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.anyscale.com",
     description:
       "Distributed AI platform powered by Ray for training, fine-tuning, and scalable LLM serving.",
-    impactSummary:
-      "Ray cluster worker nodes fail to schedule, endpoints return 503.",
+    impactSummary: "Ray cluster worker nodes fail to schedule, endpoints return 503.",
     keyComponents: ["Ray Clusters", "Anyscale Endpoints", "Workspace Engine"],
     commonErrorCodes: ["503 Unavailable", "500 Internal Server Error"],
-    troubleshootingSteps: [
-      "Check status.anyscale.com.",
-      "Check Ray actor memory allocation.",
-    ],
+    troubleshootingSteps: ["Check status.anyscale.com.", "Check Ray actor memory allocation."],
     relatedServices: ["runpod", "together-ai"],
   },
   {
@@ -5033,8 +3881,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.portkey.ai",
     description:
       "AI gateway and control plane to route, monitor, and manage LLM requests with fallback and cache.",
-    impactSummary:
-      "Routed AI requests fail if gateway proxy encounters connectivity issues.",
+    impactSummary: "Routed AI requests fail if gateway proxy encounters connectivity issues.",
     keyComponents: [
       "AI Gateway Proxy",
       "Observability Dashboard",
@@ -5054,19 +3901,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "arize.com",
     officialStatusUrl: "https://status.arize.com",
-    description:
-      "LLM observability, evaluation, and ML model monitoring platform.",
+    description: "LLM observability, evaluation, and ML model monitoring platform.",
     impactSummary: "Span tracing and evaluation datasets fail to ingest.",
-    keyComponents: [
-      "OTel Collector Ingest",
-      "Evaluation Engine",
-      "Model Quality Drift",
-    ],
+    keyComponents: ["OTel Collector Ingest", "Evaluation Engine", "Model Quality Drift"],
     commonErrorCodes: ["500 Server Error", "504 Timeout"],
-    troubleshootingSteps: [
-      "Check Arize status.",
-      "Verify OTel endpoint exporter config.",
-    ],
+    troubleshootingSteps: ["Check Arize status.", "Verify OTel endpoint exporter config."],
     relatedServices: ["langfuse", "langsmith"],
   },
   {
@@ -5075,19 +3914,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "cartesia.ai",
     officialStatusUrl: "https://status.cartesia.ai",
-    description:
-      "Ultra-low latency generative voice AI and real-time Sonic TTS API.",
+    description: "Ultra-low latency generative voice AI and real-time Sonic TTS API.",
     impactSummary: "Real-time speech synthesis audio streams disconnect.",
-    keyComponents: [
-      "Sonic TTS WebSocket",
-      "Voice Clone API",
-      "Streaming Player",
-    ],
+    keyComponents: ["Sonic TTS WebSocket", "Voice Clone API", "Streaming Player"],
     commonErrorCodes: ["WebSocket Error 1006", "500 Server Error"],
-    troubleshootingSteps: [
-      "Check Cartesia status.",
-      "Switch to ElevenLabs or Deepgram Aura.",
-    ],
+    troubleshootingSteps: ["Check Cartesia status.", "Switch to ElevenLabs or Deepgram Aura."],
     relatedServices: ["elevenlabs", "deepgram"],
   },
   {
@@ -5100,10 +3931,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     impactSummary: "Voice cloning and audio render requests fail.",
     keyComponents: ["TTS REST API", "Streaming API", "Voice Studio"],
     commonErrorCodes: ["500 Internal Error", "504 Timeout"],
-    troubleshootingSteps: [
-      "Check status.play.ht.",
-      "Verify API key and user ID header.",
-    ],
+    troubleshootingSteps: ["Check status.play.ht.", "Verify API key and user ID header."],
     relatedServices: ["elevenlabs", "cartesia"],
   },
   {
@@ -5112,15 +3940,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "speechify.com",
     officialStatusUrl: "https://status.speechify.com",
-    description:
-      "Text-to-speech voice API featuring natural-sounding voices for web and apps.",
+    description: "Text-to-speech voice API featuring natural-sounding voices for web and apps.",
     impactSummary: "Audio generation API returns 500 or times out.",
     keyComponents: ["Audio Generation API", "Voice Catalog", "Mobile Sync"],
     commonErrorCodes: ["500 Server Error", "403 Forbidden"],
-    troubleshootingSteps: [
-      "Check Speechify status.",
-      "Inspect request character length.",
-    ],
+    troubleshootingSteps: ["Check Speechify status.", "Inspect request character length."],
     relatedServices: ["elevenlabs", "play-ht"],
   },
   {
@@ -5132,16 +3956,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     description:
       "Multilingual text embeddings model API for semantic search and document retrieval.",
     impactSummary: "Vector generation fails, breaking RAG indexing.",
-    keyComponents: [
-      "Embed v3 API",
-      "Compression Engine",
-      "Multilingual Models",
-    ],
+    keyComponents: ["Embed v3 API", "Compression Engine", "Multilingual Models"],
     commonErrorCodes: ["500 Internal Server Error", "429 Rate Limit"],
-    troubleshootingSteps: [
-      "Check status.cohere.com.",
-      "Fallback to OpenAI embeddings.",
-    ],
+    troubleshootingSteps: ["Check status.cohere.com.", "Fallback to OpenAI embeddings."],
     relatedServices: ["openai", "voyage-ai"],
   },
   {
@@ -5150,16 +3967,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "trychroma.com",
     officialStatusUrl: "https://status.trychroma.com",
-    description:
-      "AI-native open-source and managed vector database for embeddings.",
-    impactSummary:
-      "Collection queries fail, vector embeddings fail to persist.",
+    description: "AI-native open-source and managed vector database for embeddings.",
+    impactSummary: "Collection queries fail, vector embeddings fail to persist.",
     keyComponents: ["Chroma Server API", "HNSW Index", "Metadata Filter"],
     commonErrorCodes: ["500 Server Error", "504 Timeout"],
-    troubleshootingSteps: [
-      "Check status.trychroma.com.",
-      "Verify Chroma client connection URL.",
-    ],
+    troubleshootingSteps: ["Check status.trychroma.com.", "Verify Chroma client connection URL."],
     relatedServices: ["pinecone", "qdrant", "weaviate"],
   },
   {
@@ -5168,16 +3980,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "zilliz.com",
     officialStatusUrl: "https://status.zilliz.com",
-    description:
-      "Enterprise vector database built for massive scale similarity search.",
-    impactSummary:
-      "High-dimensional vector search fails, collection loading stalls.",
+    description: "Enterprise vector database built for massive scale similarity search.",
+    impactSummary: "High-dimensional vector search fails, collection loading stalls.",
     keyComponents: ["Milvus Coordinator", "Query Nodes", "Vector Storage"],
     commonErrorCodes: ["gRPC Connection Error", "500 Internal Error"],
-    troubleshootingSteps: [
-      "Check status.zilliz.com.",
-      "Inspect Milvus collection load status.",
-    ],
+    troubleshootingSteps: ["Check status.zilliz.com.", "Inspect Milvus collection load status."],
     relatedServices: ["pinecone", "qdrant"],
   },
   {
@@ -5189,17 +3996,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     description: "Secure and resizable virtual compute capacity in the cloud.",
     impactSummary:
       "Instance reachability drops, EBS volume detachment errors, instance metadata service hangs.",
-    keyComponents: [
-      "EC2 Instances",
-      "EBS Storage",
-      "Auto Scaling Groups",
-      "VPC Networking",
-    ],
-    commonErrorCodes: [
-      "500 Internal Server Error",
-      "Instance Unreachable",
-      "Connection Timeout",
-    ],
+    keyComponents: ["EC2 Instances", "EBS Storage", "Auto Scaling Groups", "VPC Networking"],
+    commonErrorCodes: ["500 Internal Server Error", "Instance Unreachable", "Connection Timeout"],
     troubleshootingSteps: [
       "Check AWS Service Health Dashboard.",
       "Inspect EC2 System Status Checks in AWS Console.",
@@ -5243,17 +4041,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Global content delivery network (CDN) securely delivering data, videos, and APIs.",
     impactSummary:
       "CloudFront edge points return 504 Gateway Timeout or 502 Bad Gateway when origin fails.",
-    keyComponents: [
-      "Edge Locations",
-      "CloudFront Functions",
-      "Lambda@Edge",
-      "Origin Shield",
-    ],
-    commonErrorCodes: [
-      "504 Gateway Timeout",
-      "502 Bad Gateway",
-      "403 Forbidden",
-    ],
+    keyComponents: ["Edge Locations", "CloudFront Functions", "Lambda@Edge", "Origin Shield"],
+    commonErrorCodes: ["504 Gateway Timeout", "502 Bad Gateway", "403 Forbidden"],
     troubleshootingSteps: [
       "Check CloudFront error rate metrics.",
       "Verify Origin timeout settings.",
@@ -5266,15 +4055,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "cloud-infra",
     domain: "aws.amazon.com/route53",
     officialStatusUrl: "https://health.aws.amazon.com",
-    description:
-      "Highly available and scalable cloud Domain Name System (DNS) web service.",
-    impactSummary:
-      "DNS resolution stalls worldwide, failover routing policies fail to flip.",
-    keyComponents: [
-      "Authoritative DNS Servers",
-      "Route 53 Health Checks",
-      "Traffic Flow Routing",
-    ],
+    description: "Highly available and scalable cloud Domain Name System (DNS) web service.",
+    impactSummary: "DNS resolution stalls worldwide, failover routing policies fail to flip.",
+    keyComponents: ["Authoritative DNS Servers", "Route 53 Health Checks", "Traffic Flow Routing"],
     commonErrorCodes: ["DNS Timeout", "SERVFAIL"],
     troubleshootingSteps: [
       "Check AWS Health Dashboard for Route 53 status.",
@@ -5290,17 +4073,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://health.aws.amazon.com",
     description:
       "Fully managed NoSQL database service delivering single-digit millisecond latency at any scale.",
-    impactSummary:
-      "ProvisionedThroughputExceededException errors, table query throttles.",
-    keyComponents: [
-      "Global Tables",
-      "DynamoDB Streams",
-      "DAX In-Memory Accelerator",
-    ],
-    commonErrorCodes: [
-      "ProvisionedThroughputExceededException",
-      "500 InternalServerError",
-    ],
+    impactSummary: "ProvisionedThroughputExceededException errors, table query throttles.",
+    keyComponents: ["Global Tables", "DynamoDB Streams", "DAX In-Memory Accelerator"],
+    commonErrorCodes: ["ProvisionedThroughputExceededException", "500 InternalServerError"],
     troubleshootingSteps: [
       "Check DynamoDB read/write capacity units.",
       "Enable On-Demand auto-scaling.",
@@ -5313,10 +4088,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "cloud-infra",
     domain: "aws.amazon.com/sqs",
     officialStatusUrl: "https://health.aws.amazon.com",
-    description:
-      "Fully managed message queuing service enabling microservices decoupling.",
-    impactSummary:
-      "Queue message ingestion delays, dead letter queues (DLQ) overflow.",
+    description: "Fully managed message queuing service enabling microservices decoupling.",
+    impactSummary: "Queue message ingestion delays, dead letter queues (DLQ) overflow.",
     keyComponents: ["Standard Queues", "FIFO Queues", "Dead Letter Queues"],
     commonErrorCodes: ["500 InternalServerError", "OverLimit"],
     troubleshootingSteps: [
@@ -5333,18 +4106,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://health.aws.amazon.com",
     description:
       "Fully managed container orchestration service for Docker containers on Fargate or EC2.",
-    impactSummary:
-      "Task deployments fail, container tasks crash-loop without restarting.",
-    keyComponents: [
-      "ECS Fargate",
-      "EC2 Launch Type",
-      "Service Scheduler",
-      "Target Groups",
-    ],
-    commonErrorCodes: [
-      "STOPPED (Essential container in task exited)",
-      "CannotPullContainerError",
-    ],
+    impactSummary: "Task deployments fail, container tasks crash-loop without restarting.",
+    keyComponents: ["ECS Fargate", "EC2 Launch Type", "Service Scheduler", "Target Groups"],
+    commonErrorCodes: ["STOPPED (Essential container in task exited)", "CannotPullContainerError"],
     troubleshootingSteps: [
       "Inspect stopped task reasons in ECS Console.",
       "Check CloudWatch container logs.",
@@ -5359,13 +4123,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://health.aws.amazon.com",
     description:
       "Managed Kubernetes service to run Kubernetes on AWS without installing or operating control plane.",
-    impactSummary:
-      "kubectl commands fail, control plane API server is unreachable.",
+    impactSummary: "kubectl commands fail, control plane API server is unreachable.",
     keyComponents: ["EKS Control Plane", "Managed Node Groups", "AWS VPC CNI"],
-    commonErrorCodes: [
-      "Error from server (ServiceUnavailable)",
-      "Connection Refused",
-    ],
+    commonErrorCodes: ["Error from server (ServiceUnavailable)", "Connection Refused"],
     troubleshootingSteps: [
       "Check status of EKS cluster in AWS Console.",
       "Inspect node group health.",
@@ -5378,21 +4138,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "cloud-infra",
     domain: "aws.amazon.com/ses",
     officialStatusUrl: "https://health.aws.amazon.com",
-    description:
-      "Cost-effective, flexible, and scalable email service for developers.",
-    impactSummary:
-      "Outbound emails fail to send, bounce/complaint rates cause account probation.",
-    keyComponents: [
-      "SMTP Endpoint",
-      "SES v2 API",
-      "Dedicated IP Pools",
-      "Configuration Sets",
-    ],
-    commonErrorCodes: [
-      "MessageRejected",
-      "LimitExceededException",
-      "500 Server Error",
-    ],
+    description: "Cost-effective, flexible, and scalable email service for developers.",
+    impactSummary: "Outbound emails fail to send, bounce/complaint rates cause account probation.",
+    keyComponents: ["SMTP Endpoint", "SES v2 API", "Dedicated IP Pools", "Configuration Sets"],
+    commonErrorCodes: ["MessageRejected", "LimitExceededException", "500 Server Error"],
     troubleshootingSteps: [
       "Check SES Reputation Dashboard.",
       "Verify DKIM and SPF records in Route 53.",
@@ -5454,21 +4203,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "cloud-infra",
     domain: "cloud.google.com/storage",
     officialStatusUrl: "https://status.cloud.google.com",
-    description:
-      "Worldwide, scalable object storage for developers and enterprises.",
-    impactSummary:
-      "gsutil and REST API bucket uploads fail with 503 or RateLimitExceeded.",
-    keyComponents: [
-      "JSON REST API",
-      "XML API",
-      "Signed URLs",
-      "Object Lifecycle Management",
-    ],
-    commonErrorCodes: [
-      "503 Service Unavailable",
-      "500 Backend Error",
-      "AccessDenied",
-    ],
+    description: "Worldwide, scalable object storage for developers and enterprises.",
+    impactSummary: "gsutil and REST API bucket uploads fail with 503 or RateLimitExceeded.",
+    keyComponents: ["JSON REST API", "XML API", "Signed URLs", "Object Lifecycle Management"],
+    commonErrorCodes: ["503 Service Unavailable", "500 Backend Error", "AccessDenied"],
     troubleshootingSteps: [
       "Check Google Cloud Status dashboard.",
       "Verify IAM service account permissions.",
@@ -5483,14 +4221,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.cloud.google.com",
     description:
       "Serverless, highly scalable enterprise data warehouse designed for business agility.",
-    impactSummary:
-      "Streaming insert API fails, analytical SQL queries time out.",
-    keyComponents: [
-      "BigQuery SQL Engine",
-      "Storage Write API",
-      "BI Engine",
-      "BigQuery ML",
-    ],
+    impactSummary: "Streaming insert API fails, analytical SQL queries time out.",
+    keyComponents: ["BigQuery SQL Engine", "Storage Write API", "BI Engine", "BigQuery ML"],
     commonErrorCodes: ["quotaExceeded", "500 Internal Error", "backendError"],
     troubleshootingSteps: [
       "Check BigQuery slot capacity usage.",
@@ -5504,24 +4236,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "cloud-infra",
     domain: "azure.microsoft.com/services/storage/blobs",
     officialStatusUrl: "https://status.azure.com",
-    description:
-      "Massively scalable and secure object storage for cloud-native workloads.",
+    description: "Massively scalable and secure object storage for cloud-native workloads.",
     impactSummary: "Blob read/write operations fail, CDN origin fetch errors.",
-    keyComponents: [
-      "Block Blobs",
-      "Append Blobs",
-      "Storage Accounts REST API",
-      "AzCopy",
-    ],
-    commonErrorCodes: [
-      "503 ServerBusy",
-      "500 InternalError",
-      "AuthenticationFailed",
-    ],
-    troubleshootingSteps: [
-      "Check Azure Service Health.",
-      "Verify SAS token expiry.",
-    ],
+    keyComponents: ["Block Blobs", "Append Blobs", "Storage Accounts REST API", "AzCopy"],
+    commonErrorCodes: ["503 ServerBusy", "500 InternalError", "AuthenticationFailed"],
+    troubleshootingSteps: ["Check Azure Service Health.", "Verify SAS token expiry."],
     relatedServices: ["azure", "aws-s3"],
   },
   {
@@ -5530,20 +4249,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "cloud-infra",
     domain: "azure.microsoft.com/services/app-service",
     officialStatusUrl: "https://status.azure.com",
-    description:
-      "HTTP-based service for hosting web applications, REST APIs, and mobile backends.",
-    impactSummary:
-      "App Service instances throw 502/503 errors, deployment slots fail to swap.",
-    keyComponents: [
-      "App Service Plans",
-      "Deployment Slots",
-      "Kudu Deployment Engine",
-    ],
-    commonErrorCodes: [
-      "502 Bad Gateway",
-      "503 Service Unavailable",
-      "500 Server Error",
-    ],
+    description: "HTTP-based service for hosting web applications, REST APIs, and mobile backends.",
+    impactSummary: "App Service instances throw 502/503 errors, deployment slots fail to swap.",
+    keyComponents: ["App Service Plans", "Deployment Slots", "Kudu Deployment Engine"],
+    commonErrorCodes: ["502 Bad Gateway", "503 Service Unavailable", "500 Server Error"],
     troubleshootingSteps: [
       "Restart App Service in Azure Portal.",
       "Check Diagnose and Solve Problems in portal.",
@@ -5558,14 +4267,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.azure.com",
     description:
       "Fully managed distributed NoSQL and relational database for modern app development.",
-    impactSummary:
-      "Request Unit (RU/s) throttling (429), multi-region replication sync lag.",
-    keyComponents: [
-      "SQL (Core) API",
-      "MongoDB API",
-      "Gremlin API",
-      "Change Feed",
-    ],
+    impactSummary: "Request Unit (RU/s) throttling (429), multi-region replication sync lag.",
+    keyComponents: ["SQL (Core) API", "MongoDB API", "Gremlin API", "Change Feed"],
     commonErrorCodes: ["429 RequestRateTooLarge", "500 Internal Server Error"],
     troubleshootingSteps: [
       "Increase Provisioned RU/s or enable Autoscale.",
@@ -5581,16 +4284,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.porkbun.com",
     description: "Domain registrar and authoritative DNS management provider.",
     impactSummary: "Domain DNS updates delay, registrar control panel errors.",
-    keyComponents: [
-      "Authoritative DNS",
-      "Domain Registrar API",
-      "SSL Generator",
-    ],
+    keyComponents: ["Authoritative DNS", "Domain Registrar API", "SSL Generator"],
     commonErrorCodes: ["500 Server Error", "DNS Resolution Timeout"],
-    troubleshootingSteps: [
-      "Check status.porkbun.com.",
-      "Use Cloudflare DNS nameservers.",
-    ],
+    troubleshootingSteps: ["Check status.porkbun.com.", "Use Cloudflare DNS nameservers."],
     relatedServices: ["namecheap", "godaddy", "cloudflare"],
   },
   {
@@ -5599,8 +4295,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "cloud-infra",
     domain: "tailscale.com",
     officialStatusUrl: "https://status.tailscale.com",
-    description:
-      "Zero config VPN built on WireGuard providing secure mesh networking for teams.",
+    description: "Zero config VPN built on WireGuard providing secure mesh networking for teams.",
     impactSummary:
       "Tailnet nodes disconnect, MagicDNS stops resolving private hostnames, DERP relays lag.",
     keyComponents: [
@@ -5638,11 +4333,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Workflow Engine",
       "Artifacts Cache",
     ],
-    commonErrorCodes: [
-      "Runner connection lost",
-      "Workflow run timed out",
-      "500 Server Error",
-    ],
+    commonErrorCodes: ["Runner connection lost", "Workflow run timed out", "500 Server Error"],
     troubleshootingSteps: [
       "Check www.githubstatus.com Actions component.",
       "Cancel and re-run failed jobs.",
@@ -5659,13 +4350,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://www.githubstatus.com",
     description:
       "AI pair programmer providing autocomplete suggestions, chat, and pull request reviews.",
-    impactSummary:
-      "IDE completions stop rendering, Copilot Chat returns connection error.",
-    keyComponents: [
-      "Copilot Completion API",
-      "Copilot Chat API",
-      "Copilot Workspace",
-    ],
+    impactSummary: "IDE completions stop rendering, Copilot Chat returns connection error.",
+    keyComponents: ["Copilot Completion API", "Copilot Chat API", "Copilot Workspace"],
     commonErrorCodes: ["Copilot: Connection failed", "503 Service Unavailable"],
     troubleshootingSteps: [
       "Check www.githubstatus.com Copilot component.",
@@ -5681,16 +4367,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.bitrise.io",
     description: "Mobile DevOps and CI/CD platform for iOS and Android apps.",
     impactSummary: "iOS build machines stall, App Store deployment steps fail.",
-    keyComponents: [
-      "macOS M-series Build Machines",
-      "Workflow Steps",
-      "Code Signing Engine",
-    ],
+    keyComponents: ["macOS M-series Build Machines", "Workflow Steps", "Code Signing Engine"],
     commonErrorCodes: ["500 Internal Error", "Build Failed on Step"],
-    troubleshootingSteps: [
-      "Check status.bitrise.io.",
-      "Test build locally with Bitrise CLI.",
-    ],
+    troubleshootingSteps: ["Check status.bitrise.io.", "Test build locally with Bitrise CLI."],
     relatedServices: ["github-actions", "circleci"],
   },
   {
@@ -5699,15 +4378,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "devtools-git",
     domain: "codecov.io",
     officialStatusUrl: "https://status.codecov.com",
-    description:
-      "Code coverage analysis and reporting tool integrated into pull request checks.",
-    impactSummary:
-      "Coverage report upload fails in CI, blocking required PR status checks.",
-    keyComponents: [
-      "Coverage Ingestion API",
-      "PR Comment Bot",
-      "Quality Gates",
-    ],
+    description: "Code coverage analysis and reporting tool integrated into pull request checks.",
+    impactSummary: "Coverage report upload fails in CI, blocking required PR status checks.",
+    keyComponents: ["Coverage Ingestion API", "PR Comment Bot", "Quality Gates"],
     commonErrorCodes: ["500 Server Error", "Upload Failed: Connection Timeout"],
     troubleshootingSteps: [
       "Check status.codecov.com.",
@@ -5723,14 +4396,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.honeycomb.io",
     description:
       "Fast observability tool built for high-cardinality distributed tracing and debugging.",
-    impactSummary:
-      "OTel trace ingest delays, high-cardinality queries timeout.",
-    keyComponents: [
-      "API Data Ingest",
-      "Query Engine",
-      "BubbleUp Analysis",
-      "SLO Triggers",
-    ],
+    impactSummary: "OTel trace ingest delays, high-cardinality queries timeout.",
+    keyComponents: ["API Data Ingest", "Query Engine", "BubbleUp Analysis", "SLO Triggers"],
     commonErrorCodes: ["503 Service Unavailable", "429 Rate Limit"],
     troubleshootingSteps: [
       "Check status.honeycomb.io.",
@@ -5744,19 +4411,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "devtools-git",
     domain: "axiom.co",
     officialStatusUrl: "https://status.axiom.co",
-    description:
-      "Cloud-native log management, event analytics, and observability platform.",
+    description: "Cloud-native log management, event analytics, and observability platform.",
     impactSummary: "Vercel log draining stalls, APL queries error.",
-    keyComponents: [
-      "Ingest API",
-      "Axiom Processing Language (APL)",
-      "Vercel Drain",
-    ],
+    keyComponents: ["Ingest API", "Axiom Processing Language (APL)", "Vercel Drain"],
     commonErrorCodes: ["500 Server Error", "504 Timeout"],
-    troubleshootingSteps: [
-      "Check status.axiom.co.",
-      "Inspect Axiom API token permissions.",
-    ],
+    troubleshootingSteps: ["Check status.axiom.co.", "Inspect Axiom API token permissions."],
     relatedServices: ["datadog", "sentry", "vercel"],
   },
   {
@@ -5767,14 +4426,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.better-auth.com",
     description:
       "Modern, framework-agnostic TypeScript authentication framework for full-stack apps.",
-    impactSummary:
-      "Session verification middleware throws runtime error, OAuth callbacks fail.",
-    keyComponents: [
-      "Auth Core Engine",
-      "Session Plugin",
-      "OAuth Handlers",
-      "Two-Factor Plugin",
-    ],
+    impactSummary: "Session verification middleware throws runtime error, OAuth callbacks fail.",
+    keyComponents: ["Auth Core Engine", "Session Plugin", "OAuth Handlers", "Two-Factor Plugin"],
     commonErrorCodes: ["500 Internal Error", "401 Unauthorized"],
     troubleshootingSteps: [
       "Check database connection for session table.",
@@ -5798,11 +4451,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Snowpipe Ingestion",
       "Storage Layer",
     ],
-    commonErrorCodes: [
-      "Warehouse failed to start",
-      "500 Server Error",
-      "Connection Timeout",
-    ],
+    commonErrorCodes: ["Warehouse failed to start", "500 Server Error", "Connection Timeout"],
     troubleshootingSteps: [
       "Check status.snowflake.com for your cloud region (AWS, Azure, GCP).",
       "Inspect Snowpipe error logs.",
@@ -5818,14 +4467,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.databricks.com",
     description:
       "Data intelligence platform unifying data engineering, data science, and AI on Apache Spark.",
-    impactSummary:
-      "Spark clusters fail to start, automated job workflows terminate with errors.",
-    keyComponents: [
-      "Spark Clusters",
-      "Unity Catalog",
-      "Delta Lake Storage",
-      "Model Serving",
-    ],
+    impactSummary: "Spark clusters fail to start, automated job workflows terminate with errors.",
+    keyComponents: ["Spark Clusters", "Unity Catalog", "Delta Lake Storage", "Model Serving"],
     commonErrorCodes: ["500 Internal Error", "Cluster start timed out"],
     troubleshootingSteps: [
       "Check status.databricks.com.",
@@ -5839,19 +4482,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "databases-storage",
     domain: "clickhouse.com",
     officialStatusUrl: "https://status.clickhouse.com",
-    description:
-      "Lightning-fast cloud data warehouse for real-time analytics and telemetry.",
-    impactSummary:
-      "Real-time telemetry queries hang, HTTP interface returns 503.",
-    keyComponents: [
-      "ClickHouse Service",
-      "Keeper Coordination",
-      "Object Storage Tier",
-    ],
-    commonErrorCodes: [
-      "503 Service Unavailable",
-      "DB::Exception: Memory limit exceeded",
-    ],
+    description: "Lightning-fast cloud data warehouse for real-time analytics and telemetry.",
+    impactSummary: "Real-time telemetry queries hang, HTTP interface returns 503.",
+    keyComponents: ["ClickHouse Service", "Keeper Coordination", "Object Storage Tier"],
+    commonErrorCodes: ["503 Service Unavailable", "DB::Exception: Memory limit exceeded"],
     troubleshootingSteps: [
       "Check status.clickhouse.com.",
       "Review query memory limit in ClickHouse Console.",
@@ -5864,10 +4498,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "databases-storage",
     domain: "pinata.cloud",
     officialStatusUrl: "https://status.pinata.cloud",
-    description:
-      "IPFS pinning service and dedicated IPFS gateways for Web3 and media.",
-    impactSummary:
-      "IPFS content hashes (CID) fail to resolve via dedicated gateway.",
+    description: "IPFS pinning service and dedicated IPFS gateways for Web3 and media.",
+    impactSummary: "IPFS content hashes (CID) fail to resolve via dedicated gateway.",
     keyComponents: ["Pinning API", "Dedicated Gateway", "File API"],
     commonErrorCodes: ["504 Gateway Timeout", "502 Bad Gateway"],
     troubleshootingSteps: [
@@ -5882,18 +4514,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "comms-email",
     domain: "mailchimp.com",
     officialStatusUrl: "https://status.mailchimp.com",
-    description:
-      "Marketing automation platform and email marketing service for businesses.",
+    description: "Marketing automation platform and email marketing service for businesses.",
     impactSummary: "Campaign sends stall, Marketing API requests return 500.",
     keyComponents: ["Marketing API", "Automations Engine", "Campaign Delivery"],
-    commonErrorCodes: [
-      "500 Internal Server Error",
-      "429 Rate Limit (10 simultaneous connections)",
-    ],
-    troubleshootingSteps: [
-      "Check status.mailchimp.com.",
-      "Inspect API error response details.",
-    ],
+    commonErrorCodes: ["500 Internal Server Error", "429 Rate Limit (10 simultaneous connections)"],
+    troubleshootingSteps: ["Check status.mailchimp.com.", "Inspect API error response details."],
     relatedServices: ["klaviyo", "sendgrid"],
   },
   {
@@ -5904,18 +4529,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.brevo.com",
     description:
       "All-in-one platform for transactional emails, SMS marketing, and WhatsApp campaigns.",
-    impactSummary:
-      "Transactional emails fail to dispatch, webhook event deliveries freeze.",
-    keyComponents: [
-      "Transactional Email API",
-      "Marketing Automation",
-      "SMS API",
-    ],
+    impactSummary: "Transactional emails fail to dispatch, webhook event deliveries freeze.",
+    keyComponents: ["Transactional Email API", "Marketing Automation", "SMS API"],
     commonErrorCodes: ["500 Internal Error", "400 Bad Request"],
-    troubleshootingSteps: [
-      "Check status.brevo.com.",
-      "Verify Brevo API v3 key.",
-    ],
+    troubleshootingSteps: ["Check status.brevo.com.", "Verify Brevo API v3 key."],
     relatedServices: ["sendgrid", "resend"],
   },
   {
@@ -5924,10 +4541,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "comms-email",
     domain: "crisp.chat",
     officialStatusUrl: "https://status.crisp.chat",
-    description:
-      "Customer messaging platform providing live chat widgets and CRM inbox.",
-    impactSummary:
-      "Chat widget fails to connect WebSocket, customer messages drop.",
+    description: "Customer messaging platform providing live chat widgets and CRM inbox.",
+    impactSummary: "Chat widget fails to connect WebSocket, customer messages drop.",
     keyComponents: ["Chatbox WebSocket", "Inbox REST API", "Bot Engine"],
     commonErrorCodes: ["500 Server Error", "WebSocket Connection Timeout"],
     troubleshootingSteps: ["Check status.crisp.chat.", "Reload chat session."],
@@ -5939,25 +4554,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "productivity-collab",
     domain: "webflow.com",
     officialStatusUrl: "https://status.webflow.com",
-    description:
-      "Visual web development platform for building production websites without code.",
-    impactSummary:
-      "Site publishing fails, CMS API requests return 500, Designer canvas locks.",
-    keyComponents: [
-      "Designer Canvas",
-      "Publishing Engine",
-      "CMS REST API",
-      "Webflow Ecommerce",
-    ],
-    commonErrorCodes: [
-      "500 Internal Server Error",
-      "502 Bad Gateway",
-      "Publishing Failed",
-    ],
-    troubleshootingSteps: [
-      "Check status.webflow.com.",
-      "Republish site to staging domain first.",
-    ],
+    description: "Visual web development platform for building production websites without code.",
+    impactSummary: "Site publishing fails, CMS API requests return 500, Designer canvas locks.",
+    keyComponents: ["Designer Canvas", "Publishing Engine", "CMS REST API", "Webflow Ecommerce"],
+    commonErrorCodes: ["500 Internal Server Error", "502 Bad Gateway", "Publishing Failed"],
+    troubleshootingSteps: ["Check status.webflow.com.", "Republish site to staging domain first."],
     relatedServices: ["framer", "vercel"],
     featured: true,
   },
@@ -5967,16 +4568,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "productivity-collab",
     domain: "framer.com",
     officialStatusUrl: "https://status.framer.com",
-    description:
-      "Design and publishing tool for lightning-fast responsive websites.",
-    impactSummary:
-      "Site deployment pipeline stalls, Framer canvas multiplayer disconnects.",
+    description: "Design and publishing tool for lightning-fast responsive websites.",
+    impactSummary: "Site deployment pipeline stalls, Framer canvas multiplayer disconnects.",
     keyComponents: ["Publishing CDN", "Canvas Editor", "CMS Engine"],
     commonErrorCodes: ["500 Server Error", "504 Gateway Timeout"],
-    troubleshootingSteps: [
-      "Check status.framer.com.",
-      "Refresh Framer project.",
-    ],
+    troubleshootingSteps: ["Check status.framer.com.", "Refresh Framer project."],
     relatedServices: ["webflow", "figma"],
   },
   {
@@ -5985,16 +4581,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "productivity-collab",
     domain: "hubspot.com",
     officialStatusUrl: "https://status.hubspot.com",
-    description:
-      "CRM platform with marketing, sales, customer service, and CMS software.",
+    description: "CRM platform with marketing, sales, customer service, and CMS software.",
     impactSummary:
       "Contact form submissions fail, CRM API webhooks back up, Deals workflow rules pause.",
-    keyComponents: [
-      "CRM Contacts API",
-      "Forms API",
-      "Workflows Automation",
-      "HubSpot CMS",
-    ],
+    keyComponents: ["CRM Contacts API", "Forms API", "Workflows Automation", "HubSpot CMS"],
     commonErrorCodes: [
       "500 Internal Server Error",
       "429 Rate Limit (100 req/10 sec)",
@@ -6013,8 +4603,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "productivity-collab",
     domain: "salesforce.com",
     officialStatusUrl: "https://status.salesforce.com",
-    description:
-      "Enterprise customer relationship management (CRM) software suite.",
+    description: "Enterprise customer relationship management (CRM) software suite.",
     impactSummary:
       "REST/SOAP API calls error out, Apex triggers fail, lightning interface disconnects.",
     keyComponents: [
@@ -6023,11 +4612,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Lightning Platform",
       "Single Sign-On",
     ],
-    commonErrorCodes: [
-      "500 Internal Error",
-      "REQUEST_LIMIT_EXCEEDED",
-      "UNABLE_TO_LOCK_ROW",
-    ],
+    commonErrorCodes: ["500 Internal Error", "REQUEST_LIMIT_EXCEEDED", "UNABLE_TO_LOCK_ROW"],
     troubleshootingSteps: [
       "Check status.salesforce.com lookup by instance (e.g. NA123, EU45).",
       "Inspect API limits.",
@@ -6040,20 +4625,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "productivity-collab",
     domain: "zapier.com",
     officialStatusUrl: "https://status.zapier.com",
-    description:
-      "Workflow automation platform connecting thousands of web apps.",
+    description: "Workflow automation platform connecting thousands of web apps.",
     impactSummary:
       "Zaps fail to trigger, webhook catches drop payloads, app integrations disconnect.",
-    keyComponents: [
-      "Zaps Execution Engine",
-      "Webhooks by Zapier",
-      "App Integration Connectors",
-    ],
-    commonErrorCodes: [
-      "500 Server Error",
-      "Connection Timeout",
-      "Trigger Failed",
-    ],
+    keyComponents: ["Zaps Execution Engine", "Webhooks by Zapier", "App Integration Connectors"],
+    commonErrorCodes: ["500 Server Error", "Connection Timeout", "Trigger Failed"],
     troubleshootingSteps: [
       "Check status.zapier.com.",
       "Inspect Zap History for detailed step execution errors.",
@@ -6069,14 +4645,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.make.com",
     description:
       "Visual platform to build and automate business processes and multi-step workflows.",
-    impactSummary:
-      "Scenario executions stall, webhook listeners fail to capture data.",
+    impactSummary: "Scenario executions stall, webhook listeners fail to capture data.",
     keyComponents: ["Scenario Runner Engine", "Custom Webhooks", "Data Stores"],
     commonErrorCodes: ["500 Internal Server Error", "Connection Error"],
-    troubleshootingSteps: [
-      "Check status.make.com.",
-      "Check scenario execution history.",
-    ],
+    troubleshootingSteps: ["Check status.make.com.", "Check scenario execution history."],
     relatedServices: ["zapier", "n8n-cloud"],
   },
   {
@@ -6085,19 +4657,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "productivity-collab",
     domain: "n8n.io",
     officialStatusUrl: "https://status.n8n.io",
-    description:
-      "Fair-code workflow automation tool and cloud service for technical teams.",
+    description: "Fair-code workflow automation tool and cloud service for technical teams.",
     impactSummary: "Workflow triggers fail, node execution queue stalls.",
-    keyComponents: [
-      "Workflow Execution Engine",
-      "Webhook Nodes",
-      "Credential Store",
-    ],
+    keyComponents: ["Workflow Execution Engine", "Webhook Nodes", "Credential Store"],
     commonErrorCodes: ["500 Internal Error", "Execution Timed Out"],
-    troubleshootingSteps: [
-      "Check status.n8n.io.",
-      "Restart n8n workflow instance.",
-    ],
+    troubleshootingSteps: ["Check status.n8n.io.", "Restart n8n workflow instance."],
     relatedServices: ["zapier", "make-com"],
   },
   {
@@ -6107,8 +4671,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     domain: "privy.io",
     officialStatusUrl: "https://status.privy.io",
     description: "Embedded wallet and authentication library for web3 apps.",
-    impactSummary:
-      "Embedded wallet creation fails, social login for web3 dApps breaks.",
+    impactSummary: "Embedded wallet creation fails, social login for web3 dApps breaks.",
     keyComponents: ["Embedded Wallets API", "Auth Gateway", "Security Enclave"],
     commonErrorCodes: ["500 Internal Server Error", "401 Unauthorized"],
     troubleshootingSteps: ["Check status.privy.io.", "Verify Privy App ID."],
@@ -6120,20 +4683,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "web3-crypto",
     domain: "reown.com",
     officialStatusUrl: "https://status.reown.com",
-    description:
-      "Open protocol for connecting blockchain wallets to decentralized applications.",
-    impactSummary:
-      "QR code modal pairing fails, mobile wallet signature prompts drop.",
-    keyComponents: [
-      "Relay Server WebSocket",
-      "AppKit / Web3Modal",
-      "Verify API",
-    ],
-    commonErrorCodes: [
-      "WebSocket Closed",
-      "500 Server Error",
-      "Session Expired",
-    ],
+    description: "Open protocol for connecting blockchain wallets to decentralized applications.",
+    impactSummary: "QR code modal pairing fails, mobile wallet signature prompts drop.",
+    keyComponents: ["Relay Server WebSocket", "AppKit / Web3Modal", "Verify API"],
+    commonErrorCodes: ["WebSocket Closed", "500 Server Error", "Session Expired"],
     troubleshootingSteps: [
       "Check status.reown.com.",
       "Inspect WalletConnect project ID in dashboard.",
@@ -6146,15 +4699,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "web3-crypto",
     domain: "solscan.io",
     officialStatusUrl: "https://status.solscan.io",
-    description:
-      "Real-time blockchain explorer and developer data API for the Solana network.",
+    description: "Real-time blockchain explorer and developer data API for the Solana network.",
     impactSummary: "Solana transaction tracking APIs return 500 or rate limit.",
     keyComponents: ["Public REST API", "Block Explorer UI", "Token API"],
     commonErrorCodes: ["429 Too Many Requests", "500 Server Error"],
-    troubleshootingSteps: [
-      "Check Solscan status.",
-      "Use Solana RPC getTransaction directly.",
-    ],
+    troubleshootingSteps: ["Check Solscan status.", "Use Solana RPC getTransaction directly."],
     relatedServices: ["quicknode", "etherscan"],
   },
   {
@@ -6173,11 +4722,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Service Directory",
       "Webhooks Ingest",
     ],
-    commonErrorCodes: [
-      "500 Internal Server Error",
-      "429 Rate Limit",
-      "502 Bad Gateway",
-    ],
+    commonErrorCodes: ["500 Internal Server Error", "429 Rate Limit", "502 Bad Gateway"],
     troubleshootingSteps: [
       "Check status.pagerduty.com.",
       "Verify PagerDuty Integration Key in monitoring alerts.",
@@ -6196,17 +4741,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Modern incident management platform ensuring critical incidents are never missed.",
     impactSummary:
       "Alert routing rules fail, push notifications and voice calls fail to wake on-call team.",
-    keyComponents: [
-      "Alert Creation API",
-      "Heartbeat Monitor",
-      "Escalation Policies",
-      "Schedules",
-    ],
+    keyComponents: ["Alert Creation API", "Heartbeat Monitor", "Escalation Policies", "Schedules"],
     commonErrorCodes: ["500 Internal Error", "504 Gateway Timeout"],
-    troubleshootingSteps: [
-      "Check opsgenie.status.atlassian.com.",
-      "Verify API key permissions.",
-    ],
+    troubleshootingSteps: ["Check opsgenie.status.atlassian.com.", "Verify API key permissions."],
     relatedServices: ["pagerduty", "jira", "datadog"],
   },
   {
@@ -6217,14 +4754,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.incident.io",
     description:
       "Incident management platform natively integrated into Slack for managing operational response.",
-    impactSummary:
-      "Slack /inc declare commands fail, incident timeline updates do not sync.",
-    keyComponents: [
-      "Slack App Bot",
-      "Incident API",
-      "Public Status Pages",
-      "Catalog Sync",
-    ],
+    impactSummary: "Slack /inc declare commands fail, incident timeline updates do not sync.",
+    keyComponents: ["Slack App Bot", "Incident API", "Public Status Pages", "Catalog Sync"],
     commonErrorCodes: ["500 Server Error", "Slack App Timeout"],
     troubleshootingSteps: [
       "Check status.incident.io.",
@@ -6238,21 +4769,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "devtools-git",
     domain: "rootly.com",
     officialStatusUrl: "https://status.rootly.com",
-    description:
-      "Slack-native incident management platform and automated post-mortem generator.",
-    impactSummary:
-      "Incident workflows stall, automated Jira ticket creation halts.",
-    keyComponents: [
-      "Slack Integration",
-      "Rootly API",
-      "Post-Mortem Engine",
-      "Integrations",
-    ],
+    description: "Slack-native incident management platform and automated post-mortem generator.",
+    impactSummary: "Incident workflows stall, automated Jira ticket creation halts.",
+    keyComponents: ["Slack Integration", "Rootly API", "Post-Mortem Engine", "Integrations"],
     commonErrorCodes: ["500 Server Error", "502 Bad Gateway"],
-    troubleshootingSteps: [
-      "Check status.rootly.com.",
-      "Inspect bot permissions in Slack.",
-    ],
+    troubleshootingSteps: ["Check status.rootly.com.", "Inspect bot permissions in Slack."],
     relatedServices: ["incident-io", "pagerduty", "slack"],
   },
   {
@@ -6261,15 +4782,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "devtools-git",
     domain: "firehydrant.com",
     officialStatusUrl: "https://status.firehydrant.com",
-    description:
-      "All-in-one incident management software to automate incident response processes.",
+    description: "All-in-one incident management software to automate incident response processes.",
     impactSummary: "Runbooks fail to trigger, automated communications stall.",
     keyComponents: ["Runbook Engine", "Incident API", "Status Pages"],
     commonErrorCodes: ["500 Internal Error", "504 Timeout"],
-    troubleshootingSteps: [
-      "Check status.firehydrant.com.",
-      "Trigger manual incident declaration.",
-    ],
+    troubleshootingSteps: ["Check status.firehydrant.com.", "Trigger manual incident declaration."],
     relatedServices: ["pagerduty", "opsgenie"],
   },
   {
@@ -6280,13 +4797,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.signoz.io",
     description:
       "Open-source observability platform natively built on OpenTelemetry and ClickHouse.",
-    impactSummary:
-      "OTel collector ingestion fails, APM dashboards show missing traces.",
-    keyComponents: [
-      "OTel Ingest Gateway",
-      "ClickHouse Query Engine",
-      "Alert Manager",
-    ],
+    impactSummary: "OTel collector ingestion fails, APM dashboards show missing traces.",
+    keyComponents: ["OTel Ingest Gateway", "ClickHouse Query Engine", "Alert Manager"],
     commonErrorCodes: ["503 Service Unavailable", "500 Server Error"],
     troubleshootingSteps: [
       "Check status.signoz.io.",
@@ -6302,8 +4814,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.hyperdx.io",
     description:
       "Developer-first observability platform connecting logs, traces, and session replays.",
-    impactSummary:
-      "Browser session replays stop recording, log ingestion returns 500.",
+    impactSummary: "Browser session replays stop recording, log ingestion returns 500.",
     keyComponents: ["Ingest API", "Session Replay Engine", "Search Interface"],
     commonErrorCodes: ["500 Server Error", "504 Gateway Timeout"],
     troubleshootingSteps: [
@@ -6322,12 +4833,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Frontend monitoring and session replay solution that records user interactions and network errors.",
     impactSummary:
       "Session recording uploads fail in user browsers, increasing client-side CPU overhead.",
-    keyComponents: [
-      "Ingest Collectors",
-      "Replay Engine",
-      "Network Monitor",
-      "Performance Metrics",
-    ],
+    keyComponents: ["Ingest Collectors", "Replay Engine", "Network Monitor", "Performance Metrics"],
     commonErrorCodes: ["500 Internal Server Error", "429 Quota Exceeded"],
     troubleshootingSteps: [
       "Check status.logrocket.com.",
@@ -6343,18 +4849,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.highlight.io",
     description:
       "Open source full-stack monitoring platform with session replay, error monitoring, and logging.",
-    impactSummary:
-      "Error capture telemetry drops, frontend session recording fails to send.",
-    keyComponents: [
-      "Telemetry Ingestion",
-      "Session Recording Player",
-      "Error Monitoring",
-    ],
+    impactSummary: "Error capture telemetry drops, frontend session recording fails to send.",
+    keyComponents: ["Telemetry Ingestion", "Session Recording Player", "Error Monitoring"],
     commonErrorCodes: ["500 Internal Error", "504 Gateway Timeout"],
-    troubleshootingSteps: [
-      "Check status.highlight.io.",
-      "Verify project ID in H.init().",
-    ],
+    troubleshootingSteps: ["Check status.highlight.io.", "Verify project ID in H.init()."],
     relatedServices: ["sentry", "logrocket", "posthog"],
   },
   {
@@ -6367,17 +4865,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "AI search and discovery platform providing real-time search API and neural search indices.",
     impactSummary:
       "Website search bars freeze, search queries return 500, record indexing queues stall.",
-    keyComponents: [
-      "Search REST API",
-      "Indexing Pipeline",
-      "NeuralSearch Engine",
-      "Recommend API",
-    ],
-    commonErrorCodes: [
-      "503 Service Unavailable",
-      "429 Rate Limit",
-      "500 Internal Server Error",
-    ],
+    keyComponents: ["Search REST API", "Indexing Pipeline", "NeuralSearch Engine", "Recommend API"],
+    commonErrorCodes: ["503 Service Unavailable", "429 Rate Limit", "500 Internal Server Error"],
     troubleshootingSteps: [
       "Check status.algolia.com (check DSN Distributed Search Network clusters).",
       "Verify Algolia search-only API key permissions.",
@@ -6393,8 +4882,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     domain: "meilisearch.com",
     officialStatusUrl: "https://status.meilisearch.com",
     description: "Ultra-fast, typo-tolerant open-source search engine cloud.",
-    impactSummary:
-      "Instant search inputs freeze, document updates stall in task queue.",
+    impactSummary: "Instant search inputs freeze, document updates stall in task queue.",
     keyComponents: ["Search API", "Task Queue", "Index Manager"],
     commonErrorCodes: ["500 Internal Error", "504 Gateway Timeout"],
     troubleshootingSteps: [
@@ -6411,18 +4899,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.typesense.org",
     description:
       "Fast, typo-tolerant search engine optimized for developer productivity and instant search-as-you-type.",
-    impactSummary:
-      "Search requests fail, document curation rules stop working.",
-    keyComponents: [
-      "Multi-Region Clusters",
-      "Search API",
-      "Document Ingestion",
-    ],
+    impactSummary: "Search requests fail, document curation rules stop working.",
+    keyComponents: ["Multi-Region Clusters", "Search API", "Document Ingestion"],
     commonErrorCodes: ["503 Service Unavailable", "500 Server Error"],
-    troubleshootingSteps: [
-      "Check status.typesense.org.",
-      "Verify cluster nodes health.",
-    ],
+    troubleshootingSteps: ["Check status.typesense.org.", "Verify cluster nodes health."],
     relatedServices: ["meilisearch", "algolia"],
   },
   {
@@ -6433,19 +4913,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.trigger.dev",
     description:
       "Developer-first background jobs framework built for long-running workflows with zero timeouts.",
-    impactSummary:
-      "Background task triggers freeze, serverless task queues fail to process runs.",
-    keyComponents: [
-      "Realtime Engine",
-      "Task Execution Runtime",
-      "Dashboard UI",
-      "Webhooks Queue",
-    ],
-    commonErrorCodes: [
-      "500 Internal Server Error",
-      "Run Timed Out",
-      "504 Gateway Timeout",
-    ],
+    impactSummary: "Background task triggers freeze, serverless task queues fail to process runs.",
+    keyComponents: ["Realtime Engine", "Task Execution Runtime", "Dashboard UI", "Webhooks Queue"],
+    commonErrorCodes: ["500 Internal Server Error", "Run Timed Out", "504 Gateway Timeout"],
     troubleshootingSteps: [
       "Check status.trigger.dev.",
       "Inspect run logs in Trigger.dev dashboard.",
@@ -6461,13 +4931,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.inngest.com",
     description:
       "Event-driven durable execution engine to build step functions, background jobs, and workflows.",
-    impactSummary:
-      "Event ingest drops events, function steps fail to resume after sleep or await.",
-    keyComponents: [
-      "Event Ingest API",
-      "Durable Execution Engine",
-      "Step Concurrency Controller",
-    ],
+    impactSummary: "Event ingest drops events, function steps fail to resume after sleep or await.",
+    keyComponents: ["Event Ingest API", "Durable Execution Engine", "Step Concurrency Controller"],
     commonErrorCodes: ["500 Internal Server Error", "Event Delivery Failed"],
     troubleshootingSteps: [
       "Check status.inngest.com.",
@@ -6492,11 +4957,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Matching Service",
       "Temporal Web UI",
     ],
-    commonErrorCodes: [
-      "RESOURCE_EXHAUSTED",
-      "UNAVAILABLE",
-      "DEADLINE_EXCEEDED",
-    ],
+    commonErrorCodes: ["RESOURCE_EXHAUSTED", "UNAVAILABLE", "DEADLINE_EXCEEDED"],
     troubleshootingSteps: [
       "Check status.temporal.io.",
       "Verify client TLS mTLS certificates and namespace health.",
@@ -6511,13 +4972,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.mintlify.com",
     description:
       "Modern documentation platform built for developers, with interactive API playground and search.",
-    impactSummary:
-      "Documentation portals fail to load, GitHub sync for docs publishing errors.",
-    keyComponents: [
-      "Documentation CDN",
-      "GitHub Sync Engine",
-      "AI Search Assistant",
-    ],
+    impactSummary: "Documentation portals fail to load, GitHub sync for docs publishing errors.",
+    keyComponents: ["Documentation CDN", "GitHub Sync Engine", "AI Search Assistant"],
     commonErrorCodes: ["500 Server Error", "502 Bad Gateway"],
     troubleshootingSteps: [
       "Check status.mintlify.com.",
@@ -6533,18 +4989,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.gitbook.com",
     description:
       "Documentation platform where technical teams document products, APIs, and internal knowledge.",
-    impactSummary:
-      "Public documentation sites return 500, Git sync operations error.",
-    keyComponents: [
-      "Published Sites CDN",
-      "Git Sync Engine",
-      "Visitor Analytics",
-    ],
+    impactSummary: "Public documentation sites return 500, Git sync operations error.",
+    keyComponents: ["Published Sites CDN", "Git Sync Engine", "Visitor Analytics"],
     commonErrorCodes: ["500 Internal Error", "504 Timeout"],
-    troubleshootingSteps: [
-      "Check status.gitbook.com.",
-      "Verify GitBook space permissions.",
-    ],
+    troubleshootingSteps: ["Check status.gitbook.com.", "Verify GitBook space permissions."],
     relatedServices: ["mintlify", "notion"],
   },
   {
@@ -6555,18 +5003,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.readme.com",
     description:
       "Interactive API documentation hub with live API metrics and developer onboarding.",
-    impactSummary:
-      "Interactive API explorer calls fail, OpenAPI spec imports error.",
-    keyComponents: [
-      "API Reference Engine",
-      "Metrics Logging API",
-      "Developer Hub",
-    ],
+    impactSummary: "Interactive API explorer calls fail, OpenAPI spec imports error.",
+    keyComponents: ["API Reference Engine", "Metrics Logging API", "Developer Hub"],
     commonErrorCodes: ["500 Internal Error", "503 Service Unavailable"],
-    troubleshootingSteps: [
-      "Check status.readme.com.",
-      "Validate OpenAPI specification syntax.",
-    ],
+    troubleshootingSteps: ["Check status.readme.com.", "Validate OpenAPI specification syntax."],
     relatedServices: ["mintlify", "gitbook"],
   },
   {
@@ -6577,23 +5017,15 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.postman.com",
     description:
       "API platform for building and using APIs, managing collections, and automated mock servers.",
-    impactSummary:
-      "Cloud collection sync disconnects, mock servers and automated monitors fail.",
+    impactSummary: "Cloud collection sync disconnects, mock servers and automated monitors fail.",
     keyComponents: [
       "Collection Cloud Sync",
       "Postman Mock Servers",
       "Postman Monitors",
       "Public API Network",
     ],
-    commonErrorCodes: [
-      "500 Internal Error",
-      "Sync Failed",
-      "504 Gateway Timeout",
-    ],
-    troubleshootingSteps: [
-      "Check status.postman.com.",
-      "Switch to offline mode in desktop app.",
-    ],
+    commonErrorCodes: ["500 Internal Error", "Sync Failed", "504 Gateway Timeout"],
+    troubleshootingSteps: ["Check status.postman.com.", "Switch to offline mode in desktop app."],
     relatedServices: ["github", "readme-io"],
   },
   {
@@ -6612,11 +5044,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
       "Retool Workflows Engine",
       "Resource Connectors",
     ],
-    commonErrorCodes: [
-      "500 Internal Server Error",
-      "Query Timed Out",
-      "504 Gateway Timeout",
-    ],
+    commonErrorCodes: ["500 Internal Server Error", "Query Timed Out", "504 Gateway Timeout"],
     troubleshootingSteps: [
       "Check status.retool.com.",
       "Check database resource connection credentials in Retool Resources.",
@@ -6632,13 +5060,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     domain: "appsmith.com",
     officialStatusUrl: "https://status.appsmith.com",
     description: "Open-source internal tool development platform.",
-    impactSummary:
-      "Admin portal queries fail, UI widgets throw JavaScript evaluation errors.",
-    keyComponents: [
-      "Cloud Workspace",
-      "Data Source Connectors",
-      "JS Object Engine",
-    ],
+    impactSummary: "Admin portal queries fail, UI widgets throw JavaScript evaluation errors.",
+    keyComponents: ["Cloud Workspace", "Data Source Connectors", "JS Object Engine"],
     commonErrorCodes: ["500 Internal Error", "Datasource Connection Failed"],
     troubleshootingSteps: [
       "Check status.appsmith.com.",
@@ -6654,13 +5077,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.liveblocks.io",
     description:
       "Real-time collaborative infrastructure providing presence, comments, and multiplayer storage.",
-    impactSummary:
-      "Multiplayer room connections fail, comments real-time sync stalls.",
-    keyComponents: [
-      "Liveblocks WebSocket Mesh",
-      "Presence Engine",
-      "Storage & Comments API",
-    ],
+    impactSummary: "Multiplayer room connections fail, comments real-time sync stalls.",
+    keyComponents: ["Liveblocks WebSocket Mesh", "Presence Engine", "Storage & Comments API"],
     commonErrorCodes: ["WebSocket Connection Closed", "500 Server Error"],
     troubleshootingSteps: [
       "Check status.liveblocks.io.",
@@ -6676,14 +5094,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.partykit.io",
     description:
       "Real-time multiplayer server infrastructure built on Cloudflare Workers and Durable Objects.",
-    impactSummary:
-      "WebSocket rooms disconnect, collaborative state changes fail to persist.",
+    impactSummary: "WebSocket rooms disconnect, collaborative state changes fail to persist.",
     keyComponents: ["PartyKit Edge Runtime", "Room Mesh", "Deploy Engine"],
     commonErrorCodes: ["1006 Connection Closed", "500 Worker Error"],
-    troubleshootingSteps: [
-      "Check PartyKit status.",
-      "Inspect room server logs via partykit tail.",
-    ],
+    troubleshootingSteps: ["Check PartyKit status.", "Inspect room server logs via partykit tail."],
     relatedServices: ["cloudflare", "liveblocks"],
   },
   {
@@ -6694,13 +5108,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.gitguardian.com",
     description:
       "Code security and automated secret detection platform protecting Git repositories.",
-    impactSummary:
-      "Pre-commit and PR scan checks block CI pipelines with timeout errors.",
-    keyComponents: [
-      "Secret Detection API",
-      "GitHub App Webhook Ingest",
-      "Internal Monitoring",
-    ],
+    impactSummary: "Pre-commit and PR scan checks block CI pipelines with timeout errors.",
+    keyComponents: ["Secret Detection API", "GitHub App Webhook Ingest", "Internal Monitoring"],
     commonErrorCodes: ["500 Server Error", "504 Timeout"],
     troubleshootingSteps: [
       "Check status.gitguardian.com.",
@@ -6714,16 +5123,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "auth-security",
     domain: "semgrep.dev",
     officialStatusUrl: "https://status.semgrep.dev",
-    description:
-      "Static code analysis (SAST) and software supply chain security platform.",
-    impactSummary:
-      "CI security scans fail to upload results or download rule packs.",
+    description: "Static code analysis (SAST) and software supply chain security platform.",
+    impactSummary: "CI security scans fail to upload results or download rule packs.",
     keyComponents: ["Rules Registry", "App Ingestion API", "Secrets Scanner"],
     commonErrorCodes: ["500 Internal Error", "Failed to download rules"],
-    troubleshootingSteps: [
-      "Check status.semgrep.dev.",
-      "Run local ruleset semgrep --config=auto.",
-    ],
+    troubleshootingSteps: ["Check status.semgrep.dev.", "Run local ruleset semgrep --config=auto."],
     relatedServices: ["snyk", "github"],
   },
   {
@@ -6732,20 +5136,12 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "auth-security",
     domain: "cloudflare.com/products/turnstile",
     officialStatusUrl: "https://www.cloudflarestatus.com",
-    description:
-      "Smart CAPTCHA alternative providing seamless bot protection without puzzles.",
+    description: "Smart CAPTCHA alternative providing seamless bot protection without puzzles.",
     impactSummary:
       "Widget fails to generate challenge response token, siteverify API rejects valid tokens.",
     keyComponents: ["Turnstile Widget Script", "siteverify API Endpoint"],
-    commonErrorCodes: [
-      "invalid-input-response",
-      "timeout-or-duplicate",
-      "500 Server Error",
-    ],
-    troubleshootingSteps: [
-      "Check Cloudflare status.",
-      "Verify sitekey and secretKey.",
-    ],
+    commonErrorCodes: ["invalid-input-response", "timeout-or-duplicate", "500 Server Error"],
+    troubleshootingSteps: ["Check Cloudflare status.", "Verify sitekey and secretKey."],
     relatedServices: ["cloudflare", "hcaptcha", "recaptcha"],
     featured: true,
   },
@@ -6757,23 +5153,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.razorpay.com",
     description:
       "Payment gateway and financial solutions platform powering Indian and international businesses.",
-    impactSummary:
-      "UPI and net banking checkouts fail, webhook notifications stop delivering.",
-    keyComponents: [
-      "Payment Gateway API",
-      "UPI Stack",
-      "Payouts API",
-      "Subscriptions",
-    ],
-    commonErrorCodes: [
-      "BAD_REQUEST_ERROR",
-      "GATEWAY_ERROR",
-      "500 Server Error",
-    ],
-    troubleshootingSteps: [
-      "Check status.razorpay.com.",
-      "Verify webhook signature validation.",
-    ],
+    impactSummary: "UPI and net banking checkouts fail, webhook notifications stop delivering.",
+    keyComponents: ["Payment Gateway API", "UPI Stack", "Payouts API", "Subscriptions"],
+    commonErrorCodes: ["BAD_REQUEST_ERROR", "GATEWAY_ERROR", "500 Server Error"],
+    troubleshootingSteps: ["Check status.razorpay.com.", "Verify webhook signature validation."],
     relatedServices: ["stripe", "paypal"],
   },
   {
@@ -6784,8 +5167,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.mollie.com",
     description:
       "European payment service provider supporting iDEAL, Bancontact, cards, and Apple Pay.",
-    impactSummary:
-      "iDEAL bank redirect flows fail, payment status webhooks stall.",
+    impactSummary: "iDEAL bank redirect flows fail, payment status webhooks stall.",
     keyComponents: ["Payments API v2", "Orders API", "Hosted Payment Pages"],
     commonErrorCodes: ["500 Internal Server Error", "422 Unprocessable Entity"],
     troubleshootingSteps: [
@@ -6802,13 +5184,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.paystack.com",
     description:
       "Modern payment gateway powering transactions across Africa (Nigeria, Ghana, South Africa, Kenya).",
-    impactSummary:
-      "Card and bank transfer transactions reject, webhook events queue with delays.",
-    keyComponents: [
-      "Transaction Initialize API",
-      "Transfer Payouts",
-      "Webhook Dispatcher",
-    ],
+    impactSummary: "Card and bank transfer transactions reject, webhook events queue with delays.",
+    keyComponents: ["Transaction Initialize API", "Transfer Payouts", "Webhook Dispatcher"],
     commonErrorCodes: ["500 Internal Error", "504 Gateway Timeout"],
     troubleshootingSteps: [
       "Check status.paystack.com.",
@@ -6822,10 +5199,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "payments-fintech",
     domain: "flutterwave.com",
     officialStatusUrl: "https://status.flutterwave.com",
-    description:
-      "African payment technology company connecting businesses with global consumers.",
-    impactSummary:
-      "Card processing errors, Mobile Money and MPESA payment rails fail.",
+    description: "African payment technology company connecting businesses with global consumers.",
+    impactSummary: "Card processing errors, Mobile Money and MPESA payment rails fail.",
     keyComponents: ["Standard Checkout", "Payouts API", "Mobile Money Gateway"],
     commonErrorCodes: ["500 Server Error", "Transaction Failed"],
     troubleshootingSteps: [
@@ -6840,20 +5215,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "databases-storage",
     domain: "motherduck.com",
     officialStatusUrl: "https://status.motherduck.com",
-    description:
-      "Serverless cloud analytics platform powered by DuckDB for fast data processing.",
-    impactSummary:
-      "DuckDB hybrid local/cloud queries fail, attached database sync errors.",
-    keyComponents: [
-      "MotherDuck Cloud Engine",
-      "DuckDB Extension API",
-      "Web UI",
-    ],
+    description: "Serverless cloud analytics platform powered by DuckDB for fast data processing.",
+    impactSummary: "DuckDB hybrid local/cloud queries fail, attached database sync errors.",
+    keyComponents: ["MotherDuck Cloud Engine", "DuckDB Extension API", "Web UI"],
     commonErrorCodes: ["500 Server Error", "Query Execution Error"],
-    troubleshootingSteps: [
-      "Check MotherDuck status.",
-      "Run query locally in in-memory DuckDB.",
-    ],
+    troubleshootingSteps: ["Check MotherDuck status.", "Run query locally in in-memory DuckDB."],
     relatedServices: ["clickhouse-cloud", "snowflake"],
   },
   {
@@ -6862,21 +5228,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "databases-storage",
     domain: "confluent.cloud",
     officialStatusUrl: "https://status.confluent.cloud",
-    description:
-      "Fully managed Apache Kafka event streaming service and data streaming platform.",
-    impactSummary:
-      "Kafka producers throw TimeoutException, consumer groups lag and disconnect.",
-    keyComponents: [
-      "Kafka Brokers",
-      "Schema Registry",
-      "Kafka Connect",
-      "ksqlDB",
-    ],
-    commonErrorCodes: [
-      "NOT_ENOUGH_REPLICAS",
-      "REQUEST_TIMED_OUT",
-      "500 Server Error",
-    ],
+    description: "Fully managed Apache Kafka event streaming service and data streaming platform.",
+    impactSummary: "Kafka producers throw TimeoutException, consumer groups lag and disconnect.",
+    keyComponents: ["Kafka Brokers", "Schema Registry", "Kafka Connect", "ksqlDB"],
+    commonErrorCodes: ["NOT_ENOUGH_REPLICAS", "REQUEST_TIMED_OUT", "500 Server Error"],
     troubleshootingSteps: [
       "Check status.confluent.cloud.",
       "Inspect Kafka consumer group offsets.",
@@ -6889,16 +5244,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "databases-storage",
     domain: "redpanda.com",
     officialStatusUrl: "https://status.redpanda.com",
-    description:
-      "C++ streaming data platform compatible with Apache Kafka APIs with low latency.",
-    impactSummary:
-      "Topic partition leadership changes cause producer retry loops.",
+    description: "C++ streaming data platform compatible with Apache Kafka APIs with low latency.",
+    impactSummary: "Topic partition leadership changes cause producer retry loops.",
     keyComponents: ["Redpanda Broker Cluster", "Schema Registry", "HTTP Proxy"],
     commonErrorCodes: ["503 Unavailable", "Produce Request Timeout"],
-    troubleshootingSteps: [
-      "Check status.redpanda.com.",
-      "Verify broker bootstrap URLs.",
-    ],
+    troubleshootingSteps: ["Check status.redpanda.com.", "Verify broker bootstrap URLs."],
     relatedServices: ["confluent-cloud", "upstash"],
   },
   {
@@ -6907,20 +5257,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "databases-storage",
     domain: "cloudamqp.com",
     officialStatusUrl: "https://status.cloudamqp.com",
-    description:
-      "Managed RabbitMQ and LavinMQ message broker clusters in the cloud.",
-    impactSummary:
-      "AMQP connection channel closes, message queues fill without consumers.",
-    keyComponents: [
-      "RabbitMQ Clusters",
-      "AMQP 0-9-1 Protocol",
-      "Management HTTP API",
-    ],
-    commonErrorCodes: [
-      "500 Internal Error",
-      "Channel Closed",
-      "Connection Blocked",
-    ],
+    description: "Managed RabbitMQ and LavinMQ message broker clusters in the cloud.",
+    impactSummary: "AMQP connection channel closes, message queues fill without consumers.",
+    keyComponents: ["RabbitMQ Clusters", "AMQP 0-9-1 Protocol", "Management HTTP API"],
+    commonErrorCodes: ["500 Internal Error", "Channel Closed", "Connection Blocked"],
     troubleshootingSteps: [
       "Check status.cloudamqp.com.",
       "Inspect queue memory alarm limits in RabbitMQ UI.",
@@ -6933,25 +5273,12 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "databases-storage",
     domain: "getdbt.com",
     officialStatusUrl: "https://status.getdbt.com",
-    description:
-      "Hosted environment for data transformation, CI/CD, and data pipeline scheduling.",
+    description: "Hosted environment for data transformation, CI/CD, and data pipeline scheduling.",
     impactSummary:
       "Automated dbt build jobs fail to trigger, model DAG documentation fails to update.",
-    keyComponents: [
-      "dbt Scheduler",
-      "Cloud IDE",
-      "Semantic Layer",
-      "Metadata API",
-    ],
-    commonErrorCodes: [
-      "500 Internal Error",
-      "Job Run Failed",
-      "504 Gateway Timeout",
-    ],
-    troubleshootingSteps: [
-      "Check status.getdbt.com.",
-      "Run dbt run locally against warehouse.",
-    ],
+    keyComponents: ["dbt Scheduler", "Cloud IDE", "Semantic Layer", "Metadata API"],
+    commonErrorCodes: ["500 Internal Error", "Job Run Failed", "504 Gateway Timeout"],
+    troubleshootingSteps: ["Check status.getdbt.com.", "Run dbt run locally against warehouse."],
     relatedServices: ["snowflake", "gcp-bigquery", "databricks"],
   },
   {
@@ -6962,13 +5289,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.fivetran.com",
     description:
       "Automated data movement and ELT pipeline platform connecting sources to warehouses.",
-    impactSummary:
-      "Data sync connectors freeze, destination warehouse tables show stale data.",
-    keyComponents: [
-      "Connector Sync Engine",
-      "Transformations",
-      "REST API & Webhooks",
-    ],
+    impactSummary: "Data sync connectors freeze, destination warehouse tables show stale data.",
+    keyComponents: ["Connector Sync Engine", "Transformations", "REST API & Webhooks"],
     commonErrorCodes: ["500 Server Error", "Connector Broken"],
     troubleshootingSteps: [
       "Check status.fivetran.com.",
@@ -6982,20 +5304,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "databases-storage",
     domain: "airbyte.com",
     officialStatusUrl: "https://status.airbyte.com",
-    description:
-      "Open-source and managed data integration platform for building ELT pipelines.",
-    impactSummary:
-      "Source-to-destination sync jobs fail, schema drift checks error.",
-    keyComponents: [
-      "Sync Scheduler",
-      "Connector Registry",
-      "Normalization Engine",
-    ],
+    description: "Open-source and managed data integration platform for building ELT pipelines.",
+    impactSummary: "Source-to-destination sync jobs fail, schema drift checks error.",
+    keyComponents: ["Sync Scheduler", "Connector Registry", "Normalization Engine"],
     commonErrorCodes: ["500 Internal Error", "Job Failed"],
-    troubleshootingSteps: [
-      "Check status.airbyte.com.",
-      "Inspect connector container logs.",
-    ],
+    troubleshootingSteps: ["Check status.airbyte.com.", "Inspect connector container logs."],
     relatedServices: ["fivetran", "snowflake"],
   },
   {
@@ -7007,16 +5320,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     description:
       "Customer data platform (CDP) and pipeline designed for developer-first data architectures.",
     impactSummary: "Event SDK tracking calls queue, warehouse ETL sync fails.",
-    keyComponents: [
-      "Event Stream Ingestion",
-      "Reverse ETL Engine",
-      "Transformations",
-    ],
+    keyComponents: ["Event Stream Ingestion", "Reverse ETL Engine", "Transformations"],
     commonErrorCodes: ["500 Server Error", "504 Timeout"],
-    troubleshootingSteps: [
-      "Check status.rudderstack.com.",
-      "Verify writeKey configuration.",
-    ],
+    troubleshootingSteps: ["Check status.rudderstack.com.", "Verify writeKey configuration."],
     relatedServices: ["segment", "posthog"],
   },
   {
@@ -7025,16 +5331,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "devtools-git",
     domain: "plausible.io",
     officialStatusUrl: "https://status.plausible.io",
-    description:
-      "Simple, lightweight (< 1 KB), open-source, and privacy-friendly web analytics.",
-    impactSummary:
-      "plausible.js script returns 500, stats dashboard is unreachable.",
+    description: "Simple, lightweight (< 1 KB), open-source, and privacy-friendly web analytics.",
+    impactSummary: "plausible.js script returns 500, stats dashboard is unreachable.",
     keyComponents: ["Event Ingestion Endpoint", "Stats Dashboard", "Stats API"],
     commonErrorCodes: ["500 Server Error", "502 Bad Gateway"],
-    troubleshootingSteps: [
-      "Check status.plausible.io.",
-      "Verify script data-domain attribute.",
-    ],
+    troubleshootingSteps: ["Check status.plausible.io.", "Verify script data-domain attribute."],
     relatedServices: ["posthog", "mixpanel"],
   },
   {
@@ -7043,10 +5344,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "devtools-git",
     domain: "usefathom.com",
     officialStatusUrl: "https://status.usefathom.com",
-    description:
-      "Privacy-focused website analytics without cookies or tracking personal data.",
-    impactSummary:
-      "Analytics beacon hits fail to record, visitor counts do not update.",
+    description: "Privacy-focused website analytics without cookies or tracking personal data.",
+    impactSummary: "Analytics beacon hits fail to record, visitor counts do not update.",
     keyComponents: ["Global Edge CDN", "Ingestion API", "Dashboard Portal"],
     commonErrorCodes: ["500 Internal Error", "504 Gateway Timeout"],
     troubleshootingSteps: ["Check status.usefathom.com.", "Verify site ID."],
@@ -7058,15 +5357,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "devtools-git",
     domain: "umami.is",
     officialStatusUrl: "https://status.umami.is",
-    description:
-      "Privacy-focused, open-source alternative to Google Analytics.",
+    description: "Privacy-focused, open-source alternative to Google Analytics.",
     impactSummary: "Event tracking API returns 500, dashboard graphs go blank.",
     keyComponents: ["Tracker Script", "Cloud Database API", "Reporting UI"],
     commonErrorCodes: ["500 Server Error", "502 Bad Gateway"],
-    troubleshootingSteps: [
-      "Check status.umami.is.",
-      "Verify website-id parameter.",
-    ],
+    troubleshootingSteps: ["Check status.umami.is.", "Verify website-id parameter."],
     relatedServices: ["plausible-analytics", "posthog"],
   },
   {
@@ -7075,15 +5370,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "devtools-git",
     domain: "uptimerobot.com",
     officialStatusUrl: "https://status.uptimerobot.com",
-    description:
-      "Uptime monitoring service offering HTTP, ping, port, and keyword checks.",
-    impactSummary:
-      "Monitoring checks stop executing, alert notifications fail to send.",
-    keyComponents: [
-      "Monitor Probe Engine",
-      "Public Status Pages",
-      "Alert Dispatcher",
-    ],
+    description: "Uptime monitoring service offering HTTP, ping, port, and keyword checks.",
+    impactSummary: "Monitoring checks stop executing, alert notifications fail to send.",
+    keyComponents: ["Monitor Probe Engine", "Public Status Pages", "Alert Dispatcher"],
     commonErrorCodes: ["500 Internal Server Error", "502 Bad Gateway"],
     troubleshootingSteps: [
       "Check status.uptimerobot.com.",
@@ -7098,13 +5387,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     domain: "pingdom.com",
     officialStatusUrl: "https://status.pingdom.com",
     description: "Website performance and availability monitoring provider.",
-    impactSummary:
-      "Uptime check alerts delay, Real User Monitoring (RUM) beacon script fails.",
-    keyComponents: [
-      "Synthetics Engine",
-      "RUM Analytics",
-      "Public Status Pages",
-    ],
+    impactSummary: "Uptime check alerts delay, Real User Monitoring (RUM) beacon script fails.",
+    keyComponents: ["Synthetics Engine", "RUM Analytics", "Public Status Pages"],
     commonErrorCodes: ["500 Server Error", "503 Service Unavailable"],
     troubleshootingSteps: [
       "Check status.pingdom.com.",
@@ -7119,13 +5403,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     domain: "site24x7.com",
     officialStatusUrl: "https://status.site24x7.com",
     description: "All-in-one monitoring solution for DevOps and IT operations.",
-    impactSummary:
-      "Server agent heartbeat disconnects, synthetic web tests time out.",
-    keyComponents: [
-      "Server Monitoring Agent",
-      "APM Insight",
-      "Synthetic Web Probes",
-    ],
+    impactSummary: "Server agent heartbeat disconnects, synthetic web tests time out.",
+    keyComponents: ["Server Monitoring Agent", "APM Insight", "Synthetic Web Probes"],
     commonErrorCodes: ["500 Internal Error", "Agent Communication Error"],
     troubleshootingSteps: [
       "Check status.site24x7.com.",
@@ -7143,10 +5422,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     impactSummary: "Background step functions stall and fail to resume.",
     keyComponents: ["Step Orchestrator", "SDK Connection", "Event Log"],
     commonErrorCodes: ["500 Server Error", "Step Function Failed"],
-    troubleshootingSteps: [
-      "Check status.inngest.com.",
-      "Verify Inngest serve handler endpoint.",
-    ],
+    troubleshootingSteps: ["Check status.inngest.com.", "Verify Inngest serve handler endpoint."],
     relatedServices: ["trigger-dev", "temporal"],
   },
   {
@@ -7155,10 +5431,8 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "databases-storage",
     domain: "upstash.com/docs/qstash",
     officialStatusUrl: "https://status.upstash.com",
-    description:
-      "Serverless message queue and task scheduler designed for serverless runtimes.",
-    impactSummary:
-      "Scheduled cron messages drop, webhook retry delivery halts.",
+    description: "Serverless message queue and task scheduler designed for serverless runtimes.",
+    impactSummary: "Scheduled cron messages drop, webhook retry delivery halts.",
     keyComponents: ["Publish Endpoint", "Cron Scheduler", "Signature Verifier"],
     commonErrorCodes: ["500 Internal Error", "401 Unauthorized", "504 Timeout"],
     troubleshootingSteps: [
@@ -7174,18 +5448,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     domain: "neon.tech",
     officialStatusUrl: "https://neonstatus.com",
     description: "Serverless PostgreSQL platform built for cloud applications.",
-    impactSummary:
-      "Postgres connections drop, auto-suspend wakeups take longer than expected.",
-    keyComponents: [
-      "Serverless Storage",
-      "Compute Instances",
-      "Branching Engine",
-    ],
+    impactSummary: "Postgres connections drop, auto-suspend wakeups take longer than expected.",
+    keyComponents: ["Serverless Storage", "Compute Instances", "Branching Engine"],
     commonErrorCodes: ["500 Server Error", "Connection Refused"],
-    troubleshootingSteps: [
-      "Check neonstatus.com.",
-      "Use pooled connection string.",
-    ],
+    troubleshootingSteps: ["Check neonstatus.com.", "Use pooled connection string."],
     relatedServices: ["supabase", "planetscale"],
   },
   {
@@ -7194,16 +5460,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "databases-storage",
     domain: "turso.tech",
     officialStatusUrl: "https://status.turso.tech",
-    description:
-      "SQLite-compatible distributed database for low latency edge computing.",
-    impactSummary:
-      "Edge replicas return connection refused, sync operations freeze.",
+    description: "SQLite-compatible distributed database for low latency edge computing.",
+    impactSummary: "Edge replicas return connection refused, sync operations freeze.",
     keyComponents: ["libSQL Primary", "Edge Replicas", "HTTP Pipeline"],
     commonErrorCodes: ["500 Internal Error", "Connection Timeout"],
-    troubleshootingSteps: [
-      "Check status.turso.tech.",
-      "Verify Turso database URL.",
-    ],
+    troubleshootingSteps: ["Check status.turso.tech.", "Verify Turso database URL."],
     relatedServices: ["supabase", "neon"],
   },
   {
@@ -7212,15 +5473,9 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "databases-storage",
     domain: "prisma.io/accelerate",
     officialStatusUrl: "https://status.prisma.io",
-    description:
-      "Global database cache and connection pooler for Prisma ORM at the edge.",
-    impactSummary:
-      "Prisma queries proxied through Accelerate return 500 or timeout.",
-    keyComponents: [
-      "Connection Pool Gateway",
-      "Global Edge Cache",
-      "Query Metrics",
-    ],
+    description: "Global database cache and connection pooler for Prisma ORM at the edge.",
+    impactSummary: "Prisma queries proxied through Accelerate return 500 or timeout.",
+    keyComponents: ["Connection Pool Gateway", "Global Edge Cache", "Query Metrics"],
     commonErrorCodes: [
       "500 Internal Server Error",
       "P5000 Accelerate Connection Error",
@@ -7240,16 +5495,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "databases-storage",
     domain: "prisma.io/pulse",
     officialStatusUrl: "https://status.prisma.io",
-    description:
-      "Real-time Change Data Capture (CDC) stream for Postgres databases with Prisma.",
-    impactSummary:
-      "Real-time database change events stop streaming to subscribers.",
+    description: "Real-time Change Data Capture (CDC) stream for Postgres databases with Prisma.",
+    impactSummary: "Real-time database change events stop streaming to subscribers.",
     keyComponents: ["Postgres CDC Engine", "Subscription Stream", "Pulse API"],
     commonErrorCodes: ["500 Server Error", "Stream Disconnected"],
-    troubleshootingSteps: [
-      "Check status.prisma.io.",
-      "Verify Postgres replication slot state.",
-    ],
+    troubleshootingSteps: ["Check status.prisma.io.", "Verify Postgres replication slot state."],
     relatedServices: ["supabase", "prisma-accelerate"],
   },
   {
@@ -7263,10 +5513,7 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     impactSummary: "Sign in and sign up flows fail, middleware throws 500.",
     keyComponents: ["Frontend SDK", "Backend API", "User Management"],
     commonErrorCodes: ["500 Server Error", "401 Unauthorized"],
-    troubleshootingSteps: [
-      "Check status.clerk.com.",
-      "Verify CLERK_SECRET_KEY in environment.",
-    ],
+    troubleshootingSteps: ["Check status.clerk.com.", "Verify CLERK_SECRET_KEY in environment."],
     relatedServices: ["auth0", "supabase"],
   },
   {
@@ -7288,20 +5535,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "api.openai.com",
     officialStatusUrl: "https://status.openai.com",
-    description:
-      "Developer API for GPT-4o, o1, o3-mini, and ChatGPT completions.",
-    impactSummary:
-      "Completions stall, assistants return 500, rate limits trip.",
+    description: "Developer API for GPT-4o, o1, o3-mini, and ChatGPT completions.",
+    impactSummary: "Completions stall, assistants return 500, rate limits trip.",
     keyComponents: ["Chat API", "Embeddings", "Assistants API"],
-    commonErrorCodes: [
-      "500 Internal Server Error",
-      "429 Rate Limit",
-      "503 Service Unavailable",
-    ],
-    troubleshootingSteps: [
-      "Check status.openai.com.",
-      "Switch to Claude or Groq fallback.",
-    ],
+    commonErrorCodes: ["500 Internal Server Error", "429 Rate Limit", "503 Service Unavailable"],
+    troubleshootingSteps: ["Check status.openai.com.", "Switch to Claude or Groq fallback."],
     relatedServices: ["anthropic", "groq"],
   },
   {
@@ -7310,15 +5548,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "ai-ml",
     domain: "api.anthropic.com",
     officialStatusUrl: "https://status.anthropic.com",
-    description:
-      "API access to Claude 3.5 Sonnet, Claude 3.7, and Claude Haiku models.",
+    description: "API access to Claude 3.5 Sonnet, Claude 3.7, and Claude Haiku models.",
     impactSummary: "Claude responses return 529 overloaded or 500 error.",
     keyComponents: ["Messages API", "Claude.ai", "Prompt Caching"],
     commonErrorCodes: ["529 Overloaded", "500 Server Error"],
-    troubleshootingSteps: [
-      "Check status.anthropic.com.",
-      "Switch to OpenAI fallback.",
-    ],
+    troubleshootingSteps: ["Check status.anthropic.com.", "Switch to OpenAI fallback."],
     relatedServices: ["openai", "mistral-ai"],
   },
   {
@@ -7329,14 +5563,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     officialStatusUrl: "https://status.stripe.com",
     description:
       "Online payment processing API and financial infrastructure for software businesses.",
-    impactSummary:
-      "Card charges fail, checkout sessions error out, webhook delivery stalls.",
+    impactSummary: "Card charges fail, checkout sessions error out, webhook delivery stalls.",
     keyComponents: ["Payment Intents", "Checkout Sessions", "Webhooks"],
     commonErrorCodes: ["500 Internal Error", "api_connection_error"],
-    troubleshootingSteps: [
-      "Check status.stripe.com.",
-      "Ensure idempotency keys are used.",
-    ],
+    troubleshootingSteps: ["Check status.stripe.com.", "Ensure idempotency keys are used."],
     relatedServices: ["paypal", "paddle"],
   },
   {
@@ -7345,19 +5575,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "devtools-git",
     domain: "api.github.com",
     officialStatusUrl: "https://www.githubstatus.com",
-    description:
-      "REST and GraphQL APIs for GitHub repositories, issues, PRs, and webhooks.",
+    description: "REST and GraphQL APIs for GitHub repositories, issues, PRs, and webhooks.",
     impactSummary: "CI triggers drop, developer automations fail with 500.",
     keyComponents: ["REST API v3", "GraphQL API v4", "Webhook Deliveries"],
-    commonErrorCodes: [
-      "500 Server Error",
-      "429 Rate Limited",
-      "502 Bad Gateway",
-    ],
-    troubleshootingSteps: [
-      "Check githubstatus.com.",
-      "Verify personal access token quota.",
-    ],
+    commonErrorCodes: ["500 Server Error", "429 Rate Limited", "502 Bad Gateway"],
+    troubleshootingSteps: ["Check githubstatus.com.", "Verify personal access token quota."],
     relatedServices: ["gitlab", "bitbucket"],
   },
   {
@@ -7366,15 +5588,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "comms-email",
     domain: "api.twilio.com",
     officialStatusUrl: "https://status.twilio.com",
-    description:
-      "Programmable messaging, voice calls, and phone verification API.",
+    description: "Programmable messaging, voice calls, and phone verification API.",
     impactSummary: "SMS 2FA verification stops, voice webhooks drop.",
     keyComponents: ["Programmable SMS", "Voice SIP", "Twilio Verify"],
     commonErrorCodes: ["Error 20003", "500 Server Error"],
-    troubleshootingSteps: [
-      "Check status.twilio.com.",
-      "Inspect Twilio Debugger logs.",
-    ],
+    troubleshootingSteps: ["Check status.twilio.com.", "Inspect Twilio Debugger logs."],
     relatedServices: ["sendgrid", "resend"],
   },
   {
@@ -7383,15 +5601,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "cloud-infra",
     domain: "vercel.com",
     officialStatusUrl: "https://www.vercel-status.com",
-    description:
-      "Global edge network hosting Next.js and frontend applications.",
+    description: "Global edge network hosting Next.js and frontend applications.",
     impactSummary: "SSR pages throw 500, edge middleware execution hangs.",
     keyComponents: ["Edge Middleware", "Serverless Functions", "CDN Cache"],
     commonErrorCodes: ["504 GATEWAY_TIMEOUT", "FUNCTION_INVOCATION_FAILED"],
-    troubleshootingSteps: [
-      "Check vercel-status.com.",
-      "Review runtime function logs.",
-    ],
+    troubleshootingSteps: ["Check vercel-status.com.", "Review runtime function logs."],
     relatedServices: ["cloudflare", "aws"],
   },
   {
@@ -7401,14 +5615,10 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     domain: "aws.amazon.com",
     officialStatusUrl: "https://health.aws.amazon.com",
     description: "Cloud computing infrastructure across global regions.",
-    impactSummary:
-      "us-east-1 regional incidents cause cascading failures across dependencies.",
+    impactSummary: "us-east-1 regional incidents cause cascading failures across dependencies.",
     keyComponents: ["Compute EC2", "Storage S3", "Database RDS", "Network VPC"],
     commonErrorCodes: ["500 Server Error", "503 Unavailable"],
-    troubleshootingSteps: [
-      "Check AWS Health Dashboard.",
-      "Trigger multi-region failover.",
-    ],
+    troubleshootingSteps: ["Check AWS Health Dashboard.", "Trigger multi-region failover."],
     relatedServices: ["google-cloud", "azure"],
   },
   {
@@ -7417,16 +5627,11 @@ export const SERVICES_DATA: ServiceDownInfo[] = [
     category: "cloud-infra",
     domain: "cloudflare.com",
     officialStatusUrl: "https://www.cloudflarestatus.com",
-    description:
-      "Global edge CDN, authoritative DNS, and DDoS scrubbing network.",
-    impactSummary:
-      "DNS resolution fails, HTTP 520-524 errors display globally.",
+    description: "Global edge CDN, authoritative DNS, and DDoS scrubbing network.",
+    impactSummary: "DNS resolution fails, HTTP 520-524 errors display globally.",
     keyComponents: ["1.1.1.1 DNS", "Edge Proxy", "WAF Engine"],
     commonErrorCodes: ["Error 521", "Error 522", "Error 524"],
-    troubleshootingSteps: [
-      "Check cloudflarestatus.com.",
-      "Verify origin server health.",
-    ],
+    troubleshootingSteps: ["Check cloudflarestatus.com.", "Verify origin server health."],
     relatedServices: ["fastly", "aws"],
   },
 ];
@@ -7445,9 +5650,7 @@ export function getFeaturedServices(): ServiceDownInfo[] {
   return SERVICES_DATA.filter((s) => s.featured);
 }
 
-export function getServicesByCategory(
-  category: ServiceCategory,
-): ServiceDownInfo[] {
+export function getServicesByCategory(category: ServiceCategory): ServiceDownInfo[] {
   return SERVICES_DATA.filter((s) => s.category === category);
 }
 

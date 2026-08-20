@@ -130,9 +130,7 @@ export function IncidentHistoryTab({
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs text-muted-foreground font-mono uppercase">
-            Period:
-          </span>
+          <span className="text-xs text-muted-foreground font-mono uppercase">Period:</span>
           <div className="flex rounded-sm border border-primary/20 overflow-hidden">
             {[30, 60, 90].map((days) => (
               <button
@@ -159,21 +157,12 @@ export function IncidentHistoryTab({
             <span className="text-xs text-muted-foreground font-mono uppercase">
               Current Uptime
             </span>
-            {uptimeData.trend === "up" && (
-              <TrendingUp className="size-4 text-green-500" />
-            )}
-            {uptimeData.trend === "down" && (
-              <TrendingDown className="size-4 text-red-500" />
-            )}
-            {uptimeData.trend === "stable" && (
-              <Minus className="size-4 text-muted-foreground" />
-            )}
+            {uptimeData.trend === "up" && <TrendingUp className="size-4 text-green-500" />}
+            {uptimeData.trend === "down" && <TrendingDown className="size-4 text-red-500" />}
+            {uptimeData.trend === "stable" && <Minus className="size-4 text-muted-foreground" />}
           </div>
           <div
-            className={cn(
-              "text-3xl font-bold font-mono mt-2",
-              getUptimeColor(uptimeData.current),
-            )}
+            className={cn("text-3xl font-bold font-mono mt-2", getUptimeColor(uptimeData.current))}
           >
             {uptimeData.current.toFixed(2)}%
           </div>
@@ -184,9 +173,7 @@ export function IncidentHistoryTab({
         </div>
 
         <div className="rounded-sm border border-primary/20 bg-card/40 p-4 backdrop-blur-sm">
-          <span className="text-xs text-muted-foreground font-mono uppercase">
-            Total Incidents
-          </span>
+          <span className="text-xs text-muted-foreground font-mono uppercase">Total Incidents</span>
           <div className="text-3xl font-bold font-mono mt-2 text-foreground">
             {incidents.length}
           </div>
@@ -196,9 +183,7 @@ export function IncidentHistoryTab({
         </div>
 
         <div className="rounded-sm border border-primary/20 bg-card/40 p-4 backdrop-blur-sm">
-          <span className="text-xs text-muted-foreground font-mono uppercase">
-            Active Now
-          </span>
+          <span className="text-xs text-muted-foreground font-mono uppercase">Active Now</span>
           <div className="text-3xl font-bold font-mono mt-2 text-foreground">
             {incidents.filter((i) => i.status !== "RESOLVED").length}
           </div>
@@ -245,10 +230,7 @@ export function IncidentHistoryTab({
               </tr>
             )}
             {paginatedIncidents.map((incident) => (
-              <tr
-                key={incident.id}
-                className="hover:bg-primary/5 transition-colors"
-              >
+              <tr key={incident.id} className="hover:bg-primary/5 transition-colors">
                 <td className="py-4 px-4">
                   <span
                     className={cn(
@@ -262,15 +244,10 @@ export function IncidentHistoryTab({
                 <td className="py-4 px-4">
                   <div className="flex items-start gap-2">
                     <AlertTriangle
-                      className={cn(
-                        "size-4 mt-0.5 shrink-0",
-                        getSeverityColor(incident.severity),
-                      )}
+                      className={cn("size-4 mt-0.5 shrink-0", getSeverityColor(incident.severity))}
                     />
                     <div>
-                      <div className="text-sm font-medium text-foreground">
-                        {incident.title}
-                      </div>
+                      <div className="text-sm font-medium text-foreground">{incident.title}</div>
                       <div className="text-xs text-muted-foreground/60 font-mono md:hidden">
                         {incident.monitor.name}
                       </div>

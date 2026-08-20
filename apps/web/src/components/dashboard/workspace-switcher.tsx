@@ -133,9 +133,7 @@ export function WorkspaceSwitcher() {
         window.location.reload();
       } else if (res.requiresUpgrade) {
         setIsCreateOpen(false);
-        setUpgradeError(
-          res.error || "Multi-Seat workspaces require The Construct plan",
-        );
+        setUpgradeError(res.error || "Multi-Seat workspaces require The Construct plan");
         setIsUpgradeOpen(true);
       } else {
         alert(res.error || "Failed to create workspace");
@@ -202,9 +200,7 @@ export function WorkspaceSwitcher() {
                     <Building2 className="size-3.5 text-muted-foreground group-hover:text-foreground" />
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <span className="font-bold truncate text-foreground">
-                      {ws.name}
-                    </span>
+                    <span className="font-bold truncate text-foreground">{ws.name}</span>
                     <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
                       <span className="uppercase">{ws.role}</span>
                       <span>•</span>
@@ -215,9 +211,7 @@ export function WorkspaceSwitcher() {
                     </div>
                   </div>
                 </div>
-                {ws.isActive && (
-                  <Check className="size-4 text-primary shrink-0 ml-2" />
-                )}
+                {ws.isActive && <Check className="size-4 text-primary shrink-0 ml-2" />}
               </DropdownMenuItem>
             ))}
           </DropdownMenuGroup>
@@ -244,8 +238,8 @@ export function WorkspaceSwitcher() {
                 Create Team Workspace
               </DialogTitle>
               <DialogDescription className="text-xs text-muted-foreground">
-                Set up a shared workspace for your engineering team to
-                collaborate on monitors, incident response, and alerts.
+                Set up a shared workspace for your engineering team to collaborate on monitors,
+                incident response, and alerts.
               </DialogDescription>
             </DialogHeader>
 
@@ -311,8 +305,8 @@ export function WorkspaceSwitcher() {
             </div>
             <ul className="space-y-1.5 text-muted-foreground text-[11px] pl-6 list-disc">
               <li>
-                Up to 25 team member seats with role permissions (Owner, Admin,
-                Member, Viewer, Billing)
+                Up to 25 team member seats with role permissions (Owner, Admin, Member, Viewer,
+                Billing)
               </li>
               <li>1,500 active monitors with 10-second fast edge checks</li>
               <li>PagerDuty, Opsgenie, SMS alert escalation policies</li>

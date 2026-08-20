@@ -2,14 +2,7 @@
 
 import { Fragment } from "react";
 import Link from "next/link";
-import {
-  Check,
-  X,
-  Sparkles,
-  ArrowRight,
-  ShieldCheck,
-  ExternalLink,
-} from "lucide-react";
+import { Check, X, Sparkles, ArrowRight, ShieldCheck, ExternalLink } from "lucide-react";
 import { competitors, featureComparisons } from "./comparison-data";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -57,13 +50,11 @@ export default function ComparisonTable() {
             Competitive Analysis
           </div>
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-4">
-            Why Engineering Teams Choose{" "}
-            <span className="text-primary">SteadyStack</span>
+            Why Engineering Teams Choose <span className="text-primary">SteadyStack</span>
           </h2>
           <p className="text-muted-foreground text-sm sm:text-base leading-relaxed font-sans">
-            Compare SteadyStack head-to-head against legacy uptime tools. Faster
-            checks, broader global edge coverage, and native synthetic testing
-            out of the box.
+            Compare SteadyStack head-to-head against legacy uptime tools. Faster checks, broader
+            global edge coverage, and native synthetic testing out of the box.
           </p>
         </div>
 
@@ -126,8 +117,7 @@ export default function ComparisonTable() {
               <tbody className="divide-y divide-border/40 font-sans text-xs">
                 {featureComparisons.map((feature, idx) => {
                   const isNewCategory =
-                    idx === 0 ||
-                    featureComparisons[idx - 1]?.category !== feature.category;
+                    idx === 0 || featureComparisons[idx - 1]?.category !== feature.category;
 
                   return (
                     <Fragment key={idx}>
@@ -173,9 +163,7 @@ export default function ComparisonTable() {
                         </td>
 
                         {/* Checkly Cell */}
-                        <td className="p-4 sm:p-5 text-center">
-                          {renderValue(feature.checkly)}
-                        </td>
+                        <td className="p-4 sm:p-5 text-center">{renderValue(feature.checkly)}</td>
                       </tr>
                     </Fragment>
                   );
@@ -190,27 +178,24 @@ export default function ComparisonTable() {
               <strong className="text-foreground font-mono font-bold uppercase text-[11px] mr-1.5">
                 Note 1:
               </strong>
-              Being straight with you: Checkly runs 22 locations to our 7, and
-              Better Uptime&apos;s 3-of-4 quorum is a genuinely good design that
-              solves the same problem we do. We think 4-of-7 across published,
-              health-monitored regions is better — and unlike anyone else here,
-              we publish enough detail for you to verify it yourself. Pingdom
-              runs 100+ locations and still gets false-positive complaints,
-              which is rather the point: the confirmation rule matters more than
-              the count.
+              Being straight with you: Checkly runs 22 locations to our 7, and Better Uptime&apos;s
+              3-of-4 quorum is a genuinely good design that solves the same problem we do. We think
+              4-of-7 across published, health-monitored regions is better — and unlike anyone else
+              here, we publish enough detail for you to verify it yourself. Pingdom runs 100+
+              locations and still gets false-positive complaints, which is rather the point: the
+              confirmation rule matters more than the count.
             </p>
             <p className="pt-2 border-t border-border/40 text-[11px] font-mono text-muted-foreground/80">
-              <strong className="text-foreground">Note 2:</strong> Last verified
-              August 2026 against vendor pricing pages and public documentation.
-              Found something out of date? Tell us and we&apos;ll fix it.
+              <strong className="text-foreground">Note 2:</strong> Last verified August 2026 against
+              vendor pricing pages and public documentation. Found something out of date? Tell us
+              and we&apos;ll fix it.
             </p>
           </div>
 
           {/* Table Footer Banner */}
           <div className="p-4 sm:p-6 bg-muted/30 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-xs text-muted-foreground font-mono">
-              ⚡ Free 60-second monitoring checks for up to 50 endpoints. No
-              credit card required.
+              ⚡ Free 60-second monitoring checks for up to 50 endpoints. No credit card required.
             </div>
             <Link
               href="/signup"

@@ -1,16 +1,8 @@
-import {
-  Pinecone,
-  type Index,
-  type RecordMetadata,
-} from "@pinecone-database/pinecone";
+import { Pinecone, type Index, type RecordMetadata } from "@pinecone-database/pinecone";
 import { embed } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
 import { env } from "@steadystack/env/server";
-import {
-  resolveHeliconeBaseUrl,
-  buildHeliconeHeaders,
-  isHeliconeConfigured,
-} from "./helicone";
+import { resolveHeliconeBaseUrl, buildHeliconeHeaders, isHeliconeConfigured } from "./helicone";
 
 let cachedPineconeClient: Pinecone | null = null;
 let lastApiKey: string | null = null;
@@ -67,9 +59,7 @@ export function getPineconeClient(): Pinecone | null {
   }
 
   const apiKey = (
-    process.env.PINECONE_API_KEY !== undefined
-      ? process.env.PINECONE_API_KEY
-      : env.PINECONE_API_KEY
+    process.env.PINECONE_API_KEY !== undefined ? process.env.PINECONE_API_KEY : env.PINECONE_API_KEY
   )?.trim();
 
   if (!apiKey) {
@@ -91,9 +81,7 @@ export function getPineconeClient(): Pinecone | null {
 /**
  * Returns the configured Pinecone vector index instance.
  */
-export function getIncidentIndex(
-  indexName?: string,
-): Index<IncidentVectorMetadata> | null {
+export function getIncidentIndex(indexName?: string): Index<IncidentVectorMetadata> | null {
   const client = getPineconeClient();
   if (!client) return null;
 
@@ -111,8 +99,7 @@ export function getIncidentIndex(
  */
 function getEmbeddingModel() {
   const openAiKey = process.env.OPENAI_API_KEY || env.OPENAI_API_KEY;
-  const openRouterKey =
-    process.env.OPENROUTER_API_KEY || env.OPENROUTER_API_KEY;
+  const openRouterKey = process.env.OPENROUTER_API_KEY || env.OPENROUTER_API_KEY;
 
   if (openAiKey) {
     const endpoint = resolveHeliconeBaseUrl("openai");
@@ -131,9 +118,7 @@ function getEmbeddingModel() {
 
   if (openRouterKey) {
     const openRouterBaseUrl =
-      process.env.OPENROUTER_BASE_URL ||
-      env.OPENROUTER_BASE_URL ||
-      "https://openrouter.ai/api/v1";
+      process.env.OPENROUTER_BASE_URL || env.OPENROUTER_BASE_URL || "https://openrouter.ai/api/v1";
     const endpoint = resolveHeliconeBaseUrl("openrouter", openRouterBaseUrl);
 
     const openrouter = createOpenAI({
@@ -141,9 +126,7 @@ function getEmbeddingModel() {
       baseURL: endpoint,
       headers: {
         "HTTP-Referer":
-          process.env.NEXT_PUBLIC_APP_URL ||
-          env.NEXT_PUBLIC_APP_URL ||
-          "http://localhost:3000",
+          process.env.NEXT_PUBLIC_APP_URL || env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
         "X-Title": "SteadyStack Pinecone Embeddings",
         ...buildHeliconeHeaders({ feature: "pinecone-embeddings" }),
       },
@@ -159,10 +142,7 @@ function getEmbeddingModel() {
  * Generates a deterministic 1536-dimensional semantic feature embedding vector
  * from text via hashed character n-grams and token weights.
  */
-function generateDeterministicEmbedding(
-  text: string,
-  dimensions = 1536,
-): number[] {
+function generateDeterministicEmbedding(text: string, dimensions = 1536): number[] {
   const vec = new Array(dimensions).fill(0);
   const normalized = text.toLowerCase().trim();
   const words = normalized.split(/\s+/);
@@ -201,9 +181,7 @@ function generateDeterministicEmbedding(
  * Supports OpenAI/OpenRouter text-embedding-3-small, native Pinecone Inference API,
  * and deterministic normalized semantic hashing fallback.
  */
-export async function generateTextEmbedding(
-  text: string,
-): Promise<number[] | null> {
+export async function generateTextEmbedding(text: string): Promise<number[] | null> {
   const clipped = text.slice(0, 8000);
 
   // 1. Try OpenAI / OpenRouter if configured
@@ -234,11 +212,7 @@ export async function generateTextEmbedding(
       });
 
       const firstItem = res.data?.[0];
-      if (
-        firstItem &&
-        "values" in firstItem &&
-        Array.isArray(firstItem.values)
-      ) {
+      if (firstItem && "values" in firstItem && Array.isArray(firstItem.values)) {
         const raw = firstItem.values as number[];
         if (raw.length > 0) {
           const targetDims = 1536;
@@ -251,10 +225,7 @@ export async function generateTextEmbedding(
         }
       }
     } catch (pineconeInferenceError) {
-      console.warn(
-        "[Pinecone] Inference API fallback failed:",
-        pineconeInferenceError,
-      );
+      console.warn("[Pinecone] Inference API fallback failed:", pineconeInferenceError);
     }
   }
 
@@ -378,10 +349,7 @@ export async function indexIncidentPostMortem(params: {
 
     return { success: true, id: params.incidentId };
   } catch (error: any) {
-    console.error(
-      "[Pinecone] Failed to upsert incident post-mortem vector:",
-      error,
-    );
+    console.error("[Pinecone] Failed to upsert incident post-mortem vector:", error);
     return {
       success: false,
       error: error?.message || "Pinecone upsert failed",
@@ -459,10 +427,7 @@ export async function deleteIncidentVector(
     await namespace.deleteOne({ id: incidentId });
     return { success: true };
   } catch (error) {
-    console.warn(
-      `[Pinecone] Failed to delete vector for incident ${incidentId}:`,
-      error,
-    );
+    console.warn(`[Pinecone] Failed to delete vector for incident ${incidentId}:`, error);
     return { success: false };
   }
 }

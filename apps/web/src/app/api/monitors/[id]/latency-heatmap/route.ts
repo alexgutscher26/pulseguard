@@ -32,10 +32,7 @@ export async function GET(request: NextRequest, props: LatencyHeatmapParams) {
     const metricType = searchParams.get("metricType") || "both";
 
     // Determine granularity based on time range
-    const granularityMap: Record<
-      string,
-      { granularity: string; hours: number }
-    > = {
+    const granularityMap: Record<string, { granularity: string; hours: number }> = {
       "1h": { granularity: "ONE_MINUTE", hours: 1 },
       "6h": { granularity: "ONE_MINUTE", hours: 6 },
       "24h": { granularity: "FIVE_MINUTE", hours: 24 },
@@ -124,8 +121,7 @@ export async function GET(request: NextRequest, props: LatencyHeatmapParams) {
         >();
         for (const ev of rawEvents) {
           const region =
-            ev.region ||
-            (configuredRegions.length === 1 ? configuredRegions[0] : "global");
+            ev.region || (configuredRegions.length === 1 ? configuredRegions[0] : "global");
           const d = new Date(ev.timestamp);
           d.setSeconds(0);
           d.setMilliseconds(0);
@@ -206,9 +202,7 @@ export async function GET(request: NextRequest, props: LatencyHeatmapParams) {
       ([_, data]) => data.length > 0,
     );
     const selectedEntries =
-      activeRegionEntries.length > 0
-        ? activeRegionEntries
-        : Array.from(regionMap.entries());
+      activeRegionEntries.length > 0 ? activeRegionEntries : Array.from(regionMap.entries());
 
     // Build response
     const regions = selectedEntries.map(([region, data]) => {
@@ -276,9 +270,6 @@ export async function GET(request: NextRequest, props: LatencyHeatmapParams) {
     );
   } catch (error) {
     console.error("[LatencyHeatmap] Error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

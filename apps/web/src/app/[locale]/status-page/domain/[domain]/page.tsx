@@ -84,17 +84,13 @@ export default async function CustomDomainStatusPage({ params }: Props) {
   // 1. IP Whitelist Check
   if (page.ipWhitelist && page.ipWhitelist.trim() !== "") {
     const forwardedFor = headerStore.get("x-forwarded-for");
-    const clientIp = forwardedFor
-      ? forwardedFor.split(",")[0].trim()
-      : "127.0.0.1";
+    const clientIp = forwardedFor ? forwardedFor.split(",")[0].trim() : "127.0.0.1";
 
     const allowedIps = page.ipWhitelist.split(",").map((ip) => ip.trim());
     if (!allowedIps.includes(clientIp)) {
       return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-black text-white font-mono p-4 text-center">
-          <h1 className="text-4xl font-bold text-red-500 mb-4">
-            403 Forbidden
-          </h1>
+          <h1 className="text-4xl font-bold text-red-500 mb-4">403 Forbidden</h1>
           <p className="opacity-50 uppercase tracking-widest">
             Access Denied: IP {clientIp} Not authorized
           </p>
@@ -106,11 +102,7 @@ export default async function CustomDomainStatusPage({ params }: Props) {
   // 2. Private Access Check
   if (page.isPrivate) {
     const token = cookieStore.get(`status-page-token-${page.id}`)?.value;
-    const isValid = await verifyAuthToken(
-      token,
-      page.id,
-      env.BETTER_AUTH_SECRET,
-    );
+    const isValid = await verifyAuthToken(token, page.id, env.BETTER_AUTH_SECRET);
     if (!isValid) {
       return <PasswordProtection pageId={page.id} title={page.title} />;
     }
@@ -129,9 +121,7 @@ export default async function CustomDomainStatusPage({ params }: Props) {
   }
 
   const session = await auth.api.getSession({ headers: headerStore });
-  const isAdmin = session?.user?.id
-    ? await canManageStatusPage(page.id, session.user.id)
-    : false;
+  const isAdmin = session?.user?.id ? await canManageStatusPage(page.id, session.user.id) : false;
 
   // 4. Fetch Active & Recent Incidents (Last 7 Days)
   const monitorIds = page.monitors.map((m) => m.monitorId);
@@ -156,11 +146,7 @@ export default async function CustomDomainStatusPage({ params }: Props) {
         <label className="sr-only" aria-label="Status Page Label">
           Status Page
         </label>
-        <PublicView
-          page={page}
-          isAdmin={isAdmin}
-          initialIncidents={incidents}
-        />
+        <PublicView page={page} isAdmin={isAdmin} initialIncidents={incidents} />
       </>
     </NextIntlClientProvider>
   );

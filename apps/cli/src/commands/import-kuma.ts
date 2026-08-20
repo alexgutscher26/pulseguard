@@ -27,9 +27,7 @@ export function parseKumaExport(
   try {
     data = JSON.parse(rawContent);
   } catch {
-    throw new Error(
-      "Invalid JSON format. Please provide a valid Uptime Kuma JSON export file.",
-    );
+    throw new Error("Invalid JSON format. Please provide a valid Uptime Kuma JSON export file.");
   }
 
   // Uptime Kuma exports can be { monitorList: [...] }, { monitors: [...] }, or a direct array [...]
@@ -163,8 +161,7 @@ export function parseKumaExport(
       method,
       headers: headers && Object.keys(headers).length > 0 ? headers : undefined,
       body: m.body || undefined,
-      expectation:
-        Object.keys(expectation).length > 0 ? expectation : undefined,
+      expectation: Object.keys(expectation).length > 0 ? expectation : undefined,
       alertThreshold,
       tags: uniqueTags,
     };
@@ -179,18 +176,9 @@ importCmd
   .command("kuma <file>")
   .alias("uptime-kuma")
   .description("Import monitors from an Uptime Kuma JSON backup file")
-  .option(
-    "--dry-run",
-    "Preview parsed monitors without creating them in SteadyStack",
-  )
-  .option(
-    "--overwrite",
-    "Update existing monitors with the same name instead of skipping",
-  )
-  .option(
-    "-t, --tags <tags>",
-    "Additional comma-separated tags to attach to imported monitors",
-  )
+  .option("--dry-run", "Preview parsed monitors without creating them in SteadyStack")
+  .option("--overwrite", "Update existing monitors with the same name instead of skipping")
+  .option("-t, --tags <tags>", "Additional comma-separated tags to attach to imported monitors")
   .action(async (filePath: string, opts) => {
     if (!existsSync(filePath)) {
       console.error(chalk.red(`✖ File not found: ${filePath}`));
@@ -223,9 +211,7 @@ importCmd
     }
 
     console.log(
-      chalk.cyan(
-        `Found ${chalk.bold(parsedMonitors.length)} monitor(s) in backup file.\n`,
-      ),
+      chalk.cyan(`Found ${chalk.bold(parsedMonitors.length)} monitor(s) in backup file.\n`),
     );
 
     // Display summary table
@@ -273,13 +259,9 @@ importCmd
 
     if (opts.dryRun) {
       console.log(
-        chalk.yellow(
-          "✨ Dry run complete. No changes made to your SteadyStack workspace.",
-        ),
+        chalk.yellow("✨ Dry run complete. No changes made to your SteadyStack workspace."),
       );
-      console.log(
-        chalk.dim("Remove --dry-run to apply these monitors live.\n"),
-      );
+      console.log(chalk.dim("Remove --dry-run to apply these monitors live.\n"));
       return;
     }
 
@@ -295,13 +277,9 @@ importCmd
       process.exit(1);
     }
 
-    const existingByName = new Map(
-      existingMonitors.map((m) => [m.name.toLowerCase().trim(), m]),
-    );
+    const existingByName = new Map(existingMonitors.map((m) => [m.name.toLowerCase().trim(), m]));
 
-    spinner.succeed(
-      `Connected. Existing monitors in workspace: ${existingMonitors.length}`,
-    );
+    spinner.succeed(`Connected. Existing monitors in workspace: ${existingMonitors.length}`);
 
     let createdCount = 0;
     let updatedCount = 0;
@@ -314,16 +292,12 @@ importCmd
       const existing = existingByName.get(m.name.toLowerCase().trim());
 
       if (existing && !opts.overwrite) {
-        console.log(
-          `  ${chalk.dim("[-]")} Skipped (already exists): ${chalk.bold(m.name)}`,
-        );
+        console.log(`  ${chalk.dim("[-]")} Skipped (already exists): ${chalk.bold(m.name)}`);
         skippedCount++;
         continue;
       }
 
-      const itemSpinner = ora(
-        existing ? `Updating ${m.name}…` : `Creating ${m.name}…`,
-      ).start();
+      const itemSpinner = ora(existing ? `Updating ${m.name}…` : `Creating ${m.name}…`).start();
 
       try {
         if (existing) {
@@ -340,9 +314,7 @@ importCmd
             alertThreshold: m.alertThreshold,
             tags: m.tags,
           });
-          itemSpinner.succeed(
-            chalk.yellow(`[~] Updated: ${chalk.bold(m.name)}`),
-          );
+          itemSpinner.succeed(chalk.yellow(`[~] Updated: ${chalk.bold(m.name)}`));
           updatedCount++;
         } else {
           await api.post("/api/cli/monitors", {
@@ -358,9 +330,7 @@ importCmd
             alertThreshold: m.alertThreshold,
             tags: m.tags,
           });
-          itemSpinner.succeed(
-            chalk.green(`[+] Created: ${chalk.bold(m.name)}`),
-          );
+          itemSpinner.succeed(chalk.green(`[+] Created: ${chalk.bold(m.name)}`));
           createdCount++;
         }
       } catch (err: any) {

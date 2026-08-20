@@ -89,11 +89,7 @@ for (const packageDirectory of packageDirectories) {
     );
   }
 
-  fs.writeFileSync(
-    target,
-    'module.exports = require("./index.cjs");\n',
-    "utf8",
-  );
+  fs.writeFileSync(target, 'module.exports = require("./index.cjs");\n', "utf8");
 
   console.log(`Created missing pg-cloudflare entrypoint: ${target}`);
 }

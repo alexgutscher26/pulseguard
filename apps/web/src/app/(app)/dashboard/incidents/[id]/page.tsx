@@ -14,11 +14,7 @@ import { PostMortemEditor } from "@/components/incidents/post-mortem/post-mortem
 
 export const dynamic = "force-dynamic";
 
-export default async function IncidentDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function IncidentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const incident = await getIncident(id);
   const postMortem = await getPostMortem(id);
@@ -70,10 +66,7 @@ export default async function IncidentDetailPage({
 
         <TabsContent value="overview" className="space-y-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <IncidentActions
-              incidentId={incident.id}
-              currentStatus={incident.status}
-            />
+            <IncidentActions incidentId={incident.id} currentStatus={incident.status} />
           </div>
 
           <div className="grid gap-6 md:grid-cols-3">
@@ -84,10 +77,7 @@ export default async function IncidentDetailPage({
                   {incident.description || "No description provided."}
                 </p>
                 <div className="mt-4 pt-4 border-t text-xs text-muted-foreground font-mono">
-                  Monitor URL:{" "}
-                  <span className="text-foreground">
-                    {incident.monitor.url}
-                  </span>
+                  Monitor URL: <span className="text-foreground">{incident.monitor.url}</span>
                 </div>
               </div>
 
@@ -138,15 +128,11 @@ export default async function IncidentDetailPage({
                   </div>
                   <div className="flex justify-between items-center py-2 border-b">
                     <span className="text-muted-foreground">Severity</span>
-                    <span className="font-medium text-destructive">
-                      {incident.severity}
-                    </span>
+                    <span className="font-medium text-destructive">{incident.severity}</span>
                   </div>
                   <div className="flex justify-between items-center py-2 border-b">
                     <span className="text-muted-foreground">Started</span>
-                    <span className="font-mono">
-                      {formatDate(new Date(incident.startedAt))}
-                    </span>
+                    <span className="font-mono">{formatDate(new Date(incident.startedAt))}</span>
                   </div>
                   {incident.resolvedAt && (
                     <div className="flex justify-between items-center py-2 border-b bg-green-500/5 -mx-2 px-2">

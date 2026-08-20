@@ -28,20 +28,13 @@ export async function POST(req: Request) {
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : "Unknown error";
-    console.error(
-      `Stripe Webhook Signature Verification Failed: ${errorMessage}`,
-    );
-    return NextResponse.json(
-      { error: `Webhook Error: ${errorMessage}` },
-      { status: 400 },
-    );
+    console.error(`Stripe Webhook Signature Verification Failed: ${errorMessage}`);
+    return NextResponse.json({ error: `Webhook Error: ${errorMessage}` }, { status: 400 });
   }
 
   // Idempotency: Ignore duplicate deliveries of the same Stripe event ID
   if (processedEvents.has(event.id)) {
-    console.log(
-      `[Stripe Webhook] Duplicate event ${event.id} received, returning cached 200`,
-    );
+    console.log(`[Stripe Webhook] Duplicate event ${event.id} received, returning cached 200`);
     return NextResponse.json({ received: true, duplicate: true });
   }
   if (processedEvents.size > MAX_PROCESSED_EVENTS) {
@@ -65,10 +58,7 @@ export async function POST(req: Request) {
                       expand: ["items.data.price.product"],
                     })
                   : session.subscription;
-              plan = await resolvePlanFromStripeSubscriptionAsync(
-                subObj,
-                "CONSTRUCT",
-              );
+              plan = await resolvePlanFromStripeSubscriptionAsync(subObj, "CONSTRUCT");
             } catch {
               plan = "CONSTRUCT";
             }
@@ -78,9 +68,7 @@ export async function POST(req: Request) {
         }
 
         if (userId) {
-          const oneYearFromNow = new Date(
-            Date.now() + 365 * 24 * 60 * 60 * 1000,
-          );
+          const oneYearFromNow = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
           await db.subscription.upsert({
             where: { userId },
             create: {
@@ -126,15 +114,11 @@ export async function POST(req: Request) {
         });
 
         if (subRecord) {
-          const effectiveStatus =
-            subscription.status === "active" ? "ACTIVE" : status;
+          const effectiveStatus = subscription.status === "active" ? "ACTIVE" : status;
           const currentPlan =
             subscription.status === "canceled"
               ? "INITIATE"
-              : await resolvePlanFromStripeSubscriptionAsync(
-                  subscription,
-                  subRecord.plan,
-                );
+              : await resolvePlanFromStripeSubscriptionAsync(subscription, subRecord.plan);
 
           await db.subscription.update({
             where: { id: subRecord.id },
@@ -205,9 +189,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ received: true });
   } catch (error) {
     console.error("Error processing Stripe webhook event:", error);
-    return NextResponse.json(
-      { error: "Webhook handler failed" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Webhook handler failed" }, { status: 500 });
   }
 }

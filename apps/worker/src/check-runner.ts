@@ -1,11 +1,7 @@
 import type { ExecutionContext } from "@cloudflare/workers-types";
 import type { MonitorStatus } from "@steadystack/types";
 import { checkHttpUniversal, checkPortUniversal } from "@steadystack/core";
-import {
-  CheckErrorReason,
-  MonitorStatus as Status,
-  MonitorType,
-} from "./constants";
+import { CheckErrorReason, MonitorStatus as Status, MonitorType } from "./constants";
 import type { Env } from "./env";
 
 /** Base cooldown (ms) between duplicate alerts for the same monitor. */
@@ -35,11 +31,7 @@ export interface CheckOutcome {
  * @param prisma - Optional database client (used by heartbeat checks).
  * @returns An object containing the status ("UP", "DOWN", or "MAINTENANCE"), the latency in milliseconds, and an optional error reason.
  */
-export async function performCheck(
-  monitor: any,
-  env?: Env,
-  prisma?: any,
-): Promise<CheckOutcome> {
+export async function performCheck(monitor: any, env?: Env, prisma?: any): Promise<CheckOutcome> {
   // If explicitly in maintenance (passed from caller), skip check
   if (monitor.status === Status.MAINTENANCE) {
     return { status: Status.MAINTENANCE, latency: 0 };
@@ -63,10 +55,7 @@ export async function performCheck(
         return { status: Status.MAINTENANCE, latency: 0 };
       }
     } catch (dbErr) {
-      console.error(
-        `[Maintenance] Failed to check maintenance window for ${monitor.id}:`,
-        dbErr,
-      );
+      console.error(`[Maintenance] Failed to check maintenance window for ${monitor.id}:`, dbErr);
       // On DB failure, proceed with the check (fail-open)
     }
   }
@@ -93,10 +82,7 @@ export async function performCheck(
       if (sslResult.status !== "VALID") {
         currentStatus = Status.DOWN;
         errorReason = `SSL_${sslResult.status}`;
-      } else if (
-        sslResult.protocol === "TLSv1.0" ||
-        sslResult.protocol === "TLSv1.1"
-      ) {
+      } else if (sslResult.protocol === "TLSv1.0" || sslResult.protocol === "TLSv1.1") {
         currentStatus = Status.DOWN;
         errorReason = CheckErrorReason.LEGACY_TLS_PROTOCOL;
       }
@@ -132,9 +118,7 @@ export async function performCheck(
       return {
         status: isHealthy ? Status.UP : Status.DOWN,
         latency: dnsLatency,
-        errorReason: isHealthy
-          ? undefined
-          : `DNS_ANOMALY: ${dnsResult.anomalies.join("; ")}`,
+        errorReason: isHealthy ? undefined : `DNS_ANOMALY: ${dnsResult.anomalies.join("; ")}`,
       };
     } catch (e: any) {
       return {
@@ -146,8 +130,7 @@ export async function performCheck(
   }
 
   if (monitor.type === MonitorType.DOMAIN) {
-    const { checkDomainExpiration } =
-      await import("./services/domain-expiration");
+    const { checkDomainExpiration } = await import("./services/domain-expiration");
     try {
       const startDom = performance.now();
       const domainResult = await checkDomainExpiration(monitor.url);
@@ -174,11 +157,7 @@ export async function performCheck(
   if (monitor.type === MonitorType.HEARTBEAT) {
     const { checkHeartbeat } = await import("./services/heartbeat");
     try {
-      const result = await checkHeartbeat(
-        prisma,
-        monitor.id,
-        monitor.interval || 300,
-      );
+      const result = await checkHeartbeat(prisma, monitor.id, monitor.interval || 300);
       return {
         status: result.status,
         latency: result.latency,
@@ -200,18 +179,12 @@ export async function performCheck(
         ? (JSON.parse(monitor.script).method as string) || "tools/list"
         : "tools/list";
       const mcpParams = monitor.script
-        ? (JSON.parse(monitor.script).params as
-            Record<string, unknown> | undefined)
+        ? (JSON.parse(monitor.script).params as Record<string, unknown> | undefined)
         : undefined;
       const mcpAssertions = monitor.expectation
         ? (JSON.parse(monitor.expectation).assertions as any[]) || []
         : [];
-      const result = await checkMCP(
-        monitor.url,
-        mcpAssertions,
-        mcpMethod,
-        mcpParams,
-      );
+      const result = await checkMCP(monitor.url, mcpAssertions, mcpMethod, mcpParams);
       return {
         status: result.status,
         latency: result.latency,
@@ -233,12 +206,7 @@ export async function performCheck(
       const gqlAssertions = monitor.expectation
         ? (JSON.parse(monitor.expectation).assertions as any[]) || []
         : [];
-      const result = await checkGraphQL(
-        monitor.url,
-        gqlQuery,
-        undefined,
-        gqlAssertions,
-      );
+      const result = await checkGraphQL(monitor.url, gqlQuery, undefined, gqlAssertions);
       return {
         status: result.status,
         latency: result.latency,
@@ -260,11 +228,7 @@ export async function performCheck(
       const wsAssertion = monitor.expectation
         ? (JSON.parse(monitor.expectation) as any)
         : undefined;
-      const result = await checkWebSocket(
-        monitor.url,
-        listenSeconds,
-        wsAssertion,
-      );
+      const result = await checkWebSocket(monitor.url, listenSeconds, wsAssertion);
       return {
         status: result.status,
         latency: result.latency,
@@ -342,9 +306,7 @@ export async function performCheck(
 
       const cachedValue = await env.DNS_CACHE.get(`dns:${hostname}`);
       if (cachedValue) {
-        console.warn(
-          `[DNSFallback] DNS failed for ${hostname}. Retrying via IP...`,
-        );
+        console.warn(`[DNSFallback] DNS failed for ${hostname}. Retrying via IP...`);
 
         // Re-map the hostname to IP for the fetch
         const { ip } = JSON.parse(cachedValue) as { ip: string };
@@ -397,10 +359,7 @@ export async function performInternalRequest(
           let rawHeaders = monitor.headers;
           if (rawHeaders.startsWith("enc:v1:")) {
             const { decryptSecret } = await import("@steadystack/core");
-            rawHeaders = await decryptSecret(
-              rawHeaders,
-              env?.ENCRYPTION_SECRET,
-            );
+            rawHeaders = await decryptSecret(rawHeaders, env?.ENCRYPTION_SECRET);
           }
           const parsed = JSON.parse(rawHeaders);
           if (Array.isArray(parsed)) {
@@ -437,8 +396,7 @@ export async function performInternalRequest(
         );
         if (!validation.success) {
           currentStatus = Status.DOWN;
-          errorReason =
-            validation.errorMessage || `HTTP_${checkResult.statusCode || 200}`;
+          errorReason = validation.errorMessage || `HTTP_${checkResult.statusCode || 200}`;
         }
       }
     } else if (urlStr.startsWith("tcp://")) {
@@ -462,11 +420,7 @@ export async function performInternalRequest(
       }
     } else if (urlStr.startsWith("ping://")) {
       const hostname = urlStr.replace("ping://", "");
-      const checkResult = await checkPortUniversal(
-        hostname,
-        80,
-        (monitor.timeout || 10) * 1000,
-      );
+      const checkResult = await checkPortUniversal(hostname, 80, (monitor.timeout || 10) * 1000);
 
       if (checkResult.isOpen) {
         currentStatus = Status.UP;
@@ -488,10 +442,7 @@ export async function performInternalRequest(
     currentStatus = Status.DOWN;
 
     // Classify Error
-    if (
-      err.name === "TimeoutError" ||
-      (err.message && err.message.includes("Stats"))
-    ) {
+    if (err.name === "TimeoutError" || (err.message && err.message.includes("Stats"))) {
       errorReason = CheckErrorReason.TIMEOUT;
     } else if (
       err.code === "ECONNREFUSED" ||
@@ -523,9 +474,7 @@ export async function shouldSendAlert(
 
   // If > 3 events in 5 mins (e.g. DOWN -> UP -> DOWN -> ...), suppress
   if (recentEvents > 3) {
-    console.warn(
-      `[RateLimit] Flapping detected for ${monitorId}. Suppressing alert.`,
-    );
+    console.warn(`[RateLimit] Flapping detected for ${monitorId}. Suppressing alert.`);
     return false;
   }
 
@@ -593,10 +542,7 @@ export async function shouldSendAlert(
         return false;
       }
     } catch (dbErr) {
-      console.error(
-        `[AlertDedup] DB fallback check failed for ${monitorId}:`,
-        dbErr,
-      );
+      console.error(`[AlertDedup] DB fallback check failed for ${monitorId}:`, dbErr);
       // Both Redis and DB failed. Fail-closed to protect the user's inbox.
       return false;
     }
@@ -609,10 +555,7 @@ export async function shouldSendAlert(
  * Record that an alert was sent for a monitor, updating the cooldown tracker
  * in Redis for future de-duplication.
  */
-export async function recordAlertSent(
-  monitorId: string,
-  env?: Env,
-): Promise<void> {
+export async function recordAlertSent(monitorId: string, env?: Env): Promise<void> {
   if (!env?.UPSTASH_REDIS_REST_URL || !env?.UPSTASH_REDIS_REST_TOKEN) return;
 
   try {
@@ -724,18 +667,13 @@ export async function recordLatencyBatchToAggregator(
             latency: r.latency,
             success: r.success,
             timestamp:
-              typeof r.timestamp === "number"
-                ? r.timestamp
-                : r.timestamp?.getTime() || Date.now(),
+              typeof r.timestamp === "number" ? r.timestamp : r.timestamp?.getTime() || Date.now(),
           })),
           flush,
         }),
       });
     } catch (error) {
-      console.warn(
-        `[LatencyAggregator] DO record-batch notification failed (non-fatal):`,
-        error,
-      );
+      console.warn(`[LatencyAggregator] DO record-batch notification failed (non-fatal):`, error);
     }
   }
 

@@ -3,21 +3,15 @@ import db from "@steadystack/db";
 import { PLANS, type PlanTier } from "./billing";
 
 // Initialize Stripe SDK instance
-export const stripe = new Stripe(
-  process.env.STRIPE_SECRET_KEY || "sk_test_mock_steadystack_key",
-  {
-    apiVersion: "2025-02-24.acacia" as Stripe.LatestApiVersion,
-    appInfo: {
-      name: "SteadyStack Cloud Monitoring",
-      version: "1.0.0",
-    },
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_mock_steadystack_key", {
+  apiVersion: "2025-02-24.acacia" as Stripe.LatestApiVersion,
+  appInfo: {
+    name: "SteadyStack Cloud Monitoring",
+    version: "1.0.0",
   },
-);
+});
 
-function appendQueryParams(
-  url: string,
-  params: Record<string, string>,
-): string {
+function appendQueryParams(url: string, params: Record<string, string>): string {
   const [base, query] = url.split("?");
   const searchParams = new URLSearchParams(query || "");
   for (const [key, value] of Object.entries(params)) {
@@ -97,9 +91,7 @@ export async function createStripePromotionCode({
   const stripeKey = process.env.STRIPE_SECRET_KEY || "";
 
   if (!stripeKey || stripeKey.includes("mock")) {
-    console.log(
-      `[Stripe Mock] Created mock promotion code: ${cleanCode} (${percentOff}% off)`,
-    );
+    console.log(`[Stripe Mock] Created mock promotion code: ${cleanCode} (${percentOff}% off)`);
     return { id: `promo_mock_${cleanCode}`, code: cleanCode, isMock: true };
   }
 
@@ -132,9 +124,7 @@ export async function createStripePromotionCode({
         },
       });
       couponExists = true;
-      console.log(
-        `[Stripe] Successfully created coupon in Stripe: ${cleanCode}`,
-      );
+      console.log(`[Stripe] Successfully created coupon in Stripe: ${cleanCode}`);
     } catch (createErr: any) {
       if (
         createErr.code === "resource_already_exists" ||
@@ -143,11 +133,7 @@ export async function createStripePromotionCode({
         couponExists = true;
         console.log(`[Stripe] Coupon ${cleanCode} already exists in Stripe`);
       } else {
-        console.error(
-          "[Stripe] Error creating coupon %s:",
-          cleanCode,
-          createErr,
-        );
+        console.error("[Stripe] Error creating coupon %s:", cleanCode, createErr);
         throw createErr;
       }
     }
@@ -169,10 +155,7 @@ export async function createStripePromotionCode({
       return { id: existingPromo.id, code: existingPromo.code, isMock: false };
     }
   } catch (listErr: any) {
-    console.warn(
-      `[Stripe] Note checking existing promotion code ${cleanCode}:`,
-      listErr?.message,
-    );
+    console.warn(`[Stripe] Note checking existing promotion code ${cleanCode}:`, listErr?.message);
   }
 
   try {
@@ -192,10 +175,7 @@ export async function createStripePromotionCode({
     );
     return { id: promo.id, code: promo.code, isMock: false };
   } catch (promoErr: any) {
-    console.log(
-      `[Stripe] Promotion code creation notice for ${cleanCode}:`,
-      promoErr?.message,
-    );
+    console.log(`[Stripe] Promotion code creation notice for ${cleanCode}:`, promoErr?.message);
     if (
       promoErr.code === "resource_already_exists" ||
       promoErr.message?.includes("already exists")
@@ -278,14 +258,9 @@ export async function createCheckoutSession({
   const planDetails = PLANS[plan];
 
   const priceId =
-    interval === "annual"
-      ? planDetails.stripePriceIdAnnual
-      : planDetails.stripePriceIdMonthly;
+    interval === "annual" ? planDetails.stripePriceIdAnnual : planDetails.stripePriceIdMonthly;
 
-  if (
-    process.env.STRIPE_SECRET_KEY &&
-    !process.env.STRIPE_SECRET_KEY.includes("mock")
-  ) {
+  if (process.env.STRIPE_SECRET_KEY && !process.env.STRIPE_SECRET_KEY.includes("mock")) {
     const cleanPromo = promoCode?.trim().toUpperCase();
 
     // Check if the price ID is a real pre-configured Stripe price ID or placeholder
@@ -319,8 +294,7 @@ export async function createCheckoutSession({
             quantity: 1,
           };
 
-    let discountConfig: { promotion_code?: string; coupon?: string } | null =
-      null;
+    let discountConfig: { promotion_code?: string; coupon?: string } | null = null;
 
     if (cleanPromo) {
       // 1. Check if it's an active Promotion Code in Stripe
@@ -357,19 +331,15 @@ export async function createCheckoutSession({
               try {
                 const partnerData = JSON.parse(r.value);
                 const matchesVip =
-                  partnerData.vipCode &&
-                  partnerData.vipCode.trim().toUpperCase() === cleanPromo;
+                  partnerData.vipCode && partnerData.vipCode.trim().toUpperCase() === cleanPromo;
                 const matchesRenewal =
                   partnerData.renewalDiscountCode &&
-                  partnerData.renewalDiscountCode.trim().toUpperCase() ===
-                    cleanPromo;
+                  partnerData.renewalDiscountCode.trim().toUpperCase() === cleanPromo;
                 const matchesId = r.id.trim().toUpperCase() === cleanPromo;
 
                 if (matchesVip || matchesRenewal || matchesId) {
                   const isRenewal = matchesRenewal;
-                  const percent = isRenewal
-                    ? partnerData.renewalDiscountPercent || 50
-                    : 100;
+                  const percent = isRenewal ? partnerData.renewalDiscountPercent || 50 : 100;
                   const promoResult = await createStripePromotionCode({
                     code: cleanPromo,
                     percentOff: percent,
@@ -407,10 +377,7 @@ export async function createCheckoutSession({
               } catch {}
             }
           } catch (dbErr: any) {
-            console.warn(
-              "[Stripe] On-demand VIP coupon creation check:",
-              dbErr?.message,
-            );
+            console.warn("[Stripe] On-demand VIP coupon creation check:", dbErr?.message);
           }
         }
       }
@@ -475,11 +442,7 @@ export async function createCheckoutSession({
     };
 
     try {
-      const session = await tryCreate(
-        true,
-        customerId,
-        Boolean(discountConfig),
-      );
+      const session = await tryCreate(true, customerId, Boolean(discountConfig));
       return { url: session.url || returnUrl };
     } catch (err: any) {
       console.warn(
@@ -488,10 +451,7 @@ export async function createCheckoutSession({
       );
 
       // If customer doesn't exist in current Stripe account, recreate customer and retry
-      if (
-        err.message?.includes("No such customer") ||
-        err.code === "resource_missing"
-      ) {
+      if (err.message?.includes("No such customer") || err.code === "resource_missing") {
         console.log("[Stripe] Recreating customer for user:", userId);
         const newCustomer = await stripe.customers.create({
           email,
@@ -511,37 +471,21 @@ export async function createCheckoutSession({
           },
         });
 
-        const retrySession = await tryCreate(
-          false,
-          customerId,
-          Boolean(discountConfig),
-        );
+        const retrySession = await tryCreate(false, customerId, Boolean(discountConfig));
         return { url: retrySession.url || returnUrl };
       }
 
       // If coupon doesn't exist in Stripe, retry without preset discount and enable manual promo code entry
-      if (
-        err.message?.includes("No such coupon") ||
-        err.message?.includes("coupon")
-      ) {
-        console.log(
-          "[Stripe] Retrying checkout session without invalid preset coupon...",
-        );
+      if (err.message?.includes("No such coupon") || err.message?.includes("coupon")) {
+        console.log("[Stripe] Retrying checkout session without invalid preset coupon...");
         const retrySession = await tryCreate(false, customerId, false);
         return { url: retrySession.url || returnUrl };
       }
 
       // If automatic tax is not configured in Stripe dashboard, retry without automatic tax
-      if (
-        err.message?.includes("automatic tax") ||
-        err.message?.includes("tax")
-      ) {
+      if (err.message?.includes("automatic tax") || err.message?.includes("tax")) {
         console.log("[Stripe] Retrying without automatic tax requirement...");
-        const retrySession = await tryCreate(
-          false,
-          customerId,
-          Boolean(discountConfig),
-        );
+        const retrySession = await tryCreate(false, customerId, Boolean(discountConfig));
         return { url: retrySession.url || returnUrl };
       }
 
@@ -577,10 +521,7 @@ export async function createPortalSession({
 }): Promise<{ url: string }> {
   const customerId = await getOrCreateStripeCustomer(userId, email);
 
-  if (
-    process.env.STRIPE_SECRET_KEY &&
-    !process.env.STRIPE_SECRET_KEY.includes("mock")
-  ) {
+  if (process.env.STRIPE_SECRET_KEY && !process.env.STRIPE_SECRET_KEY.includes("mock")) {
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: customerId,
       return_url: returnUrl,
@@ -616,10 +557,7 @@ export function resolvePlanFromStripeSubscription(
   const priceId = priceItem?.id;
   if (priceId) {
     for (const [tier, details] of Object.entries(PLANS)) {
-      if (
-        details.stripePriceIdMonthly === priceId ||
-        details.stripePriceIdAnnual === priceId
-      ) {
+      if (details.stripePriceIdMonthly === priceId || details.stripePriceIdAnnual === priceId) {
         return tier as PlanTier;
       }
     }
@@ -653,20 +591,10 @@ export function resolvePlanFromStripeSubscription(
 
   // 6. Check price unit_amount (78000 = $780 Construct annual, 7900 = $79 Construct monthly, 6500 = $65, 18000 = $180 Netrunner annual, 1900 = $19 Netrunner monthly, 1500 = $15)
   const unitAmount = priceItem?.unit_amount;
-  if (
-    unitAmount === 7900 ||
-    unitAmount === 78000 ||
-    unitAmount === 6500 ||
-    unitAmount === 79
-  ) {
+  if (unitAmount === 7900 || unitAmount === 78000 || unitAmount === 6500 || unitAmount === 79) {
     return "CONSTRUCT";
   }
-  if (
-    unitAmount === 1900 ||
-    unitAmount === 18000 ||
-    unitAmount === 1500 ||
-    unitAmount === 19
-  ) {
+  if (unitAmount === 1900 || unitAmount === 18000 || unitAmount === 1500 || unitAmount === 19) {
     return "NETRUNNER";
   }
 
@@ -681,10 +609,7 @@ export async function resolvePlanFromStripeSubscriptionAsync(
   subscription: any,
   fallbackPlan: string = "INITIATE",
 ): Promise<PlanTier> {
-  const syncResult = resolvePlanFromStripeSubscription(
-    subscription,
-    fallbackPlan,
-  );
+  const syncResult = resolvePlanFromStripeSubscription(subscription, fallbackPlan);
   if (syncResult !== "INITIATE" && syncResult !== fallbackPlan) {
     return syncResult;
   }
@@ -692,9 +617,7 @@ export async function resolvePlanFromStripeSubscriptionAsync(
   // If synchronous check couldn't identify and product is a string ID, fetch product from Stripe
   const priceItem = subscription?.items?.data?.[0]?.price;
   const productId =
-    typeof priceItem?.product === "string"
-      ? priceItem.product
-      : priceItem?.product?.id;
+    typeof priceItem?.product === "string" ? priceItem.product : priceItem?.product?.id;
 
   if (
     productId &&
@@ -710,10 +633,7 @@ export async function resolvePlanFromStripeSubscriptionAsync(
       if (prodName.includes("CONSTRUCT")) return "CONSTRUCT";
       if (prodName.includes("NETRUNNER")) return "NETRUNNER";
     } catch (err: any) {
-      console.warn(
-        "[Stripe] Failed to retrieve product for tier resolution:",
-        err?.message,
-      );
+      console.warn("[Stripe] Failed to retrieve product for tier resolution:", err?.message);
     }
   }
 
@@ -723,9 +643,7 @@ export async function resolvePlanFromStripeSubscriptionAsync(
 /**
  * Synchronizes a user's subscription and tier directly against Stripe.
  */
-export async function syncUserSubscriptionFromStripe(
-  userId: string,
-): Promise<{
+export async function syncUserSubscriptionFromStripe(userId: string): Promise<{
   success: boolean;
   plan: PlanTier;
   status: string;
@@ -748,9 +666,7 @@ export async function syncUserSubscriptionFromStripe(
 
     const stripeKey = process.env.STRIPE_SECRET_KEY || "";
     if (!stripeKey || stripeKey.includes("mock")) {
-      const plan = (user.subscription?.plan ||
-        user.tier ||
-        "INITIATE") as PlanTier;
+      const plan = (user.subscription?.plan || user.tier || "INITIATE") as PlanTier;
       return {
         success: true,
         plan,
@@ -770,9 +686,7 @@ export async function syncUserSubscriptionFromStripe(
     }
 
     if (!customerId) {
-      const plan = (user.subscription?.plan ||
-        user.tier ||
-        "INITIATE") as PlanTier;
+      const plan = (user.subscription?.plan || user.tier || "INITIATE") as PlanTier;
       return {
         success: true,
         plan,
@@ -796,8 +710,7 @@ export async function syncUserSubscriptionFromStripe(
         activeSub,
         user.subscription?.plan || "CONSTRUCT",
       );
-      const effectiveStatus =
-        activeSub.status === "active" ? "ACTIVE" : "TRIALING";
+      const effectiveStatus = activeSub.status === "active" ? "ACTIVE" : "TRIALING";
       const oneYearFromNow = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
       const subAny = activeSub as any;
       const periodStart = subAny.current_period_start
@@ -840,9 +753,7 @@ export async function syncUserSubscriptionFromStripe(
       return { success: true, plan, status: effectiveStatus };
     }
 
-    const plan = (user.subscription?.plan ||
-      user.tier ||
-      "INITIATE") as PlanTier;
+    const plan = (user.subscription?.plan || user.tier || "INITIATE") as PlanTier;
     return {
       success: true,
       plan,
@@ -900,24 +811,14 @@ export async function verifyAndApplyCheckoutSession({
     const rawPlan = session.metadata?.plan?.toUpperCase();
     if (rawPlan && rawPlan in PLANS) {
       plan = rawPlan as PlanTier;
-    } else if (
-      session.subscription &&
-      typeof session.subscription === "object"
-    ) {
-      plan = await resolvePlanFromStripeSubscriptionAsync(
-        session.subscription,
-        "CONSTRUCT",
-      );
+    } else if (session.subscription && typeof session.subscription === "object") {
+      plan = await resolvePlanFromStripeSubscriptionAsync(session.subscription, "CONSTRUCT");
     }
 
     const customerId =
-      typeof session.customer === "string"
-        ? session.customer
-        : session.customer?.id;
+      typeof session.customer === "string" ? session.customer : session.customer?.id;
     const subscriptionId =
-      typeof session.subscription === "string"
-        ? session.subscription
-        : session.subscription?.id;
+      typeof session.subscription === "string" ? session.subscription : session.subscription?.id;
 
     console.log(
       `[Stripe] Syncing checkout session ${sessionId} for user ${userId} -> Plan: ${plan}`,
@@ -957,10 +858,7 @@ export async function verifyAndApplyCheckoutSession({
 
     return { success: true, plan };
   } catch (error: any) {
-    console.error(
-      "[Stripe] Failed to verify and apply checkout session:",
-      error,
-    );
+    console.error("[Stripe] Failed to verify and apply checkout session:", error);
     return {
       success: false,
       error: error?.message || "Failed to verify session",

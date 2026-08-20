@@ -27,13 +27,5 @@
     "@storybook/addon-vitest",
     "@storybook/nextjs-vite"
   ],
-  "ignorePatterns": [
-    "dist",
-    ".next",
-    ".open-next",
-    ".expo",
-    ".wrangler",
-    "src/generated",
-    "*.d.ts"
-  ]
+  "ignorePatterns": ["dist", ".next", ".open-next", ".expo", ".wrangler", "src/generated", "*.d.ts"]
 }

@@ -5,12 +5,7 @@ import { IncidentTable } from "@/components/incidents/incident-table";
 import { IncidentTemplateManager } from "@/components/incidents/incident-template-manager";
 import { CreateIncidentModal } from "@/components/incidents/create-incident-modal";
 import { getUserPreferences } from "@/actions/user";
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { LayoutTemplate } from "lucide-react";
 

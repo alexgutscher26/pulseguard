@@ -70,8 +70,7 @@ export default async function VsCompetitorPage({
 
   if (!post) notFound();
 
-  const { title, description, date, category, readTime, author, tags } =
-    post.meta;
+  const { title, description, date, category, readTime, author, tags } = post.meta;
   const tocItems = extractHeadings(post.content);
 
   const jsonLd = {

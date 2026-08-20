@@ -12,10 +12,8 @@ export async function GET(
 
   const utmSource = url.searchParams.get("utm_source") || "status_page";
   const utmMedium = url.searchParams.get("utm_medium") || "badge";
-  const utmCampaign =
-    url.searchParams.get("utm_campaign") || "status_page_loop";
-  const utmContent =
-    url.searchParams.get("utm_content") || url.searchParams.get("slug") || "";
+  const utmCampaign = url.searchParams.get("utm_campaign") || "status_page_loop";
+  const utmContent = url.searchParams.get("utm_content") || url.searchParams.get("slug") || "";
   const redirectTo = url.searchParams.get("redirect") || "/signup";
 
   // Fire and forget click increment

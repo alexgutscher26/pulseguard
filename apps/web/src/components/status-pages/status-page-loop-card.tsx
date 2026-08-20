@@ -63,11 +63,9 @@ export function StatusPageLoopCard({
           </div>
           <p className="text-xs text-muted-foreground font-mono leading-relaxed">
             Every public visitor sees the{" "}
-            <strong className="text-foreground">
-              "Powered by SteadyStack"
-            </strong>{" "}
-            badge. Badge discovery compounds as traffic increases — all clicks
-            and referred accounts are attributed directly to you.
+            <strong className="text-foreground">"Powered by SteadyStack"</strong> badge. Badge
+            discovery compounds as traffic increases — all clicks and referred accounts are
+            attributed directly to you.
           </p>
         </div>
 
@@ -87,66 +85,46 @@ export function StatusPageLoopCard({
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div className="bg-black/50 border border-white/10 rounded-sm p-3.5 space-y-1">
           <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-[10px] font-mono uppercase tracking-wider">
-              Impressions
-            </span>
+            <span className="text-[10px] font-mono uppercase tracking-wider">Impressions</span>
             <Eye className="size-3.5 text-sky-400" />
           </div>
           <p className="text-xl font-bold font-mono text-foreground">
-            {isLoading
-              ? "..."
-              : (metrics?.statusPageViews ?? 0).toLocaleString()}
+            {isLoading ? "..." : (metrics?.statusPageViews ?? 0).toLocaleString()}
           </p>
-          <p className="text-[9px] text-muted-foreground font-mono">
-            Status page views
-          </p>
+          <p className="text-[9px] text-muted-foreground font-mono">Status page views</p>
         </div>
 
         <div className="bg-black/50 border border-white/10 rounded-sm p-3.5 space-y-1">
           <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-[10px] font-mono uppercase tracking-wider">
-              Badge Clicks
-            </span>
+            <span className="text-[10px] font-mono uppercase tracking-wider">Badge Clicks</span>
             <MousePointer className="size-3.5 text-cyan-400" />
           </div>
           <p className="text-xl font-bold font-mono text-cyan-400">
-            {isLoading
-              ? "..."
-              : (metrics?.referralClicks ?? 0).toLocaleString()}
+            {isLoading ? "..." : (metrics?.referralClicks ?? 0).toLocaleString()}
           </p>
-          <p className="text-[9px] text-muted-foreground font-mono">
-            Tracked badge hits
-          </p>
+          <p className="text-[9px] text-muted-foreground font-mono">Tracked badge hits</p>
         </div>
 
         <div className="bg-black/50 border border-white/10 rounded-sm p-3.5 space-y-1">
           <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-[10px] font-mono uppercase tracking-wider">
-              Loop Signups
-            </span>
+            <span className="text-[10px] font-mono uppercase tracking-wider">Loop Signups</span>
             <Users className="size-3.5 text-emerald-400" />
           </div>
           <p className="text-xl font-bold font-mono text-emerald-400">
             {isLoading ? "..." : (metrics?.totalSignups ?? 0).toLocaleString()}
           </p>
-          <p className="text-[9px] text-muted-foreground font-mono">
-            Converted accounts
-          </p>
+          <p className="text-[9px] text-muted-foreground font-mono">Converted accounts</p>
         </div>
 
         <div className="bg-black/50 border border-white/10 rounded-sm p-3.5 space-y-1">
           <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-[10px] font-mono uppercase tracking-wider">
-              Conversion Rate
-            </span>
+            <span className="text-[10px] font-mono uppercase tracking-wider">Conversion Rate</span>
             <TrendingUp className="size-3.5 text-amber-400" />
           </div>
           <p className="text-xl font-bold font-mono text-amber-400">
             {isLoading ? "..." : `${metrics?.conversionRate ?? 0}%`}
           </p>
-          <p className="text-[9px] text-muted-foreground font-mono">
-            Signups / views
-          </p>
+          <p className="text-[9px] text-muted-foreground font-mono">Signups / views</p>
         </div>
       </div>
 
@@ -179,11 +157,7 @@ export function StatusPageLoopCard({
               disabled={!referralUrl}
               className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-primary text-black font-mono font-bold text-xs uppercase tracking-wider rounded-sm hover:bg-primary/90 transition-all cursor-pointer disabled:opacity-50"
             >
-              {copied ? (
-                <Check className="size-3.5" />
-              ) : (
-                <Copy className="size-3.5" />
-              )}
+              {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
               {copied ? "Copied" : "Copy"}
             </button>
 

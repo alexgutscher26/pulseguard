@@ -1,13 +1,6 @@
 import { describe, expect, test, mock } from "bun:test";
-import {
-  evaluateQuorum,
-  QuorumEngine,
-  DEFAULT_QUORUM_CONFIG,
-} from "../services/quorum-engine";
-import {
-  isPrivateOrInternalUrl,
-  isPrivateOrInternalUrlAsync,
-} from "@steadystack/core";
+import { evaluateQuorum, QuorumEngine, DEFAULT_QUORUM_CONFIG } from "../services/quorum-engine";
+import { isPrivateOrInternalUrl, isPrivateOrInternalUrlAsync } from "@steadystack/core";
 import type { ProbeCheckResult } from "@steadystack/types";
 
 describe("Gate Invariant Regression Barrier Suite (The 10 Invariant Tests)", () => {
@@ -33,9 +26,7 @@ describe("Gate Invariant Regression Barrier Suite (The 10 Invariant Tests)", () 
 
       // 2. Simulate operational failure / uncaught exception mid-execution
       alarmExecutionAttempted = true;
-      throw new Error(
-        "FatalPostgresConnectionException: connection dropped during batch query",
-      );
+      throw new Error("FatalPostgresConnectionException: connection dropped during batch query");
     };
 
     let caughtError: Error | null = null;

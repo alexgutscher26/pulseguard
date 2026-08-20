@@ -18,8 +18,7 @@ export default function LandingFooter() {
               </span>
             </div>
             <p className="text-muted-foreground text-xs font-medium max-w-xs leading-relaxed">
-              Autonomous global edge uptime, synthetic surveillance, and
-              developer monitoring.
+              Autonomous global edge uptime, synthetic surveillance, and developer monitoring.
             </p>
           </div>
 
@@ -90,9 +89,7 @@ export default function LandingFooter() {
                 </span>
               </Link>
               <Link
-                href={
-                  "https://pulse-41cf5b0d.mintlify.site/introduction" as any
-                }
+                href={"https://pulse-41cf5b0d.mintlify.site/introduction" as any}
                 className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
               >
                 Docs

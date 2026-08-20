@@ -28,9 +28,7 @@ export default async function ReportsPage() {
     getMonitors().catch(() => []),
     getStatusPages().catch(() => []),
     getUserPlan(session.user.id).catch(() => "INITIATE" as const),
-    getComprehensiveSlaReport({ range: "30d", targetSla: 99.9 }).catch(
-      () => null,
-    ),
+    getComprehensiveSlaReport({ range: "30d", targetSla: 99.9 }).catch(() => null),
   ]);
 
   return (
