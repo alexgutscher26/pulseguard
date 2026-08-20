@@ -48,7 +48,7 @@ export function MonitorDetailView({ initialMonitor }: { initialMonitor: any }) {
     queryKey: ["monitor", initialMonitor.id],
     queryFn: () => getMonitor(initialMonitor.id),
     initialData: initialMonitor,
-    refetchInterval: 0, // Disable polling in favor of WebSockets
+    refetchInterval: 10000, // 10s auto-refresh
     refetchOnWindowFocus: true,
   });
 

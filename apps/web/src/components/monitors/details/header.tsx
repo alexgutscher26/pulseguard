@@ -3,23 +3,27 @@
 import { CheckCircle, ExternalLink } from "lucide-react";
 import { toggleMonitor } from "@/actions/monitors";
 import { toast } from "@/components/ui/sonner";
-import { useTransition } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { AVAILABLE_REGIONS } from "@steadystack/shared";
 import { useHaptic } from "@/hooks/use-haptic";
 
-/**
- * Render the detailed header for a monitor, displaying its status and controls.
- *
- * This function evaluates the monitor's status, including whether it is operational, down, paused, or pending.
- * It provides controls to run a check on the monitor and toggle its monitoring state, handling asynchronous operations
- * and displaying appropriate feedback messages. The component also shows the last heartbeat time based on the monitor's events.
- *
- * @param {Object} param0 - The properties object.
- * @param {any} param0.monitor - The monitor object containing its details and status.
- * @returns {JSX.Element} The rendered monitor detail header component.
- */
 export function MonitorDetailHeader({ monitor }: { monitor: any }) {
-  const hasEvents = monitor.events && monitor.events.length > 0;
+  const [now, setNow] = useState<number>(() => Date.now());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNow(Date.now());
+    }, 2000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const latestTimestamp = monitor.events?.[0]?.timestamp
+    ? new Date(monitor.events[0].timestamp).getTime()
+    : monitor.lastCheck
+      ? new Date(monitor.lastCheck).getTime()
+      : null;
+
+  const hasEvents = latestTimestamp != null;
   const isUp = monitor.status === "UP" && hasEvents;
   const isDown = monitor.status === "DOWN";
   const isPaused = monitor.status === "PAUSED";
@@ -151,12 +155,10 @@ export function MonitorDetailHeader({ monitor }: { monitor: any }) {
             Last Heartbeat
           </p>
           <p className="text-foreground text-xl font-bold font-mono mt-1">
-            {hasEvents
+            {hasEvents && latestTimestamp != null
               ? (() => {
-                  const diff = Math.floor(
-                    (Date.now() - new Date(monitor.events[0].timestamp).getTime()) / 1000,
-                  );
-                  if (diff < 2) return "Just now";
+                  const diff = Math.max(0, Math.floor((now - latestTimestamp) / 1000));
+                  if (diff < 3) return "Just now";
                   if (diff < 60) return `${diff} seconds ago`;
                   if (diff < 3600) return `${Math.floor(diff / 60)} minutes ago`;
                   return `${Math.floor(diff / 3600)} hours ago`;
