@@ -20,9 +20,7 @@ export async function GET(req: NextRequest) {
   // 1. Exchange code for access token
   const clientId = process.env.SLACK_CLIENT_ID;
   const clientSecret = process.env.SLACK_CLIENT_SECRET;
-  const redirectUri =
-    process.env.SLACK_REDIRECT_URI ||
-    `${process.env.NEXT_PUBLIC_APP_URL || new URL(req.url).origin}/api/integrations/slack/callback`;
+  const redirectUri = `${req.nextUrl.origin}/api/integrations/slack/callback`;
 
   try {
     const tokenResponse = await fetch("https://slack.com/api/oauth.v2.access", {
@@ -32,7 +30,7 @@ export async function GET(req: NextRequest) {
         client_id: clientId!,
         client_secret: clientSecret!,
         code,
-        redirect_uri: redirectUri!,
+        redirect_uri: redirectUri,
       }),
     });
 
@@ -40,8 +38,9 @@ export async function GET(req: NextRequest) {
 
     if (!data.ok) {
       console.error("Slack OAuth Error:", data);
+      const reason = encodeURIComponent(data.error || "exchange_failed");
       return NextResponse.redirect(
-        new URL("/dashboard/alerts?error=slack_exchange_failed", req.url),
+        new URL(`/dashboard/alerts?error=slack_${reason}`, req.url),
       );
     }
 

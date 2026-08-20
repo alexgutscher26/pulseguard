@@ -20,9 +20,7 @@ export async function GET(req: NextRequest) {
   // 1. Exchange code for access token
   const clientId = process.env.DISCORD_CLIENT_ID;
   const clientSecret = process.env.DISCORD_CLIENT_SECRET;
-  const redirectUri =
-    process.env.DISCORD_REDIRECT_URI ||
-    `${process.env.NEXT_PUBLIC_APP_URL || new URL(req.url).origin}/api/integrations/discord/callback`;
+  const redirectUri = `${req.nextUrl.origin}/api/integrations/discord/callback`;
 
   try {
     const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {
@@ -33,7 +31,7 @@ export async function GET(req: NextRequest) {
         client_secret: clientSecret!,
         grant_type: "authorization_code",
         code,
-        redirect_uri: redirectUri!,
+        redirect_uri: redirectUri,
       }),
     });
 
@@ -41,8 +39,9 @@ export async function GET(req: NextRequest) {
 
     if (data.error) {
       console.error("Discord OAuth Error:", data);
+      const reason = encodeURIComponent(data.error_description || data.error || "exchange_failed");
       return NextResponse.redirect(
-        new URL("/dashboard/alerts?error=discord_exchange_failed", req.url),
+        new URL(`/dashboard/alerts?error=discord_${reason}`, req.url),
       );
     }
 
