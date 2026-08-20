@@ -21,13 +21,14 @@ interface LatencyTimeSeriesProps {
 
 export function LatencyTimeSeries({ data, showPercentiles = true }: LatencyTimeSeriesProps) {
   const chartData = useMemo(() => {
+    if (!Array.isArray(data)) return [];
     return data.map((point) => ({
-      timestamp: point.timestamp * 1000, // Convert to ms
-      avg: Math.round(point.absolute.avg),
-      p50: Math.round(point.absolute.p50),
-      p95: Math.round(point.absolute.p95),
-      p99: Math.round(point.absolute.p99),
-      successRate: point.successRate,
+      timestamp: (point.timestamp || 0) * 1000, // Convert to ms
+      avg: Math.round(point.absolute?.avg ?? 0),
+      p50: Math.round(point.absolute?.p50 ?? 0),
+      p95: Math.round(point.absolute?.p95 ?? 0),
+      p99: Math.round(point.absolute?.p99 ?? 0),
+      successRate: point.successRate ?? 1,
     }));
   }, [data]);
 
@@ -139,7 +140,7 @@ function CustomTooltip({ active, payload }: any) {
         <div className="flex items-center justify-between gap-4 pt-2 mt-1 border-t border-primary/10">
           <span className="text-muted-foreground text-xs uppercase tracking-wider">Success:</span>
           <span className="font-medium font-mono text-green-500">
-            {(data.successRate * 100).toFixed(1)}%
+            {Number((data.successRate ?? 1) * 100).toFixed(1)}%
           </span>
         </div>
       </div>

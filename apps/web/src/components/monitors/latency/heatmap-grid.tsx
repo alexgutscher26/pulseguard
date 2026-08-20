@@ -93,7 +93,7 @@ export function HeatmapGrid({ data, metricType, onRegionClick }: HeatmapGridProp
                   } else if (metricType === "relative") {
                     displayValue =
                       point.relative?.vsBaseline != null
-                        ? `${point.relative.vsBaseline.toFixed(2)}x`
+                        ? `${Number(point.relative.vsBaseline).toFixed(2)}x`
                         : `${Math.round(point.absolute?.avg ?? 0)}ms`;
                   } else {
                     // Both
@@ -155,7 +155,7 @@ function getTooltipText(
   const p50 = Math.round(point.absolute?.p50 ?? 0);
   const p95 = Math.round(point.absolute?.p95 ?? 0);
   const p99 = Math.round(point.absolute?.p99 ?? 0);
-  const successRate = ((point.successRate ?? 1) * 100).toFixed(1);
+  const successRate = Number((point.successRate ?? 1) * 100).toFixed(1);
 
   const lines = [
     `Avg: ${avg}ms`,
@@ -166,7 +166,7 @@ function getTooltipText(
   ];
 
   if (metricType !== "absolute" && point.relative?.vsBaseline != null) {
-    lines.push(`vs Baseline: ${point.relative.vsBaseline.toFixed(2)}x`);
+    lines.push(`vs Baseline: ${Number(point.relative.vsBaseline).toFixed(2)}x`);
   }
 
   return lines.join("\n");

@@ -38,12 +38,16 @@ export async function verifySession(
 
   try {
     const prisma = getPrisma(env.DATABASE_URL, env.DATABASE_POOL_URL);
-    const token = decodeURIComponent(rawToken);
+    let token = decodeURIComponent(rawToken);
+
+    // If the token is a signed cookie from BetterAuth (format: `token.signature`),
+    // extract the leading token ID which matches the `token` column in PostgreSQL.
+    if (token.includes(".")) {
+      token = token.split(".")[0] || token;
+    }
 
     const session = await prisma.session.findUnique({
       where: { token },
-      // Select `token` explicitly so we can confirm the DB row matches the
-      // decoded value — defence-in-depth against URL-encoding edge cases.
       select: { userId: true, expiresAt: true, token: true },
     });
 

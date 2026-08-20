@@ -141,7 +141,7 @@ export function SlaReportView({ monitorId }: { monitorId: string }) {
                 isSlaMet ? "text-emerald-500" : "text-amber-500",
               )}
             >
-              {aggregate.uptimePct.toFixed(3)}%
+              {Number(aggregate?.uptimePct ?? 100).toFixed(3)}%
             </div>
             <p className="text-xs text-muted-foreground mt-1">Target: 99.90%</p>
           </CardContent>
@@ -155,24 +155,11 @@ export function SlaReportView({ monitorId }: { monitorId: string }) {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-foreground font-mono">
-              {aggregate.totalDowntimeMinutes}m
+              {aggregate?.totalDowntimeMinutes ?? 0}m
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-              across {aggregate.totalDown} failures
+              across {aggregate?.totalDown ?? 0} failures
             </p>
-          </CardContent>
-        </Card>
-
-        <Card className="border-zinc-800 bg-zinc-950/50 backdrop-blur-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Checks
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground font-mono">
-              {aggregate.totalChecks.toLocaleString()}
-            </div>
           </CardContent>
         </Card>
 

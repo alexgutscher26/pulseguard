@@ -162,13 +162,13 @@ export function IncidentHistoryTab({
             {uptimeData.trend === "stable" && <Minus className="size-4 text-muted-foreground" />}
           </div>
           <div
-            className={cn("text-3xl font-bold font-mono mt-2", getUptimeColor(uptimeData.current))}
+            className={cn("text-3xl font-bold font-mono mt-2", getUptimeColor(uptimeData?.current ?? 100))}
           >
-            {uptimeData.current.toFixed(2)}%
+            {Number(uptimeData?.current ?? 100).toFixed(2)}%
           </div>
           <div className="text-xs text-muted-foreground/60 mt-1 font-mono">
-            {uptimeData.difference >= 0 ? "+" : ""}
-            {uptimeData.difference.toFixed(2)}% vs prev. period
+            {(uptimeData?.difference ?? 0) >= 0 ? "+" : ""}
+            {Number(uptimeData?.difference ?? 0).toFixed(2)}% vs prev. period
           </div>
         </div>
 
