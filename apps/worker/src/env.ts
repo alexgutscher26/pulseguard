@@ -21,4 +21,5 @@ export interface Env {
   /** Outbound dead-man's switch / heartbeat webhook for worker check-loop liveness */
   DEADMAN_SNITCH_URL?: string;
   HEALTHCHECK_PING_URL?: string;
+  ENABLE_DURABLE_OBJECTS?: string;
 }

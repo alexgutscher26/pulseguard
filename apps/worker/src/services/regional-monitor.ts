@@ -56,8 +56,8 @@ export async function checkSingleRegion(
   const regionDef = getRegionByCode(regionCode);
   const resolvedRegion = regionDef?.code || regionCode;
 
-  // 1. Prioritize DO-based execution if available
-  if (env.REGIONAL_PROBE && regionDef?.isCloudflareDO) {
+  // 1. Prioritize DO-based execution ONLY if explicitly enabled (paid plan)
+  if (env.ENABLE_DURABLE_OBJECTS === "true" && env.REGIONAL_PROBE && regionDef?.isCloudflareDO) {
     try {
       const probeId = env.REGIONAL_PROBE.idFromName(resolvedRegion);
       const probe = env.REGIONAL_PROBE.get(probeId, {

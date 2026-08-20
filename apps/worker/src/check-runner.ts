@@ -651,8 +651,8 @@ export async function recordLatencyBatchToAggregator(
 ): Promise<void> {
   if (records.length === 0) return;
 
-  // 1. Broadcast to LatencyAggregator DO for live subscribers & websocket streaming
-  if (env?.LATENCY_AGGREGATOR) {
+  // 1. Broadcast to LatencyAggregator DO for live subscribers & websocket streaming (paid DO tier)
+  if (env?.ENABLE_DURABLE_OBJECTS === "true" && env?.LATENCY_AGGREGATOR) {
     try {
       const id = env.LATENCY_AGGREGATOR.idFromName("global-latency-aggregator");
       const stub = env.LATENCY_AGGREGATOR.get(id);
@@ -722,7 +722,7 @@ export async function broadcastLiveEvent(
   event: any,
   ctx?: ExecutionContext,
 ): Promise<void> {
-  if (!env?.MONITOR_CHANNEL) return;
+  if (env?.ENABLE_DURABLE_OBJECTS !== "true" || !env?.MONITOR_CHANNEL) return;
 
   try {
     // Get DO instance (using monitorId as the DO ID)

@@ -136,8 +136,8 @@ export default {
         console.warn("[CircuitBreaker] Sync initialization skipped:", cbErr);
       }
 
-      // --- REGIONAL PROBE DO BOOTSTRAP ---
-      if (env.REGIONAL_PROBE) {
+      // --- REGIONAL PROBE DO BOOTSTRAP: Only run if explicit flag enabled to save free tier duration ---
+      if (env.ENABLE_DURABLE_OBJECTS === "true" && env.REGIONAL_PROBE) {
         ctx.waitUntil(
           (async () => {
             for (const reg of CLOUDFLARE_PROBE_REGIONS) {
