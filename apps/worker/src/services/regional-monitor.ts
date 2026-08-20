@@ -193,9 +193,15 @@ export async function performRegionalChecks(
     }
   }
 
-  // If no regions configured, use default 3 primary regions on free tier (2-of-3 quorum)
+  // If no regions configured, use default primary regions on free tier (2-of-3 quorum)
   if (targetRegions.length === 0) {
-    targetRegions = [...FREE_TIER_PROBE_REGIONS];
+    targetRegions = ["wnam", "weur", "apac"];
+  } else if (targetRegions.length > 3) {
+    // Select 3 geographically distributed regions (Americas, Europe, Asia/Pacific)
+    // to guarantee global quorum while staying well under Cloudflare Workers' 50 subrequest limit per tick
+    const keyRegions = ["wnam", "weur", "apac"];
+    const filtered = targetRegions.filter((r) => keyRegions.includes(r));
+    targetRegions = filtered.length >= 3 ? filtered : targetRegions.slice(0, 3);
   }
 
   // Execute checks in bounded concurrency (max 5 simultaneous subrequests) to respect DO limits

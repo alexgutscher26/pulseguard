@@ -62,11 +62,6 @@ export default {
         );
       }
 
-      // If an auxiliary cron fired separately, skip monitor batch to avoid duplicate execution
-      if (event.cron && event.cron !== "* * * * *") {
-        return;
-      }
-
       if (!env.DATABASE_URL) {
         console.warn(
           "[Worker Cron] DATABASE_URL is not configured in worker environment. Skipping scheduled monitor checks.",
@@ -151,8 +146,8 @@ export default {
       }
 
       // Process all due monitors for this shard in chunks to prevent dropping checks under load
-      const CHUNK_SIZE = 100;
-      const MAX_CHUNKS_PER_TICK = 10;
+      const CHUNK_SIZE = 25;
+      const MAX_CHUNKS_PER_TICK = 5;
       let totalProcessedCount = 0;
 
       const totalShards = Number(env.TOTAL_SHARDS || 1);
@@ -160,19 +155,17 @@ export default {
 
       const runWithRetry = async (retryCount: number = 0, maxRetries: number = 2): Promise<any> => {
         try {
-          // Find active monitors that are due for a check, skipping abandoned free-tier accounts (>60d inactive)
+          // Find active monitors that are due for a check
           const targetIds: { id: string }[] = await prisma.$queryRaw`
             SELECT m.id FROM "Monitor" m
-            INNER JOIN "user" u ON m."userId" = u.id
             WHERE (m."status" IN ('UP', 'DOWN', 'MAINTENANCE'))
             AND NOT (m."type" = 'HEARTBEAT' AND m."status" = 'DOWN')
             AND (m."nextCheck" IS NULL OR m."nextCheck" <= NOW())
-            AND (u."tier" != 'INITIATE' OR u."updatedAt" >= NOW() - INTERVAL '60 days')
             AND (abs(hashtext(m.id)) % ${totalShards}) = ${shardId}
             AND NOT EXISTS (
               SELECT 1 FROM "ProbeAssignment" WHERE "monitorId" = m."id"
             )
-            ORDER BY m."nextCheck" ASC
+            ORDER BY m."nextCheck" ASC NULLS FIRST
             LIMIT ${CHUNK_SIZE}
           `;
           return targetIds;
