@@ -197,7 +197,7 @@ async function runDueChecks() {
                 timestamp: new Date().toISOString(),
                 reason: errorReason || "Endpoint unreachable",
                 monitorId: "",
-                previousStatus: "UP"
+                previousStatus: "UP",
               });
             } else if (
               (channel.type === "DISCORD" || channel.type === "SLACK") &&

@@ -4,6 +4,7 @@
 
 **Edge-native, zero-false-positive operational intelligence platform for modern infrastructure.**
 
+[![Status](https://steadystack.dev/api/badge/steadystack.svg?style=flat&theme=dark&size=sm)](https://steadystack.dev/status-page/steadystack)
 [![Next.js 16](https://img.shields.io/badge/Next.js-16_App_Router-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![Cloudflare Workers](https://img.shields.io/badge/Cloudflare_Workers-7_Edge_Regions-F38020?style=flat-square&logo=cloudflare)](https://workers.cloudflare.com/)
 [![TypeScript 5](https://img.shields.io/badge/TypeScript-5.5-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)

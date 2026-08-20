@@ -20,6 +20,21 @@ export default function LandingFooter() {
             <p className="text-muted-foreground text-xs font-medium max-w-xs leading-relaxed">
               Autonomous global edge uptime, synthetic surveillance, and developer monitoring.
             </p>
+            <div className="pt-1">
+              <a
+                href="https://steadystack.dev/status-page/steadystack"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block transition-opacity hover:opacity-85"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="https://steadystack.dev/api/badge/steadystack.svg?style=flat&theme=dark&size=sm"
+                  alt="SteadyStack Status"
+                  className="h-5 w-auto"
+                />
+              </a>
+            </div>
           </div>
 
           {/* Col 2 - Product */}
@@ -219,10 +234,26 @@ export default function LandingFooter() {
         </div>
 
         {/* Footer Bottom */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-border">
-          <span className="text-muted-foreground text-xs font-medium">
-            © {new Date().getFullYear()} SteadyStack. All rights reserved.
-          </span>
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-8 border-t border-border">
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="text-muted-foreground text-xs font-medium">
+              © {new Date().getFullYear()} SteadyStack. All rights reserved.
+            </span>
+            <span className="text-border hidden sm:inline">•</span>
+            <a
+              href="https://steadystack.dev/status-page/steadystack"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center transition-opacity hover:opacity-85"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://steadystack.dev/api/badge/steadystack.svg?style=flat&theme=dark&size=sm"
+                alt="SteadyStack Status"
+                className="h-4 w-auto"
+              />
+            </a>
+          </div>
           <div className="flex items-center gap-4 text-muted-foreground">
             <Link
               href="https://x.com/snackforcode"
