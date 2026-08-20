@@ -106,7 +106,6 @@
     "unicorn/no-useless-spread": "warn",
     "unicorn/prefer-set-size": "warn",
     "unicorn/prefer-string-starts-ends-with": "warn",
-    "unicorn/no-for-loop": "warn",
     "unicorn/prefer-includes": "warn",
     "unicorn/prefer-ternary": "warn",
     "unicorn/throw-new-error": "warn",
