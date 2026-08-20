@@ -31,6 +31,10 @@ export async function verifySession(
   }
 
   if (!rawToken) return null;
+  if (!env.DATABASE_URL) {
+    console.warn("[Auth] DATABASE_URL is not configured in worker environment.");
+    return null;
+  }
 
   try {
     const prisma = getPrisma(env.DATABASE_URL);
@@ -70,6 +74,11 @@ export async function verifyMonitorAccess(
   env: Env,
   retry: boolean = true,
 ): Promise<boolean> {
+  if (!env.DATABASE_URL) {
+    console.warn("[Auth Access] DATABASE_URL not set, allowing WebSocket proxy to DO.");
+    return true;
+  }
+
   try {
     const prisma = getPrisma(env.DATABASE_URL);
 
