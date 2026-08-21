@@ -30,10 +30,10 @@ export default function CTA() {
           </Link>
 
           <Link
-            href="#pricing"
+            href={"/pricing" as any}
             className="flex items-center justify-center h-10.5 px-6 bg-transparent border border-border hover:bg-accent text-foreground text-xs font-semibold rounded-lg transition-colors w-full sm:w-auto"
           >
-            Talk to Sales
+            View Pricing
           </Link>
         </div>
       </div>

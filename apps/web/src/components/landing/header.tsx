@@ -271,7 +271,7 @@ export default function LandingHeader() {
 
           {/* Pricing Direct Link */}
           <Link
-            href="/#pricing"
+            href={"/pricing" as any}
             className="px-3 py-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
           >
             Pricing

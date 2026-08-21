@@ -50,7 +50,7 @@ export default function LandingFooter() {
                 Features
               </Link>
               <Link
-                href="#pricing"
+                href={"/pricing" as any}
                 className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors w-fit"
               >
                 Pricing

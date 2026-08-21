@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Activity, Globe, Shield, Bell, Brain, Cpu, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { PRODUCT_CONFIG, AVAILABLE_REGIONS } from "@steadystack/shared";
+import { PRODUCT_CONFIG } from "@steadystack/shared";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +19,7 @@ const values = [
   {
     icon: Brain,
     title: "Detect Faster",
-    description: `${PRODUCT_CONFIG.DEFAULT_CHECK_INTERVAL_SECONDS}-second check intervals across ${AVAILABLE_REGIONS.length} global regions. We catch failures before your users do.`,
+    description: `${PRODUCT_CONFIG.DEFAULT_CHECK_INTERVAL_SECONDS}-second check intervals across 7 sovereign quorum regions. We catch failures before your users do.`,
   },
   {
     icon: Shield,
@@ -36,7 +36,7 @@ const values = [
   {
     icon: Globe,
     title: "Global by Default",
-    description: `${AVAILABLE_REGIONS.length} sovereign edge regions across North America, Europe, and Asia-Pacific.`,
+    description: "7 sovereign edge regions across North America, Europe, and Asia-Pacific, backed by an independent out-of-band Hetzner sentinel.",
   },
   {
     icon: Cpu,
@@ -52,10 +52,10 @@ const values = [
 ];
 
 const stats = [
-  { label: "Sovereign Regions", value: `${AVAILABLE_REGIONS.length}` },
+  { label: "Quorum Regions", value: "7" },
   {
-    label: "Free Checks / Mo",
-    value: `${(PRODUCT_CONFIG.FREE_CHECKS_LIMIT / 1000).toLocaleString()}k`,
+    label: "Free Monitors",
+    value: "50",
   },
   {
     label: "Check Interval",
@@ -121,9 +121,9 @@ export default function AboutPage() {
               </p>
               <p>
                 We built SteadyStack to do better. Our free tier checks every{" "}
-                {PRODUCT_CONFIG.DEFAULT_CHECK_INTERVAL_SECONDS} seconds from{" "}
-                {AVAILABLE_REGIONS.length} global regions. We verify failures across multiple nodes
-                before alerting — so you never chase a ghost.
+                {PRODUCT_CONFIG.DEFAULT_CHECK_INTERVAL_SECONDS} seconds across 7 sovereign Cloudflare edge
+                regions with 4-of-7 quorum consensus (backed by an independent out-of-band Hetzner sentinel).
+                We verify failures across multiple nodes before alerting — so you never chase a ghost.
               </p>
               <p>
                 And we made it look good. Because if you&apos;re going to stare at a dashboard all
@@ -181,8 +181,7 @@ export default function AboutPage() {
             Ready to monitor the right way?
           </h2>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-lg mx-auto mb-8">
-            {PRODUCT_CONFIG.FREE_CHECKS_LIMIT.toLocaleString()} free checks per month. No credit
-            card required. No time limit.
+            50 free monitors forever with 60-second checks across 7 quorum regions. No credit card required.
           </p>
           <Link
             href="/signup"
