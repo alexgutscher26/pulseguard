@@ -98,10 +98,15 @@ export async function seedDatabase(options: SeedOptions = {}) {
     await prisma.account.create({
       data: {
         id: "seed-account-01",
-        accountId: targetUser.email,
+        accountId: userId,
         providerId: "credential",
         userId,
       },
+    });
+  } else if (existingAccount.accountId !== userId) {
+    await prisma.account.update({
+      where: { id: existingAccount.id },
+      data: { accountId: userId },
     });
   }
 

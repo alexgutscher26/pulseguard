@@ -230,6 +230,26 @@ Options:
     });
   }
 
+  // Ensure Better Auth credential account exists for targetUser
+  const existingAccount = await prisma.account.findFirst({
+    where: { userId: targetUser.id, providerId: "credential" },
+  });
+  if (!existingAccount) {
+    await prisma.account.create({
+      data: {
+        id: `account-${targetUser.id}`,
+        accountId: targetUser.id,
+        providerId: "credential",
+        userId: targetUser.id,
+      },
+    });
+  } else if (existingAccount.accountId !== targetUser.id) {
+    await prisma.account.update({
+      where: { id: existingAccount.id },
+      data: { accountId: targetUser.id },
+    });
+  }
+
   console.log(`👤 Target User: ${targetUser.email} (${targetUser.id})\n`);
 
   const existingMonitors = await prisma.monitor.findMany({
