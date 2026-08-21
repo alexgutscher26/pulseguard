@@ -331,7 +331,7 @@ export class RegionalProbe extends DurableObject<Env> {
             monitors = await prisma.monitor.findMany({
               where: {
                 status: { in: ["UP", "DOWN", "MAINTENANCE"] },
-                nextCheck: { lte: new Date() },
+                OR: [{ nextCheck: null }, { nextCheck: { lte: new Date() } }],
               },
               take: 30, // Free/standard batch size per probe wake
               select: {

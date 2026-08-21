@@ -329,6 +329,7 @@ export async function createMonitor(prevState: any, formData: FormData) {
         type: data.type as any,
         interval: data.interval,
         timeout: data.timeout,
+        nextCheck: new Date(),
         userId: session.user.id,
         organizationId: active?.id || null,
         checkRegions: data.checkRegions,
@@ -438,6 +439,7 @@ export async function quickCreateMonitor(data: {
         interval: data.interval || 60,
         timeout: 10,
         status: "UP",
+        nextCheck: new Date(),
         checkRegions: JSON.stringify(["us-east", "eu-central", "ap-tokyo"]),
         userId: session.user.id,
         alertRules: {
@@ -583,6 +585,7 @@ export async function updateMonitor(id: string, prevState: any, formData: FormDa
         type: data.type as any,
         interval: data.interval,
         timeout: data.timeout,
+        nextCheck: new Date(),
         checkRegions: data.checkRegions,
         alertThreshold: data.alertThreshold,
         dynamicThresholding: data.dynamicThresholding,
@@ -644,6 +647,15 @@ export async function getMonitors() {
         },
       },
     });
+
+    const now = new Date();
+    const overdueMonitors = monitors.filter(
+      (m) => m.status !== "PAUSED" && (!m.nextCheck || m.nextCheck <= now),
+    );
+    if (overdueMonitors.length > 0) {
+      Promise.allSettled(overdueMonitors.map((m) => checkMonitor(m.id))).catch(() => {});
+    }
+
     return monitors;
   } catch (error) {
     console.error("Failed to fetch monitors", error);
@@ -921,6 +933,8 @@ export async function checkMonitor(
   }
 
   try {
+    const nextCheck = new Date(Date.now() + (monitor.interval || 60) * 1000);
+
     await prisma.$transaction([
       prisma.monitorEvent.create({
         data: {
@@ -936,6 +950,7 @@ export async function checkMonitor(
         data: {
           status: currentStatus,
           lastCheck: new Date(),
+          nextCheck,
         },
       }),
     ]);
@@ -1388,6 +1403,7 @@ export async function toggleMonitor(id: string, enabled: boolean) {
       where: { id, userId: session.user.id },
       data: {
         status: enabled ? "UP" : "PAUSED", // Reset to UP (pending next check) or PAUSED
+        nextCheck: enabled ? new Date() : null,
       },
     });
 
