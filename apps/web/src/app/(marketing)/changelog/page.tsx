@@ -184,7 +184,7 @@ const CHANGELOG_DATA: ChangelogEntry[] = [
     badge: "Initial Release",
     badgeColor: "bg-muted text-muted-foreground border-border",
     description:
-      "The initial open-source release of SteadyStack: 16 monitor types, real-time WebSocket dashboard via Cloudflare Durable Objects, multi-channel alerting, and public status pages.",
+      "The initial release of SteadyStack: 16 monitor types, real-time WebSocket dashboard via Cloudflare Durable Objects, multi-channel alerting, and public status pages.",
     highlights: [
       {
         category: "Feature",
@@ -224,7 +224,7 @@ export default function ChangelogPage() {
           </h1>
           <p className="text-muted-foreground text-sm max-w-xl leading-relaxed">
             Follow the latest engine improvements, CLI features, edge consensus upgrades, and
-            open-source releases shipped by the SteadyStack team.
+            platform releases shipped by the SteadyStack team.
           </p>
           <div className="flex items-center gap-3 pt-2">
             <Link

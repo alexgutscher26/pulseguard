@@ -1,11 +1,10 @@
 import { ChevronDown } from "lucide-react";
-import { PRODUCT_CONFIG, AVAILABLE_REGIONS } from "@steadystack/shared";
 
 export default function FAQ() {
   const faqs = [
     {
       q: "How fast are the checks performed, and are there interval limits per tier?",
-      a: `Verification checks execute natively at the edge. The check frequency depends on your subscription tier: the Initiate (Free) tier supports 60-second check intervals across all 50 monitors, the Netrunner plan supports down to 30 seconds, and the Construct (Enterprise) plan supports high-frequency telemetry checks down to 10 seconds. Checks run concurrently across all ${AVAILABLE_REGIONS.length} sovereign global edge regions.`,
+      a: `Verification checks execute natively at the edge. The check frequency depends on your subscription tier: the Initiate (Free) tier supports 60-second check intervals across all 50 monitors, the Netrunner plan supports down to 30 seconds, and the Construct (Enterprise) plan supports high-frequency telemetry checks down to 10 seconds. Checks run concurrently across all 7 sovereign quorum regions (backed by an independent out-of-band Hetzner sentinel).`,
     },
     {
       q: "What is multi-region consensus verification, and how does it prevent false alerts?",
