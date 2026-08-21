@@ -2,8 +2,6 @@ import { PrismaClient } from "./generated/client/index.js";
 
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
-import { PrismaNeon } from "@prisma/adapter-neon";
-import { Pool as NeonPool } from "@neondatabase/serverless";
 
 export function createPrisma(databaseUrl?: string, poolUrlOverride?: string) {
   const url =
@@ -24,63 +22,50 @@ export function createPrisma(databaseUrl?: string, poolUrlOverride?: string) {
     (typeof globalThis !== "undefined" ? (globalThis as any).DATABASE_POOL_URL : undefined) ||
     url;
 
-  // Determine if SSL is needed but remove sslmode from URL to avoid conflict with explicit ssl config.
+  // Determine if SSL is needed but strip params that pg doesn't understand from the URL.
   const isSsl = poolUrl.includes("sslmode=require") || poolUrl.includes("sslmode=verify");
-  // Strip both sslmode= and channel_binding= — the pg driver and @neondatabase/serverless
-  // do not understand channel_binding, causing libpq to treat "neondb&channel_binding=require"
-  // as the literal database name (P1003).
+  // pg driver cannot handle channel_binding= or sslmode= as URL query params — it tries to use
+  // them as part of the database name, causing "Database does not exist" (P1003).
   const cleanUrl = poolUrl
     .replace(/[?&]sslmode=[^&]+/g, "")
     .replace(/[?&]channel_binding=[^&]+/g, "")
+    .replace(/[?&]pgbouncer=[^&]+/g, "")
     // Tidy up any dangling ? or & left after stripping params
     .replace(/\?&/, "?")
     .replace(/[?&]$/, "");
 
-  const isNeon =
+  const poolConfig: any = {
+    connectionString: cleanUrl,
+    // Bounded pool size to avoid connection exhaustion in serverless environments
+    max: 5,
+    // Keep idle connections long enough to be reused across periodic ticks
+    idleTimeoutMillis: 30_000,
+    // Extended timeout for high-latency or cross-region connections
+    connectionTimeoutMillis: 10_000,
+    // TCP keep-alive prevents intermediate proxies and NATs from silently dropping connections
+    keepAlive: true,
+    keepAliveInitialDelayMillis: 5_000,
+  };
+
+  // Always enable SSL for cloud PostgreSQL providers and production
+  const isCloudProvider =
+    poolUrl.includes("supabase.com") ||
+    poolUrl.includes("supabase.co") ||
     poolUrl.includes("neon.tech") ||
-    (typeof process !== "undefined" && process.env.DATABASE_URL?.includes("neon.tech"));
+    poolUrl.includes("pooler") ||
+    poolUrl.includes("amazonaws.com");
 
-  let pool: any;
-  let adapter: any;
-
-  if (isNeon) {
-    // Use @neondatabase/serverless for Neon — it handles SSL natively via WebSockets
-    // and correctly parses Neon pooler connection strings.
-    pool = new NeonPool({ connectionString: cleanUrl });
-    adapter = new PrismaNeon(pool);
-  } else {
-    const poolConfig: any = {
-      connectionString: cleanUrl,
-      // Bounded pool size to avoid connection exhaustion in serverless / edge isolates
-      max: 5,
-      // Keep idle connections long enough to be reused across periodic ticks
-      idleTimeoutMillis: 30_000,
-      // Extended timeout for high-latency or cross-region connections
-      connectionTimeoutMillis: 10_000,
-      // TCP keep-alive prevents intermediate proxies and NATs from silently dropping connections
-      keepAlive: true,
-      keepAliveInitialDelayMillis: 5_000,
-    };
-
-    // Enable SSL for cloud PostgreSQL providers and production
-    const isCloudProvider =
-      poolUrl.includes("supabase.com") ||
-      poolUrl.includes("supabase.co") ||
-      poolUrl.includes("pooler") ||
-      poolUrl.includes("amazonaws.com");
-
-    if (isSsl || isCloudProvider || process.env.NODE_ENV === "production") {
-      poolConfig.ssl = { rejectUnauthorized: false };
-    }
-
-    pool = new Pool(poolConfig);
-    pool.on("error", (err: any) => {
-      // pg.Pool handles dead idle connections automatically by removing them from the pool.
-      // NEVER call resetPrisma or pool.end() here as it closes the entire pool and destroys active queries.
-      console.warn("[PG Pool] Idle client connection event (handled by pool):", err.message);
-    });
-    adapter = new PrismaPg(pool);
+  if (isSsl || isCloudProvider || process.env.NODE_ENV === "production") {
+    poolConfig.ssl = { rejectUnauthorized: false };
   }
+
+  const pool = new Pool(poolConfig);
+  pool.on("error", (err) => {
+    // pg.Pool handles dead idle connections automatically by removing them from the pool.
+    // NEVER call resetPrisma or pool.end() here as it closes the entire pool and destroys active queries.
+    console.warn("[PG Pool] Idle client connection event (handled by pool):", err.message);
+  });
+  const adapter = new PrismaPg(pool);
 
   const isDev = typeof process !== "undefined" && process.env?.NODE_ENV === "development";
 
