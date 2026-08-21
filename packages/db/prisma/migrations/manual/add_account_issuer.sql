@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "account" ADD COLUMN IF NOT EXISTS "issuer" TEXT;
