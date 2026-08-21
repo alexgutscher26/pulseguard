@@ -241,12 +241,13 @@ Options:
         accountId: targetUser.id,
         providerId: "credential",
         userId: targetUser.id,
+        issuer: "local:credential",
       },
     });
-  } else if (existingAccount.accountId !== targetUser.id) {
+  } else if (existingAccount.accountId !== targetUser.id || !existingAccount.issuer) {
     await prisma.account.update({
       where: { id: existingAccount.id },
-      data: { accountId: targetUser.id },
+      data: { accountId: targetUser.id, issuer: "local:credential" },
     });
   }
 

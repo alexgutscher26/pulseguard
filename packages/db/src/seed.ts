@@ -101,12 +101,13 @@ export async function seedDatabase(options: SeedOptions = {}) {
         accountId: userId,
         providerId: "credential",
         userId,
+        issuer: "local:credential",
       },
     });
-  } else if (existingAccount.accountId !== userId) {
+  } else if (existingAccount.accountId !== userId || !existingAccount.issuer) {
     await prisma.account.update({
       where: { id: existingAccount.id },
-      data: { accountId: userId },
+      data: { accountId: userId, issuer: "local:credential" },
     });
   }
 

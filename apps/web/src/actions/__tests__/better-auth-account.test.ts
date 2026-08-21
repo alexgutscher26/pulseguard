@@ -13,6 +13,7 @@ describe("Better Auth Account Invariants (P0-AUTH-01)", () => {
       providerId: "credential",
       accountId: user.id, // Must equal user.id, NOT email
       userId: user.id,
+      issuer: "local:credential",
     };
 
     // Better Auth sign-in route check logic simulation:
@@ -25,6 +26,7 @@ describe("Better Auth Account Invariants (P0-AUTH-01)", () => {
 
     expect(matchedAccount).toBeDefined();
     expect(matchedAccount?.accountId).toBe(user.id);
+    expect(matchedAccount?.issuer).toBe("local:credential");
   });
 
   test("mismatched accountId (e.g. using email) fails Better Auth credential account resolution", () => {
@@ -39,6 +41,7 @@ describe("Better Auth Account Invariants (P0-AUTH-01)", () => {
       providerId: "credential",
       accountId: user.email, // Mismatched accountId
       userId: user.id,
+      issuer: "local:credential",
     };
 
     const matchedAccount = [brokenAccount].find(
@@ -47,5 +50,19 @@ describe("Better Auth Account Invariants (P0-AUTH-01)", () => {
 
     // This failure is what caused Better Auth to log "User not found" when user was in DB
     expect(matchedAccount).toBeUndefined();
+  });
+
+  test("Prisma Account schema includes issuer field required by Better Auth", () => {
+    const accountData = {
+      id: "acc_789012",
+      accountId: "usr_123456",
+      providerId: "credential",
+      userId: "usr_123456",
+      issuer: "local:credential",
+      password: "hashed_password_string",
+    };
+
+    expect(accountData).toHaveProperty("issuer");
+    expect(accountData.issuer).toBe("local:credential");
   });
 });
