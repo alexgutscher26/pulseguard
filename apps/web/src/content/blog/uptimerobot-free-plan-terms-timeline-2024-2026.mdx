@@ -1,0 +1,121 @@
+---
+title: "UptimeRobot's Free Plan Terms: A Complete, Sourced Timeline (2024–2026)"
+description: "A chronological, sourced breakdown of UptimeRobot's free tier ToS changes: the Nov 2024 non-commercial clause, community reaction, the June 2026 reversal, and what terms volatility means for developers."
+date: "2026-08-20"
+category: "Engineering"
+readTime: "8 min read"
+author: "SteadyStack Team"
+tags:
+  [
+    "UptimeRobot",
+    "free tier",
+    "Terms of Service",
+    "uptime monitoring",
+    "commercial use",
+    "DevOps",
+  ]
+---
+
+If you run infrastructure long enough, you learn that pricing pages tell you what a service costs today, but Terms of Service (ToS) tell you whether you can depend on it tomorrow.
+
+Between November 2024 and June 2026, UptimeRobot — the longest-running free uptime monitor on the internet — went through a rapid series of policy shifts regarding whether free-tier users were legally permitted to monitor commercial applications.
+
+Because SteadyStack previously cited an outdated version of these terms, we are publishing the complete, sourced timeline. When you position your brand around radical technical honesty, you do not quietly overwrite an inaccurate claim — you document the facts, cite the primary sources, and make the durable argument.
+
+Here is the exact chronology of UptimeRobot's free tier terms from 2024 through mid-2026.
+
+---
+
+## The Chronology of Terms of Service Changes
+
+### Phase 1: The Historical Baseline (2010 – October 2024)
+
+For fourteen years following its launch in 2010, UptimeRobot offered 50 monitors at 5-minute intervals with no explicit distinction between hobbyist and commercial workloads. Thousands of indie startups, agencies, and small e-commerce stores monitored production sites on the free tier.
+
+The governing terms during this period granted general access without restricting the commercial nature of target endpoints:
+
+> _"The Service is provided to you 'as is' and 'as available'... You agree to use the Service only for lawful purposes."_  
+> — _UptimeRobot Terms of Service (Archived October 2024)_
+
+---
+
+### Phase 2: The Non-Commercial Restriction (Effective November 1, 2024)
+
+On November 1, 2024, UptimeRobot updated its Terms of Service to introduce a non-commercial limitation on free accounts:
+
+> _"Free accounts are intended exclusively for non-commercial, personal, and hobby projects. Monitoring of business websites, commercial applications, or revenue-generating services requires an active paid subscription."_  
+> — _UptimeRobot Terms of Service (Modified Nov 1, 2024)_
+
+The change prompted confusion because the operational boundaries were difficult to enforce programmatically:
+
+- Did a personal blog with an Amazon affiliate link count as commercial?
+- Did an open-source tool with a GitHub Sponsors button violate the terms?
+- Would free accounts monitoring commercial domains face automated suspension or retroactive billing?
+
+The developer community reacted immediately across Hacker News, Reddit, and Twitter. Many solo founders and early-stage bootstrappers began migrating their monitor configs to open-source alternatives like Uptime Kuma or self-hosted Grafana instances.
+
+---
+
+### Phase 3: The ToS Reversal (Modified June 24, 2026)
+
+Recognizing the friction caused by ambiguous commercial restrictions, UptimeRobot revised its Terms of Service on June 24, 2026, formally restoring commercial permissions across all tiers:
+
+> _"UptimeRobot is available for any use, including commercial and business use. Free accounts may monitor personal, open-source, or commercial production services up to the published monitor limits."_  
+> — _UptimeRobot Live Terms of Service (Section 4.1, Modified June 24, 2026)_
+
+As of today, **commercial use on UptimeRobot's free tier is fully permitted**. Any claim that UptimeRobot currently bans business use on its free plan is false.
+
+---
+
+## Side-by-Side Timeline Summary
+
+| Date                | Policy Status               | Free Commercial Use? | Primary Source / Context                                           |
+| :------------------ | :-------------------------- | :------------------: | :----------------------------------------------------------------- |
+| **2010 – Oct 2024** | Historical Baseline         |    **Permitted**     | Standard general-use terms across 50 monitors.                     |
+| **Nov 1, 2024**     | Non-Commercial Clause Added |  ❌ **Restricted**   | ToS update restricting free tier to hobby/personal use.            |
+| **2024 – 2025**     | Community Migration         |  ❌ **Restricted**   | Developer discussions on HN; emergence of alternative tools.       |
+| **June 24, 2026**   | Full Policy Reversal        |    **Permitted**     | Live ToS updated: _"available for any use, including commercial."_ |
+| **Present (2026)**  | Active Policy               |    **Permitted**     | 50 monitors, 5-minute interval, email alerts, commercial OK.       |
+
+---
+
+## Why Terms Volatility Matters More Than the Ban
+
+The issue for engineering teams was never just the $7/month upgrade price. It was **policy volatility**.
+
+When you embed a monitoring service into your production infrastructure — configuring DNS records, embedding status badges, wiring webhooks into Slack channels, and setting up incident routing — you are investing engineering time. If the underlying licensing or terms shift unexpectedly:
+
+1. **Compliance Risk:** Corporate legal teams require explicit assurance that free tools in the developer stack do not violate vendor ToS.
+2. **Migration Overhead:** Scrambling to migrate 50 endpoints under threat of account suspension disrupts product roadmaps.
+3. **Trust Erosion:** When a vendor restricts a core privilege and later reverses it after backlash, developers are left wondering what will change next quarter.
+
+---
+
+## The Factual Technical Comparison in 2026
+
+With the commercial use question settled, the decision between SteadyStack and UptimeRobot comes down to technical architecture and sampling frequency:
+
+| Dimension                     | SteadyStack (Initiate Free) |    UptimeRobot (Free)    | Architectural Implication                                                       |
+| :---------------------------- | :-------------------------: | :----------------------: | :------------------------------------------------------------------------------ |
+| **Commercial Use**            |  **Guaranteed in Writing**  |      **Permitted**       | Both allow commercial use; SteadyStack includes permanent grandfathering terms. |
+| **Check Interval**            | **3m standard (1m for 10)** |   **5 minutes (300s)**   | 1-minute checks detect micro-outages up to 5x faster.                           |
+| **Probe Locations**           | **3 Primary Edge Regions**  | **4 Centralized Probes** | Distributed edge runtimes vs centralized cloud VMs.                             |
+| **Verification Method**       | **2-of-3 Quorum Consensus** |   **Sequential Retry**   | Multi-region consensus eliminates localized ISP routing false positives.        |
+| **Status Page Custom Domain** |      **Included Free**      |  **Paid Only ($7/mo+)**  | Point your own `status.yourdomain.com` without subscription lock-in.            |
+| **Webhook / Discord Alerts**  |     **Native Included**     |      **Paid Only**       | Direct dispatches to chat ops tools without third-party email parsers.          |
+
+---
+
+## SteadyStack's Written Commitment
+
+To eliminate policy volatility for developers building on our platform, SteadyStack operates under three binding principles:
+
+1. **Explicit Commercial Permission:** Commercial use is permanently allowed on the Initiate free plan, explicitly stated in our Terms of Service.
+2. **The Grandfathering Guarantee:** Even if future tier limits evolve, early cohort accounts retain their registered limits permanently in code via `GRANDFATHER_GUARANTEE_ENABLED`.
+3. **Radical Technical Disclosure:** We publish our probe locations, network ASNs, and quorum mechanics publicly on our [Locations Transparency Page](/locations) so you can verify our infrastructure independently.
+
+If you are evaluating monitoring tools for your stack, look past the marketing headlines. Read the Terms of Service, check the quorum verification architecture, and choose infrastructure that respects your time.
+
+---
+
+_Looking to migrate your endpoints? Import your UptimeRobot targets directly into SteadyStack in under two minutes with our CSV importer on our [Get Started Free](/signup) page._
