@@ -140,9 +140,9 @@ User-Agent: ${STEADYSTACK_CANONICAL_USER_AGENT}`;
             <div className="p-4 sm:p-5 bg-muted/20 border-t border-border font-mono text-xs text-muted-foreground flex items-start gap-2.5">
               <ShieldCheck className="size-4 text-emerald-500 shrink-0 mt-0.5" />
               <div className="leading-relaxed">
-                <strong className="text-foreground">Multi-ASN Quorum:</strong> 4 of {healthyCount}{" "}
-                healthy regions plus independent ASN verification must confirm a failure before an
-                incident opens.{" "}
+                <strong className="text-foreground">Multi-ASN Quorum:</strong> 4 of 7 sovereign edge
+                regions (2 of 3 on Initiate free tier) plus independent ASN verification must
+                confirm a failure before an incident opens.{" "}
                 {excludedRegionText ? (
                   <span>
                     <strong className="text-amber-500">{excludedRegionText}</strong> is excluded
@@ -271,16 +271,18 @@ User-Agent: ${STEADYSTACK_CANONICAL_USER_AGENT}`;
               <h3 className="text-xl font-bold text-foreground">Coverage we don&apos;t have</h3>
               <div className="space-y-3 text-xs sm:text-sm text-muted-foreground leading-relaxed">
                 <p>
-                  South America, Africa, the Middle East, Oceania. Our probe regions run on
-                  Cloudflare&apos;s network, which does not currently place workloads in those
-                  regions — so we don&apos;t claim them.
+                  Africa, the Middle East, and parts of Central / South Asia. While our 7 sovereign
+                  edge regions cover North America, Europe, Asia-Pacific, Oceania, and South
+                  America, we do not currently operate dedicated edge probe workloads in Africa or
+                  the Middle East — so we don&apos;t claim them.
                 </p>
                 <p>
                   What this means practically: a genuine outage still pages you, because your
-                  endpoint will fail from all seven regions regardless of where it&apos;s hosted.
-                  What we&apos;d miss is a problem affecting only users in those regions — a São
-                  Paulo CDN edge, an African transit route. If that&apos;s a real risk for your
-                  traffic, tell us; it moves our roadmap, and we&apos;ll say so here when it ships.
+                  endpoint will fail from all regions regardless of where it&apos;s hosted. What
+                  we&apos;d miss is a localized routing issue affecting only users in those unprobed
+                  regions — such as a Johannesburg or Dubai transit route anomaly. If that&apos;s a
+                  real risk for your traffic, tell us; it moves our roadmap, and we&apos;ll say so
+                  here when it ships.
                 </p>
               </div>
             </div>

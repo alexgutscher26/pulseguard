@@ -11,14 +11,14 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "SteadyStack — Know the second your stack breaks",
   description:
-    "Know the second your stack breaks. Edge-native synthetic uptime monitoring that confirms failures across global regions before alerting. 60-second checks, live latency tracking, and zero false positives — free for commercial use.",
+    "Know the second your stack breaks. Edge-native synthetic uptime monitoring that confirms failures across global regions before alerting. Multi-region edge quorum verification, live latency tracking, and zero false positives — free for commercial use.",
   alternates: {
     canonical: "https://steadystack.dev/",
   },
   openGraph: {
     title: "SteadyStack — Know the second your stack breaks",
     description:
-      "Edge-native synthetic uptime monitoring that confirms failures across global regions before alerting. 60-second checks and zero false positives.",
+      "Edge-native synthetic uptime monitoring that confirms failures across global regions before alerting. Multi-region edge quorum verification and zero false positives.",
     url: "https://steadystack.dev/",
     siteName: "SteadyStack",
     type: "website",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "SteadyStack — Know the second your stack breaks",
     description:
-      "Edge-native synthetic uptime monitoring that confirms failures across global regions before alerting. 60-second checks and zero false positives.",
+      "Edge-native synthetic uptime monitoring that confirms failures across global regions before alerting. Multi-region edge quorum verification and zero false positives.",
     creator: "@steadystack",
   },
 };

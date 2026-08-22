@@ -195,7 +195,8 @@ export default function ComparisonTable() {
           {/* Table Footer Banner */}
           <div className="p-4 sm:p-6 bg-muted/30 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-xs text-muted-foreground font-mono">
-              ⚡ Free 60-second monitoring checks for up to 50 endpoints. No credit card required.
+              ⚡ Free monitoring for up to 50 endpoints (3m standard, 1m for first 10) with 3-region
+              quorum consensus. No credit card required.
             </div>
             <Link
               href="/signup"

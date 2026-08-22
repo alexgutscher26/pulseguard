@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     template: "%s | SteadyStack",
   },
   description:
-    "Know the second your stack breaks. Edge-native synthetic uptime monitoring that confirms failures across global regions before alerting. 60-second checks, live latency tracking, and zero false positives — free for commercial use.",
+    "Know the second your stack breaks. Edge-native synthetic uptime monitoring that confirms failures across global regions before alerting. Multi-region edge quorum verification, live latency tracking, and zero false positives — free for commercial use.",
   applicationName: "SteadyStack",
   alternates: {
     canonical: "/",
@@ -56,13 +56,13 @@ export const metadata: Metadata = {
     siteName: "SteadyStack",
     title: "SteadyStack — Know the second your stack breaks",
     description:
-      "Know the second your stack breaks. Edge-native synthetic uptime monitoring that confirms failures across global regions before alerting. 60-second checks, live latency tracking, and zero false positives — free for commercial use.",
+      "Know the second your stack breaks. Edge-native synthetic uptime monitoring that confirms failures across global regions before alerting. Multi-region edge quorum verification, live latency tracking, and zero false positives — free for commercial use.",
   },
   twitter: {
     card: "summary_large_image",
     title: "SteadyStack — Know the second your stack breaks",
     description:
-      "Know the second your stack breaks. Edge-native synthetic uptime monitoring that confirms failures across global regions before alerting. 60-second checks, live latency tracking, and zero false positives — free for commercial use.",
+      "Know the second your stack breaks. Edge-native synthetic uptime monitoring that confirms failures across global regions before alerting. Multi-region edge quorum verification, live latency tracking, and zero false positives — free for commercial use.",
     creator: "@steadystack",
   },
   robots: {

@@ -4,11 +4,11 @@ export default function FAQ() {
   const faqs = [
     {
       q: "How fast are the checks performed, and are there interval limits per tier?",
-      a: `Verification checks execute natively at the edge. The check frequency depends on your subscription tier: the Initiate (Free) tier supports 60-second check intervals across all 50 monitors, the Netrunner plan supports down to 30 seconds, and the Construct (Enterprise) plan supports high-frequency telemetry checks down to 10 seconds. Checks run concurrently across all 7 sovereign quorum regions (backed by an independent out-of-band Hetzner sentinel).`,
+      a: `Verification checks execute natively at the edge. The check frequency depends on your subscription tier: the Initiate (Free) tier supports 3-minute standard check intervals (1-minute intervals for your first 10 monitors) with 2-of-3 quorum consensus across 3 primary edge regions, the Netrunner plan supports down to 30 seconds across all 7 sovereign regions with 4-of-7 quorum consensus, and the Construct (Enterprise) plan supports high-frequency telemetry checks down to 10 seconds. All checks are backed by an independent out-of-band Hetzner sentinel.`,
     },
     {
       q: "What is multi-region consensus verification, and how does it prevent false alerts?",
-      a: "Outages on the Internet are often localized due to routing anomalies or regional network drops. When a SteadyStack edge probe detects that your monitor is DOWN, it triggers an immediate local re-check and queries our other sovereign regions. SteadyStack requires 4 of 7 global regions to independently confirm the failure before opening an incident. This voting system isolates regional route flaps from true global outages.",
+      a: "Outages on the Internet are often localized due to routing anomalies or regional network drops. When a SteadyStack edge probe detects that your monitor is DOWN, it triggers an immediate local re-check and queries our other sovereign regions. SteadyStack requires 4 of 7 global regions to independently confirm the failure before opening an incident (2-of-3 on the free tier). This voting system isolates regional route flaps from true global outages.",
     },
     {
       q: "How do private probes monitor internal infrastructure behind firewalls?",
@@ -20,7 +20,7 @@ export default function FAQ() {
     },
     {
       q: "What are the exact capabilities and limits of the Initiate (Free) plan?",
-      a: `The Initiate plan is designed for side projects, indie developers, and commercial applications. Free plan includes commercial use permitted in writing with 50 active monitors, 60-second check intervals, 7-region verification with 4-of-7 quorum consensus, 1 public status page, and transparent probe telemetry. It requires no credit card and supports HTTP, SSL/TLS, DNS, and Heartbeat checks with 3 days of log retention.`,
+      a: `The Initiate plan is designed for side projects, indie developers, and commercial applications. Free plan includes commercial use permitted in writing with 50 active monitors (3-minute standard interval, 1-minute interval for your first 10 monitors), 3 primary edge regions with 2-of-3 quorum consensus, 1 public status page, and transparent probe telemetry. It requires no credit card and supports HTTP, SSL/TLS, DNS, and Heartbeat checks with 3 days of log retention.`,
     },
     {
       q: "Can I monitor protocols other than standard web pages?",

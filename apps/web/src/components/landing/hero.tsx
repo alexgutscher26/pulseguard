@@ -99,9 +99,9 @@ export default function Hero() {
 
         {/* Subhead */}
         <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mb-8 text-balance font-sans">
-          SteadyStack monitors your endpoints every 60 seconds across global edge regions. Four
-          sovereign regions must independently confirm a failure before we page you — zero false
-          positives, zero alert fatigue.
+          SteadyStack monitors your endpoints with multi-region edge consensus. 3 primary regions
+          (2-of-3 quorum) on the free tier, and full 7-region 4-of-7 quorum on paid tiers — zero
+          false positives, zero alert fatigue.
         </p>
 
         {/* Probe Input Form */}
@@ -156,10 +156,11 @@ export default function Hero() {
         {/* Trust Row */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl mb-16 text-xs font-mono text-muted-foreground/90 border-y border-border/60 py-4 bg-muted/20 rounded-xl px-4">
           <div className="flex items-center justify-center gap-2">
-            <span className="text-primary font-bold">✓</span> 60-second checks on the free tier
+            <span className="text-primary font-bold">✓</span> 1m fast checks (first 10) & 3m
+            standard
           </div>
           <div className="flex items-center justify-center gap-2">
-            <span className="text-primary font-bold">✓</span> 7-region verification, included free
+            <span className="text-primary font-bold">✓</span> 3-region 2-of-3 quorum on free
           </div>
           <div className="flex items-center justify-center gap-2">
             <span className="text-primary font-bold">✓</span> Commercial use permitted, in writing

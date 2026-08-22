@@ -22,13 +22,13 @@ If you are evaluating SteadyStack against Better Stack, here is a transparent te
 
 ---
 
-## The Check Interval Gap: 5 Minutes vs 60 Seconds
+## The Check Interval Gap: 5 Minutes vs High-Frequency Edge Polling
 
 On Better Stack's free plan, uptime checks execute once every **5 minutes** (300 seconds) across 10 monitors.
 
 While 5-minute intervals might be acceptable for personal blogs, microservices and production APIs can experience micro-outages, memory leaks, or transient routing failures that resolve within 2 to 4 minutes. A 5-minute poller will miss these blips entirely, leaving your team clueless as to why customer error rates spiked during a deployment.
 
-SteadyStack provides **60-second checks on the free tier** for up to 50 endpoints.
+SteadyStack provides **1-minute checks for your first 10 monitors** (and 3-minute checks across remaining targets) on the free tier for up to 50 endpoints.
 
 ```
 Better Stack Free Plan (5-minute checks):
@@ -37,7 +37,7 @@ Better Stack Free Plan (5-minute checks):
 00:04 -- Service recovers (Auto-restart) --
 00:05 [Check 2: 200 OK]  ==> Zero alerts triggered. Outage unrecorded.
 
-SteadyStack Free Plan (60-second checks):
+SteadyStack Free Plan (1m fast checks):
 00:00 [Check 1: 200 OK]
 00:01 [Check 2: 200 OK]
 00:02 [Check 3: 500 ERROR] ==> 2/3 Quorum verification triggers incident.
@@ -45,7 +45,16 @@ SteadyStack Free Plan (60-second checks):
 00:04 [Check 5: 200 OK]    ==> Recovery confirmed. Full timeline logged.
 ```
 
-By increasing sampling frequency to 60 seconds, SteadyStack captures transient failures and provides exact incident start and recovery timestamps.
+By increasing sampling frequency to 1 minute on critical endpoints, SteadyStack captures transient failures and provides exact incident start and recovery timestamps.
+
+---
+
+## Quorum Consensus vs Sequential Verification
+
+Both SteadyStack and Better Stack recognize that single-node monitoring produces false alarms. However, their consensus architectures differ:
+
+- **Better Stack:** Executes checks across 4 locations, requiring a **3-of-4 quorum check**.
+- **SteadyStack:** Executes distributed checks across sovereign edge regions (3 regions with **2-of-3 quorum** on the free tier; 7 regions with **4-of-7 quorum** on paid tiers) backed by an independent out-of-band sentinel.
 
 ---
 
@@ -87,9 +96,9 @@ Here is how SteadyStack and Better Stack compare across core monitoring specific
 | Feature / Capability        |         SteadyStack          |     Better Stack      |
 | :-------------------------- | :--------------------------: | :-------------------: |
 | **Free Monitor Count**      |    **50 Active Monitors**    |  10 Active Monitors   |
-| **Free Check Interval**     |    **60 Seconds (1 min)**    |  300 Seconds (5 min)  |
-| **Free Region Coverage**    |   **7 Sovereign Regions**    |   4 Cloud Locations   |
-| **Multi-Node Verification** |   4-of-7 Quorum Consensus    |  3-of-4 Quorum Check  |
+| **Free Check Interval**     |   **3m (1m for first 10)**   |  300 Seconds (5 min)  |
+| **Free Region Coverage**    |  **3 Primary Edge Regions**  |   4 Cloud Locations   |
+| **Multi-Node Verification** | 2-of-3 Quorum (4-of-7 Paid)  |  3-of-4 Quorum Check  |
 | **Custom Status Pages**     |   Included (Custom Domain)   |       Included        |
 | **SSL Expiry Monitoring**   |   Included (30-day alerts)   |       Included        |
 | **DNS Record Watchdog**     |           Included           |       Included        |

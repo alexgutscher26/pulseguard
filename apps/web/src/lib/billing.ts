@@ -50,9 +50,8 @@ export const PLANS: Record<PlanTier, PlanDetails> = {
       manualCheckWindowSeconds: 300,
     },
     features: [
-      "50 Active Monitors",
-      "60-second Heartbeat checks",
-      "7-region 4-of-7 quorum verification",
+      "50 Active Monitors (3m standard, 1m for first 10)",
+      "3-region 2-of-3 quorum consensus",
       "Commercial use permitted in writing",
       "Email & Discord alert dispatches",
       "1 Public Status page",
