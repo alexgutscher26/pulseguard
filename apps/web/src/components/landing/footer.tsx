@@ -233,6 +233,27 @@ export default function LandingFooter() {
           </div>
         </div>
 
+        {/* Featured Badges & Directories */}
+        <div className="flex justify-center items-center pt-8 border-t border-border/50">
+          <a
+            href="https://confettisaas.com/saas/steadystack-dev?ref=badge"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="View SteadyStack on ConfettiSaaS"
+            className="transition-opacity hover:opacity-85"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://confettisaas.com/badge-light.svg"
+              width={250}
+              height={54}
+              alt="SteadyStack on ConfettiSaaS"
+              loading="lazy"
+              className="block h-11 w-auto"
+            />
+          </a>
+        </div>
+
         {/* Footer Bottom */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-8 border-t border-border">
           <div className="flex flex-wrap items-center gap-3">
@@ -268,27 +289,6 @@ export default function LandingFooter() {
               <Github className="size-[17px]" />
             </Link>
           </div>
-        </div>
-
-        {/* Featured Badges & Directories */}
-        <div className="flex justify-center items-center pt-8 border-t border-border/50">
-          <a
-            href="https://confettisaas.com/saas/steadystack-dev?ref=badge"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="View SteadyStack on ConfettiSaaS"
-            className="transition-opacity hover:opacity-85"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="https://confettisaas.com/badge-light.svg"
-              width={250}
-              height={54}
-              alt="SteadyStack on ConfettiSaaS"
-              loading="lazy"
-              className="block h-11 w-auto"
-            />
-          </a>
         </div>
       </div>
     </footer>
