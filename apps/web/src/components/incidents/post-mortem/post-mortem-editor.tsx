@@ -330,7 +330,7 @@ ${formData.actionItems || "(No action items provided)"}
 
         <div className="flex flex-wrap items-center gap-2">
           {/* Incident Memory Status Badge */}
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-muted/40 border border-primary/20 font-mono text-[11px]">
+          {/* <div className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-muted/40 border border-primary/20 font-mono text-[11px]">
             <BrainCircuit className="size-3 text-primary" />
             <span>AI Memory:</span>
             {pineconeInfo.isConfigured ? (
@@ -341,7 +341,7 @@ ${formData.actionItems || "(No action items provided)"}
             ) : (
               <span className="text-muted-foreground">Disabled</span>
             )}
-          </div>
+          </div> */}
 
           <Button
             variant="outline"
@@ -370,7 +370,7 @@ ${formData.actionItems || "(No action items provided)"}
       </div>
 
       {/* Pinecone Incident Memory & RAG Intelligence Panel */}
-      <Card className="bg-gradient-to-r from-primary/5 via-card/50 to-primary/5 border-primary/20 backdrop-blur-md">
+      {/* <Card className="bg-gradient-to-r from-primary/5 via-card/50 to-primary/5 border-primary/20 backdrop-blur-md">
         <CardHeader className="pb-3 border-b border-primary/10">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
@@ -491,7 +491,7 @@ ${formData.actionItems || "(No action items provided)"}
             </div>
           )}
         </CardContent>
-      </Card>
+      </Card> */}
 
       {/* Post-Mortem Form Tabs */}
       <Tabs defaultValue="analysis" className="w-full">
@@ -536,7 +536,7 @@ ${formData.actionItems || "(No action items provided)"}
                       <Sparkles className="size-4 text-primary" />
                       EXECUTIVE SUMMARY
                     </CardTitle>
-                    <Button
+                    {/* <Button
                       variant="ghost"
                       size="sm"
                       className="h-7 text-[10px] font-mono uppercase bg-primary/10 hover:bg-primary/20 border border-primary/10"
@@ -549,7 +549,7 @@ ${formData.actionItems || "(No action items provided)"}
                         <Wand2 className="mr-2 size-3 text-primary" />
                       )}
                       Sync Summary with AI
-                    </Button>
+                    </Button> */}
                   </div>
                 </CardHeader>
                 <CardContent className="pt-4">
@@ -559,9 +559,9 @@ ${formData.actionItems || "(No action items provided)"}
                     value={formData.summary}
                     onChange={(e) => handleInputChange("summary", e.target.value)}
                   />
-                  <p className="text-[10px] text-muted-foreground mt-2 font-mono uppercase tracking-widest italic">
+                  {/* <p className="text-[10px] text-muted-foreground mt-2 font-mono uppercase tracking-widest italic">
                     AI generated summaries synthesize event telemetry and Pinecone incident memory.
-                  </p>
+                  </p> */}
                 </CardContent>
               </Card>
 

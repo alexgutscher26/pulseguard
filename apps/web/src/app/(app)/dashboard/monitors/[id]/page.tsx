@@ -20,7 +20,7 @@ export default async function MonitorDetailPage({ params }: { params: Promise<{ 
 
   return (
     <div className="flex flex-col gap-6 p-6">
-      <AIInsights insights={serializableInsights} />
+      {/* <AIInsights insights={serializableInsights} /> */}
       <MonitorDetailView initialMonitor={serializableMonitor} />
     </div>
   );

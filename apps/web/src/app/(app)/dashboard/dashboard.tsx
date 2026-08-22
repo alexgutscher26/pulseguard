@@ -77,7 +77,7 @@ export default function Dashboard({
     <div className="flex flex-col gap-6">
       {!isDemo && <UsageLimitBanner summary={usageSummary} />}
       {!isDemo && <OnboardingChecklist status={onboardingStatus} userEmail={userEmail} />}
-      <AIInsights insights={initialInsights} />
+      {/* <AIInsights insights={initialInsights} /> */}
       <DashboardStats stats={stats} />
 
       {/* View Mode Selector bar */}
