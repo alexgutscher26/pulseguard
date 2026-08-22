@@ -234,7 +234,7 @@ export default function LandingFooter() {
         </div>
 
         {/* Featured Badges & Directories */}
-        <div className="flex justify-center items-center pt-8 border-t border-border/50">
+        <div className="flex flex-wrap justify-center items-center gap-6 pt-8 border-t border-border/50">
           <a
             href="https://confettisaas.com/saas/steadystack-dev?ref=badge"
             target="_blank"
@@ -248,6 +248,23 @@ export default function LandingFooter() {
               width={250}
               height={54}
               alt="SteadyStack on ConfettiSaaS"
+              loading="lazy"
+              className="block h-11 w-auto"
+            />
+          </a>
+          <a
+            href="https://fazier.com/launches/steadystack.dev"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="View SteadyStack on Fazier"
+            className="transition-opacity hover:opacity-85"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://fazier.com/api/v1//public/badges/launch_badges.svg?badge_type=launched&theme=light"
+              width={120}
+              height={44}
+              alt="Fazier badge"
               loading="lazy"
               className="block h-11 w-auto"
             />
