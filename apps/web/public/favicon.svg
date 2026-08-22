@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <defs>
+    <linearGradient id="ss-fav-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#06B6D4" />
+    </linearGradient>
+  </defs>
+  <!-- Background Disc / Rounded Square -->
+  <rect width="32" height="32" rx="8" fill="#0B132B" />
+  
+  <!-- Base Stack Tier -->
+  <path d="M6 22L16 27L26 22L23 19.5L16 23L9 19.5L6 22Z" fill="url(#ss-fav-grad)" fill-opacity="0.5" />
+  
+  <!-- Top Stack Hex Face -->
+  <path d="M16 6L26 11L16 16L6 11L16 6Z" fill="#0E1B38" stroke="url(#ss-fav-grad)" stroke-width="1.75" stroke-linejoin="round" />
+  
+  <!-- Pulse Waveform -->
+  <path d="M10 11H13L15 8L16 14L18 9L19 12L22 11" stroke="#10B981" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

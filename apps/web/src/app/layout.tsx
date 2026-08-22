@@ -57,6 +57,14 @@ export const metadata: Metadata = {
     title: "SteadyStack — Know the second your stack breaks",
     description:
       "Know the second your stack breaks. Edge-native synthetic uptime monitoring that confirms failures across global regions before alerting. Multi-region edge quorum verification, live latency tracking, and zero false positives — free for commercial use.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "SteadyStack — Know the second your stack breaks",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
@@ -64,7 +72,13 @@ export const metadata: Metadata = {
     description:
       "Know the second your stack breaks. Edge-native synthetic uptime monitoring that confirms failures across global regions before alerting. Multi-region edge quorum verification, live latency tracking, and zero false positives — free for commercial use.",
     creator: "@steadystack",
+    images: ["/og-image.png"],
   },
+  icons: {
+    icon: [{ url: "/favicon.ico" }, { url: "/icon.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/apple-touch-icon.png" }],
+  },
+  manifest: "/site.webmanifest",
   robots: {
     index: true,
     follow: true,
