@@ -38,7 +38,7 @@ export const competitors: CompetitorInfo[] = [
     url: "https://steadystack.dev",
     pricingUrl: "/pricing",
     description:
-      "Cloudflare edge-native monitoring with 60-second checks and 4-of-7 quorum verification.",
+      "Cloudflare edge-native monitoring with multi-region quorum consensus (2-of-3 Free, 4-of-7 Paid).",
     badge: "Recommended",
     isPrimary: true,
   },

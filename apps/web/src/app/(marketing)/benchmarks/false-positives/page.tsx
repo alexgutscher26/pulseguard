@@ -139,8 +139,8 @@ export default function FalsePositivesBenchmarkPage() {
             </h2>
 
             <p className="text-muted-foreground text-sm sm:text-base leading-relaxed max-w-xl mb-8">
-              Start monitoring your services with 4-of-7 edge quorum consensus. 60-second checks, 7
-              sovereign global regions, zero credit card required.
+              Start monitoring your services with multi-region edge quorum consensus (2-of-3 on free
+              and 4-of-7 on paid tiers). Zero credit card required.
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-4">

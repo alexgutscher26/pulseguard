@@ -188,9 +188,8 @@ export default function PostLayout({
                     Stop 3 AM false alarms with SteadyStack
                   </h3>
                   <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed m-0 max-w-xl">
-                    Get 60-second checks across 7 global regions, 4-of-7 multi-region consensus
-                    verification, and custom branded status pages — completely free for up to 50
-                    monitors.
+                    Get multi-region edge quorum consensus verification, zero false alarms, and
+                    custom branded status pages — completely free for up to 50 monitors.
                   </p>
                   <div className="flex flex-wrap items-center gap-3 pt-2">
                     <Link

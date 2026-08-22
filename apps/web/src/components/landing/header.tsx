@@ -73,7 +73,7 @@ export default function LandingHeader() {
   const productLinks = [
     {
       name: "Core Features",
-      description: "7-region quorum consensus & zero false-positive alerts",
+      description: "Multi-region quorum consensus & zero false-positive alerts",
       href: "/#features",
       icon: <Zap className="size-4 text-primary" />,
     },

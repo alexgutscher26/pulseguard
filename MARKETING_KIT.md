@@ -46,18 +46,18 @@ _(99 characters)_
 ### Medium Pitch (≤ 250 chars)
 
 ```text
-SteadyStack is an open-source, edge-native synthetic monitoring platform. It runs 60-second multi-region quorum checks, generates branded status pages, and alerts you via Slack, Discord, SMS, and Webhooks before users notice downtime.
+SteadyStack is an open-source, edge-native synthetic monitoring platform. It runs multi-region quorum checks (2-of-3 on free, 4-of-7 on paid), generates status pages, and alerts you via Slack, Discord, and Webhooks before users notice downtime.
 ```
 
-_(243 characters)_
+_(249 characters)_
 
 ### Standard Elevator Pitch (≤ 500 chars)
 
 ```text
-Most uptime monitors ping from a single data center, spamming on-call engineers with false alarms whenever a transient network hop jitters. SteadyStack solves this at the edge: 7-region distributed quorum verification confirms genuine outages in milliseconds before waking your team. Enjoy 60s checks, custom-domain public status pages, SSL expiry warnings, cron heartbeats, and full REST/CLI automation — without hostage pricing.
+Most uptime monitors ping from a single data center, spamming on-call engineers with false alarms whenever a transient network hop jitters. SteadyStack solves this at the edge: distributed quorum verification (2-of-3 on free, 4-of-7 on paid) confirms genuine outages in milliseconds before waking your team. Enjoy fast checks, custom-domain public status pages, SSL expiry warnings, cron heartbeats, and full REST/CLI automation — without hostage pricing.
 ```
 
-_(444 characters)_
+_(473 characters)_
 
 ### Full Long Description (Markdown for Directories)
 
@@ -65,12 +65,12 @@ _(444 characters)_
 SteadyStack is the next-generation, edge-native synthetic uptime monitoring and observability platform built for modern engineering teams and self-hosters.
 
 ### Key Features:
-- 🌐 **Multi-Region Quorum Verification**: Synthetic checks execute across 7 global edge regions simultaneously. Outages require multi-node consensus (4-of-7 quorum) before triggering an incident, eliminating false positives from transient regional routing anomalies.
-- ⚡ **Sub-Minute Synthetic Probes**: HTTP/HTTPS, SSL certificate validation, DNS resolution, TCP ports, and background cron heartbeats.
+- 🌐 **Multi-Region Quorum Verification**: Synthetic checks execute across distributed sovereign edge regions. Outages require multi-node consensus (2-of-3 on free, 4-of-7 on paid) before triggering an incident, eliminating false positives from transient regional routing anomalies.
+- ⚡ **High-Frequency Synthetic Probes**: HTTP/HTTPS, SSL certificate validation, DNS resolution, TCP ports, and background cron heartbeats (3m standard / 1m for first 10 on free, down to 30s/10s on paid).
 - 🎨 **Branded Public Status Pages**: Host status pages on your custom domain (`status.yourdomain.com`) with incident timelines, subscriber notifications, and sleek dark/light themes.
 - 🔔 **Multi-Channel Alert Routing**: Instant escalation via Slack, Discord, PagerDuty, Webhooks, SMS, and Email.
 - 🛠️ **Developer-First Architecture**: Full REST API, tRPC endpoints, Docker probe agent for private VPC monitoring, and native CLI tooling.
-- 💸 **Fair Commercial Free Tier**: Generous 60-second checks and unlimited public status pages without punitive upgrade walls.
+- 💸 **Fair Commercial Free Tier**: 50 monitors (3m standard, 1m for first 10) with 3-region 2-of-3 quorum consensus, public status page, and commercial use permitted in writing.
 ```
 
 ---
@@ -137,7 +137,7 @@ Thank you so much for the support! 🚀
 
 - **Alternative to**: UptimeRobot, Better Stack, Pingdom, Statuspage.io, Datadog Synthetics
 - **Category**: Uptime Monitoring / Status Page Service / DevOps Tool
-- **Key Differentiator vs. UptimeRobot**: SteadyStack provides 60s checks on its free tier, 7-region quorum consensus verification, and modern customizable status pages without paywalling basic SRE features.
+- **Key Differentiator vs. UptimeRobot**: SteadyStack provides 50 free monitors with multi-region quorum consensus verification (2-of-3 on free, 4-of-7 on paid), 1-minute checks for your first 10 monitors, and customizable status pages without paywalling basic SRE features.
 - **Key Differentiator vs. Better Stack**: Fully open architecture, transparent self-hosting options, and edge-native Cloudflare probe execution.
 
 ### C. Uneed (`uneed.best`) & BetaList (`betalist.com`)

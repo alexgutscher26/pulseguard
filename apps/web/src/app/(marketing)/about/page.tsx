@@ -183,8 +183,7 @@ export default function AboutPage() {
             Ready to monitor the right way?
           </h2>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-lg mx-auto mb-8">
-            50 free monitors forever with 60-second checks across 7 quorum regions. No credit card
-            required.
+            50 free monitors forever with 3-region 2-of-3 quorum consensus. No credit card required.
           </p>
           <Link
             href="/signup"

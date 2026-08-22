@@ -307,8 +307,7 @@ export default function ChangelogPage() {
         <div className="max-w-4xl mx-auto px-6 text-center space-y-4">
           <h3 className="text-2xl font-bold text-foreground">Ready to test SteadyStack?</h3>
           <p className="text-xs text-muted-foreground max-w-md mx-auto">
-            Self-host the full stack on Docker or start free with 60-second checks across 7 global
-            edge regions.
+            Self-host the full stack on Docker or start free with 3-region 2-of-3 quorum consensus.
           </p>
           <div className="flex justify-center gap-3 pt-2">
             <Link

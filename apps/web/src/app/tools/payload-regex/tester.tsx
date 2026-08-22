@@ -76,7 +76,7 @@ const MOCK_SITES: Record<string, string> = {
 </head>
 <body>
   <h1>Detect downtime before your users do</h1>
-  <p>60-second checks from 7 global regions with 4-of-7 quorum verification.</p>
+  <p>Multi-region checks with sovereign edge quorum verification.</p>
 </body>
 </html>`,
 };

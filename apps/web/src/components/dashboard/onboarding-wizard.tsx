@@ -826,7 +826,7 @@ export function OnboardingWizard({ open, onOpenChange, userEmail = "" }: Onboard
                     Edge Monitoring Active & Verified
                   </h3>
                   <p className="text-xs font-mono text-muted-foreground mt-1">
-                    Your target monitor is live with 60-second multi-region probe consensus and
+                    Your target monitor is live with 1-minute multi-region probe consensus and
                     active alert dispatch.
                   </p>
                 </div>

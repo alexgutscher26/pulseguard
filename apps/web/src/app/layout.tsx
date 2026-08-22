@@ -118,7 +118,7 @@ const jsonLd = {
       operatingSystem: "All",
       applicationCategory: "DeveloperApplication",
       description:
-        "Know the second your stack breaks. Cloudflare edge-native monitoring platform with 60-second checks, 7-region verification, and 4-of-7 quorum failure confirmation.",
+        "Know the second your stack breaks. Cloudflare edge-native monitoring platform with multi-region quorum verification, synthetic checks, and zero false alarms.",
       offers: {
         "@type": "AggregateOffer",
         priceCurrency: "USD",
