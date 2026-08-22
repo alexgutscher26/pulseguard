@@ -333,7 +333,7 @@ export default function Hero() {
                   <ShieldCheck className="size-3 text-primary" />
                   Cloudflare Edge DOs
                 </span>
-                <span className="text-primary font-mono font-bold">4-of-7 Quorum</span>
+                <span className="text-primary font-mono font-bold">4-of-7 Quorum (Paid)</span>
               </div>
             </div>
           </div>

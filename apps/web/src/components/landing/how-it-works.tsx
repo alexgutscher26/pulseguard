@@ -6,9 +6,9 @@ export default function HowItWorks() {
     {
       number: "01",
       name: "BREADTH",
-      title: "Seven regions, every 60 seconds",
+      title: "Seven regions, every 60 seconds (paid tiers)",
       description:
-        "Every monitor is checked from all seven: Western and Eastern North America, Western and Eastern Europe, and three Asia-Pacific regions covering Japan and Korea, Southeast Asia, and wider APAC. Not a rotation — all seven, every cycle.",
+        "Every monitor is checked from all seven (or 3 primary regions on the free tier): Western and Eastern North America, Western and Eastern Europe, and three Asia-Pacific regions covering Japan and Korea, Southeast Asia, and wider APAC. Not a rotation — all regions, every cycle.",
       icon: Globe,
     },
     {
@@ -22,9 +22,9 @@ export default function HowItWorks() {
     {
       number: "03",
       name: "CONFIRM",
-      title: "Four of seven must agree",
+      title: "Four of seven must agree (paid tiers)",
       description:
-        "Only when four regions independently confirm the failure do we open an incident. A region that's simply slow to respond is excluded from the count rather than counted as a failure — so one congested route can neither trigger an alert nor suppress one.",
+        "Only when four regions (2-of-3 on the free tier) independently confirm the failure do we open an incident. A region that's simply slow to respond is excluded from the count rather than counted as a failure — so one congested route can neither trigger an alert nor suppress one.",
       icon: ShieldCheck,
     },
     {
